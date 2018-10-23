@@ -4,7 +4,29 @@
 
 ### Copying a starter project
 
-*TODO*
+1. Create a new public repository for your project (e.g. `new-repository`)
+2. Create a clone of the starter repo: 
+```
+git clone --single-branch https://github.com/concord-consortium/starter-projects.git
+```
+3. Re-initialize the repo:
+```
+cd starter-projects
+rm -rf .git
+git init
+```
+4. Create an initial commit
+```
+git add .
+git commit -m "Initial commit"
+```
+5. Push to your new repository
+```
+git remote add origin https://github.com/concord-consortium/new-repository.git
+git push -u origin master
+```
+6. Find and replace references to `starter-projects`/`Starter Projects` and re-commit.
+7. Your new repository is ready! Follow the steps below to use it.
 
 ### Initial steps
 
