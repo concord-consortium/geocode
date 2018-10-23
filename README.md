@@ -25,8 +25,14 @@ git commit -m "Initial commit"
 git remote add origin https://github.com/concord-consortium/new-repository.git
 git push -u origin master
 ```
-6. Find and replace references to `starter-projects`/`Starter Projects` and re-commit.
-7. Your new repository is ready! Follow the steps below to use it.
+6. Remove the temporary repository and re-clone your new one.
+```
+cd ..
+rm -rf starter-projects
+git clone https://github.com/concord-consortium/new-repository.git
+```
+7. Open your new repository and update all instances of `starter-projects` to `new-repository` and `Starter Projects` to `New Repository`. Note: this will do some of the configuration for Travis deployment to S3, but you'll still need to follow the instructions [here](https://docs.google.com/document/d/e/2PACX-1vTpYjbGmUMxk_FswUmapK_RzVyEtm1WdnFcNByp9mqwHnp0nR_EzRUOiubuUCsGwzQgOnut_UiabYOM/pub).
+8. Your new repository is ready! Remove this section of the `README`, and follow the steps below to use it.
 
 ### Initial steps
 
