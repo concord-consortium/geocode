@@ -1,9 +1,10 @@
-# Collaborative Learning
-
-Collaborative Learning was built by [The Concord Consortium](http://concord.org/) for the
-MSU Inscriptions project.
+# Starter Projects
 
 ## Development
+
+### Copying a starter project
+
+*TODO*
 
 ### Initial steps
 
@@ -24,14 +25,16 @@ You *do not* need to build to deploy the code, that is automatic.  See more info
 
 ## Deployment
 
+*TODO* Set up Travis Deployment
+
 Production releases to S3 are based on the contents of the /dist folder and are built automatically by Travis
 for each branch pushed to GitHub and each merge into production.
 
-Merges into production are deployed to http://collaborative-learning.concord.org.
+Merges into production are deployed to http://starter-projects.concord.org.
 
-Other branches are deployed to http://collaborative-learning.concord.org/branch/<name>.
+Other branches are deployed to http://starter-projects.concord.org/branch/<name>.
 
-You can view the status of all the branch deploys [here](https://travis-ci.org/concord-consortium/collaborative-learning/branches).
+You can view the status of all the branch deploys [here](https://travis-ci.org/concord-consortium/starter-projects/branches).
 
 To deploy a production release:
 
@@ -45,22 +48,14 @@ To deploy a production release:
 8. Checkout production
 9. Run `git merge master --no-ff`
 10. Push production to GitHub
-11. Use https://github.com/concord-consortium/collaborative-learning/releases to create a new release tag
+11. Use https://github.com/concord-consortium/starter-projects/releases to create a new release tag
 
 ### Testing
 
-Run `npm test` to run all tests.
-
-### QA
-
-Along with `dev`, `test`, `authed` and `demo` modes the app has a `qa` mode.  QA mode uses the same parameters as demo mode with two additional parameters:
-
-1. qaGroup - the group to automatically assign the fake user to after connecting to the database.
-2. qaClear - either "all", "class" or "offering".  When this parameter is present the QA database is cleared at the level requested based on the user parameters.
-   This is useful to clear data between automated QA runs.  When complete the app will display `<span className="qa-clear">QA Cleared: OK</span>`.
+Run `npm test` to run jest tests. Run `npm run test:full` to run jest and Cypress tests.
 
 ## License
 
-Collaborative Learning is Copyright 2018 (c) by the Concord Consortium and is distributed under the [MIT license](http://www.opensource.org/licenses/MIT).
+Starter Projects are Copyright 2018 (c) by the Concord Consortium and is distributed under the [MIT license](http://www.opensource.org/licenses/MIT).
 
 See license.md for the complete license text.

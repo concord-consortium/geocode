@@ -17,10 +17,6 @@ module.exports = (env, argv) => {
       filename: 'assets/index.[hash].js'
     },
     performance: { hints: false },
-    externals: {
-      // ignore optional dependency of JSXGraph
-      'canvas': 'canvas'
-    },
     module: {
       rules: [
         {

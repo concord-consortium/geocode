@@ -1,5 +1,5 @@
 {
-  "name": "starter-project",
+  "name": "starter-projects",
   "version": "0.0.1",
   "description": "Concord Consortium starter projects",
   "main": "index.js",
@@ -50,14 +50,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/concord-consortium/starter-project.git"
+    "url": "git+https://github.com/concord-consortium/starter-projects.git"
   },
   "author": "Concord Consortium",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/concord-consortium/starter-project/issues"
+    "url": "https://github.com/concord-consortium/starter-projects/issues"
   },
-  "homepage": "https://github.com/concord-consortium/starter-project#readme",
+  "homepage": "https://github.com/concord-consortium/starter-projects#readme",
   "devDependencies": {
     "@cypress/webpack-preprocessor": "^3.0.0",
     "@types/enzyme": "^3.1.14",
