@@ -4,6 +4,8 @@
   "description": "Concord Consortium starter projects",
   "main": "index.js",
   "jest": {
+    "testURL": "https://starter-projects.unexisting.url.com",
+    "setupTestFrameworkScriptFile": "<rootDir>src/setupTests.js",
     "transform": {
       "^.+\\.tsx?$": "ts-jest"
     },
@@ -18,7 +20,7 @@
     ],
     "moduleNameMapper": {
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
-      "\\.(css|less|sass)$": "<rootDir>/__mocks__/styleMock.js"
+      "\\.(css|less|sass)$": "identity-obj-proxy"
     },
     "moduleFileExtensions": [
       "ts",
@@ -79,6 +81,7 @@
     "file-loader": "^2.0.0",
     "fork-ts-checker-webpack-plugin": "^0.4.10",
     "html-webpack-plugin": "^3.2.0",
+    "identity-obj-proxy": "^3.0.0",
     "jest": "^23.6.0",
     "mini-css-extract-plugin": "^0.4.4",
     "node-sass": "^4.9.4",
