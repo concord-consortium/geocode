@@ -2,7 +2,7 @@
 SRC_DIR='dist'
 DISTRIBUTION_ID='E1YPVV3YLYS4J7'
 # name of branch to deploy to root of site
-PRODUCTION_BRANCH='production'
+PRODUCTION_BRANCH='master'
 
 if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
 	echo "skipping deploy to S3: this is a pull request"
