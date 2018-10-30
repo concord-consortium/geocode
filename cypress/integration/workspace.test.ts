@@ -1,5 +1,5 @@
 context("Test the overall app", () => {
-  before(() => {
+  beforeEach(() => {
     cy.visit("");
   });
 
