@@ -10,22 +10,92 @@
       canvas { border: 2px solid black; border-radius: 10px;}
       #app {
         display: flex;
-        align-content: center;
         justify-content: center;
         align-items: center;
+        flex-direction: column;
         position: absolute; top:0; right:0; bottom:0; left:0;
+      }
+      #blocklyDiv {
+        width: 100%;
+        height: 400px;
+        position: relative;
       }
       .hidden {
         display: none;
       }
     </style>
+    <script src="blockly/blockly_compressed.js"></script>
+    <script src="blockly/blocks_compressed.js"></script>
+    <script src="blockly/javascript_compressed.js"></script>
+    <script src="blockly/en.js"></script>
+    <script src="blocks.js"></script>
   </head>
   <body>
     <div class="hidden assets">
       <img id="base-map" src="base-map.png"/>
     </div>
     <div id="app">
-      <canvas id="volcano-canvas" width='500' height='500'/>
+      <div id='blocklyDiv'></div>
+      <canvas id="volcano-canvas" width='500' height='500'>
+      </canvas>
     </div>
+
+
+    <xml id="toolbox" style="display: none">
+        <category name="Map Drawing" colour="%{BKY_TEXTS_HUE}">
+          <!-- <block type="console_logger"></block> -->
+          <block type="drawdot"></block>
+          <block type="clear"></block>
+        </category>
+        <category name="JavaScript" colour="%{BKY_TEXTS_HUE}">
+          <block type="run_js_from_textbox"></block>
+        </category>
+        <category name="Logic" colour="%{BKY_LOGIC_HUE}">
+          <block type="controls_if"></block>
+          <block type="logic_compare"></block>
+          <block type="logic_operation"></block>
+          <block type="logic_negate"></block>
+          <block type="logic_boolean"></block>
+        </category>
+        <category name="Loops" colour="%{BKY_LOOPS_HUE}">
+          <block type="controls_repeat_ext">
+            <value name="TIMES">
+              <block type="math_number">
+                <field name="NUM">10</field>
+              </block>
+            </value>
+          </block>
+          <block type="controls_whileUntil"></block>
+        </category>
+        <category name="Math" colour="%{BKY_MATH_HUE}">
+          <block type="math_number">
+            <field name="NUM">123</field>
+          </block>
+          <block type="math_arithmetic"></block>
+          <block type="math_single"></block>
+          <block type="math_random_int">
+            <value name="FROM">
+              <block type="math_number">
+                <field name="NUM">1</field>
+              </block>
+            </value>
+            <value name="TO">
+              <block type="math_number">
+                <field name="NUM">100</field>
+              </block>
+            </value>
+          </block>
+        </category>
+      </xml>
+    
+      <script>
+        var blockOpts = {
+            media: 'blockly/media/',
+            toolbox: document.getElementById('toolbox')
+          };
+        var demoWorkspace = Blockly.inject('blocklyDiv', blockOpts);
+        var startBlocks = document.getElementById('startBlocks')
+        Blockly.Xml.domToWorkspace(startBlocks, demoWorkspace);
+      </script>
   </body>
 </html>
