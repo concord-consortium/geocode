@@ -6,8 +6,26 @@
     <meta name="description" content="Starter Projects">
     <link rel="shortcut icon" href="favicon.ico">
     <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+    <style>
+      canvas { border: 2px solid black; border-radius: 10px;}
+      #app {
+        display: flex;
+        align-content: center;
+        justify-content: center;
+        align-items: center;
+        position: absolute; top:0; right:0; bottom:0; left:0;
+      }
+      .hidden {
+        display: none;
+      }
+    </style>
   </head>
   <body>
-    <div id="app"></div>
+    <div class="hidden assets">
+      <img id="base-map" src="base-map.png"/>
+    </div>
+    <div id="app">
+      <canvas id="volcano-canvas" width='500' height='500'/>
+    </div>
   </body>
 </html>
