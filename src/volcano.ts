@@ -36,6 +36,7 @@ export default class Volcano {
       this.addRock();
    }
     if (this.context) {
+      this.context.clearRect(0, 0, canvasSize, canvasSize);
       this.rocks.forEach((rock) => {
         rock.draw(this.context as CanvasRenderingContext2D);
       });
