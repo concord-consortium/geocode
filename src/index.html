@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
     <style>
       canvas { border: 2px solid black; border-radius: 10px;}
-      #app {
+      #container {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -31,71 +31,27 @@
     <script src="blocks.js"></script>
   </head>
   <body>
+    <div id="startBlocks" />
     <div class="hidden assets">
       <img id="base-map" src="base-map.png"/>
     </div>
-    <div id="app">
+    <div id="container">
       <div id='blocklyDiv'></div>
-      <canvas id="volcano-canvas" width='500' height='500'>
-      </canvas>
+      <div id="reactApp" />
     </div>
-
-
-    <xml id="toolbox" style="display: none">
-        <category name="Map Drawing" colour="%{BKY_TEXTS_HUE}">
-          <!-- <block type="console_logger"></block> -->
-          <block type="drawdot"></block>
-          <block type="clear"></block>
-        </category>
-        <category name="JavaScript" colour="%{BKY_TEXTS_HUE}">
-          <block type="run_js_from_textbox"></block>
-        </category>
-        <category name="Logic" colour="%{BKY_LOGIC_HUE}">
-          <block type="controls_if"></block>
-          <block type="logic_compare"></block>
-          <block type="logic_operation"></block>
-          <block type="logic_negate"></block>
-          <block type="logic_boolean"></block>
-        </category>
-        <category name="Loops" colour="%{BKY_LOOPS_HUE}">
-          <block type="controls_repeat_ext">
-            <value name="TIMES">
-              <block type="math_number">
-                <field name="NUM">10</field>
-              </block>
-            </value>
-          </block>
-          <block type="controls_whileUntil"></block>
-        </category>
-        <category name="Math" colour="%{BKY_MATH_HUE}">
-          <block type="math_number">
-            <field name="NUM">123</field>
-          </block>
-          <block type="math_arithmetic"></block>
-          <block type="math_single"></block>
-          <block type="math_random_int">
-            <value name="FROM">
-              <block type="math_number">
-                <field name="NUM">1</field>
-              </block>
-            </value>
-            <value name="TO">
-              <block type="math_number">
-                <field name="NUM">100</field>
-              </block>
-            </value>
-          </block>
-        </category>
-      </xml>
-    
-      <script>
-        var blockOpts = {
+    <script>
+      fetch('./toolbox.xml').then((r) => {
+        r.text().then( (data) => {
+          var blockOpts = {
             media: 'blockly/media/',
-            toolbox: document.getElementById('toolbox')
+            toolbox: data
           };
         var demoWorkspace = Blockly.inject('blocklyDiv', blockOpts);
-        var startBlocks = document.getElementById('startBlocks')
+        var startBlocks = document.getElementById('startBlocks');
         Blockly.Xml.domToWorkspace(startBlocks, demoWorkspace);
-      </script>
+        });
+      });
+
+    </script>
   </body>
 </html>

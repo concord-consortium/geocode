@@ -1,5 +1,3 @@
-import Rock from "./rock";
-
 const fullCircle = Math.PI * 2;
 
 export interface IPosition {

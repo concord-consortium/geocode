@@ -19,12 +19,10 @@ export default class Volcano {
   private center = {x: canvasSize / 2.0, y: canvasSize / 2.0};
   private baseMap: HTMLImageElement;
 
-  constructor(context: string) {
-    const div = document.getElementById(context);
+  constructor(element: HTMLCanvasElement|null) {
     this.baseMap = (document.getElementById("base-map") as HTMLImageElement);
-
-    if (div !== null) {
-      this.context = (div as HTMLCanvasElement).getContext("2d");
+    if (element !== null) {
+      this.context = (element as HTMLCanvasElement).getContext("2d");
     }
   }
 
@@ -45,8 +43,8 @@ export default class Volcano {
     }
   }
   private randomizeWind() {
-    this.wind.x += rand(50);
-    this.wind.y += rand(50);
+    // this.wind.x += rand(50);
+    // this.wind.y += rand(50);
   }
 
   private drawCaldera(context: CanvasRenderingContext2D) {

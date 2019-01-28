@@ -1,7 +1,18 @@
 
 // import "./index.sass";
 import Volcano from "./volcano";
+import { Provider } from "mobx-react";
+import * as React from "react";
+import * as ReactDOM from "react-dom";
 
-const volcano = new Volcano("volcano-canvas");
-setInterval( () => volcano.run(), 500);
-// volcano.run();
+import { AppComponent } from "./components/app";
+import { createStores } from "./models/volcano-store";
+
+const stores = createStores({ });
+
+ReactDOM.render(
+  <Provider stores={stores}>
+    <AppComponent />
+  </Provider>,
+  document.getElementById("reactApp")
+);

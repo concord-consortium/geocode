@@ -1,5 +1,5 @@
 import * as React from "react";
-import { IStores } from "../models/stores";
+import { IStores } from "../models/volcano-store";
 
 export interface IBaseProps {
   stores?: IStores;
