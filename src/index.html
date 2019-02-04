@@ -8,20 +8,7 @@
     <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
     <link rel="stylesheet" href="index.css">
     <style>
-      canvas { border: 2px solid black; border-radius: 10px;}
-      #container {
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
-        flex-direction: row;
-      }
-      #blocklyDiv {
-        height: 400px;
-        position: relative;
-      }
-      .hidden {
-        display: none;
-      }
+      .hidden { display: none; }
     </style>
     <script src="blockly/blockly_compressed.js"></script>
     <script src="blockly/blocks_compressed.js"></script>
@@ -30,27 +17,9 @@
     <script src="blocks.js"></script>
   </head>
   <body>
-    <div id="startBlocks" />
     <div class="hidden assets">
       <img id="base-map" src="base-map.png"/>
     </div>
-    <div id="container">
-      <div id='blocklyDiv'></div>
-      <div id="reactApp" />
-    </div>
-    <script>
-      fetch('./toolbox.xml').then((r) => {
-        r.text().then( (data) => {
-          var blockOpts = {
-            media: 'blockly/media/',
-            toolbox: data
-          };
-        var demoWorkspace = Blockly.inject('blocklyDiv', blockOpts);
-        var startBlocks = document.getElementById('startBlocks');
-        Blockly.Xml.domToWorkspace(startBlocks, demoWorkspace);
-        });
-      });
-
-    </script>
+    <div id="reactApp" />
   </body>
 </html>

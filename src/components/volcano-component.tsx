@@ -1,13 +1,10 @@
-import { inject, observer } from "mobx-react";
 import * as React from "react";
-import { BaseComponent, IBaseProps } from "./base";
 import Volcano from "../volcano";
-import { SimulationModelType } from "../models/volcano-store";
+import styled from "styled-components";
 
-interface IProps extends IBaseProps {
-  windSpeed: number;
-  windDirection: number;
-}
+const SimDiv = styled.div`
+  border: 2px solid black; border-radius: 10px;
+`;
 
 interface IState {}
 
@@ -29,9 +26,9 @@ export class VolcanoComponent extends React.Component<IProps, IState>{
 
   public render() {
     return (
-      <div className="VolcanoSim">
+      <SimDiv>
         <canvas ref={this.canvRef} width={500} height={500}/>
-      </div>
+      </SimDiv>
     );
   }
 

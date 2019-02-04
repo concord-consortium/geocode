@@ -11,8 +11,10 @@ interface IProps extends IBaseProps {}
 interface IState {}
 
 const App = styled.div`
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: row;
 `;
 
 const Controls = styled.div`
@@ -22,34 +24,41 @@ const Controls = styled.div`
   align-items: flex-start;
 `;
 
+const Simulation = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+`;
 @inject("stores")
 @observer
-
 export class AppComponent extends BaseComponent<IProps, IState> {
   public render() {
     const {simulation} = this.stores;
     return (
       <App>
-        {/* <BlocklyContianer /> */}
-        <VolcanoComponent
-          windDirection={simulation.windDirection}
-          windSpeed={simulation.windSpeed}
-        />
-        <Controls>
-          <RangeControl
-            min={0}
-            max={6.2}
-            step={0.2}
-            onChange={this.changeWindDirection}
-            name="Wind Direction"
+        <BlocklyContianer />
+        <Simulation >
+          <VolcanoComponent
+            windDirection={simulation.windDirection}
+            windSpeed={simulation.windSpeed}
           />
-          <RangeControl
-            min={0}
-            max={500}
-            onChange={this.changeWindSpeed}
-            name="Wind Speed"
-          />
-        </Controls>
+          <Controls>
+            <RangeControl
+              min={0}
+              max={6.2}
+              step={0.2}
+              onChange={this.changeWindDirection}
+              name="Wind Direction"
+            />
+            <RangeControl
+              min={0}
+              max={500}
+              onChange={this.changeWindSpeed}
+              name="Wind Speed"
+            />
+          </Controls>
+        </Simulation>
       </App>
     );
   }
@@ -63,5 +72,4 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     const speed = parseFloat(input.currentTarget.value);
     this.stores.simulation.setWindSpeed(speed);
   }
-
 }
