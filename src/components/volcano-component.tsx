@@ -30,7 +30,6 @@ export class VolcanoComponent extends React.Component<IProps, IState>{
   public render() {
     return (
       <div className="VolcanoSim">
-        Hello Volcano Component
         <canvas ref={this.canvRef} width={500} height={500}/>
       </div>
     );

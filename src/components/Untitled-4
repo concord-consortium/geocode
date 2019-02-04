@@ -1,10 +1,4 @@
-import { inject, observer } from "mobx-react";
 import * as React from "react";
-import { BaseComponent, IBaseProps } from "./base";
-import { VolcanoComponent } from "./volcano-component";
-import RangeControl from "./range-control";
-import BlocklyContianer from "./blockly-container";
-
 import styled from "styled-components";
 
 interface IProps extends IBaseProps {}
@@ -30,7 +24,6 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     const {simulation} = this.stores;
     return (
       <App>
-        {/* <BlocklyContianer /> */}
         <VolcanoComponent
           windDirection={simulation.windDirection}
           windSpeed={simulation.windSpeed}
@@ -53,15 +46,16 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       </App>
     );
   }
-
   private changeWindDirection = (input: React.FormEvent<HTMLInputElement>) => {
     const direction = parseFloat(input.currentTarget.value);
     this.stores.simulation.setWindDirection(direction);
+    console.log(direction);
+    console.log(this.stores.simulation.windDirection);
   }
-
   private changeWindSpeed = (input: React.FormEvent<HTMLInputElement>) => {
     const speed = parseFloat(input.currentTarget.value);
     this.stores.simulation.setWindSpeed(speed);
+    console.log(speed);
+    console.log(this.stores.simulation.windSpeed);
   }
-
 }
