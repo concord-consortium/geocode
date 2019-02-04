@@ -8,6 +8,7 @@ import BlocklyContianer from "./blockly-container";
 import styled from "styled-components";
 
 interface IProps extends IBaseProps {}
+
 interface IState {}
 
 const App = styled.div`
@@ -34,14 +35,19 @@ const Simulation = styled.div`
 @observer
 export class AppComponent extends BaseComponent<IProps, IState> {
   public render() {
-    const {simulation} = this.stores;
+    const {
+      windDirection,
+      windSpeed,
+      setCanvas } =
+      this.stores;
     return (
       <App>
         <BlocklyContianer />
         <Simulation >
           <VolcanoComponent
-            windDirection={simulation.windDirection}
-            windSpeed={simulation.windSpeed}
+            windDirection={ windDirection }
+            windSpeed={ windSpeed }
+            setCanvas={ setCanvas }
           />
           <Controls>
             <RangeControl
@@ -65,11 +71,11 @@ export class AppComponent extends BaseComponent<IProps, IState> {
 
   private changeWindDirection = (input: React.FormEvent<HTMLInputElement>) => {
     const direction = parseFloat(input.currentTarget.value);
-    this.stores.simulation.setWindDirection(direction);
+    this.stores.setWindDirection(direction);
   }
 
   private changeWindSpeed = (input: React.FormEvent<HTMLInputElement>) => {
     const speed = parseFloat(input.currentTarget.value);
-    this.stores.simulation.setWindSpeed(speed);
+    this.stores.setWindSpeed(speed);
   }
 }

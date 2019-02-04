@@ -21,14 +21,11 @@ export default class Volcano {
 
   constructor(element: HTMLCanvasElement|null) {
     this.baseMap = (document.getElementById("base-map") as HTMLImageElement);
-    if (element !== null) {
-      this.context = (element as HTMLCanvasElement).getContext("2d");
-    }
+    this.setCanvas(element);
   }
 
   public run() {
     console.log("running");
-    this.randomizeWind();
     this.rocks = [];
     for (let i = 0; i < 400; i++) {
       this.addRock();
@@ -42,9 +39,11 @@ export default class Volcano {
       this.drawBaseMap(this.context);
     }
   }
-  private randomizeWind() {
-    // this.wind.x += rand(50);
-    // this.wind.y += rand(50);
+
+  public setCanvas = (elem: HTMLCanvasElement | null) => {
+    if (elem) {
+      this.context = elem.getContext("2d");
+    }
   }
 
   private drawCaldera(context: CanvasRenderingContext2D) {

@@ -10,6 +10,7 @@ interface IState {}
 interface IProps {
   windSpeed: number;
   windDirection: number;
+  setCanvas: (elem: HTMLCanvasElement|null) => void;
 }
 
 export class VolcanoComponent extends React.Component<IProps, IState>{
@@ -18,14 +19,9 @@ export class VolcanoComponent extends React.Component<IProps, IState>{
   private intervalRef: any  = null;
   private volcano: Volcano | null = null;
 
-  public componentDidMount() {
-    this.volcano = new Volcano(this.canvRef.current);
-    this.setInterval(500);
-  }
-
   public componentDidUpdate(prevProps: IProps) {
-    console.log(this.props);
-    this.resetInterval(500);
+    const { setCanvas } = this.props;
+    setCanvas(this.canvRef.current);
   }
 
   public render() {
@@ -41,21 +37,5 @@ export class VolcanoComponent extends React.Component<IProps, IState>{
       clearInterval(this.intervalRef);
     }
   }
-  private setInterval(millies: number) {
-    const {windSpeed, windDirection } = this.props;
-    const x = windSpeed * Math.cos(windDirection);
-    const y = windSpeed * Math.sin(windDirection);
-    this.intervalRef = setInterval(() => {
-      if (this.volcano) {
-        this.volcano.wind.x = x;
-        this.volcano.wind.y = y;
-        this.volcano.run();
-      }
-    }, millies);
-  }
 
-  private resetInterval(millies: number) {
-    this.clearInterval();
-    this.setInterval(millies);
-  }
 }

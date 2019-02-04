@@ -1,5 +1,8 @@
-import {  types } from "mobx-state-tree";
+import { types } from "mobx-state-tree";
 import { autorun } from "mobx";
+import Volcano from "../volcano";
+
+const volcano = new Volcano(null);
 
 export const SimulationModel = types
   .model("simulation", {
@@ -14,26 +17,24 @@ export const SimulationModel = types
       },
       setWindDirection(direction: number) {
         self.windDirection = direction;
+      },
+      setCanvas(canvas: HTMLCanvasElement) {
+        volcano.setCanvas(canvas);
       }
     };
   });
 
-export type SimulationModelType = typeof SimulationModel.Type;
+export const simulation = SimulationModel.create({});
 
-export interface IStores {
-  simulation: SimulationModelType;
-}
-
-export interface ICreateStores {
-  simulation?: SimulationModelType;
-}
-
-export function createStores(params?: ICreateStores): IStores {
-  return {
-    simulation: params && params.simulation || SimulationModel.create({})
-  };
-}
 autorun(() => {
-  console.log(SimulationModel);
+  console.log("Tho ho ho ");
+  console.log(simulation.windSpeed);
+  const {windSpeed, windDirection } = simulation;
+  const x = windSpeed * Math.cos(windDirection);
+  const y = windSpeed * Math.sin(windDirection);
+  volcano.wind.x = x;
+  volcano.wind.y = y;
+  volcano.run();
 });
 
+export type SimulationModelType = typeof SimulationModel.Type;
