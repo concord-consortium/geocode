@@ -13,9 +13,10 @@ interface IState {}
 
 const App = styled.div`
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     align-items: flex-start;
     flex-direction: row;
+    margin-top: 50px;
 `;
 
 const Controls = styled.div`

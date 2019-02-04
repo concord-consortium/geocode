@@ -10,10 +10,13 @@ const StartBlocks = styled.div``;
 
 const WorkSpace = styled.div`
   font-family: sans-serif;
-  background-color: orange;
-  width: 800px;
-  height: 400px;
+  background-color: hsla(30, 50%, 60%, 0.5);
+  width: 900px;
+  height: 600px;
   position: relative;
+  border: 2px solid gray;
+  border-radius: 0.5em;
+  padding: 1em;
 `;
 
 export default class BlocklyContainer extends React.Component<IProps, IState> {
@@ -29,13 +32,13 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
       </Wrapper>
     );
   }
+
   public componentDidMount() {
-    // console.log("component did mount");
     this.initializeBlockly();
   }
 
   public componentDidUpdate() {
-    console.log("component did update");
+    console.log("Blockly received update");
   }
 
   private initializeBlockly = () => {

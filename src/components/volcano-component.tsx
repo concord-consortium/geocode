@@ -31,11 +31,4 @@ export class VolcanoComponent extends React.Component<IProps, IState>{
       </SimDiv>
     );
   }
-
-  private clearInterval() {
-    if (this.intervalRef) {
-      clearInterval(this.intervalRef);
-    }
-  }
-
 }

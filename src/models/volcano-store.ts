@@ -20,6 +20,7 @@ export const SimulationModel = types
       },
       setCanvas(canvas: HTMLCanvasElement) {
         volcano.setCanvas(canvas);
+        volcano.run();
       }
     };
   });
@@ -27,8 +28,6 @@ export const SimulationModel = types
 export const simulation = SimulationModel.create({});
 
 autorun(() => {
-  console.log("Tho ho ho ");
-  console.log(simulation.windSpeed);
   const {windSpeed, windDirection } = simulation;
   const x = windSpeed * Math.cos(windDirection);
   const y = windSpeed * Math.sin(windDirection);
