@@ -7,6 +7,10 @@ const SimDiv = styled.div`
 `;
 
 interface IState {}
+interface IProps {
+  windSpeed: number;
+  windDirection: number;
+}
 
 export class VolcanoComponent extends React.Component<IProps, IState>{
 
