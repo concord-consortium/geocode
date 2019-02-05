@@ -64,20 +64,24 @@ Blockly.JavaScript['drawdot'] = function(block) {
   return code;
 };
 
-Blockly.Blocks['run_js_from_textbox'] = {
+Blockly.Blocks['console_log_from_blockly'] = {
   init: function() {
     this.appendDummyInput()
         .appendField("Run JS from textbox");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(230);
- this.setTooltip("");
- this.setHelpUrl("");
+    this.setTooltip("");
+    this.setHelpUrl("");
   }
 };
 
-Blockly.JavaScript['run_js_from_textbox'] = function(block) {
-  const code = 'run_js_from_textbox();\n';
+Blockly.JavaScript['console_log_from_blockly'] = function(block) {
+  const code = `
+    console.log('from blockly');\n
+    console.log(count);\n
+    console.log(rocks);\n
+  `;
   return code;
 };
 

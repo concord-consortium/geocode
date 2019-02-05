@@ -1,8 +1,11 @@
 import * as React from "react";
 import styled from "styled-components";
-import { runReactions } from "mobx/lib/internal";
 
-interface IProps {}
+
+interface IProps {
+  setBlocklyCode?: (code: string) => void;
+}
+
 interface IState {}
 
 const Wrapper = styled.div``;
@@ -51,6 +54,13 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
         this.workSpace = Blockly.inject(this.workSpaceRef.current, blockOpts);
         const startBlocks = this.startBlockRef.current;
         Blockly.Xml.domToWorkspace(startBlocks, this.workSpace);
+        const myUpdateFunction = (event: any) => {
+          const code = Blockly.JavaScript.workspaceToCode(this.workSpace);
+          if (this.props.setBlocklyCode) {
+            this.props.setBlocklyCode(code);
+          }
+        };
+        this.workSpace.addChangeListener(myUpdateFunction);
       });
     });
   }

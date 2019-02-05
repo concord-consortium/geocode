@@ -43,7 +43,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       this.stores;
     return (
       <App>
-        <BlocklyContianer />
+        <BlocklyContianer setBlocklyCode={this.setBlocklyCode} />
         <Simulation >
           <VolcanoComponent
             windDirection={ windDirection }
@@ -68,6 +68,10 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         </Simulation>
       </App>
     );
+  }
+
+  private setBlocklyCode = (code: string) => {
+    console.log(code);
   }
 
   private changeWindDirection = (input: React.FormEvent<HTMLInputElement>) => {

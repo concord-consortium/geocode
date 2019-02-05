@@ -6,7 +6,7 @@
           <block type="clear"></block>
         </category>
         <category name="JavaScript" colour="%{BKY_TEXTS_HUE}">
-          <block type="run_js_from_textbox"></block>
+          <block type="console_log_from_blockly"></block>
         </category>
         <category name="Logic" colour="%{BKY_LOGIC_HUE}">
           <block type="controls_if"></block>

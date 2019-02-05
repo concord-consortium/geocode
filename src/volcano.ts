@@ -16,6 +16,7 @@ class GridCell {
   public rockCount() {
     return this.rocks.length;
   }
+
   public avgRockSize() {
     if (this.rocks.length < 1) {
       return 0;
@@ -36,35 +37,19 @@ class GridCell {
 export type IDrawingFunction = (cell: GridCell, context: CanvasRenderingContext2D) => void;
 
 export default class Volcano {
-  public wind = {
-    x: rand(500),
-    y: rand(500)
-  };
-
+  public wind = { x: rand(500), y: rand(500) };
+  private code = "console.log('code');";
   private context: CanvasRenderingContext2D | null;
-  private rocks: Rock[] = [];
   private gridCells: GridCell[] = [];
   private center = {x: canvasSize / 2.0, y: canvasSize / 2.0};
   private baseMap: HTMLImageElement;
 
   constructor(element: HTMLCanvasElement|null) {
     this.baseMap = (document.getElementById("base-map") as HTMLImageElement);
-    this.setDrawingFunction( (cell, context) => {
-      const size = cell.avgRockSize();
-      const count = cell.rockCount();
-      const max = 10;
-      const darkness = count < 1 ? 0 : count / max * 100;
-      const color = makeHSLA(0, 100, 100 - darkness, 1.0);
-      context.fillStyle = color;
-      context.fillRect(0, 0, gridCellSize - 1, gridCellSize - 1);
-    });
     this.setCanvas(element);
   }
 
-  public drawingFunction: IDrawingFunction = (cell, context) => console.log(cell);
-
   public run() {
-    this.rocks = [];
     this.gridCells = [];
     for (let x = 0; x < numCols; x++) {
       for (let y = 0; y < numRows; y++ ) {
@@ -87,15 +72,47 @@ export default class Volcano {
     }
   }
 
-  public setDrawingFunction = (f: IDrawingFunction) => {
-    this.drawingFunction = f;
+  public setBlocklyCode = (code: string) => {
+   console.log(code);
+   this.code = code;
+  }
+
+  private oldDrawGridCell = (cell: GridCell, context: CanvasRenderingContext2D) => {
+    const size = cell.avgRockSize();
+    const count = cell.rockCount();
+    const max = 10;
+    const darkness = count < 1 ? 0 : count / max * 100;
+    const color = makeHSLA(0, 100, 100 - darkness, 1.0);
+    context.fillStyle = color;
+    context.fillRect(0, 0, gridCellSize - 1, gridCellSize - 1);
   }
 
   private drawGridCell(x: number, y: number, gridCell: GridCell) {
     if (this.context) {
       this.context.save();
       this.context.translate(x * gridCellSize, y * gridCellSize);
-      this.drawingFunction(gridCell, this.context);
+      const context = {
+        x,
+        y,
+        context: this.context,
+        cell: gridCell,
+        count: gridCell.rockCount,
+        rocks: gridCell.rocks,
+        code: this.code
+      };
+      const evalCode = () => {
+        try {
+          // tslint:disable-next-line
+          eval(this.code);
+        }
+        catch (e) {
+          console.log(e);
+        }
+      };
+      console.log("evaling:");
+      evalCode.call(context);
+      console.log(context);
+      this.oldDrawGridCell(gridCell, this.context);
       this.context.restore();
     }
   }

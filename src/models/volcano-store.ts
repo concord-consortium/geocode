@@ -21,6 +21,9 @@ export const SimulationModel = types
       setCanvas(canvas: HTMLCanvasElement) {
         volcano.setCanvas(canvas);
         volcano.run();
+      },
+      setCode(code: string) {
+        volcano.setCode(code);
       }
     };
   });
