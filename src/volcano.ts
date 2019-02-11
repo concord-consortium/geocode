@@ -8,7 +8,7 @@ const numCols = numRows;
 const rand = (max: number) => Math.random() * max - (max / 2);
 
 const makeHSLA = (h: number, s: number, l: number, a: number) => {
-  return `hsla(${h}, ${s}%, ${l}%, ${a})`;
+  return `hsla(${h}, ${s}%, ${l}%, ${a && a / 100})`;
 };
 
 class GridCell {
@@ -38,7 +38,7 @@ export type IDrawingFunction = (cell: GridCell, context: CanvasRenderingContext2
 
 export default class Volcano {
   public wind = { x: rand(500), y: rand(500) };
-  private code = "console.log('code');";
+  private code = ";";
   private context: CanvasRenderingContext2D | null;
   private gridCells: GridCell[] = [];
   private center = {x: canvasSize / 2.0, y: canvasSize / 2.0};
@@ -88,6 +88,12 @@ export default class Volcano {
   }
 
   private drawGridCell(x: number, y: number, gridCell: GridCell) {
+    const fillGridCell = (h: number, s: number, l: number, a: number) => {
+      if (this.context) {
+        this.context.fillStyle = makeHSLA(h, s, l, a);
+        this.context.fillRect(0, 0, gridCellSize - 1, gridCellSize - 1);
+      }
+    };
     if (this.context) {
       this.context.save();
       this.context.translate(x * gridCellSize, y * gridCellSize);
@@ -96,9 +102,10 @@ export default class Volcano {
         y,
         context: this.context,
         cell: gridCell,
-        count: gridCell.rockCount,
+        count: gridCell.rocks.length,
+        size: gridCell.avgRockSize(),
         rocks: gridCell.rocks,
-        code: this.code
+        fill: fillGridCell
       };
       const evalCode = () => {
         try {
@@ -109,10 +116,9 @@ export default class Volcano {
           console.log(e);
         }
       };
-      console.log("evaling:");
       evalCode.call(context);
-      console.log(context);
-      this.oldDrawGridCell(gridCell, this.context);
+      // console.log(context);
+      // this.oldDrawGridCell(gridCell, this.context);
       this.context.restore();
     }
   }

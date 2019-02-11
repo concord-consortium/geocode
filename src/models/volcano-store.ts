@@ -22,8 +22,8 @@ export const SimulationModel = types
         volcano.setCanvas(canvas);
         volcano.run();
       },
-      setCode(code: string) {
-        volcano.setCode(code);
+      setBlocklyCode(code: string) {
+        volcano.setBlocklyCode(code);
       }
     };
   });

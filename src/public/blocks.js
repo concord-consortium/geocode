@@ -1,28 +1,113 @@
-
-function drawRandomDot(radius=20) {
-  const canvas = document.getElementById('canvas');
-  const x = Math.random() * 400;
-  const y = Math.random() * 400;
-  const r = radius;
-  const ctx = canvas.getContext('2d');
-  // ctx.fillStyle = 'white';
-  ctx.fillStyle = 'hsla(100, 70%, 95%, 0.7)';
-  ctx.beginPath();
-  ctx.ellipse(x, y, r, r, 0, 0, 2 * Math.PI);
-  ctx.fill();
-}
-
-function clearCanvas() {
-  const canvas = document.getElementById('canvas');
-  const context = canvas.getContext('2d');
-  context.clearRect(0, 0, canvas.width, canvas.height);
-}
-
-function run_js_from_textbox() {
-  const codebox = document.getElementById('codebox');
-  const value = codebox.value;
-  eval(value);
+Blockly.Blocks['fill_cell'] = {
+  init: function() {
+    this.appendValueInput("hue")
+        .setCheck("Number")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("hue");
+    this.appendValueInput("sat")
+        .setCheck("Number")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("saturation");
+    this.appendValueInput("value")
+        .setCheck("Number")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("value");
+    this.appendValueInput("alpha")
+        .setCheck("Number")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("alpha");
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(230);
+ this.setTooltip("");
+ this.setHelpUrl("");
+  }
 };
+
+Blockly.JavaScript['fill_cell'] = function(block) {
+  var hue = Blockly.JavaScript.valueToCode(block, 'hue', Blockly.JavaScript.ORDER_ATOMIC);
+  var sat = Blockly.JavaScript.valueToCode(block, 'sat', Blockly.JavaScript.ORDER_ATOMIC);
+  var value = Blockly.JavaScript.valueToCode(block, 'value', Blockly.JavaScript.ORDER_ATOMIC);
+  var alpha = Blockly.JavaScript.valueToCode(block, 'alpha', Blockly.JavaScript.ORDER_ATOMIC);
+  // TODO: Assemble JavaScript into code variable.
+  var code = `
+    this.fill( ${hue || 1}, ${sat || 50}, ${value || 50}, ${alpha || 10 });
+  `;
+  return code;
+};
+
+
+Blockly.Blocks['thickness'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("tephra thickness");
+    this.setOutput(true, null);
+    this.setColour(230);
+ this.setTooltip("");
+ this.setHelpUrl("");
+  }
+};
+Blockly.JavaScript['thickness'] = function(block) {
+  // TODO: Assemble JavaScript into code variable.
+  var code = `(this.count)`;
+  // TODO: Change ORDER_NONE to the correct strength.
+  return [code, Blockly.JavaScript.ORDER_NONE];
+};
+
+Blockly.Blocks['rock-size'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("rock size");
+    this.setOutput(true, null);
+    this.setColour(230);
+ this.setTooltip("");
+ this.setHelpUrl("");
+  }
+};
+
+Blockly.JavaScript['rock-size'] = function(block) {
+  // TODO: Assemble JavaScript into code variable.
+  var code = `(this.size)`;
+  // TODO: Change ORDER_NONE to the correct strength.
+  return [code, Blockly.JavaScript.ORDER_NONE];
+};
+
+Blockly.Blocks['x'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("X");
+    this.setOutput(true, null);
+    this.setColour(230);
+ this.setTooltip("");
+ this.setHelpUrl("");
+  }
+};
+
+Blockly.JavaScript['x'] = function(block) {
+  // TODO: Assemble JavaScript into code variable.
+  var code = `(this.x)`;
+  // TODO: Change ORDER_NONE to the correct strength.
+  return [code, Blockly.JavaScript.ORDER_NONE];
+};
+
+Blockly.Blocks['y'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("Y");
+    this.setOutput(true, null);
+    this.setColour(230);
+ this.setTooltip("");
+ this.setHelpUrl("");
+  }
+};
+
+Blockly.JavaScript['y'] = function(block) {
+  // TODO: Assemble JavaScript into code variable.
+  var code = `(this.y)`;
+  // TODO: Change ORDER_NONE to the correct strength.
+  return [code, Blockly.JavaScript.ORDER_NONE];
+};
+
 
 Blockly.Blocks['console_logger'] = {
   init: function() {
@@ -43,44 +128,14 @@ Blockly.JavaScript['console_logger'] = function(block) {
   return code;
 };
 
-Blockly.Blocks['drawdot'] = {
-  init: function() {
-    this.appendValueInput("radius")
-        .setCheck("Number")
-        .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("circle radius");
-    this.setPreviousStatement(true, null);
-    this.setNextStatement(true, null);
-    this.setColour(60);
- this.setTooltip("draw a randomly located dot");
- this.setHelpUrl("");
-  }
-};
 
-Blockly.JavaScript['drawdot'] = function(block) {
-  var value_radius = Blockly.JavaScript.valueToCode(block, 'radius', Blockly.JavaScript.ORDER_ATOMIC);
-  // TODO: Assemble JavaScript into code variable.
-  const code=`drawRandomDot(${value_radius});\n`;
-  return code;
-};
 
-Blockly.Blocks['console_log_from_blockly'] = {
-  init: function() {
-    this.appendDummyInput()
-        .appendField("Run JS from textbox");
-    this.setPreviousStatement(true, null);
-    this.setNextStatement(true, null);
-    this.setColour(230);
-    this.setTooltip("");
-    this.setHelpUrl("");
-  }
-};
 
 Blockly.JavaScript['console_log_from_blockly'] = function(block) {
   const code = `
     console.log('from blockly');\n
-    console.log(count);\n
-    console.log(rocks);\n
+    console.log(this.count);\n
+    console.log(this.rocks);\n
   `;
   return code;
 };

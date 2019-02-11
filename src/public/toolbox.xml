@@ -1,12 +1,12 @@
 
     <xml id="toolbox" style="display: none">
-        <category name="Map Drawing" colour="%{BKY_TEXTS_HUE}">
+        <category name="Map" colour="%{BKY_TEXTS_HUE}">
           <!-- <block type="console_logger"></block> -->
-          <block type="drawdot"></block>
-          <block type="clear"></block>
-        </category>
-        <category name="JavaScript" colour="%{BKY_TEXTS_HUE}">
-          <block type="console_log_from_blockly"></block>
+          <block type="fill_cell"></block>
+          <block type="thickness"></block>
+          <block type="rock-size"></block>
+          <block type="x"></block>
+          <block type="y"></block>
         </category>
         <category name="Logic" colour="%{BKY_LOGIC_HUE}">
           <block type="controls_if"></block>
