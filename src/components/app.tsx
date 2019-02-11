@@ -39,6 +39,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     const {
       windDirection,
       windSpeed,
+      code,
       setCanvas,
       setBlocklyCode
     } = this.stores;
@@ -50,6 +51,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             windDirection={ windDirection }
             windSpeed={ windSpeed }
             setCanvas={ setCanvas }
+            code={ code }
           />
           <Controls>
             <RangeControl

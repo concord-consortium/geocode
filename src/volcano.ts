@@ -1,14 +1,14 @@
 import Rock from "./rock";
 
 const canvasSize = 500;
-const gridCellSize = 20;
+const gridCellSize = 50;
 const numRows = canvasSize / gridCellSize;
 const numCols = numRows;
 
 const rand = (max: number) => Math.random() * max - (max / 2);
 
 const makeHSLA = (h: number, s: number, l: number, a: number) => {
-  return `hsla(${h}, ${s}%, ${l}%, ${a && a / 100})`;
+  return `hsla(${h * 2.5}, ${s}%, ${l}%, ${a && a / 100})`;
 };
 
 class GridCell {
@@ -21,8 +21,7 @@ class GridCell {
     if (this.rocks.length < 1) {
       return 0;
     }
-    return this.rocks.reduce( (prev, current) => (prev as number) + current.size, 0)
-      / this.rocks.length;
+    return this.rocks.reduce( (prev, c) => Math.max(prev as number, c.size), 0);
   }
 
   public addRock(rock: Rock) {
@@ -49,7 +48,7 @@ export default class Volcano {
     this.setCanvas(element);
   }
 
-  public run() {
+  public run(){
     this.gridCells = [];
     for (let x = 0; x < numCols; x++) {
       for (let y = 0; y < numRows; y++ ) {
@@ -117,8 +116,6 @@ export default class Volcano {
         }
       };
       evalCode.call(context);
-      // console.log(context);
-      // this.oldDrawGridCell(gridCell, this.context);
       this.context.restore();
     }
   }
@@ -177,7 +174,9 @@ export default class Volcano {
     }
     const gridIndex = y * (canvasSize / gridCellSize) + x;
     const cell = this.gridCells[gridIndex];
-    cell.addRock(rock);
+    if (cell){
+     cell.addRock(rock);
+    }
   }
 
 }

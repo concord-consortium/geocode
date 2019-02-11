@@ -41,7 +41,12 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
   }
 
   public componentDidUpdate() {
-    console.log("Blockly received update");
+    // console.log(this.toXml());
+  }
+
+  private toXml() {
+    const xml = Blockly.Xml.workspaceToDom(this.workSpaceRef.current);
+    return Blockly.Xml.domToText(xml);
   }
 
   private initializeBlockly = () => {

@@ -8,7 +8,8 @@ export const SimulationModel = types
   .model("simulation", {
     windSpeed: 0,
     windDirection: 0,
-    explosiveForce: 0
+    explosiveForce: 0,
+    code: ";"
   })
   .actions((self) => {
     return {
@@ -23,6 +24,7 @@ export const SimulationModel = types
         volcano.run();
       },
       setBlocklyCode(code: string) {
+        self.code = code;
         volcano.setBlocklyCode(code);
       }
     };
