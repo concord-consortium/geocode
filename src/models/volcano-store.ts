@@ -33,12 +33,13 @@ export const SimulationModel = types
 export const simulation = SimulationModel.create({});
 
 autorun(() => {
-  const {windSpeed, windDirection } = simulation;
+  const {windSpeed, windDirection, code } = simulation;
   const x = windSpeed * Math.cos(windDirection);
   const y = windSpeed * Math.sin(windDirection);
   volcano.wind.x = x;
   volcano.wind.y = y;
   volcano.run();
+  console.log(code);
 });
 
 export type SimulationModelType = typeof SimulationModel.Type;

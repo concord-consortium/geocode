@@ -41,11 +41,11 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
   }
 
   public componentDidUpdate() {
-    // console.log(this.toXml());
+    console.log(this.toXml());
   }
 
   private toXml() {
-    const xml = Blockly.Xml.workspaceToDom(this.workSpaceRef.current);
+    const xml = Blockly.Xml.workspaceToDom(this.workSpace);
     return Blockly.Xml.domToText(xml);
   }
 
@@ -59,6 +59,13 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
         this.workSpace = Blockly.inject(this.workSpaceRef.current, blockOpts);
         const startBlocks = this.startBlockRef.current;
         Blockly.Xml.domToWorkspace(startBlocks, this.workSpace);
+        fetch("./normal-setup.xml")
+        .then((resp) => {
+          resp.text().then((d) => {
+            const xml = Blockly.Xml.textToDom(d);
+            Blockly.Xml.domToWorkspace(xml, this.workSpace);
+          });
+        });
         const myUpdateFunction = (event: any) => {
           const code = Blockly.JavaScript.workspaceToCode(this.workSpace);
           if (this.props.setBlocklyCode) {
