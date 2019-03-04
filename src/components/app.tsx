@@ -51,7 +51,6 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             windDirection={ windDirection }
             windSpeed={ windSpeed }
             setCanvas={ setCanvas }
-            code={ code }
           />
           <Controls>
             <RangeControl
