@@ -37,8 +37,11 @@ const gridTephraCalc = (
   gridX: number,
   gridY: number,
   coneGridX: number,
-  coneGridY: number
-  // windSpeed: number
+  coneGridY: number,
+  windSpeed: number,
+  colHeight: number,
+  mass: number,         // total eruption mass 0 to 1e12 kg (about 1 km3)
+  particleSize: number  // Made up number. 1 == actual simulation values (mg?)
   ) => {
 
   const dScale = 1000; // 1 km per grid cell.
@@ -48,13 +51,14 @@ const gridTephraCalc = (
   // the y axis is orthogonal to the x axis
   // const xvent = 0; // x location of the volcano (m)
   // const yvent = 0; // y location of the volcano (m)
+  // const windSpeed = 3;    //  0 to 20 m/s
+  // const colHeight = 3000; // varies from 2000 to 25000 m
+  // const mass = 5000000000;    // total eruption mass 0 to 1e12 kg (about 1 km3)
+  // const settlingSpeed = 2; // particle settling velocity (m/s)
+  // const diffusion = 3000;  // 3000 diffusion coefficient (m2/s)
 
-  const settlingSpeed = 2; // particle settling velocity (m/s)
-  const diffusion = 3000;  // 3000 diffusion coefficient (m2/s)
-  const mass = 5000000000;    // total eruption mass 0 to 1e12 kg (about 1 km3)
-  const colHeight = 3000; // varies from 2000 to 25000 m
-  const windSpeed = 3;    //  0 to 20 m/s
-
+  const settlingSpeed = particleSize * 2;
+  const diffusion = 3000 / particleSize;
   /*
     TODO:
       * Rotate for vectors for wind direction …

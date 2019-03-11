@@ -1,7 +1,7 @@
 import gridTephraCalc from "./tephra2";
-
+import { simulation } from "./models/volcano-store";
 const canvasSize = 500;
-const gridCellSize = 10;
+const gridCellSize = 20;
 
 const numRows = canvasSize / gridCellSize;
 const numCols = numRows;
@@ -17,7 +17,13 @@ class GridCell {
   public thickness: number;
 
   public fromXY(gridX: number, gridY: number, vX: number, vY: number){
-    this.thickness = gridTephraCalc(gridX, gridY, vX, vY);
+    this.thickness = gridTephraCalc(
+      gridX, gridY,
+      vX, vY,
+      simulation.windSpeed,
+      simulation.colHeight,
+      simulation.mass,
+      simulation.particleSize);
   }
 
   public clear() {

@@ -53,18 +53,43 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             setCanvas={ setCanvas }
           />
           <Controls>
-            <RangeControl
+            {/* <RangeControl
               min={0}
               max={6.2}
               step={0.2}
               onChange={this.changeWindDirection}
               name="Wind Direction"
+            /> */}
+            <RangeControl
+              min={0.1}
+              max={5}
+              step={0.1}
+              onChange={this.changeSize}
+              value={this.stores.particleSize}
+              name="Particle Size (1 - 10)"
+            />
+            <RangeControl
+              min={10}
+              max={30}
+              step={0.1}
+              value={Math.log(this.stores.mass)}
+              onChange={this.changeMass}
+              name="Ejected Mass (10kg – 1e12 kg)"
+            />
+            <RangeControl
+              min={2000}
+              max={25000}
+              value={this.stores.colHeight}
+              onChange={this.changeColumnHeight}
+              name="Column Height (2km – 25km)"
             />
             <RangeControl
               min={0}
-              max={500}
+              max={20}
+              step={0.1}
+              value={this.stores.windSpeed}
               onChange={this.changeWindSpeed}
-              name="Wind Speed"
+              name="Wind Speed (m/s)"
             />
           </Controls>
         </Simulation>
@@ -80,5 +105,22 @@ export class AppComponent extends BaseComponent<IProps, IState> {
   private changeWindSpeed = (input: React.FormEvent<HTMLInputElement>) => {
     const speed = parseFloat(input.currentTarget.value);
     this.stores.setWindSpeed(speed);
+  }
+
+  private changeColumnHeight = (input: React.FormEvent<HTMLInputElement>) => {
+    const height = parseFloat(input.currentTarget.value);
+    this.stores.setColumnHeight(height);
+  }
+
+  private changeMass = (input: React.FormEvent<HTMLInputElement>) => {
+    const massLog = parseFloat(input.currentTarget.value);
+    const mass = Math.exp(massLog);
+    this.stores.setMass(mass);
+  }
+
+  private changeSize = (input: React.FormEvent<HTMLInputElement>) => {
+    const size = parseFloat(input.currentTarget.value);
+    console.log(size);
+    this.stores.setParticleSize(size);
   }
 }

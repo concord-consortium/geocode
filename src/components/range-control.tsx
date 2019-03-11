@@ -5,6 +5,7 @@ import styled from "styled-components";
 interface IProps {
   min: number;
   max: number;
+  value: number;
   step?: number;
   onChange?: (input: React.FormEvent<HTMLInputElement>) => void;
   name: string;
@@ -22,7 +23,7 @@ const InputLabel = styled.label`
 
 export default class RangeControl extends React.Component<IProps, IState> {
   public render() {
-    const {min, max, step, onChange, name} = this.props;
+    const {min, max, step, onChange, name, value} = this.props;
     return (
       <ControlGroup>
         <input
@@ -30,10 +31,12 @@ export default class RangeControl extends React.Component<IProps, IState> {
           min={min}
           max={max}
           step={step}
+          value={value}
           onChange={onChange}
           name={name}
         />
         <InputLabel>{name}</InputLabel>
+
       </ControlGroup>
     );
   }
