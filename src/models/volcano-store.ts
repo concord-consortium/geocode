@@ -39,7 +39,6 @@ autorun(() => {
   volcano.wind.x = x;
   volcano.wind.y = y;
   volcano.run();
-  console.log(code);
 });
 
 export type SimulationModelType = typeof SimulationModel.Type;

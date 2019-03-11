@@ -40,7 +40,7 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
   }
 
   public componentDidUpdate() {
-    console.log(this.toXml());
+    // console.log(this.toXml());
   }
 
   private toXml() {

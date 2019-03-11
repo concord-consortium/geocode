@@ -1,10 +1,11 @@
-import Rock from "./rock";
 import gridTephraCalc from "./tephra2";
 
 const canvasSize = 500;
-const gridCellSize = 50;
+const gridCellSize = 10;
+
 const numRows = canvasSize / gridCellSize;
 const numCols = numRows;
+const VOLCANO_CENTER = { x: numCols / 2 - 0.5, y: numRows / 2 - 0.5};
 
 const rand = (max: number) => Math.random() * max - (max / 2);
 
@@ -13,25 +14,14 @@ const makeHSLA = (h: number, s: number, l: number, a: number) => {
 };
 
 class GridCell {
-  public rocks: number;
-  public rockCount() {
-    return this.rocks;
-  }
-
-  public avgRockSize() {
-    // if (this.rocks.length < 1) {
-    //   return 0;
-    // }
-    // return this.rocks.reduce( (prev, c) => Math.max(prev as number, c.size), 0);
-    return this.rocks;
-  }
+  public thickness: number;
 
   public fromXY(gridX: number, gridY: number, vX: number, vY: number){
-    this.rocks = gridTephraCalc(gridX, gridY, vX, vY);
+    this.thickness = gridTephraCalc(gridX, gridY, vX, vY);
   }
 
   public clear() {
-    this.rocks = 0;
+    this.thickness = 0;
   }
 }
 
@@ -55,8 +45,8 @@ export default class Volcano {
     for (let x = 0; x < numCols; x++) {
       for (let y = 0; y < numRows; y++ ) {
         const cell = new GridCell();
-        cell.fromXY(x, y, 1 - (numCols / 2), numRows / 2);
-        console.log(cell.rockCount());
+        // First grid index is 0 so 4.5 is the middle of our grid.
+        cell.fromXY(x, y, VOLCANO_CENTER.x, VOLCANO_CENTER.y);
         this.gridCells.push(cell);
       }
     }
@@ -76,17 +66,7 @@ export default class Volcano {
   }
 
   public setBlocklyCode = (code: string) => {
-   console.log(code);
    this.code = code;
-  }
-
-  private oldDrawGridCell = (cell: GridCell, context: CanvasRenderingContext2D) => {
-    const count = cell.rockCount();
-    const max = 10;
-    const darkness = count < 1 ? 0 : count / max * 100;
-    const color = makeHSLA(0, 100, 100 - darkness, 1.0);
-    context.fillStyle = color;
-    context.fillRect(0, 0, gridCellSize - 1, gridCellSize - 1);
   }
 
   private drawGridCell(x: number, y: number, gridCell: GridCell) {
@@ -104,9 +84,9 @@ export default class Volcano {
         y,
         context: this.context,
         cell: gridCell,
-        count: gridCell.rocks,
-        size: gridCell.avgRockSize(),
-        rocks: gridCell.rocks,
+        count: gridCell.thickness,
+        size: gridCell.thickness,
+        thickness: gridCell.thickness,
         fill: fillGridCell
       };
       const evalCode = () => {
@@ -141,45 +121,5 @@ export default class Volcano {
     context.imageSmoothingEnabled = false;
     context.drawImage(this.baseMap, 0, 0, canvasSize, canvasSize);
   }
-
-  private expRand(exp: number = 2, scale: number = 1, min: number = 0.5) {
-    const uniform = Math.random();
-    const bp = Math.sin((uniform * Math.PI / 2));
-    let result = Math.pow(bp, exp);
-    result  = result < 0.5 ? 2 * result : 2 * (1 - result);
-    result  = result * scale;
-    result  = result <  min ? min : result;
-    return result;
-  }
-
-  private randomRock() {
-    const rockSize = this.expRand(10, 10, 1);
-    const force = {
-      x: Math.random() * 100 - 50,
-      y: Math.random() * 100 - 50
-    };
-    const sizeV = rockSize;
-    const windX = this.wind.x / sizeV;
-    const windY = this.wind.y / sizeV;
-    const randX = rand(200) / sizeV;
-    const randY = rand(200) / sizeV;
-    const x = randX + windX + force.x + this.center.x;
-    const y = randY + windY + force.y + this.center.y;
-    return new Rock({x, y}, rockSize);
-  }
-
-  // private addRock() {
-  //   const rock = this.randomRock();
-  //   const x = Math.floor(rock.position.x / gridCellSize);
-  //   const y = Math.floor(rock.position.y / gridCellSize);
-  //   if ( y < 0 || x < 0 || x >= numCols || y >= numRows) {
-  //     return;
-  //   }
-  //   const gridIndex = y * (canvasSize / gridCellSize) + x;
-  //   const cell = this.gridCells[gridIndex];
-  //   if (cell){
-  //    cell.addRock(rock);
-  //   }
-  // }
 
 }

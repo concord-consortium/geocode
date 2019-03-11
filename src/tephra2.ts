@@ -41,7 +41,7 @@ const gridTephraCalc = (
   // windSpeed: number
   ) => {
 
-  const dScale = 1000; // 10 km per grid cell.
+  const dScale = 1000; // 1 km per grid cell.
 
   // MODEL PARAMS:
   // the x axisis oriented in the wind direction (positive downwind)
@@ -50,10 +50,10 @@ const gridTephraCalc = (
   // const yvent = 0; // y location of the volcano (m)
 
   const settlingSpeed = 2; // particle settling velocity (m/s)
-  const diffusion = 3000;  // diffusion coefficient (m2/s)
+  const diffusion = 3000;  // 3000 diffusion coefficient (m2/s)
   const mass = 5000000000;    // total eruption mass 0 to 1e12 kg (about 1 km3)
-  const colHeight = 5000; // varies from 2000 to 25000 m
-  const windSpeed = 1;    //  0 to 20 m/s
+  const colHeight = 3000; // varies from 2000 to 25000 m
+  const windSpeed = 3;    //  0 to 20 m/s
 
   /*
     TODO:
