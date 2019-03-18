@@ -37,11 +37,14 @@ const Simulation = styled.div`
 export class AppComponent extends BaseComponent<IProps, IState> {
   public render() {
     const {
+      mass,
       windDirection,
       windSpeed,
       code,
       setCanvas,
-      setBlocklyCode
+      setBlocklyCode,
+      colHeight,
+      particleSize
     } = this.stores;
     return (
       <App>
@@ -53,33 +56,34 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             setCanvas={ setCanvas }
           />
           <Controls>
-            {/* <RangeControl
+            <RangeControl
               min={0}
               max={6.2}
               step={0.2}
               onChange={this.changeWindDirection}
+              value={windDirection}
               name="Wind Direction"
-            /> */}
+            />
             <RangeControl
               min={0.1}
               max={5}
               step={0.1}
               onChange={this.changeSize}
-              value={this.stores.particleSize}
+              value={particleSize}
               name="Particle Size (1 - 10)"
             />
             <RangeControl
               min={10}
               max={30}
               step={0.1}
-              value={Math.log(this.stores.mass)}
+              value={Math.log(mass)}
               onChange={this.changeMass}
               name="Ejected Mass (10kg – 1e12 kg)"
             />
             <RangeControl
               min={2000}
               max={25000}
-              value={this.stores.colHeight}
+              value={colHeight}
               onChange={this.changeColumnHeight}
               name="Column Height (2km – 25km)"
             />
@@ -87,11 +91,12 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               min={0}
               max={20}
               step={0.1}
-              value={this.stores.windSpeed}
+              value={windSpeed}
               onChange={this.changeWindSpeed}
               name="Wind Speed (m/s)"
             />
           </Controls>
+          <div>${code}</div>
         </Simulation>
       </App>
     );

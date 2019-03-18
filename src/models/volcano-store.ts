@@ -1,8 +1,16 @@
 import { types } from "mobx-state-tree";
 import { autorun } from "mobx";
 import Volcano from "../volcano";
+import { number } from "mobx-state-tree/dist/internal";
 
 const volcano = new Volcano(null);
+export interface IModelParams {
+  mass: number;
+  windSpeed: number;
+  colHeight: number;
+  particleSize: number;
+  windDirection: number;
+}
 
 export const SimulationModel = types
   .model("simulation", {
@@ -37,6 +45,13 @@ export const SimulationModel = types
       setBlocklyCode(code: string) {
         self.code = code;
         volcano.setBlocklyCode(code);
+      },
+      setModelParams(params: IModelParams) {
+        this.mass = params.mass;
+        this.setWindSpeed(params.windSpeed);
+        this.windDirection = params.windDirection;
+        this.particleSize = params.particleSize;
+        console.log(params);
       }
     };
   });

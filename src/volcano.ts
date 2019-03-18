@@ -37,7 +37,7 @@ export default class Volcano {
   public wind = { x: rand(500), y: rand(500) };
   private code = ";";
   private context: CanvasRenderingContext2D | null;
-  private gridCells: GridCell[] = [];
+  private gridCells: number[] = [];
   private center = {x: canvasSize / 2.0, y: canvasSize / 2.0};
   private baseMap: HTMLImageElement;
 
@@ -53,7 +53,14 @@ export default class Volcano {
         const cell = new GridCell();
         // First grid index is 0 so 4.5 is the middle of our grid.
         cell.fromXY(x, y, VOLCANO_CENTER.x, VOLCANO_CENTER.y);
-        this.gridCells.push(cell);
+        const thickness = gridTephraCalc(
+          x, y, VOLCANO_CENTER.x, VOLCANO_CENTER.y,
+          simulation.windSpeed,
+          simulation.colHeight,
+          simulation.mass,
+          simulation.particleSize
+        );
+        this.gridCells.push(thickness);
       }
     }
 
@@ -73,9 +80,25 @@ export default class Volcano {
 
   public setBlocklyCode = (code: string) => {
    this.code = code;
+   this.evalCode( {
+    setModelParams: simulation.setModelParams
+   });
   }
 
-  private drawGridCell(x: number, y: number, gridCell: GridCell) {
+  private evalCode(context: any) {
+    const evalCode = () => {
+      try {
+        // tslint:disable-next-line
+        eval(this.code);
+      }
+      catch (e) {
+        console.log(e);
+      }
+    };
+    evalCode.call(context);
+  }
+
+  private drawGridCell(x: number, y: number, thickness: number) {
     const fillGridCell = (h: number, s: number, l: number, a: number) => {
       if (this.context) {
         this.context.fillStyle = makeHSLA(h, s, l, a);
@@ -85,33 +108,21 @@ export default class Volcano {
     if (this.context) {
       this.context.save();
       this.context.translate(x * gridCellSize, y * gridCellSize);
-      const context = {
+      this.evalCode({
         x,
         y,
+        thickness,
         context: this.context,
-        cell: gridCell,
-        count: gridCell.thickness,
-        size: gridCell.thickness,
-        thickness: gridCell.thickness,
-        fill: fillGridCell
-      };
-      const evalCode = () => {
-        try {
-          // tslint:disable-next-line
-          eval(this.code);
-        }
-        catch (e) {
-          console.log(e);
-        }
-      };
-      evalCode.call(context);
+        fill: fillGridCell,
+        setModelParams: () => null
+      });
+
       this.context.restore();
     }
   }
 
   private drawGridCells() {
     this.gridCells.forEach((gridCell, index) => {
-      const c = this.context as CanvasRenderingContext2D;
       const x = index % numRows;
       const y = Math.floor(index / numRows);
       this.drawGridCell(x, y, gridCell);

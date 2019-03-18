@@ -31,12 +31,59 @@ Blockly.JavaScript['fill_cell'] = function(block) {
   var alpha = Blockly.JavaScript.valueToCode(block, 'alpha', Blockly.JavaScript.ORDER_ATOMIC);
   // TODO: Assemble JavaScript into code variable.
   var code = `
-    this.fill( ${hue || 1}, ${sat || 50}, ${value || 50}, ${alpha || 10 });
+    this.fill && this.fill( ${hue || 1}, ${sat || 50}, ${value || 50}, ${alpha || 10 });
   `;
   return code;
 };
 
+/************************************************* */
 
+Blockly.Blocks['run_sumilation'] = {
+  init: function() {
+    this.appendValueInput("mass")
+        .setCheck("Number")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("Mass (kg)");
+    this.appendValueInput("coumn_height")
+        .setCheck("Number")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("Column Height (km)");
+    this.appendValueInput("wind_speed")
+        .setCheck("Number")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("Wind Speed (m/s)");
+    this.appendValueInput("particle_size")
+        .setCheck("Number")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("Particle Size");
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(230);
+    this.setTooltip("Simulation parameters");
+    this.setHelpUrl("");
+  }
+}
+
+Blockly.JavaScript['run_sumilation'] = function(block) {
+  var value_mass = Blockly.JavaScript.valueToCode(block, 'mass', Blockly.JavaScript.ORDER_ATOMIC);
+  var value_coumn_height = Blockly.JavaScript.valueToCode(block, 'coumn_height', Blockly.JavaScript.ORDER_ATOMIC);
+  var value_wind_speed = Blockly.JavaScript.valueToCode(block, 'wind_speed', Blockly.JavaScript.ORDER_ATOMIC);
+  var value_particle_size = Blockly.JavaScript.valueToCode(block, 'particle_size', Blockly.JavaScript.ORDER_ATOMIC);
+  // TODO: Assemble JavaScript into code variable.
+  var code = '...;\n';
+  var code = `
+    var modelParams = {
+      mass: ${value_mass || 100},
+      colHeight: ${value_coumn_height || 10},
+      windSpeed: ${value_wind_speed || 0},
+      particleSize: ${value_particle_size || 1}
+    }
+    this.setModelParams(modelParams);
+  `;
+  return code;
+};
+
+/************************************************* */
 Blockly.Blocks['thickness'] = {
   init: function() {
     this.appendDummyInput()
@@ -47,30 +94,15 @@ Blockly.Blocks['thickness'] = {
  this.setHelpUrl("");
   }
 };
+
+
 Blockly.JavaScript['thickness'] = function(block) {
   // TODO: Assemble JavaScript into code variable.
-  var code = `(this.count)`;
+  var code = `(this.thickness)`;
   // TODO: Change ORDER_NONE to the correct strength.
   return [code, Blockly.JavaScript.ORDER_NONE];
 };
 
-Blockly.Blocks['rock-size'] = {
-  init: function() {
-    this.appendDummyInput()
-        .appendField("rock size");
-    this.setOutput(true, null);
-    this.setColour(230);
- this.setTooltip("");
- this.setHelpUrl("");
-  }
-};
-
-Blockly.JavaScript['rock-size'] = function(block) {
-  // TODO: Assemble JavaScript into code variable.
-  var code = `(this.size)`;
-  // TODO: Change ORDER_NONE to the correct strength.
-  return [code, Blockly.JavaScript.ORDER_NONE];
-};
 
 Blockly.Blocks['x'] = {
   init: function() {
