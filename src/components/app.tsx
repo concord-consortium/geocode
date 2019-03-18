@@ -125,7 +125,6 @@ export class AppComponent extends BaseComponent<IProps, IState> {
 
   private changeSize = (input: React.FormEvent<HTMLInputElement>) => {
     const size = parseFloat(input.currentTarget.value);
-    console.log(size);
     this.stores.setParticleSize(size);
   }
 }

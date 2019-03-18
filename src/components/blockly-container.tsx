@@ -9,7 +9,7 @@ interface IState {}
 
 const Wrapper = styled.div``;
 const StartBlocks = styled.div``;
-
+let lastTimeout: number | null  = null;
 const WorkSpace = styled.div`
   font-family: sans-serif;
   background-color: hsla(30, 50%, 60%, 0.5);
@@ -40,12 +40,15 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
   }
 
   public componentDidUpdate() {
-    // console.log(this.toXml());
+    if (lastTimeout) {
+      clearTimeout(lastTimeout);
+    }
+    lastTimeout = window.setTimeout(this.toXml, 400);
   }
 
-  private toXml() {
+  private toXml = () => {
     const xml = Blockly.Xml.workspaceToDom(this.workSpace);
-    return Blockly.Xml.domToText(xml);
+    localStorage.setItem("blockly-workspace", Blockly.Xml.domToPrettyText(xml));
   }
 
   private initializeBlockly = () => {

@@ -1,35 +1,29 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <xml xmlns="http://www.w3.org/1999/xhtml">
-   <block type="fill_cell" id="FiOukSo!}zoAroweCeje" x="124" y="90">
-      <value name="sat">
-         <block type="math_arithmetic" id="+,AJi[YQHawbhPP`(XLx">
-            <field name="OP">MULTIPLY</field>
-            <value name="A">
-               <block type="thickness" id="@pCP.KuK~l8M@k)=XY/u" />
-            </value>
-            <value name="B">
-               <block type="math_number" id="Mf[Cfgm3Xko(!,K_F.;1">
-                  <field name="NUM">5</field>
-               </block>
-            </value>
-         </block>
-      </value>
-      <value name="alpha">
-         <block type="math_arithmetic" id="h~EXSR_gboT5ybsMyvDJ">
-            <field name="OP">MULTIPLY</field>
-            <value name="A">
-               <block type="thickness" id="yQxry$D|}PPnQ1}3b8Xi" />
-            </value>
-            <value name="B">
-               <block type="math_number" id="K0;xG1ENO|-Y?F$b#qJ(">
-                  <field name="NUM">10</field>
-               </block>
-            </value>
-         </block>
-      </value>
-   </block>
-   <block type="y" id="Tf]dK2,)_=@LL(^#Z3{$" x="16" y="285" />
-   <block type="x" id="fN:5`/Hu{F;-]_0=yssw" x="88" y="296" />
-   <block type="y" id="NnkVL[=W*eY=;W9~0teg" x="192" y="319" />
-   <block type="thickness" id="A59#ycR#ZIB6k]|URNsX" x="261" y="322" />
+  <block type="fill_cell" id="FiOukSo!}zoAroweCeje" x="124" y="90">
+    <value name="alpha">
+      <block type="thickness" id="yQxry$D|}PPnQ1}3b8Xi"></block>
+    </value>
+  </block>
+  <block type="run_sumilation" id="FABLsCXdth[+o=_(%F|V" x="214" y="238">
+    <value name="mass">
+      <block type="math_number" id="kie0bt?~-l@aiM]v+vWM">
+        <field name="NUM">1000000000000</field>
+      </block>
+    </value>
+    <value name="coumn_height">
+      <block type="math_number" id="7L0@^B1S(3.0g0!hn+(x">
+        <field name="NUM">600</field>
+      </block>
+    </value>
+    <value name="wind_speed">
+      <block type="math_number" id="C6S|v.jI_4KW3g-+x9Y9">
+        <field name="NUM">10</field>
+      </block>
+    </value>
+    <value name="particle_size">
+      <block type="math_number" id="cLr#b9Z:-ItAYz2tl}y_">
+        <field name="NUM">1</field>
+      </block>
+    </value>
+  </block>
 </xml>

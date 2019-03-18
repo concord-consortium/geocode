@@ -47,11 +47,11 @@ export const SimulationModel = types
         volcano.setBlocklyCode(code);
       },
       setModelParams(params: IModelParams) {
-        this.mass = params.mass;
         this.setWindSpeed(params.windSpeed);
-        this.windDirection = params.windDirection;
-        this.particleSize = params.particleSize;
-        console.log(params);
+        this.setColumnHeight(params.colHeight);
+        this.setMass(params.mass);
+        this.setParticleSize(params.particleSize);
+        this.setWindDirection(params.windDirection);
       }
     };
   });
