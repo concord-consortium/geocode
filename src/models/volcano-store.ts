@@ -62,10 +62,7 @@ autorun(() => {
   const {windSpeed, windDirection, colHeight, code } = simulation;
   const x = windSpeed * Math.cos(windDirection);
   const y = windSpeed * Math.sin(windDirection);
-  volcano.wind.x = x;
-  volcano.wind.y = y;
   volcano.run();
-  console.log(simulation.colHeight);
 });
 
 export type SimulationModelType = typeof SimulationModel.Type;

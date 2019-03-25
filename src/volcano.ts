@@ -1,5 +1,6 @@
 import gridTephraCalc from "./tephra2";
 import { simulation } from "./models/volcano-store";
+import { evalCode } from "./utilities/interpreter";
 const canvasSize = 500;
 const gridCellSize = 20;
 
@@ -13,29 +14,7 @@ const makeHSLA = (h: number, s: number, l: number, a: number) => {
   return `hsla(${h * 2.5}, ${s}%, ${l}%, ${a && a / 100})`;
 };
 
-class GridCell {
-  public thickness: number;
-
-  public fromXY(gridX: number, gridY: number, vX: number, vY: number){
-    this.thickness = gridTephraCalc(
-      gridX, gridY,
-      vX, vY,
-      simulation.windSpeed,
-      simulation.colHeight,
-      simulation.mass,
-      simulation.particleSize);
-  }
-
-  public clear() {
-    this.thickness = 0;
-  }
-}
-
-export type IDrawingFunction = (cell: GridCell, context: CanvasRenderingContext2D) => void;
-
 export default class Volcano {
-  public wind = { x: rand(500), y: rand(500) };
-  private code = ";";
   private context: CanvasRenderingContext2D | null;
   private gridCells: number[] = [];
   private center = {x: canvasSize / 2.0, y: canvasSize / 2.0};
@@ -50,9 +29,6 @@ export default class Volcano {
     this.gridCells = [];
     for (let x = 0; x < numCols; x++) {
       for (let y = 0; y < numRows; y++ ) {
-        const cell = new GridCell();
-        // First grid index is 0 so 4.5 is the middle of our grid.
-        cell.fromXY(x, y, VOLCANO_CENTER.x, VOLCANO_CENTER.y);
         const thickness = gridTephraCalc(
           x, y, VOLCANO_CENTER.x, VOLCANO_CENTER.y,
           simulation.windSpeed,
@@ -79,23 +55,7 @@ export default class Volcano {
   }
 
   public setBlocklyCode = (code: string) => {
-   this.code = code;
-   this.evalCode( {
-    setModelParams: simulation.setModelParams
-   });
-  }
-
-  private evalCode(context: any) {
-    const evalCode = () => {
-      try {
-        // tslint:disable-next-line
-        eval(this.code);
-      }
-      catch (e) {
-        console.log(e);
-      }
-    };
-    evalCode.call(context);
+   evalCode(code);
   }
 
   private drawGridCell(x: number, y: number, thickness: number) {
@@ -108,14 +68,15 @@ export default class Volcano {
     if (this.context) {
       this.context.save();
       this.context.translate(x * gridCellSize, y * gridCellSize);
-      this.evalCode({
-        x,
-        y,
-        thickness,
-        context: this.context,
-        fill: fillGridCell,
-        setModelParams: () => null
-      });
+      fillGridCell(0, 0.5, 0.5, thickness);
+      // evalCode({
+      //   x,
+      //   y,
+      //   thickness,
+      //   context: this.context,
+      //   fill: fillGridCell,
+      //   setModelParams: () => null
+      // });
 
       this.context.restore();
     }
