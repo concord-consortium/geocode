@@ -72,12 +72,14 @@ Blockly.JavaScript['run_sumilation'] = function(block) {
   // TODO: Assemble JavaScript into code variable.
   var code = '...;\n';
   var code = `
+    var mass=${value_mass};
     var modelParams = {
       mass: ${value_mass || 100},
       colHeight: ${value_coumn_height || 10},
       windSpeed: ${value_wind_speed || 0},
       particleSize: ${value_particle_size || 1}
     }
+    // this.setModelParams(modelParams);
     this.setModelParams(modelParams);
   `;
   return code;
