@@ -1,12 +1,20 @@
 
     <xml id="toolbox" style="display: none">
-        <category name="Map" colour="%{BKY_TEXTS_HUE}">
+        <category name="Volcano" colour="%{BKY_TEXTS_HUE}">
           <!-- <block type="console_logger"></block> -->
-          <block type="run_sumilation"></block>
+          <!-- <block type="run_sumilation"></block>
           <block type="fill_cell"></block>
           <block type="thickness"></block>
           <block type="x"></block>
-          <block type="y"></block>
+          <block type="y"></block> -->
+          <block type="addVolcano"></block>
+          <block type="addTown"></block>
+          <block type="setWindDirection"></block>
+          <block type="setWindSpeed"></block>
+          <block type="setEruptionHeight"></block>
+          <block type="setEruptionMass"></block>
+          <block type="erupt"></block>
+          <block type="redrawMap"></block>
         </category>
         <category name="Logic" colour="%{BKY_LOGIC_HUE}">
           <block type="controls_if"></block>
@@ -45,8 +53,12 @@
       <block type="controls_flow_statements"></block>
 
     </category>
-    <category name="Variables" colour="330" custom="VARIABLE"></category>
-        <category name="Math" colour="%{BKY_MATH_HUE}">
+    <category name="Variables" colour="330" custom="VARIABLE">
+    </category>
+        <category name="Data" colour="%{BKY_MATH_HUE}">
+          <block type="text">
+              <field name="TEXT"></field>
+          </block>
           <block type="math_number">
             <field name="NUM">123</field>
           </block>

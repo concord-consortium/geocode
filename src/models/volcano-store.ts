@@ -1,30 +1,59 @@
 import { types } from "mobx-state-tree";
 import { autorun } from "mobx";
-import Volcano from "../volcano";
-import { number } from "mobx-state-tree/dist/internal";
+import gridTephraCalc from "../tephra2";
+import { evalCode } from "../utilities/interpreter";
 
-const volcano = new Volcano(null);
 export interface IModelParams {
   mass: number;
   windSpeed: number;
   colHeight: number;
   particleSize: number;
   windDirection: number;
+  volcanoX: number;
+  volcanoY: number;
 }
+
+export const SimDatum = types
+  .model("SimDatum", {
+    thickness: types.number
+  });
+
+export interface SimDatumType {
+  thickness: number;
+}
+export const City = types
+  .model("City", {
+    name: types.string,
+    x: types.number,
+    y: types.number
+  });
 
 export const SimulationModel = types
   .model("simulation", {
+    numRows: 10,
+    numCols: 10,
     windSpeed: 0,
     windDirection: 0,
     mass: 2000,
     colHeight: 2000,
     particleSize: 1,
+    volcanoX: 5,
+    volcanoY: 5,
+    cities: types.array(City),
     code: ";"
   })
   .actions((self) => {
     return {
       setWindSpeed(speed: number) {
         self.windSpeed = speed;
+        console.log(`Set windspeed to ${self.windSpeed}`);
+      },
+      setVolcanoX(x: number) {
+        self.volcanoX = x;
+        console.log(`Set volcanoX to ${self.volcanoX}`);
+      },
+      setVolcanoY(y: number) {
+        self.volcanoY = y;
       },
       setColumnHeight(height: number) {
         self.colHeight = height;
@@ -38,13 +67,8 @@ export const SimulationModel = types
       setWindDirection(direction: number) {
         self.windDirection = direction;
       },
-      setCanvas(canvas: HTMLCanvasElement) {
-        volcano.setCanvas(canvas);
-        volcano.run();
-      },
       setBlocklyCode(code: string) {
         self.code = code;
-        volcano.setBlocklyCode(code);
       },
       setModelParams(params: IModelParams) {
         this.setWindSpeed(params.windSpeed);
@@ -52,17 +76,50 @@ export const SimulationModel = types
         this.setMass(params.mass);
         this.setParticleSize(params.particleSize);
         this.setWindDirection(params.windDirection);
+      },
+      setVolcano(x: number, y: number) {
+        this.setVolcanoX(x);
+        this.setVolcanoY(y);
+        console.log(`Set volcano ${this.volcanoX} ${this.volcanoY}`);
+      }
+    };
+  })
+  .views((self) => {
+    return {
+      get data() {
+        const rows = self.numRows;
+        const cols = self.numCols;
+        const vX = self.volcanoX;
+        const vY = self.volcanoY;
+        const resultData: SimDatumType[] = [];
+        for (let x = 0; x < rows; x ++) {
+          for (let y = 0; y < cols; y++) {
+            const simResults = gridTephraCalc(
+              x, y, vX, vY,
+              self.windSpeed,
+              self.colHeight,
+              self.mass,
+              self.particleSize
+            );
+            resultData.push( {thickness: simResults});
+          }
+        }
+        console.log("-- DATA VARIABLE UPDATED -- ");
+        return resultData;
       }
     };
   });
-
 export const simulation = SimulationModel.create({});
 
 autorun(() => {
   const {windSpeed, windDirection, colHeight, code } = simulation;
   const x = windSpeed * Math.cos(windDirection);
   const y = windSpeed * Math.sin(windDirection);
-  volcano.run();
+  const vx = simulation.volcanoX;
+  evalCode(code, simulation);
+  console.log(`AUTO RUN RAN ${vx} --------------------------- `);
 });
 
 export type SimulationModelType = typeof SimulationModel.Type;
+// export type SimDatumType = typeof SimDatum.Type;
+

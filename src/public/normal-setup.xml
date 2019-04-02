@@ -4,7 +4,7 @@
       <block type="thickness" id="yQxry$D|}PPnQ1}3b8Xi"></block>
     </value>
   </block>
-  <block type="run_sumilation" id="FABLsCXdth[+o=_(%F|V" x="214" y="238">
+  <!-- <block type="run_sumilation" id="FABLsCXdth[+o=_(%F|V" x="214" y="238">
     <value name="mass">
       <block type="math_number" id="kie0bt?~-l@aiM]v+vWM">
         <field name="NUM">1000000000000</field>
@@ -25,5 +25,5 @@
         <field name="NUM">1</field>
       </block>
     </value>
-  </block>
+  </block> -->
 </xml>

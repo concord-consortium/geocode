@@ -193,3 +193,221 @@ Blockly.JavaScript['clear'] = function(block) {
   return code;
 };
 
+
+/***********************  Newish  ********************************/
+Blockly.Blocks['addVolcano'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("Create the volcano at");
+    this.appendValueInput("x")
+        .setCheck("Number")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("x");
+    this.appendValueInput("y")
+        .setCheck("Number")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("y");
+    this.setInputsInline(true);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(230);
+ this.setTooltip("");
+ this.setHelpUrl("");
+  }
+};
+
+Blockly.JavaScript['addVolcano'] = function(block) {
+  var value_x = Blockly.JavaScript.valueToCode(block, 'x', Blockly.JavaScript.ORDER_ATOMIC);
+  var value_y = Blockly.JavaScript.valueToCode(block, 'y', Blockly.JavaScript.ORDER_ATOMIC);
+  // TODO: Assemble JavaScript into code variable.
+  value_x = value_x || 10;
+  value_y = value_y || 10;
+  var code = `
+    setVolcano({x: ${value_x}, y: ${value_y}});
+  `
+  console.log(code);
+  return code;
+};
+
+/*******************************  Add Town: ***********************************/
+Blockly.Blocks['addTown'] = {
+  init: function() {
+    this.appendValueInput("name")
+        .setCheck("String")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("Create a town named");
+    this.appendDummyInput()
+        .appendField("at");
+    this.appendValueInput("x")
+        .setCheck("Number")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("x");
+    this.appendValueInput("y")
+        .setCheck("Number")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("y");
+    this.setInputsInline(true);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(230);
+ this.setTooltip("");
+ this.setHelpUrl("");
+  }
+};
+
+Blockly.JavaScript['addTown'] = function(block) {
+  var value_name = Blockly.JavaScript.valueToCode(block, 'name', Blockly.JavaScript.ORDER_ATOMIC);
+  var value_x = Blockly.JavaScript.valueToCode(block, 'x', Blockly.JavaScript.ORDER_ATOMIC);
+  var value_y = Blockly.JavaScript.valueToCode(block, 'y', Blockly.JavaScript.ORDER_ATOMIC);
+  // TODO: Assemble JavaScript into code variable.
+  var code = '//...;\n';
+  return code;
+};
+
+/************************** Wind Direction: ***********************************/
+Blockly.Blocks['setWindDirection'] = {
+  init: function() {
+    this.appendValueInput("windDirection")
+        .setCheck("Number")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("Set wind direction");
+    this.appendDummyInput()
+        .appendField("degrees");
+    this.setInputsInline(true);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(150);
+ this.setTooltip("Compass direction,  0 == north 180 == south");
+ this.setHelpUrl("Compass direction,  0 == north 180 == south");
+  }
+};
+
+Blockly.JavaScript['setWindDirection'] = function(block) {
+  var value_winddirection = Blockly.JavaScript.valueToCode(block, 'windDirection', Blockly.JavaScript.ORDER_ATOMIC);
+  // TODO: Assemble JavaScript into code variable.
+  var code = '//...;\n';
+  return code;
+};
+
+/************************** Wind Speed: ***********************************/
+Blockly.Blocks['setWindSpeed'] = {
+  init: function() {
+    this.appendValueInput("windSpeed")
+        .setCheck("Number")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("Set wind speed");
+    this.appendDummyInput()
+        .appendField("m/s");
+    this.setInputsInline(true);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(150);
+ this.setTooltip("wind speed, meters per second");
+ this.setHelpUrl("wind speed, meters per second");
+  }
+};
+
+Blockly.JavaScript['setWindSpeed'] = function(block) {
+  var value_wind_speed = Blockly.JavaScript.valueToCode(block, 'windSpeed', Blockly.JavaScript.ORDER_ATOMIC);
+  // TODO: Assemble JavaScript into code variable.
+  var code = `
+    setWindspeed(${value_wind_speed});
+
+  `;
+  return code;
+};
+
+/************************** set Eruption Height: ***********************************/
+Blockly.Blocks['setEruptionHeight'] = {
+  init: function() {
+    this.appendValueInput("eruptionHeight")
+        .setCheck("Number")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("Set eruption height");
+    this.appendDummyInput()
+        .appendField("km");
+    this.setInputsInline(true);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(150);
+ this.setTooltip("");
+ this.setHelpUrl("");
+  }
+};
+
+Blockly.JavaScript['setEruptionHeight'] = function(block) {
+  var value_eruptionHeight = Blockly.JavaScript.valueToCode(block, 'eruptionHeight', Blockly.JavaScript.ORDER_ATOMIC);
+  // TODO: Assemble JavaScript into code variable.
+  var code = '//...;\n';
+  return code;
+};
+
+/************************** set Eruption Mass: ***********************************/
+Blockly.Blocks['setEruptionMass'] = {
+  init: function() {
+    this.appendValueInput("eruptionMass")
+        .setCheck("Number")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("Set eruption mass");
+    this.appendDummyInput()
+        .appendField("kg");
+    this.setInputsInline(true);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(150);
+ this.setTooltip("");
+ this.setHelpUrl("");
+  }
+};
+
+Blockly.JavaScript['setEruptionMass'] = function(block) {
+  var value_eruptionHeight = Blockly.JavaScript.valueToCode(block, 'eruptionHeight', Blockly.JavaScript.ORDER_ATOMIC);
+  // TODO: Assemble JavaScript into code variable.
+  var code = '//...;\n';
+  return code;
+};
+
+
+
+/************************** Erupt : ***********************************/
+Blockly.Blocks['erupt'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("Erupt with current values");
+    this.setInputsInline(true);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(330);
+ this.setTooltip("have the volcano erupt");
+ this.setHelpUrl("have the volcano erupt");
+  }
+};
+
+Blockly.JavaScript['erupt'] = function(block) {
+  // TODO: Assemble JavaScript into code variable.
+  var code = '//...;\n';
+  return code;
+};
+
+
+
+/************************** reDraw: ***********************************/
+
+Blockly.Blocks['redrawMap'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("Redraw the map");
+    this.setInputsInline(true);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(75);
+ this.setTooltip("have the volcano erupt");
+ this.setHelpUrl("have the volcano erupt");
+  }
+};
+
+Blockly.JavaScript['redrawMap'] = function(block) {
+  // TODO: Assemble JavaScript into code variable.
+  var code = '//...;\n';
+  return code;
+};

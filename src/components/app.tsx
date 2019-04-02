@@ -41,10 +41,12 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       windDirection,
       windSpeed,
       code,
-      setCanvas,
       setBlocklyCode,
       colHeight,
-      particleSize
+      particleSize,
+      numCols,
+      numRows,
+      data
     } = this.stores;
     return (
       <App>
@@ -53,7 +55,12 @@ export class AppComponent extends BaseComponent<IProps, IState> {
           <VolcanoComponent
             windDirection={ windDirection }
             windSpeed={ windSpeed }
-            setCanvas={ setCanvas }
+            mass={ mass }
+            colHeight={ colHeight }
+            particleSize={ particleSize }
+            numColumns={numCols}
+            numRows={numRows}
+            data={ data }
           />
           <Controls>
             <RangeControl
