@@ -71,16 +71,31 @@ export const SimulationModel = types
         self.code = code;
       },
       setModelParams(params: IModelParams) {
-        this.setWindSpeed(params.windSpeed);
-        this.setColumnHeight(params.colHeight);
-        this.setMass(params.mass);
-        this.setParticleSize(params.particleSize);
-        this.setWindDirection(params.windDirection);
+        self.windSpeed = params.windSpeed;
+        self.colHeight = params.colHeight;
+        self.mass = params.mass;
+        self.particleSize = params.particleSize;
+        self.windDirection = params.windDirection;
       },
       setVolcano(x: number, y: number) {
-        this.setVolcanoX(x);
-        this.setVolcanoY(y);
-        console.log(`Set volcano ${this.volcanoX} ${this.volcanoY}`);
+        self.volcanoX = x;
+        self.volcanoY = y;
+      },
+
+      addCity(x: number, y: number, name: string) {
+        let city = self.cities.find( c => {
+          if (c.name === name) { return true; }
+          if (c.x === x && c.y === y){ return true; }
+          return false;
+        });
+        if (city) {
+          city.name = name;
+          city.x = x;
+          city.y = y;
+        } else {
+          city = {name, x, y};
+          self.cities.push(city);
+        }
       }
     };
   })
@@ -104,7 +119,6 @@ export const SimulationModel = types
             resultData.push( {thickness: simResults});
           }
         }
-        console.log("-- DATA VARIABLE UPDATED -- ");
         return resultData;
       }
     };
@@ -112,7 +126,7 @@ export const SimulationModel = types
 export const simulation = SimulationModel.create({});
 
 autorun(() => {
-  const {windSpeed, windDirection, colHeight, code } = simulation;
+  const {windSpeed, windDirection, code } = simulation;
   const x = windSpeed * Math.cos(windDirection);
   const y = windSpeed * Math.sin(windDirection);
   const vx = simulation.volcanoX;
@@ -121,5 +135,4 @@ autorun(() => {
 });
 
 export type SimulationModelType = typeof SimulationModel.Type;
-// export type SimDatumType = typeof SimDatum.Type;
-
+export type CityType = typeof City.Type;

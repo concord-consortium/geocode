@@ -1,7 +1,7 @@
-import { IModelParams } from "../models/volcano-store";
+import { IModelParams } from "../stores/volcano-store";
 
 // import { Interpreter } from "js-interpreter";
-import { SimulationModelType } from "../models/volcano-store";
+import { SimulationModelType } from "../stores/volcano-store";
 const Interpreter = require("js-interpreter");
 
 const makeInterperterFunc = (simulation: SimulationModelType) => {
@@ -43,6 +43,11 @@ const makeInterperterFunc = (simulation: SimulationModelType) => {
     addFunc("setVolcano", (...args) => {
       const params = (unwrap(args)[0]) as {x: number, y: number};
       simulation.setVolcano(params.x, params.y);
+    });
+
+    addFunc("addCity", (...args) => {
+      const params = (unwrap(args)[0]) as {x: number, y: number, name: string};
+      simulation.addCity(params.x, params.y, params.name);
     });
 
     addFunc("log", (...args) => {

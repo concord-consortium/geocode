@@ -46,7 +46,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       particleSize,
       numCols,
       numRows,
-      data
+      data,
+      cities
     } = this.stores;
     return (
       <App>
@@ -61,6 +62,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             numColumns={numCols}
             numRows={numRows}
             data={ data }
+            cities={cities}
+
           />
           <Controls>
             <RangeControl

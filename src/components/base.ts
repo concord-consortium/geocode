@@ -1,5 +1,5 @@
 import * as React from "react";
-import { SimulationModelType } from "../models/volcano-store";
+import { SimulationModelType } from "../stores/volcano-store";
 
 export interface IBaseProps {
   stores?: SimulationModelType;

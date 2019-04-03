@@ -11,9 +11,9 @@ export class CanvasGrid {
   protected context: CanvasRenderingContext2D;
   protected geometry: ICanvasShape;
 
-  constructor(element: HTMLCanvasElement, geometry: ICanvasShape) {
+  constructor(canvas: CanvasRenderingContext2D, geometry: ICanvasShape) {
     this.geometry = geometry;
-    this.setCanvas(element);
+    this.context = canvas;
   }
 
   protected clear = () => {
@@ -22,12 +22,9 @@ export class CanvasGrid {
     }
   }
 
+  // All values in the range 0-100 …
   protected makeHSLA = (h: number, s: number, l: number, a: number) => {
-    return `hsla(${h * 2.5}, ${s}%, ${l}%, ${a && a / 100})`;
-  }
-
-  protected setCanvas = (elem: HTMLCanvasElement) => {
-    this.context = elem.getContext("2d") as CanvasRenderingContext2D;
+    return `hsla(${h * 3.6}, ${s}%, ${l}%, ${a && a / 100})`;
   }
 
   protected drawInCell(x: number, y: number, drawFunc: (ctx: CanvasRenderingContext2D ) => void) {
