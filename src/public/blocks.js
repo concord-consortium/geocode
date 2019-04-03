@@ -262,9 +262,9 @@ Blockly.JavaScript['addTown'] = function(block) {
   // TODO: Assemble JavaScript into code variable.
   value_x = value_x || 1;
   value_y = value_y || 1;
-  value_name = value_name || "untitled"
+  value_name = value_name || "'untitled'"
   var code = `
-    addCity({x: ${value_x}, y: ${value_y}, name: "${value_name}"});
+    addCity({x: ${value_x}, y: ${value_y}, name: ${value_name}});
   `
   return code;
 };

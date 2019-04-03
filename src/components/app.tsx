@@ -4,6 +4,7 @@ import { BaseComponent, IBaseProps } from "./base";
 import { VolcanoComponent } from "./volcano-component";
 import RangeControl from "./range-control";
 import BlocklyContianer from "./blockly-container";
+import { simulation } from "../stores/volcano-store";
 
 import styled from "styled-components";
 
@@ -51,6 +52,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     } = this.stores;
     return (
       <App>
+
         <BlocklyContianer setBlocklyCode={ setBlocklyCode} />
         <Simulation >
           <VolcanoComponent
@@ -66,6 +68,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
 
           />
           <Controls>
+            <button onClick={simulation.run}>run</button>
             <RangeControl
               min={0}
               max={6.2}

@@ -27,7 +27,7 @@ export class CanvasCities extends CanvasGrid {
     const metrics = ctx.measureText(name);
     const width = metrics.width + 2 * textBoxMargin;
     const height = fontSize + textBoxMargin;
-    const starFill = this.makeHSLA(100, 40, 40, 100);
+    const starFill = this.makeHSLA(15, 100, 50, 100);
     const textBoxFill = this.makeHSLA(100, 0, 100, 90);
     const nameFill = this.makeHSLA(0, 0, 10, 100);
     const offsetY = Math.floor(gridSize / 2);

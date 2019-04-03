@@ -81,21 +81,17 @@ export const SimulationModel = types
         self.volcanoX = x;
         self.volcanoY = y;
       },
-
       addCity(x: number, y: number, name: string) {
-        let city = self.cities.find( c => {
-          if (c.name === name) { return true; }
-          if (c.x === x && c.y === y){ return true; }
-          return false;
+        const oldCities = self.cities.filter( c => {
+          if (c.name === name) { return false; }
+          if (c.x === x && c.y === y){ return false; }
+          return true;
         });
-        if (city) {
-          city.name = name;
-          city.x = x;
-          city.y = y;
-        } else {
-          city = {name, x, y};
-          self.cities.push(city);
-        }
+        oldCities.push(City.create({name, x, y}));
+        self.cities.replace(oldCities.map(c => City.create({name: c.name, x: c.x, y: c.y})));
+      },
+      run() {
+        evalCode(self.code, self);
       }
     };
   })
@@ -126,7 +122,7 @@ export const SimulationModel = types
 export const simulation = SimulationModel.create({});
 
 autorun(() => {
-  const {windSpeed, windDirection, code } = simulation;
+  const {windSpeed, windDirection, code, cities } = simulation;
   const x = windSpeed * Math.cos(windDirection);
   const y = windSpeed * Math.sin(windDirection);
   const vx = simulation.volcanoX;
