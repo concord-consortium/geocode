@@ -1,10 +1,10 @@
 {
-  "name": "starter-projects",
+  "name": "geocode",
   "version": "0.0.1",
-  "description": "Concord Consortium starter projects",
+  "description": "Concord Consortium GeoCode project",
   "main": "index.js",
   "jest": {
-    "testURL": "https://starter-projects.unexisting.url.com",
+    "testURL": "https://geocode-projects.unexisting.url.com",
     "setupTestFrameworkScriptFile": "<rootDir>src/setupTests.js",
     "transform": {
       "^.+\\.tsx?$": "ts-jest"
@@ -52,27 +52,30 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/concord-consortium/starter-projects.git"
+    "url": "git+https://github.com/concord-consortium/geocode.git"
   },
   "author": "Concord Consortium",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/concord-consortium/starter-projects/issues"
+    "url": "https://github.com/concord-consortium/geocode/issues"
   },
-  "homepage": "https://github.com/concord-consortium/starter-projects#readme",
+  "homepage": "https://github.com/concord-consortium/geocode#readme",
   "devDependencies": {
     "@cypress/webpack-preprocessor": "^3.0.1",
+    "@types/color": "^3.0.0",
     "@types/enzyme": "^3.1.15",
     "@types/enzyme-adapter-react-16": "^1.0.3",
     "@types/jest": "^23.3.10",
     "@types/lodash": "^4.14.119",
+    "@types/pixi.js": "^4.8.6",
     "@types/query-string": "^6.1.1",
     "@types/react": "^16.7.17",
     "@types/react-dom": "^16.0.11",
+    "@types/styled-components": "^4.1.6",
     "@types/uuid": "^3.4.4",
     "autoprefixer": "^9.4.3",
     "babel-core": "^6.26.3",
-    "babel-jest": "^23.6.0",
+    "babel-jest": "^24.7.1",
     "copy-webpack-plugin": "^4.6.0",
     "css-loader": "^1.0.1",
     "cypress": "^3.2.0",
@@ -82,7 +85,7 @@
     "fork-ts-checker-webpack-plugin": "^0.4.15",
     "html-webpack-plugin": "^3.2.0",
     "identity-obj-proxy": "^3.0.0",
-    "jest": "^23.6.0",
+    "jest": "^24.7.1",
     "mini-css-extract-plugin": "^0.4.5",
     "node-sass": "^4.11.0",
     "npm-run-all": "^4.1.5",
@@ -104,13 +107,15 @@
     "webpack-dev-server": "^3.1.14"
   },
   "dependencies": {
-    "@types/styled-components": "^4.1.6",
+    "@inlet/react-pixi": "^0.5.7",
+    "color": "^3.1.0",
     "immutable": "^3.8.2",
     "js-interpreter": "^1.4.6",
     "lodash": "^4.17.11",
     "mobx": "^5.8.0",
     "mobx-react": "^5.4.3",
     "mobx-state-tree": "^3.9.0",
+    "pixi.js": "^4.8.7",
     "query-string": "^6.2.0",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
