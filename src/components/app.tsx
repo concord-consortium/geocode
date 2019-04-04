@@ -5,6 +5,10 @@ import { VolcanoComponent } from "./volcano-component";
 import RangeControl from "./range-control";
 import BlocklyContianer from "./blockly-container";
 import { simulation } from "../stores/volcano-store";
+import { Stage, Text } from "@inlet/react-pixi";
+import { TextStyle } from "pixi.js";
+
+import Color from "color";
 
 import styled from "styled-components";
 
@@ -50,6 +54,14 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       data,
       cities
     } = this.stores;
+
+    const BasicText = () => {
+      const style = new TextStyle({fill: "white"});
+      return (
+        <Text style={style} x={30} y={90} text="Basic text in pixi" />
+      );
+    }
+
     return (
       <App>
 
@@ -65,8 +77,10 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             numRows={numRows}
             data={ data }
             cities={cities}
-
           />
+            <Stage >
+              <BasicText />
+            </Stage>
           <Controls>
             <button onClick={simulation.run}>run</button>
             <RangeControl
