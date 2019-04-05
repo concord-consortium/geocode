@@ -2,9 +2,14 @@ import * as React from "react";
 import { CanvasVolcano } from "../canvas-volcano";
 import { CanvasCities } from "../canvas-cities";
 import { ICanvasShape } from "../canvas-grid";
-import { SimDatumType, CityType } from "../stores/volcano-store";
-import RunCalculation from "../volcano-simulator";
+import { SimDatumType, CityType, City } from "../stores/volcano-store";
 import styled from "styled-components";
+import { Stage, Text } from "@inlet/react-pixi";
+import { TextStyle } from "pixi.js";
+import { PixiCityContainer } from "./pixi-city-container";
+import Volcano from "./pixi-volcano";
+
+import * as Color from "color";
 
 const CanvDiv = styled.div`
   border: 2px solid black; border-radius: 10px;
@@ -13,50 +18,73 @@ const CanvDiv = styled.div`
 interface IState {}
 interface IProps {
   numRows: number;
-  numColumns: number;
+  numCols: number;
   windSpeed: number;
   windDirection: number;
   mass: number;
   colHeight: number;
   particleSize: number;
+  volcanoX: number;
+  volcanoY: number;
   data: SimDatumType[];
   cities: CityType[];
 }
 
+const BasicText = () => {
+  const style = new TextStyle({fill: "black", fontSize: "12px"});
+  return (
+    <Text style={style} x={30} y={90} text="Basic text in pixi" />
+  );
+};
+
 export class VolcanoComponent extends React.Component<IProps, IState>{
 
-  private canvRef = React.createRef<HTMLCanvasElement>();
-  private volcano: CanvasVolcano | null = null;
-  private cityLayer: CanvasCities | null = null;
+  private ref = React.createRef<HTMLDivElement>();
+  private metrics: ICanvasShape;
+
+  public componentDidMount() {
+    this.recomputeMetrics();
+  }
 
   public componentDidUpdate(prevProps: IProps) {
-    const canvas = this.canvRef.current;
-    if (canvas) {
-      const gridSize = canvas.width / this.props.numRows;
-      // const data: SimDatumType[] = RunCalculation(20, 20);
-      const {data, cities} = this.props;
-      const canv = this.canvRef.current as HTMLCanvasElement;
-      const ctx = canv.getContext("2d") as CanvasRenderingContext2D;
-      const metrics: ICanvasShape  = {
-        gridSize,
-        height: canvas.height,
-        width: canvas.width,
-        numCols: this.props.numColumns,
-        numRows: this.props.numRows
-      };
-      this.volcano = new CanvasVolcano(ctx, metrics, data);
-      this.cityLayer = new CanvasCities(ctx, metrics, cities);
-      this.volcano.draw();
-      this.cityLayer.draw();
-    }
-
+    this.recomputeMetrics();
   }
 
   public render() {
+    if (! this.metrics) { return null; }
+    const {cities, volcanoX, volcanoY} = this.props;
+    const {width, height, gridSize} = this.metrics;
+    const cityItems = cities.map( (city) => {
+      const {x, y, name, id} = city;
+      if (x && y && name) {
+        return <PixiCityContainer gridSize={gridSize} key={id} position={{x, y}} name={name} />;
+      }
+    });
+
     return (
-      <CanvDiv>
-        <canvas ref={this.canvRef} width={500} height={500}/>
+      <CanvDiv ref={this.ref}>
+        <Stage
+          width={width}
+          height={height}
+          options={{backgroundColor: Color("hsl(0, 30%, 95%)").rgbNumber()}} >
+          {cityItems}
+          <Volcano gridSize={gridSize} gridX={volcanoX} gridY={volcanoY} />
+        </Stage>
       </CanvDiv>
     );
+  }
+
+  private recomputeMetrics() {
+    const {numCols, numRows } = this.props;
+    const width = 500;
+    const height = 500;
+    const gridSize = width / numCols;
+    this.metrics  = {
+      gridSize,
+      height,
+      width,
+      numCols,
+      numRows
+    };
   }
 }

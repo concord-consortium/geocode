@@ -3,6 +3,9 @@ import { autorun } from "mobx";
 import gridTephraCalc from "../tephra2";
 import { evalCode } from "../utilities/interpreter";
 
+let _cityCounter = 0;
+const genCityId = () => `city_${_cityCounter++}`;
+
 export interface IModelParams {
   mass: number;
   windSpeed: number;
@@ -23,6 +26,7 @@ export interface SimDatumType {
 }
 export const City = types
   .model("City", {
+    id: types.identifier,
     name: types.string,
     x: types.number,
     y: types.number
@@ -82,13 +86,22 @@ export const SimulationModel = types
         self.volcanoY = y;
       },
       addCity(x: number, y: number, name: string) {
-        const oldCities = self.cities.filter( c => {
-          if (c.name === name) { return false; }
-          if (c.x === x && c.y === y){ return false; }
-          return true;
+        const found = self.cities.find( c => {
+          if (c.name === name) { return true; }
+          if (c.x === x && c.y === y){ return true; }
+          return false;
         });
-        oldCities.push(City.create({name, x, y}));
-        self.cities.replace(oldCities.map(c => City.create({name: c.name, x: c.x, y: c.y})));
+        if (found) {
+          found.name = name;
+          found.x = x;
+          found.y = y;
+          console.log(`found a city with ${name}`);
+        }
+        else {
+          self.cities.push(City.create({id: genCityId(), name, x, y}));
+          console.log(`created a city with ${name}`);
+        }
+
       },
       run() {
         evalCode(self.code, self);
@@ -116,6 +129,9 @@ export const SimulationModel = types
           }
         }
         return resultData;
+      },
+      get cityHash() {
+        return self.cities.reduce( (pre, cur) => `${pre}-${cur.id}`, "");
       }
     };
   });
@@ -127,6 +143,8 @@ autorun(() => {
   const y = windSpeed * Math.sin(windDirection);
   const vx = simulation.volcanoX;
   evalCode(code, simulation);
+  const cityHash = cities.reduce( (pre, current) => `${pre}-${current.name}`, "");
+  console.log(cityHash);
   console.log(`AUTO RUN RAN ${vx} --------------------------- `);
 });
 

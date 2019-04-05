@@ -5,11 +5,6 @@ import { VolcanoComponent } from "./volcano-component";
 import RangeControl from "./range-control";
 import BlocklyContianer from "./blockly-container";
 import { simulation } from "../stores/volcano-store";
-import { Stage, Text } from "@inlet/react-pixi";
-import { TextStyle } from "pixi.js";
-
-import Color from "color";
-
 import styled from "styled-components";
 
 interface IProps extends IBaseProps {}
@@ -37,6 +32,11 @@ const Simulation = styled.div`
   justify-content: flex-start;
   align-items: flex-start;
 `;
+
+const Hidden = styled.div`
+  display: none;
+`;
+
 @inject("stores")
 @observer
 export class AppComponent extends BaseComponent<IProps, IState> {
@@ -52,35 +52,31 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       numCols,
       numRows,
       data,
-      cities
+      cities,
+      cityHash,
+      volcanoX,
+      volcanoY
     } = this.stores;
-
-    const BasicText = () => {
-      const style = new TextStyle({fill: "white"});
-      return (
-        <Text style={style} x={30} y={90} text="Basic text in pixi" />
-      );
-    }
 
     return (
       <App>
-
         <BlocklyContianer setBlocklyCode={ setBlocklyCode} />
         <Simulation >
+          <Hidden>cityHash</Hidden>
           <VolcanoComponent
             windDirection={ windDirection }
             windSpeed={ windSpeed }
             mass={ mass }
             colHeight={ colHeight }
             particleSize={ particleSize }
-            numColumns={numCols}
-            numRows={numRows}
+            numCols={ numCols }
+            numRows={ numRows }
             data={ data }
-            cities={cities}
+            cities={ cities }
+            volcanoX={ volcanoX }
+            volcanoY={ volcanoY }
           />
-            <Stage >
-              <BasicText />
-            </Stage>
+
           <Controls>
             <button onClick={simulation.run}>run</button>
             <RangeControl
