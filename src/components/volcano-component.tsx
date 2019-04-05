@@ -30,12 +30,6 @@ interface IProps {
   cities: CityType[];
 }
 
-const BasicText = () => {
-  const style = new TextStyle({fill: "black", fontSize: "12px"});
-  return (
-    <Text style={style} x={30} y={90} text="Basic text in pixi" />
-  );
-};
 
 export class VolcanoComponent extends React.Component<IProps, IState>{
 

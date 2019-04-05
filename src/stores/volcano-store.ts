@@ -131,7 +131,7 @@ export const SimulationModel = types
         return resultData;
       },
       get cityHash() {
-        return self.cities.reduce( (pre, cur) => `${pre}-${cur.id}`, "");
+        return self.cities.reduce( (pre, cur) => `${pre}-${cur.name}${cur.x}${cur.y}`, "");
       }
     };
   });
@@ -143,9 +143,6 @@ autorun(() => {
   const y = windSpeed * Math.sin(windDirection);
   const vx = simulation.volcanoX;
   evalCode(code, simulation);
-  const cityHash = cities.reduce( (pre, current) => `${pre}-${current.name}`, "");
-  console.log(cityHash);
-  console.log(`AUTO RUN RAN ${vx} --------------------------- `);
 });
 
 export type SimulationModelType = typeof SimulationModel.Type;

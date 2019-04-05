@@ -34,7 +34,7 @@ const Simulation = styled.div`
 `;
 
 const Hidden = styled.div`
-  display: none;
+  display: inline;
 `;
 
 @inject("stores")
@@ -62,7 +62,6 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       <App>
         <BlocklyContianer setBlocklyCode={ setBlocklyCode} />
         <Simulation >
-          <Hidden>cityHash</Hidden>
           <VolcanoComponent
             windDirection={ windDirection }
             windSpeed={ windSpeed }

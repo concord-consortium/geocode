@@ -1,16 +1,10 @@
 import * as React from "react";
-import { CanvasVolcano } from "../canvas-volcano";
-import { CanvasCities } from "../canvas-cities";
-import { ICanvasShape } from "../canvas-grid";
-import { SimDatumType, CityType } from "../stores/volcano-store";
+
 import styled from "styled-components";
 import { Container, Text } from "@inlet/react-pixi";
 import { TextStyle } from "pixi.js";
 import * as Color from "color";
 
-const CanvDiv = styled.div`
-  border: 2px solid black; border-radius: 10px;
-`;
 
 interface IProps {
   position: {x: number, y: number};
