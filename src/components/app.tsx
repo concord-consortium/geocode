@@ -105,5 +105,4 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     );
   }
 
-
 }

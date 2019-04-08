@@ -5,7 +5,6 @@ import { Container, Text } from "@inlet/react-pixi";
 import { TextStyle } from "pixi.js";
 import * as Color from "color";
 
-
 interface IProps {
   position: {x: number, y: number};
   name: string;

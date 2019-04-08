@@ -27,7 +27,7 @@ export const PixiAxis = (props: IProps) => {
   let x = 0;
   let y = 0;
   for (x = 0; x < numCols; x++) {
-    labels.push(<GridLabel x={x * gridSize + offset} y={0} title={`${x}`} />)
+    labels.push(<GridLabel x={x * gridSize + offset} y={0} title={`${x}`} />);
   }
   x = 0;
   for (y = 0; y < numRows; y++) {

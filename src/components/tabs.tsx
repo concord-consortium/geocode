@@ -47,7 +47,7 @@ const Tab = styled(UnstyledTab).attrs({
   }
 `;
 
-const TabPanel = styled(UnstyledTabPanel).attrs({ selectedClassName: 'selected' })`
+const TabPanel = styled(UnstyledTabPanel).attrs({ selectedClassName: "selected" })`
   display: none;
   padding: 10px 20px;
   &.selected {
