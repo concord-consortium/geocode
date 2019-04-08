@@ -11,7 +11,8 @@ import Volcano from "./pixi-volcano";
 import * as Color from "color";
 
 const CanvDiv = styled.div`
-  border: 2px solid black; border-radius: 10px;
+  border: 0px solid black; border-radius: 0px;
+  margin: 1em;
 `;
 
 interface IState {}
