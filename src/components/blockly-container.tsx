@@ -3,6 +3,8 @@ import styled from "styled-components";
 
 interface IProps {
   setBlocklyCode?: (code: string) => void;
+  width: number;
+  height: number;
 }
 
 interface IState {}
@@ -12,8 +14,8 @@ const StartBlocks = styled.div``;
 let lastTimeout: number | null  = null;
 const WorkSpace = styled.div`
   font-family: sans-serif;
-  width: 800px;
-  height: 800px;
+  width: ${(p: IProps) => `${p.width}px`};
+  height: ${(p: IProps) => `${p.height}px`};
   margin: 1em;
   /* position: relative;
   border: 2px solid gray;
@@ -28,10 +30,11 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
   private startBlockRef = React.createRef<HTMLDivElement>();
 
   public render() {
+    const {width, height} = this.props;
     return (
       <Wrapper>
         <StartBlocks ref={this.startBlockRef} />
-        <WorkSpace ref={this.workSpaceRef} />
+        <WorkSpace width={width} height={height} ref={this.workSpaceRef} />
       </Wrapper>
     );
   }

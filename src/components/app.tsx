@@ -75,7 +75,10 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             <Tab>Code</Tab>
           </TabList>
           <TabPanel>
-            <BlocklyContianer setBlocklyCode={ setBlocklyCode} />
+            <BlocklyContianer
+              width={800}
+              height={600}
+              setBlocklyCode={ setBlocklyCode} />
           </TabPanel>
           <TabPanel>
             <Code>
@@ -102,7 +105,6 @@ export class AppComponent extends BaseComponent<IProps, IState> {
           />
 
           <Controls>
-            <button onClick={simulation.run}>run</button>
             <RangeControl
               min={0}
               max={6.2}
