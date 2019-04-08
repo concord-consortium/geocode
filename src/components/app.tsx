@@ -6,7 +6,9 @@ import RangeControl from "./range-control";
 import BlocklyContianer from "./blockly-container";
 import { simulation } from "../stores/volcano-store";
 import styled from "styled-components";
-
+import { Tab, Tabs, TabList, TabPanel } from "./tabs";
+import { js_beautify } from "js-beautify";
+import SyntaxHighlighter from "react-syntax-highlighter";
 interface IProps extends IBaseProps {}
 
 interface IState {}
@@ -31,6 +33,13 @@ const Simulation = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
+`;
+
+const Code = styled.div`
+  width: 800px;
+  max-height: 600px;
+  overflow: auto;
+  padding: 1em;
 `;
 
 const Hidden = styled.div`
@@ -60,7 +69,23 @@ export class AppComponent extends BaseComponent<IProps, IState> {
 
     return (
       <App>
-        <BlocklyContianer setBlocklyCode={ setBlocklyCode} />
+        <Tabs>
+          <TabList>
+            <Tab>Blocks</Tab>
+            <Tab>Code</Tab>
+          </TabList>
+          <TabPanel>
+            <BlocklyContianer setBlocklyCode={ setBlocklyCode} />
+          </TabPanel>
+          <TabPanel>
+            <Code>
+              <SyntaxHighlighter>
+                {js_beautify(code)}
+              </SyntaxHighlighter>
+            </Code>
+          </TabPanel>
+        </Tabs>
+
         <Simulation >
           <VolcanoComponent
             windDirection={ windDirection }
