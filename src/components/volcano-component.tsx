@@ -1,13 +1,12 @@
 import * as React from "react";
-import { CanvasVolcano } from "../canvas-volcano";
-import { CanvasCities } from "../canvas-cities";
 import { ICanvasShape } from "../canvas-grid";
-import { SimDatumType, CityType, City } from "../stores/volcano-store";
+import { SimDatumType, CityType  } from "../stores/volcano-store";
 import styled from "styled-components";
 import { Stage, Text } from "@inlet/react-pixi";
-import { TextStyle } from "pixi.js";
 import { PixiCityContainer } from "./pixi-city-container";
+import { PixiTephraMap } from "./pixi-tephra-map";
 import Volcano from "./pixi-volcano";
+
 
 import * as Color from "color";
 
@@ -30,7 +29,6 @@ interface IProps {
   cities: CityType[];
 }
 
-
 export class VolcanoComponent extends React.Component<IProps, IState>{
 
   private ref = React.createRef<HTMLDivElement>();
@@ -46,7 +44,7 @@ export class VolcanoComponent extends React.Component<IProps, IState>{
 
   public render() {
     if (! this.metrics) { return null; }
-    const {cities, volcanoX, volcanoY} = this.props;
+    const {cities, volcanoX, volcanoY, data} = this.props;
     const {width, height, gridSize} = this.metrics;
     const cityItems = cities.map( (city) => {
       const {x, y, name, id} = city;
@@ -61,6 +59,9 @@ export class VolcanoComponent extends React.Component<IProps, IState>{
           width={width}
           height={height}
           options={{backgroundColor: Color("hsl(0, 30%, 95%)").rgbNumber()}} >
+          <PixiTephraMap
+            canvasMetrics={this.metrics}
+            data={data.map( (d) => d.thickness )} />
           {cityItems}
           <Volcano gridSize={gridSize} gridX={volcanoX} gridY={volcanoY} />
         </Stage>
