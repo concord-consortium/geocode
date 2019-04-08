@@ -42,7 +42,7 @@ const GridSquare =  PixiComponent<IGridSquareProps, PIXI.Graphics>("GridSquare",
 
 export const PixiTephraMap = (props: IProps) => {
   const { canvasMetrics, data } = props;
-  const { width, height, numCols, numRows, gridSize } = canvasMetrics;
+  const { numCols, numRows, gridSize } = canvasMetrics;
   const getData = (x: number, y: number) => data[x + y * numCols];
   const cells = [];
   for (let gridX = 0; gridX < numCols; gridX++) {
