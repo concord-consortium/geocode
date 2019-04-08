@@ -14,7 +14,8 @@ interface IProps {
 interface IState {}
 
 const ControlGroup = styled.div`
-  margin: 0.5em;
+  margin-left: 1em;
+  margin-top: 0.7em;
 `;
 
 const InputLabel = styled.label`

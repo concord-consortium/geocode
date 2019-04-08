@@ -47,9 +47,8 @@ export const PixiTephraMap = (props: IProps) => {
   const cells = [];
   for (let gridX = 0; gridX < numCols; gridX++) {
     for (let gridY = 0; gridY < numRows; gridY++) {
-      const offset = gridSize / 2;
-      const x = gridSize * gridX + offset;
-      const y = gridSize * gridY + offset;
+      const x = gridSize * gridX;
+      const y = gridSize * gridY;
       const hsla: IHsla = {
         hue: 0,
         sat: 50,

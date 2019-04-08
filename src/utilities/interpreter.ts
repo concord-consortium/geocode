@@ -40,6 +40,11 @@ const makeInterperterFunc = (simulation: SimulationModelType) => {
       simulation.setWindSpeed(params);
     });
 
+    addFunc("setMass", (...args) => {
+      const params = (unwrap(args)[0]);
+      simulation.setMass(params);
+    });
+
     addFunc("setVolcano", (...args) => {
       const params = (unwrap(args)[0]) as {x: number, y: number};
       simulation.setVolcano(params.x, params.y);

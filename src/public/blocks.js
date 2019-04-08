@@ -366,9 +366,11 @@ Blockly.Blocks['setEruptionMass'] = {
 };
 
 Blockly.JavaScript['setEruptionMass'] = function(block) {
-  var value_eruptionHeight = Blockly.JavaScript.valueToCode(block, 'eruptionHeight', Blockly.JavaScript.ORDER_ATOMIC);
+  var value_mass = Blockly.JavaScript.valueToCode(block, 'eruptionMass', Blockly.JavaScript.ORDER_ATOMIC);
   // TODO: Assemble JavaScript into code variable.
-  var code = '//...;\n';
+  var code = `
+    setMass(${value_mass});
+  `;
   return code;
 };
 

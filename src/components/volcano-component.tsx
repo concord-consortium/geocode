@@ -5,8 +5,8 @@ import styled from "styled-components";
 import { Stage, Text } from "@inlet/react-pixi";
 import { PixiCityContainer } from "./pixi-city-container";
 import { PixiTephraMap } from "./pixi-tephra-map";
+import { PixiAxis } from "./pixi-axis";
 import Volcano from "./pixi-volcano";
-
 
 import * as Color from "color";
 
@@ -64,6 +64,7 @@ export class VolcanoComponent extends React.Component<IProps, IState>{
             canvasMetrics={this.metrics}
             data={data.map( (d) => d.thickness )} />
           {cityItems}
+          <PixiAxis gridMetrics={this.metrics} />
           <Volcano gridSize={gridSize} gridX={volcanoX} gridY={volcanoY} />
         </Stage>
       </CanvDiv>

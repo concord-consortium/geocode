@@ -118,7 +118,6 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               name="Wind Speed (m/s)"
             />
           </Controls>
-          <div>${code}</div>
         </Simulation>
       </App>
     );
