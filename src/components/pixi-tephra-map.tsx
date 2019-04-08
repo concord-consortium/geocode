@@ -50,9 +50,9 @@ export const PixiTephraMap = (props: IProps) => {
       const x = gridSize * gridX;
       const y = gridSize * gridY;
       const hsla: IHsla = {
-        hue: 0,
-        sat: 50,
-        value: 50,
+        hue: 10,
+        sat: 40,
+        value: 60,
         alpha: getData(gridX, gridY)
       };
       cells.push(<GridSquare hsla={hsla} x={x} y={y} size={gridSize} />);
