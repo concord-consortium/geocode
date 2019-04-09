@@ -21,7 +21,6 @@ const WorkSpace = styled.div`
   border: 2px solid gray;
   border-radius: 0.5em; */
   /* padding: 1em; */
-
 `;
 
 export default class BlocklyContainer extends React.Component<IProps, IState> {
@@ -43,11 +42,14 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
     this.initializeBlockly();
   }
 
+  // TODO: This should eventually be removed. We save the XML to local storage.
+  // We don't ever restore this at the moment, but its used by developers to
+  // Save the initial program.
   public componentDidUpdate() {
     if (lastTimeout) {
       clearTimeout(lastTimeout);
     }
-    lastTimeout = window.setTimeout(this.toXml, 400);
+    lastTimeout = window.setTimeout(this.toXml, 500);
   }
 
   private toXml = () => {

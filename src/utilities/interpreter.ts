@@ -63,15 +63,41 @@ const makeInterperterFunc = (simulation: SimulationModelType) => {
 
 let lastRunID: number | null  = null;
 
-export const evalCode = (code: string, store: any) => {
+export interface IInterpreter {
+  step: () => void;
+  run: (complete: () => void) => void;
+  stop: () => void;
+}
+
+export const makeInterpreter = (code: string, store: any) => {
   if (lastRunID) {
     window.clearTimeout(lastRunID);
   }
   const interpreter = new Interpreter(code, makeInterperterFunc(store));
-  const nextStep = () => {
+  const step = () => {
+    console.log("step");
+    window.setTimeout(() => interpreter.step(), 10);
+  };
+
+  const run = (complete: () => void) => {
     if (interpreter.step()) {
-      lastRunID = window.setTimeout(nextStep, 10);
+      lastRunID = window.setTimeout(() => run(complete), 10);
+    }
+    else {
+      complete();
     }
   };
-  nextStep();
+
+  const stop = () => {
+    if (lastRunID) {
+      window.clearTimeout(lastRunID);
+      lastRunID = null;
+    }
+  };
+
+  return {
+    step,
+    run,
+    stop
+  };
 };

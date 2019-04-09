@@ -11,6 +11,7 @@ import { Tab, Tabs, TabList, TabPanel } from "./tabs";
 import { js_beautify } from "js-beautify";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import Controls from "./controls";
+import RunButtons from "./run-buttons";
 
 interface IProps extends IBaseProps {}
 
@@ -60,7 +61,12 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       cities,
       cityHash,
       volcanoX,
-      volcanoY
+      volcanoY,
+      run,
+      step,
+      stop,
+      reset,
+      running
     } = this.stores;
 
     return (
@@ -75,6 +81,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               width={800}
               height={600}
               setBlocklyCode={ setBlocklyCode} />
+              <RunButtons {...{run, stop, step, reset, running}} />
           </TabPanel>
           <TabPanel>
             <Code>

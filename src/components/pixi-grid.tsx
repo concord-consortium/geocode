@@ -3,7 +3,6 @@ import * as React from "react";
 import { Container, Text } from "@inlet/react-pixi";
 import { TextStyle } from "pixi.js";
 import { ICanvasShape } from "../interfaces";
-import * as Color from "color";
 
 interface IProps {
   gridMetrics: ICanvasShape;

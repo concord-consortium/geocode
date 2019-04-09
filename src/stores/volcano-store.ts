@@ -1,10 +1,11 @@
 import { types } from "mobx-state-tree";
 import { autorun } from "mobx";
 import gridTephraCalc from "../tephra2";
-import { evalCode } from "../utilities/interpreter";
+import { IInterpreter, makeInterpreter } from "../utilities/interpreter";
 
 let _cityCounter = 0;
 const genCityId = () => `city_${_cityCounter++}`;
+let interpreter: IInterpreter | null;
 
 export interface IModelParams {
   mass: number;
@@ -44,7 +45,8 @@ export const SimulationModel = types
     volcanoX: 5,
     volcanoY: 5,
     cities: types.array(City),
-    code: ";"
+    code: "",
+    running: false
   })
   .actions((self) => {
     return {
@@ -73,6 +75,11 @@ export const SimulationModel = types
       },
       setBlocklyCode(code: string) {
         self.code = code;
+        if (interpreter) {
+          interpreter.stop();
+        }
+        self.running = false;
+        interpreter = makeInterpreter(code, simulation);
       },
       setModelParams(params: IModelParams) {
         self.windSpeed = params.windSpeed;
@@ -95,16 +102,34 @@ export const SimulationModel = types
           found.name = name;
           found.x = x;
           found.y = y;
-          console.log(`found a city with ${name}`);
         }
         else {
           self.cities.push(City.create({id: genCityId(), name, x, y}));
-          console.log(`created a city with ${name}`);
         }
 
       },
       run() {
-        evalCode(self.code, self);
+        const reset = () => {
+          this.setBlocklyCode(self.code);
+        };
+        if (interpreter) {
+          interpreter.run(reset);
+          self.running = true;
+        }
+      },
+      reset() {
+        this.setBlocklyCode(self.code);
+      },
+      stop() {
+        if (interpreter) {
+          interpreter.stop();
+          self.running = false;
+        }
+      },
+      step() {
+        if (interpreter) {
+          interpreter.step();
+        }
       }
     };
   })
@@ -142,7 +167,6 @@ autorun(() => {
   const x = windSpeed * Math.cos(windDirection);
   const y = windSpeed * Math.sin(windDirection);
   const vx = simulation.volcanoX;
-  evalCode(code, simulation);
 });
 
 export type SimulationModelType = typeof SimulationModel.Type;
