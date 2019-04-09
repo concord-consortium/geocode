@@ -6,3 +6,6 @@ export interface ICanvasShape {
   numRows: number;
   gridSize: number;
 }
+export interface IBlocklyWorkspace {
+  highlightBlock: (id: number) => void;
+}

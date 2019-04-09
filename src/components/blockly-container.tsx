@@ -2,7 +2,7 @@ import * as React from "react";
 import styled from "styled-components";
 
 interface IProps {
-  setBlocklyCode?: (code: string) => void;
+  setBlocklyCode?: (code: string, workspace: any) => void;
   width: number;
   height: number;
 }
@@ -67,6 +67,8 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
         this.workSpace = Blockly.inject(this.workSpaceRef.current, blockOpts);
         const startBlocks = this.startBlockRef.current;
         Blockly.Xml.domToWorkspace(startBlocks, this.workSpace);
+        Blockly.JavaScript.STATEMENT_PREFIX = "highlightBlock(%1);\n";
+        Blockly.JavaScript.addReservedWords("highlightBlock");
         fetch("./normal-setup.xml")
         .then((resp) => {
           resp.text().then((d) => {
@@ -77,7 +79,7 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
         const myUpdateFunction = (event: any) => {
           const code = Blockly.JavaScript.workspaceToCode(this.workSpace);
           if (this.props.setBlocklyCode) {
-            this.props.setBlocklyCode(code);
+            this.props.setBlocklyCode(code, this.workSpace);
           }
         };
         this.workSpace.addChangeListener(myUpdateFunction);

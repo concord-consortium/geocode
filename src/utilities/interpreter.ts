@@ -2,9 +2,10 @@ import { IModelParams } from "../stores/volcano-store";
 
 // import { Interpreter } from "js-interpreter";
 import { SimulationModelType } from "../stores/volcano-store";
+import { IBlocklyWorkspace } from "../interfaces";
 const Interpreter = require("js-interpreter");
 
-const makeInterperterFunc = (simulation: SimulationModelType) => {
+const makeInterperterFunc = (simulation: SimulationModelType, workspace: IBlocklyWorkspace) => {
   return (interpreter: any, scope: any) => {
     const addVar = (name: string, value: any) => {
       interpreter.setProperty(scope, name, value);
@@ -58,6 +59,13 @@ const makeInterperterFunc = (simulation: SimulationModelType) => {
     addFunc("log", (...args) => {
       console.log(unwrap(args));
     });
+
+    addFunc("highlightBlock", (...args) => {
+      const id = (unwrap(args)[0] as number);
+      if (workspace) {
+        workspace.highlightBlock(id);
+      }
+    });
   };
 };
 
@@ -69,11 +77,11 @@ export interface IInterpreter {
   stop: () => void;
 }
 
-export const makeInterpreter = (code: string, store: any) => {
+export const makeInterpreter = (code: string, store: any, workspace: any) => {
   if (lastRunID) {
     window.clearTimeout(lastRunID);
   }
-  const interpreter = new Interpreter(code, makeInterperterFunc(store));
+  const interpreter = new Interpreter(code, makeInterperterFunc(store, workspace));
   const step = () => {
     console.log("step");
     window.setTimeout(() => interpreter.step(), 10);

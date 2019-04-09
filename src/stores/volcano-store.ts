@@ -73,13 +73,13 @@ export const SimulationModel = types
       setWindDirection(direction: number) {
         self.windDirection = direction;
       },
-      setBlocklyCode(code: string) {
+      setBlocklyCode(code: string, workspace: any) {
         self.code = code;
         if (interpreter) {
           interpreter.stop();
         }
         self.running = false;
-        interpreter = makeInterpreter(code, simulation);
+        interpreter = makeInterpreter(code, simulation, workspace);
       },
       setModelParams(params: IModelParams) {
         self.windSpeed = params.windSpeed;
