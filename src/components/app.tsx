@@ -1,7 +1,8 @@
 import { inject, observer } from "mobx-react";
 import * as React from "react";
 import { BaseComponent, IBaseProps } from "./base";
-import { VolcanoComponent } from "./volcano-component";
+import { MapComponent } from "./map-component";
+import { CrossSectionComponent } from "./cross-section-component";
 
 import BlocklyContianer from "./blockly-container";
 import { simulation } from "../stores/volcano-store";
@@ -85,7 +86,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         </Tabs>
 
         <Simulation >
-          <VolcanoComponent
+          <MapComponent
             windDirection={ windDirection }
             windSpeed={ windSpeed }
             mass={ mass }
@@ -93,10 +94,20 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             particleSize={ particleSize }
             numCols={ numCols }
             numRows={ numRows }
+            width={ 500 }
+            height={ 500 }
             data={ data }
             cities={ cities }
             volcanoX={ volcanoX }
             volcanoY={ volcanoY }
+          />
+          <CrossSectionComponent
+            data={ data }
+            height={ 200 }
+            numCols={ numCols }
+            numRows={ numRows }
+            width={ 500 }
+            volcanoX={ volcanoX }
           />
           <Controls />
         </Simulation>

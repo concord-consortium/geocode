@@ -3,11 +3,7 @@ import { ICanvasShape } from "../canvas-grid";
 import { SimDatumType, CityType  } from "../stores/volcano-store";
 import styled from "styled-components";
 import { Stage, Text } from "@inlet/react-pixi";
-import { PixiCityContainer } from "./pixi-city-container";
-import { PixiTephraMap } from "./pixi-tephra-map";
-import { PixiAxis } from "./pixi-axis";
-import Volcano from "./pixi-volcano";
-
+import { PixiTephraCrossSection } from "./pixi-tephra-cross-section";
 import * as Color from "color";
 
 const CanvDiv = styled.div`
@@ -19,18 +15,14 @@ interface IState {}
 interface IProps {
   numRows: number;
   numCols: number;
-  windSpeed: number;
-  windDirection: number;
-  mass: number;
-  colHeight: number;
-  particleSize: number;
+  height: number;
+  width: number;
   volcanoX: number;
-  volcanoY: number;
   data: SimDatumType[];
-  cities: CityType[];
+  // cities: CityType[];
 }
 
-export class VolcanoComponent extends React.Component<IProps, IState>{
+export class CrossSectionComponent extends React.Component<IProps, IState>{
 
   private ref = React.createRef<HTMLDivElement>();
   private metrics: ICanvasShape;
@@ -45,14 +37,8 @@ export class VolcanoComponent extends React.Component<IProps, IState>{
 
   public render() {
     if (! this.metrics) { return null; }
-    const {cities, volcanoX, volcanoY, data} = this.props;
-    const {width, height, gridSize} = this.metrics;
-    const cityItems = cities.map( (city) => {
-      const {x, y, name, id} = city;
-      if (x && y && name) {
-        return <PixiCityContainer gridSize={gridSize} key={id} position={{x, y}} name={name} />;
-      }
-    });
+    const { volcanoX, data, height } = this.props;
+    const { width, gridSize } = this.metrics;
 
     return (
       <CanvDiv ref={this.ref}>
@@ -60,21 +46,16 @@ export class VolcanoComponent extends React.Component<IProps, IState>{
           width={width}
           height={height}
           options={{backgroundColor: Color("hsl(0, 30%, 95%)").rgbNumber()}} >
-          <PixiTephraMap
+          <PixiTephraCrossSection
             canvasMetrics={this.metrics}
             data={data.map( (d) => d.thickness )} />
-          {cityItems}
-          <PixiAxis gridMetrics={this.metrics} />
-          <Volcano gridSize={gridSize} gridX={volcanoX} gridY={volcanoY} />
         </Stage>
       </CanvDiv>
     );
   }
 
   private recomputeMetrics() {
-    const {numCols, numRows } = this.props;
-    const width = 500;
-    const height = 500;
+    const {numCols, numRows, width, height } = this.props;
     const gridSize = width / numCols;
     this.metrics  = {
       gridSize,
