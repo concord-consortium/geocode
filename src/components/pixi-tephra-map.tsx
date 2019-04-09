@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { Container } from "@inlet/react-pixi";
 import { PixiComponent } from "@inlet/react-pixi";
-import { ICanvasShape } from "../canvas-grid";
+import { ICanvasShape } from "../interfaces";
 import * as PIXI from "pixi.js";
 import * as Color from "color";
 

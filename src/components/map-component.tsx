@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ICanvasShape } from "../canvas-grid";
+import { ICanvasShape } from "../interfaces";
 import { SimDatumType, CityType  } from "../stores/volcano-store";
 import styled from "styled-components";
 import { Stage, Text } from "@inlet/react-pixi";
