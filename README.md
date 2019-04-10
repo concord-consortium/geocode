@@ -95,11 +95,11 @@ simulation store.
 Production releases to S3 are based on the contents of the /dist folder and are built automatically by Travis
 for each branch pushed to GitHub and each merge into production.
 
-Merges into production are deployed to http://geocode.concord.org.
+Merges into production are deployed to http://geocode-app.concord.org.
 
-Other branches are deployed to http://geocode.concord.org/branch/<name>.
+Other branches are deployed to http://geocode-app.concord.org/branch/<name>.
 
-You can view the status of all the branch deploys [here](https://travis-ci.org/concord-consortium/geocode/branches).
+You can view the status of all the branch deploys [here](https://travis-ci.org/concord-consortium/geocode-app/branches).
 
 To deploy a production release:
 
