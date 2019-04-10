@@ -70,7 +70,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     } = this.stores;
 
     return (
-      <App>
+      <App className="app" >
         <Tabs>
           <TabList>
             <Tab>Blocks</Tab>
