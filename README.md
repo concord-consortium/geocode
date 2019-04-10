@@ -6,18 +6,18 @@ The goal of GeoCode is to get students exploring geological theats using
 the practice of programming. In this case, we are using Blockly to generate
 code that runs a simple tephra distrobution model.
 
-Students change eruptionparameters using [Blockly]().
+Students change eruption parameters using [Blockly](https://developers.google.com/blockly/).
 
 ## Technology reference links:
-[Blockly](https://developers.google.com/blockly/) Block programming tool developed by Google.
-[JS-interpreter](https://github.com/NeilFraser/JS-Interpreter) An isolated javascript evaluation engine.
-[mobx](https://github.com/mobxjs/mobx) Simple, scalable state management.
-[mobx-state-tree](https://github.com/mobxjs/mobx-state-tree)  Transactional, MobX powered state container
-[styled-components](https://www.styled-components.com/) CSS only components via ES6.
-[PixiJS](http://www.pixijs.com/) 2D Graphics and scene-graph utlity.
-[React-Pixi](https://reactpixi.org/) Use react state to drive Pixi scenes.
-[React](https://reactjs.org/) Web Components.
-[TypeScript](https://www.typescriptlang.org/) Javascript that scales.
+* [Blockly](https://developers.google.com/blockly/) Block programming tool developed by Google.
+* [JS-interpreter](https://github.com/NeilFraser/JS-Interpreter) An isolated javascript evaluation engine.
+* [mobx](https://github.com/mobxjs/mobx) Simple, scalable state management.
+* [mobx-state-tree](https://github.com/mobxjs/mobx-state-tree)  Transactional, MobX powered state container
+* [styled-components](https://www.styled-components.com/) CSS only components via ES6.
+* [PixiJS](http://www.pixijs.com/) 2D Graphics and scene-graph utlity.
+* [React-Pixi](https://reactpixi.org/) Use react state to drive Pixi scenes.
+* [React](https://reactjs.org/) Web Components.
+* [TypeScript](https://www.typescriptlang.org/) Javascript that scales.
 
 
 ## Development
