@@ -1,61 +1,86 @@
-# Starter Projects
+# GeoCode Scaffolded Visual Programming platform
+
+## About
+
+The goal of GeoCode is to get students exploring geological theats using
+the practice of programming. In this case, we are using Blockly to generate
+code that runs a simple tephra distrobution model.
+
+Students change eruptionparameters using [Blockly]().
+
+## Technology reference links:
+[Blockly](https://developers.google.com/blockly/) Block programming tool developed by Google.
+[JS-interpreter](https://github.com/NeilFraser/JS-Interpreter) An isolated javascript evaluation engine.
+[mobx](https://github.com/mobxjs/mobx) Simple, scalable state management.
+[mobx-state-tree](https://github.com/mobxjs/mobx-state-tree)  Transactional, MobX powered state container
+[styled-components](https://www.styled-components.com/) CSS only components via ES6.
+[PixiJS](http://www.pixijs.com/) 2D Graphics and scene-graph utlity.
+[React-Pixi](https://reactpixi.org/) Use react state to drive Pixi scenes.
+[React](https://reactjs.org/) Web Components.
+[TypeScript](https://www.typescriptlang.org/) Javascript that scales.
+
 
 ## Development
-
-### Copying a starter project
-
-1. Create a new public repository for your project (e.g. `new-repository`)
-2. Create a clone of the starter repo
-    ```
-    git clone --single-branch https://github.com/concord-consortium/starter-projects.git new-repository
-    ```
-3. Update the starter repo
-
-    First, update and run the starter project:
-    ```
-    cd new-repository
-    npm install
-    npm update
-    npm start
-    ``` 
-    Then, verify the project works by visiting [localhost:8080](http://localhost:8080) and checking for the words "Hello World". 
-    Also verify that the test suite still passes:
-    ```
-    npm run test:full
-    ```
-    If the updates are functional, please commit any changes to `package.json` or `package-lock.json` back to the 
-    Starter Projects repository for future use.
-
-4. Next, re-initialize the repo to create a new history
-    ```
-    rm -rf .git
-    git init
-    ```
-5. Create an initial commit for your new project
-    ```
-    git add .
-    git commit -m "Initial commit"
-    ```
-6. Push to your new repository
-    ```
-    git remote add origin https://github.com/concord-consortium/new-repository.git
-    git push -u origin master
-    ```
-7. Open your new repository and update all instances of `starter-projects` to `new-repository` and `Starter Projects` to `New Repository`. 
-   Note: this will do some of the configuration for Travis deployment to S3, but you'll still need to follow 
-   the instructions [here](https://docs.google.com/document/d/e/2PACX-1vTpYjbGmUMxk_FswUmapK_RzVyEtm1WdnFcNByp9mqwHnp0nR_EzRUOiubuUCsGwzQgOnut_UiabYOM/pub).
-8. Your new repository is ready! Remove this section of the `README`, and follow the steps below to use it.
 
 ### Initial steps
 
 1. Clone this repo and `cd` into it
-2. Run `npm install` to pull dependencies
-3. Run `npm start` to run `webpack-dev-server` in development mode with hot module replacement
+2. Run `npm install` to pull dependencies.
+3. Run `npm start` to run `webpack-dev-server` in development mode with hot module replacement.
 
 ### Building
 
 If you want to build a local version run `npm build`, it will create the files in the `dist` folder.
 You *do not* need to build to deploy the code, that is automatic.  See more info in the Deployment section below.
+
+### Stores
+
+At the moment all data is saved in the store `stores/simulation-store.ts`.
+The store is coupled to the simulation, and the code interpreter. It would be
+nice to silo these three concerns better.
+
+### The simulation and tephra calculation
+
+The simulation is a simple tephra calculation function defined in `tephra2.ts`.
+This function will be improved, modified with the help of our volcanologist partners.
+
+### Developing new Blockly code blocks
+The Blockly configurations and blocks are configured in:
+* `public/blocks.js` These are the custom blocks.
+* `public/normal-setup.xml` This is the saved workspace (program in progress).
+* `public/toolboc.xml` This is the list of blocks available in the toolbox.
+
+You can use the [block factory](https://blockly-demo.appspot.com/static/demos/blockfactory/index.html)
+to create new block elements, or you can just look at `blocks.js` for examples to copy from.
+
+If you want to set a default block program modify the contents of `public/normal-setup.xml`.
+You can copy your current workspace (from eg http://localhost:8080/) by viewing the
+developer tools, ckicking on the "Application" tab, and looking in Local Storage. The
+XML will be stored in local storage under the key "blockly-workspace".
+
+The block's UI and code generation methods are both defined in `blocks.js`.  
+
+The UI the blocks get defined in the `Blockly.Blocks` global object.
+Blocks register themselves in this object using a unique key, such as
+`Blockly.Blocks['print]`.
+
+The Code generation for the blocks are defined in the same file in a global variable
+named `Blockly.JavaScript`.
+
+The any custom functions must be defined in `interpeter.js` in the function named
+`makeInterperterFunc`.  Look at example to see how the function is registered:
+
+```
+    addFunc("setWindspeed", (...args) => {
+      const params = (unwrap(args)[0]);
+      simulation.setWindSpeed(params);
+    });
+
+```
+
+The above method adds "setWindspeed" as a new javascript function that the
+blockly generated code can use.  In this example, it modifies a parameter in the
+simulation store.
 
 ### Notes
 
@@ -70,11 +95,11 @@ You *do not* need to build to deploy the code, that is automatic.  See more info
 Production releases to S3 are based on the contents of the /dist folder and are built automatically by Travis
 for each branch pushed to GitHub and each merge into production.
 
-Merges into production are deployed to http://starter-projects.concord.org.
+Merges into production are deployed to http://geocode.concord.org.
 
-Other branches are deployed to http://starter-projects.concord.org/branch/<name>.
+Other branches are deployed to http://geocode.concord.org/branch/<name>.
 
-You can view the status of all the branch deploys [here](https://travis-ci.org/concord-consortium/starter-projects/branches).
+You can view the status of all the branch deploys [here](https://travis-ci.org/concord-consortium/geocode/branches).
 
 To deploy a production release:
 
@@ -114,6 +139,6 @@ Inside of your `package.json` file:
 
 ## License
 
-Starter Projects are Copyright 2018 (c) by the Concord Consortium and is distributed under the [MIT license](http://www.opensource.org/licenses/MIT).
+GeoCode  Projects are Copyright 2018 (c) by the Concord Consortium and is distributed under the [MIT license](http://www.opensource.org/licenses/MIT).
 
 See license.md for the complete license text.
