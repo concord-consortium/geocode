@@ -5,7 +5,7 @@
   "main": "index.js",
   "jest": {
     "testURL": "https://geocode-projects.unexisting.url.com",
-    "setupTestFrameworkScriptFile": "<rootDir>src/setupTests.js",
+    "setupFilesAfterEnv": ["<rootDir>src/setupTests.js"],
     "transform": {
       "^.+\\.tsx?$": "ts-jest"
     },
