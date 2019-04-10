@@ -17,6 +17,8 @@ export interface IModelParams {
   volcanoY: number;
 }
 
+// This is a bit silly at the moment because our model only outputs one value:
+// the tephra thickness. Originally we also had median grain-size.
 export const SimDatum = types
   .model("SimDatum", {
     thickness: types.number
@@ -25,6 +27,7 @@ export const SimDatum = types
 export interface SimDatumType {
   thickness: number;
 }
+
 export const City = types
   .model("City", {
     id: types.identifier,
@@ -33,10 +36,10 @@ export const City = types
     y: types.number
   });
 
-export const SimulationModel = types
+export const SimulationStore = types
   .model("simulation", {
-    numRows: 10,
-    numCols: 10,
+    numRows: 20,
+    numCols: 20,
     windSpeed: 0,
     windDirection: 0,
     mass: 2000,
@@ -160,7 +163,7 @@ export const SimulationModel = types
       }
     };
   });
-export const simulation = SimulationModel.create({});
+export const simulation = SimulationStore.create({});
 
 autorun(() => {
   const {windSpeed, windDirection, code, cities } = simulation;
@@ -169,5 +172,5 @@ autorun(() => {
   const vx = simulation.volcanoX;
 });
 
-export type SimulationModelType = typeof SimulationModel.Type;
+export type SimulationModelType = typeof SimulationStore.Type;
 export type CityType = typeof City.Type;

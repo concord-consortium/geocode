@@ -1,6 +1,6 @@
 import * as React from "react";
 import { ICanvasShape } from "../interfaces";
-import { SimDatumType, CityType  } from "../stores/volcano-store";
+import { SimDatumType, CityType  } from "../stores/simulation-store";
 import styled from "styled-components";
 import { Stage, Text } from "@inlet/react-pixi";
 import { PixiCityContainer } from "./pixi-city-container";

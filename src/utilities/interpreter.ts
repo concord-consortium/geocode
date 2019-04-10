@@ -1,7 +1,7 @@
-import { IModelParams } from "../stores/volcano-store";
+import { IModelParams } from "../stores/simulation-store";
 
 // import { Interpreter } from "js-interpreter";
-import { SimulationModelType } from "../stores/volcano-store";
+import { SimulationModelType } from "../stores/simulation-store";
 import { IBlocklyWorkspace } from "../interfaces";
 const Interpreter = require("js-interpreter");
 

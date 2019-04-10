@@ -3,7 +3,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 
 import { AppComponent } from "./components/app";
-import { simulation } from "./stores/volcano-store";
+import { simulation } from "./stores/simulation-store";
 
 ReactDOM.render(
   <Provider stores={simulation}>

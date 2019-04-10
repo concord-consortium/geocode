@@ -1,5 +1,5 @@
 import gridTephraCalc from "./tephra2";
-import { SimDatumType } from "./stores/volcano-store";
+import { SimDatumType } from "./stores/simulation-store";
 
 const rand = (max: number) => Math.random() * max - (max / 2);
 

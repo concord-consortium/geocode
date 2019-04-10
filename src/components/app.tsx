@@ -5,7 +5,7 @@ import { MapComponent } from "./map-component";
 import { CrossSectionComponent } from "./cross-section-component";
 
 import BlocklyContianer from "./blockly-container";
-import { simulation } from "../stores/volcano-store";
+import { simulation } from "../stores/simulation-store";
 import styled from "styled-components";
 import { Tab, Tabs, TabList, TabPanel } from "./tabs";
 import { js_beautify } from "js-beautify";
