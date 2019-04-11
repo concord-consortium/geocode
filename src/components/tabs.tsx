@@ -55,9 +55,14 @@ const TabPanel = styled(UnstyledTabPanel).attrs({ selectedClassName: "selected" 
   }
 `;
 
+const FixWidthTabPanel = styled(TabPanel)`
+  width: ${ (p: {width?: number}) => p.width ? p.width : 800}px;
+`;
+
 (Tab as any).tabsRole = "Tab";
 (Tabs as any).tabsRole = "Tabs";
 (TabPanel as any).tabsRole = "TabPanel";
+(FixWidthTabPanel as any).tabsRole = "TabPanel";
 (TabList as any).tabsRole = "TabList";
 
-export { Tab, TabList, Tabs, TabPanel };
+export { Tab, TabList, Tabs, TabPanel, FixWidthTabPanel };

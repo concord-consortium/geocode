@@ -7,7 +7,7 @@ import { CrossSectionComponent } from "./cross-section-component";
 import BlocklyContianer from "./blockly-container";
 import { simulation } from "../stores/simulation-store";
 import styled from "styled-components";
-import { Tab, Tabs, TabList, TabPanel } from "./tabs";
+import { Tab, Tabs, TabList, TabPanel, FixWidthTabPanel } from "./tabs";
 import { js_beautify } from "js-beautify";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import Controls from "./controls";
@@ -37,10 +37,6 @@ const Code = styled.div`
   max-height: 600px;
   overflow: auto;
   padding: 1em;
-`;
-
-const Hidden = styled.div`
-  display: inline;
 `;
 
 @inject("stores")
@@ -77,23 +73,23 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             <Tab>Code</Tab>
             <Tab>Controls</Tab>
           </TabList>
-          <TabPanel>
+          <FixWidthTabPanel width={820}>
             <BlocklyContianer
               width={800}
               height={600}
               setBlocklyCode={ setBlocklyCode} />
               <RunButtons {...{run, stop, step, reset, running}} />
-          </TabPanel>
-          <TabPanel>
+          </FixWidthTabPanel>
+          <FixWidthTabPanel width={820}>
             <Code>
               <SyntaxHighlighter>
                 {js_beautify(code)}
               </SyntaxHighlighter>
             </Code>
-          </TabPanel>
-          <TabPanel>
+          </FixWidthTabPanel>
+          <FixWidthTabPanel width={820}>
             <Controls />
-          </TabPanel>
+          </FixWidthTabPanel>
         </Tabs>
 
         <Simulation >
