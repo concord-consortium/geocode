@@ -75,6 +75,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
           <TabList>
             <Tab>Blocks</Tab>
             <Tab>Code</Tab>
+            <Tab>Controls</Tab>
           </TabList>
           <TabPanel>
             <BlocklyContianer
@@ -89,6 +90,9 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 {js_beautify(code)}
               </SyntaxHighlighter>
             </Code>
+          </TabPanel>
+          <TabPanel>
+            <Controls />
           </TabPanel>
         </Tabs>
 
@@ -116,7 +120,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             width={ 500 }
             volcanoX={ volcanoX }
           />
-          <Controls />
+
         </Simulation>
 
       </App>
