@@ -6,6 +6,7 @@ import { IInterpreter, makeInterpreter } from "../utilities/interpreter";
 let _cityCounter = 0;
 const genCityId = () => `city_${_cityCounter++}`;
 let interpreter: IInterpreter | null;
+let cachedBlocklyWorkspace: {highlightBlock: (id: string|null) => void};
 
 export interface IModelParams {
   mass: number;
@@ -80,8 +81,10 @@ export const SimulationStore = types
         self.code = code;
         if (interpreter) {
           interpreter.stop();
+          workspace.highlightBlock(null);
         }
         self.running = false;
+        cachedBlocklyWorkspace = workspace;
         interpreter = makeInterpreter(code, simulation, workspace);
       },
       setModelParams(params: IModelParams) {
@@ -113,7 +116,7 @@ export const SimulationStore = types
       },
       run() {
         const reset = () => {
-          this.setBlocklyCode(self.code);
+          this.setBlocklyCode(self.code, cachedBlocklyWorkspace);
         };
         if (interpreter) {
           interpreter.run(reset);
@@ -121,7 +124,7 @@ export const SimulationStore = types
         }
       },
       reset() {
-        this.setBlocklyCode(self.code);
+        this.setBlocklyCode(self.code, cachedBlocklyWorkspace);
       },
       stop() {
         if (interpreter) {
