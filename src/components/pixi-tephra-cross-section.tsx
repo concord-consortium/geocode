@@ -63,7 +63,7 @@ export const PixiTephraCrossSection = (props: IProps) => {
       value: 60,
       alpha: 1 - tephHeight
     };
-    cells.push(<Bar hsla={hsla} x={x} width={50} maxHeight={height} height={tephHeight * height}/>);
+    cells.push(<Bar hsla={hsla} x={x} width={gridSize} maxHeight={height} height={tephHeight * height}/>);
   }
   return (
     <Container >
