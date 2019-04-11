@@ -45,7 +45,7 @@ export class CrossSectionComponent extends React.Component<IProps, IState>{
         <Stage
           width={width}
           height={height}
-          options={{backgroundColor: Color("hsl(0, 30%, 95%)").rgbNumber()}} >
+          options={{backgroundColor: Color("hsl(0, 10%, 95%)").rgbNumber()}} >
           <PixiTephraCrossSection
             canvasMetrics={this.metrics}
             data={data.map( (d) => d.thickness )} />
