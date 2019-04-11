@@ -14,16 +14,16 @@ export default PixiComponent<IVolcProps, PIXI.Graphics>("Volcano", {
   applyProps: (g, _, props: IVolcProps) => {
     const rgbFill = Color("hsl(10, 20%, 50%)").rgbNumber();
     const { gridX, gridY, gridSize } = props;
-    const scale = 0.5 * gridSize;
+    const scale = gridSize;
     const x = gridX * gridSize;
     const y = gridY * gridSize;
     const half = Math.floor(scale / 2);
 
-    const top = y - half;
-    const bottom = y + half;
-    const right = x + half;
-    const left =  x - half;
-    const center = x + 0;
+    const top = y;
+    const bottom = y + gridSize;
+    const right = x + gridSize;
+    const left =  x;
+    const center = x + half;
 
     const volcanoPoints = [
       center, top,
