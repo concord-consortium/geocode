@@ -38,8 +38,8 @@ export const City = types
 
 export const SimulationStore = types
   .model("simulation", {
-    numRows: 20,
-    numCols: 20,
+    numRows: 14,
+    numCols: 14,
     windSpeed: 0,
     windDirection: 0,
     mass: 2000,

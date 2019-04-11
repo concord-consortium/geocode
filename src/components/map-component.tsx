@@ -6,6 +6,7 @@ import { Stage, Text } from "@inlet/react-pixi";
 import { PixiCityContainer } from "./pixi-city-container";
 import { PixiTephraMap } from "./pixi-tephra-map";
 import { PixiAxis } from "./pixi-axis";
+import { PixiGrid } from "./pixi-grid";
 import Volcano from "./pixi-volcano";
 
 import * as Color from "color";
@@ -67,6 +68,7 @@ export class MapComponent extends React.Component<IProps, IState>{
             data={data.map( (d) => d.thickness )} />
           {cityItems}
           <PixiAxis gridMetrics={this.metrics} />
+          <PixiGrid gridMetrics={this.metrics} />
           <Volcano gridSize={gridSize} gridX={volcanoX} gridY={volcanoY} />
         </Stage>
       </CanvDiv>
@@ -75,7 +77,7 @@ export class MapComponent extends React.Component<IProps, IState>{
 
   private recomputeMetrics() {
     const {numCols, numRows, width, height } = this.props;
-    const gridSize = width / numCols;
+    const gridSize = Math.round(width / numCols);
     this.metrics  = {
       gridSize,
       height,

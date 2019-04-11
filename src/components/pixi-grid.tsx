@@ -1,41 +1,58 @@
 import * as React from "react";
 
-import { Container, Text } from "@inlet/react-pixi";
-import { TextStyle } from "pixi.js";
+import { Container, Text, PixiComponent } from "@inlet/react-pixi";
+import { TextStyle, Point  } from "pixi.js";
 import { ICanvasShape } from "../interfaces";
+import * as Color from "color";
 
 interface IProps {
   gridMetrics: ICanvasShape;
 }
 
-const GridLabel = (props: {x: number, y: number, title: string}) => {
-  const style = new TextStyle({fill: "black", fontSize: "12px"});
-  const { x, y, title } = props;
-  return (
-    <Container position={[x, y]} >
-      <Text style={style} text={title}/>
-    </Container>
-  );
-};
+interface IGridLineProps {
+  start: {x: number, y: number};
+  end: {x: number, y: number};
+}
 
-export const PixiAxis = (props: IProps) => {
+const GridLine = PixiComponent<IGridLineProps, PIXI.Graphics>("GridLine", {
+  create: props => new PIXI.Graphics(),
+  // didMount: (instance, parent) => {},
+  // willUnmount: (instance, parent) => {},
+  applyProps: (g, _: IGridLineProps, newProps: IGridLineProps) => {
+    const { start, end} = newProps;
+    g.alpha = 1;
+    g.clear();
+    g.moveTo(start.x, start.y);
+    g.lineStyle(1.1, 0, 0.5, 0.5);
+    g.lineTo(end.x, end.y);
+    g.endFill();
+  },
+});
+
+export const PixiGrid = (props: IProps) => {
   const { gridMetrics } = props;
-  const { numCols, numRows, gridSize} = gridMetrics;
-  const labels  = [];
+  const { numCols, numRows, gridSize, height, width} = gridMetrics;
+  const lines  = [];
   const offset = gridSize / 2;
   let x = 0;
   let y = 0;
+  let start = null;
+  let end = null;
   for (x = 0; x < numCols; x++) {
-    labels.push(<GridLabel x={x * gridSize + offset} y={0} title={`${x}`} />);
+    start = {x: x * gridSize, y: 0};
+    end = {x: x * gridSize, y: height};
+    lines.push(<GridLine start={start} end={end} />);
   }
   x = 0;
   for (y = 0; y < numRows; y++) {
-    labels.push(<GridLabel x={0} y={y * gridSize + offset} title={`${y}`}/>);
+    start = {x: 0, y: y * gridSize};
+    end = {x: width, y: y * gridSize};
+    lines.push(<GridLine start={start} end={end} />);
   }
 
   return (
     <Container>
-      {labels}
+      {lines}
     </Container>
   );
 };
