@@ -27,41 +27,39 @@ const makeInterperterFunc = (simulation: SimulationModelType, workspace: IBlockl
     };
 
     const addFunc = (name: string, func: (args: any) => any) => {
-      const wrapped = interpreter.createNativeFunction(func);
+      const unwrappingFunction = (...args: any) => {
+        const params = (unwrap(args)[0]) as any;
+        func(params);
+      };
+      const wrapped = interpreter.createNativeFunction(unwrappingFunction);
       addVar(name, wrapped);
     };
 
-    addFunc("setModelParams", (...args) => {
-      const params = (unwrap(args)[0]) as any;
-      simulation.setModelParams(params as IModelParams);
+    addFunc("setModelParams", (params: IModelParams) => {
+      simulation.setModelParams(params);
     });
 
-    addFunc("setWindspeed", (...args) => {
-      const params = (unwrap(args)[0]);
-      simulation.setWindSpeed(params);
+    addFunc("setWindspeed", (speed: number) => {
+      simulation.setWindSpeed(speed);
     });
 
-    addFunc("setMass", (...args) => {
-      const params = (unwrap(args)[0]);
-      simulation.setMass(params);
+    addFunc("setMass", (mass: number) => {
+      simulation.setMass(mass);
     });
 
-    addFunc("setVolcano", (...args) => {
-      const params = (unwrap(args)[0]) as {x: number, y: number};
+    addFunc("setVolcano", (params: {x: number, y: number}) => {
       simulation.setVolcano(params.x, params.y);
     });
 
-    addFunc("addCity", (...args) => {
-      const params = (unwrap(args)[0]) as {x: number, y: number, name: string};
+    addFunc("addCity", (params: {x: number, y: number, name: string}) => {
       simulation.addCity(params.x, params.y, params.name);
     });
 
-    addFunc("log", (...args) => {
-      console.log(unwrap(args));
+    addFunc("log", (params) => {
+      console.log(params);
     });
 
-    addFunc("highlightBlock", (...args) => {
-      const id = (unwrap(args)[0] as number);
+    addFunc("highlightBlock", (id: number) => {
       if (workspace) {
         workspace.highlightBlock(id);
       }
