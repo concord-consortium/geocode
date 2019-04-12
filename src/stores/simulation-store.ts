@@ -152,6 +152,7 @@ export const SimulationStore = types
             const simResults = gridTephraCalc(
               x, y, vX, vY,
               self.windSpeed,
+              self.windDirection,
               self.colHeight,
               self.mass,
               self.particleSize

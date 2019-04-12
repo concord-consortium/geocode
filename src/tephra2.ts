@@ -1,7 +1,7 @@
 // Calculate the tephra mass loading in cross section
 // Chuck Connor  & Noah Paessel 2/2019
 // using tephra2 algorthim (equation of Lim et al. (2008))
-
+import { rotateGridPoint } from "./utilities/grid-transform";
 const tephraCalc = (
   x: number,
   y: number,
@@ -39,6 +39,7 @@ const gridTephraCalc = (
   coneGridX: number,
   coneGridY: number,
   windSpeed: number,
+  windDirection: number,
   colHeight: number,
   mass: number,         // total eruption mass 0 to 1e12 kg (about 1 km3)
   particleSize: number  // Made up number. 1 == actual simulation values (mg?)
@@ -59,17 +60,13 @@ const gridTephraCalc = (
 
   const settlingSpeed = particleSize * 2;
   const diffusion = 3000 / particleSize;
-  /*
-    TODO:
-      * Rotate for vectors for wind direction …
-      * Read simulation date from sliders.
-  */
   const modelX = gridX * dScale;
   const modelY = gridY * dScale;
   const coneX = coneGridX * dScale;
   const coneY = coneGridY * dScale;
+  const rotated = rotateGridPoint({x: modelX, y: modelY}, windDirection, {x: coneX, y: coneY});
   return tephraCalc(
-    modelX, modelY,
+    rotated.x, rotated.y,
     coneX, coneY,
     windSpeed, mass,
     colHeight, settlingSpeed, diffusion);
