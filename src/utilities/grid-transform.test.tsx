@@ -12,7 +12,7 @@ const rotated = [
   {x: 2, y: 0}, {x: 1, y: 0}, {x: 0, y: 0}
 ];
 
-const angle = Math.PI; // 180 degrees
+const angle = 180;
 const center = {x: 1, y: 1};
 
 describe("rotateGridPoint", () => {
