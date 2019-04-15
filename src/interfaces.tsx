@@ -9,3 +9,7 @@ export interface ICanvasShape {
 export interface IBlocklyWorkspace {
   highlightBlock: (id: number) => void;
 }
+export interface Ipoint {
+  x: number;
+  y: number;
+}

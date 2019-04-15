@@ -2,21 +2,21 @@ import * as React from "react";
 
 import { Container, Text } from "@inlet/react-pixi";
 import { TextStyle } from "pixi.js";
-import { ICanvasShape } from "../interfaces";
-import * as Color from "color";
+import { ICanvasShape, Ipoint } from "../interfaces";
 
 interface IProps {
   gridMetrics: ICanvasShape;
 }
 
-const GridLabel = (props: {x: number, y: number, title: string, top: boolean}) => {
+const GridLabel = (props: {position: Ipoint, title: string, xAxis: boolean, size: number}) => {
   const style = new TextStyle({fill: "black", fontSize: "12px", align: "center"});
-  const { x, y, title, top } = props;
-
+  const { position, size, title, xAxis } = props;
+  const x = position.x * size + (xAxis ? size / 2 : 0);
+  const y = position.y * size + size / 2;
   return (
     <Container position={[x, y]} >
       {
-        top
+        xAxis
         ? <Text anchor={[0.5, 0]} style={style} text={title}/>
         : <Text anchor={[0.0, 0.5]} style={style} text={title}/>
       }
@@ -29,15 +29,14 @@ export const PixiAxis = (props: IProps) => {
   const { gridMetrics } = props;
   const { numCols, numRows, gridSize} = gridMetrics;
   const labels  = [];
-  const offset = gridSize / 2;
   let x = 0;
   let y = 0;
   for (x = 0; x < numCols; x++) {
-    labels.push(<GridLabel top={true} x={x * gridSize + offset} y={0} title={`${x}`} />);
+    labels.push(<GridLabel xAxis={true} position={{x, y}} size={gridSize} title={`${x}`} />);
   }
   x = 0;
   for (y = 0; y < numRows; y++) {
-    labels.push(<GridLabel top={false} x={0} y={y * gridSize + offset} title={`${y}`}/>);
+    labels.push(<GridLabel xAxis={false} position={{x, y}} size={gridSize} title={`${y}`}/>);
   }
 
   return (

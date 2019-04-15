@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { Container } from "@inlet/react-pixi";
 import { PixiComponent } from "@inlet/react-pixi";
-import { ICanvasShape } from "../interfaces";
+import { ICanvasShape, Ipoint } from "../interfaces";
 import * as PIXI from "pixi.js";
 import * as Color from "color";
 
@@ -19,8 +19,7 @@ interface IHsla {
 }
 interface IGridSquareProps {
   hsla: IHsla;
-  x: number;
-  y: number;
+  position: Ipoint;
   size: number;
 }
 
@@ -29,7 +28,9 @@ const GridSquare =  PixiComponent<IGridSquareProps, PIXI.Graphics>("GridSquare",
   // didMount: (instance, parent) => {},
   // willUnmount: (instance, parent) => {},
   applyProps: (g, _: IGridSquareProps, newProps: IGridSquareProps) => {
-    const { hsla, x, y, size} = newProps;
+    const { hsla, position, size} = newProps;
+    const x = position.x * size;
+    const y = position.y * size;
     g.clear();
     g.alpha = hsla.alpha;
     const colorString = `hsl(${hsla.hue}, ${hsla.sat}%, ${hsla.value}%)`;
@@ -47,15 +48,13 @@ export const PixiTephraMap = (props: IProps) => {
   const cells = [];
   for (let gridX = 0; gridX < numCols; gridX++) {
     for (let gridY = 0; gridY < numRows; gridY++) {
-      const x = gridSize * gridX;
-      const y = gridSize * gridY;
       const hsla: IHsla = {
         hue: 10,
         sat: 40,
         value: 60,
         alpha: getData(gridX, gridY)
       };
-      cells.push(<GridSquare hsla={hsla} x={x} y={y} size={gridSize} />);
+      cells.push(<GridSquare hsla={hsla} position={{x: gridX, y: gridY}} size={gridSize} />);
     }
   }
   return (

@@ -2,10 +2,10 @@
 import { PixiComponent } from "@inlet/react-pixi";
 import * as PIXI from "pixi.js";
 import * as Color from "color";
+import { Ipoint } from "../interfaces";
 
 interface IVolcProps {
-  gridX: number;
-  gridY: number;
+  position: Ipoint;
   gridSize: number;
 }
 
@@ -13,10 +13,10 @@ export default PixiComponent<IVolcProps, PIXI.Graphics>("Volcano", {
   create: (props) => new PIXI.Graphics(),
   applyProps: (g, _, props: IVolcProps) => {
     const rgbFill = Color("hsl(10, 20%, 50%)").rgbNumber();
-    const { gridX, gridY, gridSize } = props;
+    const { position, gridSize } = props;
     const scale = gridSize;
-    const x = gridX * gridSize;
-    const y = gridY * gridSize;
+    const x = position.x * gridSize;
+    const y = position.y * gridSize;
     const half = Math.floor(scale / 2);
 
     const top = y;

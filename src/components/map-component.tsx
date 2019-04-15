@@ -69,7 +69,7 @@ export class MapComponent extends React.Component<IProps, IState>{
           {cityItems}
           <PixiAxis gridMetrics={this.metrics} />
           <PixiGrid gridMetrics={this.metrics} />
-          <Volcano gridSize={gridSize} gridX={volcanoX} gridY={volcanoY} />
+          <Volcano gridSize={gridSize} position={{x: volcanoX, y: volcanoY}} />
         </Stage>
       </CanvDiv>
     );
