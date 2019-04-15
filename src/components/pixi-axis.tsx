@@ -6,6 +6,7 @@ import { ICanvasShape, Ipoint } from "../interfaces";
 
 interface IProps {
   gridMetrics: ICanvasShape;
+  toCanvasCoords: (point: Ipoint) => Ipoint;
 }
 
 const GridLabel = (props: {position: Ipoint, title: string, xAxis: boolean, size: number}) => {
@@ -26,17 +27,17 @@ const GridLabel = (props: {position: Ipoint, title: string, xAxis: boolean, size
 };
 
 export const PixiAxis = (props: IProps) => {
-  const { gridMetrics } = props;
+  const { gridMetrics, toCanvasCoords } = props;
   const { numCols, numRows, gridSize} = gridMetrics;
   const labels  = [];
   let x = 0;
   let y = 0;
   for (x = 0; x < numCols; x++) {
-    labels.push(<GridLabel xAxis={true} position={{x, y}} size={gridSize} title={`${x}`} />);
+    labels.push(<GridLabel xAxis={true} position={toCanvasCoords({x, y})} size={gridSize} title={`${x}`} />);
   }
   x = 0;
   for (y = 0; y < numRows; y++) {
-    labels.push(<GridLabel xAxis={false} position={{x, y}} size={gridSize} title={`${y}`}/>);
+    labels.push(<GridLabel xAxis={false} position={toCanvasCoords({x, y})} size={gridSize} title={`${y}`}/>);
   }
 
   return (

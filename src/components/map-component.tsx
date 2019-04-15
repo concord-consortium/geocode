@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ICanvasShape } from "../interfaces";
+import { ICanvasShape, Ipoint } from "../interfaces";
 import { SimDatumType, CityType  } from "../stores/simulation-store";
 import styled from "styled-components";
 import { Stage, Text } from "@inlet/react-pixi";
@@ -53,7 +53,7 @@ export class MapComponent extends React.Component<IProps, IState>{
     const cityItems = cities.map( (city) => {
       const {x, y, name, id} = city;
       if (x && y && name) {
-        return <PixiCityContainer gridSize={gridSize} key={id} position={{x, y}} name={name} />;
+        return <PixiCityContainer gridSize={gridSize} key={id} position={this.toCanvasCoords({x, y})} name={name} />;
       }
     });
 
@@ -65,14 +65,19 @@ export class MapComponent extends React.Component<IProps, IState>{
           options={{backgroundColor: Color("hsl(0, 10%, 95%)").rgbNumber()}} >
           <PixiTephraMap
             canvasMetrics={this.metrics}
-            data={data.map( (d) => d.thickness )} />
+            data={data.map( (d) => d.thickness )}
+            toCanvasCoords={this.toCanvasCoords} />
           {cityItems}
-          <PixiAxis gridMetrics={this.metrics} />
+          <PixiAxis gridMetrics={this.metrics} toCanvasCoords={this.toCanvasCoords} />
           <PixiGrid gridMetrics={this.metrics} />
-          <Volcano gridSize={gridSize} position={{x: volcanoX, y: volcanoY}} />
+          <Volcano gridSize={gridSize} position={this.toCanvasCoords({x: volcanoX, y: volcanoY})} />
         </Stage>
       </CanvDiv>
     );
+  }
+
+  public toCanvasCoords = (point: Ipoint): Ipoint => {
+    return {x: point.x, y: this.props.numRows - point.y - 1};
   }
 
   private recomputeMetrics() {

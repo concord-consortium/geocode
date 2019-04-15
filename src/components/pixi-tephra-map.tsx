@@ -9,6 +9,7 @@ import * as Color from "color";
 interface IProps {
   canvasMetrics: ICanvasShape;
   data: number[];
+  toCanvasCoords: (point: Ipoint) => Ipoint;
 }
 
 interface IHsla {
@@ -42,7 +43,7 @@ const GridSquare =  PixiComponent<IGridSquareProps, PIXI.Graphics>("GridSquare",
 });
 
 export const PixiTephraMap = (props: IProps) => {
-  const { canvasMetrics, data } = props;
+  const { canvasMetrics, data, toCanvasCoords } = props;
   const { numCols, numRows, gridSize } = canvasMetrics;
   const getData = (x: number, y: number) => data[x + y * numCols];
   const cells = [];
@@ -54,7 +55,7 @@ export const PixiTephraMap = (props: IProps) => {
         value: 60,
         alpha: getData(gridX, gridY)
       };
-      cells.push(<GridSquare hsla={hsla} position={{x: gridX, y: gridY}} size={gridSize} />);
+      cells.push(<GridSquare hsla={hsla} position={toCanvasCoords({x: gridX, y: gridY})} size={gridSize} />);
     }
   }
   return (
