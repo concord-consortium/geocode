@@ -290,7 +290,10 @@ Blockly.Blocks['setWindDirection'] = {
 Blockly.JavaScript['setWindDirection'] = function(block) {
   var value_winddirection = Blockly.JavaScript.valueToCode(block, 'windDirection', Blockly.JavaScript.ORDER_ATOMIC);
   // TODO: Assemble JavaScript into code variable.
-  var code = '//...;\n';
+  var code = `
+    setWinddirection(${value_winddirection});
+
+  `;
   return code;
 };
 
