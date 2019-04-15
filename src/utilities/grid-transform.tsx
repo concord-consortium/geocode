@@ -1,8 +1,5 @@
 import {rotate, translate, applyToPoints, transform, applyToPoint } from "transformation-matrix";
-interface Ipoint {
-  x: number;
-  y: number;
-}
+import { Ipoint } from "../interfaces";
 
 export const makeRotMatrix = (angleDeg: number, center: Ipoint) => {
   const angleRad = (angleDeg / 360) * 2 * Math.PI;
