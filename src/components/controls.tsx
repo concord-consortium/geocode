@@ -45,7 +45,7 @@ export class Controls extends BaseComponent<IProps, IState> {
       <StyledControls>
         <RangeControl
           min={0}
-          max={6.2}
+          max={360}
           step={0.2}
           onChange={this.changeWindDirection}
           value={windDirection}
