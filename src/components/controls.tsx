@@ -11,6 +11,13 @@ const StyledControls = styled.div`
   align-items: flex-start;
 `;
 
+const StyledButton = styled.div`
+  padding: 0.25em;
+  margin: 0.25em;
+  border: 1px solid hsl(0, 0%, 25%);
+  border-radius: 0.2em;
+`;
+
 interface IControls {
   windDirection: number;
   particleSize: number;
@@ -82,6 +89,7 @@ export class Controls extends BaseComponent<IProps, IState> {
           onChange={this.changeWindSpeed}
           name="Wind Speed (m/s)"
         />
+        <StyledButton onClick={this.erupt}>Erupt</StyledButton>
       </StyledControls>
     );
   }
@@ -110,6 +118,10 @@ export class Controls extends BaseComponent<IProps, IState> {
   private changeSize = (input: React.FormEvent<HTMLInputElement>) => {
     const size = parseFloat(input.currentTarget.value);
     this.stores.setParticleSize(size);
+  }
+
+  private erupt = () => {
+    this.stores.erupt();
   }
 }
 
