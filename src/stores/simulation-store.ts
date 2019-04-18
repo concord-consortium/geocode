@@ -50,7 +50,8 @@ export const SimulationStore = types
     volcanoY: 5,
     cities: types.array(City),
     code: "",
-    running: false
+    running: false,
+    data: types.array(SimDatum)
   })
   .actions((self) => {
     return {
@@ -136,17 +137,13 @@ export const SimulationStore = types
         if (interpreter) {
           interpreter.step();
         }
-      }
-    };
-  })
-  .views((self) => {
-    return {
-      get data() {
+      },
+      erupt() {
         const rows = self.numRows;
         const cols = self.numCols;
         const vX = self.volcanoX;
         const vY = self.volcanoY;
-        const resultData: SimDatumType[] = [];
+        self.data.clear();
         for (let x = 0; x < rows; x ++) {
           for (let y = 0; y < cols; y++) {
             const simResults = gridTephraCalc(
@@ -157,11 +154,14 @@ export const SimulationStore = types
               self.mass,
               self.particleSize
             );
-            resultData.push( {thickness: simResults});
+            self.data.push( {thickness: simResults});
           }
         }
-        return resultData;
-      },
+      }
+    };
+  })
+  .views((self) => {
+    return {
       get cityHash() {
         return self.cities.reduce( (pre, cur) => `${pre}-${cur.name}${cur.x}${cur.y}`, "");
       }
