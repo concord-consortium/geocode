@@ -22,7 +22,7 @@
       <block type="addTown" id="J-x,U-qj%P;[c?~98*;7">
         <value name="name">
           <block type="text" id="s0Lxg*^`ifTF.p*H?;;B">
-            <field name="TEXT">Cambrdige</field>
+            <field name="TEXT">Cambridge</field>
           </block>
         </value>
         <value name="x">
@@ -121,6 +121,9 @@
                 <field name="VAR" id="zL$*y4!n=}%@UAvCJLU8" variabletype="">wind</field>
               </block>
             </value>
+            <next>
+              <block type="erupt" id="!}.iT4[idQh:-81OWcT)"></block>
+            </next>
           </block>
         </statement>
       </block>
