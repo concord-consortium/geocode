@@ -10,6 +10,8 @@ import { PixiGrid } from "./pixi-grid";
 import Volcano from "./pixi-volcano";
 
 import * as Color from "color";
+import { observer, inject } from "mobx-react";
+import { BaseComponent, IBaseProps } from "./base";
 
 const CanvDiv = styled.div`
   border: 0px solid black; border-radius: 0px;
@@ -17,7 +19,7 @@ const CanvDiv = styled.div`
 `;
 
 interface IState {}
-interface IProps {
+interface IProps extends IBaseProps {
   numRows: number;
   numCols: number;
   width: number;
@@ -33,7 +35,9 @@ interface IProps {
   cities: CityType[];
 }
 
-export class MapComponent extends React.Component<IProps, IState>{
+@inject("stores")
+@observer
+export class MapComponent extends BaseComponent<IProps, IState>{
 
   private ref = React.createRef<HTMLDivElement>();
   private metrics: ICanvasShape;
@@ -47,7 +51,7 @@ export class MapComponent extends React.Component<IProps, IState>{
   }
 
   public render() {
-    if (! this.metrics) { return null; }
+    if (! this.metrics) { this.recomputeMetrics(); }
     const {cities, volcanoX, volcanoY, data} = this.props;
     const {width, height, gridSize} = this.metrics;
     const cityItems = cities.map( (city) => {
