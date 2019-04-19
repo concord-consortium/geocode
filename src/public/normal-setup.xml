@@ -122,7 +122,14 @@
               </block>
             </value>
             <next>
-              <block type="erupt" id="!}.iT4[idQh:-81OWcT)"></block>
+              <block type="erupt" id="!}.iT4[idQh:-81OWcT)">
+                <next>
+                  <block type="outputPaintGrid" id="x@93A}jw.qHG((65c!fg">
+                    <field name="COLOR">#ff0000</field>
+                    <field name="result_type">thickness</field>
+                  </block>
+                </next>
+              </block>
             </next>
           </block>
         </statement>
