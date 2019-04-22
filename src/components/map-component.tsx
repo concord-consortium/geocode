@@ -12,6 +12,7 @@ import Volcano from "./pixi-volcano";
 import * as Color from "color";
 import { observer, inject } from "mobx-react";
 import { BaseComponent, IBaseProps } from "./base";
+import { getSnapshot, IStateTreeNode } from "mobx-state-tree";
 
 const CanvDiv = styled.div`
   border: 0px solid black; border-radius: 0px;
@@ -31,7 +32,7 @@ interface IProps extends IBaseProps {
   particleSize: number;
   volcanoX: number;
   volcanoY: number;
-  data: SimDatumType[];
+  gridColors: IStateTreeNode<any, string[]>;
   cities: CityType[];
 }
 
@@ -52,8 +53,9 @@ export class MapComponent extends BaseComponent<IProps, IState>{
 
   public render() {
     if (! this.metrics) { this.recomputeMetrics(); }
-    const {cities, volcanoX, volcanoY, data} = this.props;
+    const {cities, volcanoX, volcanoY, gridColors} = this.props;
     const {width, height, gridSize} = this.metrics;
+
     const cityItems = cities.map( (city) => {
       const {x, y, name, id} = city;
       if (x && y && name) {
@@ -69,7 +71,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           options={{backgroundColor: Color("hsl(0, 10%, 95%)").rgbNumber()}} >
           <PixiTephraMap
             canvasMetrics={this.metrics}
-            data={data.map( (d) => d.thickness )}
+            gridColors={getSnapshot(gridColors)}
             toCanvasCoords={this.toCanvasCoords} />
           {cityItems}
           <PixiAxis gridMetrics={this.metrics} toCanvasCoords={this.toCanvasCoords} />

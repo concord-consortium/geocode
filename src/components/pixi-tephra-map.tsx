@@ -8,18 +8,12 @@ import * as Color from "color";
 
 interface IProps {
   canvasMetrics: ICanvasShape;
-  data: number[];
+  gridColors: string[];
   toCanvasCoords: (point: Ipoint) => Ipoint;
 }
 
-interface IHsla {
-  hue: number;
-  sat: number;
-  value: number;
-  alpha: number;
-}
 interface IGridSquareProps {
-  hsla: IHsla;
+  color: string;
   position: Ipoint;
   size: number;
 }
@@ -29,33 +23,28 @@ const GridSquare =  PixiComponent<IGridSquareProps, PIXI.Graphics>("GridSquare",
   // didMount: (instance, parent) => {},
   // willUnmount: (instance, parent) => {},
   applyProps: (g, _: IGridSquareProps, newProps: IGridSquareProps) => {
-    const { hsla, position, size} = newProps;
+    const { color, position, size} = newProps;
     const x = position.x * size;
     const y = position.y * size;
     g.clear();
-    g.alpha = hsla.alpha;
-    const colorString = `hsl(${hsla.hue}, ${hsla.sat}%, ${hsla.value}%)`;
-    const fillRGB = Color(colorString).rgbNumber();
-    g.beginFill(fillRGB);
+    const fillColor = Color(color);
+    const fillRGB = fillColor.rgbNumber();
+    g.beginFill(fillRGB, fillColor.alpha());
     g.drawRect(x, y, size, size);
     g.endFill();
   },
 });
 
 export const PixiTephraMap = (props: IProps) => {
-  const { canvasMetrics, data, toCanvasCoords } = props;
+  const { canvasMetrics, gridColors, toCanvasCoords } = props;
   const { numCols, numRows, gridSize } = canvasMetrics;
-  const getData = (x: number, y: number) => data[x + y * numCols];
+  const getColor = (x: number, y: number) =>
+    gridColors[x + y * numCols] || "hsla(0, 0%, 100%, 0)";
   const cells = [];
   for (let gridX = 0; gridX < numCols; gridX++) {
     for (let gridY = 0; gridY < numRows; gridY++) {
-      const hsla: IHsla = {
-        hue: 10,
-        sat: 40,
-        value: 60,
-        alpha: getData(gridX, gridY)
-      };
-      cells.push(<GridSquare hsla={hsla} position={toCanvasCoords({x: gridX, y: gridY})} size={gridSize} />);
+      const color = getColor(gridX, gridY);
+      cells.push(<GridSquare color={color} position={toCanvasCoords({x: gridX, y: gridY})} size={gridSize} />);
     }
   }
   return (
