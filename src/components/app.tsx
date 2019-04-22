@@ -54,6 +54,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       numCols,
       numRows,
       data,
+      gridColors,
       cities,
       cityHash,
       volcanoX,
@@ -103,7 +104,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             numRows={ numRows }
             width={ 500 }
             height={ 500 }
-            data={ data }
+            gridColors={ gridColors }
             cities={ cities }
             volcanoX={ volcanoX }
             volcanoY={ volcanoY }

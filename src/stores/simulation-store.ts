@@ -1,5 +1,6 @@
 import { types } from "mobx-state-tree";
 import { autorun } from "mobx";
+import * as Color from "color";
 import gridTephraCalc from "../tephra2";
 import { IInterpreter, makeInterpreter } from "../utilities/interpreter";
 
@@ -29,6 +30,8 @@ export interface SimDatumType {
   thickness: number;
 }
 
+export type SimOutput = "thickness";
+
 export const City = types
   .model("City", {
     id: types.identifier,
@@ -51,7 +54,8 @@ export const SimulationStore = types
     cities: types.array(City),
     code: "",
     running: false,
-    data: types.array(SimDatum)
+    data: types.array(SimDatum),
+    gridColors: types.array(types.string)
   })
   .actions((self) => {
     return {
@@ -157,6 +161,18 @@ export const SimulationStore = types
             self.data.push( {thickness: simResults});
           }
         }
+      },
+      paintGrid(resultType: SimOutput, colorStr: string) {
+        self.gridColors.clear();
+        const baseColor = Color(colorStr).hsl();
+        self.data.forEach(datum => {
+          const val: number = datum[resultType];
+          // Need to think of how to handle scaling.
+          // Note: toFixed is used because of https://github.com/Qix-/color/issues/156
+          const alpha = Math.min(Number.parseFloat(val.toFixed(2)), 1);
+          const gridColor = Color(baseColor).alpha(alpha);
+          self.gridColors.push(gridColor.toString());
+        });
       }
     };
   })
