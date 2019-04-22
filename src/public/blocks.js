@@ -395,11 +395,11 @@ Blockly.Blocks['erupt'] = {
 
 Blockly.JavaScript['erupt'] = function(block) {
   // TODO: Assemble JavaScript into code variable.
-  var code = '//...;\n';
+  var code = `
+  erupt();
+`;
   return code;
 };
-
-
 
 /************************** reDraw: ***********************************/
 

@@ -5,6 +5,8 @@ import styled from "styled-components";
 import { Stage, Text } from "@inlet/react-pixi";
 import { PixiTephraCrossSection } from "./pixi-tephra-cross-section";
 import * as Color from "color";
+import { inject, observer } from "mobx-react";
+import { BaseComponent, IBaseProps } from "./base";
 
 const CanvDiv = styled.div`
   border: 0px solid black; border-radius: 0px;
@@ -12,7 +14,7 @@ const CanvDiv = styled.div`
 `;
 
 interface IState {}
-interface IProps {
+interface IProps extends IBaseProps {
   numRows: number;
   numCols: number;
   height: number;
@@ -22,7 +24,9 @@ interface IProps {
   // cities: CityType[];
 }
 
-export class CrossSectionComponent extends React.Component<IProps, IState>{
+@inject("stores")
+@observer
+export class CrossSectionComponent extends BaseComponent<IProps, IState>{
 
   private ref = React.createRef<HTMLDivElement>();
   private metrics: ICanvasShape;
@@ -36,7 +40,7 @@ export class CrossSectionComponent extends React.Component<IProps, IState>{
   }
 
   public render() {
-    if (! this.metrics) { return null; }
+    if (! this.metrics) { this.recomputeMetrics(); }
     const { volcanoX, data, height } = this.props;
     const { width, gridSize } = this.metrics;
 
