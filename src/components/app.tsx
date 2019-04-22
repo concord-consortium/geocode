@@ -12,15 +12,13 @@ import { js_beautify } from "js-beautify";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import Controls from "./controls";
 import RunButtons from "./run-buttons";
+import { SimulationAuthoringOptions } from "../stores/simulation-store";
 
 interface IProps extends IBaseProps {}
 
 interface IState {
   showOptionsDialog: boolean;
-  simulationOptions: {
-    requireEruption?: boolean;
-    requirePainting?: boolean;
-  };
+  simulationOptions: SimulationAuthoringOptions;
 }
 
 const App = styled.div`
@@ -55,6 +53,10 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       requirePainting: true
     }
   };
+
+  public componentDidUpdate() {
+    this.stores.setAuthoringOptions(this.state.simulationOptions);
+  }
 
   public render() {
     const {
