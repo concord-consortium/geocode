@@ -7,6 +7,7 @@ import { PixiCityContainer } from "./pixi-city-container";
 import { PixiTephraMap } from "./pixi-tephra-map";
 import { PixiAxis } from "./pixi-axis";
 import { PixiGrid } from "./pixi-grid";
+import { WindWidget } from "./pixi-wind-widget";
 import Volcano from "./pixi-volcano";
 
 import * as Color from "color";
@@ -70,6 +71,12 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           width={width}
           height={height}
           options={{backgroundColor: Color("hsl(0, 10%, 95%)").rgbNumber()}} >
+          options={
+            {
+              backgroundColor: Color("hsl(0, 10%, 95%)").rgbNumber(),
+              antialias: true
+            }
+          } >
           <Sprite image={map} x={0} y={0} width={width} height={height} />
           <PixiTephraMap
             canvasMetrics={this.metrics}
@@ -79,6 +86,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           <PixiAxis gridMetrics={this.metrics} toCanvasCoords={this.toCanvasCoords} />
           <PixiGrid gridMetrics={this.metrics} />
           <Volcano gridSize={gridSize} position={this.toCanvasCoords({x: volcanoX, y: volcanoY})} />
+          <WindWidget windDirection={windDirection} windSpeed={windSpeed} location={{x: 50, y: 50}}/>
         </Stage>
       </CanvDiv>
     );
