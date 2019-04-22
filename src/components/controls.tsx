@@ -122,6 +122,7 @@ export class Controls extends BaseComponent<IProps, IState> {
 
   private erupt = () => {
     this.stores.erupt();
+    this.stores.paintGrid("thickness", "#ff0000");
   }
 }
 
