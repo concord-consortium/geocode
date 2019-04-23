@@ -140,6 +140,16 @@
                     <field name="VAR" id="zL$*y4!n=}%@UAvCJLU8" variabletype="">wind</field>
                   </block>
                 </value>
+                <next>
+                  <block type="erupt" id="8IRxcs[0O$HmIA_LW7%l">
+                    <next>
+                      <block type="outputPaintGrid" id="T2nR$PpW-trOOM=g#OS4">
+                        <field name="COLOR">#993300</field>
+                        <field name="result_type">thickness</field>
+                      </block>
+                    </next>
+                  </block>
+                </next>
               </block>
             </statement>
             <next>
@@ -149,15 +159,6 @@
                     <field name="VAR" id="I$A~(uyn:GC8je?=*nGf" variabletype="">wind direction</field>
                   </block>
                 </value>
-              </block>
-            <next>
-              <block type="erupt" id="!}.iT4[idQh:-81OWcT)">
-                <next>
-                  <block type="outputPaintGrid" id="x@93A}jw.qHG((65c!fg">
-                    <field name="COLOR">#ff0000</field>
-                    <field name="result_type">thickness</field>
-                  </block>
-                </next>
               </block>
             </next>
           </block>
