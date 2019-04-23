@@ -4,6 +4,7 @@ import DatGui, { DatBoolean, DatButton } from "react-dat-gui";
 import { BaseComponent, IBaseProps } from "./base";
 import { MapComponent } from "./map-component";
 import { CrossSectionComponent } from "./cross-section-component";
+import * as Maps from "./../assets/maps/maps.json";
 
 import BlocklyContianer from "./blockly-container";
 import styled from "styled-components";
@@ -50,7 +51,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     showOptionsDialog: false,
     simulationOptions: {
       requireEruption: true,
-      requirePainting: true
+      requirePainting: true,
+      map: "Mt Redoubt"
     }
   };
 
@@ -85,6 +87,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       showOptionsDialog,
       simulationOptions
     } = this.state;
+
+    const mapPath = this.getMapPath();
 
     return (
       <App className="app" >
@@ -128,6 +132,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             cities={ cities }
             volcanoX={ volcanoX }
             volcanoY={ volcanoY }
+            map={ mapPath }
           />
           <CrossSectionComponent
             data={ data }
@@ -152,6 +157,14 @@ export class AppComponent extends BaseComponent<IProps, IState> {
 
       </App>
     );
+  }
+
+  private getMapPath = () => {
+    const map = this.state.simulationOptions.map;
+    if ((Maps as {[key: string]: string})[map]) {   // ts being annoying
+      return (Maps as {[key: string]: string})[map];
+    }
+    return "";
   }
 
   private toggleShowOptions = () => this.setState({showOptionsDialog: !this.state.showOptionsDialog});
