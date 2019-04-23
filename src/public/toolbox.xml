@@ -14,6 +14,7 @@
           <block type="setEruptionHeight"></block>
           <block type="setEruptionMass"></block>
           <block type="erupt"></block>
+          <block type="outputPaintGrid"></block>
           <block type="redrawMap"></block>
         </category>
         <category name="Logic" colour="%{BKY_LOGIC_HUE}">
