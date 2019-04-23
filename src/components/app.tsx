@@ -1,6 +1,6 @@
 import { inject, observer } from "mobx-react";
 import * as React from "react";
-import DatGui, { DatBoolean, DatButton } from "react-dat-gui";
+import DatGui, { DatBoolean, DatButton, DatSelect } from "react-dat-gui";
 import { BaseComponent, IBaseProps } from "./base";
 import { MapComponent } from "./map-component";
 import { CrossSectionComponent } from "./cross-section-component";
@@ -150,7 +150,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
           { showOptionsDialog &&
             [
               <DatBoolean path="requireEruption" label="Require eruption?" key="requireEruption" />,
-              <DatBoolean path="requirePainting" label="Require painting?" key="requirePainting" />
+              <DatBoolean path="requirePainting" label="Require painting?" key="requirePainting" />,
+              <DatSelect path="map" label="Map background" options={Object.keys(Maps)} key="background" />
             ]
           }
         </DatGui>
