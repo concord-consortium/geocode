@@ -90,7 +90,7 @@ export const SimulationStore = types
       for (let x = 0; x < rows; x ++) {
         for (let y = 0; y < cols; y++) {
           const simResults = gridTephraCalc(
-            x, y, vX, vY,
+            x, y, vY, vX,   // TODO: Why are vX and vY inverted?
             self.windSpeed,
             self.windDirection,
             self.colHeight,
