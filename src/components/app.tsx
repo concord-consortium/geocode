@@ -1,21 +1,25 @@
 import { inject, observer } from "mobx-react";
 import * as React from "react";
+import DatGui, { DatBoolean, DatButton } from "react-dat-gui";
 import { BaseComponent, IBaseProps } from "./base";
 import { MapComponent } from "./map-component";
 import { CrossSectionComponent } from "./cross-section-component";
 
 import BlocklyContianer from "./blockly-container";
-import { simulation } from "../stores/simulation-store";
 import styled from "styled-components";
 import { Tab, Tabs, TabList, TabPanel, FixWidthTabPanel } from "./tabs";
 import { js_beautify } from "js-beautify";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import Controls from "./controls";
 import RunButtons from "./run-buttons";
+import { SimulationAuthoringOptions } from "../stores/simulation-store";
 
 interface IProps extends IBaseProps {}
 
-interface IState {}
+interface IState {
+  showOptionsDialog: boolean;
+  simulationOptions: SimulationAuthoringOptions;
+}
 
 const App = styled.div`
     display: flex;
@@ -42,6 +46,18 @@ const Code = styled.div`
 @inject("stores")
 @observer
 export class AppComponent extends BaseComponent<IProps, IState> {
+  public state: IState = {
+    showOptionsDialog: false,
+    simulationOptions: {
+      requireEruption: true,
+      requirePainting: true
+    }
+  };
+
+  public componentDidUpdate() {
+    this.stores.setAuthoringOptions(this.state.simulationOptions);
+  }
+
   public render() {
     const {
       mass,
@@ -56,7 +72,6 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       data,
       gridColors,
       cities,
-      cityHash,
       volcanoX,
       volcanoY,
       run,
@@ -65,6 +80,11 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       reset,
       running
     } = this.stores;
+
+    const {
+      showOptionsDialog,
+      simulationOptions
+    } = this.state;
 
     return (
       <App className="app" >
@@ -120,8 +140,22 @@ export class AppComponent extends BaseComponent<IProps, IState> {
 
         </Simulation>
 
+        <DatGui data={simulationOptions} onUpdate={this.handleUpdate}>
+          <DatButton label="Model options" onClick={this.toggleShowOptions} />
+          { showOptionsDialog &&
+            [
+              <DatBoolean path="requireEruption" label="Require eruption?" key="requireEruption" />,
+              <DatBoolean path="requirePainting" label="Require painting?" key="requirePainting" />
+            ]
+          }
+        </DatGui>
+
       </App>
     );
   }
+
+  private toggleShowOptions = () => this.setState({showOptionsDialog: !this.state.showOptionsDialog});
+
+  private handleUpdate = (simulationOptions: any) => this.setState({ simulationOptions });
 
 }

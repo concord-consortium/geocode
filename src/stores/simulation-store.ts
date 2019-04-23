@@ -40,6 +40,11 @@ export const City = types
     y: types.number
   });
 
+export interface SimulationAuthoringOptions {
+  requireEruption: boolean;
+  requirePainting: boolean;
+}
+
 export const SimulationStore = types
   .model("simulation", {
     numRows: 14,
@@ -55,32 +60,90 @@ export const SimulationStore = types
     code: "",
     running: false,
     data: types.array(SimDatum),
-    gridColors: types.array(types.string)
+    gridColors: types.array(types.string),
+    // authoring props
+    requireEruption: true,
+    requirePainting: true,
   })
+  .actions((self) => ({
+    paintGrid(resultType: SimOutput, colorStr: string) {
+      self.gridColors.clear();
+      const baseColor = Color(colorStr).hsl();
+      self.data.forEach(datum => {
+        const val: number = datum[resultType];
+        // Need to think of how to handle scaling.
+        // Note: toFixed is used because of https://github.com/Qix-/color/issues/156
+        const alpha = Math.min(Number.parseFloat(val.toFixed(2)), 1);
+        const gridColor = Color(baseColor).alpha(alpha);
+        self.gridColors.push(gridColor.toString());
+      });
+    }
+  }))
+  .actions((self) => ({
+    erupt() {
+      const rows = self.numRows;
+      const cols = self.numCols;
+      const vX = self.volcanoX;
+      const vY = self.volcanoY;
+      self.data.clear();
+      for (let x = 0; x < rows; x ++) {
+        for (let y = 0; y < cols; y++) {
+          const simResults = gridTephraCalc(
+            x, y, vX, vY,
+            self.windSpeed,
+            self.windDirection,
+            self.colHeight,
+            self.mass,
+            self.particleSize
+          );
+          self.data.push( {thickness: simResults});
+        }
+      }
+
+      // auto-repaint if necessary
+      if (!self.requirePainting) {
+        self.paintGrid("thickness", "#ff0000");
+      }
+    },
+  }))
   .actions((self) => {
     return {
       setWindSpeed(speed: number) {
         self.windSpeed = speed;
-        console.log(`Set windspeed to ${self.windSpeed}`);
+        // auto-erupt to recalculate data
+        if (!self.requireEruption) {
+          self.erupt();
+        }
       },
       setVolcanoX(x: number) {
         self.volcanoX = x;
-        console.log(`Set volcanoX to ${self.volcanoX}`);
       },
       setVolcanoY(y: number) {
         self.volcanoY = y;
       },
       setColumnHeight(height: number) {
         self.colHeight = height;
+        if (!self.requireEruption) {
+          self.erupt();
+        }
       },
       setMass(mass: number) {
         self.mass = mass;
+        if (!self.requireEruption) {
+          self.erupt();
+        }
       },
       setParticleSize(size: number) {
         self.particleSize = size;
+        if (!self.requireEruption) {
+          self.erupt();
+        }
       },
       setWindDirection(direction: number) {
         self.windDirection = direction;
+        if (!self.requireEruption) {
+          self.erupt();
+        }
       },
       setBlocklyCode(code: string, workspace: any) {
         self.code = code;
@@ -119,6 +182,10 @@ export const SimulationStore = types
         }
 
       },
+      setAuthoringOptions(opts: SimulationAuthoringOptions) {
+        self.requireEruption = opts.requireEruption;
+        self.requirePainting = opts.requirePainting;
+      },
       run() {
         const reset = () => {
           this.setBlocklyCode(self.code, cachedBlocklyWorkspace);
@@ -141,38 +208,6 @@ export const SimulationStore = types
         if (interpreter) {
           interpreter.step();
         }
-      },
-      erupt() {
-        const rows = self.numRows;
-        const cols = self.numCols;
-        const vX = self.volcanoX;
-        const vY = self.volcanoY;
-        self.data.clear();
-        for (let x = 0; x < rows; x ++) {
-          for (let y = 0; y < cols; y++) {
-            const simResults = gridTephraCalc(
-              x, y, vX, vY,
-              self.windSpeed,
-              self.windDirection,
-              self.colHeight,
-              self.mass,
-              self.particleSize
-            );
-            self.data.push( {thickness: simResults});
-          }
-        }
-      },
-      paintGrid(resultType: SimOutput, colorStr: string) {
-        self.gridColors.clear();
-        const baseColor = Color(colorStr).hsl();
-        self.data.forEach(datum => {
-          const val: number = datum[resultType];
-          // Need to think of how to handle scaling.
-          // Note: toFixed is used because of https://github.com/Qix-/color/issues/156
-          const alpha = Math.min(Number.parseFloat(val.toFixed(2)), 1);
-          const gridColor = Color(baseColor).alpha(alpha);
-          self.gridColors.push(gridColor.toString());
-        });
       }
     };
   })
