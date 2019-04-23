@@ -33,6 +33,52 @@ const tephraCalc = (
   return term3 * Math.exp(-term1 / term4 - term2 / term4);
 };
 
+// calculates the mass loading of tephra at a point x,y (meters)
+// from a volcanic vent located at xvent, yvent (m)
+// mass (kg) is released from a height localColHeight (m)
+// into a windfield with velocity wind_speed (m/s) blowing toward the positive x direction
+// particles have a settling_speed (m/s) and diffusion (m**2/s)
+// updated on 2019-04-23
+const tephraCalc2 = (
+  x: number,
+  y: number,
+  xvent: number,
+  yvent: number,
+  windSpeed: number,
+  mass: number,
+  colHeight: number,
+  settlingSpeed: number,
+  diffusion: number
+  ) => {
+
+    const colSteps = 100; // use 100 column steps fr the integration (coarse)
+    const colInterval = colHeight / colSteps;
+    const colMassInterval = mass /  colSteps; // distribute evenly along column
+
+    let term1;
+    let term2;
+    let term3;
+    let term4;
+
+    let localColHeight = 0;
+    let masLoading = 0;
+    let i;
+
+    // for each height-interval in the eruption column:
+    for (i = 1; i <= colSteps; i++){
+        localColHeight = i * colInterval;
+
+        term1 = ( x - (xvent + windSpeed * localColHeight / settlingSpeed) );
+        term1 = Math.pow(term1, 2);
+        term2 = Math.pow(y - yvent, 2);
+        term3 = settlingSpeed * colMassInterval / (4 * Math.PI * localColHeight * diffusion);
+        term4 = 4 * diffusion * localColHeight / settlingSpeed;
+        masLoading += term3 * Math.exp( -term1 / term4 - term2 / term4);
+    }
+
+    return masLoading;
+};
+
 const gridTephraCalc = (
   gridX: number,
   gridY: number,
@@ -65,7 +111,7 @@ const gridTephraCalc = (
   const coneX = coneGridX * dScale;
   const coneY = coneGridY * dScale;
   const rotated = rotateGridPoint({x: modelX, y: modelY}, windDirection, {x: coneX, y: coneY});
-  return tephraCalc(
+  return tephraCalc2(
     rotated.x, rotated.y,
     coneX, coneY,
     windSpeed, mass,
