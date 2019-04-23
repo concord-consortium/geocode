@@ -55,7 +55,15 @@ export class MapComponent extends BaseComponent<IProps, IState>{
 
   public render() {
     if (! this.metrics) { this.recomputeMetrics(); }
-    const {cities, volcanoX, volcanoY, gridColors, map} = this.props;
+    const {
+      cities,
+      volcanoX,
+      volcanoY,
+      gridColors,
+      windDirection,
+      windSpeed,
+	  map
+    } = this.props;
     const {width, height, gridSize} = this.metrics;
 
     const cityItems = cities.map( (city) => {
