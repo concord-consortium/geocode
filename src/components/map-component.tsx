@@ -1,8 +1,8 @@
 import * as React from "react";
 import { ICanvasShape, Ipoint } from "../interfaces";
-import { SimDatumType, CityType  } from "../stores/simulation-store";
+import { CityType  } from "../stores/simulation-store";
 import styled from "styled-components";
-import { Stage, Text } from "@inlet/react-pixi";
+import { Stage, Sprite } from "@inlet/react-pixi";
 import { PixiCityContainer } from "./pixi-city-container";
 import { PixiTephraMap } from "./pixi-tephra-map";
 import { PixiAxis } from "./pixi-axis";
@@ -34,6 +34,7 @@ interface IProps extends IBaseProps {
   volcanoY: number;
   gridColors: IStateTreeNode<any, string[]>;
   cities: CityType[];
+  map: string;
 }
 
 @inject("stores")
@@ -53,7 +54,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
 
   public render() {
     if (! this.metrics) { this.recomputeMetrics(); }
-    const {cities, volcanoX, volcanoY, gridColors} = this.props;
+    const {cities, volcanoX, volcanoY, gridColors, map} = this.props;
     const {width, height, gridSize} = this.metrics;
 
     const cityItems = cities.map( (city) => {
@@ -69,6 +70,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           width={width}
           height={height}
           options={{backgroundColor: Color("hsl(0, 10%, 95%)").rgbNumber()}} >
+          <Sprite image={map} x={0} y={0} width={width} height={height} />
           <PixiTephraMap
             canvasMetrics={this.metrics}
             gridColors={getSnapshot(gridColors)}

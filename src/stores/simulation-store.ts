@@ -43,6 +43,7 @@ export const City = types
 export interface SimulationAuthoringOptions {
   requireEruption: boolean;
   requirePainting: boolean;
+  map: string;
 }
 
 export const SimulationStore = types
