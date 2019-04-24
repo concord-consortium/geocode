@@ -36,7 +36,7 @@ const Arrow = PixiComponent<IWindWidgetProps, PIXI.Graphics>("WindWidget", {
 
 export const WindWidget = (props: IWindWidgetProps) => {
   const { windDirection: angleDegrees, location } = props;
-  const arrowDirection = 360 - angleDegrees;
+  const arrowDirection = angleDegrees;
   const {x, y} = location;
   return (
     <Container cacheAsBitmap={false} x={x} y={y} rotation={arrowDirection / 360 * Math.PI * 2}>

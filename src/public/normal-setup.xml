@@ -70,7 +70,7 @@
                   <block type="addVolcano" id="nzE]r2sy+R6*~k$$3e_E">
                     <value name="x">
                       <block type="math_number" id="*pu?|v%dk2Ft}0s5Qbw6">
-                        <field name="NUM">1</field>
+                        <field name="NUM">6</field>
                       </block>
                     </value>
                     <value name="y">
@@ -89,7 +89,7 @@
                           <block type="setWindDirection" id="/H|(LVe)_5VTaNduq0Lx">
                             <value name="windDirection">
                               <block type="math_number" id="S0WIUo]bMF.JylF!dEu|">
-                                <field name="NUM">90</field>
+                                <field name="NUM">45</field>
                               </block>
                             </value>
                             <next>
