@@ -62,7 +62,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       gridColors,
       windDirection,
       windSpeed,
-	  map
+      map
     } = this.props;
     const {width, height, gridSize} = this.metrics;
 
@@ -78,7 +78,6 @@ export class MapComponent extends BaseComponent<IProps, IState>{
         <Stage
           width={width}
           height={height}
-          options={{backgroundColor: Color("hsl(0, 10%, 95%)").rgbNumber()}} >
           options={
             {
               backgroundColor: Color("hsl(0, 10%, 95%)").rgbNumber(),
