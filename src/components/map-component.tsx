@@ -2,7 +2,7 @@ import * as React from "react";
 import { ICanvasShape, Ipoint } from "../interfaces";
 import { CityType  } from "../stores/simulation-store";
 import styled from "styled-components";
-import { Stage, Sprite } from "@inlet/react-pixi";
+import { Stage, Sprite, Text } from "@inlet/react-pixi";
 import { PixiCityContainer } from "./pixi-city-container";
 import { PixiTephraMap } from "./pixi-tephra-map";
 import { PixiAxis } from "./pixi-axis";
