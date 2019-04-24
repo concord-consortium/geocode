@@ -44,7 +44,13 @@ export const PixiTephraMap = (props: IProps) => {
   for (let gridX = 0; gridX < numCols; gridX++) {
     for (let gridY = 0; gridY < numRows; gridY++) {
       const color = getColor(gridX, gridY);
-      cells.push(<GridSquare color={color} position={toCanvasCoords({x: gridX, y: gridY})} size={gridSize} />);
+      cells.push(
+        <GridSquare
+          color={color}
+          key={`${gridX}-${gridY}`}
+          position={toCanvasCoords({x: gridX, y: gridY})}
+          size={gridSize}
+        />);
     }
   }
   return (

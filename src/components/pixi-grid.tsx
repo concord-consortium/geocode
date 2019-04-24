@@ -1,9 +1,7 @@
 import * as React from "react";
 
 import { Container, Text, PixiComponent } from "@inlet/react-pixi";
-import { TextStyle, Point  } from "pixi.js";
 import { ICanvasShape } from "../interfaces";
-import * as Color from "color";
 
 interface IProps {
   gridMetrics: ICanvasShape;
@@ -41,13 +39,13 @@ export const PixiGrid = (props: IProps) => {
   for (x = 0; x < numCols; x++) {
     start = {x: x * gridSize, y: 0};
     end = {x: x * gridSize, y: height};
-    lines.push(<GridLine start={start} end={end} />);
+    lines.push(<GridLine key={`x-gridline-${x}`} start={start} end={end} />);
   }
   x = 0;
   for (y = 0; y < numRows; y++) {
     start = {x: 0, y: y * gridSize};
-    end = {x: width, y: y * gridSize};
-    lines.push(<GridLine start={start} end={end} />);
+    end =   {x: width, y: y * gridSize};
+    lines.push(<GridLine key={`y-gridline-${y}`} start={start} end={end} />);
   }
 
   return (
