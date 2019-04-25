@@ -5,6 +5,7 @@ import { PixiComponent } from "@inlet/react-pixi";
 import { ICanvasShape, Ipoint } from "../interfaces";
 import * as PIXI from "pixi.js";
 import * as Color from "color";
+import { getGridIndexForLocation } from "../stores/simulation-store";
 
 interface IProps {
   canvasMetrics: ICanvasShape;
@@ -39,7 +40,7 @@ export const PixiTephraMap = (props: IProps) => {
   const { canvasMetrics, gridColors, toCanvasCoords } = props;
   const { numCols, numRows, gridSize } = canvasMetrics;
   const getColor = (x: number, y: number) =>
-    gridColors[x + y * numCols] || "hsla(0, 0%, 100%, 0)";
+    gridColors[getGridIndexForLocation(x, y, numRows)] || "hsla(0, 0%, 100%, 0)";
   const cells = [];
   for (let gridX = 0; gridX < numCols; gridX++) {
     for (let gridY = 0; gridY < numRows; gridY++) {

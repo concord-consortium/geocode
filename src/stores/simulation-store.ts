@@ -46,6 +46,10 @@ export interface SimulationAuthoringOptions {
   map: string;
 }
 
+export function getGridIndexForLocation(x: number, y: number, numRows: number) {
+  return y + x * numRows;
+}
+
 export const SimulationStore = types
   .model("simulation", {
     numRows: 14,
@@ -90,14 +94,14 @@ export const SimulationStore = types
       for (let x = 0; x < rows; x ++) {
         for (let y = 0; y < cols; y++) {
           const simResults = gridTephraCalc(
-            x, y, vY, vX,   // TODO: Why are vX and vY inverted?
+            x, y, vX, vY,
             self.windSpeed,
             self.windDirection,
             self.colHeight,
             self.mass,
             self.particleSize
           );
-          self.data.push( {thickness: simResults});
+          self.data[getGridIndexForLocation(x, y, rows)] = {thickness: simResults};
         }
       }
 
