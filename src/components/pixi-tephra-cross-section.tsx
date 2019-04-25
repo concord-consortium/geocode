@@ -5,6 +5,7 @@ import { PixiComponent } from "@inlet/react-pixi";
 import { ICanvasShape } from "../interfaces";
 import * as PIXI from "pixi.js";
 import * as Color from "color";
+import { getGridIndexForLocation } from "../stores/simulation-store";
 
 interface IProps {
   canvasMetrics: ICanvasShape;
@@ -46,7 +47,7 @@ const Bar =  PixiComponent<IBarProps, PIXI.Graphics>("Bar", {
 export const PixiTephraCrossSection = (props: IProps) => {
   const { canvasMetrics, data } = props;
   const { numCols, numRows, gridSize, height } = canvasMetrics;
-  const getData = (x: number, y: number) => data[y + x * numRows];
+  const getData = (x: number, y: number) => data[getGridIndexForLocation(x, y, numRows)];
   const cells = [];
   const maxTephra = 1;
   for (let gridX = 0; gridX < numCols; gridX++) {

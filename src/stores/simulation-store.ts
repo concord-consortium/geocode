@@ -46,6 +46,10 @@ export interface SimulationAuthoringOptions {
   map: string;
 }
 
+export function getGridIndexForLocation(x: number, y: number, numRows: number) {
+  return y + x * numRows;
+}
+
 export const SimulationStore = types
   .model("simulation", {
     numRows: 14,
@@ -97,7 +101,7 @@ export const SimulationStore = types
             self.mass,
             self.particleSize
           );
-          self.data.push( {thickness: simResults});
+          self.data[getGridIndexForLocation(x, y, rows)] = {thickness: simResults};
         }
       }
 
