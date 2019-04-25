@@ -36,9 +36,10 @@ const tephraCalc = (
 // calculates the mass loading of tephra at a point x,y (meters)
 // from a volcanic vent located at xvent, yvent (m)
 // mass (kg) is released from a height localColHeight (m)
-// into a windfield with velocity wind_speed (m/s) blowing toward the positive x direction
+// into a windfield with velocity wind_speed (m/s) blowing toward the positive y direction
 // particles have a settling_speed (m/s) and diffusion (m**2/s)
 // updated on 2019-04-23
+// edited 2019-04-2 from the provided calc to make assume windspeed is in the positive y direction
 const tephraCalc2 = (
   x: number,
   y: number,
@@ -68,9 +69,9 @@ const tephraCalc2 = (
     for (i = 1; i <= colSteps; i++){
         localColHeight = i * colInterval;
 
-        term1 = ( x - (xvent + windSpeed * localColHeight / settlingSpeed) );
+        term1 = ( y - (yvent + windSpeed * localColHeight / settlingSpeed) );
         term1 = Math.pow(term1, 2);
-        term2 = Math.pow(y - yvent, 2);
+        term2 = Math.pow(x - xvent, 2);
         term3 = settlingSpeed * colMassInterval / (4 * Math.PI * localColHeight * diffusion);
         term4 = 4 * diffusion * localColHeight / settlingSpeed;
         masLoading += term3 * Math.exp( -term1 / term4 - term2 / term4);
