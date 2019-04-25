@@ -5,7 +5,7 @@ export const makeRotMatrix = (angleDeg: number, center: Ipoint) => {
   const angleRad = (angleDeg / 360) * 2 * Math.PI;
   return transform(
     translate(center.x, center.y),
-    rotate(-angleRad),
+    rotate(angleRad),
     translate(-center.x, -center.y),
   );
 };
