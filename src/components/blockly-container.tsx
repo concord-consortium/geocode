@@ -48,10 +48,15 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
     this.initializeBlockly();
   }
 
-  // TODO: This should eventually be removed. We save the XML to local storage.
-  // We don't ever restore this at the moment, but its used by developers to
-  // Save the initial program.
-  public componentDidUpdate() {
+  public componentDidUpdate(prevProps: IProps) {
+    if ((prevProps.toolboxPath !== this.props.toolboxPath) ||
+        prevProps.initialCodeSetupPath !== this.props.initialCodeSetupPath) {
+          this.initializeBlockly();
+        }
+
+    // TODO: This should eventually be removed. We save the XML to local storage.
+    // We don't ever restore this at the moment, but its used by developers to
+    // Save the initial program.
     if (lastTimeout) {
       clearTimeout(lastTimeout);
     }
@@ -64,6 +69,9 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
   }
 
   private initializeBlockly = () => {
+    if (this.workSpaceRef.current) {
+      this.workSpaceRef.current.innerHTML = "";
+    }
     const {toolboxPath, initialCodeSetupPath, setBlocklyCode} = this.props;
     fetch(toolboxPath).then((r) => {
       r.text().then( (data) => {
