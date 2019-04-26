@@ -1,8 +1,10 @@
 {
   "toolbox": {
+    "First": "./assets/blockly-authoring/toolbox/first-toolbox.xml",
     "Everything": "./assets/blockly-authoring/toolbox/full-toolbox.xml"
   },
   "code": {
-    "Basic": "./assets/blockly-authoring/code/basic-setup.xml"
+    "Basic": "./assets/blockly-authoring/code/basic-setup.xml",
+    "Nested loops": "./assets/blockly-authoring/code/nested-loops.xml"
   }
 }
