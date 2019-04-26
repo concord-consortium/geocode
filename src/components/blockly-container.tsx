@@ -2,7 +2,9 @@ import * as React from "react";
 import styled from "styled-components";
 
 interface IProps {
-  setBlocklyCode?: (code: string, workspace: any) => void;
+  toolboxPath: string;
+  initialCodeSetupPath: string;
+  setBlocklyCode: (code: string, workspace: any) => void;
   width: number;
   height: number;
 }
@@ -12,10 +14,14 @@ interface IState {}
 const Wrapper = styled.div``;
 const StartBlocks = styled.div``;
 let lastTimeout: number | null  = null;
+interface WorkspaceProps {
+  width: number;
+  height: number;
+}
 const WorkSpace = styled.div`
   font-family: sans-serif;
-  width: ${(p: IProps) => `${p.width}px`};
-  height: ${(p: IProps) => `${p.height}px`};
+  width: ${(p: WorkspaceProps) => `${p.width}px`};
+  height: ${(p: WorkspaceProps) => `${p.height}px`};
   margin: 1em;
   /* position: relative;
   border: 2px solid gray;
@@ -58,7 +64,8 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
   }
 
   private initializeBlockly = () => {
-    fetch("./toolbox.xml").then((r) => {
+    const {toolboxPath, initialCodeSetupPath, setBlocklyCode} = this.props;
+    fetch(toolboxPath).then((r) => {
       r.text().then( (data) => {
         const blockOpts = {
           media: "blockly/media/",
@@ -69,7 +76,7 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
         Blockly.Xml.domToWorkspace(startBlocks, this.workSpace);
         Blockly.JavaScript.STATEMENT_PREFIX = "highlightBlock(%1);\n";
         Blockly.JavaScript.addReservedWords("highlightBlock");
-        fetch("./normal-setup.xml")
+        fetch(initialCodeSetupPath)
         .then((resp) => {
           resp.text().then((d) => {
             const xml = Blockly.Xml.textToDom(d);
@@ -78,9 +85,7 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
         });
         const myUpdateFunction = (event: any) => {
           const code = Blockly.JavaScript.workspaceToCode(this.workSpace);
-          if (this.props.setBlocklyCode) {
-            this.props.setBlocklyCode(code, this.workSpace);
-          }
+          setBlocklyCode(code, this.workSpace);
         };
         this.workSpace.addChangeListener(myUpdateFunction);
       });
