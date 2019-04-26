@@ -102,8 +102,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             <BlocklyContianer
               width={800}
               height={600}
-              toolboxPath={"./toolbox.xml"}
-              initialCodeSetupPath={"./normal-setup.xml"}
+              toolboxPath={"./assets/blockly-authoring/toolbox/full-toolbox.xml"}
+              initialCodeSetupPath={"./assets/blockly-authoring/code/basic-setup.xml"}
               setBlocklyCode={ setBlocklyCode} />
               <RunButtons {...{run, stop, step, reset, running}} />
           </FixWidthTabPanel>
