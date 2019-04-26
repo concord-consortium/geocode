@@ -1,0 +1,8 @@
+{
+  "toolbox": {
+    "Everything": "./assets/blockly-authoring/toolbox/full-toolbox.xml"
+  },
+  "code": {
+    "Basic": "./assets/blockly-authoring/code/basic-setup.xml"
+  }
+}

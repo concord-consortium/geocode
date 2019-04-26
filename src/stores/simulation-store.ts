@@ -3,6 +3,7 @@ import { autorun } from "mobx";
 import * as Color from "color";
 import gridTephraCalc from "../tephra2";
 import { IInterpreter, makeInterpreter } from "../utilities/interpreter";
+import { SimulationAuthoringOptions } from "../components/app";
 
 let _cityCounter = 0;
 const genCityId = () => `city_${_cityCounter++}`;
@@ -39,12 +40,6 @@ export const City = types
     x: types.number,
     y: types.number
   });
-
-export interface SimulationAuthoringOptions {
-  requireEruption: boolean;
-  requirePainting: boolean;
-  map: string;
-}
 
 export function getGridIndexForLocation(x: number, y: number, numRows: number) {
   return y + x * numRows;
