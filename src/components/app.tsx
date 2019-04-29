@@ -169,7 +169,9 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               <DatSelect path="toolbox" label="Code toolbox"
                 options={Object.keys(BlocklyAuthoring.toolbox)} key="toolbox" />,
               <DatSelect path="initialCode" label="Initial code"
-                options={Object.keys(BlocklyAuthoring.code)} key="code" />
+                options={Object.keys(BlocklyAuthoring.code)} key="code" />,
+              // submit button. Should remain at bottom
+              <DatButton label="Generate authored model" onClick={this.generateAndOpenAuthoredUrl} key="generate" />
             ]
           }
         </DatGui>
@@ -181,5 +183,10 @@ export class AppComponent extends BaseComponent<IProps, IState> {
   private toggleShowOptions = () => this.setState({showOptionsDialog: !this.state.showOptionsDialog});
 
   private handleUpdate = (simulationOptions: any) => this.setState({ simulationOptions });
+
+  private generateAndOpenAuthoredUrl = () => {
+    const encodedParams = encodeURIComponent(JSON.stringify(this.state.simulationOptions));
+    window.open(`${location.origin}${location.pathname}?${encodedParams}`, "geocode-app");
+  }
 
 }
