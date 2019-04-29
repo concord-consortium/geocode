@@ -27,7 +27,7 @@ export interface SimulationAuthoringOptions {
 }
 
 interface IState {
-  showOptionsDialog: boolean;
+  expandOptionsDialog: boolean;
   simulationOptions: SimulationAuthoringOptions;
 }
 
@@ -61,7 +61,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     super(props);
 
     const initialState: IState = {
-      showOptionsDialog: false,
+      expandOptionsDialog: false,
       simulationOptions: {
         requireEruption: true,
         requirePainting: true,
@@ -119,7 +119,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     } = this.stores;
 
     const {
-      showOptionsDialog,
+      expandOptionsDialog,
       simulationOptions
     } = this.state;
 
@@ -186,7 +186,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
 
         <DatGui data={simulationOptions} onUpdate={this.handleUpdate}>
           <DatButton label="Model options" onClick={this.toggleShowOptions} />
-          { showOptionsDialog &&
+          { expandOptionsDialog &&
             [
               <DatBoolean path="requireEruption" label="Require eruption?" key="requireEruption" />,
               <DatBoolean path="requirePainting" label="Require painting?" key="requirePainting" />,
@@ -205,7 +205,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     );
   }
 
-  private toggleShowOptions = () => this.setState({showOptionsDialog: !this.state.showOptionsDialog});
+  private toggleShowOptions = () => this.setState({expandOptionsDialog: !this.state.expandOptionsDialog});
 
   private handleUpdate = (simulationOptions: any) => this.setState({ simulationOptions });
 
