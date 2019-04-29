@@ -24,6 +24,9 @@ export interface SimulationAuthoringOptions {
   map: string;
   toolbox: string;
   initialCode: string;
+  showBlocks: boolean;
+  showCode: boolean;
+  showControls: boolean;
 }
 
 interface IState {
@@ -70,6 +73,9 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         map: "Mt Redoubt",
         toolbox: "Everything",
         initialCode: "Basic",
+        showBlocks: true,
+        showCode: true,
+        showControls: true,
       }
     };
 
@@ -131,37 +137,52 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       simulationOptions
     } = this.state;
 
-    const mapPath = (Maps as {[key: string]: string})[this.state.simulationOptions.map];
-    const toolboxPath = (BlocklyAuthoring.toolbox as {[key: string]: string})[this.state.simulationOptions.toolbox];
-    const codePath = (BlocklyAuthoring.code as {[key: string]: string})[this.state.simulationOptions.initialCode];
+    const {
+      map,
+      toolbox,
+      initialCode,
+      showBlocks,
+      showCode,
+      showControls,
+    } = simulationOptions;
+
+    const mapPath = (Maps as {[key: string]: string})[map];
+    const toolboxPath = (BlocklyAuthoring.toolbox as {[key: string]: string})[toolbox];
+    const codePath = (BlocklyAuthoring.code as {[key: string]: string})[initialCode];
 
     return (
       <App className="app" >
         <Tabs>
           <TabList>
-            <Tab>Blocks</Tab>
-            <Tab>Code</Tab>
-            <Tab>Controls</Tab>
+            { showBlocks && <Tab>Blocks</Tab>}
+            { showCode && <Tab>Code</Tab>}
+            { showControls && <Tab>Controls</Tab>}
           </TabList>
-          <FixWidthTabPanel width={820}>
-            <BlocklyContianer
-              width={800}
-              height={600}
-              toolboxPath={toolboxPath}
-              initialCodeSetupPath={codePath}
-              setBlocklyCode={ setBlocklyCode} />
-              <RunButtons {...{run, stop, step, reset, running}} />
-          </FixWidthTabPanel>
-          <FixWidthTabPanel width={820}>
-            <Code>
-              <SyntaxHighlighter>
-                {js_beautify(code)}
-              </SyntaxHighlighter>
-            </Code>
-          </FixWidthTabPanel>
-          <FixWidthTabPanel width={820}>
-            <Controls />
-          </FixWidthTabPanel>
+          { showBlocks &&
+            <FixWidthTabPanel width={820}>
+              <BlocklyContianer
+                width={800}
+                height={600}
+                toolboxPath={toolboxPath}
+                initialCodeSetupPath={codePath}
+                setBlocklyCode={ setBlocklyCode} />
+                <RunButtons {...{run, stop, step, reset, running}} />
+            </FixWidthTabPanel>
+          }
+          { showCode &&
+            <FixWidthTabPanel width={820}>
+              <Code>
+                <SyntaxHighlighter>
+                  {js_beautify(code)}
+                </SyntaxHighlighter>
+              </Code>
+            </FixWidthTabPanel>
+          }
+          { showControls &&
+            <FixWidthTabPanel width={820}>
+              <Controls />
+            </FixWidthTabPanel>
+          }
         </Tabs>
 
         <Simulation >
@@ -204,6 +225,11 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                   options={Object.keys(BlocklyAuthoring.toolbox)} key="toolbox" />,
                 <DatSelect path="initialCode" label="Initial code"
                   options={Object.keys(BlocklyAuthoring.code)} key="code" />,
+
+                <DatBoolean path="showBlocks" label="Show blocks?" key="showBlocks" />,
+                <DatBoolean path="showCode" label="Show code?" key="showCode" />,
+                <DatBoolean path="showControls" label="Show controls?" key="showControls" />,
+
                 // submit button. Should remain at bottom
                 <DatButton label="Generate authored model" onClick={this.generateAndOpenAuthoredUrl} key="generate" />
               ]
