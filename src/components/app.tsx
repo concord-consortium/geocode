@@ -27,6 +27,7 @@ export interface SimulationAuthoringOptions {
 }
 
 interface IState {
+  showOptionsDialog: boolean;
   expandOptionsDialog: boolean;
   simulationOptions: SimulationAuthoringOptions;
 }
@@ -61,6 +62,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     super(props);
 
     const initialState: IState = {
+      showOptionsDialog: true,
       expandOptionsDialog: false,
       simulationOptions: {
         requireEruption: true,
@@ -87,6 +89,11 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         initialState.simulationOptions[option] = urlParams[option];
       }
     });
+
+    // for now, assume that if we've loaded from params that we don't want settings dialog
+    if (Object.keys(urlParams).length > 0) {
+      initialState.showOptionsDialog = false;
+    }
 
     this.state = initialState;
   }
@@ -119,6 +126,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     } = this.stores;
 
     const {
+      showOptionsDialog,
       expandOptionsDialog,
       simulationOptions
     } = this.state;
@@ -184,22 +192,24 @@ export class AppComponent extends BaseComponent<IProps, IState> {
 
         </Simulation>
 
-        <DatGui data={simulationOptions} onUpdate={this.handleUpdate}>
-          <DatButton label="Model options" onClick={this.toggleShowOptions} />
-          { expandOptionsDialog &&
-            [
-              <DatBoolean path="requireEruption" label="Require eruption?" key="requireEruption" />,
-              <DatBoolean path="requirePainting" label="Require painting?" key="requirePainting" />,
-              <DatSelect path="map" label="Map background" options={Object.keys(Maps)} key="background" />,
-              <DatSelect path="toolbox" label="Code toolbox"
-                options={Object.keys(BlocklyAuthoring.toolbox)} key="toolbox" />,
-              <DatSelect path="initialCode" label="Initial code"
-                options={Object.keys(BlocklyAuthoring.code)} key="code" />,
-              // submit button. Should remain at bottom
-              <DatButton label="Generate authored model" onClick={this.generateAndOpenAuthoredUrl} key="generate" />
-            ]
-          }
-        </DatGui>
+        { showOptionsDialog &&
+          <DatGui data={simulationOptions} onUpdate={this.handleUpdate}>
+            <DatButton label="Model options" onClick={this.toggleShowOptions} />
+            { expandOptionsDialog &&
+              [
+                <DatBoolean path="requireEruption" label="Require eruption?" key="requireEruption" />,
+                <DatBoolean path="requirePainting" label="Require painting?" key="requirePainting" />,
+                <DatSelect path="map" label="Map background" options={Object.keys(Maps)} key="background" />,
+                <DatSelect path="toolbox" label="Code toolbox"
+                  options={Object.keys(BlocklyAuthoring.toolbox)} key="toolbox" />,
+                <DatSelect path="initialCode" label="Initial code"
+                  options={Object.keys(BlocklyAuthoring.code)} key="code" />,
+                // submit button. Should remain at bottom
+                <DatButton label="Generate authored model" onClick={this.generateAndOpenAuthoredUrl} key="generate" />
+              ]
+            }
+          </DatGui>
+        }
 
       </App>
     );
