@@ -6,3 +6,5 @@ npm-error.log
 
 # Editors
 .idea
+
+.DS_Store
