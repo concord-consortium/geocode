@@ -1,0 +1,171 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+  <variables>
+    <variable type="" id="};vT:wlKgaTOscd4a|pM">windDirection</variable>
+    <variable type="" id="R8If;Orr[wiGG.I,V9_t">windSpeed</variable>
+  </variables>
+  <block type="addTown" id="%`S]ozt=N83nxZ@D]X+A" x="73" y="55">
+    <value name="name">
+      <block type="text" id="u#Y)3)-ai$(2)Kf{nJZL">
+        <field name="TEXT">Boston</field>
+      </block>
+    </value>
+    <value name="x">
+      <block type="math_number" id="#=PE6yxO:9HhUF#C[`ZS">
+        <field name="NUM">8</field>
+      </block>
+    </value>
+    <value name="y">
+      <block type="math_number" id="8MWNnp$D5#TtHOsvRVM(">
+        <field name="NUM">5</field>
+      </block>
+    </value>
+    <next>
+      <block type="addTown" id="J-x,U-qj%P;[c?~98*;7">
+        <value name="name">
+          <block type="text" id="s0Lxg*^`ifTF.p*H?;;B">
+            <field name="TEXT">Cambridge</field>
+          </block>
+        </value>
+        <value name="x">
+          <block type="math_number" id="2Q$NX{|vP]Uk+M/k3p,+">
+            <field name="NUM">8</field>
+          </block>
+        </value>
+        <value name="y">
+          <block type="math_number" id="d1rCwD{k_8XAkIzo;r0a">
+            <field name="NUM">4</field>
+          </block>
+        </value>
+        <next>
+          <block type="addTown" id="Zm`0R94fv2rrlbltjOV3">
+            <value name="name">
+              <block type="text" id="^LY.sBL=a0=~V19xN1Ud">
+                <field name="TEXT">Concord</field>
+              </block>
+            </value>
+            <value name="x">
+              <block type="math_number" id="$6eBLXPDtlESe_AVX4]+">
+                <field name="NUM">7</field>
+              </block>
+            </value>
+            <value name="y">
+              <block type="math_number" id="lomn*G(RNDILNIFY(3#0">
+                <field name="NUM">3</field>
+              </block>
+            </value>
+            <next>
+              <block type="addTown" id="r@)0aC#2bMqSuhPKl%86">
+                <value name="name">
+                  <block type="text" id=".g#;[S1,v_AOg@q-CC~f">
+                    <field name="TEXT">Amherst</field>
+                  </block>
+                </value>
+                <value name="x">
+                  <block type="math_number" id="mC/$4FQCK.pT!`jnny-R">
+                    <field name="NUM">2</field>
+                  </block>
+                </value>
+                <value name="y">
+                  <block type="math_number" id="%d9][ydlzgXVu.2$TfjQ">
+                    <field name="NUM">3</field>
+                  </block>
+                </value>
+                <next>
+                  <block type="addVolcano" id="nzE]r2sy+R6*~k$$3e_E">
+                    <value name="x">
+                      <block type="math_number" id="*pu?|v%dk2Ft}0s5Qbw6">
+                        <field name="NUM">6</field>
+                      </block>
+                    </value>
+                    <value name="y">
+                      <block type="math_number" id="Zl!!Qc2FcjjEC]H?$2]|">
+                        <field name="NUM">6</field>
+                      </block>
+                    </value>
+                    <next>
+                      <block type="setEruptionMass" id="g1oYU/)m7d,HP{%tyWu3">
+                        <value name="eruptionMass">
+                          <block type="math_number" id="$=I+kM5Ri!b(U^Vg,`o;">
+                            <field name="NUM">100000000</field>
+                          </block>
+                        </value>
+                        <next>
+                          <block type="controls_for" id="DHOAueq0C|;^![e#mM-y">
+                            <field name="VAR" id="};vT:wlKgaTOscd4a|pM" variabletype="">windDirection</field>
+                            <value name="FROM">
+                              <shadow type="math_number" id=".Ufd|RP({iKOMj(PD#0Y">
+                                <field name="NUM">45</field>
+                              </shadow>
+                            </value>
+                            <value name="TO">
+                              <shadow type="math_number" id="f/a]r=cAYmK?!JN:-*I=">
+                                <field name="NUM">315</field>
+                              </shadow>
+                            </value>
+                            <value name="BY">
+                              <shadow type="math_number" id="}FL]GFct@+ry$j@S8vEl">
+                                <field name="NUM">90</field>
+                              </shadow>
+                            </value>
+                            <statement name="DO">
+                              <block type="controls_for" id="}hv}.`Q/Wgs`(xWkqhmP">
+                                <field name="VAR" id="R8If;Orr[wiGG.I,V9_t" variabletype="">windSpeed</field>
+                                <value name="FROM">
+                                  <shadow type="math_number" id="a}365V3bx]F|^sQ(GvJd">
+                                    <field name="NUM">0</field>
+                                  </shadow>
+                                </value>
+                                <value name="TO">
+                                  <shadow type="math_number" id="B7x(klR.kc81H@~PdIDh">
+                                    <field name="NUM">10</field>
+                                  </shadow>
+                                </value>
+                                <value name="BY">
+                                  <shadow type="math_number" id="#8l:BCi)yUS6?EjF1VaK">
+                                    <field name="NUM">5</field>
+                                  </shadow>
+                                </value>
+                                <statement name="DO">
+                                  <block type="setWindDirection" id="/H|(LVe)_5VTaNduq0Lx">
+                                    <value name="windDirection">
+                                      <block type="variables_get" id="p[ur~i=X8E$PGuEDXp2n">
+                                        <field name="VAR" id="};vT:wlKgaTOscd4a|pM" variabletype="">windDirection</field>
+                                      </block>
+                                    </value>
+                                    <next>
+                                      <block type="setWindSpeed" id="_qHK7gU,7NaA(/KBW4Rf">
+                                        <value name="windSpeed">
+                                          <block type="variables_get" id="j%of^6%C`@4*Ts#XPE%E">
+                                            <field name="VAR" id="R8If;Orr[wiGG.I,V9_t" variabletype="">windSpeed</field>
+                                          </block>
+                                        </value>
+                                        <next>
+                                          <block type="erupt" id="8IRxcs[0O$HmIA_LW7%l">
+                                            <next>
+                                              <block type="outputPaintGrid" id="T2nR$PpW-trOOM=g#OS4">
+                                                <field name="COLOR">#993300</field>
+                                                <field name="result_type">thickness</field>
+                                              </block>
+                                            </next>
+                                          </block>
+                                        </next>
+                                      </block>
+                                    </next>
+                                  </block>
+                                </statement>
+                              </block>
+                            </statement>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </next>
+  </block>
+</xml>

@@ -5,6 +5,7 @@ import { BaseComponent, IBaseProps } from "./base";
 import { MapComponent } from "./map-component";
 import { CrossSectionComponent } from "./cross-section-component";
 import * as Maps from "./../assets/maps/maps.json";
+import * as BlocklyAuthoring from "./../assets/blockly-authoring/index.json";
 
 import BlocklyContianer from "./blockly-container";
 import styled from "styled-components";
@@ -13,9 +14,16 @@ import { js_beautify } from "js-beautify";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import Controls from "./controls";
 import RunButtons from "./run-buttons";
-import { SimulationAuthoringOptions } from "../stores/simulation-store";
 
 interface IProps extends IBaseProps {}
+
+export interface SimulationAuthoringOptions {
+  requireEruption: boolean;
+  requirePainting: boolean;
+  map: string;
+  toolbox: string;
+  initialCode: string;
+}
 
 interface IState {
   showOptionsDialog: boolean;
@@ -52,7 +60,9 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     simulationOptions: {
       requireEruption: true,
       requirePainting: true,
-      map: "Mt Redoubt"
+      map: "Mt Redoubt",
+      toolbox: "Everything",
+      initialCode: "Basic",
     }
   };
 
@@ -88,7 +98,9 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       simulationOptions
     } = this.state;
 
-    const mapPath = this.getMapPath();
+    const mapPath = (Maps as {[key: string]: string})[this.state.simulationOptions.map];
+    const toolboxPath = (BlocklyAuthoring.toolbox as {[key: string]: string})[this.state.simulationOptions.toolbox];
+    const codePath = (BlocklyAuthoring.code as {[key: string]: string})[this.state.simulationOptions.initialCode];
 
     return (
       <App className="app" >
@@ -102,6 +114,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             <BlocklyContianer
               width={800}
               height={600}
+              toolboxPath={toolboxPath}
+              initialCodeSetupPath={codePath}
               setBlocklyCode={ setBlocklyCode} />
               <RunButtons {...{run, stop, step, reset, running}} />
           </FixWidthTabPanel>
@@ -151,21 +165,17 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             [
               <DatBoolean path="requireEruption" label="Require eruption?" key="requireEruption" />,
               <DatBoolean path="requirePainting" label="Require painting?" key="requirePainting" />,
-              <DatSelect path="map" label="Map background" options={Object.keys(Maps)} key="background" />
+              <DatSelect path="map" label="Map background" options={Object.keys(Maps)} key="background" />,
+              <DatSelect path="toolbox" label="Code toolbox"
+                options={Object.keys(BlocklyAuthoring.toolbox)} key="toolbox" />,
+              <DatSelect path="initialCode" label="Initial code"
+                options={Object.keys(BlocklyAuthoring.code)} key="code" />
             ]
           }
         </DatGui>
 
       </App>
     );
-  }
-
-  private getMapPath = () => {
-    const map = this.state.simulationOptions.map;
-    if ((Maps as {[key: string]: string})[map]) {   // ts being annoying
-      return (Maps as {[key: string]: string})[map];
-    }
-    return "";
   }
 
   private toggleShowOptions = () => this.setState({showOptionsDialog: !this.state.showOptionsDialog});
