@@ -18,6 +18,7 @@ import RunButtons from "./run-buttons";
 interface IProps extends IBaseProps {}
 
 export interface SimulationAuthoringOptions {
+  [key: string]: any;
   requireEruption: boolean;
   requirePainting: boolean;
   map: string;
@@ -27,6 +28,7 @@ export interface SimulationAuthoringOptions {
 
 interface IState {
   showOptionsDialog: boolean;
+  expandOptionsDialog: boolean;
   simulationOptions: SimulationAuthoringOptions;
 }
 
@@ -55,16 +57,46 @@ const Code = styled.div`
 @inject("stores")
 @observer
 export class AppComponent extends BaseComponent<IProps, IState> {
-  public state: IState = {
-    showOptionsDialog: false,
-    simulationOptions: {
-      requireEruption: true,
-      requirePainting: true,
-      map: "Mt Redoubt",
-      toolbox: "Everything",
-      initialCode: "Basic",
+
+  public constructor(props: IProps) {
+    super(props);
+
+    const initialState: IState = {
+      showOptionsDialog: true,
+      expandOptionsDialog: false,
+      simulationOptions: {
+        requireEruption: true,
+        requirePainting: true,
+        map: "Mt Redoubt",
+        toolbox: "Everything",
+        initialCode: "Basic",
+      }
+    };
+
+    // load in url params, if any, to state
+    let urlParams: any = {};
+    try {
+      const queryString = location.search.length > 1 ? decodeURIComponent(location.search.substring(1)) : "{}";
+      urlParams = JSON.parse(queryString);
+    } catch (e) {
+      // leave params empty
     }
-  };
+
+    // set simulationOptions while making no assumptions about urlParams object
+    const simulationOptionsKeys = Object.keys(initialState.simulationOptions);
+    simulationOptionsKeys.forEach(option => {
+      if (urlParams.hasOwnProperty(option)) {
+        initialState.simulationOptions[option] = urlParams[option];
+      }
+    });
+
+    // for now, assume that if we've loaded from params that we don't want settings dialog
+    if (Object.keys(urlParams).length > 0) {
+      initialState.showOptionsDialog = false;
+    }
+
+    this.state = initialState;
+  }
 
   public componentDidUpdate() {
     this.stores.setAuthoringOptions(this.state.simulationOptions);
@@ -95,6 +127,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
 
     const {
       showOptionsDialog,
+      expandOptionsDialog,
       simulationOptions
     } = this.state;
 
@@ -159,27 +192,36 @@ export class AppComponent extends BaseComponent<IProps, IState> {
 
         </Simulation>
 
-        <DatGui data={simulationOptions} onUpdate={this.handleUpdate}>
-          <DatButton label="Model options" onClick={this.toggleShowOptions} />
-          { showOptionsDialog &&
-            [
-              <DatBoolean path="requireEruption" label="Require eruption?" key="requireEruption" />,
-              <DatBoolean path="requirePainting" label="Require painting?" key="requirePainting" />,
-              <DatSelect path="map" label="Map background" options={Object.keys(Maps)} key="background" />,
-              <DatSelect path="toolbox" label="Code toolbox"
-                options={Object.keys(BlocklyAuthoring.toolbox)} key="toolbox" />,
-              <DatSelect path="initialCode" label="Initial code"
-                options={Object.keys(BlocklyAuthoring.code)} key="code" />
-            ]
-          }
-        </DatGui>
+        { showOptionsDialog &&
+          <DatGui data={simulationOptions} onUpdate={this.handleUpdate}>
+            <DatButton label="Model options" onClick={this.toggleShowOptions} />
+            { expandOptionsDialog &&
+              [
+                <DatBoolean path="requireEruption" label="Require eruption?" key="requireEruption" />,
+                <DatBoolean path="requirePainting" label="Require painting?" key="requirePainting" />,
+                <DatSelect path="map" label="Map background" options={Object.keys(Maps)} key="background" />,
+                <DatSelect path="toolbox" label="Code toolbox"
+                  options={Object.keys(BlocklyAuthoring.toolbox)} key="toolbox" />,
+                <DatSelect path="initialCode" label="Initial code"
+                  options={Object.keys(BlocklyAuthoring.code)} key="code" />,
+                // submit button. Should remain at bottom
+                <DatButton label="Generate authored model" onClick={this.generateAndOpenAuthoredUrl} key="generate" />
+              ]
+            }
+          </DatGui>
+        }
 
       </App>
     );
   }
 
-  private toggleShowOptions = () => this.setState({showOptionsDialog: !this.state.showOptionsDialog});
+  private toggleShowOptions = () => this.setState({expandOptionsDialog: !this.state.expandOptionsDialog});
 
   private handleUpdate = (simulationOptions: any) => this.setState({ simulationOptions });
+
+  private generateAndOpenAuthoredUrl = () => {
+    const encodedParams = encodeURIComponent(JSON.stringify(this.state.simulationOptions));
+    window.open(`${location.origin}${location.pathname}?${encodedParams}`, "geocode-app");
+  }
 
 }
