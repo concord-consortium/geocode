@@ -18,6 +18,7 @@ export interface IModelParams {
   windDirection: number;
   volcanoX: number;
   volcanoY: number;
+  isErupting: boolean;
 }
 
 // This is a bit silly at the moment because our model only outputs one value:
@@ -61,6 +62,7 @@ export const SimulationStore = types
     running: false,
     data: types.array(SimDatum),
     gridColors: types.array(types.string),
+    isErupting: false,
     // authoring props
     requireEruption: true,
     requirePainting: true,
@@ -81,6 +83,7 @@ export const SimulationStore = types
   }))
   .actions((self) => ({
     erupt() {
+      self.isErupting = true;
       const rows = self.numRows;
       const cols = self.numCols;
       const vX = self.volcanoX;
