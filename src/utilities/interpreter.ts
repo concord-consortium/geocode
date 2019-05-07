@@ -55,6 +55,10 @@ const makeInterperterFunc = (simulation: SimulationModelType, workspace: IBlockl
       simulation.setMass(mass);
     });
 
+    addFunc("setVEI", (vei: number) => {
+      simulation.setVEI(vei);
+    });
+
     addFunc("setVolcano", (params: {x: number, y: number}) => {
       simulation.setVolcano(params.x, params.y);
     });

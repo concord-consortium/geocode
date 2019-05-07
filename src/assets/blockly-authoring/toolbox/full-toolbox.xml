@@ -13,6 +13,7 @@
           <block type="setWindSpeed"></block>
           <block type="setEruptionHeight"></block>
           <block type="setEruptionMass"></block>
+          <block type="setVEI"></block>
           <block type="erupt"></block>
           <block type="outputPaintGrid"></block>
           <block type="redrawMap"></block>
