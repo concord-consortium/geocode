@@ -13,7 +13,7 @@ const makeInterperterFunc = (simulation: SimulationModelType, workspace: IBlockl
 
     const unwrap = (args: any[]) => {
       const modifiedArgs = args.map( (a) => {
-        if (a.data) {return a.data; }
+        if (a.data !== undefined && a.data !== null) {return a.data; }
         if (a.properties) {
           const returnObject: { [key: string]: any } = {};
           const keys = Object.keys(a.properties);
