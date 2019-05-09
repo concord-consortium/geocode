@@ -2,12 +2,12 @@ import { types } from "mobx-state-tree";
 import { autorun } from "mobx";
 import * as Color from "color";
 import gridTephraCalc from "../tephra2";
-import { IInterpreter, makeInterpreter } from "../utilities/interpreter";
+import { IInterpreterController, makeInterpreterController } from "../utilities/interpreter";
 import { SimulationAuthoringOptions } from "../components/app";
 
 let _cityCounter = 0;
 const genCityId = () => `city_${_cityCounter++}`;
-let interpreter: IInterpreter | null;
+let interpreterController: IInterpreterController | null;
 let cachedBlocklyWorkspace: {highlightBlock: (id: string|null) => void};
 
 export interface IModelParams {
@@ -157,13 +157,13 @@ export const SimulationStore = types
       },
       setBlocklyCode(code: string, workspace: any) {
         self.code = code;
-        if (interpreter) {
-          interpreter.stop();
+        if (interpreterController) {
+          interpreterController.stop();
           workspace.highlightBlock(null);
         }
         self.running = false;
         cachedBlocklyWorkspace = workspace;
-        interpreter = makeInterpreter(code, simulation, workspace);
+        interpreterController = makeInterpreterController(code, simulation, workspace);
       },
       setModelParams(params: IModelParams) {
         self.windSpeed = params.windSpeed;
@@ -200,8 +200,8 @@ export const SimulationStore = types
         const reset = () => {
           this.setBlocklyCode(self.code, cachedBlocklyWorkspace);
         };
-        if (interpreter) {
-          interpreter.run(reset);
+        if (interpreterController) {
+          interpreterController.run(reset);
           self.running = true;
         }
       },
@@ -209,14 +209,14 @@ export const SimulationStore = types
         this.setBlocklyCode(self.code, cachedBlocklyWorkspace);
       },
       stop() {
-        if (interpreter) {
-          interpreter.stop();
+        if (interpreterController) {
+          interpreterController.stop();
           self.running = false;
         }
       },
       step() {
-        if (interpreter) {
-          interpreter.step();
+        if (interpreterController) {
+          interpreterController.step();
         }
       }
     };

@@ -85,19 +85,18 @@ const makeInterperterFunc = (simulation: SimulationModelType, workspace: IBlockl
 
 let lastRunID: number | null  = null;
 
-export interface IInterpreter {
+export interface IInterpreterController {
   step: () => void;
   run: (complete: () => void) => void;
   stop: () => void;
 }
 
-export const makeInterpreter = (code: string, store: any, workspace: any) => {
+export const makeInterpreterController = (code: string, store: any, workspace: any) => {
   if (lastRunID) {
     window.clearTimeout(lastRunID);
   }
   const interpreter = new Interpreter(code, makeInterperterFunc(store, workspace));
   const step = () => {
-    console.log("step");
     window.setTimeout(() => interpreter.step(), 10);
   };
 
@@ -117,9 +116,11 @@ export const makeInterpreter = (code: string, store: any, workspace: any) => {
     }
   };
 
-  return {
+  const intepreterController: IInterpreterController = {
     step,
     run,
     stop
   };
+
+  return intepreterController;
 };
