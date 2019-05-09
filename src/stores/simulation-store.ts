@@ -66,6 +66,7 @@ export const SimulationStore = types
   })
   .volatile(self => ({
     running: false,
+    steppingThroughBlock: false,
   }))
   .actions((self) => ({
     setBlocklyCode(code: string, workspace: any) {
@@ -96,10 +97,31 @@ export const SimulationStore = types
         self.running = false;
       }
     },
+    /**
+     * Steps through one complete block.
+     * This sets steppingThroughBlock to true, and then repeatedly calls `step` on the interpreter
+     * until steppingThroughBlock is false. All blocks are wrapped with code that will call endStep
+     * at the end of the block's function, which will set steppingThroughBlock to false.
+     */
     step() {
-      if (interpreterController) {
-        interpreterController.step();
+      self.steppingThroughBlock = true;
+
+      // guard against infinite loops or a block failing to call endStep
+      const maxInvocations = 100;
+      let invocations = 0;
+
+      function stepAsync() {
+        if (interpreterController) {
+          interpreterController.step();
+        }
+        if (self.steppingThroughBlock && invocations++ < maxInvocations) {
+          setTimeout(stepAsync, 0); // async to allow endStep to be called
+        }
       }
+      stepAsync();
+    },
+    endStep() {
+      self.steppingThroughBlock = false;
     }
   }))
   .actions((self) => ({

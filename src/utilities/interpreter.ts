@@ -80,6 +80,10 @@ const makeInterperterFunc = (simulation: SimulationModelType, workspace: IBlockl
         workspace.highlightBlock(id);
       }
     });
+
+    addFunc("endStep", () => {
+      simulation.endStep();
+    });
   };
 };
 
@@ -97,7 +101,7 @@ export const makeInterpreterController = (code: string, store: any, workspace: a
   }
   const interpreter = new Interpreter(code, makeInterperterFunc(store, workspace));
   const step = () => {
-    window.setTimeout(() => interpreter.step(), 10);
+    interpreter.step();
   };
 
   const run = (complete: () => void) => {
