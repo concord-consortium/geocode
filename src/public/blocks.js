@@ -383,7 +383,7 @@ Blockly.Blocks['setVEI'] = {
     this.appendValueInput("vei")
         .setCheck("Number")
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("Set VEI");
+        .appendField("Set VEI (0-8)");
     this.appendDummyInput();
     this.setInputsInline(true);
     this.setPreviousStatement(true, null);

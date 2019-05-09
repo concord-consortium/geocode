@@ -134,9 +134,10 @@ export const SimulationStore = types
         }
       },
       setVEI(vei: number) {
+        const clippedVEI = Math.max(0, Math.min(vei, 8));
         // for now this is just setting the mass
         // we want vei 1 = 1e8, vei 8 = 1e15
-        const mass = Math.pow(10, vei + 7);
+        const mass = Math.pow(10, clippedVEI + 7);
         self.mass = mass;
         if (!self.requireEruption) {
           self.erupt();
