@@ -58,13 +58,50 @@ export const SimulationStore = types
     volcanoY: 5,
     cities: types.array(City),
     code: "",
-    running: false,
     data: types.array(SimDatum),
     gridColors: types.array(types.string),
     // authoring props
     requireEruption: true,
     requirePainting: true,
   })
+  .volatile(self => ({
+    running: false,
+  }))
+  .actions((self) => ({
+    setBlocklyCode(code: string, workspace: any) {
+      self.code = code;
+      if (interpreterController) {
+        interpreterController.stop();
+        workspace.highlightBlock(null);
+      }
+      self.running = false;
+      cachedBlocklyWorkspace = workspace;
+      interpreterController = makeInterpreterController(code, simulation, workspace);
+    },
+    run() {
+      const reset = () => {
+        this.setBlocklyCode(self.code, cachedBlocklyWorkspace);
+      };
+      if (interpreterController) {
+        interpreterController.run(reset);
+        self.running = true;
+      }
+    },
+    reset() {
+      this.setBlocklyCode(self.code, cachedBlocklyWorkspace);
+    },
+    stop() {
+      if (interpreterController) {
+        interpreterController.stop();
+        self.running = false;
+      }
+    },
+    step() {
+      if (interpreterController) {
+        interpreterController.step();
+      }
+    }
+  }))
   .actions((self) => ({
     paintGrid(resultType: SimOutput, colorStr: string) {
       self.gridColors.clear();
@@ -155,16 +192,6 @@ export const SimulationStore = types
           self.erupt();
         }
       },
-      setBlocklyCode(code: string, workspace: any) {
-        self.code = code;
-        if (interpreterController) {
-          interpreterController.stop();
-          workspace.highlightBlock(null);
-        }
-        self.running = false;
-        cachedBlocklyWorkspace = workspace;
-        interpreterController = makeInterpreterController(code, simulation, workspace);
-      },
       setModelParams(params: IModelParams) {
         self.windSpeed = params.windSpeed;
         self.colHeight = params.colHeight;
@@ -195,29 +222,6 @@ export const SimulationStore = types
       setAuthoringOptions(opts: SimulationAuthoringOptions) {
         self.requireEruption = opts.requireEruption;
         self.requirePainting = opts.requirePainting;
-      },
-      run() {
-        const reset = () => {
-          this.setBlocklyCode(self.code, cachedBlocklyWorkspace);
-        };
-        if (interpreterController) {
-          interpreterController.run(reset);
-          self.running = true;
-        }
-      },
-      reset() {
-        this.setBlocklyCode(self.code, cachedBlocklyWorkspace);
-      },
-      stop() {
-        if (interpreterController) {
-          interpreterController.stop();
-          self.running = false;
-        }
-      },
-      step() {
-        if (interpreterController) {
-          interpreterController.step();
-        }
       }
     };
   })
