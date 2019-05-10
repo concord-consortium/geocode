@@ -88,11 +88,13 @@ const makeInterperterFunc = (simulation: SimulationModelType, workspace: IBlockl
 };
 
 let lastRunID: number | null  = null;
+let paused = false;
 
 export interface IInterpreterController {
   step: () => void;
   run: (complete: () => void) => void;
   stop: () => void;
+  pause: () => void;
 }
 
 export const makeInterpreterController = (code: string, store: any, workspace: any) => {
@@ -105,12 +107,17 @@ export const makeInterpreterController = (code: string, store: any, workspace: a
   };
 
   const run = (complete: () => void) => {
-    if (interpreter.step()) {
-      lastRunID = window.setTimeout(() => run(complete), 10);
+    paused = false;
+    function runLoop() {
+      if (paused) return;
+      if (interpreter.step()) {
+        lastRunID = window.setTimeout(() => runLoop(), 10);
+      }
+      else {
+        complete();
+      }
     }
-    else {
-      complete();
-    }
+    runLoop();
   };
 
   const stop = () => {
@@ -120,10 +127,15 @@ export const makeInterpreterController = (code: string, store: any, workspace: a
     }
   };
 
+  const pause = () => {
+    paused = true;
+  };
+
   const intepreterController: IInterpreterController = {
     step,
     run,
-    stop
+    stop,
+    pause
   };
 
   return intepreterController;

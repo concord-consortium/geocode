@@ -97,6 +97,22 @@ export const SimulationStore = types
         self.running = false;
       }
     },
+    // pauses the interpreter run without setting self.running = false
+    pause() {
+      if (interpreterController) {
+        interpreterController.pause();
+      }
+    },
+    // only restarts if self.running = true. If user hit stop between `pause` and this
+    // function, this won't restart the run.
+    unpause() {
+      if (interpreterController && self.running) {
+        const reset = () => {
+          this.setBlocklyCode(self.code, cachedBlocklyWorkspace);
+        };
+        interpreterController.run(reset);
+      }
+    },
     /**
      * Steps through one complete block.
      * This sets steppingThroughBlock to true, and then repeatedly calls `step` on the interpreter
@@ -163,6 +179,10 @@ export const SimulationStore = types
       if (!self.requirePainting) {
         self.paintGrid("thickness", "#ff0000");
       }
+
+      // will be used when we add animations
+      // self.pause();
+      // setTimeout(self.unpause, 1000);
     },
   }))
   .actions((self) => {
