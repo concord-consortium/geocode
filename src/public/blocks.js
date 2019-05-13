@@ -5,26 +5,6 @@
  * and/or edited by hand
  */
 
-// createBlockWrapper is a HOF which lets us add an expression to the end of every block. It is a
-// work-around for the lack of Blockly.JavaScript.STATEMENT_POSTFIX (in contrast to the existing
-// Blockly.JavaScript.STATEMENT_PREFIX), although the Blockly team may be adding this soon.
-// Note: `prefix` not really necessary here, as Blockly.JavaScript.STATEMENT_PREFIX, but it seemed logical
-// to include it.
-function createBlockWrapper(prefix, postfix) {
-  return function(blockFunction) {
-    return function (block) {
-      return `
-      ${prefix}
-      ${blockFunction(block)}
-      ${postfix}
-    `
-    }
-  }
-};
-
-// call `endStep` at the end of every block
-const addEndStep = createBlockWrapper("", "endStep()");
-
 Blockly.Blocks['fill_cell'] = {
   init: function() {
     this.appendValueInput("hue")
@@ -51,7 +31,7 @@ Blockly.Blocks['fill_cell'] = {
   }
 };
 
-Blockly.JavaScript['fill_cell'] = addEndStep(function(block) {
+Blockly.JavaScript['fill_cell'] = function(block) {
   var hue = Blockly.JavaScript.valueToCode(block, 'hue', Blockly.JavaScript.ORDER_ATOMIC);
   var sat = Blockly.JavaScript.valueToCode(block, 'sat', Blockly.JavaScript.ORDER_ATOMIC);
   var value = Blockly.JavaScript.valueToCode(block, 'value', Blockly.JavaScript.ORDER_ATOMIC);
@@ -61,7 +41,7 @@ Blockly.JavaScript['fill_cell'] = addEndStep(function(block) {
     this.fill && this.fill( ${hue || 1}, ${sat || 50}, ${value || 50}, ${alpha || 10 });
   `;
   return code;
-});
+}
 
 /************************************************* */
 
@@ -91,7 +71,7 @@ Blockly.Blocks['run_sumilation'] = {
   }
 }
 
-Blockly.JavaScript['run_sumilation'] = addEndStep(function(block) {
+Blockly.JavaScript['run_sumilation'] = function(block) {
   var value_mass = Blockly.JavaScript.valueToCode(block, 'mass', Blockly.JavaScript.ORDER_ATOMIC);
   var value_coumn_height = Blockly.JavaScript.valueToCode(block, 'coumn_height', Blockly.JavaScript.ORDER_ATOMIC);
   var value_wind_speed = Blockly.JavaScript.valueToCode(block, 'wind_speed', Blockly.JavaScript.ORDER_ATOMIC);
@@ -110,7 +90,7 @@ Blockly.JavaScript['run_sumilation'] = addEndStep(function(block) {
     this.setModelParams(modelParams);
   `;
   return code;
-});
+}
 
 /************************************************* */
 Blockly.Blocks['thickness'] = {
@@ -125,12 +105,12 @@ Blockly.Blocks['thickness'] = {
 };
 
 
-Blockly.JavaScript['thickness'] = addEndStep(function(block) {
+Blockly.JavaScript['thickness'] = function(block) {
   // TODO: Assemble JavaScript into code variable.
   var code = `(this.thickness)`;
   // TODO: Change ORDER_NONE to the correct strength.
   return [code, Blockly.JavaScript.ORDER_NONE];
-});
+}
 
 
 Blockly.Blocks['x'] = {
@@ -144,12 +124,12 @@ Blockly.Blocks['x'] = {
   }
 };
 
-Blockly.JavaScript['x'] = addEndStep(function(block) {
+Blockly.JavaScript['x'] = function(block) {
   // TODO: Assemble JavaScript into code variable.
   var code = `(this.x)`;
   // TODO: Change ORDER_NONE to the correct strength.
   return [code, Blockly.JavaScript.ORDER_NONE];
-});
+}
 
 Blockly.Blocks['y'] = {
   init: function() {
@@ -162,12 +142,12 @@ Blockly.Blocks['y'] = {
   }
 };
 
-Blockly.JavaScript['y'] = addEndStep(function(block) {
+Blockly.JavaScript['y'] = function(block) {
   // TODO: Assemble JavaScript into code variable.
   var code = `(this.y)`;
   // TODO: Change ORDER_NONE to the correct strength.
   return [code, Blockly.JavaScript.ORDER_NONE];
-});
+}
 
 
 Blockly.Blocks['console_logger'] = {
@@ -182,24 +162,24 @@ Blockly.Blocks['console_logger'] = {
   }
 };
 
-Blockly.JavaScript['console_logger'] = addEndStep(function(block) {
+Blockly.JavaScript['console_logger'] = function(block) {
   const value_logstring = Blockly.JavaScript.valueToCode(block, 'logString', Blockly.JavaScript.ORDER_ATOMIC);
   // TODO: Assemble JavaScript into code variable.
   const code = `console.log(${value_logstring});`;
   return code;
-});
+}
 
 
 
 
-Blockly.JavaScript['console_log_from_blockly'] = addEndStep(function(block) {
+Blockly.JavaScript['console_log_from_blockly'] = function(block) {
   const code = `
     console.log('from blockly');\n
     console.log(this.count);\n
     console.log(this.rocks);\n
   `;
   return code;
-});
+}
 
 Blockly.Blocks['clear'] = {
   init: function() {
@@ -215,10 +195,10 @@ Blockly.Blocks['clear'] = {
   }
 };
 
-Blockly.JavaScript['clear'] = addEndStep(function(block) {
+Blockly.JavaScript['clear'] = function(block) {
   const code ='clearCanvas();\n';
   return code;
-});
+}
 
 
 /***********************  Newish  ********************************/
@@ -243,7 +223,7 @@ Blockly.Blocks['addVolcano'] = {
   }
 };
 
-Blockly.JavaScript['addVolcano'] = addEndStep(function(block) {
+Blockly.JavaScript['addVolcano'] = function(block) {
   var value_x = Blockly.JavaScript.valueToCode(block, 'x', Blockly.JavaScript.ORDER_ATOMIC);
   var value_y = Blockly.JavaScript.valueToCode(block, 'y', Blockly.JavaScript.ORDER_ATOMIC);
   // TODO: Assemble JavaScript into code variable.
@@ -254,7 +234,7 @@ Blockly.JavaScript['addVolcano'] = addEndStep(function(block) {
   `
   console.log(code);
   return code;
-});
+}
 
 /*******************************  Add Town: ***********************************/
 Blockly.Blocks['addTown'] = {
@@ -282,7 +262,7 @@ Blockly.Blocks['addTown'] = {
   }
 };
 
-Blockly.JavaScript['addTown'] = addEndStep(function(block) {
+Blockly.JavaScript['addTown'] = function(block) {
   var value_name = Blockly.JavaScript.valueToCode(block, 'name', Blockly.JavaScript.ORDER_ATOMIC);
   var value_x = Blockly.JavaScript.valueToCode(block, 'x', Blockly.JavaScript.ORDER_ATOMIC);
   var value_y = Blockly.JavaScript.valueToCode(block, 'y', Blockly.JavaScript.ORDER_ATOMIC);
@@ -294,7 +274,7 @@ Blockly.JavaScript['addTown'] = addEndStep(function(block) {
     addCity({x: ${value_x}, y: ${value_y}, name: ${value_name}});
   `
   return code;
-});
+}
 
 /************************** Wind Direction: ***********************************/
 Blockly.Blocks['setWindDirection'] = {
@@ -314,7 +294,7 @@ Blockly.Blocks['setWindDirection'] = {
   }
 };
 
-Blockly.JavaScript['setWindDirection'] = addEndStep(function(block) {
+Blockly.JavaScript['setWindDirection'] = function(block) {
   var value_winddirection = Blockly.JavaScript.valueToCode(block, 'windDirection', Blockly.JavaScript.ORDER_ATOMIC);
   // TODO: Assemble JavaScript into code variable.
   var code = `
@@ -322,7 +302,7 @@ Blockly.JavaScript['setWindDirection'] = addEndStep(function(block) {
 
   `;
   return code;
-});
+}
 
 /************************** Wind Speed: ***********************************/
 Blockly.Blocks['setWindSpeed'] = {
@@ -342,7 +322,7 @@ Blockly.Blocks['setWindSpeed'] = {
   }
 };
 
-Blockly.JavaScript['setWindSpeed'] = addEndStep(function(block) {
+Blockly.JavaScript['setWindSpeed'] = function(block) {
   var value_wind_speed = Blockly.JavaScript.valueToCode(block, 'windSpeed', Blockly.JavaScript.ORDER_ATOMIC);
   // TODO: Assemble JavaScript into code variable.
   var code = `
@@ -350,7 +330,7 @@ Blockly.JavaScript['setWindSpeed'] = addEndStep(function(block) {
 
   `;
   return code;
-});
+}
 
 /************************** set Eruption Height: ***********************************/
 Blockly.Blocks['setEruptionHeight'] = {
@@ -370,12 +350,12 @@ Blockly.Blocks['setEruptionHeight'] = {
   }
 };
 
-Blockly.JavaScript['setEruptionHeight'] = addEndStep(function(block) {
+Blockly.JavaScript['setEruptionHeight'] = function(block) {
   var value_eruptionHeight = Blockly.JavaScript.valueToCode(block, 'eruptionHeight', Blockly.JavaScript.ORDER_ATOMIC);
   // TODO: Assemble JavaScript into code variable.
   var code = '//...;\n';
   return code;
-});
+}
 
 /************************** set Eruption Mass: ***********************************/
 Blockly.Blocks['setEruptionMass'] = {
@@ -395,14 +375,14 @@ Blockly.Blocks['setEruptionMass'] = {
   }
 };
 
-Blockly.JavaScript['setEruptionMass'] = addEndStep(function(block) {
+Blockly.JavaScript['setEruptionMass'] = function(block) {
   var value_mass = Blockly.JavaScript.valueToCode(block, 'eruptionMass', Blockly.JavaScript.ORDER_ATOMIC);
   // TODO: Assemble JavaScript into code variable.
   var code = `
     setMass(${value_mass});
   `;
   return code;
-});
+}
 
 /************************** VEI: ***********************************/
 Blockly.Blocks['setVEI'] = {
@@ -421,7 +401,7 @@ Blockly.Blocks['setVEI'] = {
   }
 };
 
-Blockly.JavaScript['setVEI'] = addEndStep(function(block) {
+Blockly.JavaScript['setVEI'] = function(block) {
   var value_vei = Blockly.JavaScript.valueToCode(block, 'vei', Blockly.JavaScript.ORDER_ATOMIC);
   // TODO: Assemble JavaScript into code variable.
   var code = `
@@ -429,7 +409,7 @@ Blockly.JavaScript['setVEI'] = addEndStep(function(block) {
 
   `;
   return code;
-});
+}
 
 /************************** Erupt : ***********************************/
 Blockly.Blocks['erupt'] = {
@@ -445,13 +425,13 @@ Blockly.Blocks['erupt'] = {
   }
 };
 
-Blockly.JavaScript['erupt'] = addEndStep(function(block) {
+Blockly.JavaScript['erupt'] = function(block) {
   // TODO: Assemble JavaScript into code variable.
   var code = `
   erupt();
 `;
   return code;
-});
+}
 
 /************************** results: ***********************************/
 
@@ -470,7 +450,7 @@ Blockly.Blocks['outputPaintGrid'] = {
   }
 };
 
-Blockly.JavaScript['outputPaintGrid'] = addEndStep(function(block) {
+Blockly.JavaScript['outputPaintGrid'] = function(block) {
   var resultType = block.getFieldValue('result_type');
   var color = block.getFieldValue('COLOR');
   // TODO: Assemble JavaScript into code variable.
@@ -478,7 +458,7 @@ Blockly.JavaScript['outputPaintGrid'] = addEndStep(function(block) {
     paintGrid({resultType: "${resultType}", color: "${color}"});
   `;
   return code;
-});
+}
 
 /************************** reDraw: ***********************************/
 
@@ -495,8 +475,8 @@ Blockly.Blocks['redrawMap'] = {
   }
 };
 
-Blockly.JavaScript['redrawMap'] = addEndStep(function(block) {
+Blockly.JavaScript['redrawMap'] = function(block) {
   // TODO: Assemble JavaScript into code variable.
   var code = '//...;\n';
   return code;
-});
+}
