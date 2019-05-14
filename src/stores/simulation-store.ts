@@ -2,12 +2,12 @@ import { types } from "mobx-state-tree";
 import { autorun } from "mobx";
 import * as Color from "color";
 import gridTephraCalc from "../tephra2";
-import { IInterpreter, makeInterpreter } from "../utilities/interpreter";
+import { IInterpreterController, makeInterpreterController } from "../utilities/interpreter";
 import { SimulationAuthoringOptions } from "../components/app";
 
 let _cityCounter = 0;
 const genCityId = () => `city_${_cityCounter++}`;
-let interpreter: IInterpreter | null;
+let interpreterController: IInterpreterController | null;
 let cachedBlocklyWorkspace: {highlightBlock: (id: string|null) => void};
 
 export interface IModelParams {
@@ -58,13 +58,88 @@ export const SimulationStore = types
     volcanoY: 5,
     cities: types.array(City),
     code: "",
-    running: false,
     data: types.array(SimDatum),
     gridColors: types.array(types.string),
     // authoring props
     requireEruption: true,
     requirePainting: true,
   })
+  .volatile(self => ({
+    running: false,
+    steppingThroughBlock: false,
+  }))
+  .actions((self) => ({
+    setBlocklyCode(code: string, workspace: any) {
+      self.code = code;
+      if (interpreterController) {
+        interpreterController.stop();
+        workspace.highlightBlock(null);
+      }
+      self.running = false;
+      cachedBlocklyWorkspace = workspace;
+      interpreterController = makeInterpreterController(code, simulation, workspace);
+    },
+    run() {
+      const reset = () => {
+        this.setBlocklyCode(self.code, cachedBlocklyWorkspace);
+      };
+      if (interpreterController) {
+        interpreterController.run(reset);
+        self.running = true;
+      }
+    },
+    reset() {
+      this.setBlocklyCode(self.code, cachedBlocklyWorkspace);
+    },
+    stop() {
+      if (interpreterController) {
+        interpreterController.stop();
+        self.running = false;
+      }
+    },
+    // pauses the interpreter run without setting self.running = false
+    pause() {
+      if (interpreterController) {
+        interpreterController.pause();
+      }
+    },
+    // only restarts if self.running = true. If user hit stop between `pause` and this
+    // function, this won't restart the run.
+    unpause() {
+      if (interpreterController && self.running) {
+        const reset = () => {
+          this.setBlocklyCode(self.code, cachedBlocklyWorkspace);
+        };
+        interpreterController.run(reset);
+      }
+    },
+    /**
+     * Steps through one complete block.
+     * This sets steppingThroughBlock to true, and then repeatedly calls `step` on the interpreter
+     * until steppingThroughBlock is false. All blocks are wrapped with code that will call endStep
+     * at the end of the block's function, which will set steppingThroughBlock to false.
+     */
+    step() {
+      self.steppingThroughBlock = true;
+
+      // guard against infinite loops or a block failing to call endStep
+      const maxInvocations = 100;
+      let invocations = 0;
+
+      function stepAsync() {
+        if (interpreterController) {
+          interpreterController.step();
+        }
+        if (self.steppingThroughBlock && invocations++ < maxInvocations) {
+          setTimeout(stepAsync, 0); // async to allow endStep to be called
+        }
+      }
+      stepAsync();
+    },
+    endStep() {
+      self.steppingThroughBlock = false;
+    }
+  }))
   .actions((self) => ({
     paintGrid(resultType: SimOutput, colorStr: string) {
       self.gridColors.clear();
@@ -104,6 +179,10 @@ export const SimulationStore = types
       if (!self.requirePainting) {
         self.paintGrid("thickness", "#ff0000");
       }
+
+      // will be used when we add animations
+      // self.pause();
+      // setTimeout(self.unpause, 1000);
     },
   }))
   .actions((self) => {
@@ -155,16 +234,6 @@ export const SimulationStore = types
           self.erupt();
         }
       },
-      setBlocklyCode(code: string, workspace: any) {
-        self.code = code;
-        if (interpreter) {
-          interpreter.stop();
-          workspace.highlightBlock(null);
-        }
-        self.running = false;
-        cachedBlocklyWorkspace = workspace;
-        interpreter = makeInterpreter(code, simulation, workspace);
-      },
       setModelParams(params: IModelParams) {
         self.windSpeed = params.windSpeed;
         self.colHeight = params.colHeight;
@@ -195,29 +264,6 @@ export const SimulationStore = types
       setAuthoringOptions(opts: SimulationAuthoringOptions) {
         self.requireEruption = opts.requireEruption;
         self.requirePainting = opts.requirePainting;
-      },
-      run() {
-        const reset = () => {
-          this.setBlocklyCode(self.code, cachedBlocklyWorkspace);
-        };
-        if (interpreter) {
-          interpreter.run(reset);
-          self.running = true;
-        }
-      },
-      reset() {
-        this.setBlocklyCode(self.code, cachedBlocklyWorkspace);
-      },
-      stop() {
-        if (interpreter) {
-          interpreter.stop();
-          self.running = false;
-        }
-      },
-      step() {
-        if (interpreter) {
-          interpreter.step();
-        }
       }
     };
   })
