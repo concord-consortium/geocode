@@ -289,6 +289,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             map={ mapPath }
             isErupting={isErupting}
           />
+
           { showSidebar &&
             <MapSidebarComponent
               width={ 500 }
@@ -331,10 +332,6 @@ export class AppComponent extends BaseComponent<IProps, IState> {
           }
         </Simulation>
 
-                  <DatBoolean path="showBlocks" label="Show blocks?" key="showBlocks" />,
-                  <DatBoolean path="showCode" label="Show code?" key="showCode" />,
-                  <DatBoolean path="showControls" label="Show controls?" key="showControls" />,
-
         </Simulation>
         { showOptionsDialog &&
           <DatGui data={simulationOptions} onUpdate={this.handleUpdate}>
@@ -363,8 +360,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             }
           </DatGui>
         }
-
-      </App>
+      </Simulation>
+    </App>
     );
   }
 
