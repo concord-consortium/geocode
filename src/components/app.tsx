@@ -10,6 +10,7 @@ import * as Maps from "./../assets/maps/maps.json";
 import * as BlocklyAuthoring from "./../assets/blockly-authoring/index.json";
 
 import BlocklyContianer from "./blockly-container";
+import ContainerDimensions from "react-container-dimensions";
 import styled from "styled-components";
 import { Tab, Tabs, TabList, TabPanel, FixWidthTabPanel } from "./tabs";
 import { js_beautify } from "js-beautify";
@@ -42,10 +43,18 @@ interface IState {
 
 const App = styled.div`
     display: flex;
-    justify-content: space-around;
+    justify-content: flex-start;
     align-items: flex-start;
     flex-direction: row;
-    margin-top: 50px;
+    height: 100vh;
+`;
+
+const Row = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
 `;
 
 const Simulation = styled.div`
@@ -56,8 +65,7 @@ const Simulation = styled.div`
 `;
 
 const Code = styled.div`
-  width: 800px;
-  max-height: 600px;
+  max-height: 400px;
   overflow: auto;
   padding: 1em;
 `;
@@ -166,23 +174,88 @@ export class AppComponent extends BaseComponent<IProps, IState> {
 
     return (
       <App className="app" >
-        <Tabs>
-          <TabList>
-            { showBlocks && <Tab>Blocks</Tab>}
-            { showCode && <Tab>Code</Tab>}
-            { showControls && <Tab>Controls</Tab>}
-          </TabList>
-          { showBlocks &&
+        <ContainerDimensions>
+          { props => {
+            const {width, height} = props;
+            const margin = 10;
+            const tabWidth = Math.floor(width * .6);
+            const mapWidth = Math.floor(width * .4) - margin;
+            const blocklyWidth = tabWidth - (margin * 2);
+            const blocklyHeight = Math.floor(height * .7);
+            return(
+              <Row>
+                <Tabs>
+                  <TabList>
+                    { showBlocks && <Tab>Blocks</Tab>}
+                    { showCode && <Tab>Code</Tab>}
+                    { showControls && <Tab>Controls</Tab>}
+                  </TabList>
+                  { showBlocks &&
+                    <FixWidthTabPanel width={`${tabWidth}px`}>
+                      <BlocklyContianer
+                        width={blocklyWidth}
+                        height={blocklyHeight}
+                        toolboxPath={toolboxPath}
+                        initialCodeSetupPath={codePath}
+                        setBlocklyCode={ setBlocklyCode} />
+                      <RunButtons {...{run, stop, step, reset, running}} />
+                    </FixWidthTabPanel>
+                  }
+                  { showCode &&
+                    <FixWidthTabPanel width={`${tabWidth}px`}>
+                      <Code>
+                        <SyntaxHighlighter>
+                          {js_beautify(code)}
+                        </SyntaxHighlighter>
+                      </Code>
+                    </FixWidthTabPanel>
+                  }
+                  { showControls &&
+                    <FixWidthTabPanel width={`${tabWidth}px`}>
+                      <Controls />
+                    </FixWidthTabPanel>
+                  }
+                </Tabs>
+
+                <Simulation >
+                  <MapComponent
+                    windDirection={ windDirection }
+                    windSpeed={ windSpeed }
+                    mass={ mass }
+                    colHeight={ colHeight }
+                    particleSize={ particleSize }
+                    numCols={ numCols }
+                    numRows={ numRows }
+                    width={ mapWidth }
+                    height={ mapWidth }
+                    gridColors={ gridColors }
+                    cities={ cities }
+                    volcanoX={ volcanoX }
+                    volcanoY={ volcanoY }
+                    map={ mapPath }
+                  />
+                </Simulation>
+              </Row>
+            ); }
+          }
+          { showCode &&
             <FixWidthTabPanel width={820}>
-              <BlocklyContianer
-                width={800}
-                height={600}
-                toolboxPath={toolboxPath}
-                initialCodeSetupPath={codePath}
-                setBlocklyCode={ setBlocklyCode} />
-                <RunButtons {...{run, stop, step, reset, running}} />
+              <Code>
+                <SyntaxHighlighter>
+                  {js_beautify(code)}
+                </SyntaxHighlighter>
+              </Code>
             </FixWidthTabPanel>
           }
+          { showControls &&
+            <FixWidthTabPanel width={820}>
+              <Controls />
+            </FixWidthTabPanel>
+          }
+        </Tabs>
+
+          </ContainerDimensions>
+
           { showCode &&
             <FixWidthTabPanel width={820}>
               <Code>
@@ -256,6 +329,12 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               />
             </LineChart>
           }
+        </Simulation>
+
+                  <DatBoolean path="showBlocks" label="Show blocks?" key="showBlocks" />,
+                  <DatBoolean path="showCode" label="Show code?" key="showCode" />,
+                  <DatBoolean path="showControls" label="Show controls?" key="showControls" />,
+
         </Simulation>
         { showOptionsDialog &&
           <DatGui data={simulationOptions} onUpdate={this.handleUpdate}>

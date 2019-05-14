@@ -23,10 +23,6 @@ const WorkSpace = styled.div`
   width: ${(p: WorkspaceProps) => `${p.width}px`};
   height: ${(p: WorkspaceProps) => `${p.height}px`};
   margin: 1em;
-  /* position: relative;
-  border: 2px solid gray;
-  border-radius: 0.5em; */
-  /* padding: 1em; */
 `;
 
 export default class BlocklyContainer extends React.Component<IProps, IState> {
@@ -77,7 +73,12 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
       r.text().then( (data) => {
         const blockOpts = {
           media: "blockly/media/",
-          toolbox: data
+          toolbox: data,
+          zoom: {
+            startScale: 0.8,
+            maxScale: 2,
+            minScale: 0.2
+          }
         };
         this.workSpace = Blockly.inject(this.workSpaceRef.current, blockOpts);
         const startBlocks = this.startBlockRef.current;
