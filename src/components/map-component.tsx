@@ -109,6 +109,9 @@ export class MapComponent extends BaseComponent<IProps, IState>{
             imagePath={AshConfig.image}
             x={volcanoPos.x + 20}
             y={volcanoPos.y + 20}
+            windDirection={windDirection}
+            windSpeed={windSpeed}
+            mass={mass}
             playing={isErupting} />
           <WindWidget windDirection={windDirection} windSpeed={windSpeed} location={{x: 50, y: 50}}/>
         </Stage>
