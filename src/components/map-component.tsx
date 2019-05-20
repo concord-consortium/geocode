@@ -2,18 +2,20 @@ import * as React from "react";
 import { ICanvasShape, Ipoint } from "../interfaces";
 import { CityType  } from "../stores/simulation-store";
 import styled from "styled-components";
-import { Stage, Sprite, Text } from "@inlet/react-pixi";
+import { Stage, Sprite } from "@inlet/react-pixi";
 import { PixiCityContainer } from "./pixi-city-container";
 import { PixiTephraMap } from "./pixi-tephra-map";
 import { PixiAxis } from "./pixi-axis";
 import { PixiGrid } from "./pixi-grid";
 import { WindWidget } from "./pixi-wind-widget";
-import Volcano from "./pixi-volcano";
+import VolcanoEmitter from "./pixi-volcano-emitter";
+import * as AshConfig from "../assets/particles/ash.json";
 
 import * as Color from "color";
 import { observer, inject } from "mobx-react";
 import { BaseComponent, IBaseProps } from "./base";
 import { getSnapshot, IStateTreeNode } from "mobx-state-tree";
+import { EmitterConfig } from "pixi-particles";
 
 const CanvDiv = styled.div`
   border: 0px solid black; border-radius: 0px;
@@ -36,6 +38,7 @@ interface IProps extends IBaseProps {
   gridColors: IStateTreeNode<any, string[]>;
   cities: CityType[];
   map: string;
+  isErupting: boolean;
 }
 
 @inject("stores")
@@ -62,7 +65,9 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       gridColors,
       windDirection,
       windSpeed,
-      map
+      mass,
+      map,
+      isErupting
     } = this.props;
     const {width, height, gridSize} = this.metrics;
 
@@ -72,6 +77,8 @@ export class MapComponent extends BaseComponent<IProps, IState>{
         return <PixiCityContainer gridSize={gridSize} key={id} position={this.toCanvasCoords({x, y})} name={name} />;
       }
     });
+
+    const volcanoPos = this.toCanvasCoords({x: volcanoX, y: volcanoY}, gridSize);
 
     return (
       <CanvDiv ref={this.ref}>
@@ -92,15 +99,25 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           {cityItems}
           <PixiAxis gridMetrics={this.metrics} toCanvasCoords={this.toCanvasCoords} />
           <PixiGrid gridMetrics={this.metrics} />
-          <Volcano gridSize={gridSize} position={this.toCanvasCoords({x: volcanoX, y: volcanoY})} />
+          <Sprite image={"./assets/volcano.png"}
+            x={volcanoPos.x - 10}
+            y={volcanoPos.y - 10}
+            width={60}
+            height={60} />
+          <VolcanoEmitter
+            config={AshConfig.config as unknown as EmitterConfig}
+            imagePath={AshConfig.image}
+            x={volcanoPos.x + 20}
+            y={volcanoPos.y + 20}
+            playing={isErupting} />
           <WindWidget windDirection={windDirection} windSpeed={windSpeed} location={{x: 50, y: 50}}/>
         </Stage>
       </CanvDiv>
     );
   }
 
-  public toCanvasCoords = (point: Ipoint): Ipoint => {
-    return {x: point.x, y: this.props.numRows - point.y - 1};
+  public toCanvasCoords = (point: Ipoint, scale = 1): Ipoint => {
+    return {x: point.x * scale, y: (this.props.numRows - point.y - 1) * scale};
   }
 
   private recomputeMetrics() {
