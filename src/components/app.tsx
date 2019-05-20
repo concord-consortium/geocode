@@ -28,6 +28,8 @@ export interface SimulationAuthoringOptions {
   showBlocks: boolean;
   showCode: boolean;
   showControls: boolean;
+  showCrossSection: boolean;
+  showChart: boolean;
 }
 
 interface IState {
@@ -77,6 +79,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         showBlocks: true,
         showCode: true,
         showControls: true,
+        showCrossSection: false,
+        showChart: false,
       }
     };
 
@@ -147,6 +151,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       showBlocks,
       showCode,
       showControls,
+      showCrossSection,
+      showChart
     } = simulationOptions;
 
     const mapPath = (Maps as {[key: string]: string})[map];
@@ -206,30 +212,34 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             map={ mapPath }
             isErupting={isErupting}
           />
-          <CrossSectionComponent
-            data={ data }
-            height={ 100 }
-            numCols={ numCols }
-            numRows={ numRows }
-            width={ 500 }
-            volcanoX={ volcanoX }
-          />
-          <LineChart width={500} height={200} data={plotData.chartData}>
-            <Line type="linear" dataKey={plotData.yAxis} stroke="red" strokeWidth={2} />
-            <CartesianGrid stroke="#ddd" strokeDasharray="5 5" />
-            <XAxis
-              type="number"
-              domain={[0, "auto"]}
-              allowDecimals={false}
-              dataKey={plotData.xAxis}
-              label={{ value: plotData.xAxis, offset: -5, position: "insideBottom" }}
+          { showCrossSection &&
+            <CrossSectionComponent
+              data={ data }
+              height={ 100 }
+              numCols={ numCols }
+              numRows={ numRows }
+              width={ 500 }
+              volcanoX={ volcanoX }
             />
-            <YAxis
-              type="number"
-              domain={[0, "auto"]}
-              label={{ value: plotData.yAxis, angle: -90, offset: 12, position: "insideBottomLeft" }}
-            />
-          </LineChart>
+          }
+          { showChart &&
+            <LineChart width={500} height={200} data={plotData.chartData}>
+              <Line type="linear" dataKey={plotData.yAxis} stroke="red" strokeWidth={2} />
+              <CartesianGrid stroke="#ddd" strokeDasharray="5 5" />
+              <XAxis
+                type="number"
+                domain={[0, "auto"]}
+                allowDecimals={false}
+                dataKey={plotData.xAxis}
+                label={{ value: plotData.xAxis, offset: -5, position: "insideBottom" }}
+              />
+              <YAxis
+                type="number"
+                domain={[0, "auto"]}
+                label={{ value: plotData.yAxis, angle: -90, offset: 12, position: "insideBottomLeft" }}
+              />
+            </LineChart>
+          }
 
         </Simulation>
 
@@ -249,6 +259,9 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 <DatBoolean path="showBlocks" label="Show blocks?" key="showBlocks" />,
                 <DatBoolean path="showCode" label="Show code?" key="showCode" />,
                 <DatBoolean path="showControls" label="Show controls?" key="showControls" />,
+
+                <DatBoolean path="showCrossSection" label="Show cross section?" key="showCrossSection" />,
+                <DatBoolean path="showChart" label="Show chart?" key="showChart" />,
 
                 // submit button. Should remain at bottom
                 <DatButton label="Generate authored model" onClick={this.generateAndOpenAuthoredUrl} key="generate" />
