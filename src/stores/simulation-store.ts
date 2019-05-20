@@ -50,9 +50,9 @@ export const SimulationStore = types
   .model("simulation", {
     numRows: 14,
     numCols: 14,
-    windSpeed: 0,
-    windDirection: 0,
-    mass: 2000,
+    windSpeed: 6,
+    windDirection: 45,
+    mass: 20000000,
     colHeight: 2000,
     particleSize: 1,
     volcanoX: 5,
