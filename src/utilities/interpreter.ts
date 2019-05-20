@@ -39,8 +39,8 @@ const makeInterperterFunc = (simulation: SimulationModelType, workspace: IBlockl
       simulation.setModelParams(params);
     });
 
-    addFunc("erupt", () => {
-      simulation.erupt();
+    addFunc("erupt", (animate: boolean) => {
+      simulation.erupt(animate);
     });
 
     addFunc("setWinddirection", (direction: number) => {
@@ -75,10 +75,11 @@ const makeInterperterFunc = (simulation: SimulationModelType, workspace: IBlockl
       console.log(params);
     });
 
-    addFunc("highlightBlock", (id: number) => {
+    addFunc("startStep", (blockId: number) => {
       if (workspace) {
-        workspace.highlightBlock(id);
+        workspace.highlightBlock(blockId);
       }
+      simulation.startStep();
     });
 
     addFunc("endStep", () => {
