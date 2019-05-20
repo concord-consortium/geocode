@@ -122,6 +122,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       numRows,
       data,
       gridColors,
+      plotData,
       cities,
       volcanoX,
       volcanoY,
@@ -151,12 +152,6 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     const mapPath = (Maps as {[key: string]: string})[map];
     const toolboxPath = (BlocklyAuthoring.toolbox as {[key: string]: string})[toolbox];
     const codePath = (BlocklyAuthoring.code as {[key: string]: string})[initialCode];
-
-    const lineData = [
-      {"wind speed": 0, "thickness": 0},
-      {"wind speed": 1, "thickness": 0.5},
-      {"wind speed": 2, "thickness": 0.2}
-    ];
 
     return (
       <App className="app" >
@@ -219,11 +214,21 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             width={ 500 }
             volcanoX={ volcanoX }
           />
-          <LineChart width={500} height={200} data={lineData}>
-            <Line type="linear" dataKey="thickness" stroke="red" strokeWidth={2} />
+          <LineChart width={500} height={200} data={plotData.chartData}>
+            <Line type="linear" dataKey={plotData.yAxis} stroke="red" strokeWidth={2} />
             <CartesianGrid stroke="#ddd" strokeDasharray="5 5" />
-            <XAxis dataKey="wind speed"  label={{ value: "Wind Speed", offset: -5, position: "insideBottom" }}/>
-            <YAxis  label={{ value: "Thickness", angle: -90, offset: 12, position: "insideBottomLeft" }}/>
+            <XAxis
+              type="number"
+              domain={[0, "auto"]}
+              allowDecimals={false}
+              dataKey={plotData.xAxis}
+              label={{ value: plotData.xAxis, offset: -5, position: "insideBottom" }}
+            />
+            <YAxis
+              type="number"
+              domain={[0, "auto"]}
+              label={{ value: plotData.yAxis, angle: -90, offset: 12, position: "insideBottomLeft" }}
+            />
           </LineChart>
 
         </Simulation>

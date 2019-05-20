@@ -1,9 +1,10 @@
-import { types } from "mobx-state-tree";
+import { types, getSnapshot } from "mobx-state-tree";
 import { autorun } from "mobx";
 import * as Color from "color";
 import gridTephraCalc from "../tephra2";
 import { IInterpreterController, makeInterpreterController } from "../utilities/interpreter";
 import { SimulationAuthoringOptions } from "../components/app";
+import { stringify } from "querystring";
 
 let _cityCounter = 0;
 const genCityId = () => `city_${_cityCounter++}`;
@@ -33,6 +34,48 @@ export interface SimDatumType {
 }
 
 export type SimOutput = "thickness";
+export type SimulationVariable = "windSpeed" | "windDirection" | "colHeight" | "mass" | "vei";
+
+const MeasurementLabel: {[key in (SimOutput | SimulationVariable)]: string} = {
+  thickness: "Thickness (mm)",
+  windSpeed: "Wind speed (m/s)",
+  windDirection: "Wind direction (degrees)",
+  mass: "Eruption mass (kg)",
+  colHeight: "Eruption height (km)",
+  vei: "VEI"
+};
+
+export const PlotData = types
+  .model("PlotData", {
+    xAxis: "",
+    yAxis: "",
+    points: types.array(types.array(types.number))    // [[x,y], [x,y], ...]
+  })
+  .actions((self) => ({
+    setXAxis(xAxis: string) {
+      if (xAxis !== self.xAxis) {
+        self.points.clear();
+      }
+      self.xAxis = xAxis;
+    },
+    setYAxis(yAxis: string) {
+      if (yAxis !== self.yAxis) {
+        self.points.clear();
+      }
+      self.yAxis = yAxis;
+    },
+  }))
+  .views((self) => ({
+    get chartData() {
+      return self.points
+        .sort((a, b) => a[0] - b[0])
+        .map(xy => ({
+          [self.xAxis]: xy[0],
+          [self.yAxis]: xy[1]
+        }));
+    }
+  }));
+const plotData = PlotData.create({});
 
 export const City = types
   .model("City", {
@@ -53,6 +96,7 @@ export const SimulationStore = types
     windSpeed: 6,
     windDirection: 45,
     mass: 20000000,
+    vei: 0,
     colHeight: 2000,
     particleSize: 1,
     volcanoX: 5,
@@ -61,6 +105,7 @@ export const SimulationStore = types
     code: "",
     data: types.array(SimDatum),
     gridColors: types.array(types.string),
+    plotData: types.optional(PlotData, getSnapshot(plotData)),
     isErupting: false,
     // authoring props
     requireEruption: true,
@@ -168,7 +213,12 @@ export const SimulationStore = types
     },
     clearGrid() {
       self.gridColors.clear();
-    }
+    },
+    addPlotPoint(xAxis: string, yAxis: string, x: number, y: number) {
+      self.plotData.setXAxis(xAxis);
+      self.plotData.setYAxis(yAxis);
+      self.plotData.points.push([x, y]);
+    },
   }))
   .actions((self) => ({
     erupt(animate = false) {
@@ -208,6 +258,20 @@ export const SimulationStore = types
         }
       }
     },
+    calculateAndAddPlotPoint(xData: SimulationVariable, yData: SimOutput, cityName: string) {
+      const xLabel = MeasurementLabel[xData];
+      const yLabel = MeasurementLabel[yData];
+
+      const city = self.cities.find(c => c.name === cityName);
+      if (!city) return;
+
+      const dataIndex = city.x + city.y * self.numCols;
+
+      const xVal = self[xData];
+      const yVal = self.data[dataIndex][yData];
+
+      self.addPlotPoint(xLabel, yLabel, xVal, yVal);
+    }
   }))
   .actions((self) => {
     return {
@@ -232,12 +296,15 @@ export const SimulationStore = types
       },
       setMass(mass: number) {
         self.mass = mass;
+        // set equivalent VEI for reporting
+        self.vei = Math.max(7, Math.min(15, Math.round(Math.log(mass) / Math.LN10))) - 7;
         if (!self.requireEruption) {
           self.erupt();
         }
       },
       setVEI(vei: number) {
         const clippedVEI = Math.max(0, Math.min(vei, 8));
+        self.vei = clippedVEI;
         // for now this is just setting the mass
         // we want vei 1 = 1e8, vei 8 = 1e15
         const mass = Math.pow(10, clippedVEI + 7);

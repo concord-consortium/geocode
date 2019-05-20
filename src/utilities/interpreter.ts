@@ -1,4 +1,4 @@
-import { IModelParams, SimOutput } from "../stores/simulation-store";
+import { IModelParams, SimOutput, SimulationVariable } from "../stores/simulation-store";
 
 // import { Interpreter } from "js-interpreter";
 import { SimulationModelType } from "../stores/simulation-store";
@@ -69,6 +69,10 @@ const makeInterperterFunc = (simulation: SimulationModelType, workspace: IBlockl
 
     addFunc("paintGrid", (params: {resultType: SimOutput, color: string}) => {
       simulation.paintGrid(params.resultType, params.color);
+    });
+
+    addFunc("calculateAndAddPlotPoint", (params: {xData: SimulationVariable, yData: SimOutput, cityName: string}) => {
+      simulation.calculateAndAddPlotPoint(params.xData, params.yData, params.cityName);
     });
 
     addFunc("log", (params) => {
