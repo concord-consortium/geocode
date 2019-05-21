@@ -81,7 +81,7 @@ function configureAnimation(props: IProps) {
   const kFrequencyScale = 0.0005;
   const kMinAlpha = 0.3;
   const kAlphaScale = 0.05;
-  const kSizeScaleStart = 7;
+  const kSizeScaleStart = 8;
   const kSizeScale = 0.3;
   const kSpeedScaleStart = 7;
   const kSpeedScale = 0.2;

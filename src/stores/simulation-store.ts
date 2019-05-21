@@ -207,8 +207,9 @@ export const SimulationStore = types
       self.data.forEach(datum => {
         const val: number = datum[resultType];
         // Need to think of how to handle scaling.
+        const scaledAlpha = val / 4;
         // Note: toFixed is used because of https://github.com/Qix-/color/issues/156
-        const alpha = Math.min(Number.parseFloat(val.toFixed(2)), 1);
+        const alpha = Math.min(Number.parseFloat(scaledAlpha.toFixed(2)), 1);
         const gridColor = Color(baseColor).alpha(alpha);
         self.gridColors.push(gridColor.toString());
       });
