@@ -13,9 +13,14 @@ const StyledControls = styled.div`
 
 const StyledButton = styled.div`
   padding: 0.25em;
-  margin: 0.25em;
+  margin: 0.5em 1em;
   border: 1px solid hsl(0, 0%, 25%);
   border-radius: 0.2em;
+`;
+
+const HorizontalContainer = styled.div`
+  display: flex;
+  align-items: baseline;
 `;
 
 interface IControls {
@@ -33,11 +38,17 @@ interface IControls {
 }
 
 interface IProps extends IBaseProps {}
-interface IState {}
+interface IState {
+  animate: boolean;
+}
 
 @inject("stores")
 @observer
 export class Controls extends BaseComponent<IProps, IState> {
+  public state = {
+    animate: true
+  };
+
   public render() {
 
     const {
@@ -89,7 +100,17 @@ export class Controls extends BaseComponent<IProps, IState> {
           onChange={this.changeWindSpeed}
           name="Wind Speed (m/s)"
         />
-        <StyledButton onClick={this.erupt}>Erupt</StyledButton>
+        <HorizontalContainer>
+          <StyledButton onClick={this.erupt}>Erupt</StyledButton>
+          <label>
+            <input
+              name="animate eruption"
+              type="checkbox"
+              checked={this.state.animate}
+              onChange={this.setAnimation} />
+            Animate eruption
+          </label>
+        </HorizontalContainer>
       </StyledControls>
     );
   }
@@ -121,8 +142,21 @@ export class Controls extends BaseComponent<IProps, IState> {
   }
 
   private erupt = () => {
-    this.stores.erupt();
-    this.stores.paintGrid("thickness", "#ff0000");
+    this.stores.erupt(this.state.animate);
+    if (this.state.animate) {
+      setTimeout(() => {
+        this.stores.endEruption();
+        this.stores.paintGrid("thickness", "#ff0000");
+      }, 3000);
+    } else {
+      this.stores.paintGrid("thickness", "#ff0000");
+    }
+  }
+
+  private setAnimation = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({
+      animate: event.target.checked
+    });
   }
 }
 

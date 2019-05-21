@@ -416,7 +416,11 @@ Blockly.Blocks['erupt'] = {
   init: function() {
     this.appendDummyInput()
         .appendField("Erupt with current values");
-    this.setInputsInline(true);
+    this.appendDummyInput()
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField(new Blockly.FieldCheckbox("TRUE"), "animate")
+        .appendField("Show animation");
+    this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(330);
@@ -426,10 +430,10 @@ Blockly.Blocks['erupt'] = {
 };
 
 Blockly.JavaScript['erupt'] = function(block) {
-  // TODO: Assemble JavaScript into code variable.
+  var animate = block.getFieldValue('animate') == 'TRUE';
   var code = `
-  erupt();
-`;
+    erupt(${animate});
+  `;
   return code;
 }
 

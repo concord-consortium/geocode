@@ -82,7 +82,7 @@
                       <block type="setEruptionMass" id="g1oYU/)m7d,HP{%tyWu3">
                         <value name="eruptionMass">
                           <block type="math_number" id="$=I+kM5Ri!b(U^Vg,`o;">
-                            <field name="NUM">100000000</field>
+                            <field name="NUM">20000000</field>
                           </block>
                         </value>
                         <next>

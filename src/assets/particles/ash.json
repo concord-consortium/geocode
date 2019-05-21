@@ -1,0 +1,52 @@
+{
+  "image": "./assets/particles/ash.png",
+  "config": {
+    "alpha": {
+      "start": 1,
+      "end": 0.4
+    },
+    "scale": {
+      "start": 0.001,
+      "end": 0.4,
+      "minimumScaleMultiplier": 1
+    },
+    "speed": {
+      "start": 50,
+      "end": 0,
+      "minimumSpeedMultiplier": 1.5
+    },
+    "maxSpeed": 500,
+    "startRotation": {
+      "min": 0,
+      "max": 360
+    },
+    "noRotation": true,
+    "rotationSpeed": {
+      "min": 0,
+      "max": 0
+    },
+    "lifetime": {
+      "min": 0,
+      "max": 1.5
+    },
+    "blendMode": "normal",
+    "frequency": 0.001,
+    "emitterLifetime": -1,
+    "maxParticles": 700,
+    "addAtBack": true,
+    "spawnType": "circle",
+    "spawnCircle": {
+      "x": 0,
+      "y": 0,
+      "r": 2
+    },
+    "pos": {
+      "x": 0,
+      "y": 0
+    },
+    "acceleration": {
+      "x": 0,
+      "y": 0
+    }
+  }
+}

@@ -18,6 +18,7 @@ export interface IModelParams {
   windDirection: number;
   volcanoX: number;
   volcanoY: number;
+  isErupting: boolean;
 }
 
 // This is a bit silly at the moment because our model only outputs one value:
@@ -49,9 +50,9 @@ export const SimulationStore = types
   .model("simulation", {
     numRows: 14,
     numCols: 14,
-    windSpeed: 0,
-    windDirection: 0,
-    mass: 2000,
+    windSpeed: 6,
+    windDirection: 45,
+    mass: 20000000,
     colHeight: 2000,
     particleSize: 1,
     volcanoX: 5,
@@ -60,6 +61,7 @@ export const SimulationStore = types
     code: "",
     data: types.array(SimDatum),
     gridColors: types.array(types.string),
+    isErupting: false,
     // authoring props
     requireEruption: true,
     requirePainting: true,
@@ -67,6 +69,11 @@ export const SimulationStore = types
   .volatile(self => ({
     running: false,
     steppingThroughBlock: false,
+  }))
+  .actions((self) => ({
+    endEruption() {
+      self.isErupting = false;
+    }
   }))
   .actions((self) => ({
     setBlocklyCode(code: string, workspace: any) {
@@ -90,12 +97,14 @@ export const SimulationStore = types
     },
     reset() {
       this.setBlocklyCode(self.code, cachedBlocklyWorkspace);
+      self.isErupting = false;
     },
     stop() {
       if (interpreterController) {
         interpreterController.stop();
         self.running = false;
       }
+      self.isErupting = false;
     },
     // pauses the interpreter run without setting self.running = false
     pause() {
@@ -136,6 +145,10 @@ export const SimulationStore = types
       }
       stepAsync();
     },
+    startStep() {
+      // turn off animation at beginning of next block
+      self.endEruption();
+    },
     endStep() {
       self.steppingThroughBlock = false;
     }
@@ -152,10 +165,13 @@ export const SimulationStore = types
         const gridColor = Color(baseColor).alpha(alpha);
         self.gridColors.push(gridColor.toString());
       });
+    },
+    clearGrid() {
+      self.gridColors.clear();
     }
   }))
   .actions((self) => ({
-    erupt() {
+    erupt(animate = false) {
       const rows = self.numRows;
       const cols = self.numCols;
       const vX = self.volcanoX;
@@ -181,8 +197,16 @@ export const SimulationStore = types
       }
 
       // will be used when we add animations
-      // self.pause();
-      // setTimeout(self.unpause, 1000);
+      if (animate) {
+        self.clearGrid();
+        self.isErupting = true;
+        self.pause();
+
+        // if user hit run button, this stop lasts 3000 ms
+        if (self.running) {
+          setTimeout(self.unpause, 3000);
+        }
+      }
     },
   }))
   .actions((self) => {
