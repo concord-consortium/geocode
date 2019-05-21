@@ -11,6 +11,14 @@ const StyledControls = styled.div`
   align-items: flex-start;
 `;
 
+const ValueOutput = styled.div`
+  margin: 0.5em 1em;
+  padding: 3px 14px;
+  border: 1px solid #BBB;
+  border-radius: 4px;
+  background-color: #F1F1F1;
+`;
+
 const StyledButton = styled.div`
   padding: 0.25em;
   margin: 0.5em 1em;
@@ -18,9 +26,12 @@ const StyledButton = styled.div`
   border-radius: 0.2em;
 `;
 
+interface HorizontalContainerProps {
+  alignItems?: string;
+}
 const HorizontalContainer = styled.div`
   display: flex;
-  align-items: baseline;
+  align-items: ${(p: HorizontalContainerProps) => `${p.alignItems ? p.alignItems : "flex-start"}`};
 `;
 
 interface IControls {
@@ -63,74 +74,101 @@ export class Controls extends BaseComponent<IProps, IState> {
       <StyledControls>
         <label>
           Wind speed:
-          <RangeControl
-            min={0}
-            max={30}
-            value={windSpeed}
-            step={1}
-            tickStep={5}
-            width={300}
-            onChange={this.changeWindSpeed}
-          />
+          <HorizontalContainer>
+            <RangeControl
+              min={0}
+              max={30}
+              value={windSpeed}
+              step={1}
+              tickStep={5}
+              width={300}
+              onChange={this.changeWindSpeed}
+            />
+            <ValueOutput>
+              {windSpeed} m/s
+            </ValueOutput>
+          </HorizontalContainer>
         </label>
         <label>
           Wind direction:
-          <RangeControl
-            min={0}
-            max={360}
-            value={windDirection}
-            step={10}
-            tickStep={90}
-            width={300}
-            onChange={this.changeWindDirection}
-          />
+          <HorizontalContainer>
+            <RangeControl
+              min={0}
+              max={360}
+              value={windDirection}
+              step={10}
+              tickStep={90}
+              width={300}
+              onChange={this.changeWindDirection}
+            />
+            <ValueOutput>
+              {windDirection} degrees from North
+            </ValueOutput>
+          </HorizontalContainer>
         </label>
         <label>
           Eruption mass:
-          <RangeControl
-            min={8}
-            max={15}
-            value={Math.round(Math.log(mass) / Math.LN10)}
-            step={1}
-            tickMap={{
-              8: "10<sup>8</sup>",
-              9: "10<sup>9</sup>",
-              10: "10<sup>10</sup>",
-              11: "10<sup>11</sup>",
-              12: "10<sup>12</sup>",
-              13: "10<sup>13</sup>",
-              14: "10<sup>14</sup>",
-              15: "10<sup>15</sup>",
-            }}
-            width={300}
-            onChange={this.changeMass}
-          />
+          <HorizontalContainer>
+            <RangeControl
+              min={8}
+              max={15}
+              value={Math.round(Math.log(mass) / Math.LN10)}
+              step={1}
+              tickMap={{
+                8: "10<sup>8</sup>",
+                9: "10<sup>9</sup>",
+                10: "10<sup>10</sup>",
+                11: "10<sup>11</sup>",
+                12: "10<sup>12</sup>",
+                13: "10<sup>13</sup>",
+                14: "10<sup>14</sup>",
+                15: "10<sup>15</sup>",
+              }}
+              width={300}
+              onChange={this.changeMass}
+            />
+            <ValueOutput
+              dangerouslySetInnerHTML={
+                {__html: `10<sup>${Math.round(Math.log(mass) / Math.LN10)}</sup> kg`}
+            } />
+          </HorizontalContainer>
         </label>
         <label>
           Column height
-          <RangeControl
-            min={1}
-            max={30}
-            value={colHeight / 1000}
-            step={1}
-            tickArray={[1, 5, 10, 15, 20, 25, 30]}
-            width={300}
-            onChange={this.changeColumnHeight}
-          />
+          <HorizontalContainer>
+            <RangeControl
+              min={1}
+              max={30}
+              value={colHeight / 1000}
+              step={1}
+              tickArray={[1, 5, 10, 15, 20, 25, 30]}
+              width={300}
+              onChange={this.changeColumnHeight}
+            />
+            <ValueOutput>
+              {colHeight / 1000} km
+            </ValueOutput>
+          </HorizontalContainer>
         </label>
         <label>
           Particle size:
-          <RangeControl
-            min={1}
-            max={64}
-            value={particleSize}
-            step={1}
-            tickArray={[1, 10, 20, 30, 40, 50, 64]}
-            width={300}
-            onChange={this.changeSize}
-          />
+          <HorizontalContainer>
+            <RangeControl
+              min={1}
+              max={64}
+              value={particleSize}
+              step={1}
+              tickArray={[1, 10, 20, 30, 40, 50, 64]}
+              width={300}
+              onChange={this.changeSize}
+            />
+            <ValueOutput>
+              {particleSize} mm
+            </ValueOutput>
+          </HorizontalContainer>
         </label>
-        <HorizontalContainer>
+        <HorizontalContainer
+            alignItems="baseline">
           <StyledButton onClick={this.erupt}>Erupt</StyledButton>
           <label>
             <input
