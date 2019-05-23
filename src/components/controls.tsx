@@ -11,6 +11,14 @@ const StyledControls = styled.div`
   align-items: flex-start;
 `;
 
+const ValueOutput = styled.div`
+  margin: 0.5em 1em;
+  padding: 3px 14px;
+  border: 1px solid #BBB;
+  border-radius: 4px;
+  background-color: #F1F1F1;
+`;
+
 const StyledButton = styled.div`
   padding: 0.25em;
   margin: 0.5em 1em;
@@ -18,9 +26,12 @@ const StyledButton = styled.div`
   border-radius: 0.2em;
 `;
 
+interface HorizontalContainerProps {
+  alignItems?: string;
+}
 const HorizontalContainer = styled.div`
   display: flex;
-  align-items: baseline;
+  align-items: ${(p: HorizontalContainerProps) => `${p.alignItems ? p.alignItems : "flex-start"}`};
 `;
 
 interface IControls {
@@ -61,46 +72,103 @@ export class Controls extends BaseComponent<IProps, IState> {
 
     return(
       <StyledControls>
-        <RangeControl
-          min={0}
-          max={360}
-          step={0.2}
-          onChange={this.changeWindDirection}
-          value={windDirection}
-          name="Wind Direction"
-        />
-        <RangeControl
-          min={0.1}
-          max={5}
-          step={0.1}
-          onChange={this.changeSize}
-          value={particleSize}
-          name="Particle Size (1 - 10)"
-        />
-        <RangeControl
-          min={10}
-          max={30}
-          step={0.1}
-          value={Math.log(mass)}
-          onChange={this.changeMass}
-          name="Ejected Mass (10kg – 1e12 kg)"
-        />
-        <RangeControl
-          min={2000}
-          max={25000}
-          value={colHeight}
-          onChange={this.changeColumnHeight}
-          name="Column Height (2km – 25km)"
-        />
-        <RangeControl
-          min={0}
-          max={20}
-          step={0.1}
-          value={windSpeed}
-          onChange={this.changeWindSpeed}
-          name="Wind Speed (m/s)"
-        />
-        <HorizontalContainer>
+        <label>
+          Wind speed:
+          <HorizontalContainer>
+            <RangeControl
+              min={0}
+              max={30}
+              value={windSpeed}
+              step={1}
+              tickStep={5}
+              width={300}
+              onChange={this.changeWindSpeed}
+            />
+            <ValueOutput>
+              {windSpeed} m/s
+            </ValueOutput>
+          </HorizontalContainer>
+        </label>
+        <label>
+          Wind direction:
+          <HorizontalContainer>
+            <RangeControl
+              min={0}
+              max={360}
+              value={windDirection}
+              step={10}
+              tickStep={90}
+              width={300}
+              onChange={this.changeWindDirection}
+            />
+            <ValueOutput>
+              {windDirection} degrees from North
+            </ValueOutput>
+          </HorizontalContainer>
+        </label>
+        <label>
+          Eruption mass:
+          <HorizontalContainer>
+            <RangeControl
+              min={8}
+              max={15}
+              value={Math.round(Math.log(mass) / Math.LN10)}
+              step={1}
+              tickMap={{
+                8: "10<sup>8</sup>",
+                9: "10<sup>9</sup>",
+                10: "10<sup>10</sup>",
+                11: "10<sup>11</sup>",
+                12: "10<sup>12</sup>",
+                13: "10<sup>13</sup>",
+                14: "10<sup>14</sup>",
+                15: "10<sup>15</sup>",
+              }}
+              width={300}
+              onChange={this.changeMass}
+            />
+            <ValueOutput
+              dangerouslySetInnerHTML={
+                {__html: `10<sup>${Math.round(Math.log(mass) / Math.LN10)}</sup> kg`}
+            } />
+          </HorizontalContainer>
+        </label>
+        <label>
+          Column height
+          <HorizontalContainer>
+            <RangeControl
+              min={1}
+              max={30}
+              value={colHeight / 1000}
+              step={1}
+              tickArray={[1, 5, 10, 15, 20, 25, 30]}
+              width={300}
+              onChange={this.changeColumnHeight}
+            />
+            <ValueOutput>
+              {colHeight / 1000} km
+            </ValueOutput>
+          </HorizontalContainer>
+        </label>
+        <label>
+          Particle size:
+          <HorizontalContainer>
+            <RangeControl
+              min={1}
+              max={64}
+              value={particleSize}
+              step={1}
+              tickArray={[1, 10, 20, 30, 40, 50, 64]}
+              width={300}
+              onChange={this.changeSize}
+            />
+            <ValueOutput>
+              {particleSize} mm
+            </ValueOutput>
+          </HorizontalContainer>
+        </label>
+        <HorizontalContainer
+            alignItems="baseline">
           <StyledButton onClick={this.erupt}>Erupt</StyledButton>
           <label>
             <input
@@ -115,29 +183,24 @@ export class Controls extends BaseComponent<IProps, IState> {
     );
   }
 
-  private changeWindDirection = (input: React.FormEvent<HTMLInputElement>) => {
-    const direction = parseFloat(input.currentTarget.value);
+  private changeWindDirection = (direction: number) => {
     this.stores.setWindDirection(direction);
   }
 
-  private changeWindSpeed = (input: React.FormEvent<HTMLInputElement>) => {
-    const speed = parseFloat(input.currentTarget.value);
+  private changeWindSpeed = (speed: number) => {
     this.stores.setWindSpeed(speed);
   }
 
-  private changeColumnHeight = (input: React.FormEvent<HTMLInputElement>) => {
-    const height = parseFloat(input.currentTarget.value);
-    this.stores.setColumnHeight(height);
+  private changeColumnHeight = (height: number) => {
+    this.stores.setColumnHeight(height * 1000);
   }
 
-  private changeMass = (input: React.FormEvent<HTMLInputElement>) => {
-    const massLog = parseFloat(input.currentTarget.value);
-    const mass = Math.exp(massLog);
+  private changeMass = (vei: number) => {
+    const mass =  Math.pow(10, vei);
     this.stores.setMass(mass);
   }
 
-  private changeSize = (input: React.FormEvent<HTMLInputElement>) => {
-    const size = parseFloat(input.currentTarget.value);
+  private changeSize = (size: number) => {
     this.stores.setParticleSize(size);
   }
 
