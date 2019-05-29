@@ -123,6 +123,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       setBlocklyCode,
       colHeight,
       particleSize,
+      vei,
       numCols,
       numRows,
       data,
@@ -194,12 +195,6 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             </FixWidthTabPanel>
           }
         </Tabs>
-        <MapSidebarComponent
-            width={ 100 }
-            height={ 500 }
-            windSpeed={ windSpeed }
-            windDirection={ windDirection }
-          />
         <Simulation >
           <MapComponent
             windDirection={ windDirection }
@@ -246,9 +241,17 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               />
             </LineChart>
           }
-
+          <MapSidebarComponent
+            width={ 500 }
+            height={ 100 }
+            windSpeed={ windSpeed }
+            windDirection={ windDirection }
+            colHeight={ colHeight }
+            vei={ vei }
+            mass={ mass }
+            particleSize={ particleSize }
+          />
         </Simulation>
-
         { showOptionsDialog &&
           <DatGui data={simulationOptions} onUpdate={this.handleUpdate}>
             <DatButton label="Model options" onClick={this.toggleShowOptions} />

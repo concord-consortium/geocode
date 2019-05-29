@@ -1,8 +1,10 @@
 import * as React from "react";
 import styled from "styled-components";
 import { BaseComponent, IBaseProps } from "./base";
-import { Stage } from "@inlet/react-pixi";
+import { Stage, Text } from "@inlet/react-pixi";
 import { WindWidget } from "./pixi-wind-widget";
+import { ColumnHeightWidget } from "./pixi-column-height-widget";
+import { SidebarDataDisplay } from "./pixi-sidebar-data-display";
 import * as Color from "color";
 import { observer, inject } from "mobx-react";
 
@@ -11,12 +13,21 @@ const CanvDiv = styled.div`
   margin: 1em;
 `;
 
+const style = new PIXI.TextStyle({
+  fontFamily: "Arial",
+  fontSize: 12,
+});
+
 interface IState {}
 interface IProps extends IBaseProps {
   width: number;
   height: number;
   windSpeed: number;
   windDirection: number;
+  colHeight: number;
+  vei: number;
+  mass: number;
+  particleSize: number;
 }
 interface ISidebarMetrics {
   width: number;
@@ -33,7 +44,7 @@ export class MapSidebarComponent extends BaseComponent <IProps, IState> {
     public componentDidMount() {
       this.recomputeMetrics();
     }
-  
+
     public componentDidUpdate(prevProps: IProps) {
       this.recomputeMetrics();
     }
@@ -44,10 +55,15 @@ export class MapSidebarComponent extends BaseComponent <IProps, IState> {
         const {
             windDirection,
             windSpeed,
+            colHeight,
+            vei,
+            mass,
+            particleSize
         } = this.props;
         const {width, height} = this.metrics;
 
-        return (<CanvDiv ref={this.ref}>
+        return (
+        <CanvDiv ref={this.ref}>
             <Stage
               width={width}
               height={height}
@@ -57,7 +73,30 @@ export class MapSidebarComponent extends BaseComponent <IProps, IState> {
                   antialias: true
                 }
               } >
-                <WindWidget windDirection={windDirection} windSpeed={windSpeed} location={{x: 50, y: 50}}/>
+                <Text x={70} y={15} style={style} anchor={(0.5)} text="Wind Speed/Direction" />
+                <WindWidget
+                  windDirection={windDirection}
+                  windSpeed={windSpeed}
+                  location={{x: 70, y: 80}}
+                />
+                <Text
+                  x={175}
+                  y={15}
+                  style={style}
+                  anchor={(0.5)}
+                  text="Column Height"
+                />
+                <ColumnHeightWidget
+                  colHeight={colHeight}
+                  location={{x: 175, y: 80}}
+                />
+                <SidebarDataDisplay
+                  vei={vei}
+                  colHeight={colHeight}
+                  mass={mass}
+                  particleSize={particleSize}
+                  location={{x: 350, y: 15}}
+                />
             </Stage>
         </CanvDiv>);
     }
