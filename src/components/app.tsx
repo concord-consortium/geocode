@@ -4,6 +4,7 @@ import DatGui, { DatBoolean, DatButton, DatSelect } from "react-dat-gui";
 import { LineChart, Line, CartesianGrid, XAxis, YAxis } from "recharts";
 import { BaseComponent, IBaseProps } from "./base";
 import { MapComponent } from "./map-component";
+import { MapSidebarComponent } from "./map-sidebar-component";
 import { CrossSectionComponent } from "./cross-section-component";
 import * as Maps from "./../assets/maps/maps.json";
 import * as BlocklyAuthoring from "./../assets/blockly-authoring/index.json";
@@ -193,7 +194,12 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             </FixWidthTabPanel>
           }
         </Tabs>
-
+        <MapSidebarComponent
+            width={ 100 }
+            height={ 500 }
+            windSpeed={ windSpeed }
+            windDirection={ windDirection }
+          />
         <Simulation >
           <MapComponent
             windDirection={ windDirection }
