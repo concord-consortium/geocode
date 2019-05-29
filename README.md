@@ -2,9 +2,9 @@
 
 ## About
 
-The goal of GeoCode is to get students exploring geological theats using
+The goal of GeoCode is to get students exploring geological threats using
 the practice of programming. In this case, we are using Blockly to generate
-code that runs a simple tephra distrobution model.
+code that runs a simple tephra distribution model.
 
 Students change eruption parameters using [Blockly](https://developers.google.com/blockly/).
 
@@ -33,10 +33,32 @@ Students change eruption parameters using [Blockly](https://developers.google.co
 If you want to build a local version run `npm build`, it will create the files in the `dist` folder.
 You *do not* need to build to deploy the code, that is automatic.  See more info in the Deployment section below.
 
+### Contributing:
+
+* Find a story from the [GeoCode - Pivotal Tracker](https://www.pivotaltracker.com/n/projects/2231509)
+* Assign yourself the role story owner.
+* Add `npaessel` or `sfentress` as a code reviewer for the story.
+* Copy the Story ID, you will need it in the next step.
+* Create a git topic branch in the format of  `#####-pt-story-headline-abbreviated`
+where the PT story ID is thefirst part of the branch name.
+* In your commit comment-body reference the PT Story ID  and URL.  
+e.g.: `[#1234567] https://www.pivotaltracker.com/story/show/1234567`
+Commits should have concise headlines with details in the body.
+* Test and lint your branch.
+* Push it to GitHub e.g. `git push --set-upstream origin #####-pt-story-headline-abbreviated`
+* After a few moments, your deployed branch should be available at
+`http://geocode-app.concord.org/branch/<branchname>/index.html`.  
+Verify that your deploy worked, and copy the URL.
+* When you are satisfied with your commits, and the deployment looks good, submit
+a pull request for your branch in GitHub, adding `npaessel` or `sfentress`
+as code reviewers. In your pull request summarize the work, reference the PT  
+story, and provide a link to the deployed demo branch.
+* Update the PT story with a link to the demo deployment and the GitHub pull request.
+
 ### Stores
 
-At the moment all data is saved in the store `stores/simulation-store.ts`.
-The store is coupled to the simulation, and the code interpreter. It would be
+At the moment, all data is saved in the store `stores/simulation-store.ts`.
+The store is coupled to the simulation and the code interpreter. It would be
 nice to silo these three concerns better.
 
 ### The simulation and tephra calculation
@@ -89,8 +111,6 @@ simulation store.
    `TypeScript React` in the status bar and select 'Use Workspace Version' in the popup menu.
 
 ## Deployment
-
-*TODO* Set up Travis Deployment
 
 Production releases to S3 are based on the contents of the /dist folder and are built automatically by Travis
 for each branch pushed to GitHub and each merge into production.
