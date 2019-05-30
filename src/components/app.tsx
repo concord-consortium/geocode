@@ -213,6 +213,16 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             map={ mapPath }
             isErupting={isErupting}
           />
+          <MapSidebarComponent
+            width={ 500 }
+            height={ 100 }
+            windSpeed={ windSpeed }
+            windDirection={ windDirection }
+            colHeight={ colHeight }
+            vei={ vei }
+            mass={ mass }
+            particleSize={ particleSize }
+          />
           { showCrossSection &&
             <CrossSectionComponent
               data={ data }
@@ -241,16 +251,6 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               />
             </LineChart>
           }
-          <MapSidebarComponent
-            width={ 500 }
-            height={ 100 }
-            windSpeed={ windSpeed }
-            windDirection={ windDirection }
-            colHeight={ colHeight }
-            vei={ vei }
-            mass={ mass }
-            particleSize={ particleSize }
-          />
         </Simulation>
         { showOptionsDialog &&
           <DatGui data={simulationOptions} onUpdate={this.handleUpdate}>
