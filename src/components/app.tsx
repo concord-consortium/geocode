@@ -307,7 +307,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               }
               </Simulation>
             </Row>
-          );}
+          ); }
         }
       </ContainerDimensions>
     </App>
