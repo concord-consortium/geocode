@@ -31,6 +31,7 @@ export interface SimulationAuthoringOptions {
   showControls: boolean;
   showCrossSection: boolean;
   showChart: boolean;
+  showSidebar: boolean;
 }
 
 interface IState {
@@ -82,6 +83,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         showControls: true,
         showCrossSection: false,
         showChart: false,
+        showSidebar: false,
       }
     };
 
@@ -154,7 +156,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       showCode,
       showControls,
       showCrossSection,
-      showChart
+      showChart,
+      showSidebar
     } = simulationOptions;
 
     const mapPath = (Maps as {[key: string]: string})[map];
@@ -213,16 +216,18 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             map={ mapPath }
             isErupting={isErupting}
           />
-          <MapSidebarComponent
-            width={ 500 }
-            height={ 100 }
-            windSpeed={ windSpeed }
-            windDirection={ windDirection }
-            colHeight={ colHeight }
-            vei={ vei }
-            mass={ mass }
-            particleSize={ particleSize }
-          />
+          { showSidebar && 
+            <MapSidebarComponent
+              width={ 500 }
+              height={ 100 }
+              windSpeed={ windSpeed }
+              windDirection={ windDirection }
+              colHeight={ colHeight }
+              vei={ vei }
+              mass={ mass }
+              particleSize={ particleSize }
+            />
+          }
           { showCrossSection &&
             <CrossSectionComponent
               data={ data }
@@ -271,6 +276,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
 
                 <DatBoolean path="showCrossSection" label="Show cross section?" key="showCrossSection" />,
                 <DatBoolean path="showChart" label="Show chart?" key="showChart" />,
+                <DatBoolean path="showSidebar" label="Show sidebar?" key="showSidebar" />,
 
                 // submit button. Should remain at bottom
                 <DatButton label="Generate authored model" onClick={this.generateAndOpenAuthoredUrl} key="generate" />

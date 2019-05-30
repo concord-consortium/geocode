@@ -112,7 +112,7 @@ export class MapSidebarComponent extends BaseComponent <IProps, IState> {
                   colHeight={colHeight}
                   mass={mass}
                   particleSize={particleSize}
-                  location={{x: 350, y: 10}}
+                  location={{x: 340, y: 10}}
                 />
             </Stage>
         </CanvDiv>);
