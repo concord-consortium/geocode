@@ -103,6 +103,7 @@ export const SimulationStore = types
     volcanoY: 5,
     cities: types.array(City),
     code: "",
+    log: "",
     data: types.array(SimDatum),
     gridColors: types.array(types.string),
     plotData: types.optional(PlotData, getSnapshot(plotData)),
@@ -168,6 +169,9 @@ export const SimulationStore = types
         };
         interpreterController.run(reset);
       }
+    },
+    clearLog() {
+      self.log = "";
     },
     /**
      * Steps through one complete block.
@@ -354,6 +358,9 @@ export const SimulationStore = types
           self.cities.push(City.create({id: genCityId(), name, x, y}));
         }
 
+      },
+      logInfo(data: any) {
+          self.log += (data) + "\n";
       },
       setAuthoringOptions(opts: SimulationAuthoringOptions) {
         self.requireEruption = opts.requireEruption;

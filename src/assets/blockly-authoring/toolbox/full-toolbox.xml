@@ -18,6 +18,7 @@
           <block type="outputPaintGrid"></block>
           <block type="outputPlot"></block>
           <block type="redrawMap"></block>
+          <block type="logprint"></block>
         </category>
         <category name="Logic" colour="%{BKY_LOGIC_HUE}">
           <block type="controls_if"></block>
@@ -58,26 +59,27 @@
     </category>
     <category name="Variables" colour="330" custom="VARIABLE">
     </category>
-        <category name="Data" colour="%{BKY_MATH_HUE}">
-          <block type="text">
-              <field name="TEXT"></field>
-          </block>
-          <block type="math_number">
-            <field name="NUM">123</field>
-          </block>
-          <block type="math_arithmetic"></block>
-          <block type="math_single"></block>
-          <block type="math_random_int">
-            <value name="FROM">
-              <block type="math_number">
-                <field name="NUM">1</field>
-              </block>
-            </value>
-            <value name="TO">
-              <block type="math_number">
-                <field name="NUM">100</field>
-              </block>
-            </value>
-          </block>
-        </category>
+      <category name="Data" colour="%{BKY_MATH_HUE}">
+        <block type="text">
+            <field name="TEXT"></field>
+        </block>
+        <block type="math_number">
+          <field name="NUM">123</field>
+        </block>
+        <block type="math_arithmetic"></block>
+        <block type="math_single"></block>
+        <block type="math_random_int">
+          <value name="FROM">
+            <block type="math_number">
+              <field name="NUM">1</field>
+            </block>
+          </value>
+          <value name="TO">
+            <block type="math_number">
+              <field name="NUM">100</field>
+            </block>
+          </value>
+        </block>
+      </category>
+      
       </xml>

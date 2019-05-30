@@ -79,6 +79,10 @@ const makeInterperterFunc = (simulation: SimulationModelType, workspace: IBlockl
       console.log(params);
     });
 
+    addFunc("logInfo", (params: any) => {
+      simulation.logInfo(params);
+    });
+
     addFunc("startStep", (blockId: number) => {
       if (workspace) {
         workspace.highlightBlock(blockId);
