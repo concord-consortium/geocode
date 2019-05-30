@@ -10,11 +10,12 @@ interface IColumnHeightWidgetProps {
 
 const arrowheadRadius = 6;
 const arrowOffset = arrowheadRadius / 2;
-const heightToLengthRatio = 0.001;
+const heightToLengthRatio = 0.0018;
+const mountainRadius = 15;
 
 // Seems like redundant copying of an arrow generator that could be made
 // more generic for use in both pixi-wind-widget and this one - Saul
-const Arrow = PixiComponent<IColumnHeightWidgetProps, PIXI.Graphics>("VEIWidget", {
+const MountainArrow = PixiComponent<IColumnHeightWidgetProps, PIXI.Graphics>("VEIWidget", {
   create: props => new PIXI.Graphics(),
   // didMount: (instance, parent) => {},
   // willUnmount: (instance, parent) => {},
@@ -32,6 +33,11 @@ const Arrow = PixiComponent<IColumnHeightWidgetProps, PIXI.Graphics>("VEIWidget"
     g.beginFill(0, 1);
     g.drawStar(0, headCenter, 3, arrowheadRadius, 0, 0);
     g.endFill();
+
+    g.lineStyle(0, 0);
+    g.beginFill(0x999999, 1);
+    g.drawStar(0 - mountainRadius - 5, 0 - mountainRadius / 2, 3, mountainRadius, 0, 0);
+    g.endFill();
   }
 });
 
@@ -41,7 +47,7 @@ export const ColumnHeightWidget = (props: IColumnHeightWidgetProps) => {
 
     return (
         <Container cacheAsBitmap={false} x={x} y={y}>
-            <Arrow {...props} />
+            <MountainArrow {...props} />
         </Container>
     );
 };

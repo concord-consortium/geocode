@@ -5,6 +5,7 @@ import { Stage, Text } from "@inlet/react-pixi";
 import { WindWidget } from "./pixi-wind-widget";
 import { ColumnHeightWidget } from "./pixi-column-height-widget";
 import { SidebarDataDisplay } from "./pixi-sidebar-data-display";
+import { ParticleSizeWidget } from "./pixi-particle-size-widget";
 import * as Color from "color";
 import { observer, inject } from "mobx-react";
 
@@ -73,14 +74,19 @@ export class MapSidebarComponent extends BaseComponent <IProps, IState> {
                   antialias: true
                 }
               } >
-                <Text x={70} y={15} style={style} anchor={(0.5)} text="Wind Speed/Direction" />
+                <Text
+                  x={70}
+                  y={15}
+                  style={style}
+                  anchor={(0.5)}
+                  text="Wind Speed/Direction" />
                 <WindWidget
                   windDirection={windDirection}
                   windSpeed={windSpeed}
-                  location={{x: 70, y: 80}}
+                  location={{x: 70, y: 60}}
                 />
                 <Text
-                  x={175}
+                  x={180}
                   y={15}
                   style={style}
                   anchor={(0.5)}
@@ -88,14 +94,25 @@ export class MapSidebarComponent extends BaseComponent <IProps, IState> {
                 />
                 <ColumnHeightWidget
                   colHeight={colHeight}
-                  location={{x: 175, y: 80}}
+                  location={{x: 190, y: 90}}
+                />
+                <Text
+                  x={275}
+                  y={15}
+                  style={style}
+                  anchor={(0.5)}
+                  text="Particle Size"
+                />
+                <ParticleSizeWidget
+                  particleSize={particleSize}
+                  location={{x: 275, y: 60}}
                 />
                 <SidebarDataDisplay
                   vei={vei}
                   colHeight={colHeight}
                   mass={mass}
                   particleSize={particleSize}
-                  location={{x: 350, y: 15}}
+                  location={{x: 350, y: 10}}
                 />
             </Stage>
         </CanvDiv>);

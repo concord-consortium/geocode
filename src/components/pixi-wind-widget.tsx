@@ -11,9 +11,10 @@ interface IWindWidgetProps {
 
 const arrowheadRadius = 6;
 const arrowOffset = arrowheadRadius / 2;
-const speedToLengthRatio = 2;
+const speedToLengthRatio = 0.9;
+const maxWindSpeed = 30;
 
-const Arrow = PixiComponent<IWindWidgetProps, PIXI.Graphics>("WindWidget", {
+const CircledArrow = PixiComponent<IWindWidgetProps, PIXI.Graphics>("WindWidget", {
   create: props => new PIXI.Graphics(),
   // didMount: (instance, parent) => {},
   // willUnmount: (instance, parent) => {},
@@ -22,6 +23,7 @@ const Arrow = PixiComponent<IWindWidgetProps, PIXI.Graphics>("WindWidget", {
     const length = windSpeed * speedToLengthRatio;
     const lineEnd = 0 - length;
     const headCenter = lineEnd - arrowOffset;
+    const outerCircleRadius = (maxWindSpeed * speedToLengthRatio) + arrowOffset + arrowheadRadius;
     g.alpha = 1;
     g.clear();
     g.moveTo(0, 0);
@@ -31,6 +33,10 @@ const Arrow = PixiComponent<IWindWidgetProps, PIXI.Graphics>("WindWidget", {
     g.beginFill(0, 1);
     g.drawStar(0, headCenter, 3, arrowheadRadius, 0, 0);
     g.endFill();
+
+    g.lineStyle(1, 0);
+    g.drawCircle(0, 0, outerCircleRadius);
+
   }
 });
 
@@ -40,7 +46,7 @@ export const WindWidget = (props: IWindWidgetProps) => {
   const {x, y} = location;
   return (
     <Container cacheAsBitmap={false} x={x} y={y} rotation={arrowDirection / 360 * Math.PI * 2}>
-      <Arrow {...props} />
+      <CircledArrow {...props} />
     </Container>
   );
 };
