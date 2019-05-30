@@ -7,7 +7,6 @@ import { PixiCityContainer } from "./pixi-city-container";
 import { PixiTephraMap } from "./pixi-tephra-map";
 import { PixiAxis } from "./pixi-axis";
 import { PixiGrid } from "./pixi-grid";
-import { WindWidget } from "./pixi-wind-widget";
 import VolcanoEmitter from "./pixi-volcano-emitter";
 import * as AshConfig from "../assets/particles/ash.json";
 
@@ -19,7 +18,6 @@ import { EmitterConfig } from "pixi-particles";
 
 const CanvDiv = styled.div`
   border: 0px solid black; border-radius: 0px;
-  margin: 1em;
 `;
 
 interface IState {}
@@ -113,7 +111,6 @@ export class MapComponent extends BaseComponent<IProps, IState>{
             windSpeed={windSpeed}
             mass={mass}
             playing={isErupting} />
-          <WindWidget windDirection={windDirection} windSpeed={windSpeed} location={{x: 50, y: 50}}/>
         </Stage>
       </CanvDiv>
     );

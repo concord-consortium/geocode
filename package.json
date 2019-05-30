@@ -127,6 +127,7 @@
     "prop-types": "^15.7.2",
     "query-string": "^6.2.0",
     "react": "^16.8.6",
+    "react-container-dimensions": "^1.4.1",
     "react-compound-slider": "^2.0.0",
     "react-dat-gui": "^3.0.0",
     "react-dom": "^16.8.6",

@@ -49,14 +49,15 @@ const Tab = styled(UnstyledTab).attrs({
 
 const TabPanel = styled(UnstyledTabPanel).attrs({ selectedClassName: "selected" })`
   display: none;
-  padding: 10px 20px;
+  padding: 0px 0;
+  border: none;
   &.selected {
     display: block;
   }
 `;
 
 const FixWidthTabPanel = styled(TabPanel)`
-  width: ${ (p: {width?: number}) => p.width ? p.width : 800}px;
+  width: ${ (p: {width?: string}) => p.width ? p.width : "300px"};
 `;
 
 (Tab as any).tabsRole = "Tab";
