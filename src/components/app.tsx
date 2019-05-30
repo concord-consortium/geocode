@@ -216,7 +216,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             map={ mapPath }
             isErupting={isErupting}
           />
-          { showSidebar && 
+          { showSidebar &&
             <MapSidebarComponent
               width={ 500 }
               height={ 100 }
