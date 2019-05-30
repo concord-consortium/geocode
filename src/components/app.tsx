@@ -235,260 +235,81 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                     map={ mapPath }
                     isErupting={isErupting}
                   />
-                </Simulation>
-              </Row>
-            ); }
-          }
-                </Simulation>
-              </Row>
-            ); }
-          }
-          { showCode &&
-            <FixWidthTabPanel width={820}>
-              <Code>
-                <SyntaxHighlighter>
-                  {js_beautify(code)}
-                </SyntaxHighlighter>
-              </Code>
-            </FixWidthTabPanel>
-          }
-          { showControls &&
-            <FixWidthTabPanel width={820}>
-              <Controls />
-            </FixWidthTabPanel>
-          }
-        </Tabs>
+                   { showCrossSection &&
+                <CrossSectionComponent
+                  data={ data }
+                  height={ 100 }
+                  numCols={ numCols }
+                  numRows={ numRows }
+                  width={ mapWidth }
+                  volcanoX={ volcanoX }
+                />
+              }
+              { showChart &&
+                <LineChart width={mapWidth} height={200} data={plotData.chartData}>
+                  <Line type="linear" dataKey={plotData.yAxis} stroke="red" strokeWidth={2} />
+                  <CartesianGrid stroke="#ddd" strokeDasharray="5 5" />
+                  <XAxis
+                    type="number"
+                    domain={[0, "auto"]}
+                    allowDecimals={false}
+                    dataKey={plotData.xAxis}
+                    label={{ value: plotData.xAxis, offset: -5, position: "insideBottom" }}
+                  />
+                  <YAxis
+                    type="number"
+                    domain={[0, "auto"]}
+                    label={{ value: plotData.yAxis, angle: -90, offset: 12, position: "insideBottomLeft" }}
+                  />
+                </LineChart>
+              }
 
+              { showSidebar &&
+                <MapSidebarComponent
+                  width={ mapWidth }
+                  height={ 100 }
+                  windSpeed={ windSpeed }
+                  windDirection={ windDirection }
+                  colHeight={ colHeight }
+                  vei={ vei }
+                  mass={ mass }
+                  particleSize={ particleSize }
+                />
+              }
+              { showOptionsDialog &&
+                 <DatGui data={simulationOptions} onUpdate={this.handleUpdate}>
+                  <DatButton label="Model options" onClick={this.toggleShowOptions} />
+                  { expandOptionsDialog &&
+                    [
+                      <DatBoolean path="requireEruption" label="Require eruption?" key="requireEruption" />,
+                      <DatBoolean path="requirePainting" label="Require painting?" key="requirePainting" />,
+                      <DatSelect path="map" label="Map background" options={Object.keys(Maps)} key="background" />,
+                      <DatSelect path="toolbox" label="Code toolbox"
+                        options={Object.keys(BlocklyAuthoring.toolbox)} key="toolbox" />,
+                      <DatSelect path="initialCode" label="Initial code"
+                        options={Object.keys(BlocklyAuthoring.code)} key="code" />,
+                      <DatBoolean path="showCrossSection" label="Show cross section?"
+                        key="showCrossSection" />,
+                      <DatBoolean path="showChart" label="Show chart?"
+                        key="showChart" />,
 
-        <Simulation >
-          <MapComponent
-            windDirection={ windDirection }
-            windSpeed={ windSpeed }
-            mass={ mass }
-            colHeight={ colHeight }
-            particleSize={ particleSize }
-            numCols={ numCols }
-            numRows={ numRows }
-            width={ 500 }
-            height={ 500 }
-            gridColors={ gridColors }
-            cities={ cities }
-            volcanoX={ volcanoX }
-            volcanoY={ volcanoY }
-            map={ mapPath }
-            isErupting={isErupting}
-          />
-                  { showCrossSection &&
-                    <CrossSectionComponent
-                      data={ data }
-                      height={ 100 }
-                      numCols={ numCols }
-                      numRows={ numRows }
-                      width={ mapWidth }
-                      volcanoX={ volcanoX }
-                    />
+                      <DatBoolean path="showCrossSection" label="Show cross section?" key="showCrossSection" />,
+                      <DatBoolean path="showChart" label="Show chart?" key="showChart" />,
+                      <DatBoolean path="showSidebar" label="Show sidebar?" key="showSidebar" />,
+                      // submit button. Should remain at bottom
+                      <DatButton
+                        label="Generate authored model"
+                        onClick={this.generateAndOpenAuthoredUrl}
+                        key="generate" />
+                    ]
                   }
-                  { showChart &&
-                    <LineChart width={mapWidth} height={200} data={plotData.chartData}>
-                      <Line type="linear" dataKey={plotData.yAxis} stroke="red" strokeWidth={2} />
-                      <CartesianGrid stroke="#ddd" strokeDasharray="5 5" />
-                      <XAxis
-                        type="number"
-                        domain={[0, "auto"]}
-                        allowDecimals={false}
-                        dataKey={plotData.xAxis}
-                        label={{ value: plotData.xAxis, offset: -5, position: "insideBottom" }}
-                      />
-                      <YAxis
-                        type="number"
-                        domain={[0, "auto"]}
-                        label={{ value: plotData.yAxis, angle: -90, offset: 12, position: "insideBottomLeft" }}
-                      />
-                    </LineChart>
-                  }
-          { showCode &&
-            <FixWidthTabPanel width={820}>
-              <Code>
-                <SyntaxHighlighter>
-                  {js_beautify(code)}
-                </SyntaxHighlighter>
-              </Code>
-            </FixWidthTabPanel>
-          }
-          { showControls &&
-            <FixWidthTabPanel width={820}>
-              <Controls />
-            </FixWidthTabPanel>
-          }
-        </Tabs>
-        <Simulation >
-          <MapComponent
-            windDirection={ windDirection }
-            windSpeed={ windSpeed }
-            mass={ mass }
-            colHeight={ colHeight }
-            particleSize={ particleSize }
-            numCols={ numCols }
-            numRows={ numRows }
-            width={ 500 }
-            height={ 500 }
-            gridColors={ gridColors }
-            cities={ cities }
-            volcanoX={ volcanoX }
-            volcanoY={ volcanoY }
-            map={ mapPath }
-            isErupting={isErupting}
-          />
-
-          { showCrossSection &&
-            <CrossSectionComponent
-              data={ data }
-              height={ 100 }
-              numCols={ numCols }
-              numRows={ numRows }
-              width={ 500 }
-              volcanoX={ volcanoX }
-            />
-          }
-          { showChart &&
-            <LineChart width={500} height={200} data={plotData.chartData}>
-              <Line type="linear" dataKey={plotData.yAxis} stroke="red" strokeWidth={2} />
-              <CartesianGrid stroke="#ddd" strokeDasharray="5 5" />
-              <XAxis
-                type="number"
-                domain={[0, "auto"]}
-                allowDecimals={false}
-                dataKey={plotData.xAxis}
-                label={{ value: plotData.xAxis, offset: -5, position: "insideBottom" }}
-              />
-              <YAxis
-                type="number"
-                domain={[0, "auto"]}
-                label={{ value: plotData.yAxis, angle: -90, offset: 12, position: "insideBottomLeft" }}
-              />
-            </LineChart>
-          }
-                { showOptionsDialog &&
-                  <DatGui data={simulationOptions} onUpdate={this.handleUpdate}>
-                    <DatButton label="Model options" onClick={this.toggleShowOptions} />
-                    { expandOptionsDialog &&
-                      [
-                        <DatBoolean path="requireEruption" label="Require eruption?" key="requireEruption" />,
-                        <DatBoolean path="requirePainting" label="Require painting?" key="requirePainting" />,
-                        <DatSelect path="map" label="Map background" options={Object.keys(Maps)} key="background" />,
-                        <DatSelect path="toolbox" label="Code toolbox"
-                          options={Object.keys(BlocklyAuthoring.toolbox)} key="toolbox" />,
-                        <DatSelect path="initialCode" label="Initial code"
-                          options={Object.keys(BlocklyAuthoring.code)} key="code" />,
-          { showSidebar &&
-            <MapSidebarComponent
-              width={ 500 }
-              height={ 100 }
-              windSpeed={ windSpeed }
-              windDirection={ windDirection }
-              colHeight={ colHeight }
-              vei={ vei }
-              mass={ mass }
-              particleSize={ particleSize }
-            />
-          }
-          { showCrossSection &&
-            <CrossSectionComponent
-              data={ data }
-              height={ 100 }
-              numCols={ numCols }
-              numRows={ numRows }
-              width={ 500 }
-              volcanoX={ volcanoX }
-            />
-          }
-          { showChart &&
-            <LineChart width={500} height={200} data={plotData.chartData}>
-              <Line type="linear" dataKey={plotData.yAxis} stroke="red" strokeWidth={2} />
-              <CartesianGrid stroke="#ddd" strokeDasharray="5 5" />
-              <XAxis
-                type="number"
-                domain={[0, "auto"]}
-                allowDecimals={false}
-                dataKey={plotData.xAxis}
-                label={{ value: plotData.xAxis, offset: -5, position: "insideBottom" }}
-              />
-              <YAxis
-                type="number"
-                domain={[0, "auto"]}
-                label={{ value: plotData.yAxis, angle: -90, offset: 12, position: "insideBottomLeft" }}
-              />
-            </LineChart>
-          }
-        </Simulation>
-
-        { showOptionsDialog &&
-          <DatGui data={simulationOptions} onUpdate={this.handleUpdate}>
-            <DatButton label="Model options" onClick={this.toggleShowOptions} />
-            { expandOptionsDialog &&
-              [
-                <DatBoolean path="requireEruption" label="Require eruption?" key="requireEruption" />,
-                <DatBoolean path="requirePainting" label="Require painting?" key="requirePainting" />,
-                <DatSelect path="map" label="Map background" options={Object.keys(Maps)} key="background" />,
-                <DatSelect path="toolbox" label="Code toolbox"
-                  options={Object.keys(BlocklyAuthoring.toolbox)} key="toolbox" />,
-                <DatSelect path="initialCode" label="Initial code"
-                  options={Object.keys(BlocklyAuthoring.code)} key="code" />,
-                        <DatBoolean path="showBlocks" label="Show blocks?" key="showBlocks" />,
-                        <DatBoolean path="showCode" label="Show code?" key="showCode" />,
-                        <DatBoolean path="showControls" label="Show controls?" key="showControls" />,
-        </Simulation>
-        { showOptionsDialog &&
-          <DatGui data={simulationOptions} onUpdate={this.handleUpdate}>
-            <DatButton label="Model options" onClick={this.toggleShowOptions} />
-            { expandOptionsDialog &&
-              [
-                <DatBoolean path="requireEruption" label="Require eruption?" key="requireEruption" />,
-                <DatBoolean path="requirePainting" label="Require painting?" key="requirePainting" />,
-                <DatSelect path="map" label="Map background" options={Object.keys(Maps)} key="background" />,
-                <DatSelect path="toolbox" label="Code toolbox"
-                  options={Object.keys(BlocklyAuthoring.toolbox)} key="toolbox" />,
-                <DatSelect path="initialCode" label="Initial code"
-                  options={Object.keys(BlocklyAuthoring.code)} key="code" />,
-
-                        <DatBoolean path="showCrossSection" label="Show cross section?" key="showCrossSection" />,
-                        <DatBoolean path="showChart" label="Show chart?" key="showChart" />,
-
-                <DatBoolean path="showCrossSection" label="Show cross section?" key="showCrossSection" />,
-                <DatBoolean path="showChart" label="Show chart?" key="showChart" />,
-
-                // submit button. Should remain at bottom
-                <DatButton label="Generate authored model" onClick={this.generateAndOpenAuthoredUrl} key="generate" />
-              ]
-            }
-          </DatGui>
-        }
-      </Simulation>
-                        // submit button. Should remain at bottom
-                        <DatButton
-                          label="Generate authored model"
-                          onClick={this.generateAndOpenAuthoredUrl}
-                          key="generate" />
-                      ]
-                    }
-                  </DatGui>
-                }
+                </DatGui>
+              }
               </Simulation>
-              </Row>
-            ); }
-          }
-          </ContainerDimensions>
-                <DatBoolean path="showCrossSection" label="Show cross section?" key="showCrossSection" />,
-                <DatBoolean path="showChart" label="Show chart?" key="showChart" />,
-                <DatBoolean path="showSidebar" label="Show sidebar?" key="showSidebar" />,
-
-                // submit button. Should remain at bottom
-                <DatButton label="Generate authored model" onClick={this.generateAndOpenAuthoredUrl} key="generate" />
-              ]
-            }
-          </DatGui>
+            </Row>
+          );}
         }
-      </Simulation>
+      </ContainerDimensions>
     </App>
     );
   }
