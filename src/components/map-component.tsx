@@ -18,7 +18,6 @@ import { EmitterConfig } from "pixi-particles";
 
 const CanvDiv = styled.div`
   border: 0px solid black; border-radius: 0px;
-  margin: 1em;
 `;
 
 interface IState {}

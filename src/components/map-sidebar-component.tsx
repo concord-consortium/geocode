@@ -11,7 +11,6 @@ import { observer, inject } from "mobx-react";
 
 const CanvDiv = styled.div`
   border: 0px solid black; border-radius: 0px;
-  margin: 1em;
 `;
 
 const style = new PIXI.TextStyle({
