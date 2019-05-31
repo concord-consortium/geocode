@@ -9,6 +9,7 @@ const CanvDiv = styled.div`
     margin: 1em;
     white-space: pre-line;
     position: relative;
+    overflow: auto;
     width: ${(p: ILog) => `${p.width}px`};
     height: ${(p: ILog) => `${p.height}px`};
 `;
@@ -16,7 +17,7 @@ const CanvDiv = styled.div`
 const LogDiv = styled.div`
     width: "100%";
     height: "100%";
-    overflow: "auto";
+    overflow: auto;
     margin: 4px;
 `;
 
