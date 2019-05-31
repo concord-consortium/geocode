@@ -187,6 +187,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             const mapWidth = Math.floor(width * .4) - margin;
             const blocklyWidth = tabWidth - (margin * 2);
             const blocklyHeight = Math.floor(height * .7);
+            const logWidth = Math.floor(tabWidth * 0.95);
             const logHeight = Math.floor(height * .2);
             return(
               <Row>
@@ -205,11 +206,12 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                         initialCodeSetupPath={codePath}
                         setBlocklyCode={ setBlocklyCode} />
                       <RunButtons {...{run, stop, step, reset, running}} />
-                      {showLog && <LogComponent
-                        width={blocklyWidth}
-                        height={logHeight}
-                        log={log}
-                        clear={clearLog}
+                      {showLog && 
+                        <LogComponent
+                          width={logWidth}
+                          height={logHeight}
+                          log={log}
+                          clear={clearLog}
                       />}
                     </FixWidthTabPanel>
                   }

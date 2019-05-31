@@ -8,6 +8,7 @@ const CanvDiv = styled.div`
     border: 1px solid black; border-radius: 0px;
     margin: 1em;
     white-space: pre-line;
+    position: relative;
     width: ${(p: ILog) => `${p.width}px`};
     height: ${(p: ILog) => `${p.height}px`};
 `;
@@ -22,6 +23,9 @@ const StyledButton = styled.div`
 const HighliteButton = styled(StyledButton)`
   background-color: ${(p: {selected?: boolean}) => p.selected ? "black" : "white"};
   color: ${(p: {selected?: boolean}) => p.selected ? "white" : "black"};
+  position: absolute;
+  top: 0;
+  right: 0;
 `;
 
 interface IState{}
@@ -48,8 +52,8 @@ export class LogComponent extends BaseComponent<IProps, IState> {
 
         return(
             <CanvDiv ref={this.ref} height={height} width={width}>
-                <div>
-                    <HighliteButton onClick={clear}>Clear Log</HighliteButton>
+                <HighliteButton onClick={clear}>Clear Log</HighliteButton>
+                <div style={{width: "100%", height: "100%", overflow: "auto"}}>
                     {log}
                 </div>
             </CanvDiv>
