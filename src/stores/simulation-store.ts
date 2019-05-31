@@ -144,6 +144,7 @@ export const SimulationStore = types
     reset() {
       this.setBlocklyCode(self.code, cachedBlocklyWorkspace);
       self.isErupting = false;
+      self.log = "";
       self.plotData = PlotData.create({});
       self.gridColors.clear();
     },

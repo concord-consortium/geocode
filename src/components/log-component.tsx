@@ -13,6 +13,13 @@ const CanvDiv = styled.div`
     height: ${(p: ILog) => `${p.height}px`};
 `;
 
+const LogDiv = styled.div`
+    width: "100%";
+    height: "100%";
+    overflow: "auto";
+    margin: 4px;
+`;
+
 const StyledButton = styled.div`
   padding: 0.25em;
   margin: 0.25em;
@@ -53,9 +60,9 @@ export class LogComponent extends BaseComponent<IProps, IState> {
         return(
             <CanvDiv ref={this.ref} height={height} width={width}>
                 <HighliteButton onClick={clear}>Clear Log</HighliteButton>
-                <div style={{width: "100%", height: "100%", overflow: "auto"}}>
+                <LogDiv>
                     {log}
-                </div>
+                </LogDiv>
             </CanvDiv>
         );
     }

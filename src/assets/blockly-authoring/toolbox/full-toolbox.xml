@@ -18,7 +18,6 @@
           <block type="outputPaintGrid"></block>
           <block type="outputPlot"></block>
           <block type="redrawMap"></block>
-          <block type="logprint"></block>
         </category>
         <category name="Logic" colour="%{BKY_LOGIC_HUE}">
           <block type="controls_if"></block>
@@ -80,6 +79,9 @@
             </block>
           </value>
         </block>
+      </category>
+      <category name="Logging" colour="260">
+        <block type="logprint"></block>
       </category>
       
       </xml>

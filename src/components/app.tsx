@@ -206,7 +206,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                         initialCodeSetupPath={codePath}
                         setBlocklyCode={ setBlocklyCode} />
                       <RunButtons {...{run, stop, step, reset, running}} />
-                      {showLog && 
+                      {showLog &&
                         <LogComponent
                           width={logWidth}
                           height={logHeight}
