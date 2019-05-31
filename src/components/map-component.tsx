@@ -34,6 +34,7 @@ interface IProps extends IBaseProps {
   volcanoX: number;
   volcanoY: number;
   gridColors: IStateTreeNode<any, string[]>;
+  gridValues: IStateTreeNode<any, string[]>;
   cities: CityType[];
   map: string;
   isErupting: boolean;
@@ -61,6 +62,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       volcanoX,
       volcanoY,
       gridColors,
+      gridValues,
       windDirection,
       windSpeed,
       mass,
@@ -93,6 +95,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           <PixiTephraMap
             canvasMetrics={this.metrics}
             gridColors={getSnapshot(gridColors)}
+            gridValues={getSnapshot(gridValues)}
             toCanvasCoords={this.toCanvasCoords} />
           {cityItems}
           <PixiAxis gridMetrics={this.metrics} toCanvasCoords={this.toCanvasCoords} />
