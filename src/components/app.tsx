@@ -18,6 +18,8 @@ import SyntaxHighlighter from "react-syntax-highlighter";
 import Controls from "./controls";
 import RunButtons from "./run-buttons";
 
+import screenfull from "screenfull";
+
 interface IProps extends IBaseProps {}
 
 export interface SimulationAuthoringOptions {
@@ -47,6 +49,7 @@ const App = styled.div`
     align-items: flex-start;
     flex-direction: row;
     height: 100vh;
+    background-color: #ffffff;
 `;
 
 const Row = styled.div`
@@ -70,9 +73,18 @@ const Code = styled.div`
   padding: 1em;
 `;
 
+// Copied from run-buttons to use for fullscreen button
+const StyledButton = styled.div`
+  padding: 0.25em;
+  margin: 0.25em;
+  border: 1px solid hsl(0, 0%, 25%);
+  border-radius: 0.2em;
+`;
+
 @inject("stores")
 @observer
 export class AppComponent extends BaseComponent<IProps, IState> {
+  private rootComponent = React.createRef<HTMLDivElement>();
 
   public constructor(props: IProps) {
     super(props);
@@ -91,7 +103,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         showControls: true,
         showCrossSection: false,
         showChart: false,
-        showSidebar: false,
+        showSidebar: false
       }
     };
 
@@ -118,6 +130,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     }
 
     this.state = initialState;
+
   }
 
   public componentDidUpdate() {
@@ -173,7 +186,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     const codePath = (BlocklyAuthoring.code as {[key: string]: string})[initialCode];
 
     return (
-      <App className="app" >
+      <App className="app" ref={this.rootComponent}>
         <ContainerDimensions>
           { props => {
             const {width, height} = props;
@@ -218,6 +231,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 </Tabs>
 
                 <Simulation >
+                  <StyledButton onClick={this.toggleFullscreen}>Fullscreen</StyledButton>
                   <MapComponent
                     windDirection={ windDirection }
                     windSpeed={ windSpeed }
@@ -312,6 +326,16 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       </ContainerDimensions>
     </App>
     );
+  }
+
+  private toggleFullscreen = () => {
+    if (screenfull && screenfull.enabled) {
+      const component = this.rootComponent.current;
+
+      if (component) {
+        screenfull.toggle(component);
+      }
+    }
   }
 
   private toggleShowOptions = () => this.setState({expandOptionsDialog: !this.state.expandOptionsDialog});
