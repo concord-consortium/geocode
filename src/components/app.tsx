@@ -19,6 +19,7 @@ import Controls from "./controls";
 import RunButtons from "./run-buttons";
 
 import screenfull from "screenfull";
+import { simulation } from "../stores/simulation-store";
 
 interface IProps extends IBaseProps {}
 
@@ -231,7 +232,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 </Tabs>
 
                 <Simulation >
-                  <StyledButton onClick={this.toggleFullscreen}>Fullscreen</StyledButton>
+                  <StyledButton onClick={this.toggleFullscreen} >Fullscreen</StyledButton>
                   <MapComponent
                     windDirection={ windDirection }
                     windSpeed={ windSpeed }
@@ -329,12 +330,12 @@ export class AppComponent extends BaseComponent<IProps, IState> {
   }
 
   private toggleFullscreen = () => {
-    if (screenfull && screenfull.enabled) {
-      const component = this.rootComponent.current;
+    if (this.rootComponent.current) {
+        this.stores.toggleFullscreen(this.rootComponent.current);
+        this.forceUpdate();
 
-      if (component) {
-        screenfull.toggle(component);
-      }
+        // this.state.simulationOptions.showBlocks = !this.state.simulationOptions.showBlocks;
+        // this.state.simulationOptions.showBlocks = !this.state.simulationOptions.showBlocks;
     }
   }
 
