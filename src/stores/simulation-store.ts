@@ -146,6 +146,7 @@ export const SimulationStore = types
       self.isErupting = false;
       self.plotData = PlotData.create({});
       self.gridColors.clear();
+      self.gridValues.clear();
     },
     stop() {
       if (interpreterController) {
@@ -225,6 +226,7 @@ export const SimulationStore = types
     },
     clearGrid() {
       self.gridColors.clear();
+      self.gridValues.clear();
     },
     addPlotPoint(xAxis: string, yAxis: string, x: number, y: number) {
       self.plotData.setXAxis(xAxis);
