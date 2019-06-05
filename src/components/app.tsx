@@ -94,7 +94,7 @@ const FullscreenButtonOpen = styled(FullscreenButton)`
   background-image: url("https://lab-framework.concord.org/version/1.16.3/lab/resources/layout/fullscreen-exit.svg");
 
   &:hover {
-    background-image: url("https://lab-framework.concord.org/version/1.16.3/lab/resources/layout/fullscreen-exit-dark.svg");
+background-image: url("https://lab-framework.concord.org/version/1.16.3/lab/resources/layout/fullscreen-exit-dark.svg");
   }
 `;
 
