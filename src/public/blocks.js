@@ -188,7 +188,7 @@ Blockly.Blocks['logprint'] = {
 
 Blockly.JavaScript['logprint'] = function(block) {
   var value_data = Blockly.JavaScript.valueToCode(block, 'data', Blockly.JavaScript.ORDER_ATOMIC);
-
+  console.log(value_data);
   var code = `logInfo(${value_data});`;
   return code;
 };

@@ -13,6 +13,7 @@ const makeInterperterFunc = (simulation: SimulationModelType, workspace: IBlockl
 
     const unwrap = (args: any[]) => {
       const modifiedArgs = args.map( (a) => {
+        console.log(a);
         if (a.data !== undefined && a.data !== null) {return a.data; }
         if (a.properties) {
           const returnObject: { [key: string]: any } = {};
@@ -29,7 +30,7 @@ const makeInterperterFunc = (simulation: SimulationModelType, workspace: IBlockl
     const addFunc = (name: string, func: (args: any) => any) => {
       const unwrappingFunction = (...args: any) => {
         const params = (unwrap(args)[0]) as any;
-        func(params);
+        return func(params);
       };
       const wrapped = interpreter.createNativeFunction(unwrappingFunction);
       addVar(name, wrapped);
@@ -80,6 +81,7 @@ const makeInterperterFunc = (simulation: SimulationModelType, workspace: IBlockl
     });
 
     addFunc("logInfo", (params: any) => {
+      console.log(params);
       simulation.logInfo(params);
     });
 

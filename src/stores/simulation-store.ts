@@ -361,13 +361,14 @@ export const SimulationStore = types
 
       },
       logInfo(data: any) {
+          console.log(data);
           self.log += (data) + "\n";
       },
       stringConcat(lv: any, rv: any) {
         if (lv && rv) {
           const output = lv + " " + rv;
           // console.log(lv + " " + rv);
-          console.log(output);
+          // console.log(output);
           return (output);
         }
       },
