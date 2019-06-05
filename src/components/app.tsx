@@ -82,6 +82,30 @@ const StyledButton = styled.div`
   border-radius: 0.2em;
 `;
 
+const FullscreenButton = styled(StyledButton)`
+  width: 2.5em;
+  height: 2.5em;
+  border: 0px solid hsl(0, 0%, 0%);
+  background-repeat: no-repeat;
+  background-size: 95%;
+`;
+
+const FullscreenButtonOpen = styled(FullscreenButton)`
+  background-image: url("https://lab-framework.concord.org/version/1.16.3/lab/resources/layout/fullscreen-exit.svg");
+
+  &:hover {
+    background-image: url("https://lab-framework.concord.org/version/1.16.3/lab/resources/layout/fullscreen-exit-dark.svg");
+  }
+`;
+
+const FullscreenButtonClosed = styled(FullscreenButton)`
+  background-image: url("https://lab-framework.concord.org/version/1.16.3/lab/resources/layout/fullscreen.svg");
+
+  &:hover {
+    background-image: url("https://lab-framework.concord.org/version/1.16.3/lab/resources/layout/fullscreen-dark.svg");
+  }
+`;
+
 @inject("stores")
 @observer
 export class AppComponent extends BaseComponent<IProps, IState> {
@@ -232,7 +256,12 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 </Tabs>
 
                 <Simulation >
-                  <StyledButton onClick={this.toggleFullscreen} >Fullscreen</StyledButton>
+                  { (screenfull && screenfull.isFullscreen) &&
+                    <FullscreenButtonOpen onClick={this.toggleFullscreen} />
+                  }
+                  { (screenfull && !screenfull.isFullscreen) &&
+                    <FullscreenButtonClosed onClick={this.toggleFullscreen} />
+                  }
                   <MapComponent
                     windDirection={ windDirection }
                     windSpeed={ windSpeed }
@@ -333,7 +362,6 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     if (this.rootComponent.current) {
         this.stores.toggleFullscreen(this.rootComponent.current);
         this.forceUpdate();
-
         // this.state.simulationOptions.showBlocks = !this.state.simulationOptions.showBlocks;
         // this.state.simulationOptions.showBlocks = !this.state.simulationOptions.showBlocks;
     }
