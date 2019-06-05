@@ -82,6 +82,7 @@
       </category>
       <category name="Logging" colour="260">
         <block type="logprint"></block>
+        <block type="stringconcat"></block>
       </category>
       
       </xml>

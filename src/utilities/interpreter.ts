@@ -83,6 +83,11 @@ const makeInterperterFunc = (simulation: SimulationModelType, workspace: IBlockl
       simulation.logInfo(params);
     });
 
+    addFunc("stringConcat", (params: {lv: any, rv: any}) => {
+      // console.log(params.lv + " " + params.rv);
+      return simulation.stringConcat(params.lv, params.rv);
+    });
+
     addFunc("startStep", (blockId: number) => {
       if (workspace) {
         workspace.highlightBlock(blockId);

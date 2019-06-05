@@ -363,6 +363,14 @@ export const SimulationStore = types
       logInfo(data: any) {
           self.log += (data) + "\n";
       },
+      stringConcat(lv: any, rv: any) {
+        if (lv && rv) {
+          const output = lv + " " + rv;
+          // console.log(lv + " " + rv);
+          console.log(output);
+          return (output);
+        }
+      },
       setAuthoringOptions(opts: SimulationAuthoringOptions) {
         self.requireEruption = opts.requireEruption;
         self.requirePainting = opts.requirePainting;
