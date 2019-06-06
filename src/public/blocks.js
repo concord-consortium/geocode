@@ -188,9 +188,8 @@ Blockly.Blocks['logprint'] = {
 
 Blockly.JavaScript['logprint'] = function(block) {
   var value_data = Blockly.JavaScript.valueToCode(block, 'data', Blockly.JavaScript.ORDER_ATOMIC);
-  console.log(value_data);
   var code = `logInfo(${value_data});`;
-  return code;
+  return code ;// [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
 Blockly.Blocks['stringconcat'] = {
@@ -215,13 +214,11 @@ Blockly.JavaScript['stringconcat'] = function(block) {
   // TODO: Assemble JavaScript into code variable.
   var code = ``;
   if (value_lv && value_rv) {
-    console.log(value_lv + " " + value_rv);
     code = ` stringConcat({lv: ${value_lv}, rv: ${value_rv}}) \n`;
-  
   }
   // var code = `'${value_lv} + " " + ${value_rv}'`;
   // TODO: Change ORDER_NONE to the correct strength.
-  return [code, Blockly.JavaScript.ORDER_MEMBER];
+  return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
 

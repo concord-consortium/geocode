@@ -13,7 +13,6 @@ const makeInterperterFunc = (simulation: SimulationModelType, workspace: IBlockl
 
     const unwrap = (args: any[]) => {
       const modifiedArgs = args.map( (a) => {
-        console.log(a);
         if (a.data !== undefined && a.data !== null) {return a.data; }
         if (a.properties) {
           const returnObject: { [key: string]: any } = {};
@@ -81,8 +80,10 @@ const makeInterperterFunc = (simulation: SimulationModelType, workspace: IBlockl
     });
 
     addFunc("logInfo", (params: any) => {
-      console.log(params);
-      simulation.logInfo(params);
+      if (params) {
+        // console.log(params);
+        simulation.logInfo(params);
+      }
     });
 
     addFunc("stringConcat", (params: {lv: any, rv: any}) => {
