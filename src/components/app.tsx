@@ -91,18 +91,18 @@ const FullscreenButton = styled(StyledButton)`
 `;
 
 const FullscreenButtonOpen = styled(FullscreenButton)`
-  background-image: url("https://lab-framework.concord.org/version/1.16.3/lab/resources/layout/fullscreen-exit.svg");
+  background-image: url("/assets/fullscreen-exit.svg");
 
   &:hover {
-background-image: url("https://lab-framework.concord.org/version/1.16.3/lab/resources/layout/fullscreen-exit-dark.svg");
+    background-image: url("/assets/fullscreen-exit-dark.svg");
   }
 `;
 
 const FullscreenButtonClosed = styled(FullscreenButton)`
-  background-image: url("https://lab-framework.concord.org/version/1.16.3/lab/resources/layout/fullscreen.svg");
+  background-image: url("/assets/fullscreen.svg");
 
   &:hover {
-    background-image: url("https://lab-framework.concord.org/version/1.16.3/lab/resources/layout/fullscreen-dark.svg");
+    background-image: url("/assets/fullscreen-dark.svg");
   }
 `;
 
@@ -361,9 +361,6 @@ export class AppComponent extends BaseComponent<IProps, IState> {
   private toggleFullscreen = () => {
     if (this.rootComponent.current) {
         this.stores.toggleFullscreen(this.rootComponent.current);
-        this.forceUpdate();
-        // this.state.simulationOptions.showBlocks = !this.state.simulationOptions.showBlocks;
-        // this.state.simulationOptions.showBlocks = !this.state.simulationOptions.showBlocks;
     }
   }
 
