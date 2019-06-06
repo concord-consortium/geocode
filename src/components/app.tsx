@@ -18,6 +18,8 @@ import SyntaxHighlighter from "react-syntax-highlighter";
 import Controls from "./controls";
 import RunButtons from "./run-buttons";
 
+import screenfull from "screenfull";
+
 interface IProps extends IBaseProps {}
 
 export interface SimulationAuthoringOptions {
@@ -47,6 +49,7 @@ const App = styled.div`
     align-items: flex-start;
     flex-direction: row;
     height: 100vh;
+    background-color: #ffffff;
 `;
 
 const Row = styled.div`
@@ -70,9 +73,42 @@ const Code = styled.div`
   padding: 1em;
 `;
 
+// Copied from run-buttons to use for fullscreen button
+const StyledButton = styled.div`
+  padding: 0.25em;
+  margin: 0.25em;
+  border: 1px solid hsl(0, 0%, 25%);
+  border-radius: 0.2em;
+`;
+
+const FullscreenButton = styled(StyledButton)`
+  width: 2.5em;
+  height: 2.5em;
+  border: 0px solid hsl(0, 0%, 0%);
+  background-repeat: no-repeat;
+  background-size: 95%;
+`;
+
+const FullscreenButtonOpen = styled(FullscreenButton)`
+  background-image: url("./assets/fullscreen-exit.svg");
+
+  &:hover {
+    background-image: url("./assets/fullscreen-exit-dark.svg");
+  }
+`;
+
+const FullscreenButtonClosed = styled(FullscreenButton)`
+  background-image: url("./assets/fullscreen.svg");
+
+  &:hover {
+    background-image: url("./assets/fullscreen-dark.svg");
+  }
+`;
+
 @inject("stores")
 @observer
 export class AppComponent extends BaseComponent<IProps, IState> {
+  private rootComponent = React.createRef<HTMLDivElement>();
 
   public constructor(props: IProps) {
     super(props);
@@ -91,7 +127,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         showControls: true,
         showCrossSection: false,
         showChart: false,
-        showSidebar: false,
+        showSidebar: false
       }
     };
 
@@ -118,6 +154,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     }
 
     this.state = initialState;
+
   }
 
   public componentDidUpdate() {
@@ -174,7 +211,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     const codePath = (BlocklyAuthoring.code as {[key: string]: string})[initialCode];
 
     return (
-      <App className="app" >
+      <App className="app" ref={this.rootComponent}>
         <ContainerDimensions>
           { props => {
             const {width, height} = props;
@@ -219,6 +256,12 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 </Tabs>
 
                 <Simulation >
+                  { (screenfull && screenfull.isFullscreen) &&
+                    <FullscreenButtonOpen onClick={this.toggleFullscreen} />
+                  }
+                  { (screenfull && !screenfull.isFullscreen) &&
+                    <FullscreenButtonClosed onClick={this.toggleFullscreen} />
+                  }
                   <MapComponent
                     windDirection={ windDirection }
                     windSpeed={ windSpeed }
@@ -314,6 +357,15 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       </ContainerDimensions>
     </App>
     );
+  }
+
+  private toggleFullscreen = () => {
+    if (this.rootComponent.current) {
+      if (screenfull && screenfull.enabled) {
+        const component = this.rootComponent.current;
+        screenfull.toggle(component);
+      }
+    }
   }
 
   private toggleShowOptions = () => this.setState({expandOptionsDialog: !this.state.expandOptionsDialog});

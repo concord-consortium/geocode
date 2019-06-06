@@ -6,6 +6,8 @@ import { IInterpreterController, makeInterpreterController } from "../utilities/
 import { SimulationAuthoringOptions } from "../components/app";
 import { stringify } from "querystring";
 
+import screenfull from "screenfull";
+
 let _cityCounter = 0;
 const genCityId = () => `city_${_cityCounter++}`;
 let interpreterController: IInterpreterController | null;
