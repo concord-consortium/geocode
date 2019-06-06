@@ -48,7 +48,9 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
     if ((prevProps.toolboxPath !== this.props.toolboxPath) ||
         prevProps.initialCodeSetupPath !== this.props.initialCodeSetupPath) {
           this.initializeBlockly();
-        }
+    }
+
+    this.toXml();
 
     // TODO: This should eventually be removed. We save the XML to local storage.
     // We don't ever restore this at the moment, but its used by developers to
@@ -86,13 +88,20 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
         Blockly.JavaScript.STATEMENT_PREFIX = "startStep(%1);\n";
         Blockly.JavaScript.STATEMENT_SUFFIX = "endStep();\n";
         Blockly.JavaScript.addReservedWords("highlightBlock");
-        fetch(initialCodeSetupPath)
-        .then((resp) => {
-          resp.text().then((d) => {
-            const xml = Blockly.Xml.textToDom(d);
-            Blockly.Xml.domToWorkspace(xml, this.workSpace);
+        const savedWorkspace = localStorage.getItem("blockly-workspace");
+        if (savedWorkspace) {
+          const xml = Blockly.Xml.textToDom(savedWorkspace);
+          Blockly.Xml.domToWorkspace(xml, this.workSpace);
+        } else {
+          fetch(initialCodeSetupPath)
+          .then((resp) => {
+            resp.text().then((d) => {
+              const xml = Blockly.Xml.textToDom(d);
+              Blockly.Xml.domToWorkspace(xml, this.workSpace);
+            });
           });
-        });
+        }
+
         const myUpdateFunction = (event: any) => {
           const code = Blockly.JavaScript.workspaceToCode(this.workSpace);
           setBlocklyCode(code, this.workSpace);
