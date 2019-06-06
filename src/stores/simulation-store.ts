@@ -360,12 +360,6 @@ export const SimulationStore = types
       setAuthoringOptions(opts: SimulationAuthoringOptions) {
         self.requireEruption = opts.requireEruption;
         self.requirePainting = opts.requirePainting;
-      },
-      toggleFullscreen(ref: HTMLDivElement) {
-        if (screenfull && screenfull.enabled) {
-          const component = ref;
-          screenfull.toggle(component);
-        }
       }
     };
   })

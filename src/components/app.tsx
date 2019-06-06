@@ -359,7 +359,10 @@ export class AppComponent extends BaseComponent<IProps, IState> {
 
   private toggleFullscreen = () => {
     if (this.rootComponent.current) {
-        this.stores.toggleFullscreen(this.rootComponent.current);
+      if (screenfull && screenfull.enabled) {
+        const component = this.rootComponent.current;
+        screenfull.toggle(component);
+      }
     }
   }
 
