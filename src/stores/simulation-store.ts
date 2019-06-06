@@ -365,8 +365,8 @@ export const SimulationStore = types
           self.log += (data) + "\n";
       },
       stringConcat(lv: any, rv: any) {
-        if (lv && rv) {
-          const output = lv + " " + rv;
+        if (lv || rv) {
+          const output = (lv ? lv + " " : "") + (rv ? rv : "");
 
           // Build a return value that the interpreter can understand
           const out = {

@@ -213,8 +213,8 @@ Blockly.JavaScript['stringconcat'] = function(block) {
   var value_rv = Blockly.JavaScript.valueToCode(block, 'rv', Blockly.JavaScript.ORDER_ATOMIC);
   // TODO: Assemble JavaScript into code variable.
   var code = ``;
-  if (value_lv && value_rv) {
-    code = ` stringConcat({lv: ${value_lv}, rv: ${value_rv}}) \n`;
+  if (value_lv || value_rv) {
+    code = ` stringConcat({lv: ${value_lv ? value_lv : null}, rv: ${value_rv ? value_rv : null}}) \n`;
   }
   // var code = `'${value_lv} + " " + ${value_rv}'`;
   // TODO: Change ORDER_NONE to the correct strength.
