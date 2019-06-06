@@ -90,18 +90,18 @@ const FullscreenButton = styled(StyledButton)`
 `;
 
 const FullscreenButtonOpen = styled(FullscreenButton)`
-  background-image: url("./../assets/fullscreen-exit.svg");
+  background-image: url("./assets/fullscreen-exit.svg");
 
   &:hover {
-    background-image: url("./../assets/fullscreen-exit-dark.svg");
+    background-image: url("./assets/fullscreen-exit-dark.svg");
   }
 `;
 
 const FullscreenButtonClosed = styled(FullscreenButton)`
-  background-image: url("./../assets/fullscreen.svg");
+  background-image: url("./assets/fullscreen.svg");
 
   &:hover {
-    background-image: url("./../assets/fullscreen-dark.svg");
+    background-image: url("./assets/fullscreen-dark.svg");
   }
 `;
 
