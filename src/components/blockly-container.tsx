@@ -52,7 +52,6 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
     const { saveWorkspace, savedWorkspace } = this.props;
     if ((prevProps.toolboxPath !== this.props.toolboxPath) ||
         prevProps.initialCodeSetupPath !== this.props.initialCodeSetupPath) {
-          saveWorkspace("<xml></xml>");
           this.needsToUpdateInitialCode = true;
           this.initializeBlockly();
     } else {

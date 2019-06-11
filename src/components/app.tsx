@@ -153,7 +153,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       initialState.showOptionsDialog = false;
     }
 
-    const codePath = (BlocklyAuthoring.code as {[key: string]: string})[this.state.simulationOptions.initialCode];
+    const codePath = (BlocklyAuthoring.code as {[key: string]: string})[initialState.simulationOptions.initialCode];
     fetch(codePath)
     .then((resp) => {
       resp.text().then((d) => {
