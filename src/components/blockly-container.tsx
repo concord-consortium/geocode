@@ -98,7 +98,6 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
         Blockly.JavaScript.STATEMENT_PREFIX = "startStep(%1);\n";
         Blockly.JavaScript.STATEMENT_SUFFIX = "endStep();\n";
         Blockly.JavaScript.addReservedWords("highlightBlock");
-        console.log(savedWorkspace);
         if (!this.needsToUpdateInitialCode) {
           const xml = Blockly.Xml.textToDom(savedWorkspace);
           Blockly.Xml.domToWorkspace(xml, this.workSpace);
