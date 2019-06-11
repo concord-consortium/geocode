@@ -70,12 +70,7 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
     lastTimeout = window.setTimeout(this.toXml, 500);
   }
 
-  private toXml = () => {
-    const xml = Blockly.Xml.workspaceToDom(this.workSpace);
-    localStorage.setItem("blockly-workspace", Blockly.Xml.domToPrettyText(xml));
-  }
-
-  private initializeBlockly = () => {
+  public initializeBlockly = () => {
     if (this.workSpaceRef.current) {
       this.workSpaceRef.current.innerHTML = "";
     }
@@ -91,6 +86,12 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
             minScale: 0.2
           }
         };
+
+        // Duplicated this due to asynchronous calls not clearing properly
+        if (this.workSpaceRef.current) {
+          this.workSpaceRef.current.innerHTML = "";
+        }
+
         this.workSpace = Blockly.inject(this.workSpaceRef.current, blockOpts);
         const startBlocks = this.startBlockRef.current;
         Blockly.Xml.domToWorkspace(startBlocks, this.workSpace);
@@ -119,6 +120,11 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
         this.workSpace.addChangeListener(myUpdateFunction);
       });
     });
+  }
+
+  private toXml = () => {
+    const xml = Blockly.Xml.workspaceToDom(this.workSpace);
+    localStorage.setItem("blockly-workspace", Blockly.Xml.domToPrettyText(xml));
   }
 
 }

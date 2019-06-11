@@ -109,6 +109,7 @@ const FullscreenButtonClosed = styled(FullscreenButton)`
 @observer
 export class AppComponent extends BaseComponent<IProps, IState> {
   private rootComponent = React.createRef<HTMLDivElement>();
+  private blocklyContainer = React.createRef<BlocklyContianer>();
 
   public constructor(props: IProps) {
     super(props);
@@ -158,6 +159,9 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     .then((resp) => {
       resp.text().then((d) => {
         this.stores.saveWorkspace(d);
+        if (this.blocklyContainer.current) {
+          this.blocklyContainer.current.initializeBlockly();
+        }
       });
     });
 
@@ -240,6 +244,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                   { showBlocks &&
                     <FixWidthTabPanel width={`${tabWidth}px`}>
                       <BlocklyContianer
+                        ref={this.blocklyContainer}
                         width={blocklyWidth}
                         height={blocklyHeight}
                         toolboxPath={toolboxPath}
