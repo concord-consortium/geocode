@@ -105,6 +105,7 @@ export const SimulationStore = types
     volcanoY: 5,
     cities: types.array(City),
     code: "",
+    savedWorkspace: "<xml></xml>",
     data: types.array(SimDatum),
     gridColors: types.array(types.string),
     plotData: types.optional(PlotData, getSnapshot(plotData)),
@@ -132,6 +133,9 @@ export const SimulationStore = types
       self.running = false;
       cachedBlocklyWorkspace = workspace;
       interpreterController = makeInterpreterController(code, simulation, workspace);
+    },
+    saveWorkspace(code: string) {
+      self.savedWorkspace = code;
     },
     run() {
       const reset = () => {

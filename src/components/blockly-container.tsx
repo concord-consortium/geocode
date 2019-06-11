@@ -7,6 +7,8 @@ interface IProps {
   setBlocklyCode: (code: string, workspace: any) => void;
   width: number;
   height: number;
+  saveWorkspace: (code: string) => void;
+  savedWorkspace: string;
 }
 
 interface IState {}
@@ -30,6 +32,8 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
   private workSpaceRef = React.createRef<HTMLDivElement>();
   private startBlockRef = React.createRef<HTMLDivElement>();
 
+  private needsToUpdateInitialCode: boolean = false;
+
   public render() {
     const {width, height} = this.props;
     return (
@@ -45,12 +49,18 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
   }
 
   public componentDidUpdate(prevProps: IProps) {
+    const { saveWorkspace, savedWorkspace } = this.props;
     if ((prevProps.toolboxPath !== this.props.toolboxPath) ||
         prevProps.initialCodeSetupPath !== this.props.initialCodeSetupPath) {
+          saveWorkspace("<xml></xml>");
+          this.needsToUpdateInitialCode = true;
           this.initializeBlockly();
+    } else {
+      if (this.workSpace) {
+        const xml = Blockly.Xml.workspaceToDom(this.workSpace);
+        saveWorkspace(Blockly.Xml.domToPrettyText(xml));
+      }
     }
-
-    this.toXml();
 
     // TODO: This should eventually be removed. We save the XML to local storage.
     // We don't ever restore this at the moment, but its used by developers to
@@ -70,7 +80,7 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
     if (this.workSpaceRef.current) {
       this.workSpaceRef.current.innerHTML = "";
     }
-    const {toolboxPath, initialCodeSetupPath, setBlocklyCode} = this.props;
+    const {toolboxPath, initialCodeSetupPath, setBlocklyCode, savedWorkspace} = this.props;
     fetch(toolboxPath).then((r) => {
       r.text().then( (data) => {
         const blockOpts = {
@@ -88,8 +98,8 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
         Blockly.JavaScript.STATEMENT_PREFIX = "startStep(%1);\n";
         Blockly.JavaScript.STATEMENT_SUFFIX = "endStep();\n";
         Blockly.JavaScript.addReservedWords("highlightBlock");
-        const savedWorkspace = localStorage.getItem("blockly-workspace");
-        if (savedWorkspace) {
+        console.log(savedWorkspace);
+        if (!this.needsToUpdateInitialCode) {
           const xml = Blockly.Xml.textToDom(savedWorkspace);
           Blockly.Xml.domToWorkspace(xml, this.workSpace);
         } else {
@@ -100,6 +110,7 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
               Blockly.Xml.domToWorkspace(xml, this.workSpace);
             });
           });
+          this.needsToUpdateInitialCode = false;
         }
 
         const myUpdateFunction = (event: any) => {

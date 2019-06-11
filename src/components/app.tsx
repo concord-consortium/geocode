@@ -153,6 +153,14 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       initialState.showOptionsDialog = false;
     }
 
+    const codePath = (BlocklyAuthoring.code as {[key: string]: string})[this.state.simulationOptions.initialCode];
+    fetch(codePath)
+    .then((resp) => {
+      resp.text().then((d) => {
+        this.stores.saveWorkspace(d);
+      });
+    });
+
     this.state = initialState;
 
   }
@@ -167,7 +175,9 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       windDirection,
       windSpeed,
       code,
+      savedWorkspace,
       setBlocklyCode,
+      saveWorkspace,
       colHeight,
       particleSize,
       vei,
@@ -234,7 +244,9 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                         height={blocklyHeight}
                         toolboxPath={toolboxPath}
                         initialCodeSetupPath={codePath}
-                        setBlocklyCode={ setBlocklyCode} />
+                        setBlocklyCode={ setBlocklyCode}
+                        saveWorkspace={ saveWorkspace}
+                        savedWorkspace={ savedWorkspace} />
                       <RunButtons {...{run, stop, step, reset, running}} />
                     </FixWidthTabPanel>
                   }
