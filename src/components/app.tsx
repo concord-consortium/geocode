@@ -229,7 +229,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                     { showControls && <Tab>Controls</Tab>}
                   </TabList>
                   { showBlocks &&
-                    <FixWidthTabPanel width={`${tabWidth}px`}>
+                    <FixWidthTabPanel width={`${tabWidth}px`} forceRender={true}>
                       <BlocklyContianer
                         width={blocklyWidth}
                         height={blocklyHeight}
@@ -243,7 +243,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                     <FixWidthTabPanel width={`${tabWidth}px`}>
                       <Code>
                         <SyntaxHighlighter>
-                          {js_beautify(code)}
+                          {js_beautify(code.replace(/endStep\(\)\;\n/g, "").replace(/startStep\(\'.*\'\)\;\n/g, ""))}
                         </SyntaxHighlighter>
                       </Code>
                     </FixWidthTabPanel>
