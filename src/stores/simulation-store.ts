@@ -374,7 +374,6 @@ export const SimulationStore = types
 
       },
       logInfo(data: any) {
-          // console.log(data);
           self.log += (data) + "\n";
       },
       stringConcat(lv: any, rv: any) {

@@ -85,13 +85,11 @@ const makeInterperterFunc = (simulation: SimulationModelType, workspace: IBlockl
 
     addFunc("logInfo", (params: any) => {
       if (params) {
-        // console.log(params);
         simulation.logInfo(params);
       }
     });
 
     addFunc("stringConcat", (params: {lv: any, rv: any}) => {
-      // console.log(params.lv + " " + params.rv);
       return simulation.stringConcat(params.lv, params.rv);
     });
 

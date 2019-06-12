@@ -189,7 +189,7 @@ Blockly.Blocks['logprint'] = {
 Blockly.JavaScript['logprint'] = function(block) {
   var value_data = Blockly.JavaScript.valueToCode(block, 'data', Blockly.JavaScript.ORDER_ATOMIC);
   var code = `logInfo(${value_data});`;
-  return code ;// [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
+  return code;
 };
 
 Blockly.Blocks['stringconcat'] = {
@@ -216,7 +216,6 @@ Blockly.JavaScript['stringconcat'] = function(block) {
   if (value_lv || value_rv) {
     code = ` stringConcat({lv: ${value_lv ? value_lv : null}, rv: ${value_rv ? value_rv : null}}) \n`;
   }
-  // var code = `'${value_lv} + " " + ${value_rv}'`;
   // TODO: Change ORDER_NONE to the correct strength.
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };

@@ -41,7 +41,6 @@ interface IProps extends IBaseProps {
     width: number;
     height: number;
     log: string;
-    running?: boolean;
     clear: () => void;
 }
 interface ILog {
