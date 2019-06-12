@@ -16,6 +16,7 @@
           <block type="setVEI"></block>
           <block type="erupt"></block>
           <block type="outputPaintGrid"></block>
+          <block type="outputValueGrid"></block>
           <block type="outputPlot"></block>
           <block type="redrawMap"></block>
         </category>

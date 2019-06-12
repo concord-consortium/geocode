@@ -108,6 +108,7 @@ export const SimulationStore = types
     log: "",
     data: types.array(SimDatum),
     gridColors: types.array(types.string),
+    gridValues: types.array(types.string),
     plotData: types.optional(PlotData, getSnapshot(plotData)),
     isErupting: false,
     // authoring props
@@ -149,6 +150,7 @@ export const SimulationStore = types
       self.log = "";
       self.plotData = PlotData.create({});
       self.gridColors.clear();
+      self.gridValues.clear();
     },
     stop() {
       if (interpreterController) {
@@ -221,8 +223,17 @@ export const SimulationStore = types
         self.gridColors.push(gridColor.toString());
       });
     },
+    numberGrid(resultType: SimOutput) {
+      self.gridValues.clear();
+      self.data.forEach(datum => {
+        const val: number = datum[resultType];
+
+        self.gridValues.push(val.toFixed(2));
+      });
+    },
     clearGrid() {
       self.gridColors.clear();
+      self.gridValues.clear();
     },
     addPlotPoint(xAxis: string, yAxis: string, x: number, y: number) {
       self.plotData.setXAxis(xAxis);

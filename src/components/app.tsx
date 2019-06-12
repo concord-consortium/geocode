@@ -178,6 +178,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       numRows,
       data,
       gridColors,
+      gridValues,
       plotData,
       cities,
       volcanoX,
@@ -286,6 +287,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                     width={ mapWidth }
                     height={ mapWidth }
                     gridColors={ gridColors }
+                    gridValues={ gridValues }
                     cities={ cities }
                     volcanoX={ volcanoX }
                     volcanoY={ volcanoY }
