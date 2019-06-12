@@ -4,6 +4,7 @@ import DatGui, { DatBoolean, DatButton, DatSelect } from "react-dat-gui";
 import { LineChart, Line, CartesianGrid, XAxis, YAxis } from "recharts";
 import { BaseComponent, IBaseProps } from "./base";
 import { MapComponent } from "./map-component";
+import { LogComponent } from "./log-component";
 import { MapSidebarComponent } from "./map-sidebar-component";
 import { CrossSectionComponent } from "./cross-section-component";
 import * as Maps from "./../assets/maps/maps.json";
@@ -123,6 +124,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         toolbox: "Everything",
         initialCode: "Basic",
         showBlocks: true,
+        showLog: false,
         showCode: true,
         showControls: true,
         showCrossSection: false,
@@ -167,6 +169,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       windDirection,
       windSpeed,
       code,
+      log,
       setBlocklyCode,
       colHeight,
       particleSize,
@@ -181,6 +184,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       volcanoX,
       volcanoY,
       run,
+      clearLog,
       step,
       stop,
       reset,
@@ -199,6 +203,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       toolbox,
       initialCode,
       showBlocks,
+      showLog,
       showCode,
       showControls,
       showCrossSection,
@@ -220,6 +225,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             const mapWidth = Math.floor(width * .4) - margin;
             const blocklyWidth = tabWidth - (margin * 2);
             const blocklyHeight = Math.floor(height * .7);
+            const logWidth = Math.floor(tabWidth * 0.95);
+            const logHeight = Math.floor(height * .2);
             return(
               <Row>
                 <Tabs>
@@ -237,6 +244,13 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                         initialCodeSetupPath={codePath}
                         setBlocklyCode={ setBlocklyCode} />
                       <RunButtons {...{run, stop, step, reset, running}} />
+                      {showLog &&
+                        <LogComponent
+                          width={logWidth}
+                          height={logHeight}
+                          log={log}
+                          clear={clearLog}
+                      />}
                     </FixWidthTabPanel>
                   }
                   { showCode &&
@@ -337,6 +351,11 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                         key="showCrossSection" />,
                       <DatBoolean path="showChart" label="Show chart?"
                         key="showChart" />,
+
+                      <DatBoolean path="showBlocks" label="Show blocks?" key="showBlocks" />,
+                      <DatBoolean path="showCode" label="Show code?" key="showCode" />,
+                      <DatBoolean path="showControls" label="Show controls?" key="showControls" />,
+                      <DatBoolean path="showLog" label="Show Log?" key="showLog" />,
 
                       <DatBoolean path="showCrossSection" label="Show cross section?" key="showCrossSection" />,
                       <DatBoolean path="showChart" label="Show chart?" key="showChart" />,

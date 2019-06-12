@@ -169,6 +169,56 @@ Blockly.JavaScript['console_logger'] = function(block) {
   return code;
 }
 
+Blockly.Blocks['logprint'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("Print");
+    this.appendValueInput("data")
+        .setCheck(null);
+    this.appendDummyInput()
+        .appendField("to the log");
+    this.setInputsInline(true);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(260);
+ this.setTooltip("Print something to the log");
+ this.setHelpUrl("");
+  }
+};
+
+Blockly.JavaScript['logprint'] = function(block) {
+  var value_data = Blockly.JavaScript.valueToCode(block, 'data', Blockly.JavaScript.ORDER_ATOMIC);
+  var code = `logInfo(${value_data});`;
+  return code;
+};
+
+Blockly.Blocks['stringconcat'] = {
+  init: function() {
+    this.appendValueInput("lv")
+        .setCheck(null);
+    this.appendDummyInput()
+        .appendField("+");
+    this.appendValueInput("rv")
+        .setCheck(null);
+    this.setInputsInline(true);
+    this.setOutput(true, "String");
+    this.setColour(260);
+ this.setTooltip("");
+ this.setHelpUrl("");
+  }
+};
+
+Blockly.JavaScript['stringconcat'] = function(block) {
+  var value_lv = Blockly.JavaScript.valueToCode(block, 'lv', Blockly.JavaScript.ORDER_ATOMIC);
+  var value_rv = Blockly.JavaScript.valueToCode(block, 'rv', Blockly.JavaScript.ORDER_ATOMIC);
+  // TODO: Assemble JavaScript into code variable.
+  var code = ``;
+  if (value_lv || value_rv) {
+    code = ` stringConcat({lv: ${value_lv ? value_lv : null}, rv: ${value_rv ? value_rv : null}}) \n`;
+  }
+  // TODO: Change ORDER_NONE to the correct strength.
+  return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
+};
 
 
 

@@ -59,26 +59,31 @@
     </category>
     <category name="Variables" colour="330" custom="VARIABLE">
     </category>
-        <category name="Data" colour="%{BKY_MATH_HUE}">
-          <block type="text">
-              <field name="TEXT"></field>
-          </block>
-          <block type="math_number">
-            <field name="NUM">123</field>
-          </block>
-          <block type="math_arithmetic"></block>
-          <block type="math_single"></block>
-          <block type="math_random_int">
-            <value name="FROM">
-              <block type="math_number">
-                <field name="NUM">1</field>
-              </block>
-            </value>
-            <value name="TO">
-              <block type="math_number">
-                <field name="NUM">100</field>
-              </block>
-            </value>
-          </block>
-        </category>
+      <category name="Data" colour="%{BKY_MATH_HUE}">
+        <block type="text">
+            <field name="TEXT"></field>
+        </block>
+        <block type="math_number">
+          <field name="NUM">123</field>
+        </block>
+        <block type="math_arithmetic"></block>
+        <block type="math_single"></block>
+        <block type="math_random_int">
+          <value name="FROM">
+            <block type="math_number">
+              <field name="NUM">1</field>
+            </block>
+          </value>
+          <value name="TO">
+            <block type="math_number">
+              <field name="NUM">100</field>
+            </block>
+          </value>
+        </block>
+      </category>
+      <category name="Logging" colour="260">
+        <block type="logprint"></block>
+        <block type="stringconcat"></block>
+      </category>
+      
       </xml>

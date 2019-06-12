@@ -105,6 +105,7 @@ export const SimulationStore = types
     volcanoY: 5,
     cities: types.array(City),
     code: "",
+    log: "",
     data: types.array(SimDatum),
     gridColors: types.array(types.string),
     gridValues: types.array(types.string),
@@ -146,6 +147,7 @@ export const SimulationStore = types
     reset() {
       this.setBlocklyCode(self.code, cachedBlocklyWorkspace);
       self.isErupting = false;
+      self.log = "";
       self.plotData = PlotData.create({});
       self.gridColors.clear();
       self.gridValues.clear();
@@ -172,6 +174,9 @@ export const SimulationStore = types
         };
         interpreterController.run(reset);
       }
+    },
+    clearLog() {
+      self.log = "";
     },
     /**
      * Steps through one complete block.
@@ -367,6 +372,20 @@ export const SimulationStore = types
           self.cities.push(City.create({id: genCityId(), name, x, y}));
         }
 
+      },
+      logInfo(data: any) {
+          self.log += (data) + "\n";
+      },
+      stringConcat(lv: any, rv: any) {
+        if (lv || rv) {
+          const output = (lv ? lv + " " : "") + (rv ? rv : "");
+
+          // Build a return value that the interpreter can understand
+          const out = {
+            data: output
+          };
+          return (out);
+        }
       },
       setAuthoringOptions(opts: SimulationAuthoringOptions) {
         self.requireEruption = opts.requireEruption;

@@ -29,7 +29,7 @@ const makeInterperterFunc = (simulation: SimulationModelType, workspace: IBlockl
     const addFunc = (name: string, func: (args: any) => any) => {
       const unwrappingFunction = (...args: any) => {
         const params = (unwrap(args)[0]) as any;
-        func(params);
+        return func(params);
       };
       const wrapped = interpreter.createNativeFunction(unwrappingFunction);
       addVar(name, wrapped);
@@ -81,6 +81,16 @@ const makeInterperterFunc = (simulation: SimulationModelType, workspace: IBlockl
 
     addFunc("log", (params) => {
       console.log(params);
+    });
+
+    addFunc("logInfo", (params: any) => {
+      if (params) {
+        simulation.logInfo(params);
+      }
+    });
+
+    addFunc("stringConcat", (params: {lv: any, rv: any}) => {
+      return simulation.stringConcat(params.lv, params.rv);
     });
 
     addFunc("startStep", (blockId: number) => {
