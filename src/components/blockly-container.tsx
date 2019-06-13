@@ -1,5 +1,6 @@
 import * as React from "react";
 import styled from "styled-components";
+import "../blockly-blocks/blocks.js";
 
 interface IProps {
   toolboxPath: string;
