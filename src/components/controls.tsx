@@ -3,6 +3,7 @@ import { BaseComponent, IBaseProps } from "./base";
 import { inject, observer } from "mobx-react";
 import RangeControl from "./range-control";
 import styled from "styled-components";
+import { StyledButton } from "./styled-button";
 
 const StyledControls = styled.div`
   display: flex;
@@ -17,13 +18,6 @@ const ValueOutput = styled.div`
   border: 1px solid #BBB;
   border-radius: 4px;
   background-color: #F1F1F1;
-`;
-
-const StyledButton = styled.div`
-  padding: 0.25em;
-  margin: 0.5em 1em;
-  border: 1px solid hsl(0, 0%, 25%);
-  border-radius: 0.2em;
 `;
 
 interface HorizontalContainerProps {

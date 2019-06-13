@@ -1,6 +1,7 @@
 
 import * as React from "react";
 import styled from "styled-components";
+import { StyledButton, HighliteButton } from "./styled-button";
 
 interface IProps {
   run: () => void;
@@ -11,18 +12,6 @@ interface IProps {
 }
 
 interface IState {}
-
-const StyledButton = styled.div`
-  padding: 0.25em;
-  margin: 0.25em;
-  border: 1px solid hsl(0, 0%, 25%);
-  border-radius: 0.2em;
-`;
-
-const HighliteButton = styled(StyledButton)`
-  background-color: ${(p: {selected?: boolean}) => p.selected ? "black" : "white"};
-  color: ${(p: {selected?: boolean}) => p.selected ? "white" : "black"};
-`;
 
 const ButtonContainer = styled.div`
   padding: 1em;

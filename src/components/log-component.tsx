@@ -1,5 +1,6 @@
 import * as React from "react";
 import styled from "styled-components";
+import { HighliteButton } from "./styled-button";
 import { observer, inject } from "mobx-react";
 import { BaseComponent, IBaseProps } from "./base";
 import { Stage } from "@inlet/react-pixi";
@@ -21,19 +22,10 @@ const LogDiv = styled.div`
     margin: 4px;
 `;
 
-const StyledButton = styled.div`
-  padding: 0.25em;
-  margin: 0.25em;
-  border: 1px solid hsl(0, 0%, 25%);
-  border-radius: 0.2em;
-`;
-
-const HighliteButton = styled(StyledButton)`
-  background-color: ${(p: {selected?: boolean}) => p.selected ? "black" : "white"};
-  color: ${(p: {selected?: boolean}) => p.selected ? "white" : "black"};
-  position: absolute;
-  top: 0;
-  right: 0;
+const AdjustedHighliteButton = styled(HighliteButton)`
+    position: absolute;
+    top: 0;
+    right: 0;
 `;
 
 interface IState{}
@@ -59,7 +51,7 @@ export class LogComponent extends BaseComponent<IProps, IState> {
 
         return(
             <CanvDiv ref={this.ref} height={height} width={width}>
-                <HighliteButton onClick={clear}>Clear Log</HighliteButton>
+                <AdjustedHighliteButton onClick={clear}>Clear Log</AdjustedHighliteButton>
                 <LogDiv>
                     {log}
                 </LogDiv>

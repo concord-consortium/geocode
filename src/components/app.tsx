@@ -13,6 +13,7 @@ import * as BlocklyAuthoring from "./../assets/blockly-authoring/index.json";
 import BlocklyContianer from "./blockly-container";
 import ContainerDimensions from "react-container-dimensions";
 import styled from "styled-components";
+import { StyledButton } from "./styled-button";
 import { Tab, Tabs, TabList, TabPanel, FixWidthTabPanel } from "./tabs";
 import { js_beautify } from "js-beautify";
 import SyntaxHighlighter from "react-syntax-highlighter";
@@ -72,14 +73,6 @@ const Code = styled.div`
   max-height: 400px;
   overflow: auto;
   padding: 1em;
-`;
-
-// Copied from run-buttons to use for fullscreen button
-const StyledButton = styled.div`
-  padding: 0.25em;
-  margin: 0.25em;
-  border: 1px solid hsl(0, 0%, 25%);
-  border-radius: 0.2em;
 `;
 
 const FullscreenButton = styled(StyledButton)`
