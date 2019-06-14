@@ -21,6 +21,7 @@ import Controls from "./controls";
 import RunButtons from "./run-buttons";
 
 import screenfull from "screenfull";
+import ResizeObserver from "react-resize-observer";
 
 interface IProps extends IBaseProps {}
 
@@ -43,6 +44,10 @@ interface IState {
   showOptionsDialog: boolean;
   expandOptionsDialog: boolean;
   simulationOptions: SimulationAuthoringOptions;
+  dimensions: {
+    width: number;
+    height: number;
+  };
 }
 
 const App = styled.div`
@@ -65,9 +70,14 @@ const Row = styled.div`
 const Simulation = styled.div`
   display: flex;
   flex-direction: column;
+  width: ${(p: ISim) => `${p.width}px`};
   justify-content: flex-start;
   align-items: flex-start;
 `;
+
+interface ISim {
+  width: number;
+}
 
 const Code = styled.div`
   max-height: 400px;
@@ -123,6 +133,10 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         showCrossSection: false,
         showChart: false,
         showSidebar: false
+      },
+      dimensions: {
+        width: window.innerWidth,
+        height: window.innerHeight
       }
     };
 
@@ -208,167 +222,170 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     const toolboxPath = (BlocklyAuthoring.toolbox as {[key: string]: string})[toolbox];
     const codePath = (BlocklyAuthoring.code as {[key: string]: string})[initialCode];
 
+    const {width, height} = this.state.dimensions;
+    const margin = 10;
+    const tabWidth = Math.floor(width * .6);
+    const mapWidth = Math.floor(width * .4) - margin;
+    const blocklyWidth = tabWidth - (margin * 2);
+    const blocklyHeight = Math.floor(height * .7);
+    const logWidth = Math.floor(tabWidth * 0.95);
+    const logHeight = Math.floor(height * .2);
+
     return (
       <App className="app" ref={this.rootComponent}>
-        <ContainerDimensions>
-          { props => {
-            const {width, height} = props;
-            const margin = 10;
-            const tabWidth = Math.floor(width * .6);
-            const mapWidth = Math.floor(width * .4) - margin;
-            const blocklyWidth = tabWidth - (margin * 2);
-            const blocklyHeight = Math.floor(height * .7);
-            const logWidth = Math.floor(tabWidth * 0.95);
-            const logHeight = Math.floor(height * .2);
-            return(
-              <Row>
-                <Tabs>
-                  <TabList>
-                    { showBlocks && <Tab>Blocks</Tab>}
-                    { showCode && <Tab>Code</Tab>}
-                    { showControls && <Tab>Controls</Tab>}
-                  </TabList>
-                  { showBlocks &&
-                    <FixWidthTabPanel width={`${tabWidth}px`} forceRender={true}>
-                      <BlocklyContianer
-                        width={blocklyWidth}
-                        height={blocklyHeight}
-                        toolboxPath={toolboxPath}
-                        initialCodeSetupPath={codePath}
-                        setBlocklyCode={ setBlocklyCode} />
-                      <RunButtons {...{run, stop, step, reset, running}} />
-                      {showLog &&
-                        <LogComponent
-                          width={logWidth}
-                          height={logHeight}
-                          log={log}
-                          clear={clearLog}
-                      />}
-                    </FixWidthTabPanel>
-                  }
-                  { showCode &&
-                    <FixWidthTabPanel width={`${tabWidth}px`}>
-                      <Code>
-                        <SyntaxHighlighter>
-                          {js_beautify(code.replace(/endStep\(\)\;\n/g, "").replace(/startStep\(\'.*\'\)\;\n/g, ""))}
-                        </SyntaxHighlighter>
-                      </Code>
-                    </FixWidthTabPanel>
-                  }
-                  { showControls &&
-                    <FixWidthTabPanel width={`${tabWidth}px`}>
-                      <Controls />
-                    </FixWidthTabPanel>
-                  }
-                </Tabs>
+        <ResizeObserver
+          onResize={this.resize}
+        />
+        <Row>
+          <Tabs>
+            <TabList>
+              { showBlocks && <Tab>Blocks</Tab>}
+              { showCode && <Tab>Code</Tab>}
+              { showControls && <Tab>Controls</Tab>}
+            </TabList>
+            { showBlocks &&
+              <FixWidthTabPanel width={`${tabWidth}px`} forceRender={true}>
+                <BlocklyContianer
+                  width={blocklyWidth}
+                  height={blocklyHeight}
+                  toolboxPath={toolboxPath}
+                  initialCodeSetupPath={codePath}
+                  setBlocklyCode={ setBlocklyCode} />
+                <RunButtons {...{run, stop, step, reset, running}} />
+                {showLog &&
+                  <LogComponent
+                    width={logWidth}
+                    height={logHeight}
+                    log={log}
+                    clear={clearLog}
+                />}
+              </FixWidthTabPanel>
+            }
+            { showCode &&
+              <FixWidthTabPanel width={`${tabWidth}px`}>
+                <Code>
+                  <SyntaxHighlighter>
+                    {js_beautify(code.replace(/endStep\(\)\;\n/g, "").replace(/startStep\(\'.*\'\)\;\n/g, ""))}
+                  </SyntaxHighlighter>
+                </Code>
+              </FixWidthTabPanel>
+            }
+            { showControls &&
+              <FixWidthTabPanel width={`${tabWidth}px`}>
+                <Controls />
+              </FixWidthTabPanel>
+            }
+          </Tabs>
 
-                <Simulation >
-                  { (screenfull && screenfull.isFullscreen) &&
-                    <FullscreenButtonOpen onClick={this.toggleFullscreen} />
-                  }
-                  { (screenfull && !screenfull.isFullscreen) &&
-                    <FullscreenButtonClosed onClick={this.toggleFullscreen} />
-                  }
-                  <MapComponent
-                    windDirection={ windDirection }
-                    windSpeed={ windSpeed }
-                    mass={ mass }
-                    colHeight={ colHeight }
-                    particleSize={ particleSize }
-                    numCols={ numCols }
-                    numRows={ numRows }
-                    width={ mapWidth }
-                    height={ mapWidth }
-                    gridColors={ gridColors }
-                    gridValues={ gridValues }
-                    cities={ cities }
-                    volcanoX={ volcanoX }
-                    volcanoY={ volcanoY }
-                    map={ mapPath }
-                    isErupting={isErupting}
-                  />
-                   { showCrossSection &&
-                <CrossSectionComponent
-                  data={ data }
-                  height={ 100 }
-                  numCols={ numCols }
-                  numRows={ numRows }
-                  width={ mapWidth }
-                  volcanoX={ volcanoX }
-                />
-              }
-              { showChart &&
-                <LineChart width={mapWidth} height={200} data={plotData.chartData}>
-                  <Line type="linear" dataKey={plotData.yAxis} stroke="red" strokeWidth={2} />
-                  <CartesianGrid stroke="#ddd" strokeDasharray="5 5" />
-                  <XAxis
-                    type="number"
-                    domain={[0, "auto"]}
-                    allowDecimals={false}
-                    dataKey={plotData.xAxis}
-                    label={{ value: plotData.xAxis, offset: -5, position: "insideBottom" }}
-                  />
-                  <YAxis
-                    type="number"
-                    domain={[0, "auto"]}
-                    label={{ value: plotData.yAxis, angle: -90, offset: 12, position: "insideBottomLeft" }}
-                  />
-                </LineChart>
-              }
-
-              { showSidebar &&
-                <MapSidebarComponent
-                  width={ mapWidth }
-                  height={ 100 }
-                  windSpeed={ windSpeed }
-                  windDirection={ windDirection }
-                  colHeight={ colHeight }
-                  vei={ vei }
-                  mass={ mass }
-                  particleSize={ particleSize }
-                />
-              }
-              { showOptionsDialog &&
-                 <DatGui data={simulationOptions} onUpdate={this.handleUpdate}>
-                  <DatButton label="Model options" onClick={this.toggleShowOptions} />
-                  { expandOptionsDialog &&
-                    [
-                      <DatBoolean path="requireEruption" label="Require eruption?" key="requireEruption" />,
-                      <DatBoolean path="requirePainting" label="Require painting?" key="requirePainting" />,
-                      <DatSelect path="map" label="Map background" options={Object.keys(Maps)} key="background" />,
-                      <DatSelect path="toolbox" label="Code toolbox"
-                        options={Object.keys(BlocklyAuthoring.toolbox)} key="toolbox" />,
-                      <DatSelect path="initialCode" label="Initial code"
-                        options={Object.keys(BlocklyAuthoring.code)} key="code" />,
-                      <DatBoolean path="showCrossSection" label="Show cross section?"
-                        key="showCrossSection" />,
-                      <DatBoolean path="showChart" label="Show chart?"
-                        key="showChart" />,
-
-                      <DatBoolean path="showBlocks" label="Show blocks?" key="showBlocks" />,
-                      <DatBoolean path="showCode" label="Show code?" key="showCode" />,
-                      <DatBoolean path="showControls" label="Show controls?" key="showControls" />,
-                      <DatBoolean path="showLog" label="Show Log?" key="showLog" />,
-
-                      <DatBoolean path="showCrossSection" label="Show cross section?" key="showCrossSection" />,
-                      <DatBoolean path="showChart" label="Show chart?" key="showChart" />,
-                      <DatBoolean path="showSidebar" label="Show sidebar?" key="showSidebar" />,
-                      // submit button. Should remain at bottom
-                      <DatButton
-                        label="Generate authored model"
-                        onClick={this.generateAndOpenAuthoredUrl}
-                        key="generate" />
-                    ]
-                  }
-                </DatGui>
-              }
-              </Simulation>
-            </Row>
-          ); }
+          <Simulation width={mapWidth}>
+            { (screenfull && screenfull.isFullscreen) &&
+              <FullscreenButtonOpen onClick={this.toggleFullscreen} />
+            }
+            { (screenfull && !screenfull.isFullscreen) &&
+              <FullscreenButtonClosed onClick={this.toggleFullscreen} />
+            }
+            <MapComponent
+              windDirection={ windDirection }
+              windSpeed={ windSpeed }
+              mass={ mass }
+              colHeight={ colHeight }
+              particleSize={ particleSize }
+              numCols={ numCols }
+              numRows={ numRows }
+              width={ mapWidth }
+              height={ mapWidth }
+              gridColors={ gridColors }
+              gridValues={ gridValues }
+              cities={ cities }
+              volcanoX={ volcanoX }
+              volcanoY={ volcanoY }
+              map={ mapPath }
+              isErupting={isErupting}
+            />
+              { showCrossSection &&
+          <CrossSectionComponent
+            data={ data }
+            height={ 100 }
+            numCols={ numCols }
+            numRows={ numRows }
+            width={ mapWidth }
+            volcanoX={ volcanoX }
+          />
         }
-      </ContainerDimensions>
+        { showChart &&
+          <LineChart width={mapWidth} height={200} data={plotData.chartData}>
+            <Line type="linear" dataKey={plotData.yAxis} stroke="red" strokeWidth={2} />
+            <CartesianGrid stroke="#ddd" strokeDasharray="5 5" />
+            <XAxis
+              type="number"
+              domain={[0, "auto"]}
+              allowDecimals={false}
+              dataKey={plotData.xAxis}
+              label={{ value: plotData.xAxis, offset: -5, position: "insideBottom" }}
+            />
+            <YAxis
+              type="number"
+              domain={[0, "auto"]}
+              label={{ value: plotData.yAxis, angle: -90, offset: 12, position: "insideBottomLeft" }}
+            />
+          </LineChart>
+        }
+
+        { showSidebar &&
+          <MapSidebarComponent
+            width={ mapWidth }
+            height={ 100 }
+            windSpeed={ windSpeed }
+            windDirection={ windDirection }
+            colHeight={ colHeight }
+            vei={ vei }
+            mass={ mass }
+            particleSize={ particleSize }
+          />
+        }
+        { showOptionsDialog &&
+            <DatGui data={simulationOptions} onUpdate={this.handleUpdate}>
+            <DatButton label="Model options" onClick={this.toggleShowOptions} />
+            { expandOptionsDialog &&
+              [
+                <DatBoolean path="requireEruption" label="Require eruption?" key="requireEruption" />,
+                <DatBoolean path="requirePainting" label="Require painting?" key="requirePainting" />,
+                <DatSelect path="map" label="Map background" options={Object.keys(Maps)} key="background" />,
+                <DatSelect path="toolbox" label="Code toolbox"
+                  options={Object.keys(BlocklyAuthoring.toolbox)} key="toolbox" />,
+                <DatSelect path="initialCode" label="Initial code"
+                  options={Object.keys(BlocklyAuthoring.code)} key="code" />,
+                <DatBoolean path="showCrossSection" label="Show cross section?"
+                  key="showCrossSection" />,
+                <DatBoolean path="showChart" label="Show chart?"
+                  key="showChart" />,
+
+                <DatBoolean path="showBlocks" label="Show blocks?" key="showBlocks" />,
+                <DatBoolean path="showCode" label="Show code?" key="showCode" />,
+                <DatBoolean path="showControls" label="Show controls?" key="showControls" />,
+                <DatBoolean path="showLog" label="Show Log?" key="showLog" />,
+
+                <DatBoolean path="showCrossSection" label="Show cross section?" key="showCrossSection" />,
+                <DatBoolean path="showChart" label="Show chart?" key="showChart" />,
+                <DatBoolean path="showSidebar" label="Show sidebar?" key="showSidebar" />,
+                // submit button. Should remain at bottom
+                <DatButton
+                  label="Generate authored model"
+                  onClick={this.generateAndOpenAuthoredUrl}
+                  key="generate" />
+              ]
+            }
+          </DatGui>
+        }
+        </Simulation>
+      </Row>
     </App>
     );
+  }
+
+  private resize = (rect: DOMRect) => {
+    console.log("Resized. New bounds:", rect.width, "x", rect.height);
+    this.setState({dimensions: rect});
   }
 
   private toggleFullscreen = () => {

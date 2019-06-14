@@ -47,16 +47,17 @@ export class MapComponent extends BaseComponent<IProps, IState>{
   private ref = React.createRef<HTMLDivElement>();
   private metrics: ICanvasShape;
 
-  public componentDidMount() {
-    this.recomputeMetrics();
-  }
-
-  public componentDidUpdate(prevProps: IProps) {
-    this.recomputeMetrics();
-  }
-
   public render() {
-    if (! this.metrics) { this.recomputeMetrics(); }
+    const {numCols, numRows, width, height } = this.props;
+    const gridSize = Math.round(width / numCols);
+    this.metrics  = {
+      gridSize,
+      height,
+      width,
+      numCols,
+      numRows
+    };
+
     const {
       cities,
       volcanoX,
@@ -69,7 +70,6 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       map,
       isErupting
     } = this.props;
-    const {width, height, gridSize} = this.metrics;
 
     const cityItems = cities.map( (city) => {
       const {x, y, name, id} = city;
@@ -121,17 +121,5 @@ export class MapComponent extends BaseComponent<IProps, IState>{
 
   public toCanvasCoords = (point: Ipoint, scale = 1): Ipoint => {
     return {x: point.x * scale, y: (this.props.numRows - point.y - 1) * scale};
-  }
-
-  private recomputeMetrics() {
-    const {numCols, numRows, width, height } = this.props;
-    const gridSize = Math.round(width / numCols);
-    this.metrics  = {
-      gridSize,
-      height,
-      width,
-      numCols,
-      numRows
-    };
   }
 }
