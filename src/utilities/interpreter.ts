@@ -126,6 +126,7 @@ export const makeInterpreterController = (code: string, store: any, workspace: a
   };
 
   const run = (complete: () => void) => {
+    if (lastRunID) return;
     paused = false;
     function runLoop() {
       if (paused) return;
@@ -133,6 +134,7 @@ export const makeInterpreterController = (code: string, store: any, workspace: a
         lastRunID = window.setTimeout(() => runLoop(), 10);
       }
       else {
+        lastRunID = null;
         complete();
       }
     }
