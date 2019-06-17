@@ -11,7 +11,6 @@ import * as Maps from "./../assets/maps/maps.json";
 import * as BlocklyAuthoring from "./../assets/blockly-authoring/index.json";
 
 import BlocklyContianer from "./blockly-container";
-import ContainerDimensions from "react-container-dimensions";
 import styled from "styled-components";
 import { StyledButton } from "./styled-button";
 import { Tab, Tabs, TabList, TabPanel, FixWidthTabPanel } from "./tabs";
@@ -384,7 +383,6 @@ export class AppComponent extends BaseComponent<IProps, IState> {
   }
 
   private resize = (rect: DOMRect) => {
-    console.log("Resized. New bounds:", rect.width, "x", rect.height);
     this.setState({dimensions: rect});
   }
 
