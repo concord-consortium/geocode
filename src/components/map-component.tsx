@@ -7,6 +7,7 @@ import { PixiCityContainer } from "./pixi-city-container";
 import { PixiTephraMap } from "./pixi-tephra-map";
 import { PixiAxis } from "./pixi-axis";
 import { PixiGrid } from "./pixi-grid";
+import { CrossSectionComponent } from "./pixi-cross-section-selector";
 import VolcanoEmitter from "./pixi-volcano-emitter";
 import * as AshConfig from "../assets/particles/ash.json";
 
@@ -47,6 +48,23 @@ export class MapComponent extends BaseComponent<IProps, IState>{
   private ref = React.createRef<HTMLDivElement>();
   private metrics: ICanvasShape;
 
+  private mouseX: number;
+  private mouseY: number;
+
+  constructor(props: IProps) {
+    super(props);
+
+    this.handleMouseMove = this.handleMouseMove.bind(this);
+  }
+
+  public handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
+    if (e) {
+      this.mouseX = e.nativeEvent.offsetX;
+      this.mouseY = e.nativeEvent.offsetY;
+      this.forceUpdate();
+    }
+  }
+
   public render() {
     const {numCols, numRows, width, height } = this.props;
     const gridSize = Math.round(width / numCols);
@@ -81,7 +99,8 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     const volcanoPos = this.toCanvasCoords({x: volcanoX, y: volcanoY}, gridSize);
 
     return (
-      <CanvDiv ref={this.ref}>
+      <CanvDiv ref={this.ref}
+        onMouseMove={this.handleMouseMove}>
         <Stage
           width={width}
           height={height}
@@ -114,6 +133,11 @@ export class MapComponent extends BaseComponent<IProps, IState>{
             windSpeed={windSpeed}
             mass={mass}
             playing={isErupting} />
+          <CrossSectionComponent
+            volcanoX={volcanoPos.x + 10}
+            volcanoY={volcanoPos.y + 10}
+            mouseX={this.mouseX}
+            mouseY={this.mouseY} />
         </Stage>
       </CanvDiv>
     );
