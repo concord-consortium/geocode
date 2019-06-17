@@ -10,6 +10,10 @@ import { getGridIndexForLocation } from "../stores/simulation-store";
 interface IProps {
   canvasMetrics: ICanvasShape;
   data: number[];
+  volcanoX: number;
+  volcanoY: number;
+  mouseX: number;
+  mouseY: number;
 }
 
 interface IHsla {
@@ -45,34 +49,46 @@ const Bar =  PixiComponent<IBarProps, PIXI.Graphics>("Bar", {
 });
 
 export const PixiTephraCrossSection = (props: IProps) => {
-  const { canvasMetrics, data } = props;
+  const { canvasMetrics, data, volcanoX, volcanoY, mouseX, mouseY } = props;
   const { numCols, numRows, gridSize, height } = canvasMetrics;
   const getData = (x: number, y: number) => data[getGridIndexForLocation(x, y, numRows)];
   const cells = [];
   const maxTephra = 1;
-  for (let gridX = 0; gridX < numCols; gridX++) {
-    const x = gridSize * gridX;
-    let thickness = 0;
-    for (let gridY = 0; gridY <  numRows; gridY++) {
-      thickness = Math.max(getData(gridX, gridY), thickness);
-    }
-    // thickness = thickness / numRows;
-    const tephHeight = maxTephra / thickness;
+
+  // const xDiff = (mouseX - (volcanoX * gridSize) + 20) / gridSize;
+  // const yDiff = numRows - (mouseY - (volcanoY * gridSize) + 20) / gridSize;
+  const trueVolcanoX = ((volcanoX * gridSize) + 20) / gridSize;
+  const trueVolcanoY = ((volcanoY * gridSize) + 20) / gridSize;
+  const xDiff = (mouseX / gridSize) - trueVolcanoX;
+  const yDiff = numRows - (mouseY / gridSize) - trueVolcanoY;
+  const numSegments = 500;
+  const xSlope = xDiff / numSegments;
+  const ySlope = yDiff / numSegments;
+
+  for (let progress = 0; progress < numSegments; progress++) {
+    const x = (progress / numSegments) * gridSize * numCols;
+    const width = gridSize * numCols / numSegments;
+
+    const xProgress = Math.floor(trueVolcanoX + (xSlope * progress));
+    const yProgress = Math.floor(trueVolcanoY + (ySlope * progress));
+    const thickness = maxTephra / getData(xProgress, yProgress);
+
     const hsla: IHsla = {
       hue: 10,
       sat: 40,
       value: 60,
-      alpha: 1 - tephHeight
+      alpha: 1 - thickness
     };
+
     cells.push(
       <Bar
         key={`cross-section-bar-${x}`}
         hsla={hsla}
         x={x}
-        width={gridSize}
+        width={width}
         maxHeight={height}
-        height={tephHeight * height}
-      />);
+        height={thickness * height}/>
+    );
   }
   return (
     <Container >

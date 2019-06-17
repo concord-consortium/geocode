@@ -1,7 +1,6 @@
 import * as React from "react";
-import { PixiComponent, Stage } from "@inlet/react-pixi";
+import { PixiComponent } from "@inlet/react-pixi";
 import * as PIXI from "pixi.js";
-import { Ipoint } from "../interfaces";
 
 interface IProps {
     volcanoX: number;
@@ -25,10 +24,11 @@ export const CrossSection = PixiComponent<IProps, PIXI.Graphics>("CrossSection",
         g.moveTo(volcanoX, volcanoY);
 
         g.lineTo(mouseX, mouseY);
+
     }
 });
 
-export class CrossSectionComponent extends React.Component<IProps, IState> {
+export class CrossSectionSelectorComponent extends React.Component<IProps, IState> {
 
     public render() {
         const { volcanoX, volcanoY, mouseX, mouseY } = this.props;

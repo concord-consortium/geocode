@@ -189,6 +189,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       cities,
       volcanoX,
       volcanoY,
+      mouseX,
+      mouseY,
       run,
       clearLog,
       step,
@@ -309,6 +311,9 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             numRows={ numRows }
             width={ mapWidth }
             volcanoX={ volcanoX }
+            volcanoY={ volcanoY }
+            mouseX={ mouseX }
+            mouseY={ mouseY }
           />
         }
         { showChart &&

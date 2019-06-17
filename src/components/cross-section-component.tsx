@@ -19,6 +19,9 @@ interface IProps extends IBaseProps {
   height: number;
   width: number;
   volcanoX: number;
+  volcanoY: number;
+  mouseX: number;
+  mouseY: number;
   data: SimDatumType[];
   // cities: CityType[];
 }
@@ -40,7 +43,7 @@ export class CrossSectionComponent extends BaseComponent<IProps, IState>{
 
   public render() {
     if (! this.metrics) { this.recomputeMetrics(); }
-    const { volcanoX, data, height } = this.props;
+    const { volcanoX, volcanoY, mouseX, mouseY, data, height } = this.props;
     const { width, gridSize } = this.metrics;
 
     return (
@@ -51,7 +54,11 @@ export class CrossSectionComponent extends BaseComponent<IProps, IState>{
           options={{backgroundColor: Color("hsl(0, 10%, 95%)").rgbNumber()}} >
           <PixiTephraCrossSection
             canvasMetrics={this.metrics}
-            data={data.map( (d) => d.thickness )} />
+            data={data.map( (d) => d.thickness )}
+            volcanoX={volcanoX}
+            volcanoY={volcanoY}
+            mouseX={mouseX}
+            mouseY={mouseY} />
         </Stage>
       </CanvDiv>
     );

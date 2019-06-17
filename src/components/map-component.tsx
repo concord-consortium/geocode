@@ -7,7 +7,7 @@ import { PixiCityContainer } from "./pixi-city-container";
 import { PixiTephraMap } from "./pixi-tephra-map";
 import { PixiAxis } from "./pixi-axis";
 import { PixiGrid } from "./pixi-grid";
-import { CrossSectionComponent } from "./pixi-cross-section-selector";
+import { CrossSectionSelectorComponent } from "./pixi-cross-section-selector";
 import VolcanoEmitter from "./pixi-volcano-emitter";
 import * as AshConfig from "../assets/particles/ash.json";
 
@@ -48,9 +48,6 @@ export class MapComponent extends BaseComponent<IProps, IState>{
   private ref = React.createRef<HTMLDivElement>();
   private metrics: ICanvasShape;
 
-  private mouseX: number;
-  private mouseY: number;
-
   constructor(props: IProps) {
     super(props);
 
@@ -59,8 +56,9 @@ export class MapComponent extends BaseComponent<IProps, IState>{
 
   public handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
     if (e) {
-      this.mouseX = e.nativeEvent.offsetX;
-      this.mouseY = e.nativeEvent.offsetY;
+      this.stores.setMousePos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+      // this.stores.mouseX = e.nativeEvent.offsetX;
+      // this.stores.mouseY = e.nativeEvent.offsetY;
       this.forceUpdate();
     }
   }
@@ -97,6 +95,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     });
 
     const volcanoPos = this.toCanvasCoords({x: volcanoX, y: volcanoY}, gridSize);
+    const { mouseX, mouseY } = this.stores;
 
     return (
       <CanvDiv ref={this.ref}
@@ -133,11 +132,11 @@ export class MapComponent extends BaseComponent<IProps, IState>{
             windSpeed={windSpeed}
             mass={mass}
             playing={isErupting} />
-          <CrossSectionComponent
-            volcanoX={volcanoPos.x + 10}
-            volcanoY={volcanoPos.y + 10}
-            mouseX={this.mouseX}
-            mouseY={this.mouseY} />
+          <CrossSectionSelectorComponent
+            volcanoX={volcanoPos.x + 20}
+            volcanoY={volcanoPos.y + 20}
+            mouseX={mouseX}
+            mouseY={mouseY} />
         </Stage>
       </CanvDiv>
     );

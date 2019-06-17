@@ -103,6 +103,8 @@ export const SimulationStore = types
     particleSize: 1,
     volcanoX: 5,
     volcanoY: 5,
+    mouseX: 0,
+    mouseY: 0,
     cities: types.array(City),
     code: "",
     log: "",
@@ -177,6 +179,10 @@ export const SimulationStore = types
     },
     clearLog() {
       self.log = "";
+    },
+    setMousePos(x: number, y: number) {
+      self.mouseX = x;
+      self.mouseY = y;
     },
     /**
      * Steps through one complete block.
