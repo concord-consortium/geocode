@@ -197,7 +197,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       stop,
       reset,
       running,
-      isErupting
+      isErupting,
+      showCrossSectionSelector
     } = this.stores;
 
     const {
@@ -302,6 +303,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               volcanoY={ volcanoY }
               map={ mapPath }
               isErupting={isErupting}
+              showCrossSectionSelector={showCrossSectionSelector}
             />
               { showCrossSection &&
           <CrossSectionComponent

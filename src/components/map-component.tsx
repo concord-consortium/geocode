@@ -39,6 +39,7 @@ interface IProps extends IBaseProps {
   cities: CityType[];
   map: string;
   isErupting: boolean;
+  showCrossSectionSelector: boolean;
 }
 
 @inject("stores")
@@ -47,15 +48,25 @@ export class MapComponent extends BaseComponent<IProps, IState>{
 
   private ref = React.createRef<HTMLDivElement>();
   private metrics: ICanvasShape;
+  private moveMouse: boolean = true;
 
   constructor(props: IProps) {
     super(props);
 
     this.handleMouseMove = this.handleMouseMove.bind(this);
+    this.handleMouseDown = this.handleMouseDown.bind(this);
   }
 
   public handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
-    this.stores.setMousePos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    if (this.moveMouse) {
+      this.stores.setMousePos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    }
+  }
+  public handleMouseDown(e: React.MouseEvent<HTMLDivElement>) {
+    this.moveMouse = !this.moveMouse;
+    if (this.moveMouse === false) {
+      this.forceUpdate();
+    }
   }
 
   public render() {
@@ -79,7 +90,8 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       windSpeed,
       mass,
       map,
-      isErupting
+      isErupting,
+      showCrossSectionSelector
     } = this.props;
 
     const cityItems = cities.map( (city) => {
@@ -94,7 +106,8 @@ export class MapComponent extends BaseComponent<IProps, IState>{
 
     return (
       <CanvDiv ref={this.ref}
-        onMouseMove={this.handleMouseMove}>
+        onMouseMove={this.handleMouseMove}
+        onMouseDown={this.handleMouseDown}>
         <Stage
           width={width}
           height={height}
@@ -127,11 +140,13 @@ export class MapComponent extends BaseComponent<IProps, IState>{
             windSpeed={windSpeed}
             mass={mass}
             playing={isErupting} />
+          {showCrossSectionSelector &&
           <CrossSectionSelectorComponent
             volcanoX={volcanoPos.x + 20}
             volcanoY={volcanoPos.y + 20}
             mouseX={mouseX}
-            mouseY={mouseY} />
+            mouseY={mouseY}
+            isPlaced={this.moveMouse} /> }
         </Stage>
       </CanvDiv>
     );

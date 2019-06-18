@@ -7,12 +7,20 @@ import { PixiTephraCrossSection } from "./pixi-tephra-cross-section";
 import * as Color from "color";
 import { inject, observer } from "mobx-react";
 import { BaseComponent, IBaseProps } from "./base";
+import { StyledButton } from "./styled-button";
 
 const CanvDiv = styled.div`
   border: 0px solid black; border-radius: 0px;
 `;
 
-interface IState {}
+const ContainerDiv = styled.div`
+  width: flex;
+  height: flex;
+`;
+
+interface IState {
+  isSelecting: boolean;
+}
 interface IProps extends IBaseProps {
   numRows: number;
   numCols: number;
@@ -33,6 +41,19 @@ export class CrossSectionComponent extends BaseComponent<IProps, IState>{
   private ref = React.createRef<HTMLDivElement>();
   private metrics: ICanvasShape;
 
+  public constructor(props: IProps) {
+    super(props);
+
+    const initialState: IState = {
+      isSelecting: false
+    };
+
+    this.selectButton = this.selectButton.bind(this);
+    this.cancel = this.cancel.bind(this);
+
+    this.state = initialState;
+  }
+
   public componentDidMount() {
     this.recomputeMetrics();
   }
@@ -43,25 +64,41 @@ export class CrossSectionComponent extends BaseComponent<IProps, IState>{
 
   public render() {
     if (! this.metrics) { this.recomputeMetrics(); }
+    const { isSelecting } = this.state;
     const { volcanoX, volcanoY, mouseX, mouseY, data, height } = this.props;
-    const { width, gridSize } = this.metrics;
+    const { width } = this.metrics;
 
     return (
       <CanvDiv ref={this.ref}>
-        <Stage
-          width={width}
-          height={height}
-          options={{backgroundColor: Color("hsl(0, 10%, 95%)").rgbNumber()}} >
-          <PixiTephraCrossSection
-            canvasMetrics={this.metrics}
-            data={data.map( (d) => d.thickness )}
-            volcanoX={volcanoX}
-            volcanoY={volcanoY}
-            mouseX={mouseX}
-            mouseY={mouseY} />
-        </Stage>
+        {!isSelecting && <StyledButton onClick={this.selectButton}>Draw a cross section line</StyledButton> }
+        {isSelecting &&
+        <ContainerDiv>
+          <StyledButton onClick={this.cancel}>Cancel</StyledButton>
+          <Stage
+            width={width}
+            height={height}
+            options={{backgroundColor: Color("hsl(0, 10%, 95%)").rgbNumber()}} >
+            <PixiTephraCrossSection
+              canvasMetrics={this.metrics}
+              data={data.map( (d) => d.thickness )}
+              volcanoX={volcanoX}
+              volcanoY={volcanoY}
+              mouseX={mouseX}
+              mouseY={mouseY} />
+          </Stage>
+        </ContainerDiv>}
       </CanvDiv>
     );
+  }
+
+  private selectButton() {
+    this.setState({isSelecting: true});
+    this.stores.setCrossSectionSelectorVisibility(true);
+  }
+
+  private cancel() {
+    this.setState({isSelecting: false});
+    this.stores.setCrossSectionSelectorVisibility(false);
   }
 
   private recomputeMetrics() {

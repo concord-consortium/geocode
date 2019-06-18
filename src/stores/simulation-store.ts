@@ -113,6 +113,7 @@ export const SimulationStore = types
     gridValues: types.array(types.string),
     plotData: types.optional(PlotData, getSnapshot(plotData)),
     isErupting: false,
+    showCrossSectionSelector: false,
     // authoring props
     requireEruption: true,
     requirePainting: true,
@@ -124,6 +125,11 @@ export const SimulationStore = types
   .actions((self) => ({
     endEruption() {
       self.isErupting = false;
+    }
+  }))
+  .actions((self) => ({
+    setCrossSectionSelectorVisibility(val: boolean) {
+      self.showCrossSectionSelector = val;
     }
   }))
   .actions((self) => ({

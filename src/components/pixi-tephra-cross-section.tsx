@@ -66,7 +66,6 @@ export const PixiTephraCrossSection = (props: IProps) => {
   const ySlope = yDiff / numSegments;
   const width = gridSize * numCols / numSegments;
 
-
   for (let progress = 0; progress < numSegments; progress++) {
     const x = (progress / numSegments) * gridSize * numCols;
     const xProgress = Math.floor(trueVolcanoX + (xSlope * progress));

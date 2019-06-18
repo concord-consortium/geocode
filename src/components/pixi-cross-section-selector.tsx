@@ -7,6 +7,7 @@ interface IProps {
     volcanoY: number;
     mouseX: number;
     mouseY: number;
+    isPlaced: boolean;
 }
 
 interface IState {
@@ -16,10 +17,14 @@ interface IState {
 export const CrossSection = PixiComponent<IProps, PIXI.Graphics>("CrossSection", {
     create: (props) => new PIXI.Graphics(),
     applyProps: (g, _, props: IProps) => {
-        const { volcanoX, volcanoY, mouseX, mouseY } = props;
+        const { volcanoX, volcanoY, mouseX, mouseY, isPlaced } = props;
 
         g.clear();
-        g.lineStyle(3, 0, 1);
+        if (isPlaced) {
+            g.lineStyle(3, 0x000000, 1);
+        } else {
+            g.lineStyle(3, 0xFFFFFF, 1);
+        }
         g.moveTo(volcanoX, volcanoY);
 
         g.lineTo(mouseX, mouseY);
@@ -30,13 +35,14 @@ export const CrossSection = PixiComponent<IProps, PIXI.Graphics>("CrossSection",
 export class CrossSectionSelectorComponent extends React.Component<IProps, IState> {
 
     public render() {
-        const { volcanoX, volcanoY, mouseX, mouseY } = this.props;
+        const { volcanoX, volcanoY, mouseX, mouseY, isPlaced } = this.props;
         return (
             <CrossSection
                 volcanoX={volcanoX}
                 volcanoY={volcanoY}
                 mouseX={mouseX}
-                mouseY={mouseY} />
+                mouseY={mouseY}
+                isPlaced={isPlaced} />
         );
     }
 }
