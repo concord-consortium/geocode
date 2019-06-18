@@ -21,7 +21,10 @@ const CanvDiv = styled.div`
   border: 0px solid black; border-radius: 0px;
 `;
 
-interface IState {}
+interface IState {
+  moveMouse: boolean;
+}
+
 interface IProps extends IBaseProps {
   numRows: number;
   numCols: number;
@@ -48,25 +51,29 @@ export class MapComponent extends BaseComponent<IProps, IState>{
 
   private ref = React.createRef<HTMLDivElement>();
   private metrics: ICanvasShape;
-  private moveMouse: boolean = true;
 
   constructor(props: IProps) {
     super(props);
 
+    const initialState: IState = {
+      moveMouse: true
+    };
+
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleMouseDown = this.handleMouseDown.bind(this);
+
+    this.state = initialState;
   }
 
   public handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
-    if (this.moveMouse) {
+    const { moveMouse } = this.state;
+    if (moveMouse) {
       this.stores.setMousePos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
     }
   }
   public handleMouseDown(e: React.MouseEvent<HTMLDivElement>) {
-    this.moveMouse = !this.moveMouse;
-    if (this.moveMouse === false) {
-      this.forceUpdate();
-    }
+    const { moveMouse } = this.state;
+    this.setState({moveMouse: !moveMouse});
   }
 
   public render() {
@@ -103,6 +110,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
 
     const volcanoPos = this.toCanvasCoords({x: volcanoX, y: volcanoY}, gridSize);
     const { mouseX, mouseY } = this.stores;
+    const { moveMouse } = this.state;
 
     return (
       <CanvDiv ref={this.ref}
@@ -146,7 +154,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
             volcanoY={volcanoPos.y + 20}
             mouseX={mouseX}
             mouseY={mouseY}
-            isPlaced={this.moveMouse} /> }
+            isPlaced={moveMouse} /> }
         </Stage>
       </CanvDiv>
     );
