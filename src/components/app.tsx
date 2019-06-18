@@ -359,8 +359,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                   options={Object.keys(BlocklyAuthoring.toolbox)} key="toolbox" />,
                 <DatSelect path="initialCode" label="Initial code"
                   options={Object.keys(BlocklyAuthoring.code)} key="code" />,
-                <DatBoolean path="showCrossSection" label="Show cross section?"
-                  key="showCrossSection" />,
+                <DatBoolean path="showCrossSection" label="Show cross section?" key="showCrossSection" />,
                 <DatBoolean path="showChart" label="Show chart?"
                   key="showChart" />,
 
@@ -369,7 +368,6 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 <DatBoolean path="showControls" label="Show controls?" key="showControls" />,
                 <DatBoolean path="showLog" label="Show Log?" key="showLog" />,
 
-                <DatBoolean path="showCrossSection" label="Show cross section?" key="showCrossSection" />,
                 <DatBoolean path="showChart" label="Show chart?" key="showChart" />,
                 <DatBoolean path="showSidebar" label="Show sidebar?" key="showSidebar" />,
                 // submit button. Should remain at bottom

@@ -18,7 +18,6 @@ export const CrossSection = PixiComponent<IProps, PIXI.Graphics>("CrossSection",
     applyProps: (g, _, props: IProps) => {
         const { volcanoX, volcanoY, mouseX, mouseY } = props;
 
-        // console.log(mouseX + " " + mouseY);
         g.clear();
         g.lineStyle(3, 0, 1);
         g.moveTo(volcanoX, volcanoY);

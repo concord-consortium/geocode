@@ -64,11 +64,11 @@ export const PixiTephraCrossSection = (props: IProps) => {
   const numSegments = 500;
   const xSlope = xDiff / numSegments;
   const ySlope = yDiff / numSegments;
+  const width = gridSize * numCols / numSegments;
+
 
   for (let progress = 0; progress < numSegments; progress++) {
     const x = (progress / numSegments) * gridSize * numCols;
-    const width = gridSize * numCols / numSegments;
-
     const xProgress = Math.floor(trueVolcanoX + (xSlope * progress));
     const yProgress = Math.floor(trueVolcanoY + (ySlope * progress));
     const thickness = maxTephra / getData(xProgress, yProgress);

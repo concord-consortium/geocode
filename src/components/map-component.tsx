@@ -55,12 +55,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
   }
 
   public handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
-    if (e) {
-      this.stores.setMousePos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
-      // this.stores.mouseX = e.nativeEvent.offsetX;
-      // this.stores.mouseY = e.nativeEvent.offsetY;
-      this.forceUpdate();
-    }
+    this.stores.setMousePos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
   }
 
   public render() {
