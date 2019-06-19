@@ -42,6 +42,7 @@ interface IProps extends IBaseProps {
   cities: CityType[];
   map: string;
   isErupting: boolean;
+  hasErupted: boolean;
   showCrossSectionSelector: boolean;
 }
 
@@ -98,6 +99,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       mass,
       map,
       isErupting,
+      hasErupted,
       showCrossSectionSelector
     } = this.props;
 
@@ -148,7 +150,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
             windSpeed={windSpeed}
             mass={mass}
             playing={isErupting} />
-          {showCrossSectionSelector &&
+          {showCrossSectionSelector && hasErupted &&
           <CrossSectionSelectorComponent
             volcanoX={volcanoPos.x + 20}
             volcanoY={volcanoPos.y + 20}

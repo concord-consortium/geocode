@@ -113,6 +113,7 @@ export const SimulationStore = types
     gridValues: types.array(types.string),
     plotData: types.optional(PlotData, getSnapshot(plotData)),
     isErupting: false,
+    hasErupted: false,
     showCrossSectionSelector: false,
     // authoring props
     requireEruption: true,
@@ -155,6 +156,7 @@ export const SimulationStore = types
     reset() {
       this.setBlocklyCode(self.code, cachedBlocklyWorkspace);
       self.isErupting = false;
+      self.hasErupted = false;
       self.log = "";
       self.plotData = PlotData.create({});
       self.gridColors.clear();
@@ -234,6 +236,7 @@ export const SimulationStore = types
         const gridColor = Color(baseColor).alpha(alpha);
         self.gridColors.push(gridColor.toString());
       });
+      self.hasErupted = true;
     },
     numberGrid(resultType: SimOutput) {
       self.gridValues.clear();
@@ -242,6 +245,7 @@ export const SimulationStore = types
 
         self.gridValues.push(val.toFixed(2));
       });
+      self.hasErupted = true;
     },
     clearGrid() {
       self.gridColors.clear();

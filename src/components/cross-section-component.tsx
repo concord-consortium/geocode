@@ -30,6 +30,7 @@ interface IProps extends IBaseProps {
   volcanoY: number;
   mouseX: number;
   mouseY: number;
+  hasErupted: boolean;
   data: SimDatumType[];
   // cities: CityType[];
 }
@@ -65,27 +66,29 @@ export class CrossSectionComponent extends BaseComponent<IProps, IState>{
   public render() {
     if (! this.metrics) { this.recomputeMetrics(); }
     const { isSelecting } = this.state;
-    const { volcanoX, volcanoY, mouseX, mouseY, data, height } = this.props;
+    const { volcanoX, volcanoY, mouseX, mouseY, data, height, hasErupted } = this.props;
     const { width } = this.metrics;
 
     return (
       <CanvDiv ref={this.ref}>
-        {!isSelecting && <StyledButton onClick={this.selectButton}>Draw a cross section line</StyledButton> }
-        {isSelecting &&
-        <ContainerDiv>
-          <StyledButton onClick={this.cancel}>Cancel</StyledButton>
-          <Stage
-            width={width}
-            height={height}
-            options={{backgroundColor: Color("hsl(0, 10%, 95%)").rgbNumber()}} >
-            <PixiTephraCrossSection
-              canvasMetrics={this.metrics}
-              data={data.map( (d) => d.thickness )}
-              volcanoX={volcanoX}
-              volcanoY={volcanoY}
-              mouseX={mouseX}
-              mouseY={mouseY} />
-          </Stage>
+        {hasErupted && <ContainerDiv>
+          {!isSelecting && <StyledButton onClick={this.selectButton}>Draw a cross section line</StyledButton> }
+          {isSelecting &&
+          <ContainerDiv>
+            <StyledButton onClick={this.cancel}>Cancel</StyledButton>
+            <Stage
+              width={width}
+              height={height}
+              options={{backgroundColor: Color("hsl(0, 10%, 95%)").rgbNumber()}} >
+              <PixiTephraCrossSection
+                canvasMetrics={this.metrics}
+                data={data.map( (d) => d.thickness )}
+                volcanoX={volcanoX}
+                volcanoY={volcanoY}
+                mouseX={mouseX}
+                mouseY={mouseY} />
+            </Stage>
+          </ContainerDiv>}
         </ContainerDiv>}
       </CanvDiv>
     );
