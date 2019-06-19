@@ -1,13 +1,12 @@
 import * as React from "react";
 
-import { Container } from "@inlet/react-pixi";
-import { PixiComponent } from "@inlet/react-pixi";
+import { PixiComponent, Text, Container } from "@inlet/react-pixi";
+import { TextStyle } from "pixi.js";
 import { ICanvasShape } from "../interfaces";
 import * as PIXI from "pixi.js";
 import * as Color from "color";
 import { getGridIndexForLocation } from "../stores/simulation-store";
 import gridTephraCalc from "../tephra2";
-
 
 interface IProps {
   canvasMetrics: ICanvasShape;
@@ -62,6 +61,8 @@ export const PixiTephraCrossSection = (props: IProps) => {
   const getData = (x: number, y: number) => data[getGridIndexForLocation(x, y, numRows)];
   const cells = [];
   const maxTephra = 1;
+  const numSegments = 200;
+  const textSize = 12;
 
   // const xDiff = (mouseX - (volcanoX * gridSize) + 20) / gridSize;
   // const yDiff = numRows - (mouseY - (volcanoY * gridSize) + 20) / gridSize;
@@ -69,13 +70,12 @@ export const PixiTephraCrossSection = (props: IProps) => {
   const trueVolcanoY = ((volcanoY * gridSize) + 20) / gridSize;
   const xDiff = (mouseX / gridSize) - trueVolcanoX;
   const yDiff = numRows - (mouseY / gridSize) - trueVolcanoY;
-  const numSegments = 200;
   const xSlope = xDiff / numSegments;
   const ySlope = yDiff / numSegments;
-  const colWidth = width / numSegments;
+  const colWidth = (width - textSize - 2) / numSegments;
 
   for (let progress = 0; progress < numSegments; progress++) {
-    const x = (progress / numSegments) * gridSize * numCols;
+    const x = (progress / numSegments) * (width - textSize - 2);
     const xProgress = (trueVolcanoX + (xSlope * progress));
     const yProgress = (trueVolcanoY + (ySlope * progress));
 
@@ -102,15 +102,46 @@ export const PixiTephraCrossSection = (props: IProps) => {
       <Bar
         key={`cross-section-bar-${x}`}
         hsla={hsla}
-        x={x}
+        x={x + textSize + 2}
         width={colWidth}
-        maxHeight={height}
-        height={thickness * height}/>
+        maxHeight={height - textSize}
+        height={thickness * (height - textSize)}/>
     );
   }
+
+  const style = new TextStyle({fill: "black", fontSize: `${textSize}px`, align: "center"});
+  const maxDist = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+
   return (
     <Container >
       {cells}
+    <Text
+      text="0"
+      style={style}
+      x={textSize / 2}
+      y={height - textSize}
+    />
+    <Text
+      text="Distance from vent (km)"
+      style={style}
+      anchor={[0.5, 0]}
+      x={width / 2}
+      y={height - textSize}
+      />
+    <Text
+      text="Tephra thickness (mm)"
+      style={style}
+      rotation={3 * Math.PI / 2}
+      x={0}
+      y={height - textSize}
+      />
+    <Text
+      text={maxDist.toFixed(2) + "km"}
+      style={style}
+      anchor={[1, 0]}
+      x={width}
+      y={height - textSize}
+    />
     </Container>
   );
 };

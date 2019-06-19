@@ -310,7 +310,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               { showCrossSection &&
           <CrossSectionComponent
             data={ data }
-            height={ 100 }
+            height={ 150 }
             numCols={ numCols }
             numRows={ numRows }
             width={ mapWidth }
