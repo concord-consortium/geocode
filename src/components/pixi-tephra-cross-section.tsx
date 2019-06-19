@@ -6,6 +6,8 @@ import { ICanvasShape } from "../interfaces";
 import * as PIXI from "pixi.js";
 import * as Color from "color";
 import { getGridIndexForLocation } from "../stores/simulation-store";
+import gridTephraCalc from "../tephra2";
+
 
 interface IProps {
   canvasMetrics: ICanvasShape;
@@ -14,6 +16,11 @@ interface IProps {
   volcanoY: number;
   mouseX: number;
   mouseY: number;
+  windSpeed: number;
+  windDirection: number;
+  colHeight: number;
+  mass: number;
+  particleSize: number;
 }
 
 interface IHsla {
@@ -49,7 +56,8 @@ const Bar =  PixiComponent<IBarProps, PIXI.Graphics>("Bar", {
 });
 
 export const PixiTephraCrossSection = (props: IProps) => {
-  const { canvasMetrics, data, volcanoX, volcanoY, mouseX, mouseY } = props;
+  const { canvasMetrics, data, volcanoX, volcanoY, mouseX, mouseY,
+          windSpeed, windDirection, colHeight, mass, particleSize } = props;
   const { numCols, numRows, gridSize, height } = canvasMetrics;
   const getData = (x: number, y: number) => data[getGridIndexForLocation(x, y, numRows)];
   const cells = [];
@@ -68,9 +76,23 @@ export const PixiTephraCrossSection = (props: IProps) => {
 
   for (let progress = 0; progress < numSegments; progress++) {
     const x = (progress / numSegments) * gridSize * numCols;
-    const xProgress = Math.floor(trueVolcanoX + (xSlope * progress));
-    const yProgress = Math.floor(trueVolcanoY + (ySlope * progress));
-    const thickness = maxTephra / getData(xProgress, yProgress);
+    const xProgress = (trueVolcanoX + (xSlope * progress));
+    const yProgress = (trueVolcanoY + (ySlope * progress));
+    // const thickness = maxTephra / getData(xProgress, yProgress);
+
+    const rows = numRows;
+    const cols = numCols;
+    const vX = volcanoX;
+    const vY = volcanoY;
+    const simResults = gridTephraCalc(
+      xProgress, yProgress, vX, vY,
+      windSpeed,
+      windDirection,
+      colHeight,
+      mass,
+      particleSize
+    );
+    const thickness = maxTephra / simResults;
 
     const hsla: IHsla = {
       hue: 10,

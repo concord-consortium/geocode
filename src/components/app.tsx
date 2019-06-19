@@ -319,6 +319,11 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             mouseX={ mouseX }
             mouseY={ mouseY }
             hasErupted={ hasErupted }
+            windSpeed={windSpeed}
+            windDirection={windDirection}
+            colHeight={colHeight}
+            mass={mass}
+            particleSize={particleSize}
           />
         }
         { showChart &&

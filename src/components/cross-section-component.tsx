@@ -31,6 +31,11 @@ interface IProps extends IBaseProps {
   mouseX: number;
   mouseY: number;
   hasErupted: boolean;
+  windSpeed: number;
+  windDirection: number;
+  colHeight: number;
+  mass: number;
+  particleSize: number;
   data: SimDatumType[];
   // cities: CityType[];
 }
@@ -66,7 +71,8 @@ export class CrossSectionComponent extends BaseComponent<IProps, IState>{
   public render() {
     if (! this.metrics) { this.recomputeMetrics(); }
     const { isSelecting } = this.state;
-    const { volcanoX, volcanoY, mouseX, mouseY, data, height, hasErupted } = this.props;
+    const { volcanoX, volcanoY, mouseX, mouseY, data, height, hasErupted,
+          windSpeed, windDirection, colHeight, mass, particleSize } = this.props;
     const { width } = this.metrics;
 
     return (
@@ -86,7 +92,12 @@ export class CrossSectionComponent extends BaseComponent<IProps, IState>{
                 volcanoX={volcanoX}
                 volcanoY={volcanoY}
                 mouseX={mouseX}
-                mouseY={mouseY} />
+                mouseY={mouseY}
+                windSpeed={windSpeed}
+                windDirection={windDirection}
+                colHeight={colHeight}
+                mass={mass}
+                particleSize={particleSize} />
             </Stage>
           </ContainerDiv>}
         </ContainerDiv>}
