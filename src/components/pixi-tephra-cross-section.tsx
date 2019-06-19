@@ -58,7 +58,7 @@ const Bar =  PixiComponent<IBarProps, PIXI.Graphics>("Bar", {
 export const PixiTephraCrossSection = (props: IProps) => {
   const { canvasMetrics, data, volcanoX, volcanoY, mouseX, mouseY,
           windSpeed, windDirection, colHeight, mass, particleSize } = props;
-  const { numCols, numRows, gridSize, height } = canvasMetrics;
+  const { numCols, numRows, gridSize, height, width } = canvasMetrics;
   const getData = (x: number, y: number) => data[getGridIndexForLocation(x, y, numRows)];
   const cells = [];
   const maxTephra = 1;
@@ -69,19 +69,16 @@ export const PixiTephraCrossSection = (props: IProps) => {
   const trueVolcanoY = ((volcanoY * gridSize) + 20) / gridSize;
   const xDiff = (mouseX / gridSize) - trueVolcanoX;
   const yDiff = numRows - (mouseY / gridSize) - trueVolcanoY;
-  const numSegments = 500;
+  const numSegments = 200;
   const xSlope = xDiff / numSegments;
   const ySlope = yDiff / numSegments;
-  const width = gridSize * numCols / numSegments;
+  const colWidth = width / numSegments;
 
   for (let progress = 0; progress < numSegments; progress++) {
     const x = (progress / numSegments) * gridSize * numCols;
     const xProgress = (trueVolcanoX + (xSlope * progress));
     const yProgress = (trueVolcanoY + (ySlope * progress));
-    // const thickness = maxTephra / getData(xProgress, yProgress);
 
-    const rows = numRows;
-    const cols = numCols;
     const vX = volcanoX;
     const vY = volcanoY;
     const simResults = gridTephraCalc(
@@ -106,7 +103,7 @@ export const PixiTephraCrossSection = (props: IProps) => {
         key={`cross-section-bar-${x}`}
         hsla={hsla}
         x={x}
-        width={width}
+        width={colWidth}
         maxHeight={height}
         height={thickness * height}/>
     );
