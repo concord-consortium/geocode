@@ -189,8 +189,10 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       cities,
       volcanoX,
       volcanoY,
-      mouseX,
-      mouseY,
+      crossPoint1X,
+      crossPoint1Y,
+      crossPoint2X,
+      crossPoint2Y,
       run,
       clearLog,
       step,
@@ -316,8 +318,10 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             width={ mapWidth }
             volcanoX={ volcanoX }
             volcanoY={ volcanoY }
-            mouseX={ mouseX }
-            mouseY={ mouseY }
+            crossPoint1X={ crossPoint1X }
+            crossPoint1Y={ crossPoint1Y }
+            crossPoint2X={ crossPoint2X }
+            crossPoint2Y={ crossPoint2Y }
             hasErupted={ hasErupted }
             windSpeed={windSpeed}
             windDirection={windDirection}

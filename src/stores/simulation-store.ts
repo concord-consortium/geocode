@@ -103,8 +103,10 @@ export const SimulationStore = types
     particleSize: 1,
     volcanoX: 5,
     volcanoY: 5,
-    mouseX: 0,
-    mouseY: 0,
+    crossPoint1X: 0,
+    crossPoint1Y: 0,
+    crossPoint2X: 0,
+    crossPoint2Y: 0,
     cities: types.array(City),
     code: "",
     log: "",
@@ -188,9 +190,13 @@ export const SimulationStore = types
     clearLog() {
       self.log = "";
     },
-    setMousePos(x: number, y: number) {
-      self.mouseX = x;
-      self.mouseY = y;
+    setPoint1Pos(x: number, y: number) {
+      self.crossPoint1X = x;
+      self.crossPoint1Y = y;
+    },
+    setPoint2Pos(x: number, y: number) {
+      self.crossPoint2X = x;
+      self.crossPoint2Y = y;
     },
     /**
      * Steps through one complete block.

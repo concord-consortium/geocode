@@ -57,24 +57,32 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     super(props);
 
     const initialState: IState = {
-      moveMouse: true
+      moveMouse: false
     };
 
-    this.handleMouseMove = this.handleMouseMove.bind(this);
-    this.handleMouseDown = this.handleMouseDown.bind(this);
+    this.handleDragMove = this.handleDragMove.bind(this);
+    this.handleDragEnter = this.handleDragEnter.bind(this);
+    this.handleDragExit = this.handleDragExit.bind(this);
 
     this.state = initialState;
   }
 
-  public handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
+  public handleDragEnter(e: React.MouseEvent<HTMLDivElement>) {
+    this.stores.setPoint1Pos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    this.stores.setPoint2Pos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    this.setState({moveMouse: true});
+  }
+
+  public handleDragMove(e: React.MouseEvent<HTMLDivElement>) {
     const { moveMouse } = this.state;
     if (moveMouse) {
-      this.stores.setMousePos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+      this.stores.setPoint2Pos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
     }
   }
-  public handleMouseDown(e: React.MouseEvent<HTMLDivElement>) {
-    const { moveMouse } = this.state;
-    this.setState({moveMouse: !moveMouse});
+
+  public handleDragExit(e: React.MouseEvent<HTMLDivElement>) {
+    this.stores.setPoint2Pos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    this.setState({moveMouse: false});
   }
 
   public render() {
@@ -111,13 +119,14 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     });
 
     const volcanoPos = this.toCanvasCoords({x: volcanoX, y: volcanoY}, gridSize);
-    const { mouseX, mouseY } = this.stores;
+    const { crossPoint1X, crossPoint1Y, crossPoint2X, crossPoint2Y } = this.stores;
     const { moveMouse } = this.state;
 
     return (
       <CanvDiv ref={this.ref}
-        onMouseMove={this.handleMouseMove}
-        onMouseDown={this.handleMouseDown}>
+        onMouseMove={this.handleDragMove}
+        onMouseDown={this.handleDragEnter}
+        onMouseUp={this.handleDragExit}>
         <Stage
           width={width}
           height={height}
@@ -152,10 +161,10 @@ export class MapComponent extends BaseComponent<IProps, IState>{
             playing={isErupting} />
           {showCrossSectionSelector && hasErupted &&
           <CrossSectionSelectorComponent
-            volcanoX={volcanoPos.x + 20}
-            volcanoY={volcanoPos.y + 20}
-            mouseX={mouseX}
-            mouseY={mouseY}
+            crossPoint2X={crossPoint2X}
+            crossPoint2Y={crossPoint2Y}
+            crossPoint1X={crossPoint1X}
+            crossPoint1Y={crossPoint1Y}
             isPlaced={moveMouse} /> }
         </Stage>
       </CanvDiv>

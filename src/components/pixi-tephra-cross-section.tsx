@@ -13,8 +13,10 @@ interface IProps {
   data: number[];
   volcanoX: number;
   volcanoY: number;
-  mouseX: number;
-  mouseY: number;
+  crossPoint1X: number;
+  crossPoint1Y: number;
+  crossPoint2X: number;
+  crossPoint2Y: number;
   windSpeed: number;
   windDirection: number;
   colHeight: number;
@@ -55,7 +57,7 @@ const Bar =  PixiComponent<IBarProps, PIXI.Graphics>("Bar", {
 });
 
 export const PixiTephraCrossSection = (props: IProps) => {
-  const { canvasMetrics, data, volcanoX, volcanoY, mouseX, mouseY,
+  const { canvasMetrics, data, volcanoX, volcanoY, crossPoint1X, crossPoint1Y, crossPoint2X, crossPoint2Y,
           windSpeed, windDirection, colHeight, mass, particleSize } = props;
   const { numCols, numRows, gridSize, height, width } = canvasMetrics;
   const getData = (x: number, y: number) => data[getGridIndexForLocation(x, y, numRows)];
@@ -64,18 +66,18 @@ export const PixiTephraCrossSection = (props: IProps) => {
   const numSegments = 200;
   const textSize = 12;
 
-  const trueVolcanoX = ((volcanoX * gridSize) + 20) / gridSize;
-  const trueVolcanoY = ((volcanoY * gridSize) + 20) / gridSize;
-  const xDiff = (mouseX / gridSize) - trueVolcanoX;
-  const yDiff = numRows - (mouseY / gridSize) - trueVolcanoY;
+  const trueP1X = ((crossPoint1X) / gridSize);
+  const trueP1Y = numRows - ((crossPoint1Y) / gridSize);
+  const xDiff = (crossPoint2X / gridSize)  - trueP1X;
+  const yDiff = (numRows - (crossPoint2Y / gridSize) - trueP1Y);
   const xSlope = xDiff / numSegments;
   const ySlope = yDiff / numSegments;
   const colWidth = (width - textSize - 2) / numSegments;
 
   for (let progress = 0; progress < numSegments; progress++) {
     const x = (progress / numSegments) * (width - textSize - 2);
-    const xProgress = (trueVolcanoX + (xSlope * progress));
-    const yProgress = (trueVolcanoY + (ySlope * progress));
+    const xProgress = (trueP1X + (xSlope * progress));
+    const yProgress = (trueP1Y + (ySlope * progress));
 
     const vX = volcanoX;
     const vY = volcanoY;
@@ -87,7 +89,9 @@ export const PixiTephraCrossSection = (props: IProps) => {
       mass,
       particleSize
     );
-    const thickness = maxTephra / Math.log10(simResults);
+
+    // I add 10 to the calculation so that the return of the log is between 0 and 1
+    const thickness = maxTephra / Math.log10(simResults + 10);
 
     const hsla: IHsla = {
       hue: 10,
