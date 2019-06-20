@@ -64,8 +64,6 @@ export const PixiTephraCrossSection = (props: IProps) => {
   const numSegments = 200;
   const textSize = 12;
 
-  // const xDiff = (mouseX - (volcanoX * gridSize) + 20) / gridSize;
-  // const yDiff = numRows - (mouseY - (volcanoY * gridSize) + 20) / gridSize;
   const trueVolcanoX = ((volcanoX * gridSize) + 20) / gridSize;
   const trueVolcanoY = ((volcanoY * gridSize) + 20) / gridSize;
   const xDiff = (mouseX / gridSize) - trueVolcanoX;
@@ -89,7 +87,7 @@ export const PixiTephraCrossSection = (props: IProps) => {
       mass,
       particleSize
     );
-    const thickness = maxTephra / simResults;
+    const thickness = maxTephra / Math.log10(simResults);
 
     const hsla: IHsla = {
       hue: 10,
