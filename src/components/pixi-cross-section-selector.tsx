@@ -3,7 +3,6 @@ import { PixiComponent, Container, Text } from "@inlet/react-pixi";
 import * as PIXI from "pixi.js";
 import { TextStyle } from "pixi.js";
 
-
 interface IProps {
     crossPoint1X: number;
     crossPoint1Y: number;
@@ -40,7 +39,6 @@ export const CrossSection = PixiComponent<IProps, PIXI.Graphics>("CrossSection",
 });
 
 export class CrossSectionSelectorComponent extends React.Component<IProps, IState> {
-
 
     public render() {
         const { crossPoint2X, crossPoint2Y, crossPoint1X, crossPoint1Y, isPlaced } = this.props;
