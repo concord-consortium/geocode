@@ -390,6 +390,11 @@ export const SimulationStore = types
       setAuthoringOptions(opts: SimulationAuthoringOptions) {
         self.requireEruption = opts.requireEruption;
         self.requirePainting = opts.requirePainting;
+        self.windSpeed = opts.initialWindSpeed;
+        self.windDirection = opts.initialWindDirection;
+        self.mass = opts.initialEruptionMass;
+        self.colHeight = opts.initialColumnHeight;
+        self.particleSize = opts.initialParticleSize;
       }
     };
   })
