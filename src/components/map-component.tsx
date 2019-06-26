@@ -1,4 +1,11 @@
 import * as React from "react";
+import * as L from "leaflet";
+
+import { Map as LeafletMap, TileLayer, Marker, Popup } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import "../css/map-component.css";
+import { iconVolcano } from "./volcano-icon";
+
 import { ICanvasShape, Ipoint } from "../interfaces";
 import { CityType  } from "../stores/simulation-store";
 import styled from "styled-components";
@@ -9,15 +16,21 @@ import { PixiAxis } from "./pixi-axis";
 import { PixiGrid } from "./pixi-grid";
 import VolcanoEmitter from "./pixi-volcano-emitter";
 import * as AshConfig from "../assets/particles/ash.json";
-
 import * as Color from "color";
 import { observer, inject } from "mobx-react";
 import { BaseComponent, IBaseProps } from "./base";
 import { getSnapshot, IStateTreeNode } from "mobx-state-tree";
 import { EmitterConfig } from "pixi-particles";
+import { LatLngBounds } from "leaflet";
 
+interface WorkspaceProps {
+  width: number;
+  height: number;
+}
 const CanvDiv = styled.div`
   border: 0px solid black; border-radius: 0px;
+  width: ${(p: WorkspaceProps) => `${p.width}px`};
+  height: ${(p: WorkspaceProps) => `${p.height}px`};
 `;
 
 interface IState {}
@@ -74,15 +87,60 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     const cityItems = cities.map( (city) => {
       const {x, y, name, id} = city;
       if (x && y && name) {
-        return <PixiCityContainer gridSize={gridSize} key={id} position={this.toCanvasCoords({x, y})} name={name} />;
+        const mapPos = this.toCanvasCoords({x, y}, 1);
+        return (
+          <Marker
+          position={[mapPos.x, mapPos.y]}
+          icon={iconVolcano}
+          key={name}>
+            <Popup>
+              {name}
+            </Popup>
+          </Marker>
+        );
       }
     });
 
     const volcanoPos = this.toCanvasCoords({x: volcanoX, y: volcanoY}, gridSize);
+    const corner1 = L.latLng(20, -50);
+    const corner2 = L.latLng(50, -150);
+    const bounds = L.latLngBounds(corner1, corner2);
 
     return (
-      <CanvDiv ref={this.ref}>
-        <Stage
+      <CanvDiv
+        ref={this.ref}
+        width={width}
+        height={height}
+      >
+        <LeafletMap
+          className="map"
+          maxBounds={undefined}
+          maxBoundsViscosity={1}
+          center={[50, 50]}
+          zoom={5.8768}
+          minZoom={3}
+          maxZoom={20}
+          attributionControl={true}
+          zoomControl={true}
+          doubleClickZoom={true}
+          scrollWheelZoom={true}
+          dragging={true}
+          animate={true}
+          easeLinearity={0.35}
+          >
+          <Marker position={[volcanoX, volcanoY]}
+          icon={iconVolcano}>
+            <Popup>
+              Popup for any custom information.
+            </Popup>
+          </Marker>
+          {cityItems}
+          <TileLayer
+              attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+              url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
+          />
+        </LeafletMap>
+        {/* <Stage
           width={width}
           height={height}
           options={
@@ -92,6 +150,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
             }
           } >
           <Sprite image={map} x={0} y={0} width={width} height={height} />
+
           <PixiTephraMap
             canvasMetrics={this.metrics}
             gridColors={getSnapshot(gridColors)}
@@ -114,12 +173,48 @@ export class MapComponent extends BaseComponent<IProps, IState>{
             windSpeed={windSpeed}
             mass={mass}
             playing={isErupting} />
-        </Stage>
+        </Stage> */}
       </CanvDiv>
     );
   }
 
   public toCanvasCoords = (point: Ipoint, scale = 1): Ipoint => {
-    return {x: point.x * scale, y: (this.props.numRows - point.y - 1) * scale};
+    const { volcanoX, volcanoY } = this.props;
+    const dist = Math.sqrt(point.x * point.x + point.y * point.y);
+    const bearing = Math.atan((-1 * point.y) / point.x);
+    const bearindRad = bearing;
+
+    const latDiff = dist * Math.cos(bearindRad) / 111;
+    const absoluteLat = volcanoY + latDiff;
+    const longDiff = dist * Math.sin(bearindRad) / Math.cos(this.deg2rad(absoluteLat)) / 111;
+    const absoluteLong = volcanoX + longDiff;
+
+    return {x: absoluteLong, y: absoluteLat};
+  }
+
+  public toLocalCoords = (point: Ipoint): Ipoint => {
+    const { volcanoX, volcanoY } = this.props;
+    const yDist = this.getDistanceFromLatLonInKm({x: volcanoX, y: volcanoY}, {x: point.x, y: volcanoY});
+    const xDist = this.getDistanceFromLatLonInKm({x: volcanoX, y: volcanoY}, {x: volcanoX, y: point.y});
+
+    return {x: xDist, y: yDist};
+  }
+
+  public getDistanceFromLatLonInKm = (point1: Ipoint, point2: Ipoint): number => {
+    const R = 6371; // Radius of the earth in km
+    const dLat = this.deg2rad(point2.y - point1.y);  // deg2rad below
+    const dLon = this.deg2rad(point2.x - point1.x);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(this.deg2rad(point1.y)) * Math.cos(this.deg2rad(point2.y)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2)
+      ;
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const d = R * c; // Distance in km
+    return d;
+  }
+
+  public deg2rad = (deg: number): number => {
+    return deg * (Math.PI / 180);
   }
 }
