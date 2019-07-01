@@ -24,6 +24,7 @@ import { getSnapshot, IStateTreeNode } from "mobx-state-tree";
 import { EmitterConfig } from "pixi-particles";
 import { LatLngBounds } from "leaflet";
 import { CrossSectionDrawLayer } from "./cross-section-draw-layer";
+import { LocalToLatLng } from "./coordinateSpaceConversion";
 
 interface WorkspaceProps {
   width: number;
@@ -134,8 +135,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     const cityItems = cities.map( (city) => {
       const {x, y, name, id} = city;
       if (x && y && name) {
-        const mapPos = this.LocalToLatLng({x, y}, 1);
-        console.log(this.LatLngToLocal(mapPos));
+        const mapPos = LocalToLatLng({x, y}, {x: volcanoX, y: volcanoY}, 1);
         return (
           <Marker
           position={[mapPos.x, mapPos.y]}
@@ -150,7 +150,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     });
 
     const { crossPoint1X, crossPoint1Y, crossPoint2X, crossPoint2Y } = this.stores;
-    const volcanoPos = this.LocalToLatLng({x: volcanoX, y: volcanoY}, gridSize);
+    const volcanoPos = LocalToLatLng({x: volcanoX, y: volcanoY}, {x: volcanoX, y: volcanoY}, gridSize);
     const corner1 = L.latLng(20, -50);
     const corner2 = L.latLng(50, -150);
     const bounds = L.latLngBounds(corner1, corner2);
@@ -178,7 +178,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           zoomControl={true}
           doubleClickZoom={true}
           scrollWheelZoom={true}
-          dragging={false}
+          dragging={!showCrossSectionSelector}
           animate={true}
           easeLinearity={0.35}
           >
@@ -193,14 +193,14 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           <TileLayer
               url="https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png"
           />
-          <CrossSectionDrawLayer
+          { showCrossSectionSelector && <CrossSectionDrawLayer
             ref={this.crossRef}
             map={mapRef}
             p1X={crossPoint1X}
             p2X={crossPoint2X}
             p1Y={crossPoint1Y}
             p2Y={crossPoint2Y}
-          />
+          /> }
         </LeafletMap>
         {/* <Stage
     const volcanoPos = this.toCanvasCoords({x: volcanoX, y: volcanoY}, gridSize);
@@ -255,45 +255,5 @@ export class MapComponent extends BaseComponent<IProps, IState>{
         </Stage> */}
       </CanvDiv>
     );
-  }
-
-  public LocalToLatLng = (point: Ipoint, scale = 1): Ipoint => {
-    const { volcanoX, volcanoY } = this.props;
-    const dist = Math.sqrt(point.x * point.x + point.y * point.y);
-    const bearing = Math.atan((-1 * point.y) / point.x);
-    const bearindRad = bearing;
-
-    const latDiff = dist * Math.cos(bearindRad) / 111;
-    const absoluteLat = volcanoY + latDiff;
-    const longDiff = dist * Math.sin(bearindRad) / Math.cos(this.deg2rad(absoluteLat)) / 111;
-    const absoluteLong = volcanoX + longDiff;
-
-    return {x: absoluteLong, y: absoluteLat};
-  }
-
-  public LatLngToLocal = (point: Ipoint): Ipoint => {
-    const { volcanoX, volcanoY } = this.props;
-    const yDist = this.getDistanceFromLatLonInKm({x: volcanoX, y: volcanoY}, {x: point.x, y: volcanoY});
-    const xDist = this.getDistanceFromLatLonInKm({x: volcanoX, y: volcanoY}, {x: volcanoX, y: point.y});
-
-    return {x: xDist, y: yDist};
-  }
-
-  public getDistanceFromLatLonInKm = (point1: Ipoint, point2: Ipoint): number => {
-    const R = 6371; // Radius of the earth in km
-    const dLat = this.deg2rad(point2.y - point1.y);  // deg2rad below
-    const dLon = this.deg2rad(point2.x - point1.x);
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(this.deg2rad(point1.y)) * Math.cos(this.deg2rad(point2.y)) *
-      Math.sin(dLon / 2) * Math.sin(dLon / 2)
-      ;
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const d = R * c; // Distance in km
-    return d;
-  }
-
-  public deg2rad = (deg: number): number => {
-    return deg * (Math.PI / 180);
   }
 }

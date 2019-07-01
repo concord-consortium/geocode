@@ -76,6 +76,7 @@ export class CrossSectionComponent extends BaseComponent<IProps, IState>{
     const { volcanoX, volcanoY, crossPoint1X, crossPoint1Y, crossPoint2X, crossPoint2Y, data, height, hasErupted,
           windSpeed, windDirection, colHeight, mass, particleSize } = this.props;
     const { width } = this.metrics;
+    console.log(crossPoint1X + " " + crossPoint1Y);
 
     return (
       <CanvDiv ref={this.ref}>

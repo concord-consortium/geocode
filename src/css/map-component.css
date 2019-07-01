@@ -6,6 +6,7 @@
   }
   .map {
     height: 100%;
+    z-index: 0;
   }
 
   .leaflet-marker-icon {
