@@ -22,6 +22,7 @@ import { BaseComponent, IBaseProps } from "./base";
 import { getSnapshot, IStateTreeNode } from "mobx-state-tree";
 import { EmitterConfig } from "pixi-particles";
 import { LatLngBounds } from "leaflet";
+import { CrossSectionDrawLayer } from "./cross-section-draw-layer";
 
 interface WorkspaceProps {
   width: number;
@@ -58,6 +59,7 @@ interface IProps extends IBaseProps {
 export class MapComponent extends BaseComponent<IProps, IState>{
 
   private ref = React.createRef<HTMLDivElement>();
+  private map = React.createRef<LeafletMap>();
   private metrics: ICanvasShape;
 
   public render() {
@@ -80,7 +82,6 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       windDirection,
       windSpeed,
       mass,
-      map,
       isErupting
     } = this.props;
 
@@ -115,6 +116,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       >
         <LeafletMap
           className="map"
+          ref={this.map}
           maxBounds={undefined}
           maxBoundsViscosity={1}
           center={[50, 50]}
@@ -129,6 +131,9 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           animate={true}
           easeLinearity={0.35}
           >
+          <CrossSectionDrawLayer
+            map={this.map.current!.leafletElement}
+          />
           <Marker position={[volcanoX, volcanoY]}
           icon={iconVolcano}>
             <Popup>
