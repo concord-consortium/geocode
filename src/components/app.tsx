@@ -189,13 +189,19 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       cities,
       volcanoX,
       volcanoY,
+      crossPoint1X,
+      crossPoint1Y,
+      crossPoint2X,
+      crossPoint2Y,
       run,
       clearLog,
       step,
       stop,
       reset,
       running,
-      isErupting
+      isErupting,
+      hasErupted,
+      showCrossSectionSelector
     } = this.stores;
 
     const {
@@ -300,15 +306,28 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               volcanoY={ volcanoY }
               map={ mapPath }
               isErupting={isErupting}
+              showCrossSectionSelector={showCrossSectionSelector}
+              hasErupted={ hasErupted }
             />
               { showCrossSection &&
           <CrossSectionComponent
             data={ data }
-            height={ 100 }
+            height={ 150 }
             numCols={ numCols }
             numRows={ numRows }
             width={ mapWidth }
             volcanoX={ volcanoX }
+            volcanoY={ volcanoY }
+            crossPoint1X={ crossPoint1X }
+            crossPoint1Y={ crossPoint1Y }
+            crossPoint2X={ crossPoint2X }
+            crossPoint2Y={ crossPoint2Y }
+            hasErupted={ hasErupted }
+            windSpeed={windSpeed}
+            windDirection={windDirection}
+            colHeight={colHeight}
+            mass={mass}
+            particleSize={particleSize}
           />
         }
         { showChart &&
@@ -354,8 +373,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                   options={Object.keys(BlocklyAuthoring.toolbox)} key="toolbox" />,
                 <DatSelect path="initialCode" label="Initial code"
                   options={Object.keys(BlocklyAuthoring.code)} key="code" />,
-                <DatBoolean path="showCrossSection" label="Show cross section?"
-                  key="showCrossSection" />,
+                <DatBoolean path="showCrossSection" label="Show cross section?" key="showCrossSection" />,
                 <DatBoolean path="showChart" label="Show chart?"
                   key="showChart" />,
 
@@ -364,7 +382,6 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 <DatBoolean path="showControls" label="Show controls?" key="showControls" />,
                 <DatBoolean path="showLog" label="Show Log?" key="showLog" />,
 
-                <DatBoolean path="showCrossSection" label="Show cross section?" key="showCrossSection" />,
                 <DatBoolean path="showChart" label="Show chart?" key="showChart" />,
                 <DatBoolean path="showSidebar" label="Show sidebar?" key="showSidebar" />,
                 // submit button. Should remain at bottom

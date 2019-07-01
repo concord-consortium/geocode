@@ -103,6 +103,10 @@ export const SimulationStore = types
     particleSize: 1,
     volcanoX: 46.1914,
     volcanoY: -122.1956,
+    crossPoint1X: 0,
+    crossPoint1Y: 0,
+    crossPoint2X: 0,
+    crossPoint2Y: 0,
     cities: types.array(City),
     code: "",
     log: "",
@@ -111,6 +115,8 @@ export const SimulationStore = types
     gridValues: types.array(types.string),
     plotData: types.optional(PlotData, getSnapshot(plotData)),
     isErupting: false,
+    hasErupted: false,
+    showCrossSectionSelector: false,
     // authoring props
     requireEruption: true,
     requirePainting: true,
@@ -122,6 +128,11 @@ export const SimulationStore = types
   .actions((self) => ({
     endEruption() {
       self.isErupting = false;
+    }
+  }))
+  .actions((self) => ({
+    setCrossSectionSelectorVisibility(val: boolean) {
+      self.showCrossSectionSelector = val;
     }
   }))
   .actions((self) => ({
@@ -147,6 +158,7 @@ export const SimulationStore = types
     reset() {
       this.setBlocklyCode(self.code, cachedBlocklyWorkspace);
       self.isErupting = false;
+      self.hasErupted = false;
       self.log = "";
       self.plotData = PlotData.create({});
       self.gridColors.clear();
@@ -177,6 +189,14 @@ export const SimulationStore = types
     },
     clearLog() {
       self.log = "";
+    },
+    setPoint1Pos(x: number, y: number) {
+      self.crossPoint1X = x;
+      self.crossPoint1Y = y;
+    },
+    setPoint2Pos(x: number, y: number) {
+      self.crossPoint2X = x;
+      self.crossPoint2Y = y;
     },
     /**
      * Steps through one complete block.
@@ -222,6 +242,7 @@ export const SimulationStore = types
         const gridColor = Color(baseColor).alpha(alpha);
         self.gridColors.push(gridColor.toString());
       });
+      self.hasErupted = true;
     },
     numberGrid(resultType: SimOutput) {
       self.gridValues.clear();
@@ -230,6 +251,7 @@ export const SimulationStore = types
 
         self.gridValues.push(val.toFixed(2));
       });
+      self.hasErupted = true;
     },
     clearGrid() {
       self.gridColors.clear();

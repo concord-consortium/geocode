@@ -14,6 +14,7 @@ import { PixiCityContainer } from "./pixi-city-container";
 import { PixiTephraMap } from "./pixi-tephra-map";
 import { PixiAxis } from "./pixi-axis";
 import { PixiGrid } from "./pixi-grid";
+import { CrossSectionSelectorComponent } from "./pixi-cross-section-selector";
 import VolcanoEmitter from "./pixi-volcano-emitter";
 import * as AshConfig from "../assets/particles/ash.json";
 import * as Color from "color";
@@ -34,7 +35,10 @@ const CanvDiv = styled.div`
   height: ${(p: WorkspaceProps) => `${p.height}px`};
 `;
 
-interface IState {}
+interface IState {
+  moveMouse: boolean;
+}
+
 interface IProps extends IBaseProps {
   numRows: number;
   numCols: number;
@@ -52,6 +56,8 @@ interface IProps extends IBaseProps {
   cities: CityType[];
   map: string;
   isErupting: boolean;
+  hasErupted: boolean;
+  showCrossSectionSelector: boolean;
 }
 
 @inject("stores")
@@ -60,7 +66,44 @@ export class MapComponent extends BaseComponent<IProps, IState>{
 
   private ref = React.createRef<HTMLDivElement>();
   private map = React.createRef<LeafletMap>();
+  private crossRef = React.createRef<CrossSectionDrawLayer>();
   private metrics: ICanvasShape;
+
+  constructor(props: IProps) {
+    super(props);
+
+    const initialState: IState = {
+      moveMouse: false
+    };
+
+    this.handleDragMove = this.handleDragMove.bind(this);
+    this.handleDragEnter = this.handleDragEnter.bind(this);
+    this.handleDragExit = this.handleDragExit.bind(this);
+
+    this.state = initialState;
+  }
+
+  public handleDragEnter(e: React.MouseEvent<HTMLDivElement>) {
+    this.stores.setPoint1Pos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    this.stores.setPoint2Pos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    this.setState({moveMouse: true});
+  }
+
+  public handleDragMove(e: React.MouseEvent<HTMLDivElement>) {
+    const { moveMouse } = this.state;
+    if (moveMouse) {
+      this.stores.setPoint2Pos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    }
+  }
+
+  public handleDragExit(e: React.MouseEvent<HTMLDivElement>) {
+    this.stores.setPoint2Pos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    this.setState({moveMouse: false});
+  }
+
+  public componentDidMount() {
+    this.forceUpdate();
+  }
 
   public render() {
     const {numCols, numRows, width, height } = this.props;
@@ -82,7 +125,10 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       windDirection,
       windSpeed,
       mass,
-      isErupting
+      map,
+      isErupting,
+      hasErupted,
+      showCrossSectionSelector
     } = this.props;
 
     const cityItems = cities.map( (city) => {
@@ -103,10 +149,15 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       }
     });
 
+    const { crossPoint1X, crossPoint1Y, crossPoint2X, crossPoint2Y } = this.stores;
     const volcanoPos = this.LocalToLatLng({x: volcanoX, y: volcanoY}, gridSize);
     const corner1 = L.latLng(20, -50);
     const corner2 = L.latLng(50, -150);
     const bounds = L.latLngBounds(corner1, corner2);
+    let mapRef = null;
+    if (this.map.current) {
+      mapRef = this.map.current.leafletElement;
+    }
 
     return (
       <CanvDiv
@@ -127,15 +178,13 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           zoomControl={true}
           doubleClickZoom={true}
           scrollWheelZoom={true}
-          dragging={true}
+          dragging={false}
           animate={true}
           easeLinearity={0.35}
           >
-          <CrossSectionDrawLayer
-            map={this.map.current!.leafletElement}
-          />
-          <Marker position={[volcanoX, volcanoY]}
-          icon={iconVolcano}>
+          <Marker
+            position={[volcanoX, volcanoY]}
+            icon={iconVolcano}>
             <Popup>
               Popup for any custom information.
             </Popup>
@@ -144,8 +193,26 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           <TileLayer
               url="https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png"
           />
+          <CrossSectionDrawLayer
+            ref={this.crossRef}
+            map={mapRef}
+            p1X={crossPoint1X}
+            p2X={crossPoint2X}
+            p1Y={crossPoint1Y}
+            p2Y={crossPoint2Y}
+          />
         </LeafletMap>
         {/* <Stage
+    const volcanoPos = this.toCanvasCoords({x: volcanoX, y: volcanoY}, gridSize);
+    const { crossPoint1X, crossPoint1Y, crossPoint2X, crossPoint2Y } = this.stores;
+    const { moveMouse } = this.state;
+
+    return (
+      <CanvDiv ref={this.ref}
+        onMouseMove={this.handleDragMove}
+        onMouseDown={this.handleDragEnter}
+        onMouseUp={this.handleDragExit}>
+        <Stage
           width={width}
           height={height}
           options={
@@ -178,6 +245,13 @@ export class MapComponent extends BaseComponent<IProps, IState>{
             windSpeed={windSpeed}
             mass={mass}
             playing={isErupting} />
+          {showCrossSectionSelector && hasErupted &&
+          <CrossSectionSelectorComponent
+            crossPoint2X={crossPoint2X}
+            crossPoint2Y={crossPoint2Y}
+            crossPoint1X={crossPoint1X}
+            crossPoint1Y={crossPoint1Y}
+            isPlaced={moveMouse} /> }
         </Stage> */}
       </CanvDiv>
     );

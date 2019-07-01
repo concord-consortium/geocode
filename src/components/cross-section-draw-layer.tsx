@@ -1,6 +1,8 @@
 import { inject, observer } from "mobx-react";
-import React, { PureComponent } from "react";
+import { PureComponent } from "react";
 import Leaflet, { LeafletEvent } from "leaflet";
+import * as L from "leaflet";
+import * as React from "react";
 import { Ipoint } from "../interfaces";
 import { BaseComponent, IBaseProps } from "./base";
 import { iconVolcano } from "./volcano-icon";
@@ -52,7 +54,7 @@ export class CrossSectionDrawLayer extends BaseComponent<IProps, IState> {
     }
   }
 
-  public drawStart(event: Leaflet.LeafletEvent) {
+  public drawStart(event: Leaflet.LeafletMouseEvent) {
     const { map } = this.props;
     this.setPoint1(event);
     this.setPoint2(null);
@@ -77,12 +79,12 @@ export class CrossSectionDrawLayer extends BaseComponent<IProps, IState> {
     this.setPoint(1, event);
   }
 
-  public setPoint(index: number, event: LeafletEvent | null) {
+  public setPoint(index: number, event: L.LeafletEvent | null) {
     // const { setCrossSectionPoint } = this.props
     let point = null;
     if (event) {
-      const latLng = event.target.getLatLng();
-      point = latLng; // pointToArray(latLng);
+      const latLng = (event as Leaflet.LeafletMouseEvent).latlng;
+      point = {x: latLng.lng, y: latLng.lat}; // pointToArray(latLng);
     }
     if (index === 0 && point !== null) {
       this._tempPoint1 = point;
@@ -91,19 +93,33 @@ export class CrossSectionDrawLayer extends BaseComponent<IProps, IState> {
       point = point; // limitDistance(this._tempPoint1, point, config.maxCrossSectionLength);
     }
     // setCrossSectionPoint(index, point)
+    if (point !== null) {
+        if (index === 0) {
+          this.stores.setPoint1Pos(point.x, point.y);
+        } else {
+          this.stores.setPoint2Pos(point.x, point.y);
+        }
+    }
   }
 
   public render() {
     const { map } = this.props;
     const { p1X, p1Y, p2X, p2Y } = this.props;
-    const point1 = Leaflet.latLng(p1Y, p1X);
-    const point2 = Leaflet.latLng(p2Y, p2X);
+    const point1 = L.latLng(p1Y, p1X);
+    const point2 = L.latLng(p2Y, p2X);
     // const rect = crossSectionRectangle(point1, point2);
     return (
       <LayerGroup map={map}>
         {point1 && <Marker position={point1} draggable={true} icon={iconVolcano} onLeafletDrag={this.setPoint1} />}
         {point2 && <Marker position={point2} draggable={true} icon={iconVolcano} onLeafletDrag={this.setPoint2} />}
-        {point1 && point2 && <Polyline clickable={false} className='cross-section-line' positions={[point1, point2]} color='#fff' opacity={1} />}
+        {point1 && point2 &&
+          <Polyline
+            clickable={false}
+            className="cross-section-line"
+            positions={[point1, point2]}
+            color="#fff"
+            opacity={1}
+          />}
         {/* {rect && <Polygon positions={rect} clickable={false} color='#fff' weight={2} />} */}
       </LayerGroup>
     );
