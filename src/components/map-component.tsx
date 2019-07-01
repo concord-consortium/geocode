@@ -87,7 +87,8 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     const cityItems = cities.map( (city) => {
       const {x, y, name, id} = city;
       if (x && y && name) {
-        const mapPos = this.toCanvasCoords({x, y}, 1);
+        const mapPos = this.LocalToLatLng({x, y}, 1);
+        console.log(this.LatLngToLocal(mapPos));
         return (
           <Marker
           position={[mapPos.x, mapPos.y]}
@@ -101,7 +102,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       }
     });
 
-    const volcanoPos = this.toCanvasCoords({x: volcanoX, y: volcanoY}, gridSize);
+    const volcanoPos = this.LocalToLatLng({x: volcanoX, y: volcanoY}, gridSize);
     const corner1 = L.latLng(20, -50);
     const corner2 = L.latLng(50, -150);
     const bounds = L.latLngBounds(corner1, corner2);
@@ -136,8 +137,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           </Marker>
           {cityItems}
           <TileLayer
-              attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-              url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
+              url="https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png"
           />
         </LeafletMap>
         {/* <Stage
@@ -178,7 +178,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     );
   }
 
-  public toCanvasCoords = (point: Ipoint, scale = 1): Ipoint => {
+  public LocalToLatLng = (point: Ipoint, scale = 1): Ipoint => {
     const { volcanoX, volcanoY } = this.props;
     const dist = Math.sqrt(point.x * point.x + point.y * point.y);
     const bearing = Math.atan((-1 * point.y) / point.x);
@@ -192,7 +192,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     return {x: absoluteLong, y: absoluteLat};
   }
 
-  public toLocalCoords = (point: Ipoint): Ipoint => {
+  public LatLngToLocal = (point: Ipoint): Ipoint => {
     const { volcanoX, volcanoY } = this.props;
     const yDist = this.getDistanceFromLatLonInKm({x: volcanoX, y: volcanoY}, {x: point.x, y: volcanoY});
     const xDist = this.getDistanceFromLatLonInKm({x: volcanoX, y: volcanoY}, {x: volcanoX, y: point.y});
