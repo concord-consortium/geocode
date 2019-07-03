@@ -69,8 +69,7 @@ export const PixiTephraCrossSection = (props: IProps) => {
 
   const localPosPoint1 = LatLngToLocal({x: crossPoint1Y, y: crossPoint1X}, {x: volcanoX, y: volcanoY});
   const localPosPoint2 = LatLngToLocal({x: crossPoint2Y, y: crossPoint2X}, {x: volcanoX, y: volcanoY});
-  console.log(localPosPoint1);
-  console.log(localPosPoint2);
+
   const trueP1X = localPosPoint1.x; // ((localPosPoint1.x) / gridSize);
   const trueP1Y = localPosPoint1.y; // numRows - ((localPosPoint1.y) / gridSize);
   const xDiff = localPosPoint2.x - trueP1X; // (localPosPoint2.x / gridSize)  - trueP1X;

@@ -25,6 +25,7 @@ import { EmitterConfig } from "pixi-particles";
 import { LatLngBounds } from "leaflet";
 import { CrossSectionDrawLayer } from "./cross-section-draw-layer";
 import { LocalToLatLng, LatLngToLocal } from "./coordinateSpaceConversion";
+import { MapTephraThicknessLayer } from "./map-tephra-thickness-layer";
 
 interface WorkspaceProps {
   width: number;
@@ -151,7 +152,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     });
 
     const { crossPoint1X, crossPoint1Y, crossPoint2X, crossPoint2Y } = this.stores;
-    const volcanoPos = LocalToLatLng({x: volcanoX, y: volcanoY}, {x: volcanoX, y: volcanoY});
+    const volcanoPos = {x: volcanoX, y: volcanoY};
     const corner1 = L.latLng(35, -115);
     const corner2 = L.latLng(55, -135);
     const bounds = L.latLngBounds(corner1, corner2);
@@ -194,6 +195,13 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           <TileLayer
               url="https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png"
           />
+          {/* <MapTephraThicknessLayer
+            corner1Bound={corner1}
+            corner2Bound={corner2}
+            volcanoPos={volcanoPos}
+            gridSize={1}
+            map={mapRef}
+          /> */}
           { showCrossSectionSelector && <CrossSectionDrawLayer
             ref={this.crossRef}
             map={mapRef}
