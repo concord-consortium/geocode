@@ -7,6 +7,7 @@ import * as PIXI from "pixi.js";
 import * as Color from "color";
 import { getGridIndexForLocation } from "../stores/simulation-store";
 import gridTephraCalc from "../tephra2";
+import { LatLngToLocal, getDistanceFromLatLonInKm } from "./coordinateSpaceConversion";
 
 interface IProps {
   canvasMetrics: ICanvasShape;
@@ -112,7 +113,7 @@ export const PixiTephraCrossSection = (props: IProps) => {
   }
 
   const style = new TextStyle({fill: "black", fontSize: `${textSize}px`, align: "center"});
-  const maxDist = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+  const maxDist = getDistanceFromLatLonInKm({x: crossPoint1Y, y: crossPoint1X}, {x: crossPoint2Y, y: crossPoint2X});
 
   return (
     <Container >
@@ -124,7 +125,7 @@ export const PixiTephraCrossSection = (props: IProps) => {
       y={height - textSize}
     />
     <Text
-      text="Distance from vent (km)"
+      text="Distance (km)"
       style={style}
       anchor={[0.5, 0]}
       x={width / 2}

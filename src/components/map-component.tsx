@@ -24,7 +24,7 @@ import { getSnapshot, IStateTreeNode } from "mobx-state-tree";
 import { EmitterConfig } from "pixi-particles";
 import { LatLngBounds } from "leaflet";
 import { CrossSectionDrawLayer } from "./cross-section-draw-layer";
-import { LocalToLatLng } from "./coordinateSpaceConversion";
+import { LocalToLatLng, LatLngToLocal } from "./coordinateSpaceConversion";
 
 interface WorkspaceProps {
   width: number;
@@ -135,7 +135,9 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     const cityItems = cities.map( (city) => {
       const {x, y, name, id} = city;
       if (x && y && name) {
-        const mapPos = LocalToLatLng({x, y}, {x: volcanoX, y: volcanoY}, 1);
+        const mapPos = LocalToLatLng({x: y, y: x}, {x: volcanoX, y: volcanoY});
+        console.log(mapPos);
+        console.log(LatLngToLocal(mapPos, {x: volcanoX, y: volcanoY}));
         return (
           <Marker
           position={[mapPos.x, mapPos.y]}
@@ -150,7 +152,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     });
 
     const { crossPoint1X, crossPoint1Y, crossPoint2X, crossPoint2Y } = this.stores;
-    const volcanoPos = LocalToLatLng({x: volcanoX, y: volcanoY}, {x: volcanoX, y: volcanoY}, gridSize);
+    const volcanoPos = LocalToLatLng({x: volcanoX, y: volcanoY}, {x: volcanoX, y: volcanoY});
     const corner1 = L.latLng(20, -50);
     const corner2 = L.latLng(50, -150);
     const bounds = L.latLngBounds(corner1, corner2);

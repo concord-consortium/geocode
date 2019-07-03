@@ -57,7 +57,7 @@ export class CrossSectionDrawLayer extends BaseComponent<IProps, IState> {
   public drawStart(event: Leaflet.LeafletMouseEvent) {
     const { map } = this.props;
     this.setPoint1(event);
-    this.setPoint2(null);
+    this.setPoint2(event);
     if (map !== null) {
         map.on(MOUSE_MOVE, this.setPoint2);
         map.on(MOVE_UP, this.drawEnd);

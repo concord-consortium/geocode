@@ -1,43 +1,57 @@
 import { Ipoint } from "../interfaces";
 
+/*
+    Formulas for conversion translated from javascript code found here:
+    https://www.movable-type.co.uk/scripts/latlong.html
+*/
+
+
 export const deg2rad = (deg: number): number => {
     return deg * (Math.PI / 180);
 };
 
-export const LocalToLatLng = (point: Ipoint, volcanoPos: Ipoint, scale = 1): Ipoint => {
-    const volcanoX = volcanoPos.x;
-    const volcanoY = volcanoPos.y;
-    const dist = Math.sqrt(point.x * point.x + point.y * point.y);
-    const bearing = Math.atan((-1 * point.y) / point.x);
-    const bearindRad = bearing;
-
-    const latDiff = dist * Math.cos(bearindRad) / 111;
-    const absoluteLat = volcanoY + latDiff;
-    const longDiff = dist * Math.sin(bearindRad) / Math.cos(deg2rad(absoluteLat)) / 111;
-    const absoluteLong = volcanoX + longDiff;
-
-    return {x: absoluteLong, y: absoluteLat};
+export const rad2deg = (rad: number): number => {
+    return rad * (180 / Math.PI);
 };
 
-export const LatLngToLocal = (point: Ipoint, volcanoPos: Ipoint,): Ipoint => {
-    const volcanoX = volcanoPos.x;
-    const volcanoY = volcanoPos.y;
-    const yDist = getDistanceFromLatLonInKm({x: volcanoX, y: volcanoY}, {x: point.x, y: volcanoY});
-    const xDist = getDistanceFromLatLonInKm({x: volcanoX, y: volcanoY}, {x: volcanoX, y: point.y});
+// Adaptation of "Destination point given distance and bearing from start point" formula
+export const LocalToLatLng = (point: Ipoint, volcanoPos: Ipoint): Ipoint => {
+    const volcanoX = volcanoPos.y;
+    const volcanoY = volcanoPos.x;
+    const d = Math.sqrt(point.x * point.x + point.y * point.y);
+    const bearing = Math.atan((point.y) / (point.x));
+    const brng = bearing;
+    const R = 6356;
 
-    return {x: xDist, y: yDist};
+    const newLat = Math.asin( Math.sin(deg2rad(volcanoY)) * Math.cos(d / R) +
+                    Math.cos(deg2rad(volcanoY)) * Math.sin(d / R) * Math.cos(brng) );
+    const newLong = deg2rad(volcanoX) + Math.atan2(Math.sin(brng) * Math.sin(d / R) * Math.cos(deg2rad(volcanoY)),
+                            Math.cos(d / R) - Math.sin(deg2rad(volcanoY)) * Math.sin(newLat));
+    return ({x: rad2deg(newLat), y: rad2deg(newLong)});
 };
 
+export const LatLngToLocal = (point: Ipoint, volcanoPos: Ipoint): Ipoint => {
+    const volcanoX = volcanoPos.x;
+    const volcanoY = volcanoPos.y;
+    const longDist = getDistanceFromLatLonInKm({x: volcanoX, y: volcanoY}, {x: point.x, y: volcanoY});
+    const latDist = getDistanceFromLatLonInKm({x: volcanoX, y: volcanoY}, {x: volcanoX, y: point.y});
+
+    return {x: latDist, y: longDist};
+};
+
+// Haversine formula used for finding the distance between two latLng points
 export const getDistanceFromLatLonInKm = (point1: Ipoint, point2: Ipoint): number => {
-    const R = 6371; // Radius of the earth in km
-    const dLat = deg2rad(point2.y - point1.y);  // deg2rad below
-    const dLon = deg2rad(point2.x - point1.x);
-    const a =
-        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(deg2rad(point1.y)) * Math.cos(deg2rad(point2.y)) *
-        Math.sin(dLon / 2) * Math.sin(dLon / 2)
-        ;
+    const R = 6356; // km
+    const φ1 = deg2rad(point1.x);
+    const φ2 = deg2rad(point2.x);
+    const Δφ = deg2rad(point2.x - point1.x);
+    const Δλ = deg2rad(point2.y - point1.y);
+
+    const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+            Math.cos(φ1) * Math.cos(φ2) *
+            Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const d = R * c; // Distance in km
+
+    const d = R * c;
     return d;
 };
