@@ -67,10 +67,14 @@ export const PixiTephraCrossSection = (props: IProps) => {
   const numSegments = 200;
   const textSize = 12;
 
-  const trueP1X = ((crossPoint1X) / gridSize);
-  const trueP1Y = numRows - ((crossPoint1Y) / gridSize);
-  const xDiff = (crossPoint2X / gridSize)  - trueP1X;
-  const yDiff = (numRows - (crossPoint2Y / gridSize) - trueP1Y);
+  const localPosPoint1 = LatLngToLocal({x: crossPoint1Y, y: crossPoint1X}, {x: volcanoX, y: volcanoY});
+  const localPosPoint2 = LatLngToLocal({x: crossPoint2Y, y: crossPoint2X}, {x: volcanoX, y: volcanoY});
+  console.log(localPosPoint1);
+  console.log(localPosPoint2);
+  const trueP1X = localPosPoint1.x; // ((localPosPoint1.x) / gridSize);
+  const trueP1Y = localPosPoint1.y; // numRows - ((localPosPoint1.y) / gridSize);
+  const xDiff = localPosPoint2.x - trueP1X; // (localPosPoint2.x / gridSize)  - trueP1X;
+  const yDiff = localPosPoint2.y - trueP1Y; // (numRows - (localPosPoint2.y / gridSize) - trueP1Y);
   const xSlope = xDiff / numSegments;
   const ySlope = yDiff / numSegments;
   const colWidth = (width - textSize - 2) / numSegments;
@@ -80,8 +84,8 @@ export const PixiTephraCrossSection = (props: IProps) => {
     const xProgress = (trueP1X + (xSlope * progress));
     const yProgress = (trueP1Y + (ySlope * progress));
 
-    const vX = volcanoX;
-    const vY = volcanoY;
+    const vX = 0; // volcanoX;
+    const vY = 0; // volcanoY;
     const simResults = gridTephraCalc(
       xProgress, yProgress, vX, vY,
       windSpeed,

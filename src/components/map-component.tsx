@@ -136,8 +136,6 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       const {x, y, name, id} = city;
       if (x && y && name) {
         const mapPos = LocalToLatLng({x: y, y: x}, {x: volcanoX, y: volcanoY});
-        console.log(mapPos);
-        console.log(LatLngToLocal(mapPos, {x: volcanoX, y: volcanoY}));
         return (
           <Marker
           position={[mapPos.x, mapPos.y]}
@@ -153,8 +151,8 @@ export class MapComponent extends BaseComponent<IProps, IState>{
 
     const { crossPoint1X, crossPoint1Y, crossPoint2X, crossPoint2Y } = this.stores;
     const volcanoPos = LocalToLatLng({x: volcanoX, y: volcanoY}, {x: volcanoX, y: volcanoY});
-    const corner1 = L.latLng(20, -50);
-    const corner2 = L.latLng(50, -150);
+    const corner1 = L.latLng(35, -115);
+    const corner2 = L.latLng(55, -135);
     const bounds = L.latLngBounds(corner1, corner2);
     let mapRef = null;
     if (this.map.current) {
@@ -170,12 +168,12 @@ export class MapComponent extends BaseComponent<IProps, IState>{
         <LeafletMap
           className="map"
           ref={this.map}
-          maxBounds={undefined}
+          maxBounds={bounds}
           maxBoundsViscosity={1}
-          center={[50, 50]}
-          zoom={5.8768}
-          minZoom={3}
-          maxZoom={20}
+          center={[volcanoX, volcanoY]}
+          zoom={8}
+          minZoom={6}
+          maxZoom={10}
           attributionControl={true}
           zoomControl={true}
           doubleClickZoom={true}

@@ -35,8 +35,7 @@ export const LatLngToLocal = (point: Ipoint, volcanoPos: Ipoint): Ipoint => {
     const volcanoY = volcanoPos.y;
     const longDist = getDistanceFromLatLonInKm({x: volcanoX, y: volcanoY}, {x: point.x, y: volcanoY});
     const latDist = getDistanceFromLatLonInKm({x: volcanoX, y: volcanoY}, {x: volcanoX, y: point.y});
-
-    return {x: latDist, y: longDist};
+    return {x: point.y < volcanoY ? -1 * latDist : latDist, y: point.x < volcanoX ? -1 * longDist : longDist};
 };
 
 // Haversine formula used for finding the distance between two latLng points
