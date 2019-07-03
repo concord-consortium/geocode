@@ -4,7 +4,7 @@ import * as L from "leaflet";
 import { Map as LeafletMap, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "../css/map-component.css";
-import { iconVolcano } from "./volcano-icon";
+import { iconVolcano, getCachedCircleIcon } from "./icons";
 
 import { ICanvasShape, Ipoint } from "../interfaces";
 import { CityType  } from "../stores/simulation-store";
@@ -136,10 +136,11 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       const {x, y, name, id} = city;
       if (x && y && name) {
         const mapPos = LocalToLatLng({x: y, y: x}, {x: volcanoX, y: volcanoY});
+        const cityIcon = getCachedCircleIcon(name);
         return (
           <Marker
           position={[mapPos.x, mapPos.y]}
-          icon={iconVolcano}
+          icon={cityIcon}
           key={name}>
             <Popup>
               {name}

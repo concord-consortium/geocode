@@ -5,7 +5,7 @@ import * as L from "leaflet";
 import * as React from "react";
 import { Ipoint } from "../interfaces";
 import { BaseComponent, IBaseProps } from "./base";
-import { iconVolcano } from "./volcano-icon";
+import { iconVolcano, getCachedCircleIcon } from "./icons";
 import { LayerGroup, Marker, Polyline, Polygon, withLeaflet, LeafletEvents } from "react-leaflet";
 // import { circleIcon } from '../custom-leaflet/icons'
 // import crossSectionRectangle, { pointToArray, limitDistance } from '../core/cross-section-rectangle'
@@ -107,11 +107,13 @@ export class CrossSectionDrawLayer extends BaseComponent<IProps, IState> {
     const { p1X, p1Y, p2X, p2Y } = this.props;
     const point1 = L.latLng(p1Y, p1X);
     const point2 = L.latLng(p2Y, p2X);
+    const p1Icon = getCachedCircleIcon("P1");
+    const p2Icon = getCachedCircleIcon("P2");
     // const rect = crossSectionRectangle(point1, point2);
     return (
       <LayerGroup map={map}>
-        {point1 && <Marker position={point1} draggable={true} icon={iconVolcano} onLeafletDrag={this.setPoint1} />}
-        {point2 && <Marker position={point2} draggable={true} icon={iconVolcano} onLeafletDrag={this.setPoint2} />}
+        {point1 && <Marker position={point1} draggable={true} icon={p1Icon} onLeafletDrag={this.setPoint1} />}
+        {point2 && <Marker position={point2} draggable={true} icon={p2Icon} onLeafletDrag={this.setPoint2} />}
         {point1 && point2 &&
           <Polyline
             clickable={false}
