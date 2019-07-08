@@ -4,8 +4,6 @@ import { Ipoint } from "../interfaces";
     Formulas for conversion translated from javascript code found here:
     https://www.movable-type.co.uk/scripts/latlong.html
 */
-
-
 export const deg2rad = (deg: number): number => {
     return deg * (Math.PI / 180);
 };
@@ -19,7 +17,7 @@ export const LocalToLatLng = (point: Ipoint, volcanoPos: Ipoint): Ipoint => {
     const volcanoX = volcanoPos.y;
     const volcanoY = volcanoPos.x;
     const d = Math.sqrt(point.x * point.x + point.y * point.y);
-    const bearing = Math.atan((point.y) / (point.x));
+    const bearing = Math.atan2(point.y, point.x);
     const brng = bearing;
     const R = 6356;
 

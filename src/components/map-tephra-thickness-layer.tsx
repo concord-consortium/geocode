@@ -3,8 +3,10 @@ import * as Leaflet from "leaflet";
 import * as Color from "color";
 import { inject, observer } from "mobx-react";
 import { BaseComponent } from "./base";
+import gridTephraCalc from "../tephra2";
 import { Ipoint } from "../interfaces";
-import { LayerGroup, Rectangle } from "react-leaflet";
+import { LayerGroup, ImageOverlay } from "react-leaflet";
+import { LatLngToLocal } from "./coordinateSpaceConversion";
 
 interface IProps {
     corner1Bound: Leaflet.LatLng;
@@ -12,6 +14,11 @@ interface IProps {
     volcanoPos: Ipoint;
     gridSize: number;
     map: Leaflet.Map | null;
+    windSpeed: number;
+    windDirection: number;
+    colHeight: number;
+    mass: number;
+    particleSize: number;
 }
 
 interface IState {}
@@ -21,10 +28,16 @@ interface IState {}
 export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
 
     public render() {
-        const { corner1Bound, corner2Bound, volcanoPos, gridSize, map } = this.props;
+        const { corner1Bound, corner2Bound, volcanoPos, gridSize, map,
+            windSpeed,
+            windDirection,
+            colHeight,
+            mass,
+            particleSize } = this.props;
         const LatDist = Math.abs(corner1Bound.lat - corner2Bound.lat);
         const LongDist = Math.abs(corner1Bound.lng - corner2Bound.lng);
-        const squareSize = 1;
+        const maxTephra = 1;
+        const squareSize = 0.25;
         const LatSegments = LatDist / squareSize;
         const LongSegments = LongDist / squareSize;
 
@@ -41,11 +54,28 @@ export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
                 const bound1 = Leaflet.latLng(Lat, Long);
                 const bound2 = Leaflet.latLng(Lat + squareSize, Long + squareSize);
 
+                const localPos = LatLngToLocal({x: Lat, y: Long}, volcanoPos);
+                // console.log(localPos);
+                const simResults = gridTephraCalc(
+                    localPos.x, localPos.y, 0, 0,
+                    windSpeed,
+                    windDirection,
+                    colHeight,
+                    mass,
+                    particleSize
+                  );
+
+                let thickness = 1;
+                if (simResults > 1) {
+                    thickness = maxTephra / Math.log10(simResults + 10);
+                }
+                // console.log(simResults);
                 data.push(
-                    <Rectangle
+                    <ImageOverlay
+                        url={"../assets/map-square.png"}
                         key={Lat + " " + Long}
                         bounds={Leaflet.latLngBounds(bound1, bound2)}
-                        color={"red"}
+                        opacity={1 - thickness}
                     />
                 );
             }

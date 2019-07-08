@@ -126,7 +126,9 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       gridValues,
       windDirection,
       windSpeed,
+      colHeight,
       mass,
+      particleSize,
       map,
       isErupting,
       hasErupted,
@@ -195,13 +197,18 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           <TileLayer
               url="https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png"
           />
-          {/* <MapTephraThicknessLayer
+          <MapTephraThicknessLayer
             corner1Bound={corner1}
             corner2Bound={corner2}
             volcanoPos={volcanoPos}
             gridSize={1}
             map={mapRef}
-          /> */}
+            windSpeed={windSpeed}
+            windDirection={windDirection}
+            colHeight={colHeight}
+            mass={mass}
+            particleSize={particleSize}
+          />
           { showCrossSectionSelector && <CrossSectionDrawLayer
             ref={this.crossRef}
             map={mapRef}
