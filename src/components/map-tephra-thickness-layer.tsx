@@ -5,7 +5,7 @@ import { inject, observer } from "mobx-react";
 import { BaseComponent } from "./base";
 import gridTephraCalc from "../tephra2";
 import { Ipoint } from "../interfaces";
-import { LayerGroup, ImageOverlay } from "react-leaflet";
+import { LayerGroup, ImageOverlay, Rectangle } from "react-leaflet";
 import { LatLngToLocal } from "./coordinateSpaceConversion";
 
 interface IProps {
@@ -37,7 +37,7 @@ export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
         const LatDist = Math.abs(corner1Bound.lat - corner2Bound.lat);
         const LongDist = Math.abs(corner1Bound.lng - corner2Bound.lng);
         const maxTephra = 1;
-        const squareSize = 0.25;
+        const squareSize = 1;
         const LatSegments = LatDist / squareSize;
         const LongSegments = LongDist / squareSize;
 
@@ -54,7 +54,7 @@ export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
                 const bound1 = Leaflet.latLng(Lat, Long);
                 const bound2 = Leaflet.latLng(Lat + squareSize, Long + squareSize);
 
-                const localPos = LatLngToLocal({x: Lat, y: Long}, volcanoPos);
+                const localPos = LatLngToLocal({x: Lat + squareSize / 2, y: Long + squareSize / 2}, volcanoPos);
                 // console.log(localPos);
                 const simResults = gridTephraCalc(
                     localPos.x, localPos.y, 0, 0,
@@ -65,17 +65,25 @@ export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
                     particleSize
                   );
 
-                let thickness = 1;
+                // If opacity is 0, leaflet does not redraw the rectangle
+                let thickness = 1.00000001;
                 if (simResults > 1) {
                     thickness = maxTephra / Math.log10(simResults + 10);
                 }
                 // console.log(simResults);
                 data.push(
-                    <ImageOverlay
-                        url={"../assets/map-square.png"}
+                    // <ImageOverlay
+                    //     url={"../assets/map-square.png"}
+                    //     key={Lat + " " + Long}
+                    //     bounds={Leaflet.latLngBounds(bound1, bound2)}
+                    //     opacity={1 - thickness}
+                    // />
+                    <Rectangle
+                        color={"red"}
                         key={Lat + " " + Long}
                         bounds={Leaflet.latLngBounds(bound1, bound2)}
-                        opacity={1 - thickness}
+                        stroke={false}
+                        fillOpacity={1 - thickness}
                     />
                 );
             }
