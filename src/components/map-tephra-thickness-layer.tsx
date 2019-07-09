@@ -43,7 +43,7 @@ export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
         const LatDist = Math.abs(corner1Bound.lat - corner2Bound.lat);
         const LongDist = Math.abs(corner1Bound.lng - corner2Bound.lng);
         const maxTephra = 1;
-        const squareSize = 0.25;
+        const squareSize = 0.1;
         const LatSegments = LatDist / squareSize;
         const LongSegments = LongDist / squareSize;
 

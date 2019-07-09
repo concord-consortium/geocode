@@ -158,9 +158,11 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     const corner1 = L.latLng(35, -115);
     const corner2 = L.latLng(55, -135);
     const bounds = L.latLngBounds(corner1, corner2);
+    let viewportBounds = bounds;
     let mapRef = null;
     if (this.map.current) {
       mapRef = this.map.current.leafletElement;
+      viewportBounds = this.map.current.leafletElement.getBounds();
     }
 
     return (
