@@ -172,10 +172,10 @@ export class MapComponent extends BaseComponent<IProps, IState>{
         <LeafletMap
           className="map"
           ref={this.map}
-          maxBounds={bounds}
-          maxBoundsViscosity={1}
           center={[volcanoX, volcanoY]}
           zoom={8}
+          maxBounds={bounds}
+          maxBoundsViscosity={1}
           minZoom={6}
           maxZoom={10}
           attributionControl={true}

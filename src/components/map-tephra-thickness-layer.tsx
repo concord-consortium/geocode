@@ -1,12 +1,14 @@
 import * as React from "react";
 import * as Leaflet from "leaflet";
 import * as Color from "color";
+import * as d3 from "d3";
 import { inject, observer } from "mobx-react";
 import { BaseComponent } from "./base";
 import gridTephraCalc from "../tephra2";
 import { Ipoint } from "../interfaces";
-import { LayerGroup, ImageOverlay, Rectangle } from "react-leaflet";
+import { LayerGroup, ImageOverlay, Rectangle, Polyline, GeoJSON } from "react-leaflet";
 import { LatLngToLocal } from "./coordinateSpaceConversion";
+import { MultiPolygon } from "geojson";
 
 interface IProps {
     corner1Bound: Leaflet.LatLng;
@@ -27,6 +29,10 @@ interface IState {}
 @observer
 export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
 
+    // Not ideal, but geoJson does not update with state changes
+    // It will however update if given a new unique key.
+    private keyval: number = 0;
+
     public render() {
         const { corner1Bound, corner2Bound, volcanoPos, gridSize, map,
             windSpeed,
@@ -37,11 +43,11 @@ export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
         const LatDist = Math.abs(corner1Bound.lat - corner2Bound.lat);
         const LongDist = Math.abs(corner1Bound.lng - corner2Bound.lng);
         const maxTephra = 1;
-        const squareSize = 1;
+        const squareSize = 0.25;
         const LatSegments = LatDist / squareSize;
         const LongSegments = LongDist / squareSize;
 
-        const data = [];
+        const data: number[] = [];
 
         for (let currentLat = 0; currentLat < LatSegments; currentLat++) {
             for (let currentLong = 0; currentLong < LongSegments; currentLong++) {
@@ -71,28 +77,54 @@ export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
                     thickness = maxTephra / Math.log10(simResults + 10);
                 }
                 // console.log(simResults);
-                data.push(
-                    // <ImageOverlay
-                    //     url={"../assets/map-square.png"}
-                    //     key={Lat + " " + Long}
-                    //     bounds={Leaflet.latLngBounds(bound1, bound2)}
-                    //     opacity={1 - thickness}
-                    // />
-                    <Rectangle
-                        color={"red"}
-                        key={Lat + " " + Long}
-                        bounds={Leaflet.latLngBounds(bound1, bound2)}
-                        stroke={false}
-                        fillOpacity={1 - thickness}
-                    />
-                );
+
+                data.push(1 - thickness);
+                // data.push(
+                //     // <ImageOverlay
+                //     //     url={"../assets/map-square.png"}
+                //     //     key={Lat + " " + Long}
+                //     //     bounds={Leaflet.latLngBounds(bound1, bound2)}
+                //     //     opacity={1 - thickness}
+                //     // />
+                //     <Rectangle
+                //         color={"red"}
+                //         key={Lat + " " + Long}
+                //         bounds={Leaflet.latLngBounds(bound1, bound2)}
+                //         stroke={false}
+                //         fillOpacity={1 - thickness}
+                //     />
+                // );
             }
         }
 
+        const contours = d3.contours()
+                        .size([LatSegments, LongSegments])
+                        .thresholds(d3.range(1, 8).map(p => Math.pow(1.1, p) - 1))
+                        .smooth(true)
+                        (data);
+        console.log(contours);
+
+        contours.forEach(multipolygon => {
+            multipolygon.coordinates.forEach(polygon => {
+                polygon.forEach(poly => {
+                    poly.forEach(coord => {
+                        coord[0] = (coord[0] * squareSize) + corner2Bound.lng;
+                        coord[1] = (coord[1] * squareSize) + corner1Bound.lat;
+                    });
+                });
+            });
+        });
+
         return (
             <LayerGroup map={map}>
-                {data}
+                { this.renderGeoJson(contours) }
             </LayerGroup>
         );
+    }
+
+    private renderGeoJson(geojson: MultiPolygon[]) {
+        return(geojson.map(multipolygon => {
+            return (<GeoJSON key={this.keyval++} data={multipolygon}/>);
+        }));
     }
 }
