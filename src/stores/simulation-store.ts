@@ -101,6 +101,12 @@ export const SimulationStore = types
     vei: 0,
     colHeight: 2000,
     particleSize: 1,
+    stagingWindSpeed: 6,
+    stagingWindDirection: 45,
+    stagingMass: 20000000,
+    stagingVei: 0,
+    stagingColHeight: 2000,
+    stagingParticleSize: 1,
     volcanoX: 12.5078,
     volcanoY: -86.7022,
     crossPoint1X: 0,
@@ -269,6 +275,14 @@ export const SimulationStore = types
       const cols = self.numCols;
       const vX = self.volcanoX;
       const vY = self.volcanoY;
+
+      self.windSpeed = self.stagingWindSpeed;
+      self.windDirection = self.stagingWindDirection;
+      self.colHeight = self.stagingColHeight;
+      self.mass = self.stagingMass;
+      self.vei = self.stagingVei;
+      self.particleSize = self.stagingParticleSize;
+
       self.data.clear();
       for (let x = 0; x < rows; x ++) {
         for (let y = 0; y < cols; y++) {
@@ -290,6 +304,11 @@ export const SimulationStore = types
       }
 
       // will be used when we add animations
+      if (animate) {
+        console.warn("WARNING: Animated eruptions are not currently supported");
+        animate = false;
+      }
+
       if (animate) {
         self.clearGrid();
         self.isErupting = true;
@@ -319,7 +338,7 @@ export const SimulationStore = types
   .actions((self) => {
     return {
       setWindSpeed(speed: number) {
-        self.windSpeed = speed;
+        self.stagingWindSpeed = speed;
         // auto-erupt to recalculate data
         if (!self.requireEruption) {
           self.erupt();
@@ -332,13 +351,13 @@ export const SimulationStore = types
         self.volcanoY = y;
       },
       setColumnHeight(height: number) {
-        self.colHeight = height;
+        self.stagingColHeight = height;
         if (!self.requireEruption) {
           self.erupt();
         }
       },
       setMass(mass: number) {
-        self.mass = mass;
+        self.stagingMass = mass;
         // set equivalent VEI for reporting
         self.vei = Math.max(7, Math.min(15, Math.round(Math.log(mass) / Math.LN10))) - 7;
         if (!self.requireEruption) {
@@ -347,7 +366,7 @@ export const SimulationStore = types
       },
       setVEI(vei: number) {
         const clippedVEI = Math.max(0, Math.min(vei, 8));
-        self.vei = clippedVEI;
+        self.stagingVei = clippedVEI;
         // for now this is just setting the mass
         // we want vei 1 = 1e8, vei 8 = 1e15
         const mass = Math.pow(10, clippedVEI + 7);
@@ -357,23 +376,23 @@ export const SimulationStore = types
         }
       },
       setParticleSize(size: number) {
-        self.particleSize = size;
+        self.stagingParticleSize = size;
         if (!self.requireEruption) {
           self.erupt();
         }
       },
       setWindDirection(direction: number) {
-        self.windDirection = direction;
+        self.stagingWindDirection = direction;
         if (!self.requireEruption) {
           self.erupt();
         }
       },
       setModelParams(params: IModelParams) {
-        self.windSpeed = params.windSpeed;
-        self.colHeight = params.colHeight;
-        self.mass = params.mass;
-        self.particleSize = params.particleSize;
-        self.windDirection = params.windDirection;
+        self.stagingWindSpeed = params.windSpeed;
+        self.stagingColHeight = params.colHeight;
+        self.stagingMass = params.mass;
+        self.stagingParticleSize = params.particleSize;
+        self.stagingWindDirection = params.windDirection;
       },
       setVolcano(x: number, y: number) {
         self.volcanoX = x;
