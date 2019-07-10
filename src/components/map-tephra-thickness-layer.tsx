@@ -13,6 +13,7 @@ import { MultiPolygon } from "geojson";
 interface IProps {
     corner1Bound: Leaflet.LatLng;
     corner2Bound: Leaflet.LatLng;
+    viewportBounds: Leaflet.LatLngBounds;
     volcanoPos: Ipoint;
     gridSize: number;
     map: Leaflet.Map | null;
@@ -47,20 +48,26 @@ export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
             windDirection,
             colHeight,
             mass,
-            particleSize } = this.props;
-        const LatDist = Math.abs(corner1Bound.lat - corner2Bound.lat);
-        const LongDist = Math.abs(corner1Bound.lng - corner2Bound.lng);
+            particleSize,
+            viewportBounds } = this.props;
+        const LatDist = Math.abs(viewportBounds.getNorthEast().lat - viewportBounds.getSouthWest().lat);
+        const LongDist = Math.abs(viewportBounds.getNorthEast().lng - viewportBounds.getSouthWest().lng);
         const maxTephra = 1;
-        const squareSize = 0.25;
-        const LatSegments = LatDist / squareSize;
-        const LongSegments = LongDist / squareSize;
+        const samplesPerScreenPerAxis = 75;
+        const squareSize = LongDist / (samplesPerScreenPerAxis); // This assumes a square map
+        const LatSegments = samplesPerScreenPerAxis; // LatDist / squareSize;
+        const LongSegments = samplesPerScreenPerAxis; // LongDist / squareSize;
 
         const data: number[] = [];
 
         for (let currentLat = 0; currentLat < LatSegments; currentLat++) {
             for (let currentLong = 0; currentLong < LongSegments; currentLong++) {
-                const startingLat = corner1Bound.lat < corner2Bound.lat ? corner1Bound.lat : corner2Bound.lat;
-                const startingLong = corner1Bound.lng < corner2Bound.lng ? corner1Bound.lng : corner2Bound.lng;
+                const startingLat = viewportBounds.getNorthEast().lat < viewportBounds.getSouthWest().lat ?
+                                    viewportBounds.getNorthEast().lat :
+                                    viewportBounds.getSouthWest().lat;
+                const startingLong = viewportBounds.getNorthEast().lng < viewportBounds.getSouthWest().lng ?
+                                    viewportBounds.getNorthEast().lng :
+                                    viewportBounds.getSouthWest().lng;
 
                 const Lat = startingLat + currentLat * squareSize;
                 const Long = startingLong + currentLong * squareSize;
@@ -110,14 +117,14 @@ export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
                         .thresholds(d3.range(1, 8).map(p => Math.pow(1.1, p) - 1))
                         .smooth(true)
                         (data);
-        console.log(contours);
+        // console.log(contours);
 
         contours.forEach(multipolygon => {
             multipolygon.coordinates.forEach(polygon => {
                 polygon.forEach(poly => {
                     poly.forEach(coord => {
-                        coord[0] = (coord[0] * squareSize) + corner1Bound.lng;
-                        coord[1] = (coord[1] * squareSize) + corner1Bound.lat;
+                        coord[0] = (coord[0] * squareSize) + viewportBounds.getSouthWest().lng;
+                        coord[1] = (coord[1] * squareSize) + viewportBounds.getSouthWest().lat;
                     });
                 });
             });

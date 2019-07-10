@@ -69,6 +69,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
   private ref = React.createRef<HTMLDivElement>();
   private map = React.createRef<LeafletMap>();
   private crossRef = React.createRef<CrossSectionDrawLayer>();
+  private tephraRef = React.createRef<MapTephraThicknessLayer>();
   private metrics: ICanvasShape;
 
   constructor(props: IProps) {
@@ -174,6 +175,8 @@ export class MapComponent extends BaseComponent<IProps, IState>{
         <LeafletMap
           className="map"
           ref={this.map}
+          ondragend={this.reRenderMap}
+          onzoomend={this.reRenderMap}
           center={[volcanoX, volcanoY]}
           zoom={8}
           maxBounds={bounds}
@@ -200,8 +203,10 @@ export class MapComponent extends BaseComponent<IProps, IState>{
               url="https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png"
           />
           <MapTephraThicknessLayer
+            ref={this.tephraRef}
             corner1Bound={corner1}
             corner2Bound={corner2}
+            viewportBounds={viewportBounds}
             volcanoPos={volcanoPos}
             gridSize={1}
             map={mapRef}
@@ -273,5 +278,14 @@ export class MapComponent extends BaseComponent<IProps, IState>{
         </Stage> */}
       </CanvDiv>
     );
+  }
+
+  private reRenderMap = () => {
+    if (this.tephraRef.current) {
+      // By forcing the map to update, it re-renders the tephra thickness layer
+      // This is called when the viewport changes, so it can re-render the dynamically
+      // scaled tephra map
+      this.forceUpdate();
+    }
   }
 }
