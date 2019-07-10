@@ -155,8 +155,8 @@ export class MapComponent extends BaseComponent<IProps, IState>{
 
     const { crossPoint1X, crossPoint1Y, crossPoint2X, crossPoint2Y } = this.stores;
     const volcanoPos = {x: volcanoX, y: volcanoY};
-    const corner1 = L.latLng(35, -115);
-    const corner2 = L.latLng(55, -135);
+    const corner1 = L.latLng(volcanoX - 15, volcanoY - 15);
+    const corner2 = L.latLng(volcanoX + 15, volcanoY + 15);
     const bounds = L.latLngBounds(corner1, corner2);
     let viewportBounds = bounds;
     let mapRef = null;

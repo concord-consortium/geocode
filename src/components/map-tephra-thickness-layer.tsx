@@ -32,6 +32,14 @@ export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
     // Not ideal, but geoJson does not update with state changes
     // It will however update if given a new unique key.
     private keyval: number = 0;
+    private gradient: Color[] = [new Color("rgb(66, 245, 239)"),
+                                new Color("rgb(66, 245, 141)"),
+                                new Color("rgb(117, 245, 66)"),
+                                new Color("rgb(209, 245, 66)"),
+                                new Color("rgb(245, 209, 66)"),
+                                new Color("rgb(245, 126, 66)"),
+                                new Color("rgb(245, 81, 66)"),
+                                ];
 
     public render() {
         const { corner1Bound, corner2Bound, volcanoPos, gridSize, map,
@@ -43,7 +51,7 @@ export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
         const LatDist = Math.abs(corner1Bound.lat - corner2Bound.lat);
         const LongDist = Math.abs(corner1Bound.lng - corner2Bound.lng);
         const maxTephra = 1;
-        const squareSize = 0.1;
+        const squareSize = 0.25;
         const LatSegments = LatDist / squareSize;
         const LongSegments = LongDist / squareSize;
 
@@ -108,7 +116,7 @@ export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
             multipolygon.coordinates.forEach(polygon => {
                 polygon.forEach(poly => {
                     poly.forEach(coord => {
-                        coord[0] = (coord[0] * squareSize) + corner2Bound.lng;
+                        coord[0] = (coord[0] * squareSize) + corner1Bound.lng;
                         coord[1] = (coord[1] * squareSize) + corner1Bound.lat;
                     });
                 });
@@ -123,8 +131,13 @@ export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
     }
 
     private renderGeoJson(geojson: MultiPolygon[]) {
+        let gradientIndex = 0;
         return(geojson.map(multipolygon => {
-            return (<GeoJSON key={this.keyval++} data={multipolygon}/>);
+            return (<GeoJSON key={this.keyval++}
+                stroke={false}
+                fillOpacity={0.8}
+                fillColor={this.gradient[gradientIndex++].string()}
+                data={multipolygon}/>);
         }));
     }
 }
