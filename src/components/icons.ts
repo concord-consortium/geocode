@@ -5,8 +5,8 @@ import { DivIcon } from "leaflet";
 import "../css/custom-leaflet-icons.css";
 
 const iconVolcano = new L.Icon({
-    iconUrl: require("../assets/volcano.png"),
-    iconRetinaUrl: require("../assets/volcano.png"),
+    iconUrl: "./assets/volcano.png",
+    iconRetinaUrl: "./assets/volcano.png",
     iconSize: new L.Point(25, 25),
 });
 
