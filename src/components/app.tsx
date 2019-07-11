@@ -187,12 +187,12 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       gridValues,
       plotData,
       cities,
-      volcanoX,
-      volcanoY,
-      crossPoint1X,
-      crossPoint1Y,
-      crossPoint2X,
-      crossPoint2Y,
+      volcanoLat,
+      volcanoLng,
+      crossPoint1Lat,
+      crossPoint1Lng,
+      crossPoint2Lat,
+      crossPoint2Lng,
       run,
       clearLog,
       step,
@@ -302,8 +302,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               gridColors={ gridColors }
               gridValues={ gridValues }
               cities={ cities }
-              volcanoX={ volcanoX }
-              volcanoY={ volcanoY }
+              volcanoLat={ volcanoLat }
+              volcanoLng={ volcanoLng }
               map={ mapPath }
               isErupting={isErupting}
               showCrossSectionSelector={showCrossSectionSelector}
@@ -316,12 +316,12 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             numCols={ numCols }
             numRows={ numRows }
             width={ mapWidth }
-            volcanoX={ volcanoX }
-            volcanoY={ volcanoY }
-            crossPoint1X={ crossPoint1X }
-            crossPoint1Y={ crossPoint1Y }
-            crossPoint2X={ crossPoint2X }
-            crossPoint2Y={ crossPoint2Y }
+            volcanoLat={ volcanoLat }
+            volcanoLng={ volcanoLng }
+            crossPoint1Lat={ crossPoint1Lat }
+            crossPoint1Lng={ crossPoint1Lng }
+            crossPoint2Lat={ crossPoint2Lat }
+            crossPoint2Lng={ crossPoint2Lng }
             hasErupted={ hasErupted }
             windSpeed={windSpeed}
             windDirection={windDirection}

@@ -1,15 +1,10 @@
 import { inject, observer } from "mobx-react";
-import { PureComponent } from "react";
-import Leaflet, { LeafletEvent } from "leaflet";
+import Leaflet from "leaflet";
 import * as L from "leaflet";
 import * as React from "react";
-import { Ipoint } from "../interfaces";
-import { BaseComponent, IBaseProps } from "./base";
-import { iconVolcano, getCachedCircleIcon } from "./icons";
-import { LayerGroup, Marker, Polyline, Polygon, withLeaflet, LeafletEvents } from "react-leaflet";
-// import { circleIcon } from '../custom-leaflet/icons'
-// import crossSectionRectangle, { pointToArray, limitDistance } from '../core/cross-section-rectangle'
-// import config from '../config'
+import { BaseComponent } from "./base";
+import { getCachedCircleIcon } from "./icons";
+import { LayerGroup, Marker, Polyline } from "react-leaflet";
 
 const MOUSE_DOWN = "mousedown touchstart";
 const MOUSE_MOVE = "mousemove touchmove";
@@ -17,10 +12,10 @@ const MOVE_UP = "mouseup touchend";
 
 interface IProps {
   map: Leaflet.Map | null;
-  p1X: number;
-  p1Y: number;
-  p2X: number;
-  p2Y: number;
+  p1Lat: number;
+  p1Lng: number;
+  p2Lat: number;
+  p2Lng: number;
 }
 
 interface IState {}
@@ -28,7 +23,7 @@ interface IState {}
 @inject("stores")
 @observer
 export class CrossSectionDrawLayer extends BaseComponent<IProps, IState> {
-  private _tempPoint1: Ipoint;
+  private _tempPoint1: Leaflet.LatLng;
 
   constructor(props: IProps) {
     super(props);
@@ -80,36 +75,34 @@ export class CrossSectionDrawLayer extends BaseComponent<IProps, IState> {
   }
 
   public setPoint(index: number, event: L.LeafletEvent | null) {
-    // const { setCrossSectionPoint } = this.props
     let point = null;
     if (event) {
       const latLng = (event as Leaflet.LeafletMouseEvent).latlng;
-      point = {x: latLng.lng, y: latLng.lat}; // pointToArray(latLng);
+      point = latLng;
     }
     if (index === 0 && point !== null) {
       this._tempPoint1 = point;
     }
     if (index === 1 && point !== null && this._tempPoint1 !== null) {
-      point = point; // limitDistance(this._tempPoint1, point, config.maxCrossSectionLength);
+      point = point;
     }
-    // setCrossSectionPoint(index, point)
     if (point !== null) {
         if (index === 0) {
-          this.stores.setPoint1Pos(point.x, point.y);
+          this.stores.setPoint1Pos(point.lat, point.lng);
         } else {
-          this.stores.setPoint2Pos(point.x, point.y);
+          this.stores.setPoint2Pos(point.lat, point.lng);
         }
     }
   }
 
   public render() {
     const { map } = this.props;
-    const { p1X, p1Y, p2X, p2Y } = this.props;
-    const point1 = L.latLng(p1Y, p1X);
-    const point2 = L.latLng(p2Y, p2X);
+    const { p1Lat, p1Lng, p2Lat, p2Lng } = this.props;
+    const point1 = L.latLng(p1Lat, p1Lng);
+    const point2 = L.latLng(p2Lat, p2Lng);
     const p1Icon = getCachedCircleIcon("P1");
     const p2Icon = getCachedCircleIcon("P2");
-    // const rect = crossSectionRectangle(point1, point2);
+
     return (
       <LayerGroup map={map}>
         {point1 && <Marker position={point1} draggable={true} icon={p1Icon} onLeafletDrag={this.setPoint1} />}
@@ -117,12 +110,10 @@ export class CrossSectionDrawLayer extends BaseComponent<IProps, IState> {
         {point1 && point2 &&
           <Polyline
             clickable={false}
-            className="cross-section-line"
             positions={[point1, point2]}
             color="#fff"
             opacity={1}
           />}
-        {/* {rect && <Polygon positions={rect} clickable={false} color='#fff' weight={2} />} */}
       </LayerGroup>
     );
   }

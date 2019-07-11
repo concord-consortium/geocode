@@ -26,12 +26,12 @@ interface IProps extends IBaseProps {
   numCols: number;
   height: number;
   width: number;
-  volcanoX: number;
-  volcanoY: number;
-  crossPoint1X: number;
-  crossPoint1Y: number;
-  crossPoint2X: number;
-  crossPoint2Y: number;
+  volcanoLat: number;
+  volcanoLng: number;
+  crossPoint1Lat: number;
+  crossPoint1Lng: number;
+  crossPoint2Lat: number;
+  crossPoint2Lng: number;
   hasErupted: boolean;
   windSpeed: number;
   windDirection: number;
@@ -73,8 +73,22 @@ export class CrossSectionComponent extends BaseComponent<IProps, IState>{
   public render() {
     if (! this.metrics) { this.recomputeMetrics(); }
     const { isSelecting } = this.state;
-    const { volcanoX, volcanoY, crossPoint1X, crossPoint1Y, crossPoint2X, crossPoint2Y, data, height, hasErupted,
-          windSpeed, windDirection, colHeight, mass, particleSize } = this.props;
+    const {
+      volcanoLat,
+      volcanoLng,
+      crossPoint1Lat,
+      crossPoint1Lng,
+      crossPoint2Lat,
+      crossPoint2Lng,
+      data,
+      height,
+      hasErupted,
+      windSpeed,
+      windDirection,
+      colHeight,
+      mass,
+      particleSize
+    } = this.props;
     const { width } = this.metrics;
 
     return (
@@ -91,12 +105,12 @@ export class CrossSectionComponent extends BaseComponent<IProps, IState>{
               <PixiTephraCrossSection
                 canvasMetrics={this.metrics}
                 data={data.map( (d) => d.thickness )}
-                volcanoX={volcanoX}
-                volcanoY={volcanoY}
-                crossPoint1X={crossPoint1X}
-                crossPoint1Y={crossPoint1Y}
-                crossPoint2X={crossPoint2X}
-                crossPoint2Y={crossPoint2Y}
+                volcanoLat={volcanoLat}
+                volcanoLng={volcanoLng}
+                crossPoint1Lat={crossPoint1Lat}
+                crossPoint1Lng={crossPoint1Lng}
+                crossPoint2Lat={crossPoint2Lat}
+                crossPoint2Lng={crossPoint2Lng}
                 windSpeed={windSpeed}
                 windDirection={windDirection}
                 colHeight={colHeight}

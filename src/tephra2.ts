@@ -92,7 +92,7 @@ const gridTephraCalc = (
   particleSize: number  // Made up number. 1 == actual simulation values (mg?)
   ) => {
 
-  const dScale = 100; // 1 km per grid cell.
+  const dScale = 1000; // 1 km per grid cell.
 
   // MODEL PARAMS:
   // the x axisis oriented in the wind direction (positive downwind)

@@ -6,7 +6,7 @@ import { inject, observer } from "mobx-react";
 import { BaseComponent } from "./base";
 import gridTephraCalc from "../tephra2";
 import { Ipoint } from "../interfaces";
-import { LayerGroup, ImageOverlay, Rectangle, Polyline, GeoJSON } from "react-leaflet";
+import { LayerGroup, GeoJSON } from "react-leaflet";
 import { LatLngToLocal } from "./coordinateSpaceConversion";
 import { MultiPolygon } from "geojson";
 
@@ -14,7 +14,7 @@ interface IProps {
     corner1Bound: Leaflet.LatLng;
     corner2Bound: Leaflet.LatLng;
     viewportBounds: Leaflet.LatLngBounds;
-    volcanoPos: Ipoint;
+    volcanoPos: Leaflet.LatLng;
     gridSize: number;
     map: Leaflet.Map | null;
     windSpeed: number;
@@ -33,6 +33,7 @@ export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
     // Not ideal, but geoJson does not update with state changes
     // It will however update if given a new unique key.
     private keyval: number = 0;
+
     private gradient: Color[] = [new Color("rgb(66, 245, 239)"),
                                 new Color("rgb(66, 245, 141)"),
                                 new Color("rgb(117, 245, 66)"),
@@ -55,8 +56,8 @@ export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
         const maxTephra = 1;
         const samplesPerScreenPerAxis = 75;
         const squareSize = LongDist / (samplesPerScreenPerAxis); // This assumes a square map
-        const LatSegments = samplesPerScreenPerAxis; // LatDist / squareSize;
-        const LongSegments = samplesPerScreenPerAxis; // LongDist / squareSize;
+        const LatSegments = samplesPerScreenPerAxis;
+        const LongSegments = samplesPerScreenPerAxis;
 
         const data: number[] = [];
 
@@ -75,8 +76,8 @@ export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
                 const bound1 = Leaflet.latLng(Lat, Long);
                 const bound2 = Leaflet.latLng(Lat + squareSize, Long + squareSize);
 
-                const localPos = LatLngToLocal({x: Lat + squareSize / 2, y: Long + squareSize / 2}, volcanoPos);
-                // console.log(localPos);
+                const localPos = LatLngToLocal(Leaflet.latLng(Lat + squareSize / 2, Long + squareSize / 2), volcanoPos);
+
                 const simResults = gridTephraCalc(
                     localPos.x, localPos.y, 0, 0,
                     windSpeed,
@@ -86,29 +87,9 @@ export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
                     particleSize
                   );
 
-                // If opacity is 0, leaflet does not redraw the rectangle
-                let thickness = 1.00000001;
-                if (simResults > 1) {
-                    thickness = maxTephra / Math.log10(simResults + 10);
-                }
-                // console.log(simResults);
+                const thickness = maxTephra / Math.log10(simResults + 10);
 
                 data.push(1 - thickness);
-                // data.push(
-                //     // <ImageOverlay
-                //     //     url={"../assets/map-square.png"}
-                //     //     key={Lat + " " + Long}
-                //     //     bounds={Leaflet.latLngBounds(bound1, bound2)}
-                //     //     opacity={1 - thickness}
-                //     // />
-                //     <Rectangle
-                //         color={"red"}
-                //         key={Lat + " " + Long}
-                //         bounds={Leaflet.latLngBounds(bound1, bound2)}
-                //         stroke={false}
-                //         fillOpacity={1 - thickness}
-                //     />
-                // );
             }
         }
 
@@ -117,7 +98,6 @@ export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
                         .thresholds(d3.range(1, 8).map(p => Math.pow(1.1, p) - 1))
                         .smooth(true)
                         (data);
-        // console.log(contours);
 
         contours.forEach(multipolygon => {
             multipolygon.coordinates.forEach(polygon => {

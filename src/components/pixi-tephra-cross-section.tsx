@@ -5,6 +5,7 @@ import { TextStyle } from "pixi.js";
 import { ICanvasShape } from "../interfaces";
 import * as PIXI from "pixi.js";
 import * as Color from "color";
+import * as L from "leaflet";
 import { getGridIndexForLocation } from "../stores/simulation-store";
 import gridTephraCalc from "../tephra2";
 import { LatLngToLocal, getDistanceFromLatLonInKm } from "./coordinateSpaceConversion";
@@ -12,12 +13,12 @@ import { LatLngToLocal, getDistanceFromLatLonInKm } from "./coordinateSpaceConve
 interface IProps {
   canvasMetrics: ICanvasShape;
   data: number[];
-  volcanoX: number;
-  volcanoY: number;
-  crossPoint1X: number;
-  crossPoint1Y: number;
-  crossPoint2X: number;
-  crossPoint2Y: number;
+  volcanoLat: number;
+  volcanoLng: number;
+  crossPoint1Lat: number;
+  crossPoint1Lng: number;
+  crossPoint2Lat: number;
+  crossPoint2Lng: number;
   windSpeed: number;
   windDirection: number;
   colHeight: number;
@@ -58,8 +59,21 @@ const Bar =  PixiComponent<IBarProps, PIXI.Graphics>("Bar", {
 });
 
 export const PixiTephraCrossSection = (props: IProps) => {
-  const { canvasMetrics, data, volcanoX, volcanoY, crossPoint1X, crossPoint1Y, crossPoint2X, crossPoint2Y,
-          windSpeed, windDirection, colHeight, mass, particleSize } = props;
+  const {
+    canvasMetrics,
+    data,
+    volcanoLat,
+    volcanoLng,
+    crossPoint1Lat,
+    crossPoint1Lng,
+    crossPoint2Lat,
+    crossPoint2Lng,
+    windSpeed,
+    windDirection,
+    colHeight,
+    mass,
+    particleSize
+  } = props;
   const { numCols, numRows, gridSize, height, width } = canvasMetrics;
   const getData = (x: number, y: number) => data[getGridIndexForLocation(x, y, numRows)];
   const cells = [];
@@ -67,13 +81,13 @@ export const PixiTephraCrossSection = (props: IProps) => {
   const numSegments = 200;
   const textSize = 12;
 
-  const localPosPoint1 = LatLngToLocal({x: crossPoint1Y, y: crossPoint1X}, {x: volcanoX, y: volcanoY});
-  const localPosPoint2 = LatLngToLocal({x: crossPoint2Y, y: crossPoint2X}, {x: volcanoX, y: volcanoY});
+  const localPosPoint1 = LatLngToLocal(L.latLng(crossPoint1Lat, crossPoint1Lng), L.latLng(volcanoLat, volcanoLng));
+  const localPosPoint2 = LatLngToLocal(L.latLng(crossPoint2Lat, crossPoint2Lng), L.latLng(volcanoLat, volcanoLng));
 
-  const trueP1X = localPosPoint1.x; // ((localPosPoint1.x) / gridSize);
-  const trueP1Y = localPosPoint1.y; // numRows - ((localPosPoint1.y) / gridSize);
-  const xDiff = localPosPoint2.x - trueP1X; // (localPosPoint2.x / gridSize)  - trueP1X;
-  const yDiff = localPosPoint2.y - trueP1Y; // (numRows - (localPosPoint2.y / gridSize) - trueP1Y);
+  const trueP1X = localPosPoint1.x;
+  const trueP1Y = localPosPoint1.y;
+  const xDiff = localPosPoint2.x - trueP1X;
+  const yDiff = localPosPoint2.y - trueP1Y;
   const xSlope = xDiff / numSegments;
   const ySlope = yDiff / numSegments;
   const colWidth = (width - textSize - 2) / numSegments;
@@ -83,8 +97,8 @@ export const PixiTephraCrossSection = (props: IProps) => {
     const xProgress = (trueP1X + (xSlope * progress));
     const yProgress = (trueP1Y + (ySlope * progress));
 
-    const vX = 0; // volcanoX;
-    const vY = 0; // volcanoY;
+    const vX = 0;
+    const vY = 0;
     const simResults = gridTephraCalc(
       xProgress, yProgress, vX, vY,
       windSpeed,
@@ -94,7 +108,7 @@ export const PixiTephraCrossSection = (props: IProps) => {
       particleSize
     );
 
-    // I add 10 to the calculation so that the return of the log is between 0 and 1
+    // Add 10 to the calculation so that the return of the log is between 0 and 1
     const thickness = maxTephra / Math.log10(simResults + 10);
 
     const hsla: IHsla = {
@@ -116,7 +130,9 @@ export const PixiTephraCrossSection = (props: IProps) => {
   }
 
   const style = new TextStyle({fill: "black", fontSize: `${textSize}px`, align: "center"});
-  const maxDist = getDistanceFromLatLonInKm({x: crossPoint1Y, y: crossPoint1X}, {x: crossPoint2Y, y: crossPoint2X});
+  const maxDist = getDistanceFromLatLonInKm(
+                    L.latLng(crossPoint1Lat, crossPoint1Lng),
+                    L.latLng(crossPoint2Lat, crossPoint2Lng));
 
   return (
     <Container >

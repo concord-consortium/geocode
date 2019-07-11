@@ -9,20 +9,9 @@ import { iconVolcano, getCachedCircleIcon } from "./icons";
 import { ICanvasShape, Ipoint } from "../interfaces";
 import { CityType  } from "../stores/simulation-store";
 import styled from "styled-components";
-import { Stage, Sprite } from "@inlet/react-pixi";
-import { PixiCityContainer } from "./pixi-city-container";
-import { PixiTephraMap } from "./pixi-tephra-map";
-import { PixiAxis } from "./pixi-axis";
-import { PixiGrid } from "./pixi-grid";
-import { CrossSectionSelectorComponent } from "./pixi-cross-section-selector";
-import VolcanoEmitter from "./pixi-volcano-emitter";
-import * as AshConfig from "../assets/particles/ash.json";
-import * as Color from "color";
 import { observer, inject } from "mobx-react";
 import { BaseComponent, IBaseProps } from "./base";
 import { getSnapshot, IStateTreeNode } from "mobx-state-tree";
-import { EmitterConfig } from "pixi-particles";
-import { LatLngBounds } from "leaflet";
 import { CrossSectionDrawLayer } from "./cross-section-draw-layer";
 import { LocalToLatLng, LatLngToLocal } from "./coordinateSpaceConversion";
 import { MapTephraThicknessLayer } from "./map-tephra-thickness-layer";
@@ -51,8 +40,8 @@ interface IProps extends IBaseProps {
   mass: number;
   colHeight: number;
   particleSize: number;
-  volcanoX: number;
-  volcanoY: number;
+  volcanoLat: number;
+  volcanoLng: number;
   gridColors: IStateTreeNode<any, string[]>;
   gridValues: IStateTreeNode<any, string[]>;
   cities: CityType[];
@@ -121,8 +110,8 @@ export class MapComponent extends BaseComponent<IProps, IState>{
 
     const {
       cities,
-      volcanoX,
-      volcanoY,
+      volcanoLat,
+      volcanoLng,
       gridColors,
       gridValues,
       windDirection,
@@ -139,11 +128,11 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     const cityItems = cities.map( (city) => {
       const {x, y, name, id} = city;
       if (x && y && name) {
-        const mapPos = LocalToLatLng({x: y, y: x}, {x: volcanoX, y: volcanoY});
+        const mapPos = LocalToLatLng({x, y}, L.latLng(volcanoLat, volcanoLng));
         const cityIcon = getCachedCircleIcon(name);
         return (
           <Marker
-          position={[mapPos.x, mapPos.y]}
+          position={[mapPos.lat, mapPos.lng]}
           icon={cityIcon}
           key={name}>
             <Popup>
@@ -154,10 +143,10 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       }
     });
 
-    const { crossPoint1X, crossPoint1Y, crossPoint2X, crossPoint2Y } = this.stores;
-    const volcanoPos = {x: volcanoX, y: volcanoY};
-    const corner1 = L.latLng(volcanoX - 15, volcanoY - 15);
-    const corner2 = L.latLng(volcanoX + 15, volcanoY + 15);
+    const { crossPoint1Lat, crossPoint1Lng, crossPoint2Lat, crossPoint2Lng } = this.stores;
+    const volcanoPos = L.latLng(volcanoLat, volcanoLng);
+    const corner1 = L.latLng(volcanoLat - 15, volcanoLng - 15);
+    const corner2 = L.latLng(volcanoLat + 15, volcanoLng + 15);
     const bounds = L.latLngBounds(corner1, corner2);
     let viewportBounds = bounds;
     let mapRef = null;
@@ -177,7 +166,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           ref={this.map}
           ondragend={this.reRenderMap}
           onzoomend={this.reRenderMap}
-          center={[volcanoX, volcanoY]}
+          center={[volcanoLat, volcanoLng]}
           zoom={8}
           maxBounds={bounds}
           maxBoundsViscosity={1}
@@ -192,7 +181,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           easeLinearity={0.35}
           >
           <Marker
-            position={[volcanoX, volcanoY]}
+            position={[volcanoLat, volcanoLng]}
             icon={iconVolcano}>
             <Popup>
               Popup for any custom information.
@@ -219,63 +208,12 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           { showCrossSectionSelector && <CrossSectionDrawLayer
             ref={this.crossRef}
             map={mapRef}
-            p1X={crossPoint1X}
-            p2X={crossPoint2X}
-            p1Y={crossPoint1Y}
-            p2Y={crossPoint2Y}
+            p1Lat={crossPoint1Lat}
+            p2Lat={crossPoint2Lat}
+            p1Lng={crossPoint1Lng}
+            p2Lng={crossPoint2Lng}
           /> }
         </LeafletMap>
-        {/* <Stage
-    const volcanoPos = this.toCanvasCoords({x: volcanoX, y: volcanoY}, gridSize);
-    const { crossPoint1X, crossPoint1Y, crossPoint2X, crossPoint2Y } = this.stores;
-    const { moveMouse } = this.state;
-
-    return (
-      <CanvDiv ref={this.ref}
-        onMouseMove={this.handleDragMove}
-        onMouseDown={this.handleDragEnter}
-        onMouseUp={this.handleDragExit}>
-        <Stage
-          width={width}
-          height={height}
-          options={
-            {
-              backgroundColor: Color("hsl(0, 10%, 95%)").rgbNumber(),
-              antialias: true
-            }
-          } >
-          <Sprite image={map} x={0} y={0} width={width} height={height} />
-
-          <PixiTephraMap
-            canvasMetrics={this.metrics}
-            gridColors={getSnapshot(gridColors)}
-            gridValues={getSnapshot(gridValues)}
-            toCanvasCoords={this.toCanvasCoords} />
-          {cityItems}
-          <PixiAxis gridMetrics={this.metrics} toCanvasCoords={this.toCanvasCoords} />
-          <PixiGrid gridMetrics={this.metrics} />
-          <Sprite image={"./assets/volcano.png"}
-            x={volcanoPos.x - 10}
-            y={volcanoPos.y - 10}
-            width={60}
-            height={60} />
-          <VolcanoEmitter
-            config={AshConfig.config as unknown as EmitterConfig}
-            imagePath={AshConfig.image}
-            x={volcanoPos.x + 20}
-            y={volcanoPos.y + 20}
-            windDirection={windDirection}
-            windSpeed={windSpeed}
-            mass={mass}
-            playing={isErupting} />
-          {showCrossSectionSelector && hasErupted &&
-          <CrossSectionSelectorComponent
-            crossPoint2X={crossPoint2X}
-            crossPoint2Y={crossPoint2Y}
-            crossPoint1X={crossPoint1X}
-            crossPoint1Y={crossPoint1Y}
-            isPlaced={moveMouse} /> }
-        </Stage> */}
       </CanvDiv>
     );
   }

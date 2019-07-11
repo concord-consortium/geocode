@@ -1,6 +1,7 @@
 import { types, getSnapshot } from "mobx-state-tree";
 import { autorun } from "mobx";
 import * as Color from "color";
+import * as Leaflet from "leaflet";
 import gridTephraCalc from "../tephra2";
 import { IInterpreterController, makeInterpreterController } from "../utilities/interpreter";
 import { SimulationAuthoringOptions } from "../components/app";
@@ -19,8 +20,8 @@ export interface IModelParams {
   colHeight: number;
   particleSize: number;
   windDirection: number;
-  volcanoX: number;
-  volcanoY: number;
+  volcanoLat: number;
+  volcanoLng: number;
   isErupting: boolean;
 }
 
@@ -107,12 +108,12 @@ export const SimulationStore = types
     stagingVei: 0,
     stagingColHeight: 2000,
     stagingParticleSize: 1,
-    volcanoX: 12.5078,
-    volcanoY: -86.7022,
-    crossPoint1X: 0,
-    crossPoint1Y: 0,
-    crossPoint2X: 0,
-    crossPoint2Y: 0,
+    volcanoLat: 12.5078,
+    volcanoLng: -86.7022,
+    crossPoint1Lat: 0,
+    crossPoint1Lng: 0,
+    crossPoint2Lat: 0,
+    crossPoint2Lng: 0,
     cities: types.array(City),
     code: "",
     log: "",
@@ -196,13 +197,13 @@ export const SimulationStore = types
     clearLog() {
       self.log = "";
     },
-    setPoint1Pos(x: number, y: number) {
-      self.crossPoint1X = x;
-      self.crossPoint1Y = y;
+    setPoint1Pos(lat: number, lng: number) {
+      self.crossPoint1Lat = lat;
+      self.crossPoint1Lng = lng;
     },
-    setPoint2Pos(x: number, y: number) {
-      self.crossPoint2X = x;
-      self.crossPoint2Y = y;
+    setPoint2Pos(lat: number, lng: number) {
+      self.crossPoint2Lat = lat;
+      self.crossPoint2Lng = lng;
     },
     /**
      * Steps through one complete block.
@@ -273,8 +274,8 @@ export const SimulationStore = types
     erupt(animate = false) {
       const rows = self.numRows;
       const cols = self.numCols;
-      const vX = self.volcanoX;
-      const vY = self.volcanoY;
+      const vLat = self.volcanoLat;
+      const vLng = self.volcanoLng;
 
       self.windSpeed = self.stagingWindSpeed;
       self.windDirection = self.stagingWindDirection;
@@ -283,11 +284,12 @@ export const SimulationStore = types
       self.vei = self.stagingVei;
       self.particleSize = self.stagingParticleSize;
 
+      // This eruption data is no longer calculated correctly or used
       self.data.clear();
       for (let x = 0; x < rows; x ++) {
         for (let y = 0; y < cols; y++) {
           const simResults = gridTephraCalc(
-            x, y, vX, vY,
+            x, y, vLat, vLng,
             self.windSpeed,
             self.windDirection,
             self.colHeight,
@@ -344,11 +346,11 @@ export const SimulationStore = types
           self.erupt();
         }
       },
-      setVolcanoX(x: number) {
-        self.volcanoX = x;
+      setVolcanoLat(lat: number) {
+        self.volcanoLat = lat;
       },
-      setVolcanoY(y: number) {
-        self.volcanoY = y;
+      setVolcanoLng(lng: number) {
+        self.volcanoLng = lng;
       },
       setColumnHeight(height: number) {
         self.stagingColHeight = height;
@@ -394,9 +396,9 @@ export const SimulationStore = types
         self.stagingParticleSize = params.particleSize;
         self.stagingWindDirection = params.windDirection;
       },
-      setVolcano(x: number, y: number) {
-        self.volcanoX = x;
-        self.volcanoY = y;
+      setVolcano(lat: number, lng: number) {
+        self.volcanoLat = lat;
+        self.volcanoLng = lng;
       },
       addCity(x: number, y: number, name: string) {
         const found = self.cities.find( c => {
@@ -447,7 +449,7 @@ autorun(() => {
   const {windSpeed, windDirection, code, cities } = simulation;
   const x = windSpeed * Math.cos(windDirection);
   const y = windSpeed * Math.sin(windDirection);
-  const vx = simulation.volcanoX;
+  const vx = simulation.volcanoLat;
 });
 
 export type SimulationModelType = typeof SimulationStore.Type;
