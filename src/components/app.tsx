@@ -180,22 +180,26 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       colHeight,
       particleSize,
       vei,
-      numCols,
-      numRows,
-      data,
-      gridColors,
-      gridValues,
       plotData,
       cities,
-      volcanoX,
-      volcanoY,
+      volcanoLat,
+      volcanoLng,
+      crossPoint1Lat,
+      crossPoint1Lng,
+      crossPoint2Lat,
+      crossPoint2Lng,
+      viewportZoom,
+      viewportCenterLat,
+      viewportCenterLng,
       run,
       clearLog,
       step,
       stop,
       reset,
       running,
-      isErupting
+      isErupting,
+      hasErupted,
+      showCrossSectionSelector
     } = this.stores;
 
     const {
@@ -289,26 +293,35 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               mass={ mass }
               colHeight={ colHeight }
               particleSize={ particleSize }
-              numCols={ numCols }
-              numRows={ numRows }
               width={ mapWidth }
               height={ mapWidth }
-              gridColors={ gridColors }
-              gridValues={ gridValues }
               cities={ cities }
-              volcanoX={ volcanoX }
-              volcanoY={ volcanoY }
+              volcanoLat={ volcanoLat }
+              volcanoLng={ volcanoLng }
+              viewportZoom={ viewportZoom }
+              viewportCenterLat={ viewportCenterLat }
+              viewportCenterLng={ viewportCenterLng }
               map={ mapPath }
               isErupting={isErupting}
+              showCrossSectionSelector={showCrossSectionSelector}
+              hasErupted={ hasErupted }
             />
               { showCrossSection &&
           <CrossSectionComponent
-            data={ data }
-            height={ 100 }
-            numCols={ numCols }
-            numRows={ numRows }
+            height={ 150 }
             width={ mapWidth }
-            volcanoX={ volcanoX }
+            volcanoLat={ volcanoLat }
+            volcanoLng={ volcanoLng }
+            crossPoint1Lat={ crossPoint1Lat }
+            crossPoint1Lng={ crossPoint1Lng }
+            crossPoint2Lat={ crossPoint2Lat }
+            crossPoint2Lng={ crossPoint2Lng }
+            hasErupted={ hasErupted }
+            windSpeed={windSpeed}
+            windDirection={windDirection}
+            colHeight={colHeight}
+            mass={mass}
+            particleSize={particleSize}
           />
         }
         { showChart &&
@@ -354,8 +367,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                   options={Object.keys(BlocklyAuthoring.toolbox)} key="toolbox" />,
                 <DatSelect path="initialCode" label="Initial code"
                   options={Object.keys(BlocklyAuthoring.code)} key="code" />,
-                <DatBoolean path="showCrossSection" label="Show cross section?"
-                  key="showCrossSection" />,
+                <DatBoolean path="showCrossSection" label="Show cross section?" key="showCrossSection" />,
                 <DatBoolean path="showChart" label="Show chart?"
                   key="showChart" />,
 
@@ -364,7 +376,6 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 <DatBoolean path="showControls" label="Show controls?" key="showControls" />,
                 <DatBoolean path="showLog" label="Show Log?" key="showLog" />,
 
-                <DatBoolean path="showCrossSection" label="Show cross section?" key="showCrossSection" />,
                 <DatBoolean path="showChart" label="Show chart?" key="showChart" />,
                 <DatBoolean path="showSidebar" label="Show sidebar?" key="showSidebar" />,
                 // submit button. Should remain at bottom
