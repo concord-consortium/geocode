@@ -13,7 +13,7 @@ import { observer, inject } from "mobx-react";
 import { BaseComponent, IBaseProps } from "./base";
 import { getSnapshot, IStateTreeNode } from "mobx-state-tree";
 import { CrossSectionDrawLayer } from "./cross-section-draw-layer";
-import { LocalToLatLng, LatLngToLocal } from "./coordinateSpaceConversion";
+import { LocalToLatLng, LatLngToLocal } from "../utilities/coordinateSpaceConversion";
 import { MapTephraThicknessLayer } from "./map-tephra-thickness-layer";
 
 interface WorkspaceProps {
@@ -189,7 +189,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           </Marker>
           {cityItems}
           <TileLayer
-              url="https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png"
+              url="https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}@2x.png"
           />
           <MapTephraThicknessLayer
             ref={this.tephraRef}

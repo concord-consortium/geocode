@@ -7,7 +7,7 @@ import { BaseComponent } from "./base";
 import gridTephraCalc from "../tephra2";
 import { Ipoint } from "../interfaces";
 import { LayerGroup, GeoJSON } from "react-leaflet";
-import { LatLngToLocal } from "./coordinateSpaceConversion";
+import { LatLngToLocal } from "../utilities/coordinateSpaceConversion";
 import { MultiPolygon } from "geojson";
 
 interface IProps {
