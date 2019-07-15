@@ -12,7 +12,6 @@ import { LatLngToLocal, getDistanceFromLatLonInKm } from "../utilities/coordinat
 
 interface IProps {
   canvasMetrics: ICanvasShape;
-  data: number[];
   volcanoLat: number;
   volcanoLng: number;
   crossPoint1Lat: number;
@@ -61,7 +60,6 @@ const Bar =  PixiComponent<IBarProps, PIXI.Graphics>("Bar", {
 export const PixiTephraCrossSection = (props: IProps) => {
   const {
     canvasMetrics,
-    data,
     volcanoLat,
     volcanoLng,
     crossPoint1Lat,
@@ -74,8 +72,7 @@ export const PixiTephraCrossSection = (props: IProps) => {
     mass,
     particleSize
   } = props;
-  const { numCols, numRows, gridSize, height, width } = canvasMetrics;
-  const getData = (x: number, y: number) => data[getGridIndexForLocation(x, y, numRows)];
+  const { height, width } = canvasMetrics;
   const cells = [];
   const maxTephra = 1;
   const numSegments = 200;

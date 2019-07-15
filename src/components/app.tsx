@@ -180,11 +180,6 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       colHeight,
       particleSize,
       vei,
-      numCols,
-      numRows,
-      data,
-      gridColors,
-      gridValues,
       plotData,
       cities,
       volcanoLat,
@@ -193,6 +188,9 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       crossPoint1Lng,
       crossPoint2Lat,
       crossPoint2Lng,
+      viewportZoom,
+      viewportCenterLat,
+      viewportCenterLng,
       run,
       clearLog,
       step,
@@ -295,15 +293,14 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               mass={ mass }
               colHeight={ colHeight }
               particleSize={ particleSize }
-              numCols={ numCols }
-              numRows={ numRows }
               width={ mapWidth }
               height={ mapWidth }
-              gridColors={ gridColors }
-              gridValues={ gridValues }
               cities={ cities }
               volcanoLat={ volcanoLat }
               volcanoLng={ volcanoLng }
+              viewportZoom={ viewportZoom }
+              viewportCenterLat={ viewportCenterLat }
+              viewportCenterLng={ viewportCenterLng }
               map={ mapPath }
               isErupting={isErupting}
               showCrossSectionSelector={showCrossSectionSelector}
@@ -311,10 +308,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             />
               { showCrossSection &&
           <CrossSectionComponent
-            data={ data }
             height={ 150 }
-            numCols={ numCols }
-            numRows={ numRows }
             width={ mapWidth }
             volcanoLat={ volcanoLat }
             volcanoLng={ volcanoLng }

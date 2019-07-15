@@ -94,8 +94,6 @@ export function getGridIndexForLocation(x: number, y: number, numRows: number) {
 
 export const SimulationStore = types
   .model("simulation", {
-    numRows: 10,
-    numCols: 10,
     windSpeed: 6,
     windDirection: 45,
     mass: 20000000,
@@ -114,12 +112,12 @@ export const SimulationStore = types
     crossPoint1Lng: 0,
     crossPoint2Lat: 0,
     crossPoint2Lng: 0,
+    viewportZoom: 8,
+    viewportCenterLat: 0,
+    viewportCenterLng: 0,
     cities: types.array(City),
     code: "",
     log: "",
-    data: types.array(SimDatum),
-    gridColors: types.array(types.string),
-    gridValues: types.array(types.string),
     plotData: types.optional(PlotData, getSnapshot(plotData)),
     isErupting: false,
     hasErupted: false,
@@ -153,6 +151,11 @@ export const SimulationStore = types
       cachedBlocklyWorkspace = workspace;
       interpreterController = makeInterpreterController(code, simulation, workspace);
     },
+    setViewportParameters(zoom: number, viewportCenterLat: number, viewportCenterLng: number) {
+      self.viewportZoom = zoom;
+      self.viewportCenterLat = viewportCenterLat;
+      self.viewportCenterLng = viewportCenterLng;
+    },
     run() {
       const reset = () => {
         this.setBlocklyCode(self.code, cachedBlocklyWorkspace);
@@ -168,8 +171,6 @@ export const SimulationStore = types
       self.hasErupted = false;
       self.log = "";
       self.plotData = PlotData.create({});
-      self.gridColors.clear();
-      self.gridValues.clear();
     },
     stop() {
       if (interpreterController) {
@@ -238,31 +239,12 @@ export const SimulationStore = types
   }))
   .actions((self) => ({
     paintGrid(resultType: SimOutput, colorStr: string) {
-      self.gridColors.clear();
-      const baseColor = Color(colorStr).hsl();
-      self.data.forEach(datum => {
-        const val: number = datum[resultType];
-        // Need to think of how to handle scaling.
-        const scaledAlpha = val / 4;
-        // Note: toFixed is used because of https://github.com/Qix-/color/issues/156
-        const alpha = Math.min(Number.parseFloat(scaledAlpha.toFixed(2)), 1);
-        const gridColor = Color(baseColor).alpha(alpha);
-        self.gridColors.push(gridColor.toString());
-      });
+      console.warn("WARNING: Painting Grid is no longer supported");
       self.hasErupted = true;
     },
     numberGrid(resultType: SimOutput) {
-      self.gridValues.clear();
-      self.data.forEach(datum => {
-        const val: number = datum[resultType];
-
-        self.gridValues.push(val.toFixed(2));
-      });
+      console.warn("WARNING: Numbering Grid is no longer supported ");
       self.hasErupted = true;
-    },
-    clearGrid() {
-      self.gridColors.clear();
-      self.gridValues.clear();
     },
     addPlotPoint(xAxis: string, yAxis: string, x: number, y: number) {
       self.plotData.setXAxis(xAxis);
@@ -272,8 +254,6 @@ export const SimulationStore = types
   }))
   .actions((self) => ({
     erupt(animate = false) {
-      const rows = self.numRows;
-      const cols = self.numCols;
       const vLat = self.volcanoLat;
       const vLng = self.volcanoLng;
 
@@ -283,22 +263,6 @@ export const SimulationStore = types
       self.mass = self.stagingMass;
       self.vei = self.stagingVei;
       self.particleSize = self.stagingParticleSize;
-
-      // This eruption data is no longer calculated correctly or used
-      self.data.clear();
-      for (let x = 0; x < rows; x ++) {
-        for (let y = 0; y < cols; y++) {
-          const simResults = gridTephraCalc(
-            x, y, vLat, vLng,
-            self.windSpeed,
-            self.windDirection,
-            self.colHeight,
-            self.mass,
-            self.particleSize
-          );
-          self.data[getGridIndexForLocation(x, y, rows)] = {thickness: simResults};
-        }
-      }
 
       // auto-repaint if necessary
       if (!self.requirePainting) {
@@ -312,7 +276,6 @@ export const SimulationStore = types
       }
 
       if (animate) {
-        self.clearGrid();
         self.isErupting = true;
         self.pause();
 
@@ -323,18 +286,19 @@ export const SimulationStore = types
       }
     },
     calculateAndAddPlotPoint(xData: SimulationVariable, yData: SimOutput, cityName: string) {
-      const xLabel = MeasurementLabel[xData];
-      const yLabel = MeasurementLabel[yData];
+      console.warn("WARNING: Plot Point is not currently supported");
+      // const xLabel = MeasurementLabel[xData];
+      // const yLabel = MeasurementLabel[yData];
 
-      const city = self.cities.find(c => c.name === cityName);
-      if (!city) return;
+      // const city = self.cities.find(c => c.name === cityName);
+      // if (!city) return;
 
-      const dataIndex = city.x + city.y * self.numCols;
+      // const dataIndex = city.x + city.y * self.numCols;
 
-      const xVal = self[xData];
-      const yVal = self.data[dataIndex][yData];
+      // const xVal = self[xData];
+      // const yVal = self.data[dataIndex][yData];
 
-      self.addPlotPoint(xLabel, yLabel, xVal, yVal);
+      // self.addPlotPoint(xLabel, yLabel, xVal, yVal);
     }
   }))
   .actions((self) => {

@@ -22,8 +22,6 @@ interface IState {
   isSelecting: boolean;
 }
 interface IProps extends IBaseProps {
-  numRows: number;
-  numCols: number;
   height: number;
   width: number;
   volcanoLat: number;
@@ -38,7 +36,6 @@ interface IProps extends IBaseProps {
   colHeight: number;
   mass: number;
   particleSize: number;
-  data: SimDatumType[];
   // cities: CityType[];
 }
 
@@ -80,7 +77,6 @@ export class CrossSectionComponent extends BaseComponent<IProps, IState>{
       crossPoint1Lng,
       crossPoint2Lat,
       crossPoint2Lng,
-      data,
       height,
       hasErupted,
       windSpeed,
@@ -104,7 +100,6 @@ export class CrossSectionComponent extends BaseComponent<IProps, IState>{
               options={{backgroundColor: Color("hsl(0, 10%, 95%)").rgbNumber()}} >
               <PixiTephraCrossSection
                 canvasMetrics={this.metrics}
-                data={data.map( (d) => d.thickness )}
                 volcanoLat={volcanoLat}
                 volcanoLng={volcanoLng}
                 crossPoint1Lat={crossPoint1Lat}
@@ -134,8 +129,10 @@ export class CrossSectionComponent extends BaseComponent<IProps, IState>{
   }
 
   private recomputeMetrics() {
-    const {numCols, numRows, width, height } = this.props;
-    const gridSize = width / numCols;
+    const {width, height } = this.props;
+    const gridSize = 0;
+    const numCols = 0;
+    const numRows = 0;
     this.metrics  = {
       gridSize,
       height,

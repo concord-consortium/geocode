@@ -31,8 +31,6 @@ interface IState {
 }
 
 interface IProps extends IBaseProps {
-  numRows: number;
-  numCols: number;
   width: number;
   height: number;
   windSpeed: number;
@@ -42,8 +40,9 @@ interface IProps extends IBaseProps {
   particleSize: number;
   volcanoLat: number;
   volcanoLng: number;
-  gridColors: IStateTreeNode<any, string[]>;
-  gridValues: IStateTreeNode<any, string[]>;
+  viewportZoom: number;
+  viewportCenterLat: number;
+  viewportCenterLng: number;
   cities: CityType[];
   map: string;
   isErupting: boolean;
@@ -98,22 +97,12 @@ export class MapComponent extends BaseComponent<IProps, IState>{
   }
 
   public render() {
-    const {numCols, numRows, width, height } = this.props;
-    const gridSize = Math.round(width / numCols);
-    this.metrics  = {
-      gridSize,
-      height,
-      width,
-      numCols,
-      numRows
-    };
+    const { width, height } = this.props;
 
     const {
       cities,
       volcanoLat,
       volcanoLng,
-      gridColors,
-      gridValues,
       windDirection,
       windSpeed,
       colHeight,
@@ -220,10 +209,13 @@ export class MapComponent extends BaseComponent<IProps, IState>{
 
   private reRenderMap = () => {
     if (this.tephraRef.current) {
-      // By forcing the map to update, it re-renders the tephra thickness layer
-      // This is called when the viewport changes, so it can re-render the dynamically
-      // scaled tephra map
-      this.forceUpdate();
+
+      // Update values in the store to trigger a rerender of this component
+      if (this.map.current) {
+        const center = this.map.current.leafletElement.getCenter();
+        const zoom = this.map.current.leafletElement.getZoom();
+        this.stores.setViewportParameters(zoom, center.lat, center.lng);
+      }
     }
   }
 }
