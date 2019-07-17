@@ -54,7 +54,7 @@ export class CrossSectionDrawLayer extends BaseComponent<IProps, IState> {
     this.setPoint1(event);
     this.setPoint2(event);
     if (map !== null) {
-      map.dragging.enable();
+      map.dragging.disable();
       map.on(MOUSE_MOVE, this.setPoint2);
       map.on(MOVE_UP, this.drawEnd);
     }
@@ -63,7 +63,7 @@ export class CrossSectionDrawLayer extends BaseComponent<IProps, IState> {
   public drawEnd() {
     const { map } = this.props;
     if (map !== null) {
-      map.dragging.disable();
+      map.dragging.enable();
       map.off(MOUSE_MOVE, this.setPoint2);
       map.off(MOVE_UP, this.drawEnd);
     }
