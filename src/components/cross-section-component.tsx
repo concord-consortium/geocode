@@ -68,7 +68,7 @@ export class CrossSectionComponent extends BaseComponent<IProps, IState>{
   public componentDidUpdate(prevProps: IProps) {
     this.recomputeMetrics();
 
-    if(this.props.isSelectingCrossSection !== prevProps.isSelectingCrossSection) {
+    if (this.props.isSelectingCrossSection !== prevProps.isSelectingCrossSection) {
       this.stores.setCrossSectionSelectorVisibility(this.props.isSelectingCrossSection);
     }
 

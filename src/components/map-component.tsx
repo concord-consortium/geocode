@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as L from "leaflet";
 
-import { Map as LeafletMap, TileLayer, Marker, Popup } from "react-leaflet";
+import { Map as LeafletMap, TileLayer, Marker, Popup, ScaleControl } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "../css/map-component.css";
 import { iconVolcano, getCachedCircleIcon } from "./icons";
@@ -190,6 +190,9 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           animate={true}
           easeLinearity={0.35}
           >
+          <ScaleControl
+            position="topright"
+          />
           <Marker
             position={[volcanoLat, volcanoLng]}
             icon={iconVolcano}>

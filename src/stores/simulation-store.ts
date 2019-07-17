@@ -261,12 +261,16 @@ export const SimulationStore = types
       const vLat = self.volcanoLat;
       const vLng = self.volcanoLng;
 
+      // This currently exists within erupt, but will probably move
+      // to another block (like the paint by...)once there is some other
+      // feedback for eruption
       self.windSpeed = self.stagingWindSpeed;
       self.windDirection = self.stagingWindDirection;
       self.colHeight = self.stagingColHeight;
       self.mass = self.stagingMass;
       self.vei = self.stagingVei;
       self.particleSize = self.stagingParticleSize;
+      self.hasErupted = true;
 
       // auto-repaint if necessary
       if (!self.requirePainting) {
