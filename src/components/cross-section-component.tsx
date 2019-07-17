@@ -7,7 +7,7 @@ import { PixiTephraCrossSection } from "./pixi-tephra-cross-section";
 import * as Color from "color";
 import { inject, observer } from "mobx-react";
 import { BaseComponent, IBaseProps } from "./base";
-import { StyledButton } from "./styled-button";
+import Button from "./overlay-button";
 
 const CanvDiv = styled.div`
   border: 0px solid black; border-radius: 0px;
@@ -90,10 +90,10 @@ export class CrossSectionComponent extends BaseComponent<IProps, IState>{
     return (
       <CanvDiv ref={this.ref}>
         {hasErupted && <ContainerDiv>
-          {!isSelecting && <StyledButton onClick={this.selectButton}>Draw a cross section line</StyledButton> }
+          {!isSelecting && <Button onClick={this.selectButton}>Draw a cross section line</Button> }
           {isSelecting &&
           <ContainerDiv>
-            <StyledButton onClick={this.cancel}>Cancel</StyledButton>
+            <Button onClick={this.cancel}>Cancel</Button>
             <Stage
               width={width}
               height={height}

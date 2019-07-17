@@ -15,6 +15,8 @@ import { getSnapshot, IStateTreeNode } from "mobx-state-tree";
 import { CrossSectionDrawLayer } from "./cross-section-draw-layer";
 import { LocalToLatLng, LatLngToLocal } from "../utilities/coordinateSpaceConversion";
 import { MapTephraThicknessLayer } from "./map-tephra-thickness-layer";
+import { OverlayControls } from "./overlay-controls";
+import { RulerDrawLayer } from "./ruler-draw-layer";
 
 interface WorkspaceProps {
   width: number;
@@ -28,6 +30,7 @@ const CanvDiv = styled.div`
 
 interface IState {
   moveMouse: boolean;
+  showRuler: boolean;
 }
 
 interface IProps extends IBaseProps {
@@ -64,7 +67,8 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     super(props);
 
     const initialState: IState = {
-      moveMouse: false
+      moveMouse: false,
+      showRuler: false
     };
 
     this.handleDragMove = this.handleDragMove.bind(this);
@@ -113,6 +117,10 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       hasErupted,
       showCrossSectionSelector
     } = this.props;
+
+    const {
+      showRuler
+    } = this.state;
 
     const cityItems = cities.map( (city) => {
       const {x, y, name, id} = city;
@@ -202,9 +210,20 @@ export class MapComponent extends BaseComponent<IProps, IState>{
             p1Lng={crossPoint1Lng}
             p2Lng={crossPoint2Lng}
           /> }
+          {showRuler && <RulerDrawLayer
+            map={mapRef}
+          />}
         </LeafletMap>
+        <OverlayControls
+          showRuler={showRuler}
+          onRulerClick={this.onRulerClick}
+        />
       </CanvDiv>
     );
+  }
+
+  private onRulerClick = () => {
+    this.setState({showRuler: !this.state.showRuler});
   }
 
   private reRenderMap = () => {
