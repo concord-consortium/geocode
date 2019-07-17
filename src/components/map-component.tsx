@@ -51,6 +51,7 @@ interface IProps extends IBaseProps {
   isErupting: boolean;
   hasErupted: boolean;
   showCrossSectionSelector: boolean;
+  showCrossSection: boolean;
 }
 
 @inject("stores")
@@ -100,6 +101,13 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     this.forceUpdate();
   }
 
+  public componentDidUpdate(prevProps: IProps) {
+    const { showCrossSectionSelector } = this.props;
+    if (showCrossSectionSelector === true && showCrossSectionSelector !== prevProps.showCrossSectionSelector) {
+      this.setState({showRuler: false});
+    }
+  }
+
   public render() {
     const { width, height } = this.props;
 
@@ -115,12 +123,17 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       map,
       isErupting,
       hasErupted,
-      showCrossSectionSelector
+      showCrossSectionSelector,
+      showCrossSection
     } = this.props;
 
     const {
       showRuler
     } = this.state;
+
+    const {
+      isSelectingCrossSection
+    } = this.stores;
 
     const cityItems = cities.map( (city) => {
       const {x, y, name, id} = city;
@@ -217,6 +230,9 @@ export class MapComponent extends BaseComponent<IProps, IState>{
         <OverlayControls
           showRuler={showRuler}
           onRulerClick={this.onRulerClick}
+          isSelectingCrossSection={isSelectingCrossSection}
+          showCrossSection={showCrossSection}
+          onCrossSectionClick={this.onCrossSectionClick}
         />
       </CanvDiv>
     );
@@ -224,6 +240,12 @@ export class MapComponent extends BaseComponent<IProps, IState>{
 
   private onRulerClick = () => {
     this.setState({showRuler: !this.state.showRuler});
+    this.stores.setCrossSectionSelectorVisibility(false);
+    this.stores.setIsSelectingCrossSection(false);
+  }
+
+  private onCrossSectionClick = () => {
+    this.stores.setIsSelectingCrossSection(!this.stores.isSelectingCrossSection);
   }
 
   private reRenderMap = () => {

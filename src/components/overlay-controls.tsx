@@ -8,6 +8,9 @@ import { BaseComponent } from "./base";
 interface IProps {
     showRuler: boolean;
     onRulerClick: () => void;
+    isSelectingCrossSection: boolean;
+    showCrossSection: boolean;
+    onCrossSectionClick: () => void;
 }
 
 interface IState {}
@@ -16,9 +19,11 @@ interface IState {}
 @observer
 export class OverlayControls extends BaseComponent<IProps, IState> {
     public render() {
-        const { showRuler, onRulerClick } = this.props;
+        const { showRuler, onRulerClick, isSelectingCrossSection, showCrossSection, onCrossSectionClick} = this.props;
+        const { hasErupted } = this.stores;
 
         const rulerColor = showRuler ? "primary" : "secondary";
+        const selectingColor = isSelectingCrossSection ? "primary" : "secondary";
 
         return (
             <div className="overlay-controls">
@@ -28,6 +33,13 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
                         color={rulerColor}>
                             Ruler
                     </Button>
+                </div>
+                <div className="controls bottom right">
+                    {(showCrossSection && hasErupted) && <Button
+                        onClick={onCrossSectionClick}
+                        color={selectingColor}>
+                        Draw a cross section line
+                    </Button>}
                 </div>
             </div>
         );

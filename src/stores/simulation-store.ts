@@ -122,6 +122,7 @@ export const SimulationStore = types
     isErupting: false,
     hasErupted: false,
     showCrossSectionSelector: false,
+    isSelectingCrossSection: false,
     // authoring props
     requireEruption: true,
     requirePainting: true,
@@ -138,6 +139,9 @@ export const SimulationStore = types
   .actions((self) => ({
     setCrossSectionSelectorVisibility(val: boolean) {
       self.showCrossSectionSelector = val;
+    },
+    setIsSelectingCrossSection(val: boolean) {
+      self.isSelectingCrossSection = val;
     }
   }))
   .actions((self) => ({

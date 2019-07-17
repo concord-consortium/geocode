@@ -199,7 +199,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       running,
       isErupting,
       hasErupted,
-      showCrossSectionSelector
+      showCrossSectionSelector,
+      isSelectingCrossSection
     } = this.stores;
 
     const {
@@ -303,11 +304,14 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               viewportCenterLng={ viewportCenterLng }
               map={ mapPath }
               isErupting={isErupting}
+              showCrossSection={showCrossSection}
               showCrossSectionSelector={showCrossSectionSelector}
               hasErupted={ hasErupted }
             />
               { showCrossSection &&
           <CrossSectionComponent
+            isSelectingCrossSection={isSelectingCrossSection}
+            showCrossSectionSelector={showCrossSectionSelector}
             height={ 150 }
             width={ mapWidth }
             volcanoLat={ volcanoLat }

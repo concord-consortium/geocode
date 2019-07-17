@@ -60,6 +60,7 @@ export class RulerDrawLayer extends BaseComponent<IProps, IState> {
     const { map } = this.props;
     this.setPoint(event);
     if (map !== null) {
+        map.dragging.disable();
         map.on(MOUSE_MOVE, this.setPoint);
         map.on(MOVE_UP, this.drawEnd);
     }
@@ -68,6 +69,7 @@ export class RulerDrawLayer extends BaseComponent<IProps, IState> {
   public drawEnd() {
     const { map } = this.props;
     if (map !== null) {
+        map.dragging.enable();
         map.off(MOUSE_MOVE, this.setPoint);
         map.off(MOVE_UP, this.drawEnd);
     }

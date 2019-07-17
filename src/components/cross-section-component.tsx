@@ -22,6 +22,8 @@ interface IState {
   isSelecting: boolean;
 }
 interface IProps extends IBaseProps {
+  showCrossSectionSelector: boolean;
+  isSelectingCrossSection: boolean;
   height: number;
   width: number;
   volcanoLat: number;
@@ -65,6 +67,14 @@ export class CrossSectionComponent extends BaseComponent<IProps, IState>{
 
   public componentDidUpdate(prevProps: IProps) {
     this.recomputeMetrics();
+
+    if(this.props.isSelectingCrossSection !== prevProps.isSelectingCrossSection) {
+      this.stores.setCrossSectionSelectorVisibility(this.props.isSelectingCrossSection);
+    }
+
+    if (!this.stores.showCrossSectionSelector && this.state.isSelecting) {
+      this.setState({isSelecting: false});
+    }
   }
 
   public render() {
@@ -83,17 +93,16 @@ export class CrossSectionComponent extends BaseComponent<IProps, IState>{
       windDirection,
       colHeight,
       mass,
-      particleSize
+      particleSize,
+      isSelectingCrossSection
     } = this.props;
     const { width } = this.metrics;
 
     return (
       <CanvDiv ref={this.ref}>
         {hasErupted && <ContainerDiv>
-          {!isSelecting && <Button onClick={this.selectButton}>Draw a cross section line</Button> }
-          {isSelecting &&
+          {isSelectingCrossSection &&
           <ContainerDiv>
-            <Button onClick={this.cancel}>Cancel</Button>
             <Stage
               width={width}
               height={height}
