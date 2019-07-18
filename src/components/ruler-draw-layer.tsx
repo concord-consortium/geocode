@@ -7,6 +7,8 @@ import { getCachedCircleIcon } from "./icons";
 import { LayerGroup, Marker, Polyline } from "react-leaflet";
 import { getDistanceFromLatLonInKm } from "../utilities/coordinateSpaceConversion";
 
+import "../css/custom-leaflet-icons.css";
+
 const MOUSE_DOWN = "mousedown touchstart";
 const MOUSE_MOVE = "mousemove touchmove";
 const MOVE_UP = "mouseup touchend";
@@ -106,6 +108,7 @@ export class RulerDrawLayer extends BaseComponent<IProps, IState> {
 
     const icon = L.divIcon({
       iconSize: [150, 20],
+      className: "div-icon",
       html: `${data}`
     });
 
@@ -118,7 +121,7 @@ export class RulerDrawLayer extends BaseComponent<IProps, IState> {
             key={"triangle"}
             clickable={false}
             positions={[point1, point2, point3, point1]}
-            color="#fff"
+            color="#b263f7"
             opacity={1}
           />,
           <Marker

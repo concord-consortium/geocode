@@ -114,7 +114,7 @@ export class CrossSectionDrawLayer extends BaseComponent<IProps, IState> {
             key={"cross-section-line"}
             clickable={false}
             positions={[point1, point2]}
-            color="#fff"
+            color="#b263f7"
             opacity={1}
           />}
       </LayerGroup>

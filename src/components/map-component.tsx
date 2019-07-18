@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as L from "leaflet";
 
-import { Map as LeafletMap, TileLayer, Marker, Popup, ScaleControl } from "react-leaflet";
+import { Map as LeafletMap, TileLayer, Marker, Popup, ScaleControl, Pane } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "../css/map-component.css";
 import { iconVolcano, getCachedCircleIcon } from "./icons";
@@ -193,42 +193,48 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           <ScaleControl
             position="topright"
           />
-          <Marker
-            position={[volcanoLat, volcanoLng]}
-            icon={iconVolcano}>
-            <Popup>
-              Popup for any custom information.
-            </Popup>
-          </Marker>
-          {cityItems}
-          <TileLayer
-              url="https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}@2x.png"
-          />
-          <MapTephraThicknessLayer
-            ref={this.tephraRef}
-            corner1Bound={corner1}
-            corner2Bound={corner2}
-            viewportBounds={viewportBounds}
-            volcanoPos={volcanoPos}
-            gridSize={1}
-            map={mapRef}
-            windSpeed={windSpeed}
-            windDirection={windDirection}
-            colHeight={colHeight}
-            mass={mass}
-            particleSize={particleSize}
-          />
-          { showCrossSectionSelector && <CrossSectionDrawLayer
-            ref={this.crossRef}
-            map={mapRef}
-            p1Lat={crossPoint1Lat}
-            p2Lat={crossPoint2Lat}
-            p1Lng={crossPoint1Lng}
-            p2Lng={crossPoint2Lng}
-          /> }
-          {showRuler && <RulerDrawLayer
-            map={mapRef}
-          />}
+          <Pane
+            style={{zIndex: 0}}>
+            <TileLayer
+                url="https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}@2x.png"
+            />
+            <MapTephraThicknessLayer
+              ref={this.tephraRef}
+              corner1Bound={corner1}
+              corner2Bound={corner2}
+              viewportBounds={viewportBounds}
+              volcanoPos={volcanoPos}
+              gridSize={1}
+              map={mapRef}
+              windSpeed={windSpeed}
+              windDirection={windDirection}
+              colHeight={colHeight}
+              mass={mass}
+              particleSize={particleSize}
+            />
+          </Pane>
+          <Pane
+            style={{zIndex: 3}}>
+            <Marker
+              position={[volcanoLat, volcanoLng]}
+              icon={iconVolcano}>
+              <Popup>
+                Popup for any custom information.
+              </Popup>
+            </Marker>
+            {cityItems}
+            { showCrossSectionSelector && <CrossSectionDrawLayer
+              ref={this.crossRef}
+              map={mapRef}
+              p1Lat={crossPoint1Lat}
+              p2Lat={crossPoint2Lat}
+              p1Lng={crossPoint1Lng}
+              p2Lng={crossPoint2Lng}
+            /> }
+            {showRuler && <RulerDrawLayer
+              map={mapRef}
+            />}
+          </Pane>
         </LeafletMap>
         <OverlayControls
           showRuler={showRuler}
