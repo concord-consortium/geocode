@@ -14,8 +14,11 @@
   
   .div-icon {
     background: #fff;
+    width: max-content !important;
+    height: min-content !important;
     margin-top: -10px !important;
     margin-left: -10px !important;
+    padding: 5px !important;
     border-radius: 10px;
     box-shadow: 0 0 7px rgba(0,0,0,0.55);
     text-align: center;

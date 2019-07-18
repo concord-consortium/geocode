@@ -3,7 +3,7 @@ import Leaflet from "leaflet";
 import * as L from "leaflet";
 import * as React from "react";
 import { BaseComponent } from "./base";
-import { getCachedCircleIcon } from "./icons";
+import { getCachedCircleIcon, divIcon } from "./icons";
 import { LayerGroup, Marker, Polyline } from "react-leaflet";
 import { getDistanceFromLatLonInKm } from "../utilities/coordinateSpaceConversion";
 
@@ -105,12 +105,7 @@ export class RulerDrawLayer extends BaseComponent<IProps, IState> {
     const adjustedYDist = point2.lat < point3.lat ? -1 * yDist : yDist;
 
     const data = "X: " + adjustedXDist.toFixed(2) + "km Y: " + adjustedYDist.toFixed(2) + "km";
-
-    const icon = L.divIcon({
-      iconSize: [150, 20],
-      className: "div-icon",
-      html: `${data}`
-    });
+    const dataIcon = divIcon(data); // I choose not to cache this one as it is changing every time
 
     return (
       <LayerGroup map={map}>
@@ -125,11 +120,9 @@ export class RulerDrawLayer extends BaseComponent<IProps, IState> {
             opacity={1}
           />,
           <Marker
-            icon={icon}
+            icon={dataIcon}
             key={"data-popup"}
-            position={point2}>
-              {data}
-          </Marker>]}
+            position={point2} />]}
       </LayerGroup>
     );
   }

@@ -23,4 +23,14 @@ export function getCachedCircleIcon(label: string) {
     return iconsCache.get(iconKey);
 }
 
+export function divIcon(label: string): DivIcon {
+    return new DivIcon({ className: "div-icon", html: label });
+}
+
+export function getCachedDivIcon(label: string) {
+    const iconKey = "div-icon" + label;
+    if (!iconsCache.get(iconKey)) iconsCache.set(iconKey, divIcon(label));
+    return iconsCache.get(iconKey);
+}
+
 export { iconVolcano };
