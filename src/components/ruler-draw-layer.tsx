@@ -77,11 +77,10 @@ export class RulerDrawLayer extends BaseComponent<IProps, IState> {
     }
   }
 
-  public setPoint(event: L.LeafletEvent | null) {
+  public setPoint(event: L.LeafletMouseEvent) {
     let point = null;
     if (event) {
-      const latLng = (event as Leaflet.LeafletMouseEvent).latlng;
-      point = latLng;
+      point = event.latlng;
     }
 
     if (point !== null) {
@@ -96,6 +95,13 @@ export class RulerDrawLayer extends BaseComponent<IProps, IState> {
     const point1 = L.latLng(volcanoLat, volcanoLng);
     const point2 = L.latLng(pointLat, pointLng);
     const point3 = L.latLng(volcanoLat, pointLng);
+
+    const midLng = volcanoLng + ((pointLng - volcanoLng) / 2);
+    const midLat = volcanoLat + ((pointLat - volcanoLat) / 2);
+    const xMidPoint = L.latLng(volcanoLat, midLng);
+    const yMidPoint = L.latLng(midLat, pointLng);
+    const rMidPoint = L.latLng(midLat, midLng);
+
     const p1Icon = getCachedCircleIcon("");
     const p2Icon = getCachedCircleIcon("");
 
@@ -104,8 +110,16 @@ export class RulerDrawLayer extends BaseComponent<IProps, IState> {
     const adjustedXDist = point3.lng < point1.lng ? -1 * xDist : xDist;
     const adjustedYDist = point2.lat < point3.lat ? -1 * yDist : yDist;
 
-    const data = "X: " + adjustedXDist.toFixed(2) + "km Y: " + adjustedYDist.toFixed(2) + "km";
-    const dataIcon = divIcon(data); // I choose not to cache this one as it is changing every time
+    const totalDist = getDistanceFromLatLonInKm(point1, point2);
+
+    const xData = "X: " + adjustedXDist.toFixed(2) + "km";
+    const xDataIcon = divIcon(xData); // I choose not to cache this one as it is changing every time
+
+    const yData = "Y: " + adjustedYDist.toFixed(2) + "km";
+    const yDataIcon = divIcon(yData);
+
+    const rData = "R: " + totalDist.toFixed(2) + "km";
+    const rDataIcon = divIcon(rData);
 
     return (
       <LayerGroup map={map}>
@@ -120,9 +134,20 @@ export class RulerDrawLayer extends BaseComponent<IProps, IState> {
             opacity={1}
           />,
           <Marker
-            icon={dataIcon}
-            key={"data-popup"}
-            position={point2} />]}
+            icon={xDataIcon}
+            key={"xData-Popup"}
+            position={xMidPoint}
+          />,
+          <Marker
+            icon={yDataIcon}
+            key={"yData-Popup"}
+            position={yMidPoint}
+          />,
+          <Marker
+            icon={rDataIcon}
+            key={"rData-Popup"}
+            position={rMidPoint}
+          />]}
       </LayerGroup>
     );
   }
