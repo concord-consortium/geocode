@@ -1,1 +1,1 @@
-<xml><block type="setWindDirection" id=",27I;9FUnp+7Qx%%!ta," x="-4" y="92"><value name="windDirection"><block type="math_number" id="BTCp%!+sBW)TVe:hk+GU"><field name="NUM">1</field></block></value><next><block type="setWindSpeed" id="VYYh-x^Nv7N*6_hZzJ;?"><value name="windSpeed"><block type="math_number" id="^=#,G1H]Xu=ul!~WUt09"><field name="NUM">1</field></block></value><next><block type="erupt" id="6h4~D+$x%l?l`w{qT[[e"><field name="animate">TRUE</field></block></next></block></next></block></xml>
+<xml></xml>
