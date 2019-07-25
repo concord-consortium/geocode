@@ -195,6 +195,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
               colHeight={colHeight}
               mass={mass}
               particleSize={particleSize}
+              hasErupted={hasErupted}
             />
           </Pane>
           <Pane
@@ -226,9 +227,18 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           isSelectingCrossSection={isSelectingCrossSection}
           showCrossSection={hasErupted && showCrossSection}
           onCrossSectionClick={this.stores.crossSectionClick}
+          onReCenterClick={this.onRecenterClick}
         />
       </CanvDiv>
     );
+  }
+
+  private onRecenterClick = () => {
+    if (this.map.current) {
+      const {volcanoLat, volcanoLng} = this.props;
+
+      this.map.current.leafletElement.flyTo(L.latLng(volcanoLat, volcanoLng))
+    }
   }
 
   private reRenderMap = () => {
