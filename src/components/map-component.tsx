@@ -170,7 +170,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           zoomControl={true}
           doubleClickZoom={true}
           scrollWheelZoom={true}
-          dragging={!hasErupted}
+          dragging={!(isSelectingRuler || isSelectingCrossSection)}
           animate={true}
           easeLinearity={0.35}
           >
