@@ -298,6 +298,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               cities={ cities }
               volcanoLat={ volcanoLat }
               volcanoLng={ volcanoLng }
+              initialZoom={8}
               viewportZoom={ viewportZoom }
               viewportCenterLat={ viewportCenterLat }
               viewportCenterLng={ viewportCenterLng }
