@@ -50,7 +50,6 @@ interface IProps extends IBaseProps {
   map: string;
   isErupting: boolean;
   hasErupted: boolean;
-  showCrossSectionSelector: boolean;
   showCrossSection: boolean;
 }
 
@@ -97,17 +96,6 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     this.setState({moveMouse: false});
   }
 
-  public componentDidMount() {
-    this.forceUpdate();
-  }
-
-  public componentDidUpdate(prevProps: IProps) {
-    const { showCrossSectionSelector } = this.props;
-    if (showCrossSectionSelector === true && showCrossSectionSelector !== prevProps.showCrossSectionSelector) {
-      this.setState({showRuler: false});
-    }
-  }
-
   public render() {
     const { width, height } = this.props;
 
@@ -123,16 +111,12 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       map,
       isErupting,
       hasErupted,
-      showCrossSectionSelector,
-      showCrossSection
+      showCrossSection,
     } = this.props;
 
     const {
-      showRuler
-    } = this.state;
-
-    const {
-      isSelectingCrossSection
+      isSelectingCrossSection,
+      isSelectingRuler
     } = this.stores;
 
     const cityItems = cities.map( (city) => {
@@ -186,7 +170,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           zoomControl={true}
           doubleClickZoom={true}
           scrollWheelZoom={true}
-          dragging={!showCrossSectionSelector}
+          dragging={!hasErupted}
           animate={true}
           easeLinearity={0.35}
           >
@@ -223,7 +207,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
               </Popup>
             </Marker>
             {cityItems}
-            { showCrossSectionSelector && <CrossSectionDrawLayer
+            { isSelectingCrossSection && <CrossSectionDrawLayer
               ref={this.crossRef}
               map={mapRef}
               p1Lat={crossPoint1Lat}
@@ -231,30 +215,20 @@ export class MapComponent extends BaseComponent<IProps, IState>{
               p1Lng={crossPoint1Lng}
               p2Lng={crossPoint2Lng}
             /> }
-            {showRuler && <RulerDrawLayer
+            {isSelectingRuler && <RulerDrawLayer
               map={mapRef}
             />}
           </Pane>
         </LeafletMap>
         <OverlayControls
-          showRuler={showRuler}
-          onRulerClick={this.onRulerClick}
+          showRuler={isSelectingRuler}
+          onRulerClick={this.stores.rulerClick}
           isSelectingCrossSection={isSelectingCrossSection}
-          showCrossSection={showCrossSection}
-          onCrossSectionClick={this.onCrossSectionClick}
+          showCrossSection={hasErupted && showCrossSection}
+          onCrossSectionClick={this.stores.crossSectionClick}
         />
       </CanvDiv>
     );
-  }
-
-  private onRulerClick = () => {
-    this.setState({showRuler: !this.state.showRuler});
-    this.stores.setCrossSectionSelectorVisibility(false);
-    this.stores.setIsSelectingCrossSection(false);
-  }
-
-  private onCrossSectionClick = () => {
-    this.stores.setIsSelectingCrossSection(!this.stores.isSelectingCrossSection);
   }
 
   private reRenderMap = () => {

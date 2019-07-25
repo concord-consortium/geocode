@@ -121,7 +121,7 @@ export const SimulationStore = types
     plotData: types.optional(PlotData, getSnapshot(plotData)),
     isErupting: false,
     hasErupted: false,
-    showCrossSectionSelector: false,
+    isSelectingRuler: false,
     isSelectingCrossSection: false,
     // authoring props
     requireEruption: true,
@@ -137,8 +137,16 @@ export const SimulationStore = types
     }
   }))
   .actions((self) => ({
-    setCrossSectionSelectorVisibility(val: boolean) {
-      self.showCrossSectionSelector = val;
+    rulerClick() {
+      self.isSelectingRuler = !self.isSelectingRuler;
+      self.isSelectingCrossSection = false;
+    },
+    crossSectionClick() {
+      self.isSelectingCrossSection = !self.isSelectingCrossSection;
+      self.isSelectingRuler = false;
+    },
+    setIsSelectingRuler(val: boolean) {
+      self.isSelectingRuler = val;
     },
     setIsSelectingCrossSection(val: boolean) {
       self.isSelectingCrossSection = val;

@@ -18,9 +18,8 @@ const ContainerDiv = styled.div`
   height: flex;
 `;
 
-interface IState {
-  isSelecting: boolean;
-}
+interface IState {}
+
 interface IProps extends IBaseProps {
   showCrossSectionSelector: boolean;
   isSelectingCrossSection: boolean;
@@ -48,38 +47,16 @@ export class CrossSectionComponent extends BaseComponent<IProps, IState>{
   private ref = React.createRef<HTMLDivElement>();
   private metrics: ICanvasShape;
 
-  public constructor(props: IProps) {
-    super(props);
-
-    const initialState: IState = {
-      isSelecting: false
-    };
-
-    this.selectButton = this.selectButton.bind(this);
-    this.cancel = this.cancel.bind(this);
-
-    this.state = initialState;
-  }
-
   public componentDidMount() {
     this.recomputeMetrics();
   }
 
   public componentDidUpdate(prevProps: IProps) {
     this.recomputeMetrics();
-
-    if (this.props.isSelectingCrossSection !== prevProps.isSelectingCrossSection) {
-      this.stores.setCrossSectionSelectorVisibility(this.props.isSelectingCrossSection);
-    }
-
-    if (!this.stores.showCrossSectionSelector && this.state.isSelecting) {
-      this.setState({isSelecting: false});
-    }
   }
 
   public render() {
     if (! this.metrics) { this.recomputeMetrics(); }
-    const { isSelecting } = this.state;
     const {
       volcanoLat,
       volcanoLng,
@@ -125,16 +102,6 @@ export class CrossSectionComponent extends BaseComponent<IProps, IState>{
         </ContainerDiv>}
       </CanvDiv>
     );
-  }
-
-  private selectButton() {
-    this.setState({isSelecting: true});
-    this.stores.setCrossSectionSelectorVisibility(true);
-  }
-
-  private cancel() {
-    this.setState({isSelecting: false});
-    this.stores.setCrossSectionSelectorVisibility(false);
   }
 
   private recomputeMetrics() {

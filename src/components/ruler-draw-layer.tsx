@@ -107,13 +107,14 @@ export class RulerDrawLayer extends BaseComponent<IProps, IState> {
 
     const xDist = getDistanceFromLatLonInKm(point1, point3);
     const yDist = getDistanceFromLatLonInKm(point2, point3);
+    // getDistanceFromLatLonInKm returns an unsigned distance. The following lines add the signs back
     const adjustedXDist = point3.lng < point1.lng ? -1 * xDist : xDist;
     const adjustedYDist = point2.lat < point3.lat ? -1 * yDist : yDist;
 
     const totalDist = getDistanceFromLatLonInKm(point1, point2);
 
     const xData = "X: " + adjustedXDist.toFixed(2) + "km";
-    const xDataIcon = divIcon(xData); // I choose not to cache this one as it is changing every time
+    const xDataIcon = divIcon(xData); // I choose not to cache the icons as they are changing every time
 
     const yData = "Y: " + adjustedYDist.toFixed(2) + "km";
     const yDataIcon = divIcon(yData);
