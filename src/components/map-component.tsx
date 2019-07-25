@@ -237,7 +237,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     if (this.map.current) {
       const {volcanoLat, volcanoLng} = this.props;
 
-      this.map.current.leafletElement.flyTo(L.latLng(volcanoLat, volcanoLng))
+      this.map.current.leafletElement.flyTo(L.latLng(volcanoLat, volcanoLng));
     }
   }
 
