@@ -102,77 +102,9 @@ export class Controls extends BaseComponent<IProps, IState> {
             </ValueOutput>
           </HorizontalContainer>
         </label>
-        <label>
-          Eruption mass:
-          <HorizontalContainer>
-            <RangeControl
-              min={8}
-              max={15}
-              value={Math.round(Math.log(stagingMass) / Math.LN10)}
-              step={1}
-              tickMap={{
-                8: "10<sup>8</sup>",
-                9: "10<sup>9</sup>",
-                10: "10<sup>10</sup>",
-                11: "10<sup>11</sup>",
-                12: "10<sup>12</sup>",
-                13: "10<sup>13</sup>",
-                14: "10<sup>14</sup>",
-                15: "10<sup>15</sup>",
-              }}
-              width={300}
-              onChange={this.changeMass}
-            />
-            <ValueOutput
-              dangerouslySetInnerHTML={
-                {__html: `10<sup>${Math.round(Math.log(stagingMass) / Math.LN10)}</sup> kg`}
-            } />
-          </HorizontalContainer>
-        </label>
-        <label>
-          Column height
-          <HorizontalContainer>
-            <RangeControl
-              min={1}
-              max={30}
-              value={stagingColHeight / 1000}
-              step={1}
-              tickArray={[1, 5, 10, 15, 20, 25, 30]}
-              width={300}
-              onChange={this.changeColumnHeight}
-            />
-            <ValueOutput>
-              {stagingColHeight / 1000} km
-            </ValueOutput>
-          </HorizontalContainer>
-        </label>
-        <label>
-          Particle size:
-          <HorizontalContainer>
-            <RangeControl
-              min={1}
-              max={64}
-              value={stagingParticleSize}
-              step={1}
-              tickArray={[1, 10, 20, 30, 40, 50, 64]}
-              width={300}
-              onChange={this.changeSize}
-            />
-            <ValueOutput>
-              {stagingParticleSize} mm
-            </ValueOutput>
-          </HorizontalContainer>
-        </label>
         <HorizontalContainer
             alignItems="baseline">
           <Button onClick={this.erupt}>Erupt</Button>
-          <label>
-            <Checkbox
-              name="animate eruption"
-              checked={this.state.animate}
-              onChange={this.setAnimation} />
-            Animate eruption
-          </label>
         </HorizontalContainer>
       </StyledControls>
     );

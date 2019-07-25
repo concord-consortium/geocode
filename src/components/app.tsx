@@ -117,7 +117,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     super(props);
 
     const initialState: IState = {
-      showOptionsDialog: true,
+      showOptionsDialog: false,
       expandOptionsDialog: false,
       simulationOptions: {
         requireEruption: true,
@@ -125,9 +125,9 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         map: "Mt Redoubt",
         toolbox: "Everything",
         initialCode: "Basic",
-        showBlocks: true,
+        showBlocks: false,
         showLog: false,
-        showCode: true,
+        showCode: false,
         showControls: true,
         showCrossSection: false,
         showChart: false,

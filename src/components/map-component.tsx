@@ -161,7 +161,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           ondragend={this.reRenderMap}
           onzoomend={this.reRenderMap}
           center={[volcanoLat, volcanoLng]}
-          zoom={8}
+          zoom={12}
           maxBounds={bounds}
           maxBoundsViscosity={1}
           minZoom={6}
@@ -195,6 +195,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
               colHeight={colHeight}
               mass={mass}
               particleSize={particleSize}
+              hasErupted={hasErupted}
             />
           </Pane>
           <Pane
