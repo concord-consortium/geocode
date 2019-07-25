@@ -22,6 +22,7 @@ interface IProps {
     colHeight: number;
     mass: number;
     particleSize: number;
+    hasErupted: boolean;
 }
 
 interface IState {}
@@ -50,7 +51,13 @@ export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
             colHeight,
             mass,
             particleSize,
-            viewportBounds } = this.props;
+            viewportBounds,
+            hasErupted } = this.props;
+
+        if (!hasErupted) {
+            return(null);
+        }
+
         const LatDist = Math.abs(viewportBounds.getNorthEast().lat - viewportBounds.getSouthWest().lat);
         const LongDist = Math.abs(viewportBounds.getNorthEast().lng - viewportBounds.getSouthWest().lng);
         const maxTephra = 1;

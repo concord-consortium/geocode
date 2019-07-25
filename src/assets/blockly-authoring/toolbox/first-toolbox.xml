@@ -7,12 +7,12 @@
           <block type="thickness"></block>
           <block type="x"></block>
           <block type="y"></block> -->
-          <block type="addVolcano"></block>
+          <!-- <block type="addVolcano"></block> -->
           <block type="addTown"></block>
           <block type="setWindDirection"></block>
           <block type="setWindSpeed"></block>
           <block type="erupt"></block>
-          <block type="outputPaintGrid"></block>
+          <!-- <block type="outputPaintGrid"></block> -->
         </category>
         <category name="Data" colour="%{BKY_MATH_HUE}">
           <block type="text">

@@ -195,6 +195,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
               colHeight={colHeight}
               mass={mass}
               particleSize={particleSize}
+              hasErupted={hasErupted}
             />
           </Pane>
           <Pane
