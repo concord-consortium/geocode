@@ -1,10 +1,10 @@
 import * as React from "react";
 import * as L from "leaflet";
 
-import { Map as LeafletMap, TileLayer, Marker, Popup } from "react-leaflet";
+import { Map as LeafletMap, TileLayer, Marker, Popup, ScaleControl, Pane } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "../css/map-component.css";
-import { iconVolcano, getCachedCircleIcon } from "./icons";
+import { iconVolcano, getCachedCircleIcon, getCachedDivIcon } from "./icons";
 
 import { ICanvasShape, Ipoint } from "../interfaces";
 import { CityType  } from "../stores/simulation-store";
@@ -15,6 +15,8 @@ import { getSnapshot, IStateTreeNode } from "mobx-state-tree";
 import { CrossSectionDrawLayer } from "./cross-section-draw-layer";
 import { LocalToLatLng, LatLngToLocal } from "../utilities/coordinateSpaceConversion";
 import { MapTephraThicknessLayer } from "./map-tephra-thickness-layer";
+import { OverlayControls } from "./overlay-controls";
+import { RulerDrawLayer } from "./ruler-draw-layer";
 
 interface WorkspaceProps {
   width: number;
@@ -28,6 +30,7 @@ const CanvDiv = styled.div`
 
 interface IState {
   moveMouse: boolean;
+  showRuler: boolean;
 }
 
 interface IProps extends IBaseProps {
@@ -47,7 +50,7 @@ interface IProps extends IBaseProps {
   map: string;
   isErupting: boolean;
   hasErupted: boolean;
-  showCrossSectionSelector: boolean;
+  showCrossSection: boolean;
 }
 
 @inject("stores")
@@ -64,7 +67,8 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     super(props);
 
     const initialState: IState = {
-      moveMouse: false
+      moveMouse: false,
+      showRuler: false
     };
 
     this.handleDragMove = this.handleDragMove.bind(this);
@@ -92,10 +96,6 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     this.setState({moveMouse: false});
   }
 
-  public componentDidMount() {
-    this.forceUpdate();
-  }
-
   public render() {
     const { width, height } = this.props;
 
@@ -111,14 +111,19 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       map,
       isErupting,
       hasErupted,
-      showCrossSectionSelector
+      showCrossSection,
     } = this.props;
+
+    const {
+      isSelectingCrossSection,
+      isSelectingRuler
+    } = this.stores;
 
     const cityItems = cities.map( (city) => {
       const {x, y, name, id} = city;
       if (x && y && name) {
         const mapPos = LocalToLatLng({x, y}, L.latLng(volcanoLat, volcanoLng));
-        const cityIcon = getCachedCircleIcon(name);
+        const cityIcon = getCachedDivIcon(name);
         return (
           <Marker
           position={[mapPos.lat, mapPos.lng]}
@@ -165,44 +170,63 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           zoomControl={true}
           doubleClickZoom={true}
           scrollWheelZoom={true}
-          dragging={!showCrossSectionSelector}
+          dragging={!hasErupted}
           animate={true}
           easeLinearity={0.35}
           >
-          <Marker
-            position={[volcanoLat, volcanoLng]}
-            icon={iconVolcano}>
-            <Popup>
-              Popup for any custom information.
-            </Popup>
-          </Marker>
-          {cityItems}
-          <TileLayer
-              url="https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}@2x.png"
+          <ScaleControl
+            position="topright"
           />
-          <MapTephraThicknessLayer
-            ref={this.tephraRef}
-            corner1Bound={corner1}
-            corner2Bound={corner2}
-            viewportBounds={viewportBounds}
-            volcanoPos={volcanoPos}
-            gridSize={1}
-            map={mapRef}
-            windSpeed={windSpeed}
-            windDirection={windDirection}
-            colHeight={colHeight}
-            mass={mass}
-            particleSize={particleSize}
-          />
-          { showCrossSectionSelector && <CrossSectionDrawLayer
-            ref={this.crossRef}
-            map={mapRef}
-            p1Lat={crossPoint1Lat}
-            p2Lat={crossPoint2Lat}
-            p1Lng={crossPoint1Lng}
-            p2Lng={crossPoint2Lng}
-          /> }
+          <Pane
+            style={{zIndex: 0}}>
+            <TileLayer
+                url="https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}@2x.png"
+            />
+            <MapTephraThicknessLayer
+              ref={this.tephraRef}
+              corner1Bound={corner1}
+              corner2Bound={corner2}
+              viewportBounds={viewportBounds}
+              volcanoPos={volcanoPos}
+              gridSize={1}
+              map={mapRef}
+              windSpeed={windSpeed}
+              windDirection={windDirection}
+              colHeight={colHeight}
+              mass={mass}
+              particleSize={particleSize}
+            />
+          </Pane>
+          <Pane
+            style={{zIndex: 3}}>
+            <Marker
+              position={[volcanoLat, volcanoLng]}
+              icon={iconVolcano}>
+              <Popup>
+                Popup for any custom information.
+              </Popup>
+            </Marker>
+            {cityItems}
+            { isSelectingCrossSection && <CrossSectionDrawLayer
+              ref={this.crossRef}
+              map={mapRef}
+              p1Lat={crossPoint1Lat}
+              p2Lat={crossPoint2Lat}
+              p1Lng={crossPoint1Lng}
+              p2Lng={crossPoint2Lng}
+            /> }
+            {isSelectingRuler && <RulerDrawLayer
+              map={mapRef}
+            />}
+          </Pane>
         </LeafletMap>
+        <OverlayControls
+          showRuler={isSelectingRuler}
+          onRulerClick={this.stores.rulerClick}
+          isSelectingCrossSection={isSelectingCrossSection}
+          showCrossSection={hasErupted && showCrossSection}
+          onCrossSectionClick={this.stores.crossSectionClick}
+        />
       </CanvDiv>
     );
   }

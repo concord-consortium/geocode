@@ -4,6 +4,8 @@ import { inject, observer } from "mobx-react";
 import RangeControl from "./range-control";
 import styled from "styled-components";
 import { StyledButton } from "./styled-button";
+import Button from "./overlay-button";
+import Checkbox from "@material-ui/core/Checkbox";
 
 const StyledControls = styled.div`
   display: flex;
@@ -163,11 +165,10 @@ export class Controls extends BaseComponent<IProps, IState> {
         </label>
         <HorizontalContainer
             alignItems="baseline">
-          <StyledButton onClick={this.erupt}>Erupt</StyledButton>
+          <Button onClick={this.erupt}>Erupt</Button>
           <label>
-            <input
+            <Checkbox
               name="animate eruption"
-              type="checkbox"
               checked={this.state.animate}
               onChange={this.setAnimation} />
             Animate eruption

@@ -18,7 +18,7 @@ export const LocalToLatLng = (point: Ipoint, volcanoPos: L.LatLng): L.LatLng => 
     const volcanoLat = volcanoPos.lat;
     const volcanoLng = volcanoPos.lng;
     const d = Math.sqrt(point.x * point.x + point.y * point.y);
-    const bearing = Math.atan2(point.y, point.x);
+    const bearing = Math.atan2(point.x, point.y);
     const brng = bearing;
     const R = 6356; // Radius of the earth in km
 

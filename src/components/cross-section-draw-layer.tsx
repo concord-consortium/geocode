@@ -54,16 +54,18 @@ export class CrossSectionDrawLayer extends BaseComponent<IProps, IState> {
     this.setPoint1(event);
     this.setPoint2(event);
     if (map !== null) {
-        map.on(MOUSE_MOVE, this.setPoint2);
-        map.on(MOVE_UP, this.drawEnd);
+      map.dragging.disable();
+      map.on(MOUSE_MOVE, this.setPoint2);
+      map.on(MOVE_UP, this.drawEnd);
     }
   }
 
   public drawEnd() {
     const { map } = this.props;
     if (map !== null) {
-        map.off(MOUSE_MOVE, this.setPoint2);
-        map.off(MOVE_UP, this.drawEnd);
+      map.dragging.enable();
+      map.off(MOUSE_MOVE, this.setPoint2);
+      map.off(MOVE_UP, this.drawEnd);
     }
   }
 
@@ -109,9 +111,10 @@ export class CrossSectionDrawLayer extends BaseComponent<IProps, IState> {
         {point2 && <Marker position={point2} draggable={true} icon={p2Icon} onLeafletDrag={this.setPoint2} />}
         {point1 && point2 &&
           <Polyline
+            key={"cross-section-line"}
             clickable={false}
             positions={[point1, point2]}
-            color="#fff"
+            color="#b263f7"
             opacity={1}
           />}
       </LayerGroup>

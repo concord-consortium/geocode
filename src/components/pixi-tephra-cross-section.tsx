@@ -75,7 +75,7 @@ export const PixiTephraCrossSection = (props: IProps) => {
   const { height, width } = canvasMetrics;
   const cells = [];
   const maxTephra = 1;
-  const numSegments = 200;
+  const numSegments = 150;
   const textSize = 12;
 
   const localPosPoint1 = LatLngToLocal(L.latLng(crossPoint1Lat, crossPoint1Lng), L.latLng(volcanoLat, volcanoLng));

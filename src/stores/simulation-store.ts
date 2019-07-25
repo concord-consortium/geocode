@@ -121,7 +121,8 @@ export const SimulationStore = types
     plotData: types.optional(PlotData, getSnapshot(plotData)),
     isErupting: false,
     hasErupted: false,
-    showCrossSectionSelector: false,
+    isSelectingRuler: false,
+    isSelectingCrossSection: false,
     // authoring props
     requireEruption: true,
     requirePainting: true,
@@ -136,8 +137,19 @@ export const SimulationStore = types
     }
   }))
   .actions((self) => ({
-    setCrossSectionSelectorVisibility(val: boolean) {
-      self.showCrossSectionSelector = val;
+    rulerClick() {
+      self.isSelectingRuler = !self.isSelectingRuler;
+      self.isSelectingCrossSection = false;
+    },
+    crossSectionClick() {
+      self.isSelectingCrossSection = !self.isSelectingCrossSection;
+      self.isSelectingRuler = false;
+    },
+    setIsSelectingRuler(val: boolean) {
+      self.isSelectingRuler = val;
+    },
+    setIsSelectingCrossSection(val: boolean) {
+      self.isSelectingCrossSection = val;
     }
   }))
   .actions((self) => ({
@@ -257,12 +269,16 @@ export const SimulationStore = types
       const vLat = self.volcanoLat;
       const vLng = self.volcanoLng;
 
+      // This currently exists within erupt, but will probably move
+      // to another block (like the paint by...)once there is some other
+      // feedback for eruption
       self.windSpeed = self.stagingWindSpeed;
       self.windDirection = self.stagingWindDirection;
       self.colHeight = self.stagingColHeight;
       self.mass = self.stagingMass;
       self.vei = self.stagingVei;
       self.particleSize = self.stagingParticleSize;
+      self.hasErupted = true;
 
       // auto-repaint if necessary
       if (!self.requirePainting) {

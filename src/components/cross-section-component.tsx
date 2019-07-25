@@ -7,7 +7,7 @@ import { PixiTephraCrossSection } from "./pixi-tephra-cross-section";
 import * as Color from "color";
 import { inject, observer } from "mobx-react";
 import { BaseComponent, IBaseProps } from "./base";
-import { StyledButton } from "./styled-button";
+import Button from "./overlay-button";
 
 const CanvDiv = styled.div`
   border: 0px solid black; border-radius: 0px;
@@ -18,10 +18,11 @@ const ContainerDiv = styled.div`
   height: flex;
 `;
 
-interface IState {
-  isSelecting: boolean;
-}
+interface IState {}
+
 interface IProps extends IBaseProps {
+  showCrossSectionSelector: boolean;
+  isSelectingCrossSection: boolean;
   height: number;
   width: number;
   volcanoLat: number;
@@ -46,19 +47,6 @@ export class CrossSectionComponent extends BaseComponent<IProps, IState>{
   private ref = React.createRef<HTMLDivElement>();
   private metrics: ICanvasShape;
 
-  public constructor(props: IProps) {
-    super(props);
-
-    const initialState: IState = {
-      isSelecting: false
-    };
-
-    this.selectButton = this.selectButton.bind(this);
-    this.cancel = this.cancel.bind(this);
-
-    this.state = initialState;
-  }
-
   public componentDidMount() {
     this.recomputeMetrics();
   }
@@ -69,7 +57,6 @@ export class CrossSectionComponent extends BaseComponent<IProps, IState>{
 
   public render() {
     if (! this.metrics) { this.recomputeMetrics(); }
-    const { isSelecting } = this.state;
     const {
       volcanoLat,
       volcanoLng,
@@ -83,17 +70,16 @@ export class CrossSectionComponent extends BaseComponent<IProps, IState>{
       windDirection,
       colHeight,
       mass,
-      particleSize
+      particleSize,
+      isSelectingCrossSection
     } = this.props;
     const { width } = this.metrics;
 
     return (
       <CanvDiv ref={this.ref}>
         {hasErupted && <ContainerDiv>
-          {!isSelecting && <StyledButton onClick={this.selectButton}>Draw a cross section line</StyledButton> }
-          {isSelecting &&
+          {isSelectingCrossSection &&
           <ContainerDiv>
-            <StyledButton onClick={this.cancel}>Cancel</StyledButton>
             <Stage
               width={width}
               height={height}
@@ -116,16 +102,6 @@ export class CrossSectionComponent extends BaseComponent<IProps, IState>{
         </ContainerDiv>}
       </CanvDiv>
     );
-  }
-
-  private selectButton() {
-    this.setState({isSelecting: true});
-    this.stores.setCrossSectionSelectorVisibility(true);
-  }
-
-  private cancel() {
-    this.setState({isSelecting: false});
-    this.stores.setCrossSectionSelectorVisibility(false);
   }
 
   private recomputeMetrics() {

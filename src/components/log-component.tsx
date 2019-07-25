@@ -1,6 +1,7 @@
 import * as React from "react";
 import styled from "styled-components";
 import { HighliteButton } from "./styled-button";
+import Button from "./overlay-button";
 import { observer, inject } from "mobx-react";
 import { BaseComponent, IBaseProps } from "./base";
 import { Stage } from "@inlet/react-pixi";
@@ -22,10 +23,11 @@ const LogDiv = styled.div`
     margin: 4px;
 `;
 
-const AdjustedHighliteButton = styled(HighliteButton)`
-    position: absolute;
+const AdjustedHighliteButton = styled(Button)`
+    && { position: absolute;
     top: 0;
     right: 0;
+    }
 `;
 
 interface IState{}
@@ -33,7 +35,7 @@ interface IProps extends IBaseProps {
     width: number;
     height: number;
     log: string;
-    clear: () => void;
+    clear: any;
 }
 interface ILog {
     width: number;
