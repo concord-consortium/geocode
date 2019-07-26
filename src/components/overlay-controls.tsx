@@ -11,6 +11,7 @@ interface IProps {
     isSelectingCrossSection: boolean;
     showCrossSection: boolean;
     onCrossSectionClick: () => void;
+    onReCenterClick: () => void;
 }
 
 interface IState {}
@@ -19,7 +20,12 @@ interface IState {}
 @observer
 export class OverlayControls extends BaseComponent<IProps, IState> {
     public render() {
-        const { showRuler, onRulerClick, isSelectingCrossSection, showCrossSection, onCrossSectionClick} = this.props;
+        const { showRuler,
+            onRulerClick,
+            isSelectingCrossSection,
+            showCrossSection,
+            onCrossSectionClick,
+            onReCenterClick} = this.props;
         const { hasErupted } = this.stores;
 
         const rulerColor = showRuler ? "primary" : "secondary";
@@ -28,6 +34,11 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
         return (
             <div className="overlay-controls">
                 <div className="controls bottom left">
+                    <Button
+                        onClick={onReCenterClick}
+                        color={"secondary"}>
+                            Re-Center
+                    </Button>
                     <Button
                         onClick={onRulerClick}
                         color={rulerColor}>

@@ -43,6 +43,7 @@ interface IProps extends IBaseProps {
   particleSize: number;
   volcanoLat: number;
   volcanoLng: number;
+  initialZoom: number;
   viewportZoom: number;
   viewportCenterLat: number;
   viewportCenterLng: number;
@@ -112,6 +113,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       isErupting,
       hasErupted,
       showCrossSection,
+      initialZoom
     } = this.props;
 
     const {
@@ -161,7 +163,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           ondragend={this.reRenderMap}
           onzoomend={this.reRenderMap}
           center={[volcanoLat, volcanoLng]}
-          zoom={8}
+          zoom={initialZoom}
           maxBounds={bounds}
           maxBoundsViscosity={1}
           minZoom={6}
@@ -195,6 +197,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
               colHeight={colHeight}
               mass={mass}
               particleSize={particleSize}
+              hasErupted={hasErupted}
             />
           </Pane>
           <Pane
@@ -226,9 +229,18 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           isSelectingCrossSection={isSelectingCrossSection}
           showCrossSection={hasErupted && showCrossSection}
           onCrossSectionClick={this.stores.crossSectionClick}
+          onReCenterClick={this.onRecenterClick}
         />
       </CanvDiv>
     );
+  }
+
+  private onRecenterClick = () => {
+    if (this.map.current) {
+      const {volcanoLat, volcanoLng, initialZoom} = this.props;
+
+      this.map.current.leafletElement.flyTo(L.latLng(volcanoLat, volcanoLng), initialZoom);
+    }
   }
 
   private reRenderMap = () => {
