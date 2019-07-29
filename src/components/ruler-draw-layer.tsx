@@ -20,6 +20,7 @@ interface IProps {
 interface IState {
     pointLat: number;
     pointLng: number;
+    hasDrawn: boolean;
 }
 
 @inject("stores")
@@ -36,7 +37,8 @@ export class RulerDrawLayer extends BaseComponent<IProps, IState> {
 
     const initialState: IState = {
         pointLat: volcanoLat,
-        pointLng: volcanoLng
+        pointLng: volcanoLng,
+        hasDrawn: false
     };
 
     this.state = initialState;
@@ -61,6 +63,7 @@ export class RulerDrawLayer extends BaseComponent<IProps, IState> {
   public drawStart(event: Leaflet.LeafletMouseEvent) {
     const { map } = this.props;
     this.setPoint(event);
+    this.setState({hasDrawn: true});
     if (map !== null) {
         map.dragging.disable();
         map.on(MOUSE_MOVE, this.setPoint);
@@ -90,7 +93,7 @@ export class RulerDrawLayer extends BaseComponent<IProps, IState> {
 
   public render() {
     const { map } = this.props;
-    const { pointLat, pointLng } = this.state;
+    const { pointLat, pointLng, hasDrawn } = this.state;
     const { volcanoLat, volcanoLng } = this.stores;
     const point1 = L.latLng(volcanoLat, volcanoLng);
     const point2 = L.latLng(pointLat, pointLng);
@@ -102,8 +105,8 @@ export class RulerDrawLayer extends BaseComponent<IProps, IState> {
     const yMidPoint = L.latLng(midLat, pointLng);
     const rMidPoint = L.latLng(midLat, midLng);
 
-    const p1Icon = getCachedCircleIcon("");
-    const p2Icon = getCachedCircleIcon("");
+    const p1Icon = getCachedCircleIcon("P1");
+    const p2Icon = getCachedCircleIcon("P2");
 
     const xDist = getDistanceFromLatLonInKm(point1, point3);
     const yDist = getDistanceFromLatLonInKm(point2, point3);
@@ -132,8 +135,9 @@ export class RulerDrawLayer extends BaseComponent<IProps, IState> {
     return (
       <LayerGroup map={map}>
         {point1 && <Marker position={point1} icon={p1Icon} />}
-        {point2 && <Marker position={point2} draggable={true} icon={p2Icon} onLeafletDrag={this.setPoint} />}
-        {point1 && point2 &&
+        {hasDrawn && point2 &&
+          <Marker position={point2} draggable={true} icon={p2Icon} onLeafletDrag={this.setPoint} />}
+        {hasDrawn && point1 && point2 &&
           [<Polyline
             key={"triangle"}
             clickable={false}
