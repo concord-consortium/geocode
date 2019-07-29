@@ -7,7 +7,7 @@
           <block type="thickness"></block>
           <block type="x"></block>
           <block type="y"></block> -->
-          <block type="addVolcano"></block>
+          <!-- <block type="addVolcano"></block> -->
           <block type="addTown"></block>
           <block type="setWindDirection"></block>
           <block type="setWindSpeed"></block>
@@ -15,8 +15,7 @@
           <block type="setEruptionMass"></block>
           <block type="setVEI"></block>
           <block type="erupt"></block>
-          <block type="outputPaintGrid"></block>
-          <block type="outputValueGrid"></block>
+          <block type="outputPaintMap"></block>
           <block type="outputPlot"></block>
           <block type="redrawMap"></block>
         </category>

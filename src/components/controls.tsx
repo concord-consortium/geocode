@@ -201,14 +201,17 @@ export class Controls extends BaseComponent<IProps, IState> {
 
   private erupt = () => {
     this.stores.erupt(this.state.animate);
-    if (this.state.animate) {
-      setTimeout(() => {
-        this.stores.endEruption();
-        this.stores.paintGrid("thickness", "#ff0000");
-      }, 3000);
-    } else {
-      this.stores.paintGrid("thickness", "#ff0000");
-    }
+    this.stores.paintMap();
+
+    // This code is used for waiting for the animation to complete and then painting
+    // if (this.state.animate) {
+    //   setTimeout(() => {
+    //     this.stores.endEruption();
+    //     this.stores.paintMap();
+    //   }, 3000);
+    // } else {
+    //   this.stores.paintMap();
+    // }
   }
 
   private setAnimation = (event: React.ChangeEvent<HTMLInputElement>) => {

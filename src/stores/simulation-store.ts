@@ -106,6 +106,12 @@ export const SimulationStore = types
     stagingVei: 0,
     stagingColHeight: 2000,
     stagingParticleSize: 1,
+    coloredWindSpeed: 6,
+    coloredWindDirection: 45,
+    coloredMass: 20000000,
+    coloredVei: 0,
+    coloredColHeight: 2000,
+    coloredParticleSize: 1,
     volcanoLat: 12.5078,
     volcanoLng: -86.7022,
     crossPoint1Lat: 0,
@@ -254,6 +260,15 @@ export const SimulationStore = types
       console.warn("WARNING: Painting Grid is no longer supported");
       self.hasErupted = true;
     },
+    paintMap() {
+      self.hasErupted = true;
+      self.coloredColHeight = self.colHeight;
+      self.coloredMass = self.mass;
+      self.coloredParticleSize = self.particleSize;
+      self.coloredVei = self.vei;
+      self.coloredWindDirection = self.windDirection;
+      self.coloredWindSpeed = self.windSpeed;
+    },
     numberGrid(resultType: SimOutput) {
       console.warn("WARNING: Numbering Grid is no longer supported ");
       self.hasErupted = true;
@@ -278,11 +293,11 @@ export const SimulationStore = types
       self.mass = self.stagingMass;
       self.vei = self.stagingVei;
       self.particleSize = self.stagingParticleSize;
-      self.hasErupted = true;
 
       // auto-repaint if necessary
       if (!self.requirePainting) {
-        self.paintGrid("thickness", "#ff0000");
+        // self.paintGrid("thickness", "#ff0000");
+        self.paintMap();
       }
 
       // will be used when we add animations

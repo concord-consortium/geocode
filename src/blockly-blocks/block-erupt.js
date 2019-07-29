@@ -2,10 +2,10 @@ Blockly.Blocks['erupt'] = {
     init: function() {
       this.appendDummyInput()
           .appendField("Erupt with current values");
-      this.appendDummyInput()
-          .setAlign(Blockly.ALIGN_RIGHT)
-          .appendField(new Blockly.FieldCheckbox("TRUE"), "animate")
-          .appendField("Show animation");
+      // this.appendDummyInput()
+      //     .setAlign(Blockly.ALIGN_RIGHT)
+      //     .appendField(new Blockly.FieldCheckbox("TRUE"), "animate")
+      //     .appendField("Show animation");
       this.setInputsInline(false);
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);

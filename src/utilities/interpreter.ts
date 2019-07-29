@@ -71,6 +71,10 @@ const makeInterperterFunc = (simulation: SimulationModelType, workspace: IBlockl
       simulation.paintGrid(params.resultType, params.color);
     });
 
+    addFunc("paintMap", () => {
+      simulation.paintMap();
+    });
+
     addFunc("numberGrid", (params: {resultType: SimOutput}) => {
       simulation.numberGrid(params.resultType);
     });

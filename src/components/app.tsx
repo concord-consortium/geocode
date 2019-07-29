@@ -180,6 +180,12 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       colHeight,
       particleSize,
       vei,
+      coloredColHeight,
+      coloredMass,
+      coloredParticleSize,
+      coloredVei,
+      coloredWindDirection,
+      coloredWindSpeed,
       plotData,
       cities,
       volcanoLat,
@@ -288,11 +294,11 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               <FullscreenButtonClosed onClick={this.toggleFullscreen} />
             }
             <MapComponent
-              windDirection={ windDirection }
-              windSpeed={ windSpeed }
-              mass={ mass }
-              colHeight={ colHeight }
-              particleSize={ particleSize }
+              windDirection={ coloredWindDirection }
+              windSpeed={ coloredWindSpeed }
+              mass={ coloredMass }
+              colHeight={ coloredColHeight }
+              particleSize={ coloredParticleSize }
               width={ mapWidth }
               height={ mapWidth }
               cities={ cities }

@@ -16,5 +16,6 @@ import "../blockly-blocks/block-set-eruption-mass";
 import "../blockly-blocks/block-set-vei";
 import "../blockly-blocks/block-erupt";
 import "../blockly-blocks/block-output-paint-grid";
+import "../blockly-blocks/block-output-paint-map";
 import "../blockly-blocks/block-output-plot";
 import "../blockly-blocks/block-redraw-map";
