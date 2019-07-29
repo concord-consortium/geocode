@@ -43,7 +43,13 @@ interface IProps extends IBaseProps {
   particleSize: number;
   volcanoLat: number;
   volcanoLng: number;
+  topLeftLat: number;
+  topLeftLng: number;
+  bottomRightLat: number;
+  bottomRightLng: number;
   initialZoom: number;
+  minZoom: number;
+  maxZoom: number;
   viewportZoom: number;
   viewportCenterLat: number;
   viewportCenterLng: number;
@@ -113,7 +119,13 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       isErupting,
       hasErupted,
       showCrossSection,
-      initialZoom
+      initialZoom,
+      minZoom,
+      maxZoom,
+      topLeftLat,
+      topLeftLng,
+      bottomRightLat,
+      bottomRightLng
     } = this.props;
 
     const {
@@ -141,8 +153,8 @@ export class MapComponent extends BaseComponent<IProps, IState>{
 
     const { crossPoint1Lat, crossPoint1Lng, crossPoint2Lat, crossPoint2Lng } = this.stores;
     const volcanoPos = L.latLng(volcanoLat, volcanoLng);
-    const corner1 = L.latLng(volcanoLat - 15, volcanoLng - 15);
-    const corner2 = L.latLng(volcanoLat + 15, volcanoLng + 15);
+    const corner1 = L.latLng(topLeftLat, topLeftLng);
+    const corner2 = L.latLng(bottomRightLat, bottomRightLng);
     const bounds = L.latLngBounds(corner1, corner2);
     let viewportBounds = bounds;
     let mapRef = null;
@@ -166,8 +178,8 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           zoom={initialZoom}
           maxBounds={bounds}
           maxBoundsViscosity={1}
-          minZoom={6}
-          maxZoom={10}
+          minZoom={minZoom}
+          maxZoom={maxZoom}
           attributionControl={true}
           zoomControl={true}
           doubleClickZoom={true}
