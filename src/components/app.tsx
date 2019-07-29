@@ -445,13 +445,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
 
   private toggleShowOptions = () => this.setState({expandOptionsDialog: !this.state.expandOptionsDialog});
 
-  private handleUpdate = (simulationOptions: SimulationAuthoringOptions) => {
-    // if(simulationOptions.scenario !== this.state.simulationOptions.scenario) {
-      
-    // }
-    
-    this.setState({ simulationOptions });
-  }
+  private handleUpdate = (simulationOptions: SimulationAuthoringOptions) => this.setState({ simulationOptions });
 
   private generateAndOpenAuthoredUrl = () => {
     const encodedParams = encodeURIComponent(JSON.stringify(this.state.simulationOptions));
