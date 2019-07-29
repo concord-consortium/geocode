@@ -113,14 +113,21 @@ export class RulerDrawLayer extends BaseComponent<IProps, IState> {
 
     const totalDist = getDistanceFromLatLonInKm(point1, point2);
 
+    const xIconAnchor = (pointLat > volcanoLat ? "top-" : "bottom-") + "center";
+
     const xData = "X: " + adjustedXDist.toFixed(2) + "km";
-    const xDataIcon = divIcon(xData); // I choose not to cache the icons as they are changing every time
+    const xDataIcon = divIcon(xData, xIconAnchor); // I choose not to cache the icons as they are changing every time
+
+    const yIconAnchor = "center-" + (pointLng > volcanoLng ? "left" : "right");
 
     const yData = "Y: " + adjustedYDist.toFixed(2) + "km";
-    const yDataIcon = divIcon(yData);
+    const yDataIcon = divIcon(yData, yIconAnchor);
+
+    const rIconAnchor = (pointLat > volcanoLat ? "bottom-" : "top-") +
+                        (pointLng > volcanoLng ? "right" : "left");
 
     const rData = "R: " + totalDist.toFixed(2) + "km";
-    const rDataIcon = divIcon(rData);
+    const rDataIcon = divIcon(rData, rIconAnchor);
 
     return (
       <LayerGroup map={map}>
