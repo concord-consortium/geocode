@@ -1,0 +1,28 @@
+.circle-icon {
+    background: #fff;
+    width: 20px !important;
+    height: 20px !important;
+    margin-top: -10px !important;
+    margin-left: -10px !important;
+    border-radius: 10px;
+    box-shadow: 0 0 7px rgba(0,0,0,0.55);
+    text-align: center;
+    line-height: 20px;
+    color: #666;
+    z-index: 200 !important;
+  }
+  
+  .div-icon {
+    background: #fff;
+    width: max-content !important;
+    height: max-content !important;
+    margin-top: 5px !important;
+    margin-left: 5px !important;
+    padding: 5px !important;
+    border-radius: 10px;
+    box-shadow: 0 0 7px rgba(0,0,0,0.55);
+    text-align: center;
+    line-height: 20px;
+    color: #666;
+    z-index: 200 !important;
+  }

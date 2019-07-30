@@ -2,6 +2,7 @@
 import * as React from "react";
 import styled from "styled-components";
 import { StyledButton, HighliteButton } from "./styled-button";
+import Button from "./overlay-button";
 
 interface IProps {
   run: () => void;
@@ -24,28 +25,28 @@ const ButtonContainer = styled.div`
 const RunButton = (props: IProps) => {
   const { run, running } = props;
   return (
-    <HighliteButton onClick={run} selected={running}>Run</HighliteButton>
+    <Button onClick={run} color={running ? "primary" : "secondary"}>Run</Button>
   );
 };
 
 const StepButton = (props: IProps) => {
   const { step } = props;
   return (
-    <StyledButton onClick={step}>Step</StyledButton>
+    <Button onClick={step}>Step</Button>
   );
 };
 
 const StopButton = (props: IProps) => {
   const { stop } = props;
   return (
-    <StyledButton onClick={stop}>Stop</StyledButton>
+    <Button onClick={stop}>Stop</Button>
   );
 };
 
 const ResetButton = (props: IProps) => {
   const { reset } = props;
   return (
-    <StyledButton onClick={reset}>Reset</StyledButton>
+    <Button onClick={reset}>Reset</Button>
   );
 };
 

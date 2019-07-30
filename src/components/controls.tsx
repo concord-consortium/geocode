@@ -4,6 +4,8 @@ import { inject, observer } from "mobx-react";
 import RangeControl from "./range-control";
 import styled from "styled-components";
 import { StyledButton } from "./styled-button";
+import Button from "./overlay-button";
+import Checkbox from "@material-ui/core/Checkbox";
 
 const StyledControls = styled.div`
   display: flex;
@@ -63,11 +65,11 @@ export class Controls extends BaseComponent<IProps, IState> {
   public render() {
 
     const {
-      windDirection,
-      particleSize,
-      mass,
-      colHeight,
-      windSpeed
+      stagingWindDirection,
+      stagingParticleSize,
+      stagingMass,
+      stagingColHeight,
+      stagingWindSpeed
     } = this.stores;
 
     const {
@@ -86,14 +88,14 @@ export class Controls extends BaseComponent<IProps, IState> {
             <RangeControl
               min={0}
               max={30}
-              value={windSpeed}
+              value={stagingWindSpeed}
               step={1}
               tickStep={5}
               width={300}
               onChange={this.changeWindSpeed}
             />
             <ValueOutput>
-              {windSpeed} m/s
+              {stagingWindSpeed} m/s
             </ValueOutput>
           </HorizontalContainer>
         </label>}
@@ -103,14 +105,14 @@ export class Controls extends BaseComponent<IProps, IState> {
             <RangeControl
               min={0}
               max={360}
-              value={windDirection}
+              value={stagingWindDirection}
               step={10}
               tickStep={90}
               width={300}
               onChange={this.changeWindDirection}
             />
             <ValueOutput>
-              {windDirection} degrees from North
+              {stagingWindDirection} degrees from North
             </ValueOutput>
           </HorizontalContainer>
         </label>}
@@ -120,7 +122,7 @@ export class Controls extends BaseComponent<IProps, IState> {
             <RangeControl
               min={8}
               max={15}
-              value={Math.round(Math.log(mass) / Math.LN10)}
+              value={Math.round(Math.log(stagingMass) / Math.LN10)}
               step={1}
               tickMap={{
                 8: "10<sup>8</sup>",
@@ -137,7 +139,7 @@ export class Controls extends BaseComponent<IProps, IState> {
             />
             <ValueOutput
               dangerouslySetInnerHTML={
-                {__html: `10<sup>${Math.round(Math.log(mass) / Math.LN10)}</sup> kg`}
+                {__html: `10<sup>${Math.round(Math.log(stagingMass) / Math.LN10)}</sup> kg`}
             } />
           </HorizontalContainer>
         </label>}
@@ -147,14 +149,14 @@ export class Controls extends BaseComponent<IProps, IState> {
             <RangeControl
               min={1}
               max={30}
-              value={colHeight / 1000}
+              value={stagingColHeight / 1000}
               step={1}
               tickArray={[1, 5, 10, 15, 20, 25, 30]}
               width={300}
               onChange={this.changeColumnHeight}
             />
             <ValueOutput>
-              {colHeight / 1000} km
+              {stagingColHeight / 1000} km
             </ValueOutput>
           </HorizontalContainer>
         </label>}
@@ -164,24 +166,23 @@ export class Controls extends BaseComponent<IProps, IState> {
             <RangeControl
               min={1}
               max={64}
-              value={particleSize}
+              value={stagingParticleSize}
               step={1}
               tickArray={[1, 10, 20, 30, 40, 50, 64]}
               width={300}
               onChange={this.changeSize}
             />
             <ValueOutput>
-              {particleSize}
+              {stagingParticleSize} mm
             </ValueOutput>
           </HorizontalContainer>
         </label>}
         <HorizontalContainer
             alignItems="baseline">
-          <StyledButton onClick={this.erupt}>Erupt</StyledButton>
+          <Button onClick={this.erupt}>Erupt</Button>
           <label>
-            <input
+            <Checkbox
               name="animate eruption"
-              type="checkbox"
               checked={this.state.animate}
               onChange={this.setAnimation} />
             Animate eruption

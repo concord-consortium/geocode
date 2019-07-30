@@ -7,19 +7,36 @@ import { PixiTephraCrossSection } from "./pixi-tephra-cross-section";
 import * as Color from "color";
 import { inject, observer } from "mobx-react";
 import { BaseComponent, IBaseProps } from "./base";
+import Button from "./overlay-button";
 
 const CanvDiv = styled.div`
   border: 0px solid black; border-radius: 0px;
 `;
 
+const ContainerDiv = styled.div`
+  width: flex;
+  height: flex;
+`;
+
 interface IState {}
+
 interface IProps extends IBaseProps {
-  numRows: number;
-  numCols: number;
+  showCrossSectionSelector: boolean;
+  isSelectingCrossSection: boolean;
   height: number;
   width: number;
-  volcanoX: number;
-  data: SimDatumType[];
+  volcanoLat: number;
+  volcanoLng: number;
+  crossPoint1Lat: number;
+  crossPoint1Lng: number;
+  crossPoint2Lat: number;
+  crossPoint2Lng: number;
+  hasErupted: boolean;
+  windSpeed: number;
+  windDirection: number;
+  colHeight: number;
+  mass: number;
+  particleSize: number;
   // cities: CityType[];
 }
 
@@ -40,26 +57,58 @@ export class CrossSectionComponent extends BaseComponent<IProps, IState>{
 
   public render() {
     if (! this.metrics) { this.recomputeMetrics(); }
-    const { volcanoX, data, height } = this.props;
-    const { width, gridSize } = this.metrics;
+    const {
+      volcanoLat,
+      volcanoLng,
+      crossPoint1Lat,
+      crossPoint1Lng,
+      crossPoint2Lat,
+      crossPoint2Lng,
+      height,
+      hasErupted,
+      windSpeed,
+      windDirection,
+      colHeight,
+      mass,
+      particleSize,
+      isSelectingCrossSection
+    } = this.props;
+    const { width } = this.metrics;
 
     return (
       <CanvDiv ref={this.ref}>
-        <Stage
-          width={width}
-          height={height}
-          options={{backgroundColor: Color("hsl(0, 10%, 95%)").rgbNumber()}} >
-          <PixiTephraCrossSection
-            canvasMetrics={this.metrics}
-            data={data.map( (d) => d.thickness )} />
-        </Stage>
+        {hasErupted && <ContainerDiv>
+          {isSelectingCrossSection &&
+          <ContainerDiv>
+            <Stage
+              width={width}
+              height={height}
+              options={{backgroundColor: Color("hsl(0, 10%, 95%)").rgbNumber()}} >
+              <PixiTephraCrossSection
+                canvasMetrics={this.metrics}
+                volcanoLat={volcanoLat}
+                volcanoLng={volcanoLng}
+                crossPoint1Lat={crossPoint1Lat}
+                crossPoint1Lng={crossPoint1Lng}
+                crossPoint2Lat={crossPoint2Lat}
+                crossPoint2Lng={crossPoint2Lng}
+                windSpeed={windSpeed}
+                windDirection={windDirection}
+                colHeight={colHeight}
+                mass={mass}
+                particleSize={particleSize} />
+            </Stage>
+          </ContainerDiv>}
+        </ContainerDiv>}
       </CanvDiv>
     );
   }
 
   private recomputeMetrics() {
-    const {numCols, numRows, width, height } = this.props;
-    const gridSize = width / numCols;
+    const {width, height } = this.props;
+    const gridSize = 0;
+    const numCols = 0;
+    const numRows = 0;
     this.metrics  = {
       gridSize,
       height,

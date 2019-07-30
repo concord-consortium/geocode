@@ -1,6 +1,7 @@
 import { types, getSnapshot } from "mobx-state-tree";
 import { autorun } from "mobx";
 import * as Color from "color";
+import * as Leaflet from "leaflet";
 import gridTephraCalc from "../tephra2";
 import { IInterpreterController, makeInterpreterController } from "../utilities/interpreter";
 import { SimulationAuthoringOptions } from "../components/app";
@@ -19,8 +20,8 @@ export interface IModelParams {
   colHeight: number;
   particleSize: number;
   windDirection: number;
-  volcanoX: number;
-  volcanoY: number;
+  volcanoLat: number;
+  volcanoLng: number;
   isErupting: boolean;
 }
 
@@ -93,24 +94,35 @@ export function getGridIndexForLocation(x: number, y: number, numRows: number) {
 
 export const SimulationStore = types
   .model("simulation", {
-    numRows: 10,
-    numCols: 10,
     windSpeed: 6,
     windDirection: 45,
     mass: 20000000,
     vei: 0,
     colHeight: 2000,
     particleSize: 1,
-    volcanoX: 5,
-    volcanoY: 5,
+    stagingWindSpeed: 6,
+    stagingWindDirection: 45,
+    stagingMass: 20000000,
+    stagingVei: 0,
+    stagingColHeight: 2000,
+    stagingParticleSize: 1,
+    volcanoLat: 12.5078,
+    volcanoLng: -86.7022,
+    crossPoint1Lat: 0,
+    crossPoint1Lng: 0,
+    crossPoint2Lat: 0,
+    crossPoint2Lng: 0,
+    viewportZoom: 8,
+    viewportCenterLat: 0,
+    viewportCenterLng: 0,
     cities: types.array(City),
     code: "",
     log: "",
-    data: types.array(SimDatum),
-    gridColors: types.array(types.string),
-    gridValues: types.array(types.string),
     plotData: types.optional(PlotData, getSnapshot(plotData)),
     isErupting: false,
+    hasErupted: false,
+    isSelectingRuler: false,
+    isSelectingCrossSection: false,
     // authoring props
     requireEruption: true,
     requirePainting: true,
@@ -125,6 +137,22 @@ export const SimulationStore = types
     }
   }))
   .actions((self) => ({
+    rulerClick() {
+      self.isSelectingRuler = !self.isSelectingRuler;
+      self.isSelectingCrossSection = false;
+    },
+    crossSectionClick() {
+      self.isSelectingCrossSection = !self.isSelectingCrossSection;
+      self.isSelectingRuler = false;
+    },
+    setIsSelectingRuler(val: boolean) {
+      self.isSelectingRuler = val;
+    },
+    setIsSelectingCrossSection(val: boolean) {
+      self.isSelectingCrossSection = val;
+    }
+  }))
+  .actions((self) => ({
     setBlocklyCode(code: string, workspace: any) {
       self.code = code;
       if (interpreterController) {
@@ -134,6 +162,11 @@ export const SimulationStore = types
       self.running = false;
       cachedBlocklyWorkspace = workspace;
       interpreterController = makeInterpreterController(code, simulation, workspace);
+    },
+    setViewportParameters(zoom: number, viewportCenterLat: number, viewportCenterLng: number) {
+      self.viewportZoom = zoom;
+      self.viewportCenterLat = viewportCenterLat;
+      self.viewportCenterLng = viewportCenterLng;
     },
     run() {
       const reset = () => {
@@ -147,10 +180,9 @@ export const SimulationStore = types
     reset() {
       this.setBlocklyCode(self.code, cachedBlocklyWorkspace);
       self.isErupting = false;
+      self.hasErupted = false;
       self.log = "";
       self.plotData = PlotData.create({});
-      self.gridColors.clear();
-      self.gridValues.clear();
     },
     stop() {
       if (interpreterController) {
@@ -177,6 +209,14 @@ export const SimulationStore = types
     },
     clearLog() {
       self.log = "";
+    },
+    setPoint1Pos(lat: number, lng: number) {
+      self.crossPoint1Lat = lat;
+      self.crossPoint1Lng = lng;
+    },
+    setPoint2Pos(lat: number, lng: number) {
+      self.crossPoint2Lat = lat;
+      self.crossPoint2Lng = lng;
     },
     /**
      * Steps through one complete block.
@@ -211,29 +251,12 @@ export const SimulationStore = types
   }))
   .actions((self) => ({
     paintGrid(resultType: SimOutput, colorStr: string) {
-      self.gridColors.clear();
-      const baseColor = Color(colorStr).hsl();
-      self.data.forEach(datum => {
-        const val: number = datum[resultType];
-        // Need to think of how to handle scaling.
-        const scaledAlpha = val / 4;
-        // Note: toFixed is used because of https://github.com/Qix-/color/issues/156
-        const alpha = Math.min(Number.parseFloat(scaledAlpha.toFixed(2)), 1);
-        const gridColor = Color(baseColor).alpha(alpha);
-        self.gridColors.push(gridColor.toString());
-      });
+      console.warn("WARNING: Painting Grid is no longer supported");
+      self.hasErupted = true;
     },
     numberGrid(resultType: SimOutput) {
-      self.gridValues.clear();
-      self.data.forEach(datum => {
-        const val: number = datum[resultType];
-
-        self.gridValues.push(val.toFixed(2));
-      });
-    },
-    clearGrid() {
-      self.gridColors.clear();
-      self.gridValues.clear();
+      console.warn("WARNING: Numbering Grid is no longer supported ");
+      self.hasErupted = true;
     },
     addPlotPoint(xAxis: string, yAxis: string, x: number, y: number) {
       self.plotData.setXAxis(xAxis);
@@ -243,24 +266,19 @@ export const SimulationStore = types
   }))
   .actions((self) => ({
     erupt(animate = false) {
-      const rows = self.numRows;
-      const cols = self.numCols;
-      const vX = self.volcanoX;
-      const vY = self.volcanoY;
-      self.data.clear();
-      for (let x = 0; x < rows; x ++) {
-        for (let y = 0; y < cols; y++) {
-          const simResults = gridTephraCalc(
-            x, y, vX, vY,
-            self.windSpeed,
-            self.windDirection,
-            self.colHeight,
-            self.mass,
-            self.particleSize
-          );
-          self.data[getGridIndexForLocation(x, y, rows)] = {thickness: simResults};
-        }
-      }
+      const vLat = self.volcanoLat;
+      const vLng = self.volcanoLng;
+
+      // This currently exists within erupt, but will probably move
+      // to another block (like the paint by...)once there is some other
+      // feedback for eruption
+      self.windSpeed = self.stagingWindSpeed;
+      self.windDirection = self.stagingWindDirection;
+      self.colHeight = self.stagingColHeight;
+      self.mass = self.stagingMass;
+      self.vei = self.stagingVei;
+      self.particleSize = self.stagingParticleSize;
+      self.hasErupted = true;
 
       // auto-repaint if necessary
       if (!self.requirePainting) {
@@ -269,7 +287,11 @@ export const SimulationStore = types
 
       // will be used when we add animations
       if (animate) {
-        self.clearGrid();
+        console.warn("WARNING: Animated eruptions are not currently supported");
+        animate = false;
+      }
+
+      if (animate) {
         self.isErupting = true;
         self.pause();
 
@@ -280,43 +302,44 @@ export const SimulationStore = types
       }
     },
     calculateAndAddPlotPoint(xData: SimulationVariable, yData: SimOutput, cityName: string) {
-      const xLabel = MeasurementLabel[xData];
-      const yLabel = MeasurementLabel[yData];
+      console.warn("WARNING: Plot Point is not currently supported");
+      // const xLabel = MeasurementLabel[xData];
+      // const yLabel = MeasurementLabel[yData];
 
-      const city = self.cities.find(c => c.name === cityName);
-      if (!city) return;
+      // const city = self.cities.find(c => c.name === cityName);
+      // if (!city) return;
 
-      const dataIndex = city.x + city.y * self.numCols;
+      // const dataIndex = city.x + city.y * self.numCols;
 
-      const xVal = self[xData];
-      const yVal = self.data[dataIndex][yData];
+      // const xVal = self[xData];
+      // const yVal = self.data[dataIndex][yData];
 
-      self.addPlotPoint(xLabel, yLabel, xVal, yVal);
+      // self.addPlotPoint(xLabel, yLabel, xVal, yVal);
     }
   }))
   .actions((self) => {
     return {
       setWindSpeed(speed: number) {
-        self.windSpeed = speed;
+        self.stagingWindSpeed = speed;
         // auto-erupt to recalculate data
         if (!self.requireEruption) {
           self.erupt();
         }
       },
-      setVolcanoX(x: number) {
-        self.volcanoX = x;
+      setVolcanoLat(lat: number) {
+        self.volcanoLat = lat;
       },
-      setVolcanoY(y: number) {
-        self.volcanoY = y;
+      setVolcanoLng(lng: number) {
+        self.volcanoLng = lng;
       },
       setColumnHeight(height: number) {
-        self.colHeight = height;
+        self.stagingColHeight = height;
         if (!self.requireEruption) {
           self.erupt();
         }
       },
       setMass(mass: number) {
-        self.mass = mass;
+        self.stagingMass = mass;
         // set equivalent VEI for reporting
         self.vei = Math.max(7, Math.min(15, Math.round(Math.log(mass) / Math.LN10))) - 7;
         if (!self.requireEruption) {
@@ -325,7 +348,7 @@ export const SimulationStore = types
       },
       setVEI(vei: number) {
         const clippedVEI = Math.max(0, Math.min(vei, 8));
-        self.vei = clippedVEI;
+        self.stagingVei = clippedVEI;
         // for now this is just setting the mass
         // we want vei 1 = 1e8, vei 8 = 1e15
         const mass = Math.pow(10, clippedVEI + 7);
@@ -335,27 +358,27 @@ export const SimulationStore = types
         }
       },
       setParticleSize(size: number) {
-        self.particleSize = size;
+        self.stagingParticleSize = size;
         if (!self.requireEruption) {
           self.erupt();
         }
       },
       setWindDirection(direction: number) {
-        self.windDirection = direction;
+        self.stagingWindDirection = direction;
         if (!self.requireEruption) {
           self.erupt();
         }
       },
       setModelParams(params: IModelParams) {
-        self.windSpeed = params.windSpeed;
-        self.colHeight = params.colHeight;
-        self.mass = params.mass;
-        self.particleSize = params.particleSize;
-        self.windDirection = params.windDirection;
+        self.stagingWindSpeed = params.windSpeed;
+        self.stagingColHeight = params.colHeight;
+        self.stagingMass = params.mass;
+        self.stagingParticleSize = params.particleSize;
+        self.stagingWindDirection = params.windDirection;
       },
-      setVolcano(x: number, y: number) {
-        self.volcanoX = x;
-        self.volcanoY = y;
+      setVolcano(lat: number, lng: number) {
+        self.volcanoLat = lat;
+        self.volcanoLng = lng;
       },
       addCity(x: number, y: number, name: string) {
         const found = self.cities.find( c => {
@@ -390,11 +413,11 @@ export const SimulationStore = types
       setAuthoringOptions(opts: SimulationAuthoringOptions) {
         self.requireEruption = opts.requireEruption;
         self.requirePainting = opts.requirePainting;
-        self.windSpeed = opts.initialWindSpeed;
-        self.windDirection = opts.initialWindDirection;
-        self.mass = opts.initialEruptionMass;
-        self.colHeight = opts.initialColumnHeight;
-        self.particleSize = opts.initialParticleSize;
+        self.stagingWindSpeed = opts.initialWindSpeed;
+        self.stagingWindDirection = opts.initialWindDirection;
+        self.stagingMass = opts.initialEruptionMass;
+        self.stagingColHeight = opts.initialColumnHeight;
+        self.stagingParticleSize = opts.initialParticleSize;
       }
     };
   })
@@ -411,7 +434,7 @@ autorun(() => {
   const {windSpeed, windDirection, code, cities } = simulation;
   const x = windSpeed * Math.cos(windDirection);
   const y = windSpeed * Math.sin(windDirection);
-  const vx = simulation.volcanoX;
+  const vx = simulation.volcanoLat;
 });
 
 export type SimulationModelType = typeof SimulationStore.Type;

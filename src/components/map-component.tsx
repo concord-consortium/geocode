@@ -1,29 +1,39 @@
 import * as React from "react";
+import * as L from "leaflet";
+
+import { Map as LeafletMap, TileLayer, Marker, Popup, ScaleControl, Pane } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import "../css/map-component.css";
+import { iconVolcano, getCachedCircleIcon, getCachedDivIcon } from "./icons";
+
 import { ICanvasShape, Ipoint } from "../interfaces";
 import { CityType  } from "../stores/simulation-store";
 import styled from "styled-components";
-import { Stage, Sprite } from "@inlet/react-pixi";
-import { PixiCityContainer } from "./pixi-city-container";
-import { PixiTephraMap } from "./pixi-tephra-map";
-import { PixiAxis } from "./pixi-axis";
-import { PixiGrid } from "./pixi-grid";
-import VolcanoEmitter from "./pixi-volcano-emitter";
-import * as AshConfig from "../assets/particles/ash.json";
-
-import * as Color from "color";
 import { observer, inject } from "mobx-react";
 import { BaseComponent, IBaseProps } from "./base";
 import { getSnapshot, IStateTreeNode } from "mobx-state-tree";
-import { EmitterConfig } from "pixi-particles";
+import { CrossSectionDrawLayer } from "./cross-section-draw-layer";
+import { LocalToLatLng, LatLngToLocal } from "../utilities/coordinateSpaceConversion";
+import { MapTephraThicknessLayer } from "./map-tephra-thickness-layer";
+import { OverlayControls } from "./overlay-controls";
+import { RulerDrawLayer } from "./ruler-draw-layer";
 
+interface WorkspaceProps {
+  width: number;
+  height: number;
+}
 const CanvDiv = styled.div`
   border: 0px solid black; border-radius: 0px;
+  width: ${(p: WorkspaceProps) => `${p.width}px`};
+  height: ${(p: WorkspaceProps) => `${p.height}px`};
 `;
 
-interface IState {}
+interface IState {
+  moveMouse: boolean;
+  showRuler: boolean;
+}
+
 interface IProps extends IBaseProps {
-  numRows: number;
-  numCols: number;
   width: number;
   height: number;
   windSpeed: number;
@@ -31,13 +41,17 @@ interface IProps extends IBaseProps {
   mass: number;
   colHeight: number;
   particleSize: number;
-  volcanoX: number;
-  volcanoY: number;
-  gridColors: IStateTreeNode<any, string[]>;
-  gridValues: IStateTreeNode<any, string[]>;
+  volcanoLat: number;
+  volcanoLng: number;
+  initialZoom: number;
+  viewportZoom: number;
+  viewportCenterLat: number;
+  viewportCenterLng: number;
   cities: CityType[];
   map: string;
   isErupting: boolean;
+  hasErupted: boolean;
+  showCrossSection: boolean;
 }
 
 @inject("stores")
@@ -45,81 +59,199 @@ interface IProps extends IBaseProps {
 export class MapComponent extends BaseComponent<IProps, IState>{
 
   private ref = React.createRef<HTMLDivElement>();
+  private map = React.createRef<LeafletMap>();
+  private crossRef = React.createRef<CrossSectionDrawLayer>();
+  private tephraRef = React.createRef<MapTephraThicknessLayer>();
   private metrics: ICanvasShape;
 
-  public render() {
-    const {numCols, numRows, width, height } = this.props;
-    const gridSize = Math.round(width / numCols);
-    this.metrics  = {
-      gridSize,
-      height,
-      width,
-      numCols,
-      numRows
+  constructor(props: IProps) {
+    super(props);
+
+    const initialState: IState = {
+      moveMouse: false,
+      showRuler: false
     };
+
+    this.handleDragMove = this.handleDragMove.bind(this);
+    this.handleDragEnter = this.handleDragEnter.bind(this);
+    this.handleDragExit = this.handleDragExit.bind(this);
+
+    this.state = initialState;
+  }
+
+  public handleDragEnter(e: React.MouseEvent<HTMLDivElement>) {
+    this.stores.setPoint1Pos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    this.stores.setPoint2Pos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    this.setState({moveMouse: true});
+  }
+
+  public handleDragMove(e: React.MouseEvent<HTMLDivElement>) {
+    const { moveMouse } = this.state;
+    if (moveMouse) {
+      this.stores.setPoint2Pos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    }
+  }
+
+  public handleDragExit(e: React.MouseEvent<HTMLDivElement>) {
+    this.stores.setPoint2Pos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    this.setState({moveMouse: false});
+  }
+
+  public render() {
+    const { width, height } = this.props;
 
     const {
       cities,
-      volcanoX,
-      volcanoY,
-      gridColors,
-      gridValues,
+      volcanoLat,
+      volcanoLng,
       windDirection,
       windSpeed,
+      colHeight,
       mass,
+      particleSize,
       map,
-      isErupting
+      isErupting,
+      hasErupted,
+      showCrossSection,
+      initialZoom
     } = this.props;
+
+    const {
+      isSelectingCrossSection,
+      isSelectingRuler
+    } = this.stores;
 
     const cityItems = cities.map( (city) => {
       const {x, y, name, id} = city;
       if (x && y && name) {
-        return <PixiCityContainer gridSize={gridSize} key={id} position={this.toCanvasCoords({x, y})} name={name} />;
+        const mapPos = LocalToLatLng({x, y}, L.latLng(volcanoLat, volcanoLng));
+        const cityIcon = getCachedDivIcon(name);
+        return (
+          <Marker
+          position={[mapPos.lat, mapPos.lng]}
+          icon={cityIcon}
+          key={name}>
+            <Popup>
+              {name}
+            </Popup>
+          </Marker>
+        );
       }
     });
 
-    const volcanoPos = this.toCanvasCoords({x: volcanoX, y: volcanoY}, gridSize);
+    const { crossPoint1Lat, crossPoint1Lng, crossPoint2Lat, crossPoint2Lng } = this.stores;
+    const volcanoPos = L.latLng(volcanoLat, volcanoLng);
+    const corner1 = L.latLng(volcanoLat - 15, volcanoLng - 15);
+    const corner2 = L.latLng(volcanoLat + 15, volcanoLng + 15);
+    const bounds = L.latLngBounds(corner1, corner2);
+    let viewportBounds = bounds;
+    let mapRef = null;
+    if (this.map.current) {
+      mapRef = this.map.current.leafletElement;
+      viewportBounds = this.map.current.leafletElement.getBounds();
+    }
 
     return (
-      <CanvDiv ref={this.ref}>
-        <Stage
-          width={width}
-          height={height}
-          options={
-            {
-              backgroundColor: Color("hsl(0, 10%, 95%)").rgbNumber(),
-              antialias: true
-            }
-          } >
-          <Sprite image={map} x={0} y={0} width={width} height={height} />
-          <PixiTephraMap
-            canvasMetrics={this.metrics}
-            gridColors={getSnapshot(gridColors)}
-            gridValues={getSnapshot(gridValues)}
-            toCanvasCoords={this.toCanvasCoords} />
-          {cityItems}
-          <PixiAxis gridMetrics={this.metrics} toCanvasCoords={this.toCanvasCoords} />
-          <PixiGrid gridMetrics={this.metrics} />
-          <Sprite image={"./assets/volcano.png"}
-            x={volcanoPos.x - 10}
-            y={volcanoPos.y - 10}
-            width={60}
-            height={60} />
-          <VolcanoEmitter
-            config={AshConfig.config as unknown as EmitterConfig}
-            imagePath={AshConfig.image}
-            x={volcanoPos.x + 20}
-            y={volcanoPos.y + 20}
-            windDirection={windDirection}
-            windSpeed={windSpeed}
-            mass={mass}
-            playing={isErupting} />
-        </Stage>
+      <CanvDiv
+        ref={this.ref}
+        width={width}
+        height={height}
+      >
+        <LeafletMap
+          className="map"
+          ref={this.map}
+          ondragend={this.reRenderMap}
+          onzoomend={this.reRenderMap}
+          center={[volcanoLat, volcanoLng]}
+          zoom={initialZoom}
+          maxBounds={bounds}
+          maxBoundsViscosity={1}
+          minZoom={6}
+          maxZoom={10}
+          attributionControl={true}
+          zoomControl={true}
+          doubleClickZoom={true}
+          scrollWheelZoom={true}
+          dragging={!(isSelectingRuler || isSelectingCrossSection)}
+          animate={true}
+          easeLinearity={0.35}
+          >
+          <ScaleControl
+            position="topright"
+          />
+          <Pane
+            style={{zIndex: 0}}>
+            <TileLayer
+                url="https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}@2x.png"
+            />
+            <MapTephraThicknessLayer
+              ref={this.tephraRef}
+              corner1Bound={corner1}
+              corner2Bound={corner2}
+              viewportBounds={viewportBounds}
+              volcanoPos={volcanoPos}
+              gridSize={1}
+              map={mapRef}
+              windSpeed={windSpeed}
+              windDirection={windDirection}
+              colHeight={colHeight}
+              mass={mass}
+              particleSize={particleSize}
+              hasErupted={hasErupted}
+            />
+          </Pane>
+          <Pane
+            style={{zIndex: 3}}>
+            <Marker
+              position={[volcanoLat, volcanoLng]}
+              icon={iconVolcano}>
+              <Popup>
+                Popup for any custom information.
+              </Popup>
+            </Marker>
+            {cityItems}
+            { isSelectingCrossSection && <CrossSectionDrawLayer
+              ref={this.crossRef}
+              map={mapRef}
+              p1Lat={crossPoint1Lat}
+              p2Lat={crossPoint2Lat}
+              p1Lng={crossPoint1Lng}
+              p2Lng={crossPoint2Lng}
+            /> }
+            {isSelectingRuler && <RulerDrawLayer
+              map={mapRef}
+            />}
+          </Pane>
+        </LeafletMap>
+        <OverlayControls
+          showRuler={isSelectingRuler}
+          onRulerClick={this.stores.rulerClick}
+          isSelectingCrossSection={isSelectingCrossSection}
+          showCrossSection={hasErupted && showCrossSection}
+          onCrossSectionClick={this.stores.crossSectionClick}
+          onReCenterClick={this.onRecenterClick}
+        />
       </CanvDiv>
     );
   }
 
-  public toCanvasCoords = (point: Ipoint, scale = 1): Ipoint => {
-    return {x: point.x * scale, y: (this.props.numRows - point.y - 1) * scale};
+  private onRecenterClick = () => {
+    if (this.map.current) {
+      const {volcanoLat, volcanoLng, initialZoom} = this.props;
+
+      this.map.current.leafletElement.flyTo(L.latLng(volcanoLat, volcanoLng), initialZoom);
+    }
+  }
+
+  private reRenderMap = () => {
+    if (this.tephraRef.current) {
+
+      // Update values in the store to trigger a rerender of this component
+      if (this.map.current) {
+        const center = this.map.current.leafletElement.getCenter();
+        const zoom = this.map.current.leafletElement.getZoom();
+        this.stores.setViewportParameters(zoom, center.lat, center.lng);
+      }
+    }
   }
 }

@@ -182,7 +182,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     }
 
     this.state = initialState;
-
+    this.stores.setAuthoringOptions(initialState.simulationOptions);
   }
 
   public componentDidUpdate() {
@@ -200,22 +200,26 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       colHeight,
       particleSize,
       vei,
-      numCols,
-      numRows,
-      data,
-      gridColors,
-      gridValues,
       plotData,
       cities,
-      volcanoX,
-      volcanoY,
+      volcanoLat,
+      volcanoLng,
+      crossPoint1Lat,
+      crossPoint1Lng,
+      crossPoint2Lat,
+      crossPoint2Lng,
+      viewportZoom,
+      viewportCenterLat,
+      viewportCenterLng,
       run,
       clearLog,
       step,
       stop,
       reset,
       running,
-      isErupting
+      isErupting,
+      hasErupted,
+      isSelectingCrossSection
     } = this.stores;
 
     const {
@@ -325,26 +329,38 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               mass={ mass }
               colHeight={ colHeight }
               particleSize={ particleSize }
-              numCols={ numCols }
-              numRows={ numRows }
               width={ mapWidth }
               height={ mapWidth }
-              gridColors={ gridColors }
-              gridValues={ gridValues }
               cities={ cities }
-              volcanoX={ volcanoX }
-              volcanoY={ volcanoY }
+              volcanoLat={ volcanoLat }
+              volcanoLng={ volcanoLng }
+              initialZoom={8}
+              viewportZoom={ viewportZoom }
+              viewportCenterLat={ viewportCenterLat }
+              viewportCenterLng={ viewportCenterLng }
               map={ mapPath }
               isErupting={isErupting}
+              showCrossSection={showCrossSection}
+              hasErupted={ hasErupted }
             />
               { showCrossSection &&
           <CrossSectionComponent
-            data={ data }
-            height={ 100 }
-            numCols={ numCols }
-            numRows={ numRows }
+            isSelectingCrossSection={isSelectingCrossSection}
+            showCrossSectionSelector={isSelectingCrossSection}
+            height={ 150 }
             width={ mapWidth }
-            volcanoX={ volcanoX }
+            volcanoLat={ volcanoLat }
+            volcanoLng={ volcanoLng }
+            crossPoint1Lat={ crossPoint1Lat }
+            crossPoint1Lng={ crossPoint1Lng }
+            crossPoint2Lat={ crossPoint2Lat }
+            crossPoint2Lng={ crossPoint2Lng }
+            hasErupted={ hasErupted }
+            windSpeed={windSpeed}
+            windDirection={windDirection}
+            colHeight={colHeight}
+            mass={mass}
+            particleSize={particleSize}
           />
         }
         { showChart &&
@@ -390,19 +406,38 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                   options={Object.keys(BlocklyAuthoring.toolbox)} key="toolbox" />,
                 <DatSelect path="initialCode" label="Initial code"
                   options={Object.keys(BlocklyAuthoring.code)} key="code" />,
-                <DatBoolean path="showCrossSection" label="Show cross section?"
-                  key="showCrossSection" />,
+                <DatBoolean path="showCrossSection" label="Show cross section?" key="showCrossSection" />,
                 <DatBoolean path="showChart" label="Show chart?"
                   key="showChart" />,
 
                 <DatBoolean path="showBlocks" label="Show blocks?" key="showBlocks" />,
                 <DatBoolean path="showCode" label="Show code?" key="showCode" />,
                 <DatBoolean path="showControls" label="Show controls?" key="showControls" />,
-                <this.optionalControls key="optionalControls"/>,
+                <DatFolder title="Controls Options" key="controlsFolder" closed={true}>
+                  <DatBoolean path="showWindSpeed" label="Show Wind Speed?" key="showWindSpeed"/>
+                  <DatNumber
+                    path="initialWindSpeed" label="Initial Wind Speed" key="initialWindSpeed"
+                    min={0} max={30} step={1}/>
+                  <DatBoolean path="showWindDirection" label="Show Wind Direction?" key="showWindDirection" />
+                  <DatNumber
+                    path="initialWindDirection" label="Initial Wind Direction" key="initialWindDirection"
+                    min={0} max={360} step={1}/>
+                  <DatBoolean path="showEruptionMass" label="Show Eruption Mass?" key="showEruptionMass" />
+                  <DatNumber
+                    path="initialEruptionMass" label="Initial Eruption Mass" key="initialEruptionMass"
+                    min={100000000} max={10000000000000000} step={1000}/>
+                  <DatBoolean path="showColumnHeight" label="Show Column Height?" key="showColumnHeight" />
+                  <DatNumber
+                    path="initialColumnHeight" label="Initial Column Height" key="initialColumnHeight"
+                    min={1000} max={30000} step={1000}/>
+                  <DatBoolean path="showParticleSize" label="Show Particle Size?" key="showParticleSize" />
+                  <DatNumber
+                    path="initialParticleSize" label="Initial Particle Size" key="initialParticleSize"
+                    min={0} max={64} step={1}/>
+                </DatFolder>,
 
                 <DatBoolean path="showLog" label="Show Log?" key="showLog" />,
 
-                <DatBoolean path="showCrossSection" label="Show cross section?" key="showCrossSection" />,
                 <DatBoolean path="showChart" label="Show chart?" key="showChart" />,
                 <DatBoolean path="showSidebar" label="Show sidebar?" key="showSidebar" />,
                 // submit button. Should remain at bottom
@@ -417,60 +452,6 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         </Simulation>
       </Row>
     </App>
-    );
-  }
-
-  private optionalControls = (props: IBaseProps) => {
-    const {
-      showControls,
-      showWindSpeed,
-      initialWindSpeed,
-      showWindDirection,
-      initialWindDirection,
-      showEruptionMass,
-      initialEruptionMass,
-      showColumnHeight,
-      initialColumnHeight,
-      showParticleSize,
-      initialParticleSize,
-    } = this.state.simulationOptions;
-
-    const output: JSX.Element[] = [];
-    if (showControls) {
-      output.push(<DatBoolean path="showWindSpeed" label="Show Wind Speed?" key="showWindSpeed" />);
-      if (showWindSpeed) {
-        output.push(<DatNumber
-          path="initialWindSpeed" label="Initial Wind Speed" key="initialWindSpeed"
-          min={0} max={30} step={1}/>);
-      }
-      output.push(<DatBoolean path="showWindDirection" label="Show Wind Direction?" key="showWindDirection" />);
-      if (showWindDirection) {
-        output.push(<DatNumber
-          path="initialWindDirection" label="Initial Wind Direction" key="initialWindDirection"
-          min={0} max={360} step={1}/>);
-      }
-      output.push(<DatBoolean path="showEruptionMass" label="Show Eruption Mass?" key="showEruptionMass" />);
-      if (showEruptionMass) {
-        output.push(<DatNumber
-          path="initialEruptionMass" label="Initial Eruption Mass" key="initialEruptionMass"
-          min={100000000} max={10000000000000000} step={1000}/>);
-      }
-      output.push(<DatBoolean path="showColumnHeight" label="Show Column Height?" key="showColumnHeight" />);
-      if (showColumnHeight) {
-        output.push(<DatNumber
-          path="initialColumnHeight" label="Initial Column Height" key="initialColumnHeight"
-          min={1} max={30} step={1}/>);
-      }
-      output.push(<DatBoolean path="showParticleSize" label="Show Particle Size?" key="showParticleSize" />);
-      if (showParticleSize) {
-        output.push(<DatNumber
-          path="initialParticleSize" label="Initial Particle Size" key="initialParticleSize"
-          min={0} max={64} step={1}/>);
-      }
-    }
-
-    return(
-      output
     );
   }
 
