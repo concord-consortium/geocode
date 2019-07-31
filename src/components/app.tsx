@@ -117,7 +117,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     super(props);
 
     const initialState: IState = {
-      showOptionsDialog: true,
+      showOptionsDialog: false,
       expandOptionsDialog: false,
       simulationOptions: {
         requireEruption: true,
@@ -127,8 +127,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         initialCode: "Basic",
         showBlocks: true,
         showLog: false,
-        showCode: true,
-        showControls: true,
+        showCode: false,
+        showControls: false,
         showCrossSection: false,
         showChart: false,
         showSidebar: false

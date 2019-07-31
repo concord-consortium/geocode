@@ -94,17 +94,17 @@ export function getGridIndexForLocation(x: number, y: number, numRows: number) {
 
 export const SimulationStore = types
   .model("simulation", {
-    windSpeed: 6,
+    windSpeed: 15,
     windDirection: 45,
-    mass: 20000000,
+    mass: 1000000000000,
     vei: 0,
-    colHeight: 2000,
+    colHeight: 25000,
     particleSize: 1,
-    stagingWindSpeed: 6,
+    stagingWindSpeed: 15,
     stagingWindDirection: 45,
-    stagingMass: 20000000,
+    stagingMass: 1000000000000,
     stagingVei: 0,
-    stagingColHeight: 2000,
+    stagingColHeight: 25000,
     stagingParticleSize: 1,
     volcanoLat: 12.5078,
     volcanoLng: -86.7022,

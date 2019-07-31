@@ -63,6 +63,7 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
   private toXml = () => {
     const xml = Blockly.Xml.workspaceToDom(this.workSpace);
     localStorage.setItem("blockly-workspace", Blockly.Xml.domToPrettyText(xml));
+    console.log(xml);
   }
 
   private initializeBlockly = () => {

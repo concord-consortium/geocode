@@ -7,27 +7,27 @@
           <block type="thickness"></block>
           <block type="x"></block>
           <block type="y"></block> -->
-          <block type="addVolcano"></block>
+          <!-- <block type="addVolcano"></block> -->
           <block type="addTown"></block>
           <block type="setWindDirection"></block>
           <block type="setWindSpeed"></block>
-          <block type="setEruptionHeight"></block>
+          <!-- <block type="setEruptionHeight"></block>
           <block type="setEruptionMass"></block>
-          <block type="setVEI"></block>
+          <block type="setVEI"></block> -->
           <block type="erupt"></block>
-          <block type="outputPaintGrid"></block>
+          <!-- <block type="outputPaintGrid"></block>
           <block type="outputValueGrid"></block>
           <block type="outputPlot"></block>
-          <block type="redrawMap"></block>
+          <block type="redrawMap"></block> -->
         </category>
-        <category name="Logic" colour="%{BKY_LOGIC_HUE}">
+        <!-- <category name="Logic" colour="%{BKY_LOGIC_HUE}">
           <block type="controls_if"></block>
           <block type="logic_compare"></block>
           <block type="logic_operation"></block>
           <block type="logic_negate"></block>
           <block type="logic_boolean"></block>
-        </category>
-      <category name="Loops" colour="120">
+        </category> -->
+      <!-- <category name="Loops" colour="120">
       <block type="controls_repeat_ext">
         <value name="TIMES">
           <shadow type="math_number">
@@ -56,17 +56,17 @@
       <block type="controls_forEach"></block>
       <block type="controls_flow_statements"></block>
 
-    </category>
-    <category name="Variables" colour="330" custom="VARIABLE">
-    </category>
+    </category> -->
+    <!-- <category name="Variables" colour="330" custom="VARIABLE">
+    </category> -->
       <category name="Data" colour="%{BKY_MATH_HUE}">
         <block type="text">
             <field name="TEXT"></field>
         </block>
         <block type="math_number">
-          <field name="NUM">123</field>
+          <field name="NUM">1</field>
         </block>
-        <block type="math_arithmetic"></block>
+        <!-- <block type="math_arithmetic"></block>
         <block type="math_single"></block>
         <block type="math_random_int">
           <value name="FROM">
@@ -79,11 +79,11 @@
               <field name="NUM">100</field>
             </block>
           </value>
-        </block>
+        </block> -->
       </category>
-      <category name="Logging" colour="260">
+      <!-- <category name="Logging" colour="260">
         <block type="logprint"></block>
         <block type="stringconcat"></block>
       </category>
-      
+       -->
       </xml>
