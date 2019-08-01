@@ -1,6 +1,6 @@
 import { inject, observer } from "mobx-react";
 import * as React from "react";
-import DatGui, { DatBoolean, DatButton, DatSelect } from "react-dat-gui";
+import DatGui, { DatBoolean, DatButton, DatSelect, DatFolder, DatNumber } from "react-dat-gui";
 import { LineChart, Line, CartesianGrid, XAxis, YAxis } from "recharts";
 import { BaseComponent, IBaseProps } from "./base";
 import { MapComponent } from "./map-component";
@@ -35,6 +35,16 @@ export interface SimulationAuthoringOptions {
   showBlocks: boolean;
   showCode: boolean;
   showControls: boolean;
+  showWindSpeed: boolean;
+  initialWindSpeed: number;
+  showWindDirection: boolean;
+  initialWindDirection: number;
+  showEruptionMass: boolean;
+  initialEruptionMass: number;
+  showColumnHeight: boolean;
+  initialColumnHeight: number;
+  showParticleSize: boolean;
+  initialParticleSize: number;
   showCrossSection: boolean;
   showChart: boolean;
   showSidebar: boolean;
@@ -130,6 +140,16 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         showLog: false,
         showCode: true,
         showControls: true,
+        showWindSpeed: true,
+        initialWindSpeed: 5,
+        showWindDirection: true,
+        initialWindDirection: 310,
+        showEruptionMass: true,
+        initialEruptionMass: 100000000000,
+        showColumnHeight: true,
+        initialColumnHeight: 30,
+        showParticleSize: true,
+        initialParticleSize: 43,
         showCrossSection: false,
         showChart: false,
         showSidebar: false
@@ -163,7 +183,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     }
 
     this.state = initialState;
-
+    this.stores.setAuthoringOptions(initialState.simulationOptions);
   }
 
   public componentDidUpdate() {
@@ -226,6 +246,16 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       showLog,
       showCode,
       showControls,
+      showWindSpeed,
+      initialWindSpeed,
+      showWindDirection,
+      initialWindDirection,
+      showEruptionMass,
+      initialEruptionMass,
+      showColumnHeight,
+      initialColumnHeight,
+      showParticleSize,
+      initialParticleSize,
       showCrossSection,
       showChart,
       showSidebar
@@ -303,7 +333,13 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             }
             { showControls &&
               <FixWidthTabPanel width={`${tabWidth}px`}>
-                <Controls />
+                <Controls
+                  showWindSpeed={showWindSpeed}
+                  showWindDirection={showWindDirection}
+                  showEruptionMass={showEruptionMass}
+                  showColumnHeight={showColumnHeight}
+                  showParticleSize={showParticleSize}
+                />
               </FixWidthTabPanel>
             }
           </Tabs>
@@ -411,6 +447,29 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 <DatBoolean path="showBlocks" label="Show blocks?" key="showBlocks" />,
                 <DatBoolean path="showCode" label="Show code?" key="showCode" />,
                 <DatBoolean path="showControls" label="Show controls?" key="showControls" />,
+                <DatFolder title="Controls Options" key="controlsFolder" closed={true}>
+                  <DatBoolean path="showWindSpeed" label="Show Wind Speed?" key="showWindSpeed"/>
+                  <DatNumber
+                    path="initialWindSpeed" label="Initial Wind Speed" key="initialWindSpeed"
+                    min={0} max={30} step={1}/>
+                  <DatBoolean path="showWindDirection" label="Show Wind Direction?" key="showWindDirection" />
+                  <DatNumber
+                    path="initialWindDirection" label="Initial Wind Direction" key="initialWindDirection"
+                    min={0} max={360} step={1}/>
+                  <DatBoolean path="showEruptionMass" label="Show Eruption Mass?" key="showEruptionMass" />
+                  <DatNumber
+                    path="initialEruptionMass" label="Initial Eruption Mass" key="initialEruptionMass"
+                    min={100000000} max={10000000000000000} step={1000}/>
+                  <DatBoolean path="showColumnHeight" label="Show Column Height?" key="showColumnHeight" />
+                  <DatNumber
+                    path="initialColumnHeight" label="Initial Column Height" key="initialColumnHeight"
+                    min={1000} max={30000} step={1000}/>
+                  <DatBoolean path="showParticleSize" label="Show Particle Size?" key="showParticleSize" />
+                  <DatNumber
+                    path="initialParticleSize" label="Initial Particle Size" key="initialParticleSize"
+                    min={0} max={64} step={1}/>
+                </DatFolder>,
+
                 <DatBoolean path="showLog" label="Show Log?" key="showLog" />,
 
                 <DatBoolean path="showChart" label="Show chart?" key="showChart" />,
