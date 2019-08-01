@@ -23,8 +23,9 @@ export function getCachedCircleIcon(label: string) {
     return iconsCache.get(iconKey);
 }
 
-export function divIcon(label: string): DivIcon {
-    return new DivIcon({ className: "div-icon", html: label });
+export function divIcon(label: string, anchorCorner: string = "top-left"): DivIcon {
+    const html = "<div class='icon-content " + anchorCorner + "'>" + label + "</div>";
+    return new DivIcon({ className: "div-icon", html });
 }
 
 export function getCachedDivIcon(label: string) {

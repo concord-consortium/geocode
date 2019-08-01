@@ -9,10 +9,14 @@
     text-align: center;
     line-height: 20px;
     color: #666;
-    z-index: 200 !important;
+    z-index: 500 !important;
   }
   
   .div-icon {
+    height: 0px;
+  }
+
+  .icon-content {
     background: #fff;
     width: max-content !important;
     height: max-content !important;
@@ -25,4 +29,40 @@
     line-height: 20px;
     color: #666;
     z-index: 200 !important;
+  }
+
+  .top-left {
+    transform: translate(0%, 0%);
+  }
+
+  .top-right {
+    transform: translate(-100%, 0%);
+  }
+
+  .top-center {
+    transform: translate(-50%, 0%);
+  }
+
+  .bottom-left {
+    transform: translate(0%, -100%);
+  }
+
+  .bottom-right {
+    transform: translate(-100%, -100%);
+  }
+
+  .bottom-center {
+    transform: translate(-50%, -100%);
+  }
+
+  .center-left {
+    transform: translate(0%, -50%);
+  }
+
+  .center-right {
+    transform: translate(-100%, -50%);
+  }
+
+  .center-center {
+    transform: translate(-50%, -50%);
   }
