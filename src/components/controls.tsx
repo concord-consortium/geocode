@@ -44,7 +44,13 @@ interface IControls {
   changeMass: (a: any) => void;
 }
 
-interface IProps extends IBaseProps {}
+interface IProps extends IBaseProps {
+  showWindSpeed: boolean;
+  showWindDirection: boolean;
+  showEruptionMass: boolean;
+  showColumnHeight: boolean;
+  showParticleSize: boolean;
+}
 interface IState {
   animate: boolean;
 }
@@ -66,9 +72,17 @@ export class Controls extends BaseComponent<IProps, IState> {
       stagingWindSpeed
     } = this.stores;
 
+    const {
+      showWindSpeed,
+      showWindDirection,
+      showEruptionMass,
+      showColumnHeight,
+      showParticleSize
+    } = this.props;
+
     return(
       <StyledControls>
-        <label>
+        {showWindSpeed && <label>
           Wind speed:
           <HorizontalContainer>
             <RangeControl
@@ -84,8 +98,8 @@ export class Controls extends BaseComponent<IProps, IState> {
               {stagingWindSpeed} m/s
             </ValueOutput>
           </HorizontalContainer>
-        </label>
-        <label>
+        </label>}
+        {showWindDirection && <label>
           Wind direction:
           <HorizontalContainer>
             <RangeControl
@@ -101,8 +115,8 @@ export class Controls extends BaseComponent<IProps, IState> {
               {stagingWindDirection} degrees from North
             </ValueOutput>
           </HorizontalContainer>
-        </label>
-        <label>
+        </label>}
+        {showEruptionMass && <label>
           Eruption mass:
           <HorizontalContainer>
             <RangeControl
@@ -128,8 +142,8 @@ export class Controls extends BaseComponent<IProps, IState> {
                 {__html: `10<sup>${Math.round(Math.log(stagingMass) / Math.LN10)}</sup> kg`}
             } />
           </HorizontalContainer>
-        </label>
-        <label>
+        </label>}
+        {showColumnHeight && <label>
           Column height
           <HorizontalContainer>
             <RangeControl
@@ -145,8 +159,8 @@ export class Controls extends BaseComponent<IProps, IState> {
               {stagingColHeight / 1000} km
             </ValueOutput>
           </HorizontalContainer>
-        </label>
-        <label>
+        </label>}
+        {showParticleSize && <label>
           Particle size:
           <HorizontalContainer>
             <RangeControl
@@ -162,7 +176,7 @@ export class Controls extends BaseComponent<IProps, IState> {
               {stagingParticleSize} mm
             </ValueOutput>
           </HorizontalContainer>
-        </label>
+        </label>}
         <HorizontalContainer
             alignItems="baseline">
           <Button onClick={this.erupt}>Erupt</Button>

@@ -1,0 +1,79 @@
+{
+    "Cerro Negro": {
+        "topLeftLat": 22,
+        "topLeftLng": -96,
+        "bottomRightLat": 2,
+        "bottomRightLng": -76,
+        "volcanoLat": 12.5078,
+        "volcanoLng": -86.7022,
+        "minZoom": 6,
+        "maxZoom": 10,
+        "initialZoom": 8
+    },
+    "Mt. St. Helens": {
+        "topLeftLat": 56,
+        "topLeftLng": -130,
+        "bottomRightLat": 36,
+        "bottomRightLng": -110,
+        "volcanoLat": 46.1914,
+        "volcanoLng": -122.1956,
+        "minZoom": 6,
+        "maxZoom": 10,
+        "initialZoom": 8
+    },
+    "Mount Pinatubo": {
+        "topLeftLat": 25,
+        "topLeftLng": 130,
+        "bottomRightLat": 5,
+        "bottomRightLng": 110,
+        "volcanoLat": 15.1429, 
+        "volcanoLng": 120.3496,
+        "minZoom": 6,
+        "maxZoom": 10,
+        "initialZoom": 8
+    },
+    "Volcan de Fuego": {
+        "topLeftLat": 4,
+        "topLeftLng": -100,
+        "bottomRightLat": 25,
+        "bottomRightLng": -80,
+        "volcanoLat": 14.4747, 
+        "volcanoLng": -90.8806,
+        "minZoom": 6,
+        "maxZoom": 10,
+        "initialZoom": 8
+    },
+    "Mount Ruapehu": {
+        "topLeftLat": -49,
+        "topLeftLng": 165,
+        "bottomRightLat": -29,
+        "bottomRightLng": 185,
+        "volcanoLat": -39.2817, 
+        "volcanoLng": 175.5685,
+        "minZoom": 6,
+        "maxZoom": 10,
+        "initialZoom": 8
+    },
+    "Mount Fuji": {
+        "topLeftLat": 25,
+        "topLeftLng": 128,
+        "bottomRightLat": 45,
+        "bottomRightLng": 148,
+        "volcanoLat": 35.3606,
+        "volcanoLng": 138.7274,
+        "minZoom": 6,
+        "maxZoom": 10,
+        "initialZoom": 8
+    },
+    "Mount Vesuvius": {
+        "topLeftLat": 30,
+        "topLeftLng": 4,
+        "bottomRightLat": 50,
+        "bottomRightLng": 24,
+        "volcanoLat": 40.8224,
+        "volcanoLng": 14.4289,
+        "minZoom": 6,
+        "maxZoom": 10,
+        "initialZoom": 8
+    }
+}

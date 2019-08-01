@@ -1,6 +1,6 @@
 import { inject, observer } from "mobx-react";
 import * as React from "react";
-import DatGui, { DatBoolean, DatButton, DatSelect } from "react-dat-gui";
+import DatGui, { DatBoolean, DatButton, DatSelect, DatFolder, DatNumber } from "react-dat-gui";
 import { LineChart, Line, CartesianGrid, XAxis, YAxis } from "recharts";
 import { BaseComponent, IBaseProps } from "./base";
 import { MapComponent } from "./map-component";
@@ -8,6 +8,7 @@ import { LogComponent } from "./log-component";
 import { MapSidebarComponent } from "./map-sidebar-component";
 import { CrossSectionComponent } from "./cross-section-component";
 import * as Maps from "./../assets/maps/maps.json";
+import * as Scenarios from "./../assets/maps/scenarios.json";
 import * as BlocklyAuthoring from "./../assets/blockly-authoring/index.json";
 
 import BlocklyContianer from "./blockly-container";
@@ -28,12 +29,22 @@ export interface SimulationAuthoringOptions {
   [key: string]: any;
   requireEruption: boolean;
   requirePainting: boolean;
-  map: string;
+  scenario: string;
   toolbox: string;
   initialCode: string;
   showBlocks: boolean;
   showCode: boolean;
   showControls: boolean;
+  showWindSpeed: boolean;
+  initialWindSpeed: number;
+  showWindDirection: boolean;
+  initialWindDirection: number;
+  showEruptionMass: boolean;
+  initialEruptionMass: number;
+  showColumnHeight: boolean;
+  initialColumnHeight: number;
+  showParticleSize: boolean;
+  initialParticleSize: number;
   showCrossSection: boolean;
   showChart: boolean;
   showSidebar: boolean;
@@ -122,13 +133,23 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       simulationOptions: {
         requireEruption: true,
         requirePainting: true,
-        map: "Mt Redoubt",
+        scenario: "Cerro Negro",
         toolbox: "Everything",
         initialCode: "Basic",
         showBlocks: true,
         showLog: false,
         showCode: true,
         showControls: true,
+        showWindSpeed: true,
+        initialWindSpeed: 5,
+        showWindDirection: true,
+        initialWindDirection: 310,
+        showEruptionMass: true,
+        initialEruptionMass: 100000000000,
+        showColumnHeight: true,
+        initialColumnHeight: 30,
+        showParticleSize: true,
+        initialParticleSize: 43,
         showCrossSection: false,
         showChart: false,
         showSidebar: false
@@ -162,10 +183,19 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     }
 
     this.state = initialState;
-
+    this.stores.setAuthoringOptions(initialState.simulationOptions);
   }
 
   public componentDidUpdate() {
+    const { scenario } = this.state.simulationOptions;
+    const scenarioData = (Scenarios as {[key: string]: {[key: string]: number}})[scenario];
+
+    // Have to do this or lint yells about string literals as keys
+    const latKey = "volcanoLat";
+    const lngKey = "volcanoLng";
+
+    this.stores.setVolcano(scenarioData[latKey], scenarioData[lngKey]);
+
     this.stores.setAuthoringOptions(this.state.simulationOptions);
   }
 
@@ -222,6 +252,16 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       showLog,
       showCode,
       showControls,
+      showWindSpeed,
+      initialWindSpeed,
+      showWindDirection,
+      initialWindDirection,
+      showEruptionMass,
+      initialEruptionMass,
+      showColumnHeight,
+      initialColumnHeight,
+      showParticleSize,
+      initialParticleSize,
       showCrossSection,
       showChart,
       showSidebar
@@ -239,6 +279,24 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     const blocklyHeight = Math.floor(height * .7);
     const logWidth = Math.floor(tabWidth * 0.95);
     const logHeight = Math.floor(height * .2);
+
+    const { scenario } = this.state.simulationOptions;
+    const scenarioData = (Scenarios as {[key: string]: {[key: string]: number}})[scenario];
+    const initialZoomKey = "initialZoom";
+    const minZoomKey = "minZoom";
+    const maxZoomKey = "maxZoom";
+    const topLeftLatKey = "topLeftLat";
+    const topLeftLngKey = "topLeftLng";
+    const bottomRightLatKey = "bottomRightLat";
+    const bottomRightLngKey = "bottomRightLng";
+
+    const initialZoom = scenarioData[initialZoomKey];
+    const minZoom = scenarioData[minZoomKey];
+    const maxZoom = scenarioData[maxZoomKey];
+    const topLeftLat = scenarioData[topLeftLatKey];
+    const topLeftLng = scenarioData[topLeftLngKey];
+    const bottomRightLat = scenarioData[bottomRightLatKey];
+    const bottomRightLng = scenarioData[bottomRightLngKey];
 
     return (
       <App className="app" ref={this.rootComponent}>
@@ -281,7 +339,13 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             }
             { showControls &&
               <FixWidthTabPanel width={`${tabWidth}px`}>
-                <Controls />
+                <Controls
+                  showWindSpeed={showWindSpeed}
+                  showWindDirection={showWindDirection}
+                  showEruptionMass={showEruptionMass}
+                  showColumnHeight={showColumnHeight}
+                  showParticleSize={showParticleSize}
+                />
               </FixWidthTabPanel>
             }
           </Tabs>
@@ -304,7 +368,13 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               cities={ cities }
               volcanoLat={ volcanoLat }
               volcanoLng={ volcanoLng }
-              initialZoom={8}
+              initialZoom={initialZoom}
+              minZoom={ minZoom }
+              maxZoom={ maxZoom }
+              topLeftLat={topLeftLat}
+              topLeftLng={topLeftLng}
+              bottomRightLat={bottomRightLat}
+              bottomRightLng={bottomRightLng}
               viewportZoom={ viewportZoom }
               viewportCenterLat={ viewportCenterLat }
               viewportCenterLng={ viewportCenterLng }
@@ -371,7 +441,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               [
                 <DatBoolean path="requireEruption" label="Require eruption?" key="requireEruption" />,
                 <DatBoolean path="requirePainting" label="Require painting?" key="requirePainting" />,
-                <DatSelect path="map" label="Map background" options={Object.keys(Maps)} key="background" />,
+                <DatSelect path="scenario" label="Map Scenario" options={Object.keys(Scenarios)} key="background" />,
                 <DatSelect path="toolbox" label="Code toolbox"
                   options={Object.keys(BlocklyAuthoring.toolbox)} key="toolbox" />,
                 <DatSelect path="initialCode" label="Initial code"
@@ -383,6 +453,29 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 <DatBoolean path="showBlocks" label="Show blocks?" key="showBlocks" />,
                 <DatBoolean path="showCode" label="Show code?" key="showCode" />,
                 <DatBoolean path="showControls" label="Show controls?" key="showControls" />,
+                <DatFolder title="Controls Options" key="controlsFolder" closed={true}>
+                  <DatBoolean path="showWindSpeed" label="Show Wind Speed?" key="showWindSpeed"/>
+                  <DatNumber
+                    path="initialWindSpeed" label="Initial Wind Speed" key="initialWindSpeed"
+                    min={0} max={30} step={1}/>
+                  <DatBoolean path="showWindDirection" label="Show Wind Direction?" key="showWindDirection" />
+                  <DatNumber
+                    path="initialWindDirection" label="Initial Wind Direction" key="initialWindDirection"
+                    min={0} max={360} step={1}/>
+                  <DatBoolean path="showEruptionMass" label="Show Eruption Mass?" key="showEruptionMass" />
+                  <DatNumber
+                    path="initialEruptionMass" label="Initial Eruption Mass" key="initialEruptionMass"
+                    min={100000000} max={10000000000000000} step={1000}/>
+                  <DatBoolean path="showColumnHeight" label="Show Column Height?" key="showColumnHeight" />
+                  <DatNumber
+                    path="initialColumnHeight" label="Initial Column Height" key="initialColumnHeight"
+                    min={1000} max={30000} step={1000}/>
+                  <DatBoolean path="showParticleSize" label="Show Particle Size?" key="showParticleSize" />
+                  <DatNumber
+                    path="initialParticleSize" label="Initial Particle Size" key="initialParticleSize"
+                    min={0} max={64} step={1}/>
+                </DatFolder>,
+
                 <DatBoolean path="showLog" label="Show Log?" key="showLog" />,
 
                 <DatBoolean path="showChart" label="Show chart?" key="showChart" />,

@@ -112,8 +112,8 @@ export const SimulationStore = types
     coloredVei: 0,
     coloredColHeight: 2000,
     coloredParticleSize: 1,
-    volcanoLat: 12.5078,
-    volcanoLng: -86.7022,
+    volcanoLat: 0,
+    volcanoLng: 0,
     crossPoint1Lat: 0,
     crossPoint1Lng: 0,
     crossPoint2Lat: 0,
@@ -428,6 +428,11 @@ export const SimulationStore = types
       setAuthoringOptions(opts: SimulationAuthoringOptions) {
         self.requireEruption = opts.requireEruption;
         self.requirePainting = opts.requirePainting;
+        self.stagingWindSpeed = opts.initialWindSpeed;
+        self.stagingWindDirection = opts.initialWindDirection;
+        self.stagingMass = opts.initialEruptionMass;
+        self.stagingColHeight = opts.initialColumnHeight;
+        self.stagingParticleSize = opts.initialParticleSize;
       }
     };
   })
