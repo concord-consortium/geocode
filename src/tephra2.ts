@@ -111,7 +111,7 @@ const gridTephraCalc = (
   const modelY = gridY * dScale;
   const coneX = coneGridX * dScale;
   const coneY = coneGridY * dScale;
-  const rotated = rotateGridPoint({x: modelX, y: modelY}, windDirection, {x: coneX, y: coneY});
+  const rotated = rotateGridPoint({x: modelX, y: modelY}, (360 - windDirection) + 90, {x: coneX, y: coneY});
   return tephraCalc2(
     rotated.x, rotated.y,
     coneX, coneY,
