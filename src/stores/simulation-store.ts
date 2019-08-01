@@ -425,14 +425,16 @@ export const SimulationStore = types
           return (out);
         }
       },
-      setAuthoringOptions(opts: SimulationAuthoringOptions) {
+      setAuthoringOptions(opts: SimulationAuthoringOptions, changeDefaultParameters: boolean) {
+        if (changeDefaultParameters) {
+          self.stagingWindSpeed = opts.initialWindSpeed;
+          self.stagingWindDirection = opts.initialWindDirection;
+          self.stagingMass = opts.initialEruptionMass;
+          self.stagingColHeight = opts.initialColumnHeight;
+          self.stagingParticleSize = opts.initialParticleSize;
+        }
         self.requireEruption = opts.requireEruption;
         self.requirePainting = opts.requirePainting;
-        self.stagingWindSpeed = opts.initialWindSpeed;
-        self.stagingWindDirection = opts.initialWindDirection;
-        self.stagingMass = opts.initialEruptionMass;
-        self.stagingColHeight = opts.initialColumnHeight;
-        self.stagingParticleSize = opts.initialParticleSize;
       }
     };
   })

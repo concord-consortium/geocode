@@ -145,11 +145,11 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         showWindDirection: true,
         initialWindDirection: 310,
         showEruptionMass: true,
-        initialEruptionMass: 100000000000,
+        initialEruptionMass: 10000000000000,
         showColumnHeight: true,
-        initialColumnHeight: 30,
+        initialColumnHeight: 20000,
         showParticleSize: true,
-        initialParticleSize: 43,
+        initialParticleSize: 1,
         showCrossSection: false,
         showChart: false,
         showSidebar: false
@@ -183,7 +183,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     }
 
     this.state = initialState;
-    this.stores.setAuthoringOptions(initialState.simulationOptions);
+    this.stores.setAuthoringOptions(initialState.simulationOptions, true);
   }
 
   public componentDidUpdate() {
@@ -196,7 +196,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
 
     this.stores.setVolcano(scenarioData[latKey], scenarioData[lngKey]);
 
-    this.stores.setAuthoringOptions(this.state.simulationOptions);
+    this.stores.setAuthoringOptions(this.state.simulationOptions, false);
   }
 
   public render() {
