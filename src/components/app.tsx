@@ -8,6 +8,7 @@ import { LogComponent } from "./log-component";
 import { MapSidebarComponent } from "./map-sidebar-component";
 import { CrossSectionComponent } from "./cross-section-component";
 import * as Maps from "./../assets/maps/maps.json";
+import * as Scenarios from "./../assets/maps/scenarios.json";
 import * as BlocklyAuthoring from "./../assets/blockly-authoring/index.json";
 
 import BlocklyContianer from "./blockly-container";
@@ -28,7 +29,7 @@ export interface SimulationAuthoringOptions {
   [key: string]: any;
   requireEruption: boolean;
   requirePainting: boolean;
-  map: string;
+  scenario: string;
   toolbox: string;
   initialCode: string;
   showBlocks: boolean;
@@ -122,7 +123,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       simulationOptions: {
         requireEruption: true,
         requirePainting: true,
-        map: "Mt Redoubt",
+        scenario: "Cerro Negro",
         toolbox: "Everything",
         initialCode: "Basic",
         showBlocks: true,
@@ -166,6 +167,15 @@ export class AppComponent extends BaseComponent<IProps, IState> {
   }
 
   public componentDidUpdate() {
+    const { scenario } = this.state.simulationOptions;
+    const scenarioData = (Scenarios as {[key: string]: {[key: string]: number}})[scenario];
+
+    // Have to do this or lint yells about string literals as keys
+    const latKey = "volcanoLat";
+    const lngKey = "volcanoLng";
+
+    this.stores.setVolcano(scenarioData[latKey], scenarioData[lngKey]);
+
     this.stores.setAuthoringOptions(this.state.simulationOptions);
   }
 
@@ -234,6 +244,24 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     const logWidth = Math.floor(tabWidth * 0.95);
     const logHeight = Math.floor(height * .2);
 
+    const { scenario } = this.state.simulationOptions;
+    const scenarioData = (Scenarios as {[key: string]: {[key: string]: number}})[scenario];
+    const initialZoomKey = "initialZoom";
+    const minZoomKey = "minZoom";
+    const maxZoomKey = "maxZoom";
+    const topLeftLatKey = "topLeftLat";
+    const topLeftLngKey = "topLeftLng";
+    const bottomRightLatKey = "bottomRightLat";
+    const bottomRightLngKey = "bottomRightLng";
+
+    const initialZoom = scenarioData[initialZoomKey];
+    const minZoom = scenarioData[minZoomKey];
+    const maxZoom = scenarioData[maxZoomKey];
+    const topLeftLat = scenarioData[topLeftLatKey];
+    const topLeftLng = scenarioData[topLeftLngKey];
+    const bottomRightLat = scenarioData[bottomRightLatKey];
+    const bottomRightLng = scenarioData[bottomRightLngKey];
+
     return (
       <App className="app" ref={this.rootComponent}>
         <ResizeObserver
@@ -298,7 +326,13 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               cities={ cities }
               volcanoLat={ volcanoLat }
               volcanoLng={ volcanoLng }
-              initialZoom={8}
+              initialZoom={initialZoom}
+              minZoom={ minZoom }
+              maxZoom={ maxZoom }
+              topLeftLat={topLeftLat}
+              topLeftLng={topLeftLng}
+              bottomRightLat={bottomRightLat}
+              bottomRightLng={bottomRightLng}
               viewportZoom={ viewportZoom }
               viewportCenterLat={ viewportCenterLat }
               viewportCenterLng={ viewportCenterLng }
@@ -365,7 +399,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               [
                 <DatBoolean path="requireEruption" label="Require eruption?" key="requireEruption" />,
                 <DatBoolean path="requirePainting" label="Require painting?" key="requirePainting" />,
-                <DatSelect path="map" label="Map background" options={Object.keys(Maps)} key="background" />,
+                <DatSelect path="scenario" label="Map Scenario" options={Object.keys(Scenarios)} key="background" />,
                 <DatSelect path="toolbox" label="Code toolbox"
                   options={Object.keys(BlocklyAuthoring.toolbox)} key="toolbox" />,
                 <DatSelect path="initialCode" label="Initial code"
