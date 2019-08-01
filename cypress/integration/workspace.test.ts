@@ -10,7 +10,7 @@ context("Test app workspace", () => {
       // cy.get(".app").should("have.text", "Blocks");
     });
     it("Contains some town names in the blockly region", () => {
-      cy.contains(".injectionDiv", "Concord");
+      cy.contains(".injectionDiv", "Boston");
     });
     it("cotains a command to set wind speed", () => {
       cy.contains(".injectionDiv", "wind");
