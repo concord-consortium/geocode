@@ -3,7 +3,7 @@ Blockly.Blocks['addTown'] = {
       this.appendValueInput("name")
           .setCheck("String")
           .setAlign(Blockly.ALIGN_RIGHT)
-          .appendField("Create a town named");
+          .appendField("Create a location named");
       this.appendDummyInput()
           .appendField("at");
       this.appendValueInput("x")
@@ -22,7 +22,7 @@ Blockly.Blocks['addTown'] = {
    this.setHelpUrl("");
     }
   };
-  
+
   Blockly.JavaScript['addTown'] = function(block) {
     var value_name = Blockly.JavaScript.valueToCode(block, 'name', Blockly.JavaScript.ORDER_ATOMIC);
     var value_x = Blockly.JavaScript.valueToCode(block, 'x', Blockly.JavaScript.ORDER_ATOMIC);
@@ -36,4 +36,3 @@ Blockly.Blocks['addTown'] = {
     `
     return code;
   }
-  
