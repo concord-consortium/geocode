@@ -27,7 +27,7 @@ const GridSquare =  PixiComponent<IGridSquareProps, PIXI.Graphics>("GridSquare",
   // didMount: (instance, parent) => {},
   // willUnmount: (instance, parent) => {},
   applyProps: (g, _: IGridSquareProps, newProps: IGridSquareProps) => {
-    const { color, value, position, size} = newProps;
+    const { color, position, size} = newProps;
     const x = position.x * size;
     const y = position.y * size;
     g.clear();

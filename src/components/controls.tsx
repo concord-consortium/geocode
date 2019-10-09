@@ -3,7 +3,6 @@ import { BaseComponent, IBaseProps } from "./base";
 import { inject, observer } from "mobx-react";
 import RangeControl from "./range-control";
 import styled from "styled-components";
-import { StyledButton } from "./styled-button";
 import Button from "./overlay-button";
 import Checkbox from "@material-ui/core/Checkbox";
 

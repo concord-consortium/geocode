@@ -6,7 +6,6 @@ import { ICanvasShape } from "../interfaces";
 import * as PIXI from "pixi.js";
 import * as Color from "color";
 import * as L from "leaflet";
-import { getGridIndexForLocation } from "../stores/simulation-store";
 import gridTephraCalc from "../tephra2";
 import { LatLngToLocal, getDistanceFromLatLonInKm } from "../utilities/coordinateSpaceConversion";
 

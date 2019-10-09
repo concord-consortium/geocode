@@ -1,9 +1,7 @@
 import * as React from "react";
 
-import styled from "styled-components";
 import { Container, Text } from "@inlet/react-pixi";
 import { TextStyle } from "pixi.js";
-import * as Color from "color";
 
 interface IProps {
   position: {x: number, y: number};

@@ -1,11 +1,8 @@
 import * as React from "react";
 import styled from "styled-components";
-import { HighliteButton } from "./styled-button";
 import Button from "./overlay-button";
 import { observer, inject } from "mobx-react";
 import { BaseComponent, IBaseProps } from "./base";
-import { Stage } from "@inlet/react-pixi";
-
 const CanvDiv = styled.div`
     border: 1px solid black; border-radius: 0px;
     margin: 1em;

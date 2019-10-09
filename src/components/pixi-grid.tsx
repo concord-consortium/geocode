@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Container, Text, PixiComponent } from "@inlet/react-pixi";
+import { Container, PixiComponent } from "@inlet/react-pixi";
 import { ICanvasShape } from "../interfaces";
 
 interface IProps {
@@ -31,7 +31,6 @@ export const PixiGrid = (props: IProps) => {
   const { gridMetrics } = props;
   const { numCols, numRows, gridSize, height, width} = gridMetrics;
   const lines  = [];
-  const offset = gridSize / 2;
   let x = 0;
   let y = 0;
   let start = null;

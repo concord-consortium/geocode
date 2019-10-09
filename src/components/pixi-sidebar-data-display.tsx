@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Text } from "@inlet/react-pixi";
 
-import { Container, PixiComponent } from "@inlet/react-pixi";
+import { Container } from "@inlet/react-pixi";
 import { Ipoint } from "../interfaces";
 
 const style = new PIXI.TextStyle({

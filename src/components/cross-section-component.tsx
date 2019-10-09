@@ -1,14 +1,11 @@
 import * as React from "react";
 import { ICanvasShape } from "../interfaces";
-import { SimDatumType, CityType  } from "../stores/simulation-store";
 import styled from "styled-components";
-import { Stage, Text } from "@inlet/react-pixi";
+import { Stage } from "@inlet/react-pixi";
 import { PixiTephraCrossSection } from "./pixi-tephra-cross-section";
 import * as Color from "color";
 import { inject, observer } from "mobx-react";
 import { BaseComponent, IBaseProps } from "./base";
-import Button from "./overlay-button";
-
 const CanvDiv = styled.div`
   border: 0px solid black; border-radius: 0px;
 `;
@@ -37,7 +34,6 @@ interface IProps extends IBaseProps {
   colHeight: number;
   mass: number;
   particleSize: number;
-  // cities: CityType[];
 }
 
 @inject("stores")

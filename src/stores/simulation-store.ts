@@ -1,13 +1,6 @@
 import { types, getSnapshot } from "mobx-state-tree";
-import { autorun } from "mobx";
-import * as Color from "color";
-import * as Leaflet from "leaflet";
-import gridTephraCalc from "../tephra2";
 import { IInterpreterController, makeInterpreterController } from "../utilities/interpreter";
 import { SimulationAuthoringOptions } from "../components/app";
-import { stringify } from "querystring";
-
-import screenfull from "screenfull";
 
 let _cityCounter = 0;
 const genCityId = () => `city_${_cityCounter++}`;
@@ -281,9 +274,6 @@ export const SimulationStore = types
   }))
   .actions((self) => ({
     erupt(animate = false) {
-      const vLat = self.volcanoLat;
-      const vLng = self.volcanoLng;
-
       // This currently exists within erupt, but will probably move
       // to another block (like the paint by...)once there is some other
       // feedback for eruption
@@ -446,13 +436,6 @@ export const SimulationStore = types
     };
   });
 export const simulation = SimulationStore.create({});
-
-autorun(() => {
-  const {windSpeed, windDirection, code, cities } = simulation;
-  const x = windSpeed * Math.cos(windDirection);
-  const y = windSpeed * Math.sin(windDirection);
-  const vx = simulation.volcanoLat;
-});
 
 export type SimulationModelType = typeof SimulationStore.Type;
 export type CityType = typeof City.Type;
