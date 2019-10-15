@@ -1,4 +1,4 @@
-Blockly.Blocks['run_sumilation'] = {
+Blockly.Blocks['run_simulation'] = {
     init: function() {
       this.appendValueInput("mass")
           .setCheck("Number")
@@ -23,8 +23,8 @@ Blockly.Blocks['run_sumilation'] = {
       this.setHelpUrl("");
     }
   }
-  
-  Blockly.JavaScript['run_sumilation'] = function(block) {
+
+  Blockly.JavaScript['run_simulation'] = function(block) {
     var value_mass = Blockly.JavaScript.valueToCode(block, 'mass', Blockly.JavaScript.ORDER_ATOMIC);
     var value_coumn_height = Blockly.JavaScript.valueToCode(block, 'coumn_height', Blockly.JavaScript.ORDER_ATOMIC);
     var value_wind_speed = Blockly.JavaScript.valueToCode(block, 'wind_speed', Blockly.JavaScript.ORDER_ATOMIC);

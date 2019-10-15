@@ -41,17 +41,17 @@ You *do not* need to build to deploy the code, that is automatic.  See more info
 * Copy the Story ID, you will need it in the next step.
 * Create a git topic branch in the format of  `#####-pt-story-headline-abbreviated`
 where the PT story ID is thefirst part of the branch name.
-* In your commit comment-body reference the PT Story ID  and URL.  
+* In your commit comment-body reference the PT Story ID  and URL.
 e.g.: `[#1234567] https://www.pivotaltracker.com/story/show/1234567`
 Commits should have concise headlines with details in the body.
 * Test and lint your branch.
 * Push it to GitHub e.g. `git push --set-upstream origin #####-pt-story-headline-abbreviated`
 * After a few moments, your deployed branch should be available at
-`http://geocode-app.concord.org/branch/<branchname>/index.html`.  
+`http://geocode-app.concord.org/branch/<branchname>/index.html`.
 Verify that your deploy worked, and copy the URL.
 * When you are satisfied with your commits, and the deployment looks good, submit
 a pull request for your branch in GitHub, adding `npaessel` or `sfentress`
-as code reviewers. In your pull request summarize the work, reference the PT  
+as code reviewers. In your pull request summarize the work, reference the PT
 story, and provide a link to the deployed demo branch.
 * Update the PT story with a link to the demo deployment and the GitHub pull request.
 
@@ -68,28 +68,22 @@ This function will be improved, modified with the help of our volcanologist part
 
 ### Developing new Blockly code blocks
 The Blockly configurations and blocks are configured in:
-* `public/blocks.js` These are the custom blocks.
-* `public/normal-setup.xml` This is the saved workspace (program in progress).
-* `public/toolboc.xml` This is the list of blocks available in the toolbox.
+* `src/blockly-blocks/blocks.js` Imports the files used for the custom blocks. Individual files are located in `src/blockly-blocks` (e.g., `src/blockly-blocks/block-add-town.js`, `src/blockly-blocks/block-add-volcano.js`, etc.).
+* `src/assets/blockly-authoring/code/basic-setup.xml` and `src/assets/blockly-authoring/code/nested-loops.xml` These are the two default saved workspaces (program in progress).
+* `src/assets/blockly-authoring/toolbox/first-toolbox.xml` and `src/assets/blockly-authoring/toolbox/full-toolbox.xml` These are the list of blocks available in the toolbox (depends on settings).
 
-You can use the [block factory](https://blockly-demo.appspot.com/static/demos/blockfactory/index.html)
-to create new block elements, or you can just look at `blocks.js` for examples to copy from.
+You can use the Blockly Developer Tools [block factory](https://blockly-demo.appspot.com/static/demos/blockfactory/index.html) to create new blocks, or you can look at one of the files imported in `blocks.js` for examples to copy from. To add a new block to the project, create a new JavaScript module containing the block's UI and code generation methods using kebab-case (e.g., `block-my-example-block.js`). Add the new JavaScript module to `src\blockly-blocks`, and add an import for the new JavaScript module in `blocks.js`. A new block must have a unique camelCase key (e.g., `myExampleBlock`).
 
-If you want to set a default block program modify the contents of `public/normal-setup.xml`.
-You can copy your current workspace (from eg http://localhost:8080/) by viewing the
-developer tools, ckicking on the "Application" tab, and looking in Local Storage. The
-XML will be stored in local storage under the key "blockly-workspace".
+The block's UI and code generation methods are both defined in the individual JavaScript modules which are located in `src/blockly-blocks` (e.g., `src/blockly-blocks/block-add-town.js`, `src/blockly-blocks/block-add-volcano.js`, etc.). If you are using the block factory, take the Block Definition JavaScript and the Generator stub JavaScript and add it to the block's JavaScript module.
 
-The block's UI and code generation methods are both defined in `blocks.js`.  
-
-The UI the blocks get defined in the `Blockly.Blocks` global object.
-Blocks register themselves in this object using a unique key, such as
+The UI for each block is defined in the `Blockly.Blocks` global object.
+Blocks register themselves in this object using a unique key (the block `name` field if you are using the block factory), such as
 `Blockly.Blocks['print]`.
 
 The Code generation for the blocks are defined in the same file in a global variable
 named `Blockly.JavaScript`.
 
-The any custom functions must be defined in `interpeter.js` in the function named
+Any custom functions must be defined in `interpeter.js` in the function named
 `makeInterperterFunc`.  Look at example to see how the function is registered:
 
 ```
@@ -103,6 +97,12 @@ The any custom functions must be defined in `interpeter.js` in the function name
 The above method adds "setWindspeed" as a new javascript function that the
 blockly generated code can use.  In this example, it modifies a parameter in the
 simulation store.
+
+If you want to set a default block program modify the contents of `src/assets/blockly-authoring/code/basic-setup.xml`
+or `src/assets/blockly-authoring/code/nested-loops.xml`.
+You can copy your current workspace (from eg http://localhost:8080/) by viewing the
+developer tools, clicking on the "Application" tab, and looking in Local Storage. The
+XML will be stored in local storage under the key "blockly-workspace".
 
 ### Notes
 
