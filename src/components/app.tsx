@@ -11,7 +11,7 @@ import * as Maps from "./../assets/maps/maps.json";
 import * as Scenarios from "./../assets/maps/scenarios.json";
 import * as BlocklyAuthoring from "./../assets/blockly-authoring/index.json";
 
-import BlocklyContianer from "./blockly-container";
+import BlocklyContainer from "./blockly-container";
 import styled from "styled-components";
 import { StyledButton } from "./styled-button";
 import { Tab, Tabs, TabList, TabPanel, FixWidthTabPanel } from "./tabs";
@@ -312,12 +312,12 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             </TabList>
             { showBlocks &&
               <FixWidthTabPanel width={`${tabWidth}px`} forceRender={true}>
-                <BlocklyContianer
+                <BlocklyContainer
                   width={blocklyWidth}
                   height={blocklyHeight}
                   toolboxPath={toolboxPath}
                   initialCodeSetupPath={codePath}
-                  setBlocklyCode={ setBlocklyCode} />
+                  setBlocklyCode={setBlocklyCode} />
                 <RunButtons {...{run, stop, step, reset, running}} />
                 {showLog &&
                   <LogComponent
