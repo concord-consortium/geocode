@@ -72,6 +72,7 @@ const App = styled.div`
 const Row = styled.div`
   display: flex;
   width: 100%;
+  height: 100%;
   justify-content: space-between;
   align-items: center;
   flex-direction: row;
@@ -92,7 +93,10 @@ interface ISim {
 const Code = styled.div`
   max-height: 400px;
   overflow: auto;
-  padding: 1em;
+`;
+
+const Syntax = styled(SyntaxHighlighter)`
+  margin: 0px;
 `;
 
 const FullscreenButton = styled(StyledButton)`
@@ -311,7 +315,11 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               { showControls && <Tab>Controls</Tab>}
             </TabList>
             { showBlocks &&
-              <FixWidthTabPanel width={`${tabWidth}px`} forceRender={true}>
+              <FixWidthTabPanel
+                width={`${tabWidth}px`}
+                forceRender={true}
+                tabcolor={"#DDEDFF"}
+              >
                 <BlocklyContainer
                   width={blocklyWidth}
                   height={blocklyHeight}
@@ -329,16 +337,22 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               </FixWidthTabPanel>
             }
             { showCode &&
-              <FixWidthTabPanel width={`${tabWidth}px`}>
+              <FixWidthTabPanel
+                width={`${tabWidth}px`}
+                tabcolor="#BBD9FF"
+              >
                 <Code>
-                  <SyntaxHighlighter>
+                  <Syntax>
                     {js_beautify(code.replace(/endStep\(\)\;\n/g, "").replace(/startStep\(\'.*\'\)\;\n/g, ""))}
-                  </SyntaxHighlighter>
+                  </Syntax>
                 </Code>
               </FixWidthTabPanel>
             }
             { showControls &&
-              <FixWidthTabPanel width={`${tabWidth}px`}>
+              <FixWidthTabPanel
+                width={`${tabWidth}px`}
+                tabcolor="#FFCA79"
+              >
                 <Controls
                   showWindSpeed={showWindSpeed}
                   showWindDirection={showWindDirection}

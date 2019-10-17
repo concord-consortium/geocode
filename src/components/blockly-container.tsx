@@ -23,7 +23,8 @@ const WorkSpace = styled.div`
   font-family: sans-serif;
   width: ${(p: WorkspaceProps) => `${p.width}px`};
   height: ${(p: WorkspaceProps) => `${p.height}px`};
-  margin: 1em;
+  border: 2px solid white;
+  margin: 3px;
 `;
 
 export default class BlocklyContainer extends React.Component<IProps, IState> {
