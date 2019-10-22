@@ -4,7 +4,7 @@ import "../blockly-blocks/blocks.js";
 
 interface IProps {
   toolboxPath: string;
-  initialCodeSetupPath: string;
+  initialCodePath: string;
   setBlocklyCode: (code: string, workspace: any) => void;
   width: number;
   height: number;
@@ -48,7 +48,7 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
 
   public componentDidUpdate(prevProps: IProps) {
     if ((prevProps.toolboxPath !== this.props.toolboxPath) ||
-        prevProps.initialCodeSetupPath !== this.props.initialCodeSetupPath) {
+        prevProps.initialCodePath !== this.props.initialCodePath) {
           this.initializeBlockly();
         }
 
@@ -66,42 +66,43 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
     localStorage.setItem("blockly-workspace", Blockly.Xml.domToPrettyText(xml));
   }
 
-  private initializeBlockly = () => {
+  private initializeBlockly = async () => {
     if (this.workSpaceRef.current) {
       this.workSpaceRef.current.innerHTML = "";
     }
-    const {toolboxPath, initialCodeSetupPath, setBlocklyCode} = this.props;
-    fetch(toolboxPath).then((r) => {
-      r.text().then( (data) => {
-        const blockOpts = {
-          media: "blockly/media/",
-          toolbox: data,
-          zoom: {
-            startScale: 0.8,
-            maxScale: 2,
-            minScale: 0.2
-          }
-        };
-        this.workSpace = Blockly.inject(this.workSpaceRef.current, blockOpts);
-        const startBlocks = this.startBlockRef.current;
-        Blockly.Xml.domToWorkspace(startBlocks, this.workSpace);
-        Blockly.JavaScript.STATEMENT_PREFIX = "startStep(%1);\n";
-        Blockly.JavaScript.STATEMENT_SUFFIX = "endStep();\n";
-        Blockly.JavaScript.addReservedWords("highlightBlock");
-        fetch(initialCodeSetupPath)
-        .then((resp) => {
-          resp.text().then((d) => {
-            const xml = Blockly.Xml.textToDom(d);
-            Blockly.Xml.domToWorkspace(xml, this.workSpace);
-          });
-        });
-        const myUpdateFunction = (event: any) => {
-          const code = Blockly.JavaScript.workspaceToCode(this.workSpace);
-          setBlocklyCode(code, this.workSpace);
-        };
-        this.workSpace.addChangeListener(myUpdateFunction);
-      });
-    });
-  }
+    const {toolboxPath, initialCodePath, setBlocklyCode} = this.props;
 
+    const intialCodeResp = await fetch(initialCodePath);
+    const codeString = await intialCodeResp.text();
+
+    const toolboxResp = await fetch(toolboxPath);
+    const toolbox = await toolboxResp.text();
+
+    const blockOpts = {
+      media: "blockly/media/",
+      toolbox,
+      zoom: {
+        startScale: 0.8,
+        maxScale: 2,
+        minScale: 0.2
+      }
+    };
+
+    this.workSpace = Blockly.inject(this.workSpaceRef.current, blockOpts);
+    const startBlocks = this.startBlockRef.current;
+
+    Blockly.Xml.domToWorkspace(startBlocks, this.workSpace);
+    Blockly.JavaScript.STATEMENT_PREFIX = "startStep(%1);\n";
+    Blockly.JavaScript.STATEMENT_SUFFIX = "endStep();\n";
+    Blockly.JavaScript.addReservedWords("highlightBlock");
+
+    const xml = Blockly.Xml.textToDom(codeString);
+    Blockly.Xml.domToWorkspace(xml, this.workSpace);
+
+    const myUpdateFunction = (event: any) => {
+      const code = Blockly.JavaScript.workspaceToCode(this.workSpace);
+      setBlocklyCode(code, this.workSpace);
+    };
+    this.workSpace.addChangeListener(myUpdateFunction);
+  }
 }
