@@ -115,7 +115,9 @@ export const SimulationStore = types
     viewportCenterLat: 0,
     viewportCenterLng: 0,
     cities: types.array(City),
-    code: "",
+    code: "",                   // current blockly JS code
+    xmlCode: "",                // current blockly xml code
+    initialXmlCode: "",         // initial blockly xml code
     log: "",
     plotData: types.optional(PlotData, getSnapshot(plotData)),
     isErupting: false,
@@ -154,6 +156,8 @@ export const SimulationStore = types
   .actions((self) => ({
     setBlocklyCode(code: string, workspace: any) {
       self.code = code;
+      self.xmlCode = Blockly.Xml.domToPrettyText(Blockly.Xml.workspaceToDom(workspace));
+
       if (interpreterController) {
         interpreterController.stop();
         workspace.highlightBlock(null);
@@ -161,6 +165,9 @@ export const SimulationStore = types
       self.running = false;
       cachedBlocklyWorkspace = workspace;
       interpreterController = makeInterpreterController(code, simulation, workspace);
+    },
+    setInitialXmlCode(xmlCode: string) {
+      self.initialXmlCode = xmlCode;
     },
     setViewportParameters(zoom: number, viewportCenterLat: number, viewportCenterLng: number) {
       self.viewportZoom = zoom;

@@ -31,7 +31,7 @@ export interface SimulationAuthoringOptions {
   requirePainting: boolean;
   scenario: string;
   toolbox: string;
-  initialCode: string;
+  initialCodeTitle: string;
   showBlocks: boolean;
   showCode: boolean;
   showControls: boolean;
@@ -143,7 +143,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         requirePainting: true,
         scenario: "Cerro Negro",
         toolbox: "Everything",
-        initialCode: "Basic",
+        initialCodeTitle: "Basic",
         showBlocks: true,
         showLog: false,
         showCode: true,
@@ -248,7 +248,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       running,
       isErupting,
       hasErupted,
-      isSelectingCrossSection
+      isSelectingCrossSection,
+      initialXmlCode
     } = this.stores;
 
     const {
@@ -261,7 +262,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     const {
       map,
       toolbox,
-      initialCode,
+      initialCodeTitle,
       showBlocks,
       showLog,
       showCode,
@@ -283,7 +284,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
 
     const mapPath = (Maps as {[key: string]: string})[map];
     const toolboxPath = (BlocklyAuthoring.toolbox as {[key: string]: string})[toolbox];
-    const codePath = (BlocklyAuthoring.code as {[key: string]: string})[initialCode];
+    const codePath = (BlocklyAuthoring.code as {[key: string]: string})[initialCodeTitle];
 
     const {width, height} = this.state.dimensions;
     const margin = 10;
@@ -377,6 +378,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                   width={blocklyWidth}
                   height={blocklyHeight}
                   toolboxPath={toolboxPath}
+                  initialCode={initialXmlCode}
                   initialCodePath={codePath}
                   setBlocklyCode={setBlocklyCode} />
                 <RunButtons {...{run, stop, step, reset, running}} />
@@ -511,8 +513,16 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                   <DatSelect path="scenario" label="Map Scenario" options={Object.keys(Scenarios)} key="background" />,
                   <DatSelect path="toolbox" label="Code toolbox"
                     options={Object.keys(BlocklyAuthoring.toolbox)} key="toolbox" />,
-                  <DatSelect path="initialCode" label="Initial code"
+                  <DatSelect path="initialCodeTitle" label="Initial code"
                     options={Object.keys(BlocklyAuthoring.code)} key="code" />,
+
+                  <DatButton label="Save current code to local storage"
+                    onClick={this.saveCodeToLocalStorage}
+                    key="generate" />,
+                  <DatButton label="Load code from local storage"
+                    onClick={this.loadCodeFromLocalStorage}
+                    key="generate" />,
+
                   <DatBoolean path="showCrossSection" label="Show cross section?" key="showCrossSection" />,
                   <DatBoolean path="showChart" label="Show chart?"
                     key="showChart" />,
@@ -596,6 +606,22 @@ export class AppComponent extends BaseComponent<IProps, IState> {
   private generateAndOpenAuthoredUrl = () => {
     const encodedParams = encodeURIComponent(JSON.stringify(this.state.simulationOptions));
     window.open(`${location.origin}${location.pathname}?${encodedParams}`, "geocode-app");
+  }
+
+  private saveCodeToLocalStorage = () => {
+    localStorage.setItem("blockly-workspace", this.stores.xmlCode);
+  }
+
+  private loadCodeFromLocalStorage = () => {
+    const code = localStorage.getItem("blockly-workspace");
+    if (code) {
+      // we need to unset and then set the state to force a re-render, if the user has already
+      // loaded the code once.
+      // because of the way Blockly injects to the DOM, we have to wait 100ms, instead of using
+      // the setState callback, or we may end up with two Blockly editors
+      this.stores.setInitialXmlCode("<xml></xml>");
+      setTimeout(() => {this.stores.setInitialXmlCode(code); }, 100);
+    }
   }
 
 }

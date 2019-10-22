@@ -15,7 +15,6 @@ interface IState {}
 
 const Wrapper = styled.div``;
 const StartBlocks = styled.div``;
-let lastTimeout: number | null  = null;
 interface WorkspaceProps {
   width: number;
   height: number;
@@ -51,21 +50,8 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
     if ((prevProps.toolboxPath !== this.props.toolboxPath) ||
         prevProps.initialCode !== this.props.initialCode ||
         prevProps.initialCodePath !== this.props.initialCodePath) {
-          this.initializeBlockly();
-        }
-
-    // TODO: This should eventually be removed. We save the XML to local storage.
-    // We don't ever restore this at the moment, but its used by developers to
-    // Save the initial program.
-    if (lastTimeout) {
-      clearTimeout(lastTimeout);
+      this.initializeBlockly();
     }
-    lastTimeout = window.setTimeout(this.toXml, 500);
-  }
-
-  private toXml = () => {
-    const xml = Blockly.Xml.workspaceToDom(this.workSpace);
-    localStorage.setItem("blockly-workspace", Blockly.Xml.domToPrettyText(xml));
   }
 
   private initializeBlockly = async () => {
