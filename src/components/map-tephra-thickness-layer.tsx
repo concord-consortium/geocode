@@ -5,7 +5,6 @@ import * as d3 from "d3";
 import { inject, observer } from "mobx-react";
 import { BaseComponent } from "./base";
 import gridTephraCalc from "../tephra2";
-import { Ipoint } from "../interfaces";
 import { LayerGroup, GeoJSON } from "react-leaflet";
 import { LatLngToLocal } from "../utilities/coordinateSpaceConversion";
 import { MultiPolygon } from "geojson";
@@ -45,7 +44,9 @@ export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
                                 ];
 
     public render() {
-        const { corner1Bound, corner2Bound, volcanoPos, gridSize, map,
+        const {
+            volcanoPos,
+            map,
             windSpeed,
             windDirection,
             colHeight,
@@ -58,18 +59,17 @@ export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
             return (null);
         }
 
-        const LatDist = Math.abs(viewportBounds.getNorthEast().lat - viewportBounds.getSouthWest().lat);
-        const LongDist = Math.abs(viewportBounds.getNorthEast().lng - viewportBounds.getSouthWest().lng);
+        const longDist = Math.abs(viewportBounds.getNorthEast().lng - viewportBounds.getSouthWest().lng);
         const maxTephra = 1;
         const samplesPerScreenPerAxis = 75;
-        const squareSize = LongDist / (samplesPerScreenPerAxis); // This assumes a square map
-        const LatSegments = samplesPerScreenPerAxis;
-        const LongSegments = samplesPerScreenPerAxis;
+        const squareSize = longDist / (samplesPerScreenPerAxis); // This assumes a square map
+        const latSegments = samplesPerScreenPerAxis;
+        const longSegments = samplesPerScreenPerAxis;
 
         const data: number[] = [];
 
-        for (let currentLat = 0; currentLat < LatSegments; currentLat++) {
-            for (let currentLong = 0; currentLong < LongSegments; currentLong++) {
+        for (let currentLat = 0; currentLat < latSegments; currentLat++) {
+            for (let currentLong = 0; currentLong < longSegments; currentLong++) {
                 const startingLat = viewportBounds.getNorthEast().lat < viewportBounds.getSouthWest().lat ?
                                     viewportBounds.getNorthEast().lat :
                                     viewportBounds.getSouthWest().lat;
@@ -77,13 +77,10 @@ export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
                                     viewportBounds.getNorthEast().lng :
                                     viewportBounds.getSouthWest().lng;
 
-                const Lat = startingLat + currentLat * squareSize;
-                const Long = startingLong + currentLong * squareSize;
+                const lat = startingLat + currentLat * squareSize;
+                const long = startingLong + currentLong * squareSize;
 
-                const bound1 = Leaflet.latLng(Lat, Long);
-                const bound2 = Leaflet.latLng(Lat + squareSize, Long + squareSize);
-
-                const localPos = LatLngToLocal(Leaflet.latLng(Lat + squareSize / 2, Long + squareSize / 2), volcanoPos);
+                const localPos = LatLngToLocal(Leaflet.latLng(lat + squareSize / 2, long + squareSize / 2), volcanoPos);
 
                 const simResults = gridTephraCalc(
                     localPos.x, localPos.y, 0, 0,
@@ -101,7 +98,7 @@ export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
         }
 
         const contours = d3.contours()
-                        .size([LatSegments, LongSegments])
+                        .size([latSegments, longSegments])
                         .thresholds(d3.range(1, 8).map(p => Math.pow(1.1, p) - 1))
                         .smooth(true)
                         (data);

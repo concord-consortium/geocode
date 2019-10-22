@@ -4,16 +4,14 @@ import * as L from "leaflet";
 import { Map as LeafletMap, TileLayer, Marker, Popup, ScaleControl, Pane } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "../css/map-component.css";
-import { iconVolcano, getCachedCircleIcon, getCachedDivIcon } from "./icons";
+import { iconVolcano, getCachedDivIcon } from "./icons";
 
-import { ICanvasShape, Ipoint } from "../interfaces";
 import { CityType  } from "../stores/simulation-store";
 import styled from "styled-components";
 import { observer, inject } from "mobx-react";
 import { BaseComponent, IBaseProps } from "./base";
-import { getSnapshot, IStateTreeNode } from "mobx-state-tree";
 import { CrossSectionDrawLayer } from "./cross-section-draw-layer";
-import { LocalToLatLng, LatLngToLocal } from "../utilities/coordinateSpaceConversion";
+import { LocalToLatLng } from "../utilities/coordinateSpaceConversion";
 import { MapTephraThicknessLayer } from "./map-tephra-thickness-layer";
 import { OverlayControls } from "./overlay-controls";
 import { RulerDrawLayer } from "./ruler-draw-layer";
@@ -68,7 +66,6 @@ export class MapComponent extends BaseComponent<IProps, IState>{
   private map = React.createRef<LeafletMap>();
   private crossRef = React.createRef<CrossSectionDrawLayer>();
   private tephraRef = React.createRef<MapTephraThicknessLayer>();
-  private metrics: ICanvasShape;
 
   constructor(props: IProps) {
     super(props);
@@ -115,8 +112,6 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       colHeight,
       mass,
       particleSize,
-      map,
-      isErupting,
       hasErupted,
       showCrossSection,
       initialZoom,
@@ -134,7 +129,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     } = this.stores;
 
     const cityItems = cities.map( (city) => {
-      const {x, y, name, id} = city;
+      const {x, y, name} = city;
       if (x && y && name) {
         const mapPos = LocalToLatLng({x, y}, L.latLng(volcanoLat, volcanoLng));
         const cityIcon = getCachedDivIcon(name);

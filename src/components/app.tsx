@@ -14,7 +14,7 @@ import * as BlocklyAuthoring from "./../assets/blockly-authoring/index.json";
 import BlocklyContainer from "./blockly-container";
 import styled from "styled-components";
 import { StyledButton } from "./styled-button";
-import { Tab, Tabs, TabList, TabPanel, FixWidthTabPanel } from "./tabs";
+import { Tab, Tabs, TabList, FixWidthTabPanel } from "./tabs";
 import { js_beautify } from "js-beautify";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import Controls from "./controls";

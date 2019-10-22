@@ -30,8 +30,6 @@ export const LocalToLatLng = (point: Ipoint, volcanoPos: L.LatLng): L.LatLng => 
 };
 
 export const LatLngToLocal = (point: L.LatLng, volcanoPos: L.LatLng): Ipoint => {
-    const volcanoLat = volcanoPos.lat;
-    const volcanoLng = volcanoPos.lng;
     const longDist = getDistanceFromLatLonInKm(volcanoPos, L.latLng(volcanoPos.lat, point.lng));
     const latDist = getDistanceFromLatLonInKm(volcanoPos, L.latLng(point.lat, volcanoPos.lng));
     return {x: point.lat < volcanoPos.lat ?

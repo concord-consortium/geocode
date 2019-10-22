@@ -1,7 +1,6 @@
 
 import * as React from "react";
 import styled from "styled-components";
-import { StyledButton, HighliteButton } from "./styled-button";
 import Button from "./overlay-button";
 
 interface IProps {
