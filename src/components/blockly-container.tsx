@@ -4,7 +4,8 @@ import "../blockly-blocks/blocks.js";
 
 interface IProps {
   toolboxPath: string;
-  initialCodePath: string;
+  initialCode?: string;
+  initialCodePath?: string;
   setBlocklyCode: (code: string, workspace: any) => void;
   width: number;
   height: number;
@@ -48,6 +49,7 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
 
   public componentDidUpdate(prevProps: IProps) {
     if ((prevProps.toolboxPath !== this.props.toolboxPath) ||
+        prevProps.initialCode !== this.props.initialCode ||
         prevProps.initialCodePath !== this.props.initialCodePath) {
           this.initializeBlockly();
         }
@@ -70,10 +72,13 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
     if (this.workSpaceRef.current) {
       this.workSpaceRef.current.innerHTML = "";
     }
-    const {toolboxPath, initialCodePath, setBlocklyCode} = this.props;
+    const {toolboxPath, initialCode, initialCodePath, setBlocklyCode} = this.props;
 
-    const intialCodeResp = await fetch(initialCodePath);
-    const codeString = await intialCodeResp.text();
+    let codeString = initialCode;
+    if (!codeString && initialCodePath) {
+      const intialCodeResp = await fetch(initialCodePath);
+      codeString = await intialCodeResp.text();
+    }
 
     const toolboxResp = await fetch(toolboxPath);
     const toolbox = await toolboxResp.text();
