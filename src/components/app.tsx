@@ -14,7 +14,7 @@ import * as BlocklyAuthoring from "./../assets/blockly-authoring/index.json";
 import BlocklyContainer from "./blockly-container";
 import styled from "styled-components";
 import { StyledButton } from "./styled-button";
-import { Tab, Tabs, TabList, FixWidthTabPanel } from "./tabs";
+import { SectionTypes, TabInfo, kTabInfo, TabBack, Tab, Tabs, TabList, FixWidthTabPanel } from "./tabs";
 import { js_beautify } from "js-beautify";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import Controls from "./controls";
@@ -51,6 +51,7 @@ export interface SimulationAuthoringOptions {
 }
 
 interface IState {
+  tabIndex: number;
   showOptionsDialog: boolean;
   expandOptionsDialog: boolean;
   simulationOptions: SimulationAuthoringOptions;
@@ -131,7 +132,10 @@ export class AppComponent extends BaseComponent<IProps, IState> {
   public constructor(props: IProps) {
     super(props);
 
+    this.handleTabSelect = this.handleTabSelect.bind(this);
+
     const initialState: IState = {
+      tabIndex: 0,
       showOptionsDialog: true,
       expandOptionsDialog: false,
       simulationOptions: {
@@ -302,23 +306,81 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     const bottomRightLat = scenarioData[bottomRightLatKey];
     const bottomRightLng = scenarioData[bottomRightLngKey];
 
+    let numTabs = 0;
+    let currentTabType = SectionTypes.BLOCKS;
+    let blockTabIndex = -1;
+    let codeTabIndex = -1;
+    let controlsTabIndex = -1;
+    if (showBlocks) {
+      blockTabIndex = numTabs;
+      numTabs++;
+    }
+    if (showCode) {
+      codeTabIndex = numTabs;
+      numTabs++;
+      if (this.state.tabIndex === codeTabIndex) {
+        currentTabType = SectionTypes.CODE;
+      }
+    }
+    if (showControls) {
+      controlsTabIndex = numTabs;
+      numTabs++;
+      if (this.state.tabIndex === controlsTabIndex) {
+        currentTabType = SectionTypes.CONTROLS;
+      }
+    }
+
     return (
       <App className="app" ref={this.rootComponent}>
         <ResizeObserver
           onResize={this.resize}
         />
         <Row>
-          <Tabs>
+          <Tabs selectedIndex={this.state.tabIndex} onSelect={this.handleTabSelect}>
+            <TabBack
+              width={tabWidth}
+              backgroundcolor={this.getTabColor(currentTabType)}
+            />
             <TabList>
-              { showBlocks && <Tab>Blocks</Tab>}
-              { showCode && <Tab>Code</Tab>}
-              { showControls && <Tab>Controls</Tab>}
+              {showBlocks &&
+                <Tab
+                  borderwidth={this.state.tabIndex !== blockTabIndex ? "2px" : "0px"}
+                  leftradius={"0px"}
+                  rightradius={this.state.tabIndex === (blockTabIndex + 1) ? "10px" : "0px"}
+                  backgroundcolor={this.getTabColor(SectionTypes.BLOCKS)}
+                  backgroundhovercolor={this.getTabHoverColor(SectionTypes.BLOCKS)}
+                >
+                  {this.getTabName(SectionTypes.BLOCKS)}
+                </Tab>
+              }
+              {showCode &&
+                <Tab
+                  borderwidth={this.state.tabIndex !== codeTabIndex ? "2px" : "0px"}
+                  leftradius={this.state.tabIndex === (codeTabIndex - 1) ? "10px" : "0px"}
+                  rightradius={this.state.tabIndex === (codeTabIndex + 1) ? "10px" : "0px"}
+                  backgroundcolor={this.getTabColor(SectionTypes.CODE)}
+                  backgroundhovercolor={this.getTabHoverColor(SectionTypes.CODE)}
+                >
+                  {this.getTabName(SectionTypes.CODE)}
+                </Tab>
+              }
+              {showControls &&
+                <Tab
+                  borderwidth={this.state.tabIndex !== controlsTabIndex ? "2px" : "0px"}
+                  leftradius={this.state.tabIndex === (controlsTabIndex - 1) ? "10px" : "0px"}
+                  rightradius={"0px"}
+                  backgroundcolor={this.getTabColor(SectionTypes.CONTROLS)}
+                  backgroundhovercolor={this.getTabHoverColor(SectionTypes.CONTROLS)}
+                >
+                  {this.getTabName(SectionTypes.CONTROLS)}
+                </Tab>
+              }
             </TabList>
             { showBlocks &&
               <FixWidthTabPanel
                 width={`${tabWidth}px`}
                 forceRender={true}
-                tabcolor={"#DDEDFF"}
+                tabcolor={this.getTabColor(SectionTypes.BLOCKS)}
               >
                 <BlocklyContainer
                   width={blocklyWidth}
@@ -339,7 +401,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             { showCode &&
               <FixWidthTabPanel
                 width={`${tabWidth}px`}
-                tabcolor="#BBD9FF"
+                tabcolor={this.getTabColor(SectionTypes.CODE)}
               >
                 <Code>
                   <Syntax>
@@ -351,7 +413,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             { showControls &&
               <FixWidthTabPanel
                 width={`${tabWidth}px`}
-                tabcolor="#FFCA79"
+                tabcolor={this.getTabColor(SectionTypes.CONTROLS)}
               >
                 <Controls
                   showWindSpeed={showWindSpeed}
@@ -509,6 +571,16 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     );
   }
 
+  private getTabColor = (type: SectionTypes) => {
+    return kTabInfo[type].backgroundColor;
+  }
+  private getTabHoverColor = (type: SectionTypes) => {
+    return kTabInfo[type].hoverBackgroundColor;
+  }
+  private getTabName = (type: SectionTypes) => {
+    return kTabInfo[type].name;
+  }
+
   private resize = (rect: DOMRect) => {
     this.setState({dimensions: rect});
   }
@@ -525,6 +597,10 @@ export class AppComponent extends BaseComponent<IProps, IState> {
   private toggleShowOptions = () => this.setState({expandOptionsDialog: !this.state.expandOptionsDialog});
 
   private handleUpdate = (simulationOptions: SimulationAuthoringOptions) => this.setState({ simulationOptions });
+
+  private handleTabSelect(tabIndex: number) {
+    this.setState({tabIndex});
+  }
 
   private generateAndOpenAuthoredUrl = () => {
     const encodedParams = encodeURIComponent(JSON.stringify(this.state.simulationOptions));

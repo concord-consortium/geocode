@@ -6,6 +6,49 @@ import {
   TabPanel as UnstyledTabPanel
 } from "react-tabs";
 
+enum SectionTypes {
+  BLOCKS = "blocks",
+  CODE = "code",
+  CONTROLS = "controls"
+}
+type TabInfo = {
+  [tab in SectionTypes]: {
+    name: string;
+    backgroundColor: string;
+    hoverBackgroundColor: string;
+  }
+};
+const kTabInfo: TabInfo = {
+  blocks: {
+    name: "Blocks",
+    backgroundColor: "#DDEDFF",
+    hoverBackgroundColor: "#CFE1FE",
+  },
+  code: {
+    name: "Code",
+    backgroundColor: "#BBD9FF",
+    hoverBackgroundColor: "#AECEFF",
+  },
+  controls: {
+    name: "Controls",
+    backgroundColor: "#FFCA79",
+    hoverBackgroundColor: "#FABF6E",
+  },
+};
+
+interface TabBackProps {
+  width: number;
+  backgroundcolor: string;
+}
+const TabBack = styled.div`
+  height: 15px;
+  background-color: ${(p: TabBackProps) => p.backgroundcolor};
+  position: absolute;
+  width: ${(p: TabBackProps) => `${p.width}px`};
+  top: 16px;
+  left: 4px;
+`;
+
 const Tabs = styled(UnstyledTabs)`
   height: 100%;
   background: white;
@@ -22,46 +65,34 @@ const TabList = styled(UnstyledTabList)`
   margin: 2px 0 0 0;
 `;
 
-const Tab = styled(UnstyledTab).attrs({
-  selectedClassName: "selected",
-  disabledClassName: "disabled",
-})`
+interface TabProps {
+  borderwidth: string;
+  leftradius: string;
+  rightradius: string;
+  backgroundcolor: string;
+  backgroundhovercolor: string;
+}
+const Tab = styled(UnstyledTab)<TabProps>`
   flex-grow: 1;
   text-align: center;
   padding: 3px 0;
+  margin: 0;
   list-style: none;
   cursor: pointer;
   color: #434343;
+  background-color: ${props => props.backgroundcolor};
   font-size: 16px;
-  border-left: 1px solid #e0e0e0;
-  border-bottom: 1px solid #e0e0e0;
-  background-color: #BBD9FF;
-  border-radius: 10px 10px 0 0;
-  border: 1px solid white;
+  border-style: solid;
+  border-color: white;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border-bottom-left-radius: ${props => props.leftradius};
+  border-bottom-right-radius: ${props => props.rightradius};
+  border-width: ${props => props.borderwidth};
+  z-index: 1;
   &:hover {
-    background-color: #AECEFF;
+    background-color: ${props => props.backgroundhovercolor};
   }
-
-  &:first-child {
-    border-left: none;
-    background-color: #DDEDFF;
-  }
-  &:first-child:hover {
-    background-color: #CFE1FE;
-  }
-
-  &:last-child {
-    background-color: #FFCA79;
-  }
-  &:last-child:hover {
-    background-color: #FABF6E;
-  }
-
-  &.selected {
-    color: #434343;
-    border-bottom: none;
-  }
-
   &.disabled {
     color: #e0e0e0;
     cursor: not-allowed;
@@ -96,4 +127,4 @@ const FixWidthTabPanel = styled(TabPanel)<FixWidthTabPanelProps>`
 (FixWidthTabPanel as any).tabsRole = "TabPanel";
 (TabList as any).tabsRole = "TabList";
 
-export { Tab, TabList, Tabs, TabPanel, FixWidthTabPanel };
+export { SectionTypes, TabInfo, kTabInfo, TabBack, Tab, TabList, Tabs, TabPanel, FixWidthTabPanel };
