@@ -194,8 +194,13 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     this.stores.setAuthoringOptions(initialState.simulationOptions, true);
   }
 
-  public componentDidUpdate() {
-    const { scenario } = this.state.simulationOptions;
+  public componentDidUpdate(prevProps: IProps, prevState: IState) {
+    const { scenario, showBlocks, showCode, showControls } = this.state.simulationOptions;
+    if (prevState.simulationOptions.showBlocks !== showBlocks ||
+        prevState.simulationOptions.showCode !== showCode ||
+        prevState.simulationOptions.showControls !== showControls) {
+          this.setState({tabIndex: 0});
+    }
     const scenarioData = (Scenarios as {[key: string]: {[key: string]: number}})[scenario];
 
     // Have to do this or lint yells about string literals as keys
@@ -306,28 +311,15 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     const bottomRightLat = scenarioData[bottomRightLatKey];
     const bottomRightLng = scenarioData[bottomRightLngKey];
 
-    let numTabs = 0;
+    kTabInfo.blocks.index = showBlocks ? 0 : -1;
+    kTabInfo.code.index = showCode ? kTabInfo.blocks.index + 1 : -1;
+    kTabInfo.controls.index = showControls ? (showCode ? kTabInfo.code.index + 1 : kTabInfo.blocks.index + 1) : -1;
     let currentTabType = SectionTypes.BLOCKS;
-    let blockTabIndex = -1;
-    let codeTabIndex = -1;
-    let controlsTabIndex = -1;
-    if (showBlocks) {
-      blockTabIndex = numTabs;
-      numTabs++;
+    if (showCode && this.state.tabIndex === kTabInfo.code.index) {
+      currentTabType = SectionTypes.CODE;
     }
-    if (showCode) {
-      codeTabIndex = numTabs;
-      numTabs++;
-      if (this.state.tabIndex === codeTabIndex) {
-        currentTabType = SectionTypes.CODE;
-      }
-    }
-    if (showControls) {
-      controlsTabIndex = numTabs;
-      numTabs++;
-      if (this.state.tabIndex === controlsTabIndex) {
-        currentTabType = SectionTypes.CONTROLS;
-      }
+    if (showControls && this.state.tabIndex === kTabInfo.controls.index) {
+      currentTabType = SectionTypes.CONTROLS;
     }
 
     return (
@@ -342,32 +334,32 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               backgroundcolor={this.getTabColor(currentTabType)}
             />
             <TabList>
-              {showBlocks &&
+              { showBlocks &&
                 <Tab
-                  borderwidth={this.state.tabIndex !== blockTabIndex ? "2px" : "0px"}
+                  borderwidth={this.state.tabIndex !== kTabInfo.blocks.index ? "2px" : "0px"}
                   leftradius={"0px"}
-                  rightradius={this.state.tabIndex === (blockTabIndex + 1) ? "10px" : "0px"}
+                  rightradius={this.state.tabIndex === (kTabInfo.blocks.index + 1) ? "10px" : "0px"}
                   backgroundcolor={this.getTabColor(SectionTypes.BLOCKS)}
                   backgroundhovercolor={this.getTabHoverColor(SectionTypes.BLOCKS)}
                 >
                   {this.getTabName(SectionTypes.BLOCKS)}
                 </Tab>
               }
-              {showCode &&
+              { showCode &&
                 <Tab
-                  borderwidth={this.state.tabIndex !== codeTabIndex ? "2px" : "0px"}
-                  leftradius={this.state.tabIndex === (codeTabIndex - 1) ? "10px" : "0px"}
-                  rightradius={this.state.tabIndex === (codeTabIndex + 1) ? "10px" : "0px"}
+                  borderwidth={this.state.tabIndex !== kTabInfo.code.index ? "2px" : "0px"}
+                  leftradius={this.state.tabIndex === (kTabInfo.code.index - 1) ? "10px" : "0px"}
+                  rightradius={this.state.tabIndex === (kTabInfo.code.index + 1) ? "10px" : "0px"}
                   backgroundcolor={this.getTabColor(SectionTypes.CODE)}
                   backgroundhovercolor={this.getTabHoverColor(SectionTypes.CODE)}
                 >
                   {this.getTabName(SectionTypes.CODE)}
                 </Tab>
               }
-              {showControls &&
+              { showControls &&
                 <Tab
-                  borderwidth={this.state.tabIndex !== controlsTabIndex ? "2px" : "0px"}
-                  leftradius={this.state.tabIndex === (controlsTabIndex - 1) ? "10px" : "0px"}
+                  borderwidth={this.state.tabIndex !== kTabInfo.controls.index ? "2px" : "0px"}
+                  leftradius={this.state.tabIndex === (kTabInfo.controls.index - 1) ? "10px" : "0px"}
                   rightradius={"0px"}
                   backgroundcolor={this.getTabColor(SectionTypes.CONTROLS)}
                   backgroundhovercolor={this.getTabHoverColor(SectionTypes.CONTROLS)}
@@ -389,13 +381,14 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                   initialCodeSetupPath={codePath}
                   setBlocklyCode={setBlocklyCode} />
                 <RunButtons {...{run, stop, step, reset, running}} />
-                {showLog &&
+                { showLog &&
                   <LogComponent
                     width={logWidth}
                     height={logHeight}
                     log={log}
                     clear={clearLog}
-                />}
+                  />
+                }
               </FixWidthTabPanel>
             }
             { showCode &&
@@ -459,115 +452,114 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               showCrossSection={showCrossSection}
               hasErupted={ hasErupted }
             />
-              { showCrossSection &&
-          <CrossSectionComponent
-            isSelectingCrossSection={isSelectingCrossSection}
-            showCrossSectionSelector={isSelectingCrossSection}
-            height={ 150 }
-            width={ mapWidth }
-            volcanoLat={ volcanoLat }
-            volcanoLng={ volcanoLng }
-            crossPoint1Lat={ crossPoint1Lat }
-            crossPoint1Lng={ crossPoint1Lng }
-            crossPoint2Lat={ crossPoint2Lat }
-            crossPoint2Lng={ crossPoint2Lng }
-            hasErupted={ hasErupted }
-            windSpeed={windSpeed}
-            windDirection={windDirection}
-            colHeight={colHeight}
-            mass={mass}
-            particleSize={particleSize}
-          />
-        }
-        { showChart &&
-          <LineChart width={mapWidth} height={200} data={plotData.chartData}>
-            <Line type="linear" dataKey={plotData.yAxis} stroke="red" strokeWidth={2} />
-            <CartesianGrid stroke="#ddd" strokeDasharray="5 5" />
-            <XAxis
-              type="number"
-              domain={[0, "auto"]}
-              allowDecimals={false}
-              dataKey={plotData.xAxis}
-              label={{ value: plotData.xAxis, offset: -5, position: "insideBottom" }}
-            />
-            <YAxis
-              type="number"
-              domain={[0, "auto"]}
-              label={{ value: plotData.yAxis, angle: -90, offset: 12, position: "insideBottomLeft" }}
-            />
-          </LineChart>
-        }
-
-        { showSidebar &&
-          <MapSidebarComponent
-            width={ mapWidth }
-            height={ 100 }
-            windSpeed={ windSpeed }
-            windDirection={ windDirection }
-            colHeight={ colHeight }
-            vei={ vei }
-            mass={ mass }
-            particleSize={ particleSize }
-          />
-        }
-        { showOptionsDialog &&
-            <DatGui data={simulationOptions} onUpdate={this.handleUpdate}>
-            <DatButton label="Model options" onClick={this.toggleShowOptions} />
-            { expandOptionsDialog &&
-              [
-                <DatBoolean path="requireEruption" label="Require eruption?" key="requireEruption" />,
-                <DatBoolean path="requirePainting" label="Require painting?" key="requirePainting" />,
-                <DatSelect path="scenario" label="Map Scenario" options={Object.keys(Scenarios)} key="background" />,
-                <DatSelect path="toolbox" label="Code toolbox"
-                  options={Object.keys(BlocklyAuthoring.toolbox)} key="toolbox" />,
-                <DatSelect path="initialCode" label="Initial code"
-                  options={Object.keys(BlocklyAuthoring.code)} key="code" />,
-                <DatBoolean path="showCrossSection" label="Show cross section?" key="showCrossSection" />,
-                <DatBoolean path="showChart" label="Show chart?"
-                  key="showChart" />,
-
-                <DatBoolean path="showBlocks" label="Show blocks?" key="showBlocks" />,
-                <DatBoolean path="showCode" label="Show code?" key="showCode" />,
-                <DatBoolean path="showControls" label="Show controls?" key="showControls" />,
-                <DatFolder title="Controls Options" key="controlsFolder" closed={true}>
-                  <DatBoolean path="showWindSpeed" label="Show Wind Speed?" key="showWindSpeed"/>
-                  <DatNumber
-                    path="initialWindSpeed" label="Initial Wind Speed" key="initialWindSpeed"
-                    min={0} max={30} step={1}/>
-                  <DatBoolean path="showWindDirection" label="Show Wind Direction?" key="showWindDirection" />
-                  <DatNumber
-                    path="initialWindDirection" label="Initial Wind Direction" key="initialWindDirection"
-                    min={0} max={360} step={1}/>
-                  <DatBoolean path="showEruptionMass" label="Show Eruption Mass?" key="showEruptionMass" />
-                  <DatNumber
-                    path="initialEruptionMass" label="Initial Eruption Mass" key="initialEruptionMass"
-                    min={100000000} max={10000000000000000} step={1000}/>
-                  <DatBoolean path="showColumnHeight" label="Show Column Height?" key="showColumnHeight" />
-                  <DatNumber
-                    path="initialColumnHeight" label="Initial Column Height" key="initialColumnHeight"
-                    min={1000} max={30000} step={1000}/>
-                  <DatBoolean path="showParticleSize" label="Show Particle Size?" key="showParticleSize" />
-                  <DatNumber
-                    path="initialParticleSize" label="Initial Particle Size" key="initialParticleSize"
-                    min={0} max={64} step={1}/>
-                </DatFolder>,
-
-                <DatBoolean path="showLog" label="Show Log?" key="showLog" />,
-
-                <DatBoolean path="showChart" label="Show chart?" key="showChart" />,
-                <DatBoolean path="showSidebar" label="Show sidebar?" key="showSidebar" />,
-                // submit button. Should remain at bottom
-                <DatButton
-                  label="Generate authored model"
-                  onClick={this.generateAndOpenAuthoredUrl}
-                  key="generate" />
-              ]
+            { showCrossSection &&
+              <CrossSectionComponent
+                isSelectingCrossSection={isSelectingCrossSection}
+                showCrossSectionSelector={isSelectingCrossSection}
+                height={ 150 }
+                width={ mapWidth }
+                volcanoLat={ volcanoLat }
+                volcanoLng={ volcanoLng }
+                crossPoint1Lat={ crossPoint1Lat }
+                crossPoint1Lng={ crossPoint1Lng }
+                crossPoint2Lat={ crossPoint2Lat }
+                crossPoint2Lng={ crossPoint2Lng }
+                hasErupted={ hasErupted }
+                windSpeed={windSpeed}
+                windDirection={windDirection}
+                colHeight={colHeight}
+                mass={mass}
+                particleSize={particleSize}
+              />
             }
-          </DatGui>
-        }
-        </Simulation>
-      </Row>
-    </App>
+            { showChart &&
+              <LineChart width={mapWidth} height={200} data={plotData.chartData}>
+                <Line type="linear" dataKey={plotData.yAxis} stroke="red" strokeWidth={2} />
+                <CartesianGrid stroke="#ddd" strokeDasharray="5 5" />
+                <XAxis
+                  type="number"
+                  domain={[0, "auto"]}
+                  allowDecimals={false}
+                  dataKey={plotData.xAxis}
+                  label={{ value: plotData.xAxis, offset: -5, position: "insideBottom" }}
+                />
+                <YAxis
+                  type="number"
+                  domain={[0, "auto"]}
+                  label={{ value: plotData.yAxis, angle: -90, offset: 12, position: "insideBottomLeft" }}
+                />
+              </LineChart>
+            }
+            { showSidebar &&
+              <MapSidebarComponent
+                width={ mapWidth }
+                height={ 100 }
+                windSpeed={ windSpeed }
+                windDirection={ windDirection }
+                colHeight={ colHeight }
+                vei={ vei }
+                mass={ mass }
+                particleSize={ particleSize }
+              />
+            }
+            { showOptionsDialog &&
+              <DatGui data={simulationOptions} onUpdate={this.handleUpdate}>
+              <DatButton label="Model options" onClick={this.toggleShowOptions} />
+              { expandOptionsDialog &&
+                [
+                  <DatBoolean path="requireEruption" label="Require eruption?" key="requireEruption" />,
+                  <DatBoolean path="requirePainting" label="Require painting?" key="requirePainting" />,
+                  <DatSelect path="scenario" label="Map Scenario" options={Object.keys(Scenarios)} key="background" />,
+                  <DatSelect path="toolbox" label="Code toolbox"
+                    options={Object.keys(BlocklyAuthoring.toolbox)} key="toolbox" />,
+                  <DatSelect path="initialCode" label="Initial code"
+                    options={Object.keys(BlocklyAuthoring.code)} key="code" />,
+                  <DatBoolean path="showCrossSection" label="Show cross section?" key="showCrossSection" />,
+                  <DatBoolean path="showChart" label="Show chart?"
+                    key="showChart" />,
+
+                  <DatBoolean path="showBlocks" label="Show blocks?" key="showBlocks" />,
+                  <DatBoolean path="showCode" label="Show code?" key="showCode" />,
+                  <DatBoolean path="showControls" label="Show controls?" key="showControls" />,
+                  <DatFolder title="Controls Options" key="controlsFolder" closed={true}>
+                    <DatBoolean path="showWindSpeed" label="Show Wind Speed?" key="showWindSpeed"/>
+                    <DatNumber
+                      path="initialWindSpeed" label="Initial Wind Speed" key="initialWindSpeed"
+                      min={0} max={30} step={1}/>
+                    <DatBoolean path="showWindDirection" label="Show Wind Direction?" key="showWindDirection" />
+                    <DatNumber
+                      path="initialWindDirection" label="Initial Wind Direction" key="initialWindDirection"
+                      min={0} max={360} step={1}/>
+                    <DatBoolean path="showEruptionMass" label="Show Eruption Mass?" key="showEruptionMass" />
+                    <DatNumber
+                      path="initialEruptionMass" label="Initial Eruption Mass" key="initialEruptionMass"
+                      min={100000000} max={10000000000000000} step={1000}/>
+                    <DatBoolean path="showColumnHeight" label="Show Column Height?" key="showColumnHeight" />
+                    <DatNumber
+                      path="initialColumnHeight" label="Initial Column Height" key="initialColumnHeight"
+                      min={1000} max={30000} step={1000}/>
+                    <DatBoolean path="showParticleSize" label="Show Particle Size?" key="showParticleSize" />
+                    <DatNumber
+                      path="initialParticleSize" label="Initial Particle Size" key="initialParticleSize"
+                      min={0} max={64} step={1}/>
+                  </DatFolder>,
+
+                  <DatBoolean path="showLog" label="Show Log?" key="showLog" />,
+
+                  <DatBoolean path="showChart" label="Show chart?" key="showChart" />,
+                  <DatBoolean path="showSidebar" label="Show sidebar?" key="showSidebar" />,
+                  // submit button. Should remain at bottom
+                  <DatButton
+                    label="Generate authored model"
+                    onClick={this.generateAndOpenAuthoredUrl}
+                    key="generate" />
+                ]
+              }
+              </DatGui>
+            }
+          </Simulation>
+        </Row>
+      </App>
     );
   }
 

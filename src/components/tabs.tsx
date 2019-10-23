@@ -14,6 +14,7 @@ enum SectionTypes {
 type TabInfo = {
   [tab in SectionTypes]: {
     name: string;
+    index: number;
     backgroundColor: string;
     hoverBackgroundColor: string;
   }
@@ -21,16 +22,19 @@ type TabInfo = {
 const kTabInfo: TabInfo = {
   blocks: {
     name: "Blocks",
+    index: -1,
     backgroundColor: "#DDEDFF",
     hoverBackgroundColor: "#CFE1FE",
   },
   code: {
     name: "Code",
+    index: -1,
     backgroundColor: "#BBD9FF",
     hoverBackgroundColor: "#AECEFF",
   },
   controls: {
     name: "Controls",
+    index: -1,
     backgroundColor: "#FFCA79",
     hoverBackgroundColor: "#FABF6E",
   },
