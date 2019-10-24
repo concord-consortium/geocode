@@ -252,6 +252,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     } = this.stores;
 
     const {
+      tabIndex,
       showOptionsDialog,
       expandOptionsDialog,
       simulationOptions
@@ -318,7 +319,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     if (showBlocks)   { enabledTabTypes.push(SectionTypes.BLOCKS); }
     if (showCode)     { enabledTabTypes.push(SectionTypes.CODE); }
     if (showControls) { enabledTabTypes.push(SectionTypes.CONTROLS); }
-    const currentTabType = enabledTabTypes[this.state.tabIndex || 0];
+    const currentTabType = enabledTabTypes[tabIndex || 0];
 
     return (
       <App className="app" ref={this.rootComponent}>
@@ -326,7 +327,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
           onResize={this.resize}
         />
         <Row>
-          <Tabs selectedIndex={this.state.tabIndex} onSelect={this.handleTabSelect}>
+          <Tabs selectedIndex={tabIndex} onSelect={this.handleTabSelect}>
             <TabBack
               width={tabWidth}
               backgroundcolor={this.getTabColor(currentTabType)}
@@ -334,9 +335,9 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             <TabList>
               { showBlocks &&
                 <Tab
-                  borderwidth={this.state.tabIndex !== kTabInfo.blocks.index ? "2px" : "0px"}
-                  leftradius={"0px"}
-                  rightradius={this.state.tabIndex === (kTabInfo.blocks.index + 1) ? "10px" : "0px"}
+                  selected={tabIndex === kTabInfo.blocks.index}
+                  leftofselected={tabIndex === (kTabInfo.blocks.index + 1) ? "true" : undefined}
+                  rightofselected={tabIndex === (kTabInfo.blocks.index - 1) ? "true" : undefined}
                   backgroundcolor={this.getTabColor(SectionTypes.BLOCKS)}
                   backgroundhovercolor={this.getTabHoverColor(SectionTypes.BLOCKS)}
                 >
@@ -345,9 +346,9 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               }
               { showCode &&
                 <Tab
-                  borderwidth={this.state.tabIndex !== kTabInfo.code.index ? "2px" : "0px"}
-                  leftradius={this.state.tabIndex === (kTabInfo.code.index - 1) ? "10px" : "0px"}
-                  rightradius={this.state.tabIndex === (kTabInfo.code.index + 1) ? "10px" : "0px"}
+                  selected={tabIndex === kTabInfo.code.index}
+                  leftofselected={tabIndex === (kTabInfo.code.index + 1) ? "true" : undefined}
+                  rightofselected={tabIndex === (kTabInfo.code.index - 1) ? "true" : undefined}
                   backgroundcolor={this.getTabColor(SectionTypes.CODE)}
                   backgroundhovercolor={this.getTabHoverColor(SectionTypes.CODE)}
                 >
@@ -356,9 +357,9 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               }
               { showControls &&
                 <Tab
-                  borderwidth={this.state.tabIndex !== kTabInfo.controls.index ? "2px" : "0px"}
-                  leftradius={this.state.tabIndex === (kTabInfo.controls.index - 1) ? "10px" : "0px"}
-                  rightradius={"0px"}
+                  selected={tabIndex === kTabInfo.controls.index}
+                  leftofselected={tabIndex === (kTabInfo.controls.index + 1) ? "true" : undefined}
+                  rightofselected={tabIndex === (kTabInfo.controls.index - 1) ? "true" : undefined}
                   backgroundcolor={this.getTabColor(SectionTypes.CONTROLS)}
                   backgroundhovercolor={this.getTabHoverColor(SectionTypes.CONTROLS)}
                 >

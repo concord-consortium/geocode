@@ -70,9 +70,9 @@ const TabList = styled(UnstyledTabList)`
 `;
 
 interface TabProps {
-  borderwidth: string;
-  leftradius: string;
-  rightradius: string;
+  selected: boolean;
+  leftofselected?: string;
+  rightofselected?: string;
   backgroundcolor: string;
   backgroundhovercolor: string;
 }
@@ -90,10 +90,16 @@ const Tab = styled(UnstyledTab)<TabProps>`
   border-color: white;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
-  border-bottom-left-radius: ${props => props.leftradius};
-  border-bottom-right-radius: ${props => props.rightradius};
-  border-width: ${props => props.borderwidth};
+  border-bottom-left-radius: ${props => props.rightofselected === "true" ? "10px" : "0px"};
+  border-bottom-right-radius: ${props => props.leftofselected === "true" ? "10px" : "0px"};
+  border-width: ${props => props.selected ? "0px" : "2px"};
   z-index: 1;
+  &:first-child {
+    border-bottom-left-radius 0px;
+  }
+  &:last-child {
+    border-bottom-right-radius 0px;
+  }
   &:hover {
     background-color: ${props => props.backgroundhovercolor};
   }
