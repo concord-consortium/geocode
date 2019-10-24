@@ -80,7 +80,9 @@
 .react-dat-gui .cr.button {
   border-left: 5px solid #e61d5f; }
   .react-dat-gui .cr.button:hover {
-    background: #111; }
+    background: #2FA1D6; }
+  .react-dat-gui .cr.button:active {
+    background: #0b7bb0; }
   .react-dat-gui .cr.button .label-text {
     display: block;
     width: 100%;
