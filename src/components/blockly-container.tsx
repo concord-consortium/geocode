@@ -44,21 +44,56 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
 
   public componentDidMount() {
     this.initializeBlockly();
+    this.setupBlockly();
   }
 
   public componentDidUpdate(prevProps: IProps) {
     if ((prevProps.toolboxPath !== this.props.toolboxPath) ||
         prevProps.initialCode !== this.props.initialCode ||
         prevProps.initialCodePath !== this.props.initialCodePath) {
-      this.initializeBlockly();
+      this.setupBlockly();
     }
   }
 
-  private initializeBlockly = async () => {
-    if (this.workSpaceRef.current) {
-      this.workSpaceRef.current.innerHTML = "";
-    }
-    const {toolboxPath, initialCode, initialCodePath, setBlocklyCode} = this.props;
+  private initializeBlockly = () => {
+    const {setBlocklyCode} = this.props;
+
+    Blockly.JavaScript.STATEMENT_PREFIX = "startStep(%1);\n";
+    Blockly.JavaScript.STATEMENT_SUFFIX = "endStep();\n";
+    Blockly.JavaScript.addReservedWords("highlightBlock");
+
+    // initialize blockly with options.
+    // note: we need to pass in a toolbox, and it has to have categories, otherwise blockly
+    // won't let us update the toolbox later with another def that includes categories
+    const blockOpts = {
+      media: "blockly/media/",
+      toolbox: `
+      <xml id="toolbox" style="display: none">
+        <category name="dummy">
+        </category>
+      </xml>
+      `,
+      zoom: {
+        startScale: 0.8,
+        maxScale: 2,
+        minScale: 0.2
+      }
+    };
+
+    this.workSpace = Blockly.inject(this.workSpaceRef.current, blockOpts);
+
+    const myUpdateFunction = (event: any) => {
+      const code = Blockly.JavaScript.workspaceToCode(this.workSpace);
+      setBlocklyCode(code, this.workSpace);
+    };
+
+    this.workSpace.addChangeListener(myUpdateFunction);
+  }
+
+  private setupBlockly = async () => {
+    const {toolboxPath, initialCode, initialCodePath} = this.props;
+
+    this.workSpace.clear();
 
     let codeString = initialCode;
     if (!codeString && initialCodePath) {
@@ -69,29 +104,9 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
     const toolboxResp = await fetch(toolboxPath);
     const toolbox = await toolboxResp.text();
 
-    const blockOpts = {
-      media: "blockly/media/",
-      toolbox,
-      zoom: {
-        startScale: 0.8,
-        maxScale: 2,
-        minScale: 0.2
-      }
-    };
-
-    this.workSpace = Blockly.inject(this.workSpaceRef.current, blockOpts);
-
-    Blockly.JavaScript.STATEMENT_PREFIX = "startStep(%1);\n";
-    Blockly.JavaScript.STATEMENT_SUFFIX = "endStep();\n";
-    Blockly.JavaScript.addReservedWords("highlightBlock");
+    this.workSpace.updateToolbox(toolbox);
 
     const xml = Blockly.Xml.textToDom(codeString);
     Blockly.Xml.domToWorkspace(xml, this.workSpace);
-
-    const myUpdateFunction = (event: any) => {
-      const code = Blockly.JavaScript.workspaceToCode(this.workSpace);
-      setBlocklyCode(code, this.workSpace);
-    };
-    this.workSpace.addChangeListener(myUpdateFunction);
   }
 }
