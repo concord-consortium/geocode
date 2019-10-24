@@ -314,13 +314,11 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     kTabInfo.blocks.index = showBlocks ? 0 : -1;
     kTabInfo.code.index = showCode ? kTabInfo.blocks.index + 1 : -1;
     kTabInfo.controls.index = showControls ? (showCode ? kTabInfo.code.index + 1 : kTabInfo.blocks.index + 1) : -1;
-    let currentTabType = SectionTypes.BLOCKS;
-    if (showCode && this.state.tabIndex === kTabInfo.code.index) {
-      currentTabType = SectionTypes.CODE;
-    }
-    if (showControls && this.state.tabIndex === kTabInfo.controls.index) {
-      currentTabType = SectionTypes.CONTROLS;
-    }
+    const enabledTabTypes = [];
+    if (showBlocks)   { enabledTabTypes.push(SectionTypes.BLOCKS); }
+    if (showCode)     { enabledTabTypes.push(SectionTypes.CODE); }
+    if (showControls) { enabledTabTypes.push(SectionTypes.CONTROLS); }
+    const currentTabType = enabledTabTypes[this.state.tabIndex || 0];
 
     return (
       <App className="app" ref={this.rootComponent}>
@@ -564,13 +562,13 @@ export class AppComponent extends BaseComponent<IProps, IState> {
   }
 
   private getTabColor = (type: SectionTypes) => {
-    return kTabInfo[type].backgroundColor;
+    return (type ? kTabInfo[type].backgroundColor : "white");
   }
   private getTabHoverColor = (type: SectionTypes) => {
-    return kTabInfo[type].hoverBackgroundColor;
+    return (type ? kTabInfo[type].hoverBackgroundColor : "white");
   }
   private getTabName = (type: SectionTypes) => {
-    return kTabInfo[type].name;
+    return (type ? kTabInfo[type].name : "");
   }
 
   private resize = (rect: DOMRect) => {
