@@ -15,7 +15,6 @@ interface IState {}
 
 const ButtonContainer = styled.div`
   padding: 1em;
-  background-color: white;
   border-radius: 0.2em;
   display: flex;
   flex-direction: row;
