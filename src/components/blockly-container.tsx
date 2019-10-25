@@ -2,9 +2,12 @@ import * as React from "react";
 import styled from "styled-components";
 import "../blockly-blocks/blocks.js";
 
+let loadingUID: number;
+
 interface IProps {
   toolboxPath: string;
-  initialCodeSetupPath: string;
+  initialCode?: string;
+  initialCodePath?: string;
   setBlocklyCode: (code: string, workspace: any) => void;
   width: number;
   height: number;
@@ -14,7 +17,6 @@ interface IState {}
 
 const Wrapper = styled.div``;
 const StartBlocks = styled.div``;
-let lastTimeout: number | null  = null;
 interface WorkspaceProps {
   width: number;
   height: number;
@@ -44,64 +46,79 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
 
   public componentDidMount() {
     this.initializeBlockly();
+    this.setupBlockly();
   }
 
   public componentDidUpdate(prevProps: IProps) {
     if ((prevProps.toolboxPath !== this.props.toolboxPath) ||
-        prevProps.initialCodeSetupPath !== this.props.initialCodeSetupPath) {
-          this.initializeBlockly();
-        }
-
-    // TODO: This should eventually be removed. We save the XML to local storage.
-    // We don't ever restore this at the moment, but its used by developers to
-    // Save the initial program.
-    if (lastTimeout) {
-      clearTimeout(lastTimeout);
+        prevProps.initialCode !== this.props.initialCode ||
+        prevProps.initialCodePath !== this.props.initialCodePath) {
+      this.setupBlockly();
     }
-    lastTimeout = window.setTimeout(this.toXml, 500);
-  }
-
-  private toXml = () => {
-    const xml = Blockly.Xml.workspaceToDom(this.workSpace);
-    localStorage.setItem("blockly-workspace", Blockly.Xml.domToPrettyText(xml));
   }
 
   private initializeBlockly = () => {
-    if (this.workSpaceRef.current) {
-      this.workSpaceRef.current.innerHTML = "";
-    }
-    const {toolboxPath, initialCodeSetupPath, setBlocklyCode} = this.props;
-    fetch(toolboxPath).then((r) => {
-      r.text().then( (data) => {
-        const blockOpts = {
-          media: "blockly/media/",
-          toolbox: data,
-          zoom: {
-            startScale: 0.8,
-            maxScale: 2,
-            minScale: 0.2
-          }
-        };
-        this.workSpace = Blockly.inject(this.workSpaceRef.current, blockOpts);
-        const startBlocks = this.startBlockRef.current;
-        Blockly.Xml.domToWorkspace(startBlocks, this.workSpace);
-        Blockly.JavaScript.STATEMENT_PREFIX = "startStep(%1);\n";
-        Blockly.JavaScript.STATEMENT_SUFFIX = "endStep();\n";
-        Blockly.JavaScript.addReservedWords("highlightBlock");
-        fetch(initialCodeSetupPath)
-        .then((resp) => {
-          resp.text().then((d) => {
-            const xml = Blockly.Xml.textToDom(d);
-            Blockly.Xml.domToWorkspace(xml, this.workSpace);
-          });
-        });
-        const myUpdateFunction = (event: any) => {
-          const code = Blockly.JavaScript.workspaceToCode(this.workSpace);
-          setBlocklyCode(code, this.workSpace);
-        };
-        this.workSpace.addChangeListener(myUpdateFunction);
-      });
-    });
+    const {setBlocklyCode} = this.props;
+
+    Blockly.JavaScript.STATEMENT_PREFIX = "startStep(%1);\n";
+    Blockly.JavaScript.STATEMENT_SUFFIX = "endStep();\n";
+    Blockly.JavaScript.addReservedWords("highlightBlock");
+
+    // initialize blockly with options.
+    // note: we need to pass in a toolbox, and it has to have categories, otherwise blockly
+    // won't let us update the toolbox later with another def that includes categories
+    const blockOpts = {
+      media: "blockly/media/",
+      toolbox: `
+      <xml id="toolbox" style="display: none">
+        <category name="dummy">
+        </category>
+      </xml>
+      `,
+      zoom: {
+        startScale: 0.8,
+        maxScale: 2,
+        minScale: 0.2
+      }
+    };
+
+    this.workSpace = Blockly.inject(this.workSpaceRef.current, blockOpts);
+
+    const myUpdateFunction = (event: any) => {
+      const code = Blockly.JavaScript.workspaceToCode(this.workSpace);
+      setBlocklyCode(code, this.workSpace);
+    };
+
+    this.workSpace.addChangeListener(myUpdateFunction);
   }
 
+  private setupBlockly = async () => {
+    const {toolboxPath, initialCode, initialCodePath} = this.props;
+
+    // because we may be loading in code and toolboxes asynchronously, this function may
+    // occasionally complete after newer invocations have completed, overwriting the newer
+    // setup. This is a quick check that only the most recent invocation will be honored.
+    const currentLoadingUID = Math.random();
+    loadingUID = currentLoadingUID;
+
+    let codeString = initialCode;
+    if (!codeString && initialCodePath) {
+      const intialCodeResp = await fetch(initialCodePath);
+      codeString = await intialCodeResp.text();
+    }
+
+    const toolboxResp = await fetch(toolboxPath);
+    const toolbox = await toolboxResp.text();
+
+    if (loadingUID !== currentLoadingUID) {
+      return;
+    }
+
+    this.workSpace.clear();
+
+    this.workSpace.updateToolbox(toolbox);
+
+    const xml = Blockly.Xml.textToDom(codeString);
+    Blockly.Xml.domToWorkspace(xml, this.workSpace);
+  }
 }
