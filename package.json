@@ -140,6 +140,7 @@
     "react-dom": "^16.8.6",
     "react-leaflet": "^2.4.0",
     "react-resize-observer": "^1.1.1",
+    "react-svg": "^10.0.23",
     "react-syntax-highlighter": "^10.2.1",
     "react-tabs": "^3.0.0",
     "recharts": "^1.5.0",
