@@ -2,6 +2,8 @@ import * as React from "react";
 import styled from "styled-components";
 import "../blockly-blocks/blocks.js";
 
+let loadingUID: number;
+
 interface IProps {
   toolboxPath: string;
   initialCode?: string;
@@ -93,7 +95,11 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
   private setupBlockly = async () => {
     const {toolboxPath, initialCode, initialCodePath} = this.props;
 
-    this.workSpace.clear();
+    // because we may be loading in code and toolboxes asynchronously, this function may
+    // occasionally complete after newer invocations have completed, overwriting the newer
+    // setup. This is a quick check that only the most recent invocation will be honored.
+    const currentLoadingUID = Math.random();
+    loadingUID = currentLoadingUID;
 
     let codeString = initialCode;
     if (!codeString && initialCodePath) {
@@ -103,6 +109,12 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
 
     const toolboxResp = await fetch(toolboxPath);
     const toolbox = await toolboxResp.text();
+
+    if (loadingUID !== currentLoadingUID) {
+      return;
+    }
+
+    this.workSpace.clear();
 
     this.workSpace.updateToolbox(toolbox);
 
