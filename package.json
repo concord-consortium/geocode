@@ -21,6 +21,7 @@
       "src/utilities/test-utils.ts"
     ],
     "moduleNameMapper": {
+      "\\.svg$": "<rootDir>/__mocks__/svgMock.js",
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
       "\\.(css|less|sass)$": "identity-obj-proxy"
     },
@@ -114,6 +115,7 @@
   "dependencies": {
     "@inlet/react-pixi": "^0.5.7",
     "@material-ui/core": "^4.2.0",
+    "@svgr/webpack": "^4.3.3",
     "@types/d3": "^5.7.2",
     "@types/d3-contour": "^1.3.0",
     "@types/react-leaflet": "^2.2.1",
@@ -140,7 +142,6 @@
     "react-dom": "^16.8.6",
     "react-leaflet": "^2.4.0",
     "react-resize-observer": "^1.1.1",
-    "react-svg": "^10.0.23",
     "react-syntax-highlighter": "^10.2.1",
     "react-tabs": "^3.0.0",
     "recharts": "^1.5.0",
