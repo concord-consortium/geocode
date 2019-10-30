@@ -1,7 +1,11 @@
-
 import * as React from "react";
 import styled from "styled-components";
-import Button from "./overlay-button";
+import RunIcon from "../assets/blockly-icons/run.svg";
+import StopIcon from "../assets/blockly-icons/stop.svg";
+import ResetIcon from "../assets/blockly-icons/reset.svg";
+import StepIcon from "../assets/blockly-icons/step.svg";
+import { Icon } from "./icon";
+import { IconButton, IconButtonText } from "./icon-button";
 
 interface IProps {
   run: () => void;
@@ -14,37 +18,74 @@ interface IProps {
 interface IState {}
 
 const ButtonContainer = styled.div`
-  padding: 1em;
-  border-radius: 0.2em;
   display: flex;
-  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 44px;
 `;
 
 const RunButton = (props: IProps) => {
   const { run, running } = props;
   return (
-    <Button onClick={run} color={running ? "primary" : "secondary"}>Run</Button>
+    <IconButton onClick={run} hovercolor="#BBD9FF" activecolor="#DDEDFF">
+      <Icon
+        width={26}
+        height={26}
+        fill={"#4AA9FF"}
+      >
+        <RunIcon />
+      </Icon>
+      <IconButtonText>Run</IconButtonText>
+    </IconButton>
   );
 };
 
 const StepButton = (props: IProps) => {
   const { step } = props;
   return (
-    <Button onClick={step}>Step</Button>
+    <IconButton onClick={step} hovercolor="#BBD9FF" activecolor="#DDEDFF">
+      <Icon
+        width={26}
+        height={26}
+        fill={"#4AA9FF"}
+      >
+        <StepIcon />
+      </Icon>
+      <IconButtonText>Step</IconButtonText>
+    </IconButton>
   );
 };
 
 const StopButton = (props: IProps) => {
   const { stop } = props;
   return (
-    <Button onClick={stop}>Stop</Button>
+    <IconButton onClick={stop} hovercolor="#BBD9FF" activecolor="#DDEDFF">
+      <Icon
+        width={26}
+        height={26}
+        fill={"#4AA9FF"}
+      >
+        <StopIcon />
+      </Icon>
+      <IconButtonText>Stop</IconButtonText>
+    </IconButton>
   );
 };
 
 const ResetButton = (props: IProps) => {
   const { reset } = props;
   return (
-    <Button onClick={reset}>Reset</Button>
+    <IconButton onClick={reset} hovercolor="#BBD9FF" activecolor="#DDEDFF">
+      <Icon
+        width={26}
+        height={26}
+        fill={"#4AA9FF"}
+      >
+        <ResetIcon />
+      </Icon>
+      <IconButtonText>Reset</IconButtonText>
+    </IconButton>
   );
 };
 

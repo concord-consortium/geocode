@@ -9,6 +9,8 @@ import ParticleIcon from "../assets/controls-icons/particle.svg";
 import WindSpeedDirectionIcon from "../assets/controls-icons/wind-speed-direction.svg";
 import RunIcon from "../assets/blockly-icons/run.svg";
 import CheckIcon from "../assets/controls-icons/check.svg";
+import { Icon } from "./icon";
+import { IconButton, IconButtonText } from "./icon-button";
 
 const StyledControls = styled.div`
   display: flex;
@@ -81,17 +83,6 @@ const IconContainer = styled.div`
   height: 60px;
 `;
 
-interface IconProps {
-  width: number;
-  height: number;
-  fill: string;
-}
-const Icon = styled.div`
-  width: ${(p: IconProps) => `${p.width}px`};
-  height: ${(p: IconProps) => `${p.height}px`};
-  fill: ${(p: IconProps) => `${p.fill}`};
-`;
-
 interface HorizontalContainerProps {
   alignItems?: string;
   justifyContent?: string;
@@ -123,29 +114,6 @@ const EruptContainer = styled.div`
 
 const EruptButtons = styled.div`
   position: relative;
-`;
-
-const EruptButton = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 83px;
-  height: 34px;
-  border-radius: 5px;
-  border: solid 2px white;
-  background-color: white;
-  &:hover {
-    background-color: #FFDBAC;
-  }
-  &:active {
-    background-color: #FFECD6;
-  }
-`;
-
-const EruptText = styled.div`
-  margin-left: 4px;
-  color: #434343;
-  font-size: 16px;
 `;
 
 const AnimateEruptionContainer = styled.div`
@@ -406,7 +374,7 @@ export class Controls extends BaseComponent<IProps, IState> {
         </ControlsContainer>
         <EruptContainer>
           <EruptButtons>
-            <EruptButton onClick={this.erupt}>
+            <IconButton onClick={this.erupt} hovercolor="#FFDBAC" activecolor="#FFECD6">
               <Icon
                 width={26}
                 height={26}
@@ -414,8 +382,8 @@ export class Controls extends BaseComponent<IProps, IState> {
               >
                 <RunIcon />
               </Icon>
-              <EruptText>Erupt</EruptText>
-            </EruptButton>
+              <IconButtonText>Erupt</IconButtonText>
+            </IconButton>
             <AnimateEruptionContainer>
               <AnimateEruptionCheckbox selected={this.state.animate} onClick={this.setAnimation}>
                 <Icon
