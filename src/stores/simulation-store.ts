@@ -1,7 +1,7 @@
 import { types, getSnapshot } from "mobx-state-tree";
 import { IInterpreterController, makeInterpreterController } from "../utilities/interpreter";
 import { SimulationAuthoringOptions } from "../components/app";
-import { UserSaveDataType } from "..";
+import { SerializedStateDataType } from "..";
 
 let _cityCounter = 0;
 const genCityId = () => `city_${_cityCounter++}`;
@@ -442,7 +442,7 @@ export const SimulationStore = types
         return self.cities.reduce( (pre, cur) => `${pre}-${cur.name}${cur.x}${cur.y}`, "");
       },
       // returns values we need to save to LARA
-      get userSnapshot(): UserSaveDataType {
+      get userSnapshot(): SerializedStateDataType {
         return {
           version: 1,
           blocklyXmlCode: self.xmlCode
