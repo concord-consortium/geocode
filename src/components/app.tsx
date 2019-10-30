@@ -94,6 +94,7 @@ interface ISim {
 const Code = styled.div`
   max-height: 400px;
   overflow: auto;
+  border: 2px solid white;
 `;
 
 const Syntax = styled(SyntaxHighlighter)`
