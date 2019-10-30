@@ -5,11 +5,11 @@ import * as ReactDOM from "react-dom";
 import * as iframePhone from "iframe-phone";
 
 import { AppComponent } from "./components/app";
-import { simulation } from "./stores/simulation-store";
 import { onSnapshot } from "mobx-state-tree";
+import { stores } from "./stores/stores";
 
 ReactDOM.render(
-  <Provider stores={simulation}>
+  <Provider stores={stores}>
     <AppComponent />
   </Provider>,
   document.getElementById("reactApp")
@@ -28,7 +28,7 @@ type Mode = "student" | "author";
  */
 const loadStateData = (state: SerializedStateDataType) => {
   if (state.blocklyXmlCode) {
-    simulation.setInitialXmlCode(state.blocklyXmlCode);
+    stores.simulation.setInitialXmlCode(state.blocklyXmlCode);
   }
 };
 
@@ -48,6 +48,7 @@ phone.addListener("initInteractive", (data: {
 
   if (data.mode === "authoring") {
     mode = "author";
+    stores.uiStore.setShowOptionsDialog(false);
     loadStateData(authorState);
   } else {
     // student state overwrites authored state
@@ -59,12 +60,13 @@ phone.addListener("initInteractive", (data: {
 // Save data everytime stores change
 const saveUserData = () => {
   if (mode === "student") {
-    phone.post("interactiveState", simulation.userSnapshot);
+    phone.post("interactiveState", stores.simulation.userSnapshot);
   } else {
-    phone.post("authoredState", simulation.userSnapshot);
+    phone.post("authoredState", stores.simulation.userSnapshot);
   }
 };
-onSnapshot(simulation, saveUserData);       // MobX function called on every store change
+onSnapshot(stores.simulation, saveUserData);       // MobX function called on every store change
+onSnapshot(stores.uiStore, saveUserData);
 
 // When we exit page and LARA asks for student data, tell it it's already up-to-date
 phone.addListener("getInteractiveState", () => {

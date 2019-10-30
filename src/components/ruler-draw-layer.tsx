@@ -33,7 +33,7 @@ export class RulerDrawLayer extends BaseComponent<IProps, IState> {
     this.drawEnd = this.drawEnd.bind(this);
     this.setPoint = this.setPoint.bind(this);
 
-    const { volcanoLat, volcanoLng } = this.stores;
+    const { volcanoLat, volcanoLng } = this.stores.simulation;
 
     const initialState: IState = {
         pointLat: volcanoLat,
@@ -94,7 +94,7 @@ export class RulerDrawLayer extends BaseComponent<IProps, IState> {
   public render() {
     const { map } = this.props;
     const { pointLat, pointLng, hasDrawn } = this.state;
-    const { volcanoLat, volcanoLng } = this.stores;
+    const { volcanoLat, volcanoLng } = this.stores.simulation;
     const point1 = L.latLng(volcanoLat, volcanoLng);
     const point2 = L.latLng(pointLat, pointLng);
     const point3 = L.latLng(volcanoLat, pointLng);

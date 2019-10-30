@@ -56,7 +56,6 @@ export interface SimulationAuthoringOptions {
 interface IState {
   tabIndex: number;
   rightTabIndex: number;
-  showOptionsDialog: boolean;
   expandOptionsDialog: boolean;
   simulationOptions: SimulationAuthoringOptions;
   dimensions: {
@@ -160,13 +159,14 @@ export class AppComponent extends BaseComponent<IProps, IState> {
   public constructor(props: IProps) {
     super(props);
 
+    const { simulation, uiStore } = this.stores;
+
     this.handleTabSelect = this.handleTabSelect.bind(this);
     this.handleRightTabSelect = this.handleRightTabSelect.bind(this);
 
     const initialState: IState = {
       tabIndex: 0,
       rightTabIndex: 0,
-      showOptionsDialog: true,
       expandOptionsDialog: false,
       simulationOptions: {
         requireEruption: true,
@@ -218,15 +218,16 @@ export class AppComponent extends BaseComponent<IProps, IState> {
 
     // for now, assume that if we've loaded from params that we don't want settings dialog
     if (Object.keys(urlParams).length > 0) {
-      initialState.showOptionsDialog = false;
+      uiStore.setShowOptionsDialog(false);
     }
 
     this.state = initialState;
-    this.stores.setAuthoringOptions(initialState.simulationOptions, true);
+    simulation.setAuthoringOptions(initialState.simulationOptions, true);
   }
 
   public componentDidUpdate(prevProps: IProps, prevState: IState) {
     const { scenario, showBlocks, showCode, showControls } = this.state.simulationOptions;
+    const { simulation } = this.stores;
     if (prevState.simulationOptions.showBlocks !== showBlocks ||
         prevState.simulationOptions.showCode !== showCode ||
         prevState.simulationOptions.showControls !== showControls) {
@@ -238,55 +239,59 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     const latKey = "volcanoLat";
     const lngKey = "volcanoLng";
 
-    this.stores.setVolcano(scenarioData[latKey], scenarioData[lngKey]);
+    simulation.setVolcano(scenarioData[latKey], scenarioData[lngKey]);
 
-    this.stores.setAuthoringOptions(this.state.simulationOptions, false);
+    simulation.setAuthoringOptions(this.state.simulationOptions, false);
   }
 
   public render() {
     const {
-      mass,
-      windDirection,
-      windSpeed,
-      code,
-      log,
-      setBlocklyCode,
-      colHeight,
-      particleSize,
-      vei,
-      coloredColHeight,
-      coloredMass,
-      coloredParticleSize,
-      coloredVei,
-      coloredWindDirection,
-      coloredWindSpeed,
-      plotData,
-      cities,
-      volcanoLat,
-      volcanoLng,
-      crossPoint1Lat,
-      crossPoint1Lng,
-      crossPoint2Lat,
-      crossPoint2Lng,
-      viewportZoom,
-      viewportCenterLat,
-      viewportCenterLng,
-      run,
-      clearLog,
-      step,
-      stop,
-      reset,
-      running,
-      isErupting,
-      hasErupted,
-      isSelectingCrossSection,
-      initialXmlCode
+      simulation: {
+        mass,
+        windDirection,
+        windSpeed,
+        code,
+        log,
+        setBlocklyCode,
+        colHeight,
+        particleSize,
+        vei,
+        coloredColHeight,
+        coloredMass,
+        coloredParticleSize,
+        coloredVei,
+        coloredWindDirection,
+        coloredWindSpeed,
+        plotData,
+        cities,
+        volcanoLat,
+        volcanoLng,
+        crossPoint1Lat,
+        crossPoint1Lng,
+        crossPoint2Lat,
+        crossPoint2Lng,
+        viewportZoom,
+        viewportCenterLat,
+        viewportCenterLng,
+        run,
+        clearLog,
+        step,
+        stop,
+        reset,
+        running,
+        isErupting,
+        hasErupted,
+        isSelectingCrossSection,
+        initialXmlCode
+      },
+      uiStore: {
+        showOptionsDialog
+      }
     } = this.stores;
 
     const {
       tabIndex,
       rightTabIndex,
-      showOptionsDialog,
       expandOptionsDialog,
       simulationOptions
     } = this.state;
@@ -698,18 +703,19 @@ export class AppComponent extends BaseComponent<IProps, IState> {
   }
 
   private saveCodeToLocalStorage = () => {
-    localStorage.setItem("blockly-workspace", this.stores.xmlCode);
+    localStorage.setItem("blockly-workspace", this.stores.simulation.xmlCode);
   }
 
   private loadCodeFromLocalStorage = () => {
+    const { simulation } = this.stores;
     const code = localStorage.getItem("blockly-workspace");
     if (code) {
       // we need to unset and then set the state to force a re-render, if the user has already
       // loaded the code once.
       // because of the way Blockly injects to the DOM, we have to wait 100ms, instead of using
       // the setState callback, or we may end up with two Blockly editors
-      this.stores.setInitialXmlCode("<xml></xml>");
-      setTimeout(() => {this.stores.setInitialXmlCode(code); }, 100);
+      simulation.setInitialXmlCode("<xml></xml>");
+      setTimeout(() => {simulation.setInitialXmlCode(code); }, 100);
     }
   }
 

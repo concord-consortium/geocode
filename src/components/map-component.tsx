@@ -87,20 +87,20 @@ export class MapComponent extends BaseComponent<IProps, IState>{
   }
 
   public handleDragEnter(e: React.MouseEvent<HTMLDivElement>) {
-    this.stores.setPoint1Pos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
-    this.stores.setPoint2Pos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    this.stores.simulation.setPoint1Pos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    this.stores.simulation.setPoint2Pos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
     this.setState({moveMouse: true});
   }
 
   public handleDragMove(e: React.MouseEvent<HTMLDivElement>) {
     const { moveMouse } = this.state;
     if (moveMouse) {
-      this.stores.setPoint2Pos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+      this.stores.simulation.setPoint2Pos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
     }
   }
 
   public handleDragExit(e: React.MouseEvent<HTMLDivElement>) {
-    this.stores.setPoint2Pos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    this.stores.simulation.setPoint2Pos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
     this.setState({moveMouse: false});
   }
 
@@ -130,7 +130,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     const {
       isSelectingCrossSection,
       isSelectingRuler
-    } = this.stores;
+    } = this.stores.simulation;
 
     const cityItems = cities.map( (city) => {
       const {x, y, name} = city;
@@ -150,7 +150,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       }
     });
 
-    const { crossPoint1Lat, crossPoint1Lng, crossPoint2Lat, crossPoint2Lng } = this.stores;
+    const { crossPoint1Lat, crossPoint1Lng, crossPoint2Lat, crossPoint2Lng } = this.stores.simulation;
     const volcanoPos = L.latLng(volcanoLat, volcanoLng);
     const corner1 = L.latLng(topLeftLat, topLeftLng);
     const corner2 = L.latLng(bottomRightLat, bottomRightLng);
@@ -236,10 +236,10 @@ export class MapComponent extends BaseComponent<IProps, IState>{
         </LeafletMap>
         <OverlayControls
           showRuler={isSelectingRuler}
-          onRulerClick={this.stores.rulerClick}
+          onRulerClick={this.stores.simulation.rulerClick}
           isSelectingCrossSection={isSelectingCrossSection}
           showCrossSection={hasErupted && showCrossSection}
-          onCrossSectionClick={this.stores.crossSectionClick}
+          onCrossSectionClick={this.stores.simulation.crossSectionClick}
           onReCenterClick={this.onRecenterClick}
         />
       </CanvDiv>
@@ -261,7 +261,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       if (this.map.current) {
         const center = this.map.current.leafletElement.getCenter();
         const zoom = this.map.current.leafletElement.getZoom();
-        this.stores.setViewportParameters(zoom, center.lat, center.lng);
+        this.stores.simulation.setViewportParameters(zoom, center.lat, center.lng);
       }
     }
   }
