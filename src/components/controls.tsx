@@ -3,12 +3,12 @@ import { BaseComponent, IBaseProps } from "./base";
 import { inject, observer } from "mobx-react";
 import RangeControl from "./range-control";
 import styled from "styled-components";
-import ColumnHeightIcon from "../assets/controls/column-height.svg";
-import EjectedVolumeIcon from "../assets/controls/ejected-volume.svg";
-import ParticleIcon from "../assets/controls/particle.svg";
-import WindSpeedDirectionIcon from "../assets/controls/wind-speed-direction.svg";
-import RunIcon from "../assets/controls/run.svg";
-import CheckIcon from "../assets/controls/check.svg";
+import ColumnHeightIcon from "../assets/controls-icons/column-height.svg";
+import EjectedVolumeIcon from "../assets/controls-icons/ejected-volume.svg";
+import ParticleIcon from "../assets/controls-icons/particle.svg";
+import WindSpeedDirectionIcon from "../assets/controls-icons/wind-speed-direction.svg";
+import RunIcon from "../assets/blockly-icons/run.svg";
+import CheckIcon from "../assets/controls-icons/check.svg";
 
 const StyledControls = styled.div`
   display: flex;
@@ -132,6 +132,7 @@ const EruptButton = styled.div`
   width: 83px;
   height: 34px;
   border-radius: 5px;
+  border: solid 2px white;
   background-color: white;
   &:hover {
     background-color: #FFDBAC;
