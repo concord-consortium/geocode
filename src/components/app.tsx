@@ -411,6 +411,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 tabcolor={this.getTabColor(SectionTypes.CONTROLS)}
               >
                 <Controls
+                  width={tabWidth}
                   showWindSpeed={showWindSpeed}
                   showWindDirection={showWindDirection}
                   showEruptionMass={showEruptionMass}

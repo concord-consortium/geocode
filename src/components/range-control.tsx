@@ -14,17 +14,19 @@ const railOuterStyle: CSSProperties = {
   transform: "translate(0%, -50%)",
   borderRadius: 7,
   cursor: "pointer",
-  // border: '1px solid white',
 };
 
 const railInnerStyle: CSSProperties = {
   position: "absolute",
   width: "100%",
-  height: 14,
+  height: 8,
   transform: "translate(0%, -50%)",
   borderRadius: 7,
   pointerEvents: "none",
-  backgroundColor: "rgb(155,155,155)",
+  backgroundColor: "#FFAC00",
+  borderWidth: "1px",
+  borderColor: "#FFDBAC",
+  borderStyle: "solid"
 };
 
 function SliderRail({ getRailProps }: { getRailProps: () => void }) {
@@ -57,7 +59,6 @@ function Handle({
           width: 28,
           height: 42,
           cursor: "pointer",
-          // border: '1px solid white',
           backgroundColor: "none",
         }}
         {...getHandleProps(id)}
@@ -76,7 +77,9 @@ function Handle({
           height: 24,
           borderRadius: "50%",
           boxShadow: "1px 1px 1px 1px rgba(0, 0, 0, 0.3)",
-          backgroundColor: disabled ? "#666" : "#ffc400",
+          backgroundColor: disabled ? "#666" : "white",
+          borderColor: "#878787",
+          borderWidth: "1px",
         }}
       />
     </React.Fragment>
@@ -108,11 +111,13 @@ function KeyboardHandle({
         position: "absolute",
         transform: "translate(-50%, -50%)",
         zIndex: 2,
-        width: 24,
-        height: 24,
+        width: 20,
+        height: 20,
         borderRadius: "50%",
         boxShadow: "1px 1px 1px 1px rgba(0, 0, 0, 0.3)",
-        backgroundColor: disabled ? "#666" : "#ffc400",
+        backgroundColor: disabled ? "#666" : "white",
+        borderColor: "#878787",
+        borderWidth: "1px",
       }}
       {...getHandleProps(id)}
     />
@@ -158,7 +163,7 @@ function Tick({ tick, count, format }: any) {
       <div
         style={{
           position: "absolute",
-          marginTop: 14,
+          marginTop: 9,
           width: 2,
           height: 5,
           backgroundColor: "rgb(200,200,200)",
@@ -168,8 +173,8 @@ function Tick({ tick, count, format }: any) {
       <div
         style={{
           position: "absolute",
-          marginTop: 22,
-          fontSize: 10,
+          marginTop: 13,
+          fontSize: 11,
           textAlign: "center",
           marginLeft: `${-(100 / count) / 2}%`,
           width: `${100 / count}%`,

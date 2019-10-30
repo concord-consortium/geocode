@@ -46,7 +46,7 @@ module.exports = (env, argv) => {
           ]
         },
         {
-          test: /\.(png|woff|woff2|eot|ttf|svg)$/,
+          test: /\.(png|woff|woff2|eot|ttf)$/,
           loader: 'url-loader',
           options: {
             limit: 8192,
@@ -56,7 +56,21 @@ module.exports = (env, argv) => {
               return devMode ? url : url.replace(/assets/, '.');
             }
           }
-        }
+        },
+        {
+          test: /\.svg$/,
+          oneOf: [
+            {
+              // Do not apply SVGR import in (S)CSS files.
+              issuer: /\.scss$/,
+              use: 'url-loader'
+            },
+            {
+              issuer: /\.tsx?$/,
+              loader: '@svgr/webpack'
+            }
+          ]
+        }				
       ]
     },
     resolve: {
