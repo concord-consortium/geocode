@@ -1,6 +1,6 @@
 import { types, getSnapshot } from "mobx-state-tree";
 import { IInterpreterController, makeInterpreterController } from "../utilities/interpreter";
-import { SimulationAuthoringOptions } from "../components/app";
+// import { SimulationAuthoringOptions } from "../components/app";
 import { SerializedStateDataType } from "..";
 import { kVEIIndexInfo } from "../utilities/vei";
 
@@ -91,21 +91,21 @@ export const SimulationStore = types
   .model("simulation", {
     windSpeed: 6,
     windDirection: 0,    // from north
-    mass: 20000000,
-    vei: 0,
-    colHeight: 2000,      // meters
+    mass: 10000000000000,
+    vei: 1,
+    colHeight: 20000,      // meters
     particleSize: 1,
     stagingWindSpeed: 6,
     stagingWindDirection: 0,
-    stagingMass: 20000000,
-    stagingVei: 0,
-    stagingColHeight: 2000,
+    stagingMass: 10000000000000,
+    stagingVei: 1,
+    stagingColHeight: 20000,
     stagingParticleSize: 1,
     coloredWindSpeed: 6,
     coloredWindDirection: 0,
-    coloredMass: 20000000,
-    coloredVei: 0,
-    coloredColHeight: 2000,
+    coloredMass: 10000000000000,
+    coloredVei: 1,
+    coloredColHeight: 20000,
     coloredParticleSize: 1,
     volcanoLat: 0,
     volcanoLng: 0,
@@ -129,6 +129,9 @@ export const SimulationStore = types
     // authoring props
     requireEruption: true,
     requirePainting: true,
+    scenario: "Cerro Negro",
+    toolbox: "Everything",
+    initialCodeTitle: "Basic",
   })
   .volatile(self => ({
     running: false,
@@ -427,17 +430,6 @@ export const SimulationStore = types
           };
           return (out);
         }
-      },
-      setAuthoringOptions(opts: SimulationAuthoringOptions, changeDefaultParameters: boolean) {
-        if (changeDefaultParameters) {
-          self.stagingWindSpeed = opts.initialWindSpeed;
-          self.stagingWindDirection = opts.initialWindDirection;
-          self.stagingMass = opts.initialEruptionMass;
-          self.stagingColHeight = opts.initialColumnHeight;
-          self.stagingParticleSize = opts.initialParticleSize;
-        }
-        self.requireEruption = opts.requireEruption;
-        self.requirePainting = opts.requirePainting;
       }
     };
   })

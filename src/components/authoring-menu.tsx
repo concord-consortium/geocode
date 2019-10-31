@@ -3,12 +3,11 @@ import DatGui, { DatBoolean, DatButton, DatSelect, DatFolder, DatNumber } from "
 
 import * as Scenarios from "./../assets/maps/scenarios.json";
 import * as BlocklyAuthoring from "./../assets/blockly-authoring/index.json";
-import { SimulationAuthoringOptions } from "./app.js";
 
 interface IProps {
   options: {};
   expandOptionsDialog: boolean;
-  handleUpdate: (simulationOptions: SimulationAuthoringOptions) => void;
+  handleUpdate: (simulationOptions: any) => void;
   toggleShowOptions: () => void;
   saveCodeToLocalStorage: () => void;
   loadCodeFromLocalStorage: () => void;

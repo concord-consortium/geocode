@@ -56,7 +56,6 @@ interface IProps extends IBaseProps {
   viewportCenterLat: number;
   viewportCenterLng: number;
   cities: CityType[];
-  map: string;
   isErupting: boolean;
   hasErupted: boolean;
   showCrossSection: boolean;

@@ -27,37 +27,10 @@ import AuthoringMenu from "./authoring-menu";
 
 interface IProps extends IBaseProps {}
 
-export interface SimulationAuthoringOptions {
-  [key: string]: any;
-  requireEruption: boolean;
-  requirePainting: boolean;
-  scenario: string;
-  toolbox: string;
-  initialCodeTitle: string;
-  showBlocks: boolean;
-  showCode: boolean;
-  showControls: boolean;
-  showWindSpeed: boolean;
-  initialWindSpeed: number;
-  showWindDirection: boolean;
-  initialWindDirection: number;
-  showEjectedVolume: boolean;
-  initialEruptionMass: number;
-  showColumnHeight: boolean;
-  initialColumnHeight: number;
-  initialParticleSize: number;
-  showVEI: boolean;
-  initialVEI: number;
-  showCrossSection: boolean;
-  showChart: boolean;
-  showSidebar: boolean;
-}
-
 interface IState {
   tabIndex: number;
   rightTabIndex: number;
   expandOptionsDialog: boolean;
-  simulationOptions: SimulationAuthoringOptions;
   dimensions: {
     width: number;
     height: number;
@@ -168,80 +141,13 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       tabIndex: 0,
       rightTabIndex: 0,
       expandOptionsDialog: false,
-      simulationOptions: {
-        requireEruption: true,
-        requirePainting: true,
-        scenario: "Cerro Negro",
-        toolbox: "Everything",
-        initialCodeTitle: "Basic",
-        showBlocks: true,
-        showLog: false,
-        showCode: true,
-        showControls: true,
-        showWindSpeed: true,
-        initialWindSpeed: 5,
-        showWindDirection: true,
-        initialWindDirection: 310,
-        showEjectedVolume: true,
-        initialEruptionMass: 10000000000000,
-        showColumnHeight: true,
-        initialColumnHeight: 20000,
-        initialParticleSize: 1,
-        showVEI: true,
-        initialVEI: 1,
-        showCrossSection: false,
-        showChart: false,
-        showSidebar: false
-      },
       dimensions: {
         width: window.innerWidth,
         height: window.innerHeight
       }
     };
 
-    // load in url params, if any, to state
-    let urlParams: any = {};
-    try {
-      const queryString = location.search.length > 1 ? decodeURIComponent(location.search.substring(1)) : "{}";
-      urlParams = JSON.parse(queryString);
-    } catch (e) {
-      // leave params empty
-    }
-
-    // set simulationOptions while making no assumptions about urlParams object
-    const simulationOptionsKeys = Object.keys(initialState.simulationOptions);
-    simulationOptionsKeys.forEach(option => {
-      if (urlParams.hasOwnProperty(option)) {
-        initialState.simulationOptions[option] = urlParams[option];
-      }
-    });
-
-    // for now, assume that if we've loaded from params that we don't want settings dialog
-    if (Object.keys(urlParams).length > 0) {
-      uiStore.setShowOptionsDialog(false);
-    }
-
     this.state = initialState;
-    simulation.setAuthoringOptions(initialState.simulationOptions, true);
-  }
-
-  public componentDidUpdate(prevProps: IProps, prevState: IState) {
-    const { scenario, showBlocks, showCode, showControls } = this.state.simulationOptions;
-    const { simulation } = this.stores;
-    if (prevState.simulationOptions.showBlocks !== showBlocks ||
-        prevState.simulationOptions.showCode !== showCode ||
-        prevState.simulationOptions.showControls !== showControls) {
-          this.setState({tabIndex: 0});
-        }
-    const scenarioData = (Scenarios as {[key: string]: {[key: string]: number}})[scenario];
-
-    // Have to do this or lint yells about string literals as keys
-    const latKey = "volcanoLat";
-    const lngKey = "volcanoLng";
-
-    simulation.setVolcano(scenarioData[latKey], scenarioData[lngKey]);
-
-    simulation.setAuthoringOptions(this.state.simulationOptions, false);
   }
 
   public render() {
@@ -259,7 +165,6 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         coloredColHeight,
         coloredMass,
         coloredParticleSize,
-        coloredVei,
         coloredWindDirection,
         coloredWindSpeed,
         plotData,
@@ -282,45 +187,34 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         isErupting,
         hasErupted,
         isSelectingCrossSection,
-        initialXmlCode
+        initialXmlCode,
+        initialCodeTitle,
+        toolbox,
+        scenario
       },
       uiStore: {
-        showOptionsDialog
+        showOptionsDialog,
+        showBlocks,
+        showLog,
+        showCode,
+        showControls,
+        showCrossSection,
+        showChart,
+        showSidebar,
+        showWindSpeed,
+        showWindDirection,
+        showEjectedVolume,
+        showColumnHeight,
+        showVEI,
       }
     } = this.stores;
 
     const {
       tabIndex,
       rightTabIndex,
-      expandOptionsDialog,
-      simulationOptions
+      expandOptionsDialog
     } = this.state;
 
-    const {
-      map,
-      toolbox,
-      initialCodeTitle,
-      showBlocks,
-      showLog,
-      showCode,
-      showControls,
-      showWindSpeed,
-      initialWindSpeed,
-      showWindDirection,
-      initialWindDirection,
-      showEjectedVolume,
-      initialEruptionMass,
-      showColumnHeight,
-      initialColumnHeight,
-      initialParticleSize,
-      showVEI,
-      initialVEI,
-      showCrossSection,
-      showChart,
-      showSidebar,
-    } = simulationOptions;
-
-    const mapPath = (Maps as {[key: string]: string})[map];
     const toolboxPath = (BlocklyAuthoring.toolbox as {[key: string]: string})[toolbox];
     const codePath = (BlocklyAuthoring.code as {[key: string]: string})[initialCodeTitle];
 
@@ -332,7 +226,6 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     const blocklyHeight = Math.floor(height * .7);
     const logWidth = Math.floor(tabWidth * 0.95);
     const logHeight = Math.floor(height * .2);
-    const { scenario } = this.state.simulationOptions;
     const scenarioData = (Scenarios as {[key: string]: {[key: string]: number}})[scenario];
     const initialZoomKey = "initialZoom";
     const minZoomKey = "minZoom";
@@ -349,6 +242,11 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     const topLeftLng = scenarioData[topLeftLngKey];
     const bottomRightLat = scenarioData[bottomRightLatKey];
     const bottomRightLng = scenarioData[bottomRightLngKey];
+
+    const latKey = "volcanoLat";
+    const lngKey = "volcanoLng";
+
+    this.stores.simulation.setVolcano(scenarioData[latKey], scenarioData[lngKey]);
 
     kTabInfo.blocks.index = showBlocks ? 0 : -1;
     kTabInfo.code.index = showCode ? kTabInfo.blocks.index + 1 : -1;
@@ -495,7 +393,6 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                   viewportZoom={ viewportZoom }
                   viewportCenterLat={ viewportCenterLat }
                   viewportCenterLng={ viewportCenterLng }
-                  map={ mapPath }
                   isErupting={isErupting}
                   showCrossSection={false}
                   hasErupted={ hasErupted }
@@ -541,7 +438,6 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                   viewportZoom={ viewportZoom }
                   viewportCenterLat={ viewportCenterLat }
                   viewportCenterLng={ viewportCenterLng }
-                  map={ mapPath }
                   isErupting={isErupting}
                   showCrossSection={true}
                   hasErupted={ hasErupted }
@@ -636,17 +532,6 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               }
             </BottomBar>
           </Tabs>
-          { showOptionsDialog &&
-            <AuthoringMenu
-              options={simulationOptions}
-              expandOptionsDialog={expandOptionsDialog}
-              handleUpdate={this.handleAuthoringUpdate}
-              toggleShowOptions={this.toggleShowOptions}
-              saveCodeToLocalStorage={this.saveCodeToLocalStorage}
-              loadCodeFromLocalStorage={this.loadCodeFromLocalStorage}
-              generateAndOpenAuthoredUrl={this.generateAndOpenAuthoredUrl}
-            />
-          }
         </Row>
       </App>
     );
@@ -687,19 +572,12 @@ export class AppComponent extends BaseComponent<IProps, IState> {
 
   private toggleShowOptions = () => this.setState({expandOptionsDialog: !this.state.expandOptionsDialog});
 
-  private handleAuthoringUpdate = (opts: SimulationAuthoringOptions) => this.setState({ simulationOptions: opts });
-
   private handleTabSelect(tabIndex: number) {
     this.setState({tabIndex});
   }
 
   private handleRightTabSelect(rightTabIndex: number) {
     this.setState({rightTabIndex});
-  }
-
-  private generateAndOpenAuthoredUrl = () => {
-    const encodedParams = encodeURIComponent(JSON.stringify(this.state.simulationOptions));
-    window.open(`${location.origin}${location.pathname}?${encodedParams}`, "geocode-app");
   }
 
   private saveCodeToLocalStorage = () => {
