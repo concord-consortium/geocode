@@ -3,12 +3,14 @@ import { BaseComponent, IBaseProps } from "./base";
 import { inject, observer } from "mobx-react";
 import RangeControl from "./range-control";
 import styled from "styled-components";
-import ColumnHeightIcon from "../assets/controls/column-height.svg";
-import EjectedVolumeIcon from "../assets/controls/ejected-volume.svg";
-import ParticleIcon from "../assets/controls/particle.svg";
-import WindSpeedDirectionIcon from "../assets/controls/wind-speed-direction.svg";
-import RunIcon from "../assets/controls/run.svg";
-import CheckIcon from "../assets/controls/check.svg";
+import ColumnHeightIcon from "../assets/controls-icons/column-height.svg";
+import EjectedVolumeIcon from "../assets/controls-icons/ejected-volume.svg";
+import ParticleIcon from "../assets/controls-icons/particle.svg";
+import WindSpeedDirectionIcon from "../assets/controls-icons/wind-speed-direction.svg";
+import RunIcon from "../assets/blockly-icons/run.svg";
+import CheckIcon from "../assets/controls-icons/check.svg";
+import { Icon } from "./icon";
+import IconButton from "./icon-button";
 
 const StyledControls = styled.div`
   display: flex;
@@ -81,17 +83,6 @@ const IconContainer = styled.div`
   height: 60px;
 `;
 
-interface IconProps {
-  width: number;
-  height: number;
-  fill: string;
-}
-const Icon = styled.div`
-  width: ${(p: IconProps) => `${p.width}px`};
-  height: ${(p: IconProps) => `${p.height}px`};
-  fill: ${(p: IconProps) => `${p.fill}`};
-`;
-
 interface HorizontalContainerProps {
   alignItems?: string;
   justifyContent?: string;
@@ -123,28 +114,6 @@ const EruptContainer = styled.div`
 
 const EruptButtons = styled.div`
   position: relative;
-`;
-
-const EruptButton = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 83px;
-  height: 34px;
-  border-radius: 5px;
-  background-color: white;
-  &:hover {
-    background-color: #FFDBAC;
-  }
-  &:active {
-    background-color: #FFECD6;
-  }
-`;
-
-const EruptText = styled.div`
-  margin-left: 4px;
-  color: #434343;
-  font-size: 16px;
 `;
 
 const AnimateEruptionContainer = styled.div`
@@ -405,16 +374,17 @@ export class Controls extends BaseComponent<IProps, IState> {
         </ControlsContainer>
         <EruptContainer>
           <EruptButtons>
-            <EruptButton onClick={this.erupt}>
-              <Icon
-                width={26}
-                height={26}
-                fill={"#FFAC00"}
-              >
-                <RunIcon />
-              </Icon>
-              <EruptText>Erupt</EruptText>
-            </EruptButton>
+            <IconButton
+              onClick={this.erupt}
+              disabled={false}
+              children={<RunIcon />}
+              label={"Erupt"}
+              hoverColor={"#FFDBAC"}
+              activeColor={"#FFECD6"}
+              fill={"#FFAC00"}
+              width={26}
+              height={26}
+            />
             <AnimateEruptionContainer>
               <AnimateEruptionCheckbox selected={this.state.animate} onClick={this.setAnimation}>
                 <Icon

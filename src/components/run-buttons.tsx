@@ -1,7 +1,10 @@
-
 import * as React from "react";
 import styled from "styled-components";
-import Button from "./overlay-button";
+import RunIcon from "../assets/blockly-icons/run.svg";
+import StopIcon from "../assets/blockly-icons/stop.svg";
+import ResetIcon from "../assets/blockly-icons/reset.svg";
+import StepIcon from "../assets/blockly-icons/step.svg";
+import IconButton from "./icon-button";
 
 interface IProps {
   run: () => void;
@@ -14,47 +17,91 @@ interface IProps {
 interface IState {}
 
 const ButtonContainer = styled.div`
-  padding: 1em;
-  border-radius: 0.2em;
   display: flex;
-  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 44px;
 `;
 
 const RunButton = (props: IProps) => {
-  const { run, running } = props;
+  const { run } = props;
   return (
-    <Button onClick={run} color={running ? "primary" : "secondary"}>Run</Button>
+    <IconButton
+      onClick={run}
+      disabled={false}
+      children={<RunIcon />}
+      label={"Run"}
+      hoverColor={"#BBD9FF"}
+      activeColor={"#DDEDFF"}
+      fill={"#4AA9FF"}
+      width={26}
+      height={26}
+    />
   );
 };
 
 const StepButton = (props: IProps) => {
   const { step } = props;
   return (
-    <Button onClick={step}>Step</Button>
+    <IconButton
+      onClick={step}
+      disabled={false}
+      children={<StepIcon />}
+      label={"Step"}
+      hoverColor={"#BBD9FF"}
+      activeColor={"#DDEDFF"}
+      fill={"#4AA9FF"}
+      width={26}
+      height={26}
+    />
   );
 };
 
 const StopButton = (props: IProps) => {
   const { stop } = props;
   return (
-    <Button onClick={stop}>Stop</Button>
+    <IconButton
+      onClick={stop}
+      disabled={false}
+      children={<StopIcon />}
+      label={"Stop"}
+      hoverColor={"#BBD9FF"}
+      activeColor={"#DDEDFF"}
+      fill={"#4AA9FF"}
+      width={26}
+      height={26}
+    />
   );
 };
 
 const ResetButton = (props: IProps) => {
   const { reset } = props;
   return (
-    <Button onClick={reset}>Reset</Button>
+    <IconButton
+      onClick={reset}
+      disabled={false}
+      children={<ResetIcon />}
+      label={"Reset"}
+      hoverColor={"#BBD9FF"}
+      activeColor={"#DDEDFF"}
+      fill={"#4AA9FF"}
+      width={26}
+      height={26}
+    />
   );
 };
 
 export default class RunButtons extends React.Component<IProps, IState> {
   public render() {
+    const { running } = this.props;
     return (
       <ButtonContainer>
-        <RunButton   {...this.props} />
+        { running
+          ? <StopButton   {...this.props} />
+          : <RunButton  {...this.props} />
+        }
         <StepButton  {...this.props} />
-        <StopButton  {...this.props} />
         <ResetButton {...this.props} />
       </ButtonContainer>
     );
