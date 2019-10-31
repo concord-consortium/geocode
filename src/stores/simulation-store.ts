@@ -365,7 +365,7 @@ export const SimulationStore = types
         // for now this is just setting the mass
         // we want vei 1 = 1e8, vei 8 = 1e15
         const mass = Math.pow(10, clippedVEI + 7);
-        self.mass = mass;
+        self.stagingMass = mass;
         if (!self.requireEruption) {
           self.erupt();
         }
