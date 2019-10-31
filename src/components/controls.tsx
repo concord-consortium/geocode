@@ -19,12 +19,17 @@ const StyledControls = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
+  height: 100%;
+  width: 100%;
+  padding: 3px;
+  box-sizing: border-box;
 `;
 
 const ControlsContainer = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  flex: 1 1 auto;
+  justify-content: flex-start;
   align-items: center;
   box-sizing: border-box;
   width: 100%;
@@ -62,7 +67,7 @@ const EruptContainer = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 44px;
+  flex: 0 1 44px;
 `;
 
 const EruptButtons = styled.div`

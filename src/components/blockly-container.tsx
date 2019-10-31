@@ -15,7 +15,11 @@ interface IProps {
 
 interface IState {}
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  flex: 1 1 auto;
+  justify-content: flex-start;
+  margin: 3px;
+`;
 const StartBlocks = styled.div``;
 interface WorkspaceProps {
   width: number;
@@ -24,8 +28,7 @@ interface WorkspaceProps {
 const WorkSpace = styled.div`
   font-family: sans-serif;
   width: ${(p: WorkspaceProps) => `${p.width}px`};
-  height: ${(p: WorkspaceProps) => `${p.height}px`};
-  border: 2px solid white;
+  height: 100%;
 `;
 
 export default class BlocklyContainer extends React.Component<IProps, IState> {

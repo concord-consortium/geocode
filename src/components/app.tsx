@@ -14,7 +14,8 @@ import * as BlocklyAuthoring from "./../assets/blockly-authoring/index.json";
 import BlocklyContainer from "./blockly-container";
 import styled from "styled-components";
 import { StyledButton } from "./styled-button";
-import { SectionTypes, TabInfo, kTabInfo, TabBack, Tab, Tabs, TabList, FixWidthTabPanel } from "./tabs";
+import { SectionTypes, RightSectionTypes, TabInfo, kTabInfo, kRightTabInfo,
+         TabBack, Tab, Tabs, TabList, TabPanel, RightTabBack, BottomTab } from "./tabs";
 import { js_beautify } from "js-beautify";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import Controls from "./controls";
@@ -53,6 +54,7 @@ export interface SimulationAuthoringOptions {
 
 interface IState {
   tabIndex: number;
+  rightTabIndex: number;
   showOptionsDialog: boolean;
   expandOptionsDialog: boolean;
   simulationOptions: SimulationAuthoringOptions;
@@ -69,6 +71,7 @@ const App = styled.div`
     flex-direction: row;
     height: 100vh;
     background-color: #ffffff;
+    overflow-x: hidden;
 `;
 
 const Row = styled.div`
@@ -80,34 +83,76 @@ const Row = styled.div`
   flex-direction: row;
 `;
 
+const Content = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  height: 100%;
+  width: 100%;
+`;
+
+const BottomBar = styled.div`
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+`;
+const TabsContainer = styled.div`
+  flex: 1 1 auto;
+`;
+
 const Simulation = styled.div`
   display: flex;
   flex-direction: column;
   width: ${(p: ISim) => `${p.width}px`};
+  height: 100%;
   justify-content: flex-start;
   align-items: flex-start;
+  background-color: ${(p: ISim) => p.backgroundColor};
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 `;
 
 interface ISim {
   width: number;
+  backgroundColor?: string;
 }
 
 const Code = styled.div`
-  max-height: 400px;
+  display: flex;
+  flex: 1 1 auto;
+  box-sizing: border-box;
+  width: 100%;
   overflow: auto;
-  border: 2px solid white;
+  justify-content: flex-start;
 `;
 
 const Syntax = styled(SyntaxHighlighter)`
-  margin: 0px;
+  flex: 1 1 auto;
+  border: 2px solid white;
+  margin: 3px;
+`;
+
+const Footer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  flex: 0 1 44px;
+`;
+
+const FullscreenContainer = styled.div`
+  flex: 0 1 33px;
 `;
 
 const FullscreenButton = styled(StyledButton)`
-  width: 2.5em;
-  height: 2.5em;
+  width: 25px;
+  height: 25px;
+  margin: 2px;
+  padding: 0px;
   border: 0px solid hsl(0, 0%, 0%);
   background-repeat: no-repeat;
-  background-size: 95%;
+  background-size: 100%;
 `;
 
 const FullscreenButtonOpen = styled(FullscreenButton)`
@@ -135,9 +180,11 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     super(props);
 
     this.handleTabSelect = this.handleTabSelect.bind(this);
+    this.handleRightTabSelect = this.handleRightTabSelect.bind(this);
 
     const initialState: IState = {
       tabIndex: 0,
+      rightTabIndex: 0,
       showOptionsDialog: true,
       expandOptionsDialog: false,
       simulationOptions: {
@@ -203,7 +250,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         prevState.simulationOptions.showCode !== showCode ||
         prevState.simulationOptions.showControls !== showControls) {
           this.setState({tabIndex: 0});
-    }
+        }
     const scenarioData = (Scenarios as {[key: string]: {[key: string]: number}})[scenario];
 
     // Have to do this or lint yells about string literals as keys
@@ -257,6 +304,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
 
     const {
       tabIndex,
+      rightTabIndex,
       showOptionsDialog,
       expandOptionsDialog,
       simulationOptions
@@ -283,7 +331,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       initialVEI,
       showCrossSection,
       showChart,
-      showSidebar
+      showSidebar,
     } = simulationOptions;
 
     const mapPath = (Maps as {[key: string]: string})[map];
@@ -291,15 +339,13 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     const codePath = (BlocklyAuthoring.code as {[key: string]: string})[initialCodeTitle];
 
     const {width, height} = this.state.dimensions;
-    const margin = 10;
     const blocklyMargin = 3;
-    const tabWidth = Math.floor(width * .6);
-    const mapWidth = Math.floor(width * .4) - margin;
+    const tabWidth = Math.floor(width * .5);
+    const mapWidth = Math.floor(width * .5);
     const blocklyWidth = tabWidth - (blocklyMargin * 2);
     const blocklyHeight = Math.floor(height * .7);
     const logWidth = Math.floor(tabWidth * 0.95);
     const logHeight = Math.floor(height * .2);
-
     const { scenario } = this.state.simulationOptions;
     const scenarioData = (Scenarios as {[key: string]: {[key: string]: number}})[scenario];
     const initialZoomKey = "initialZoom";
@@ -325,7 +371,11 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     if (showBlocks)   { enabledTabTypes.push(SectionTypes.BLOCKS); }
     if (showCode)     { enabledTabTypes.push(SectionTypes.CODE); }
     if (showControls) { enabledTabTypes.push(SectionTypes.CONTROLS); }
+    const enabledRightTabTypes = [RightSectionTypes.CONDITIONS,
+                                  RightSectionTypes.CROSS_SECTION,
+                                  RightSectionTypes.DATA];
     const currentTabType = enabledTabTypes[tabIndex || 0];
+    const currentRightTabType = enabledRightTabTypes[rightTabIndex || 0];
 
     return (
       <App className="app" ref={this.rootComponent}>
@@ -374,19 +424,21 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               }
             </TabList>
             { showBlocks &&
-              <FixWidthTabPanel
+              <TabPanel
                 width={`${tabWidth}px`}
                 forceRender={true}
                 tabcolor={this.getTabColor(SectionTypes.BLOCKS)}
               >
-                <BlocklyContainer
-                  width={blocklyWidth}
-                  height={blocklyHeight}
-                  toolboxPath={toolboxPath}
-                  initialCode={initialXmlCode}
-                  initialCodePath={codePath}
-                  setBlocklyCode={setBlocklyCode} />
-                <RunButtons {...{run, stop, step, reset, running}} />
+                <Content>
+                  <BlocklyContainer
+                    width={blocklyWidth}
+                    height={blocklyHeight}
+                    toolboxPath={toolboxPath}
+                    initialCode={initialXmlCode}
+                    initialCodePath={codePath}
+                    setBlocklyCode={setBlocklyCode} />
+                  <RunButtons {...{run, stop, step, reset, running}} />
+                </Content>
                 { showLog &&
                   <LogComponent
                     width={logWidth}
@@ -395,22 +447,25 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                     clear={clearLog}
                   />
                 }
-              </FixWidthTabPanel>
+              </TabPanel>
             }
             { showCode &&
-              <FixWidthTabPanel
+              <TabPanel
                 width={`${tabWidth}px`}
                 tabcolor={this.getTabColor(SectionTypes.CODE)}
               >
-                <Code>
-                  <Syntax>
-                    {js_beautify(code.replace(/endStep\(\)\;\n/g, "").replace(/startStep\(\'.*\'\)\;\n/g, ""))}
-                  </Syntax>
-                </Code>
-              </FixWidthTabPanel>
+                <Content>
+                  <Code>
+                    <Syntax>
+                      {js_beautify(code.replace(/endStep\(\)\;\n/g, "").replace(/startStep\(\'.*\'\)\;\n/g, ""))}
+                    </Syntax>
+                  </Code>
+                  <Footer />
+                </Content>
+              </TabPanel>
             }
             { showControls &&
-              <FixWidthTabPanel
+              <TabPanel
                 width={`${tabWidth}px`}
                 tabcolor={this.getTabColor(SectionTypes.CONTROLS)}
               >
@@ -422,157 +477,241 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                   showColumnHeight={showColumnHeight}
                   showVEI={showVEI}
                 />
-              </FixWidthTabPanel>
+              </TabPanel>
             }
           </Tabs>
 
-          <Simulation width={mapWidth}>
-            { (screenfull && screenfull.isFullscreen) &&
-              <FullscreenButtonOpen onClick={this.toggleFullscreen} />
-            }
-            { (screenfull && !screenfull.isFullscreen) &&
-              <FullscreenButtonClosed onClick={this.toggleFullscreen} />
-            }
-            <MapComponent
-              windDirection={ coloredWindDirection }
-              windSpeed={ coloredWindSpeed }
-              mass={ coloredMass }
-              colHeight={ coloredColHeight }
-              particleSize={ coloredParticleSize }
-              width={ mapWidth }
-              height={ mapWidth }
-              cities={ cities }
-              volcanoLat={ volcanoLat }
-              volcanoLng={ volcanoLng }
-              initialZoom={initialZoom}
-              minZoom={ minZoom }
-              maxZoom={ maxZoom }
-              topLeftLat={topLeftLat}
-              topLeftLng={topLeftLng}
-              bottomRightLat={bottomRightLat}
-              bottomRightLng={bottomRightLng}
-              viewportZoom={ viewportZoom }
-              viewportCenterLat={ viewportCenterLat }
-              viewportCenterLng={ viewportCenterLng }
-              map={ mapPath }
-              isErupting={isErupting}
-              showCrossSection={showCrossSection}
-              hasErupted={ hasErupted }
+          <Tabs selectedIndex={rightTabIndex} onSelect={this.handleRightTabSelect}>
+            <TabPanel
+              width={`${tabWidth}px`}
+              tabcolor={this.getRightTabColor(RightSectionTypes.CONDITIONS)}
+              rightpanel={"true"}
+            >
+              <Simulation width={mapWidth} backgroundColor={this.getRightTabColor(RightSectionTypes.CONDITIONS)}>
+                <MapComponent
+                  windDirection={ coloredWindDirection }
+                  windSpeed={ coloredWindSpeed }
+                  mass={ coloredMass }
+                  colHeight={ coloredColHeight }
+                  particleSize={ coloredParticleSize }
+                  width={ mapWidth }
+                  height={ height - 200 }
+                  cities={ cities }
+                  volcanoLat={ volcanoLat }
+                  volcanoLng={ volcanoLng }
+                  initialZoom={initialZoom}
+                  minZoom={ minZoom }
+                  maxZoom={ maxZoom }
+                  topLeftLat={topLeftLat}
+                  topLeftLng={topLeftLng}
+                  bottomRightLat={bottomRightLat}
+                  bottomRightLng={bottomRightLng}
+                  viewportZoom={ viewportZoom }
+                  viewportCenterLat={ viewportCenterLat }
+                  viewportCenterLng={ viewportCenterLng }
+                  map={ mapPath }
+                  isErupting={isErupting}
+                  showCrossSection={false}
+                  hasErupted={ hasErupted }
+                />
+                { showChart &&
+                  <LineChart width={mapWidth} height={200} data={plotData.chartData}>
+                    <Line type="linear" dataKey={plotData.yAxis} stroke="red" strokeWidth={2} />
+                    <CartesianGrid stroke="#ddd" strokeDasharray="5 5" />
+                    <XAxis
+                      type="number"
+                      domain={[0, "auto"]}
+                      allowDecimals={false}
+                      dataKey={plotData.xAxis}
+                      label={{ value: plotData.xAxis, offset: -5, position: "insideBottom" }}
+                    />
+                    <YAxis
+                      type="number"
+                      domain={[0, "auto"]}
+                      label={{ value: plotData.yAxis, angle: -90, offset: 12, position: "insideBottomLeft" }}
+                    />
+                  </LineChart>
+                }
+                <MapSidebarComponent
+                  width={ mapWidth - 400 }
+                  height={ 100 }
+                  windSpeed={ windSpeed }
+                  windDirection={ windDirection }
+                  colHeight={ colHeight }
+                  vei={ vei }
+                  mass={ mass }
+                  particleSize={ particleSize }
+                />
+              </Simulation>
+            </TabPanel>
+            <TabPanel
+              width={`${tabWidth}px`}
+              tabcolor={this.getRightTabColor(RightSectionTypes.CROSS_SECTION)}
+              rightpanel={"true"}
+            >
+              <Simulation width={mapWidth} backgroundColor={this.getRightTabColor(RightSectionTypes.CROSS_SECTION)}>
+                <MapComponent
+                  windDirection={ coloredWindDirection }
+                  windSpeed={ coloredWindSpeed }
+                  mass={ coloredMass }
+                  colHeight={ coloredColHeight }
+                  particleSize={ coloredParticleSize }
+                  width={ mapWidth }
+                  height={ height - 200 }
+                  cities={ cities }
+                  volcanoLat={ volcanoLat }
+                  volcanoLng={ volcanoLng }
+                  initialZoom={initialZoom}
+                  minZoom={ minZoom }
+                  maxZoom={ maxZoom }
+                  topLeftLat={topLeftLat}
+                  topLeftLng={topLeftLng}
+                  bottomRightLat={bottomRightLat}
+                  bottomRightLng={bottomRightLng}
+                  viewportZoom={ viewportZoom }
+                  viewportCenterLat={ viewportCenterLat }
+                  viewportCenterLng={ viewportCenterLng }
+                  map={ mapPath }
+                  isErupting={isErupting}
+                  showCrossSection={true}
+                  hasErupted={ hasErupted }
+                />
+                <CrossSectionComponent
+                  isSelectingCrossSection={isSelectingCrossSection}
+                  showCrossSectionSelector={isSelectingCrossSection}
+                  height={ 100 }
+                  width={ mapWidth }
+                  volcanoLat={ volcanoLat }
+                  volcanoLng={ volcanoLng }
+                  crossPoint1Lat={ crossPoint1Lat }
+                  crossPoint1Lng={ crossPoint1Lng }
+                  crossPoint2Lat={ crossPoint2Lat }
+                  crossPoint2Lng={ crossPoint2Lng }
+                  hasErupted={ hasErupted }
+                  windSpeed={windSpeed}
+                  windDirection={windDirection}
+                  colHeight={colHeight}
+                  mass={mass}
+                  particleSize={particleSize}
+                />
+              </Simulation>
+            </TabPanel>
+            <TabPanel
+              width={`${tabWidth}px`}
+              tabcolor={this.getRightTabColor(RightSectionTypes.DATA)}
+              rightpanel={"true"}
+            >
+              <div/>
+            </TabPanel>
+            <RightTabBack
+              width={tabWidth}
+              backgroundcolor={this.getRightTabColor(currentRightTabType)}
             />
-            { showCrossSection &&
-              <CrossSectionComponent
-                isSelectingCrossSection={isSelectingCrossSection}
-                showCrossSectionSelector={isSelectingCrossSection}
-                height={ 150 }
-                width={ mapWidth }
-                volcanoLat={ volcanoLat }
-                volcanoLng={ volcanoLng }
-                crossPoint1Lat={ crossPoint1Lat }
-                crossPoint1Lng={ crossPoint1Lng }
-                crossPoint2Lat={ crossPoint2Lat }
-                crossPoint2Lng={ crossPoint2Lng }
-                hasErupted={ hasErupted }
-                windSpeed={windSpeed}
-                windDirection={windDirection}
-                colHeight={colHeight}
-                mass={mass}
-                particleSize={particleSize}
-              />
+            <BottomBar>
+              <TabsContainer>
+                <TabList>
+                  <BottomTab
+                    selected={rightTabIndex === kRightTabInfo.conditions.index}
+                    leftofselected={rightTabIndex === (kRightTabInfo.conditions.index + 1) ? "true" : undefined}
+                    rightofselected={rightTabIndex === (kRightTabInfo.conditions.index - 1) ? "true" : undefined}
+                    backgroundcolor={this.getRightTabColor(RightSectionTypes.CONDITIONS)}
+                    backgroundhovercolor={this.getRightTabHoverColor(RightSectionTypes.CONDITIONS)}
+                  >
+                    {this.getRightTabName(RightSectionTypes.CONDITIONS)}
+                  </BottomTab>
+                  <BottomTab
+                    selected={rightTabIndex === kRightTabInfo.crossSection.index}
+                    leftofselected={rightTabIndex === (kRightTabInfo.crossSection.index + 1) ? "true" : undefined}
+                    rightofselected={rightTabIndex === (kRightTabInfo.crossSection.index - 1) ? "true" : undefined}
+                    backgroundcolor={this.getRightTabColor(RightSectionTypes.CROSS_SECTION)}
+                    backgroundhovercolor={this.getRightTabHoverColor(RightSectionTypes.CROSS_SECTION)}
+                  >
+                    {this.getRightTabName(RightSectionTypes.CROSS_SECTION)}
+                  </BottomTab>
+                  <BottomTab
+                    selected={rightTabIndex === kRightTabInfo.data.index}
+                    leftofselected={rightTabIndex === (kRightTabInfo.data.index + 1) ? "true" : undefined}
+                    rightofselected={rightTabIndex === (kRightTabInfo.data.index - 1) ? "true" : undefined}
+                    backgroundcolor={this.getRightTabColor(RightSectionTypes.DATA)}
+                    backgroundhovercolor={this.getRightTabHoverColor(RightSectionTypes.DATA)}
+                  >
+                    {this.getRightTabName(RightSectionTypes.DATA)}
+                  </BottomTab>
+                </TabList>
+              </TabsContainer>
+              <FullscreenContainer>
+                { (screenfull && screenfull.isFullscreen) &&
+                  <FullscreenButtonOpen onClick={this.toggleFullscreen} />
+                }
+                { (screenfull && !screenfull.isFullscreen) &&
+                  <FullscreenButtonClosed onClick={this.toggleFullscreen} />
+                }
+              </FullscreenContainer>
+            </BottomBar>
+          </Tabs>
+          { showOptionsDialog &&
+            <DatGui data={simulationOptions} onUpdate={this.handleUpdate}>
+            <DatButton label="Model options" onClick={this.toggleShowOptions} />
+            { expandOptionsDialog &&
+              [
+                <DatBoolean path="requireEruption" label="Require eruption?" key="requireEruption" />,
+                <DatBoolean path="requirePainting" label="Require painting?" key="requirePainting" />,
+                <DatSelect path="scenario" label="Map Scenario" options={Object.keys(Scenarios)} key="background" />,
+                <DatSelect path="toolbox" label="Code toolbox"
+                  options={Object.keys(BlocklyAuthoring.toolbox)} key="toolbox" />,
+                <DatSelect path="initialCodeTitle" label="Initial code"
+                  options={Object.keys(BlocklyAuthoring.code)} key="code" />,
+
+                <DatButton label="Save current code to local storage"
+                  onClick={this.saveCodeToLocalStorage}
+                  key="generate" />,
+                <DatButton label="Load code from local storage"
+                  onClick={this.loadCodeFromLocalStorage}
+                  key="generate" />,
+
+                <DatBoolean path="showCrossSection" label="Show cross section?" key="showCrossSection" />,
+                <DatBoolean path="showChart" label="Show chart?"
+                  key="showChart" />,
+
+                <DatBoolean path="showBlocks" label="Show blocks?" key="showBlocks" />,
+                <DatBoolean path="showCode" label="Show code?" key="showCode" />,
+                <DatBoolean path="showControls" label="Show controls?" key="showControls" />,
+                <DatFolder title="Controls Options" key="controlsFolder" closed={true}>
+                  <DatBoolean path="showWindSpeed" label="Show Wind Speed?" key="showWindSpeed"/>
+                  <DatNumber
+                    path="initialWindSpeed" label="Initial Wind Speed" key="initialWindSpeed"
+                    min={0} max={30} step={1}/>
+                  <DatBoolean path="showWindDirection" label="Show Wind Direction?" key="showWindDirection" />
+                  <DatNumber
+                    path="initialWindDirection" label="Initial Wind Direction" key="initialWindDirection"
+                    min={0} max={360} step={1}/>
+                  <DatBoolean path="showEjectedVolume" label="Show Ejected Volume?" key="showEjectedVolume" />
+                  <DatNumber
+                    path="initialEruptionMass" label="Initial Ejection Volume" key="initialEruptionMass"
+                    min={100000000} max={10000000000000000} step={1000}/>
+                  <DatBoolean path="showColumnHeight" label="Show Column Height?" key="showColumnHeight" />
+                  <DatNumber
+                    path="initialColumnHeight" label="Initial Column Height" key="initialColumnHeight"
+                    min={1000} max={30000} step={1000}/>
+                  <DatBoolean path="showVEI" label="Show VEI?" key="showVEI" />
+                  <DatNumber
+                    path="initialVEI" label="Initial VEI" key="initialVEI"
+                    min={1} max={8} step={1}/>
+                </DatFolder>,
+
+                <DatBoolean path="showLog" label="Show Log?" key="showLog" />,
+
+                <DatBoolean path="showChart" label="Show chart?" key="showChart" />,
+                <DatBoolean path="showSidebar" label="Show sidebar?" key="showSidebar" />,
+                // submit button. Should remain at bottom
+                <DatButton
+                  label="Generate authored model"
+                  onClick={this.generateAndOpenAuthoredUrl}
+                  key="generate" />
+              ]
             }
-            { showChart &&
-              <LineChart width={mapWidth} height={200} data={plotData.chartData}>
-                <Line type="linear" dataKey={plotData.yAxis} stroke="red" strokeWidth={2} />
-                <CartesianGrid stroke="#ddd" strokeDasharray="5 5" />
-                <XAxis
-                  type="number"
-                  domain={[0, "auto"]}
-                  allowDecimals={false}
-                  dataKey={plotData.xAxis}
-                  label={{ value: plotData.xAxis, offset: -5, position: "insideBottom" }}
-                />
-                <YAxis
-                  type="number"
-                  domain={[0, "auto"]}
-                  label={{ value: plotData.yAxis, angle: -90, offset: 12, position: "insideBottomLeft" }}
-                />
-              </LineChart>
-            }
-            { showSidebar &&
-              <MapSidebarComponent
-                width={ mapWidth - 200 }
-                height={ 100 }
-                windSpeed={ windSpeed }
-                windDirection={ windDirection }
-                colHeight={ colHeight }
-                vei={ vei }
-                mass={ mass }
-                particleSize={ particleSize }
-              />
-            }
-            { showOptionsDialog &&
-              <DatGui data={simulationOptions} onUpdate={this.handleUpdate}>
-              <DatButton label="Model options" onClick={this.toggleShowOptions} />
-              { expandOptionsDialog &&
-                [
-                  <DatBoolean path="requireEruption" label="Require eruption?" key="requireEruption" />,
-                  <DatBoolean path="requirePainting" label="Require painting?" key="requirePainting" />,
-                  <DatSelect path="scenario" label="Map Scenario" options={Object.keys(Scenarios)} key="background" />,
-                  <DatSelect path="toolbox" label="Code toolbox"
-                    options={Object.keys(BlocklyAuthoring.toolbox)} key="toolbox" />,
-                  <DatSelect path="initialCodeTitle" label="Initial code"
-                    options={Object.keys(BlocklyAuthoring.code)} key="code" />,
-
-                  <DatButton label="Save current code to local storage"
-                    onClick={this.saveCodeToLocalStorage}
-                    key="generate" />,
-                  <DatButton label="Load code from local storage"
-                    onClick={this.loadCodeFromLocalStorage}
-                    key="generate" />,
-
-                  <DatBoolean path="showCrossSection" label="Show cross section?" key="showCrossSection" />,
-                  <DatBoolean path="showChart" label="Show chart?"
-                    key="showChart" />,
-
-                  <DatBoolean path="showBlocks" label="Show blocks?" key="showBlocks" />,
-                  <DatBoolean path="showCode" label="Show code?" key="showCode" />,
-                  <DatBoolean path="showControls" label="Show controls?" key="showControls" />,
-                  <DatFolder title="Controls Options" key="controlsFolder" closed={true}>
-                    <DatBoolean path="showWindSpeed" label="Show Wind Speed?" key="showWindSpeed"/>
-                    <DatNumber
-                      path="initialWindSpeed" label="Initial Wind Speed" key="initialWindSpeed"
-                      min={0} max={30} step={1}/>
-                    <DatBoolean path="showWindDirection" label="Show Wind Direction?" key="showWindDirection" />
-                    <DatNumber
-                      path="initialWindDirection" label="Initial Wind Direction" key="initialWindDirection"
-                      min={0} max={360} step={1}/>
-                    <DatBoolean path="showEjectedVolume" label="Show Ejected Volume?" key="showEjectedVolume" />
-                    <DatNumber
-                      path="initialEruptionMass" label="Initial Ejection Volume" key="initialEruptionMass"
-                      min={100000000} max={10000000000000000} step={1000}/>
-                    <DatBoolean path="showColumnHeight" label="Show Column Height?" key="showColumnHeight" />
-                    <DatNumber
-                      path="initialColumnHeight" label="Initial Column Height" key="initialColumnHeight"
-                      min={1000} max={30000} step={1000}/>
-                    <DatBoolean path="showVEI" label="Show VEI?" key="showVEI" />
-                    <DatNumber
-                      path="initialVEI" label="Initial VEI" key="initialVEI"
-                      min={1} max={8} step={1}/>
-                  </DatFolder>,
-
-                  <DatBoolean path="showLog" label="Show Log?" key="showLog" />,
-
-                  <DatBoolean path="showChart" label="Show chart?" key="showChart" />,
-                  <DatBoolean path="showSidebar" label="Show sidebar?" key="showSidebar" />,
-                  // submit button. Should remain at bottom
-                  <DatButton
-                    label="Generate authored model"
-                    onClick={this.generateAndOpenAuthoredUrl}
-                    key="generate" />
-                ]
-              }
-              </DatGui>
-            }
-          </Simulation>
+            </DatGui>
+          }
         </Row>
       </App>
     );
@@ -586,6 +725,16 @@ export class AppComponent extends BaseComponent<IProps, IState> {
   }
   private getTabName = (type: SectionTypes) => {
     return (type ? kTabInfo[type].name : "");
+  }
+
+  private getRightTabColor = (type: RightSectionTypes) => {
+    return (type ? kRightTabInfo[type].backgroundColor : "white");
+  }
+  private getRightTabHoverColor = (type: RightSectionTypes) => {
+    return (type ? kRightTabInfo[type].hoverBackgroundColor : "white");
+  }
+  private getRightTabName = (type: RightSectionTypes) => {
+    return (type ? kRightTabInfo[type].name : "");
   }
 
   private resize = (rect: DOMRect) => {
@@ -607,6 +756,10 @@ export class AppComponent extends BaseComponent<IProps, IState> {
 
   private handleTabSelect(tabIndex: number) {
     this.setState({tabIndex});
+  }
+
+  private handleRightTabSelect(rightTabIndex: number) {
+    this.setState({rightTabIndex});
   }
 
   private generateAndOpenAuthoredUrl = () => {

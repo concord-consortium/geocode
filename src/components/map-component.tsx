@@ -22,8 +22,12 @@ interface WorkspaceProps {
 }
 const CanvDiv = styled.div`
   border: 0px solid black; border-radius: 0px;
-  width: ${(p: WorkspaceProps) => `${p.width}px`};
+  width: ${(p: WorkspaceProps) => `${p.width - 56}px`};
   height: ${(p: WorkspaceProps) => `${p.height}px`};
+  padding-left: 28px;
+  padding-right: 28px;
+  padding-top: 25px;
+  box-sizing: content-box;
 `;
 
 interface IState {
