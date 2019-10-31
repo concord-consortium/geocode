@@ -176,7 +176,6 @@ interface IProps extends IBaseProps {
   showWindDirection: boolean;
   showEruptionMass: boolean;
   showColumnHeight: boolean;
-  showParticleSize: boolean;
 }
 interface IState {
   animate: boolean;
@@ -204,7 +203,6 @@ export class Controls extends BaseComponent<IProps, IState> {
       showWindDirection,
       showEruptionMass,
       showColumnHeight,
-      showParticleSize
     } = this.props;
 
     return(
@@ -254,38 +252,6 @@ export class Controls extends BaseComponent<IProps, IState> {
                   {(showWindSpeed && showWindDirection) && <ValueDivider/ >}
                   {showWindDirection && <div>{stagingWindDirection} °</div>}
                   </HorizontalContainer>
-                </ValueOutput>
-              </ValueContainer>
-            </HorizontalContainer>
-          </ControlContainer>}
-          {showParticleSize && <ControlContainer>
-            <HorizontalContainer>
-              <VerticalContainer alignItems="center" justifyContent="center">
-                <label>Particle Size (mm)</label>
-                <HorizontalContainer>
-                  <RangeControl
-                    min={1}
-                    max={64}
-                    value={stagingParticleSize}
-                    step={1}
-                    tickArray={[1, 10, 20, 30, 40, 50, 64]}
-                    width={this.props.width - 220}
-                    onChange={this.changeSize}
-                  />
-                </HorizontalContainer>
-              </VerticalContainer>
-              <ValueContainer>
-                <IconContainer>
-                  <Icon
-                    width={50}
-                    height={50}
-                    fill={"black"}
-                  >
-                    <ParticleIcon />
-                  </Icon>
-                </IconContainer>
-                <ValueOutput>
-                  {stagingParticleSize} mm
                 </ValueOutput>
               </ValueContainer>
             </HorizontalContainer>
