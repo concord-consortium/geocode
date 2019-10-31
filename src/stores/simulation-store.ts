@@ -38,7 +38,7 @@ const MeasurementLabel: {[key in (SimOutput | SimulationVariable)]: string} = {
   windSpeed: "Wind speed (m/s)",
   windDirection: "Wind direction (degrees)",
   mass: "Eruption mass (kg)",
-  colHeight: "Eruption height (km)",
+  colHeight: "Column height (km)",
   vei: "VEI"
 };
 

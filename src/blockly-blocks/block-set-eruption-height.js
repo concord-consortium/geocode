@@ -1,9 +1,9 @@
 Blockly.Blocks['setEruptionHeight'] = {
     init: function() {
-      this.appendValueInput("eruptionHeight")
+      this.appendValueInput("columnHeight")
           .setCheck("Number")
           .setAlign(Blockly.ALIGN_RIGHT)
-          .appendField("Set eruption height");
+          .appendField("Set column height");
       this.appendDummyInput()
           .appendField("km");
       this.setInputsInline(true);
@@ -16,7 +16,7 @@ Blockly.Blocks['setEruptionHeight'] = {
   };
   
   Blockly.JavaScript['setEruptionHeight'] = function(block) {
-    var value_eruptionHeight = Blockly.JavaScript.valueToCode(block, 'eruptionHeight', Blockly.JavaScript.ORDER_ATOMIC);
+    var value_columnHeight = Blockly.JavaScript.valueToCode(block, 'columnHeight', Blockly.JavaScript.ORDER_ATOMIC);
     // TODO: Assemble JavaScript into code variable.
     var code = '//...;\n';
     return code;

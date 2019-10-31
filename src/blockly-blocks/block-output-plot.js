@@ -7,7 +7,7 @@ Blockly.Blocks['outputPlot'] = {
           .appendField(new Blockly.FieldDropdown([
             ["wind speed","windSpeed"],
             ["wind direction","windDirection"],
-            ["eruption height","colHeight"],
+            ["column height","colHeight"],
             ["eruption mass","mass"],
             ["VEI","vei"]]
           ), "xData");
