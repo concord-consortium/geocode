@@ -92,7 +92,7 @@ export const SimulationStore = types
     windDirection: 45,
     mass: 20000000,
     vei: 0,
-    colHeight: 2000,
+    colHeight: 2000,      // meters
     particleSize: 1,
     stagingWindSpeed: 6,
     stagingWindDirection: 45,
@@ -346,7 +346,7 @@ export const SimulationStore = types
         self.volcanoLng = lng;
       },
       setColumnHeight(height: number) {
-        self.stagingColHeight = height;
+        self.stagingColHeight = height * 1000;      // km to m
         if (!self.requireEruption) {
           self.erupt();
         }
