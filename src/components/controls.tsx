@@ -10,7 +10,7 @@ import WindSpeedDirectionIcon from "../assets/controls-icons/wind-speed-directio
 import RunIcon from "../assets/blockly-icons/run.svg";
 import CheckIcon from "../assets/controls-icons/check.svg";
 import { Icon } from "./icon";
-import { IconButton, IconButtonText } from "./icon-button";
+import IconButton from "./icon-button";
 
 const StyledControls = styled.div`
   display: flex;
@@ -374,16 +374,17 @@ export class Controls extends BaseComponent<IProps, IState> {
         </ControlsContainer>
         <EruptContainer>
           <EruptButtons>
-            <IconButton onClick={this.erupt} hovercolor="#FFDBAC" activecolor="#FFECD6">
-              <Icon
-                width={26}
-                height={26}
-                fill={"#FFAC00"}
-              >
-                <RunIcon />
-              </Icon>
-              <IconButtonText>Erupt</IconButtonText>
-            </IconButton>
+            <IconButton
+              onClick={this.erupt}
+              disabled={false}
+              children={<RunIcon />}
+              label={"Erupt"}
+              hoverColor={"#FFDBAC"}
+              activeColor={"#FFECD6"}
+              fill={"#FFAC00"}
+              width={26}
+              height={26}
+            />
             <AnimateEruptionContainer>
               <AnimateEruptionCheckbox selected={this.state.animate} onClick={this.setAnimation}>
                 <Icon
