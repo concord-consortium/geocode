@@ -289,9 +289,10 @@ export class AppComponent extends BaseComponent<IProps, IState> {
 
     const {width, height} = this.state.dimensions;
     const margin = 10;
-    const tabWidth = Math.floor(width * .6);
-    const mapWidth = Math.floor(width * .4) - margin;
-    const blocklyWidth = tabWidth - (margin * 2);
+    const blocklyMargin = 3;
+    const tabWidth = Math.floor(width * .5);
+    const mapWidth = Math.floor(width * .5) - margin;
+    const blocklyWidth = tabWidth - (blocklyMargin * 2);
     const blocklyHeight = Math.floor(height * .7);
     const logWidth = Math.floor(tabWidth * 0.95);
     const logHeight = Math.floor(height * .2);
