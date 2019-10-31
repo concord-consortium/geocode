@@ -8,7 +8,6 @@ import EjectedVolumeIcon from "../assets/controls-icons/ejected-volume.svg";
 import ParticleIcon from "../assets/controls-icons/particle.svg";
 import WindSpeedDirectionIcon from "../assets/controls-icons/wind-speed-direction.svg";
 import RunIcon from "../assets/blockly-icons/run.svg";
-import CheckIcon from "../assets/controls-icons/check.svg";
 import { Icon } from "./icon";
 import IconButton from "./icon-button";
 
@@ -114,37 +113,6 @@ const EruptContainer = styled.div`
 
 const EruptButtons = styled.div`
   position: relative;
-`;
-
-const AnimateEruptionContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  left: 80px;
-  top: 0px;
-  width: 200px;
-  height: 34px;
-`;
-
-const AnimateEruptionCheckbox = styled.button`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 20px;
-  height: 20px;
-  border-radius: 5px;
-  border: solid 1px white;
-  padding: 0px;
-  margin-right: 5px;
-  background-color: white;
-  text-decoration: none;
-  &:hover {
-    background-color: ${(p: {selected?: boolean}) => p.selected ? "#FFCA79" : "#FFDBAC"};
-  }
-  &:active {
-    background-color: #FFECD6;
-  }
 `;
 
 const NoteLabel = styled.label`
@@ -385,18 +353,6 @@ export class Controls extends BaseComponent<IProps, IState> {
               width={26}
               height={26}
             />
-            <AnimateEruptionContainer>
-              <AnimateEruptionCheckbox selected={this.state.animate} onClick={this.setAnimation}>
-                <Icon
-                  width={12}
-                  height={14}
-                  fill={this.state.animate ? "#FFAC00" : "#FFFFFF"}
-                >
-                  <CheckIcon />
-                </Icon>
-              </AnimateEruptionCheckbox>
-              <div>Animate eruption</div>
-            </AnimateEruptionContainer>
           </EruptButtons>
         </EruptContainer>
       </StyledControls>
