@@ -86,7 +86,7 @@ const gridTephraCalc = (
   coneGridX: number,
   coneGridY: number,
   windSpeed: number,
-  windDirection: number,
+  windDirectionFromNorth: number,
   colHeight: number,
   mass: number,         // total eruption mass 0 to 1e12 kg (about 1 km3)
   particleSize: number  // Made up number. 1 == actual simulation values (mg?)
@@ -111,7 +111,8 @@ const gridTephraCalc = (
   const modelY = gridY * dScale;
   const coneX = coneGridX * dScale;
   const coneY = coneGridY * dScale;
-  const rotated = rotateGridPoint({x: modelX, y: modelY}, (360 - windDirection) + 90, {x: coneX, y: coneY});
+  const windDirectionTowardsNorth = windDirectionFromNorth + 180;
+  const rotated = rotateGridPoint({x: modelX, y: modelY}, (360 - windDirectionTowardsNorth) + 90, {x: coneX, y: coneY});
   return tephraCalc2(
     rotated.x, rotated.y,
     coneX, coneY,

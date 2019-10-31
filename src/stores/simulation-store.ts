@@ -38,7 +38,7 @@ const MeasurementLabel: {[key in (SimOutput | SimulationVariable)]: string} = {
   windSpeed: "Wind speed (m/s)",
   windDirection: "Wind direction (degrees)",
   mass: "Eruption mass (kg)",
-  colHeight: "Eruption height (km)",
+  colHeight: "Column height (km)",
   vei: "VEI"
 };
 
@@ -89,19 +89,19 @@ export function getGridIndexForLocation(x: number, y: number, numRows: number) {
 export const SimulationStore = types
   .model("simulation", {
     windSpeed: 6,
-    windDirection: 45,
+    windDirection: 0,    // from north
     mass: 20000000,
     vei: 0,
-    colHeight: 2000,
+    colHeight: 2000,      // meters
     particleSize: 1,
     stagingWindSpeed: 6,
-    stagingWindDirection: 45,
+    stagingWindDirection: 0,
     stagingMass: 20000000,
     stagingVei: 0,
     stagingColHeight: 2000,
     stagingParticleSize: 1,
     coloredWindSpeed: 6,
-    coloredWindDirection: 45,
+    coloredWindDirection: 0,
     coloredMass: 20000000,
     coloredVei: 0,
     coloredColHeight: 2000,
@@ -346,7 +346,7 @@ export const SimulationStore = types
         self.volcanoLng = lng;
       },
       setColumnHeight(height: number) {
-        self.stagingColHeight = height;
+        self.stagingColHeight = height * 1000;      // km to m
         if (!self.requireEruption) {
           self.erupt();
         }
@@ -365,7 +365,7 @@ export const SimulationStore = types
         // for now this is just setting the mass
         // we want vei 1 = 1e8, vei 8 = 1e15
         const mass = Math.pow(10, clippedVEI + 7);
-        self.mass = mass;
+        self.stagingMass = mass;
         if (!self.requireEruption) {
           self.erupt();
         }

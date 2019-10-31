@@ -59,6 +59,10 @@ const makeInterperterFunc = (simulation: SimulationModelType, workspace: IBlockl
       simulation.setVEI(vei);
     });
 
+    addFunc("setColumnHeight", (height: number) => {
+      simulation.setColumnHeight(height);
+    });
+
     addFunc("setVolcano", (params: {x: number, y: number}) => {
       simulation.setVolcano(params.x, params.y);
     });
