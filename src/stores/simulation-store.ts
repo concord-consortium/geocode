@@ -89,19 +89,19 @@ export function getGridIndexForLocation(x: number, y: number, numRows: number) {
 export const SimulationStore = types
   .model("simulation", {
     windSpeed: 6,
-    windDirection: 45,
+    windDirection: 0,    // from north
     mass: 20000000,
     vei: 0,
     colHeight: 2000,      // meters
     particleSize: 1,
     stagingWindSpeed: 6,
-    stagingWindDirection: 45,
+    stagingWindDirection: 0,
     stagingMass: 20000000,
     stagingVei: 0,
     stagingColHeight: 2000,
     stagingParticleSize: 1,
     coloredWindSpeed: 6,
-    coloredWindDirection: 45,
+    coloredWindDirection: 0,
     coloredMass: 20000000,
     coloredVei: 0,
     coloredColHeight: 2000,
