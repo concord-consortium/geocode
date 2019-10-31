@@ -18,7 +18,9 @@ Blockly.Blocks['setEruptionHeight'] = {
   Blockly.JavaScript['setEruptionHeight'] = function(block) {
     var value_columnHeight = Blockly.JavaScript.valueToCode(block, 'columnHeight', Blockly.JavaScript.ORDER_ATOMIC);
     // TODO: Assemble JavaScript into code variable.
-    var code = '//...;\n';
+    var code = `
+      setColumnHeight(${value_columnHeight});
+    `;
     return code;
   }
   
