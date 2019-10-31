@@ -18,22 +18,8 @@ const ContainerDiv = styled.div`
 interface IState {}
 
 interface IProps extends IBaseProps {
-  showCrossSectionSelector: boolean;
-  isSelectingCrossSection: boolean;
   height: number;
   width: number;
-  volcanoLat: number;
-  volcanoLng: number;
-  crossPoint1Lat: number;
-  crossPoint1Lng: number;
-  crossPoint2Lat: number;
-  crossPoint2Lng: number;
-  hasErupted: boolean;
-  windSpeed: number;
-  windDirection: number;
-  colHeight: number;
-  mass: number;
-  particleSize: number;
 }
 
 @inject("stores")
@@ -54,13 +40,16 @@ export class CrossSectionComponent extends BaseComponent<IProps, IState>{
   public render() {
     if (! this.metrics) { this.recomputeMetrics(); }
     const {
+      height
+    } = this.props;
+
+    const {
       volcanoLat,
       volcanoLng,
       crossPoint1Lat,
       crossPoint1Lng,
       crossPoint2Lat,
       crossPoint2Lng,
-      height,
       hasErupted,
       windSpeed,
       windDirection,
@@ -68,7 +57,8 @@ export class CrossSectionComponent extends BaseComponent<IProps, IState>{
       mass,
       particleSize,
       isSelectingCrossSection
-    } = this.props;
+    } = this.stores.simulation;
+
     const { width } = this.metrics;
 
     return (

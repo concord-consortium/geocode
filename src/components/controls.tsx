@@ -66,28 +66,8 @@ const BoldSpan = styled.span`
   font-weight: bold;
 `;
 
-interface IControls {
-  windDirection: number;
-  particleSize: number;
-  mass: number;
-  colHeight: number;
-  windSpeed: number;
-
-  changeWindDirection: (a: any) => void;
-  changeWindSpeed: (a: any) => void;
-  changeSize: (a: any) => void;
-  changeColumnHeight: (a: any) => void;
-  changeMass: (a: any) => void;
-  changeVEI: (a: any) => void;
-}
-
 interface IProps extends IBaseProps {
   width: number;
-  showWindSpeed: boolean;
-  showWindDirection: boolean;
-  showEjectedVolume: boolean;
-  showColumnHeight: boolean;
-  showVEI: boolean;
 }
 interface IState {
   animate: boolean;
@@ -104,7 +84,6 @@ export class Controls extends BaseComponent<IProps, IState> {
 
     const {
       stagingWindDirection,
-      stagingParticleSize,
       stagingMass,
       stagingColHeight,
       stagingWindSpeed,
@@ -116,8 +95,8 @@ export class Controls extends BaseComponent<IProps, IState> {
       showWindDirection,
       showEjectedVolume,
       showColumnHeight,
-      showVEI,
-    } = this.props;
+      showVEI
+    } = this.stores.uiStore;
 
     return(
       <TabContent>

@@ -29,12 +29,6 @@ interface IState {}
 interface IProps extends IBaseProps {
   width: number;
   height: number;
-  windSpeed: number;
-  windDirection: number;
-  colHeight: number;
-  vei: number;
-  mass: number;
-  particleSize: number;
 }
 interface ISidebarMetrics {
   width: number;
@@ -66,7 +60,7 @@ export class MapSidebarComponent extends BaseComponent <IProps, IState> {
             vei,
             mass,
             particleSize
-        } = this.props;
+        } = this.stores.simulation;
         const {width, height} = this.metrics;
 
         return (

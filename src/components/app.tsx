@@ -153,40 +153,15 @@ export class AppComponent extends BaseComponent<IProps, IState> {
   public render() {
     const {
       simulation: {
-        mass,
-        windDirection,
-        windSpeed,
         code,
-        log,
         setBlocklyCode,
-        colHeight,
-        particleSize,
-        vei,
-        coloredColHeight,
-        coloredMass,
-        coloredParticleSize,
-        coloredWindDirection,
-        coloredWindSpeed,
         plotData,
-        cities,
-        volcanoLat,
-        volcanoLng,
-        crossPoint1Lat,
-        crossPoint1Lng,
-        crossPoint2Lat,
-        crossPoint2Lng,
-        viewportZoom,
-        viewportCenterLat,
-        viewportCenterLng,
         run,
         clearLog,
         step,
         stop,
         reset,
         running,
-        isErupting,
-        hasErupted,
-        isSelectingCrossSection,
         initialXmlCode,
         initialCodeTitle,
         toolbox,
@@ -201,11 +176,6 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         showCrossSection,
         showChart,
         showSidebar,
-        showWindSpeed,
-        showWindDirection,
-        showEjectedVolume,
-        showColumnHeight,
-        showVEI,
       }
     } = this.stores;
 
@@ -227,21 +197,6 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     const logWidth = Math.floor(tabWidth * 0.95);
     const logHeight = Math.floor(height * .2);
     const scenarioData = (Scenarios as {[key: string]: {[key: string]: number}})[scenario];
-    const initialZoomKey = "initialZoom";
-    const minZoomKey = "minZoom";
-    const maxZoomKey = "maxZoom";
-    const topLeftLatKey = "topLeftLat";
-    const topLeftLngKey = "topLeftLng";
-    const bottomRightLatKey = "bottomRightLat";
-    const bottomRightLngKey = "bottomRightLng";
-
-    const initialZoom = scenarioData[initialZoomKey];
-    const minZoom = scenarioData[minZoomKey];
-    const maxZoom = scenarioData[maxZoomKey];
-    const topLeftLat = scenarioData[topLeftLatKey];
-    const topLeftLng = scenarioData[topLeftLngKey];
-    const bottomRightLat = scenarioData[bottomRightLatKey];
-    const bottomRightLng = scenarioData[bottomRightLngKey];
 
     const latKey = "volcanoLat";
     const lngKey = "volcanoLng";
@@ -327,7 +282,6 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                   <LogComponent
                     width={logWidth}
                     height={logHeight}
-                    log={log}
                     clear={clearLog}
                   />
                 }
@@ -355,11 +309,6 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               >
                 <Controls
                   width={tabWidth}
-                  showWindSpeed={showWindSpeed}
-                  showWindDirection={showWindDirection}
-                  showEjectedVolume={showEjectedVolume}
-                  showColumnHeight={showColumnHeight}
-                  showVEI={showVEI}
                 />
               </TabPanel>
             }
@@ -373,42 +322,10 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             >
               <Simulation width={mapWidth} backgroundColor={this.getRightTabColor(RightSectionTypes.CONDITIONS)}>
                 <MapComponent
-                  windDirection={ coloredWindDirection }
-                  windSpeed={ coloredWindSpeed }
-                  mass={ coloredMass }
-                  colHeight={ coloredColHeight }
-                  particleSize={ coloredParticleSize }
                   width={ mapWidth }
                   height={ height - 190 }
-                  cities={ cities }
-                  volcanoLat={ volcanoLat }
-                  volcanoLng={ volcanoLng }
-                  initialZoom={initialZoom}
-                  minZoom={ minZoom }
-                  maxZoom={ maxZoom }
-                  topLeftLat={topLeftLat}
-                  topLeftLng={topLeftLng}
-                  bottomRightLat={bottomRightLat}
-                  bottomRightLng={bottomRightLng}
-                  viewportZoom={ viewportZoom }
-                  viewportCenterLat={ viewportCenterLat }
-                  viewportCenterLng={ viewportCenterLng }
-                  isErupting={isErupting}
-                  showCrossSection={false}
-                  hasErupted={ hasErupted }
                 />
-                <WidgetPanel
-                  showWindSpeed={showWindSpeed}
-                  showWindDirection={showWindDirection}
-                  showColumnHeight={showColumnHeight}
-                  showEjectedVolume={showEjectedVolume}
-                  showVEI={showVEI}
-                  windSpeed={ windSpeed }
-                  windDirection={ windDirection }
-                  columnHeight={ colHeight }
-                  vei={ vei }
-                  mass={ mass }
-                />
+                <WidgetPanel />
               </Simulation>
             </TabPanel>
             <TabPanel
@@ -418,47 +335,12 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             >
               <Simulation width={mapWidth} backgroundColor={this.getRightTabColor(RightSectionTypes.CROSS_SECTION)}>
                 <MapComponent
-                  windDirection={ coloredWindDirection }
-                  windSpeed={ coloredWindSpeed }
-                  mass={ coloredMass }
-                  colHeight={ coloredColHeight }
-                  particleSize={ coloredParticleSize }
                   width={ mapWidth }
                   height={ height - 190 }
-                  cities={ cities }
-                  volcanoLat={ volcanoLat }
-                  volcanoLng={ volcanoLng }
-                  initialZoom={initialZoom}
-                  minZoom={ minZoom }
-                  maxZoom={ maxZoom }
-                  topLeftLat={topLeftLat}
-                  topLeftLng={topLeftLng}
-                  bottomRightLat={bottomRightLat}
-                  bottomRightLng={bottomRightLng}
-                  viewportZoom={ viewportZoom }
-                  viewportCenterLat={ viewportCenterLat }
-                  viewportCenterLng={ viewportCenterLng }
-                  isErupting={isErupting}
-                  showCrossSection={true}
-                  hasErupted={ hasErupted }
                 />
                 <CrossSectionComponent
-                  isSelectingCrossSection={isSelectingCrossSection}
-                  showCrossSectionSelector={isSelectingCrossSection}
-                  height={ 100 }
                   width={ mapWidth }
-                  volcanoLat={ volcanoLat }
-                  volcanoLng={ volcanoLng }
-                  crossPoint1Lat={ crossPoint1Lat }
-                  crossPoint1Lng={ crossPoint1Lng }
-                  crossPoint2Lat={ crossPoint2Lat }
-                  crossPoint2Lng={ crossPoint2Lng }
-                  hasErupted={ hasErupted }
-                  windSpeed={windSpeed}
-                  windDirection={windDirection}
-                  colHeight={colHeight}
-                  mass={mass}
-                  particleSize={particleSize}
+                  height={ 100 }
                 />
               </Simulation>
             </TabPanel>
