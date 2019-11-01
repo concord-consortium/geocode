@@ -77,6 +77,7 @@ phone.post("supportedFeatures", {
   apiVersion: 1,
   features: {
     authoredState: true,
-    interactiveState: true
+    interactiveState: true,
+    aspectRatio: 960 / 620
   }
 });
