@@ -95,23 +95,12 @@ export class MapSidebarComponent extends BaseComponent <IProps, IState> {
                   colHeight={colHeight}
                   location={{x: 190, y: 90}}
                 />
-                <Text
-                  x={275}
-                  y={15}
-                  style={style}
-                  anchor={(0.5)}
-                  text="Particle Size"
-                />
-                <ParticleSizeWidget
-                  particleSize={particleSize}
-                  location={{x: 275, y: 60}}
-                />
                 <SidebarDataDisplay
                   vei={vei}
                   colHeight={colHeight}
                   mass={mass}
                   particleSize={particleSize}
-                  location={{x: 340, y: 10}}
+                  location={{x: 275, y: 10}}
                 />
             </Stage>
         </CanvDiv>);

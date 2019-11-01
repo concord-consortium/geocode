@@ -43,7 +43,6 @@ export interface SimulationAuthoringOptions {
   initialEruptionMass: number;
   showColumnHeight: boolean;
   initialColumnHeight: number;
-  showParticleSize: boolean;
   initialParticleSize: number;
   showCrossSection: boolean;
   showChart: boolean;
@@ -157,7 +156,6 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         initialEruptionMass: 10000000000000,
         showColumnHeight: true,
         initialColumnHeight: 20000,
-        showParticleSize: true,
         initialParticleSize: 1,
         showCrossSection: false,
         showChart: false,
@@ -276,7 +274,6 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       initialEruptionMass,
       showColumnHeight,
       initialColumnHeight,
-      showParticleSize,
       initialParticleSize,
       showCrossSection,
       showChart,
@@ -417,7 +414,6 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                   showWindDirection={showWindDirection}
                   showEruptionMass={showEruptionMass}
                   showColumnHeight={showColumnHeight}
-                  showParticleSize={showParticleSize}
                 />
               </FixWidthTabPanel>
             }
@@ -550,10 +546,6 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                     <DatNumber
                       path="initialColumnHeight" label="Initial Column Height" key="initialColumnHeight"
                       min={1000} max={30000} step={1000}/>
-                    <DatBoolean path="showParticleSize" label="Show Particle Size?" key="showParticleSize" />
-                    <DatNumber
-                      path="initialParticleSize" label="Initial Particle Size" key="initialParticleSize"
-                      min={0} max={64} step={1}/>
                   </DatFolder>,
 
                   <DatBoolean path="showLog" label="Show Log?" key="showLog" />,
