@@ -345,8 +345,8 @@ export const SimulationStore = types
       setVolcanoLng(lng: number) {
         self.volcanoLng = lng;
       },
-      setColumnHeight(height: number) {
-        self.stagingColHeight = height * 1000;      // km to m
+      setColumnHeight(heightInKilometers: number) {
+        self.stagingColHeight = heightInKilometers * 1000;      // km to m
         if (!self.requireEruption) {
           self.erupt();
         }

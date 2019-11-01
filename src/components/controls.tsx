@@ -195,7 +195,7 @@ export class Controls extends BaseComponent<IProps, IState> {
       stagingWindDirection,
       stagingParticleSize,
       stagingMass,
-      stagingColHeight,
+      stagingColHeight, // in meters
       stagingWindSpeed
     } = this.stores;
 
@@ -411,8 +411,8 @@ export class Controls extends BaseComponent<IProps, IState> {
     this.stores.setWindSpeed(speed);
   }
 
-  private changeColumnHeight = (height: number) => {
-    this.stores.setColumnHeight(height * 1000);
+  private changeColumnHeight = (heightInKilometers: number) => {
+    this.stores.setColumnHeight(heightInKilometers);
   }
 
   private changeMass = (vei: number) => {
