@@ -201,7 +201,7 @@ interface WrapperProps {
 const Wrapper = styled.div`
   height: 20px;
   width: ${(p: WrapperProps) => `${p.width}px`};
-  margin: 20px 10px;
+  margin: 16px 10px;
 `;
 
 interface IProps {
