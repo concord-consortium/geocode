@@ -149,7 +149,7 @@ interface IProps extends IBaseProps {
   width: number;
   showWindSpeed: boolean;
   showWindDirection: boolean;
-  showEruptionMass: boolean;
+  showEjectedVolume: boolean;
   showColumnHeight: boolean;
 }
 interface IState {
@@ -176,7 +176,7 @@ export class Controls extends BaseComponent<IProps, IState> {
     const {
       showWindSpeed,
       showWindDirection,
-      showEruptionMass,
+      showEjectedVolume,
       showColumnHeight,
     } = this.props;
 
@@ -232,25 +232,25 @@ export class Controls extends BaseComponent<IProps, IState> {
               </ValueContainer>
             </HorizontalContainer>
           </ControlContainer>}
-          {showEruptionMass && <ControlContainer>
+          {showEjectedVolume && <ControlContainer>
             <HorizontalContainer>
               <VerticalContainer alignItems="center" justifyContent="center">
-                <ControlLabel>Eruption Mass (kg)</ControlLabel>
+                <ControlLabel>Ejected Volume (km<sup>3</sup>)</ControlLabel>
                 <HorizontalContainer>
                   <RangeControl
-                    min={8}
-                    max={15}
-                    value={Math.round(Math.log(stagingMass) / Math.LN10)}
+                    min={0}
+                    max={7}
+                    value={Math.round(Math.log(stagingMass) / Math.LN10) - 8}
                     step={1}
                     tickMap={{
-                      8: "10<sup>8</sup>",
-                      9: "10<sup>9</sup>",
-                      10: "10<sup>10</sup>",
-                      11: "10<sup>11</sup>",
-                      12: "10<sup>12</sup>",
-                      13: "10<sup>13</sup>",
-                      14: "10<sup>14</sup>",
-                      15: "10<sup>15</sup>",
+                      0: "10<sup>-4</sup>",
+                      1: "10<sup>-3</sup>",
+                      2: "10<sup>-2</sup>",
+                      3: "10<sup>-1</sup>",
+                      4: "10<sup>0</sup>",
+                      5: "10<sup>1</sup>",
+                      6: "10<sup>2</sup>",
+                      7: "10<sup>3</sup>",
                     }}
                     width={this.props.width - 220}
                     onChange={this.changeMass}
@@ -270,7 +270,7 @@ export class Controls extends BaseComponent<IProps, IState> {
                 <ValueOutput>
                   <div
                     dangerouslySetInnerHTML={
-                      {__html: `10<sup>${Math.round(Math.log(stagingMass) / Math.LN10)}</sup> kg`}
+                      {__html: `10<sup>${Math.round(Math.log(stagingMass) / Math.LN10) - 12}</sup> km<sup>3</sup>`}
                   } />
                 </ValueOutput>
               </ValueContainer>
@@ -345,9 +345,10 @@ export class Controls extends BaseComponent<IProps, IState> {
     this.stores.setColumnHeight(heightInKilometers);
   }
 
-  private changeMass = (vei: number) => {
-    const mass =  Math.pow(10, vei);
-    this.stores.setMass(mass);
+  private changeMass = (zeroBasedPower: number) => {
+    // -4 index conversion, +9 km^3 to m^3, +3 m^3 to kg
+    const massInKilograms = Math.pow(10, zeroBasedPower - 4 + 9 + 3);
+    this.stores.setMass(massInKilograms);
   }
 
   private changeSize = (size: number) => {
