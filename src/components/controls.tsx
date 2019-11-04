@@ -30,13 +30,13 @@ const ControlsContainer = styled.div`
 `;
 
 interface ControlContainerProps {
-  height: number;
+  height?: number;
 }
 const ControlContainer = styled.div`
   width: 100%;
   box-sizing: border-box;
   padding: 8px 10px 8px 10px;
-  height: ${(p: ControlContainerProps) => `${p.height}px`};
+  height: ${(p: ControlContainerProps) => `${p.height ? `${p.height}px` : "100px"}`};
   margin-bottom: 20px;
   border-radius: 10px;
   background-color: #F0F0F0;
@@ -183,7 +183,8 @@ export class Controls extends BaseComponent<IProps, IState> {
     return(
       <StyledControls>
         <ControlsContainer>
-          {(showWindSpeed || showWindDirection) && <ControlContainer height={!showWindSpeed ? 100 : 172}>
+          {(showWindSpeed || showWindDirection) && <ControlContainer
+                                                      height={showWindSpeed && showWindDirection ? 172 : 100}>
             <HorizontalContainer alignItems="center">
               <VerticalContainer alignItems="center" justifyContent="center">
                 {showWindSpeed && <ControlLabel>Wind Speed (m/s)</ControlLabel>}
@@ -231,7 +232,7 @@ export class Controls extends BaseComponent<IProps, IState> {
               </ValueContainer>
             </HorizontalContainer>
           </ControlContainer>}
-          {showEruptionMass && <ControlContainer height={100}>
+          {showEruptionMass && <ControlContainer>
             <HorizontalContainer>
               <VerticalContainer alignItems="center" justifyContent="center">
                 <ControlLabel>Eruption Mass (kg)</ControlLabel>
@@ -275,7 +276,7 @@ export class Controls extends BaseComponent<IProps, IState> {
               </ValueContainer>
             </HorizontalContainer>
           </ControlContainer>}
-          {showColumnHeight && <ControlContainer height={100}>
+          {showColumnHeight && <ControlContainer>
             <HorizontalContainer>
               <VerticalContainer alignItems="center" justifyContent="center">
                 <ControlLabel>Column Height (km)</ControlLabel>
