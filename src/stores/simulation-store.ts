@@ -366,6 +366,20 @@ export const SimulationStore = types
         // we want vei 1 = 1e8, vei 8 = 1e15
         const mass = Math.pow(10, clippedVEI + 7);
         self.stagingMass = mass;
+
+        const veiColumnHeightTable: { [key: number]: number } = {
+          1: .1 * 1000,
+          2: 1 * 1000,
+          3: 5 * 1000,
+          4: 10 * 1000,
+          5: 15 * 1000,
+          6: 20 * 1000,
+          7: 25 * 1000,
+          8: 25 * 1000,
+        };
+        const colHeight = veiColumnHeightTable[vei] || .1 * 1000;
+        self.stagingColHeight = colHeight;
+
         if (!self.requireEruption) {
           self.erupt();
         }

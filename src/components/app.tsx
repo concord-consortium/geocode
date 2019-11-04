@@ -44,6 +44,8 @@ export interface SimulationAuthoringOptions {
   showColumnHeight: boolean;
   initialColumnHeight: number;
   initialParticleSize: number;
+  showVEI: boolean;
+  initialVEI: number;
   showCrossSection: boolean;
   showChart: boolean;
   showSidebar: boolean;
@@ -157,6 +159,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         showColumnHeight: true,
         initialColumnHeight: 20000,
         initialParticleSize: 1,
+        showVEI: true,
+        initialVEI: 1,
         showCrossSection: false,
         showChart: false,
         showSidebar: false
@@ -275,6 +279,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       showColumnHeight,
       initialColumnHeight,
       initialParticleSize,
+      showVEI,
+      initialVEI,
       showCrossSection,
       showChart,
       showSidebar
@@ -414,6 +420,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                   showWindDirection={showWindDirection}
                   showEjectedVolume={showEjectedVolume}
                   showColumnHeight={showColumnHeight}
+                  showVEI={showVEI}
                 />
               </FixWidthTabPanel>
             }
@@ -546,6 +553,10 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                     <DatNumber
                       path="initialColumnHeight" label="Initial Column Height" key="initialColumnHeight"
                       min={1000} max={30000} step={1000}/>
+                    <DatBoolean path="showVEI" label="Show VEI?" key="showVEI" />
+                    <DatNumber
+                      path="initialVEI" label="Initial VEI" key="initialVEI"
+                      min={1} max={8} step={1}/>
                   </DatFolder>,
 
                   <DatBoolean path="showLog" label="Show Log?" key="showLog" />,

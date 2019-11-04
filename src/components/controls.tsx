@@ -47,17 +47,21 @@ const ControlLabel = styled.label`
   margin-top: 6px;
 `;
 
+interface ValueContainerProps {
+  width?: number;
+}
 const ValueContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 104px;
+  width: ${(p: ValueContainerProps) => `${p.width ? `${p.width}px` : "104px"}`};
   height: 80px;
   margin-left: auto;
   padding: 2px;
   border-radius: 7px;
   background-color: #FFDBAC;
+  font-size: 12px;
 `;
 
 const ValueOutput = styled.div`
@@ -71,7 +75,6 @@ const ValueOutput = styled.div`
   border-radius: 0 0 5px 5px;
   background-color: white;
   text-align: center;
-  font-size: 12px;
 `;
 
 const ValueDivider = styled.div`
@@ -87,6 +90,15 @@ const IconContainer = styled.div`
   align-items: center;
   justify-content: center;
   height: 60px;
+  margin: 0 10px 0 10px;
+`;
+
+const VEIlabel = styled.div`
+  font-size: 10px;
+  color: #ff9300;
+`;
+const VEIvalue = styled.div`
+  font-size: 11px;
 `;
 
 interface HorizontalContainerProps {
@@ -143,6 +155,7 @@ interface IControls {
   changeSize: (a: any) => void;
   changeColumnHeight: (a: any) => void;
   changeMass: (a: any) => void;
+  changeVEI: (a: any) => void;
 }
 
 interface IProps extends IBaseProps {
@@ -151,6 +164,7 @@ interface IProps extends IBaseProps {
   showWindDirection: boolean;
   showEjectedVolume: boolean;
   showColumnHeight: boolean;
+  showVEI: boolean;
 }
 interface IState {
   animate: boolean;
@@ -170,7 +184,8 @@ export class Controls extends BaseComponent<IProps, IState> {
       stagingParticleSize,
       stagingMass,
       stagingColHeight, // in meters
-      stagingWindSpeed
+      stagingWindSpeed,
+      stagingVei
     } = this.stores;
 
     const {
@@ -178,6 +193,7 @@ export class Controls extends BaseComponent<IProps, IState> {
       showWindDirection,
       showEjectedVolume,
       showColumnHeight,
+      showVEI,
     } = this.props;
 
     return(
@@ -308,6 +324,49 @@ export class Controls extends BaseComponent<IProps, IState> {
               </ValueContainer>
             </HorizontalContainer>
           </ControlContainer>}
+          {showVEI && <ControlContainer>
+            <HorizontalContainer>
+              <VerticalContainer alignItems="center" justifyContent="center">
+                <label>VEI</label>
+                <HorizontalContainer>
+                  <RangeControl
+                    min={1}
+                    max={8}
+                    value={stagingVei}
+                    step={1}
+                    tickArray={[1, 2, 3, 4, 5, 6, 7, 8]}
+                    width={this.props.width - 274}
+                    onChange={this.changeVEI}
+                  />
+                </HorizontalContainer>
+              </VerticalContainer>
+              <ValueContainer width={160}>
+                <HorizontalContainer>
+                  <IconContainer>
+                    <Icon
+                      width={36}
+                      height={40}
+                      fill={"black"}
+                    >
+                      <ColumnHeightIcon/>
+                    </Icon>
+                  </IconContainer>
+                  <VerticalContainer alignItems="center" justifyContent="center">
+                    <VEIlabel>Column Height</VEIlabel>
+                    <VEIvalue>{stagingColHeight / 1000} km</VEIvalue>
+                    <VEIlabel>Ejected Volume</VEIlabel>
+                    <VEIvalue
+                        dangerouslySetInnerHTML={
+                          {__html: `10<sup>${Math.round(Math.log(stagingMass) / Math.LN10)}</sup> kg`}
+                      } />
+                  </VerticalContainer>
+                </HorizontalContainer>
+                <ValueOutput>
+                  {`${stagingVei}: ${this.getVEIDescription(stagingVei)}`}
+                </ValueOutput>
+              </ValueContainer>
+            </HorizontalContainer>
+          </ControlContainer>}
           <NoteLabel>
             <span>Note: changes made here will </span>
             <BoldSpan>not be</BoldSpan>
@@ -353,6 +412,24 @@ export class Controls extends BaseComponent<IProps, IState> {
 
   private changeSize = (size: number) => {
     this.stores.setParticleSize(size);
+  }
+
+  private changeVEI = (vei: number) => {
+    this.stores.setVEI(vei);
+  }
+
+  private getVEIDescription = (vei: number) => {
+    switch (vei) {
+      case 1: return "Gentle";
+      case 2: return "Explosive";
+      case 3: return "Catastrophic";
+      case 4: return "Cataclysmic";
+      case 5: return "Disastrous";
+      case 6: return "Colossal";
+      case 7: return "Super-Colossal";
+      case 8: return "Mega-Colossal";
+      default: return "";
+    }
   }
 
   private erupt = () => {
