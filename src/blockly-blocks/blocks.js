@@ -13,6 +13,7 @@ import "../blockly-blocks/block-set-wind-direction";
 import "../blockly-blocks/block-set-wind-speed";
 import "../blockly-blocks/block-set-eruption-height";
 import "../blockly-blocks/block-set-eruption-mass";
+import "../blockly-blocks/block-set-ejected-volume";
 import "../blockly-blocks/block-set-vei";
 import "../blockly-blocks/block-erupt";
 import "../blockly-blocks/block-output-paint-grid";

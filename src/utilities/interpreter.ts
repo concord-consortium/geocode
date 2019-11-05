@@ -55,6 +55,12 @@ const makeInterperterFunc = (simulation: SimulationModelType, workspace: IBlockl
       simulation.setMass(mass);
     });
 
+    addFunc("setVolume", (volume: number) => {
+      // +9 km^3 to m^3, +3 m^3 to kg
+      const massInKilograms = volume * Math.pow(10, 9 + 3);
+      simulation.setMass(massInKilograms);
+    });
+
     addFunc("setVEI", (vei: number) => {
       simulation.setVEI(vei);
     });
