@@ -39,7 +39,7 @@ export interface SimulationAuthoringOptions {
   initialWindSpeed: number;
   showWindDirection: boolean;
   initialWindDirection: number;
-  showEruptionMass: boolean;
+  showEjectedVolume: boolean;
   initialEruptionMass: number;
   showColumnHeight: boolean;
   initialColumnHeight: number;
@@ -152,7 +152,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         initialWindSpeed: 5,
         showWindDirection: true,
         initialWindDirection: 310,
-        showEruptionMass: true,
+        showEjectedVolume: true,
         initialEruptionMass: 10000000000000,
         showColumnHeight: true,
         initialColumnHeight: 20000,
@@ -270,7 +270,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       initialWindSpeed,
       showWindDirection,
       initialWindDirection,
-      showEruptionMass,
+      showEjectedVolume,
       initialEruptionMass,
       showColumnHeight,
       initialColumnHeight,
@@ -412,7 +412,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                   width={tabWidth}
                   showWindSpeed={showWindSpeed}
                   showWindDirection={showWindDirection}
-                  showEruptionMass={showEruptionMass}
+                  showEjectedVolume={showEjectedVolume}
                   showColumnHeight={showColumnHeight}
                 />
               </FixWidthTabPanel>
@@ -538,9 +538,9 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                     <DatNumber
                       path="initialWindDirection" label="Initial Wind Direction" key="initialWindDirection"
                       min={0} max={360} step={1}/>
-                    <DatBoolean path="showEruptionMass" label="Show Eruption Mass?" key="showEruptionMass" />
+                    <DatBoolean path="showEjectedVolume" label="Show Ejected Volume?" key="showEjectedVolume" />
                     <DatNumber
-                      path="initialEruptionMass" label="Initial Eruption Mass" key="initialEruptionMass"
+                      path="initialEruptionMass" label="Initial Ejection Volume" key="initialEruptionMass"
                       min={100000000} max={10000000000000000} step={1000}/>
                     <DatBoolean path="showColumnHeight" label="Show Column Height?" key="showColumnHeight" />
                     <DatNumber
