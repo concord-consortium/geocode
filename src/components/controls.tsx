@@ -25,18 +25,26 @@ const ControlsContainer = styled.div`
   align-items: center;
   box-sizing: border-box;
   width: 100%;
-  padding: 18px 28px 8px 28px;
+  padding: 20px 28px 7px 28px;
   background-color: white;
 `;
 
+interface ControlContainerProps {
+  height?: number;
+}
 const ControlContainer = styled.div`
   width: 100%;
   box-sizing: border-box;
-  padding: 5px;
-  margin-bottom: 10px;
+  padding: 8px 10px 8px 10px;
+  height: ${(p: ControlContainerProps) => `${p.height ? `${p.height}px` : "100px"}`};
+  margin-bottom: 20px;
   border-radius: 10px;
   background-color: #F0F0F0;
   font-size: 16px;
+`;
+
+const ControlLabel = styled.label`
+  margin-top: 6px;
 `;
 
 const ValueContainer = styled.div`
@@ -45,9 +53,9 @@ const ValueContainer = styled.div`
   justify-content: center;
   align-items: center;
   width: 104px;
-  height: 84px;
-  padding: 2px;
+  height: 80px;
   margin-left: auto;
+  padding: 2px;
   border-radius: 7px;
   background-color: #FFDBAC;
 `;
@@ -60,7 +68,6 @@ const ValueOutput = styled.div`
   box-sizing: border-box;
   width: 100%;
   height: 21px;
-  border: 1px solid #BBB;
   border-radius: 0 0 5px 5px;
   background-color: white;
   text-align: center;
@@ -176,10 +183,11 @@ export class Controls extends BaseComponent<IProps, IState> {
     return(
       <StyledControls>
         <ControlsContainer>
-          {(showWindSpeed || showWindDirection) && <ControlContainer>
+          {(showWindSpeed || showWindDirection) && <ControlContainer
+                                                      height={showWindSpeed && showWindDirection ? 172 : 100}>
             <HorizontalContainer alignItems="center">
               <VerticalContainer alignItems="center" justifyContent="center">
-                {showWindSpeed && <label>Wind Speed (m/s)</label>}
+                {showWindSpeed && <ControlLabel>Wind Speed (m/s)</ControlLabel>}
                 {showWindSpeed && <HorizontalContainer>
                   <RangeControl
                     min={0}
@@ -191,7 +199,7 @@ export class Controls extends BaseComponent<IProps, IState> {
                     onChange={this.changeWindSpeed}
                   />
                 </HorizontalContainer> }
-                {showWindDirection && <label>Wind Direction (° from North)</label>}
+                {showWindDirection && <ControlLabel>Wind Direction (° from North)</ControlLabel>}
                 {showWindDirection && <HorizontalContainer>
                   <RangeControl
                     min={0}
@@ -227,7 +235,7 @@ export class Controls extends BaseComponent<IProps, IState> {
           {showEruptionMass && <ControlContainer>
             <HorizontalContainer>
               <VerticalContainer alignItems="center" justifyContent="center">
-                <label>Eruption Mass (kg)</label>
+                <ControlLabel>Eruption Mass (kg)</ControlLabel>
                 <HorizontalContainer>
                   <RangeControl
                     min={8}
@@ -271,7 +279,7 @@ export class Controls extends BaseComponent<IProps, IState> {
           {showColumnHeight && <ControlContainer>
             <HorizontalContainer>
               <VerticalContainer alignItems="center" justifyContent="center">
-                <label>Column Height (km)</label>
+                <ControlLabel>Column Height (km)</ControlLabel>
                 <HorizontalContainer>
                   <RangeControl
                     min={1}
