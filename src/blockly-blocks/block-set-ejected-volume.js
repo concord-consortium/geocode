@@ -5,7 +5,7 @@ Blockly.Blocks['setEjectedVolume'] = {
           .setAlign(Blockly.ALIGN_RIGHT)
           .appendField("Set ejected volume");
       this.appendDummyInput()
-          .appendField("km^3");
+          .appendField("km\u00B3");
       this.setInputsInline(true);
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
