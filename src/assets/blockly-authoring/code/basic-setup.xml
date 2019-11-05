@@ -1,73 +1,72 @@
-<xml>
-    <block type="addTown" id="%`S]ozt=N83nxZ@D]X+A" x="52" y="130">
+<xml xmlns="http://www.w3.org/1999/xhtml">
+  <block type="addTown" id="%`S]ozt=N83nxZ@D]X+A" x="52" y="130">
+    <value name="name">
+      <block type="text" id="u#Y)3)-ai$(2)Kf{nJZL">
+        <field name="TEXT">Boston</field>
+      </block>
+    </value>
+    <value name="x">
+      <block type="math_number" id="#=PE6yxO:9HhUF#C[`ZS">
+        <field name="NUM">45</field>
+      </block>
+    </value>
+    <value name="y">
+      <block type="math_number" id="8MWNnp$D5#TtHOsvRVM(">
+        <field name="NUM">72</field>
+      </block>
+    </value>
+    <next>
+      <block type="addTown" id="J-x,U-qj%P;[c?~98*;7">
         <value name="name">
-            <block type="text" id="u#Y)3)-ai$(2)Kf{nJZL">
-                <field name="TEXT">Boston</field>
-            </block>
+          <block type="text" id="s0Lxg*^`ifTF.p*H?;;B">
+            <field name="TEXT">Cambridge</field>
+          </block>
         </value>
         <value name="x">
-            <block type="math_number" id="#=PE6yxO:9HhUF#C[`ZS">
-                <field name="NUM">45</field>
-            </block>
+          <block type="math_number" id="2Q$NX{|vP]Uk+M/k3p,+">
+            <field name="NUM">-25</field>
+          </block>
         </value>
         <value name="y">
-            <block type="math_number" id="8MWNnp$D5#TtHOsvRVM(">
-                <field name="NUM">72</field>
-            </block>
+          <block type="math_number" id="d1rCwD{k_8XAkIzo;r0a">
+            <field name="NUM">-30</field>
+          </block>
         </value>
         <next>
-            <block type="addTown" id="J-x,U-qj%P;[c?~98*;7">
-                <value name="name">
-                    <block type="text" id="s0Lxg*^`ifTF.p*H?;;B">
-                        <field name="TEXT">Cambridge</field>
-                    </block>
-                </value>
-                <value name="x">
-                    <block type="math_number" id="2Q$NX{|vP]Uk+M/k3p,+">
-                        <field name="NUM">-25</field>
-                    </block>
-                </value>
-                <value name="y">
-                    <block type="math_number" id="d1rCwD{k_8XAkIzo;r0a">
-                        <field name="NUM">-30</field>
-                    </block>
+          <block type="setEjectedVolume" id="s*$^]xERxGW,La+$A#q*">
+            <value name="ejectedVolume">
+              <block type="math_number" id="$=I+kM5Ri!b(U^Vg,`o;">
+                <field name="NUM">10</field>
+              </block>
+            </value>
+            <next>
+              <block type="setWindDirection" id="/H|(LVe)_5VTaNduq0Lx">
+                <value name="windDirection">
+                  <block type="math_number" id="S0WIUo]bMF.JylF!dEu|">
+                    <field name="NUM">37</field>
+                  </block>
                 </value>
                 <next>
-                    <block type="setEruptionMass" id="g1oYU/)m7d,HP{%tyWu3">
-                        <value name="eruptionMass">
-                            <block type="math_number" id="$=I+kM5Ri!b(U^Vg,`o;">
-                                <field name="NUM">10000000000000</field>
-                            </block>
-                        </value>
+                  <block type="setWindSpeed" id="_qHK7gU,7NaA(/KBW4Rf">
+                    <value name="windSpeed">
+                      <block type="math_number" id="UXvEj6{L%jHe2fu1m}=k">
+                        <field name="NUM">25</field>
+                      </block>
+                    </value>
+                    <next>
+                      <block type="erupt" id="8IRxcs[0O$HmIA_LW7%l">
                         <next>
-                            <block type="setWindDirection" id="/H|(LVe)_5VTaNduq0Lx">
-                                <value name="windDirection">
-                                    <block type="math_number" id="S0WIUo]bMF.JylF!dEu|">
-                                        <field name="NUM">37</field>
-                                    </block>
-                                </value>
-                                <next>
-                                    <block type="setWindSpeed" id="_qHK7gU,7NaA(/KBW4Rf">
-                                        <value name="windSpeed">
-                                            <block type="math_number" id="UXvEj6{L%jHe2fu1m}=k">
-                                                <field name="NUM">25</field>
-                                            </block>
-                                        </value>
-                                        <next>
-                                            <block type="erupt" id="8IRxcs[0O$HmIA_LW7%l">
-                                                <field name="animate">TRUE</field>
-                                                <next>
-                                                    <block type="outputPaintMap" id="+)~anF4tz$I]iQo^J20s"></block>
-                                                </next>
-                                            </block>
-                                        </next>
-                                    </block>
-                                </next>
-                            </block>
+                          <block type="outputPaintMap" id="+)~anF4tz$I]iQo^J20s"></block>
                         </next>
-                    </block>
+                      </block>
+                    </next>
+                  </block>
                 </next>
-            </block>
+              </block>
+            </next>
+          </block>
         </next>
-    </block>
+      </block>
+    </next>
+  </block>
 </xml>
