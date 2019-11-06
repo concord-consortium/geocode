@@ -5,12 +5,14 @@ import RangeControl from "./range-control";
 import styled from "styled-components";
 import ColumnHeightIcon from "../assets/controls-icons/column-height.svg";
 import EjectedVolumeIcon from "../assets/controls-icons/ejected-volume.svg";
-import ParticleIcon from "../assets/controls-icons/particle.svg";
 import WindSpeedDirectionIcon from "../assets/controls-icons/wind-speed-direction.svg";
 import RunIcon from "../assets/blockly-icons/run.svg";
 import { Icon } from "./icon";
 import IconButton from "./icon-button";
-import { kVEIIndexInfo } from "../utilities/vei";
+import { HorizontalContainer, VerticalContainer,
+         ValueContainer, ValueOutput, IconContainer } from "./styled-containers";
+import VEIWidget from "./vei-widget";
+import { WidgetPanelTypes } from "../utilities/widget";
 
 const StyledControls = styled.div`
   display: flex;
@@ -48,79 +50,11 @@ const ControlLabel = styled.label`
   margin-top: 6px;
 `;
 
-interface ValueContainerProps {
-  width?: number;
-}
-const ValueContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: ${(p: ValueContainerProps) => `${p.width ? `${p.width}px` : "104px"}`};
-  height: 80px;
-  margin-left: auto;
-  padding: 2px;
-  border-radius: 7px;
-  background-color: #FFDBAC;
-  font-size: 12px;
-`;
-
-const ValueOutput = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  box-sizing: border-box;
-  width: 100%;
-  height: 21px;
-  border-radius: 0 0 5px 5px;
-  background-color: white;
-  text-align: center;
-`;
-
 const ValueDivider = styled.div`
   width: 1px;
   height: 21px;
   margin: 0 5px 0 5px;
   background-color: #FFDBAC;
-`;
-
-const IconContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 60px;
-  margin: 0 10px 0 10px;
-`;
-
-const VEIlabel = styled.div`
-  font-size: 10px;
-  color: #ff9300;
-`;
-const VEIvalue = styled.div`
-  font-size: 11px;
-`;
-
-interface HorizontalContainerProps {
-  alignItems?: string;
-  justifyContent?: string;
-}
-const HorizontalContainer = styled.div`
-  display: flex;
-  align-items: ${(p: HorizontalContainerProps) => `${p.alignItems ? p.alignItems : "flex-start"}`};
-  justify-content: ${(p: VerticalContainerProps) => `${p.alignItems ? p.alignItems : "flex-start"}`};
-`;
-
-interface VerticalContainerProps {
-  alignItems?: string;
-  justifyContent?: string;
-}
-const VerticalContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: ${(p: VerticalContainerProps) => `${p.alignItems ? p.alignItems : "flex-start"}`};
-  justify-content: ${(p: VerticalContainerProps) => `${p.alignItems ? p.alignItems : "flex-start"}`};
 `;
 
 const EruptContainer = styled.div`
@@ -341,31 +275,12 @@ export class Controls extends BaseComponent<IProps, IState> {
                   />
                 </HorizontalContainer>
               </VerticalContainer>
-              <ValueContainer width={160}>
-                <HorizontalContainer>
-                  <IconContainer>
-                    <Icon
-                      width={36}
-                      height={40}
-                      fill={"black"}
-                    >
-                      <ColumnHeightIcon/>
-                    </Icon>
-                  </IconContainer>
-                  <VerticalContainer alignItems="center" justifyContent="center">
-                    <VEIlabel>Column Height</VEIlabel>
-                    <VEIvalue>{stagingColHeight / 1000} km</VEIvalue>
-                    <VEIlabel>Ejected Volume</VEIlabel>
-                    <VEIvalue
-                        dangerouslySetInnerHTML={
-                          {__html: `10<sup>${Math.round(Math.log(stagingMass) / Math.LN10)}</sup> kg`}
-                      } />
-                  </VerticalContainer>
-                </HorizontalContainer>
-                <ValueOutput>
-                  {`${stagingVei}: ${this.getVEIDescription(stagingVei)}`}
-                </ValueOutput>
-              </ValueContainer>
+              <VEIWidget
+                type={WidgetPanelTypes.LEFT}
+                vei={stagingVei}
+                mass={stagingMass}
+                columnHeight={stagingColHeight}
+              />
             </HorizontalContainer>
           </ControlContainer>}
           <NoteLabel>
@@ -417,10 +332,6 @@ export class Controls extends BaseComponent<IProps, IState> {
 
   private changeVEI = (vei: number) => {
     this.stores.setVEI(vei);
-  }
-
-  private getVEIDescription = (vei: number) => {
-    return ((kVEIIndexInfo[vei] && kVEIIndexInfo[vei].description) || "");
   }
 
   private erupt = () => {
