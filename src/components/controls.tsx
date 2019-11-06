@@ -10,6 +10,7 @@ import WindSpeedDirectionIcon from "../assets/controls-icons/wind-speed-directio
 import RunIcon from "../assets/blockly-icons/run.svg";
 import { Icon } from "./icon";
 import IconButton from "./icon-button";
+import { kVEIIndexInfo } from "../utilities/vei";
 
 const StyledControls = styled.div`
   display: flex;
@@ -419,17 +420,7 @@ export class Controls extends BaseComponent<IProps, IState> {
   }
 
   private getVEIDescription = (vei: number) => {
-    switch (vei) {
-      case 1: return "Gentle";
-      case 2: return "Explosive";
-      case 3: return "Catastrophic";
-      case 4: return "Cataclysmic";
-      case 5: return "Disastrous";
-      case 6: return "Colossal";
-      case 7: return "Super-Colossal";
-      case 8: return "Mega-Colossal";
-      default: return "";
-    }
+    return ((kVEIIndexInfo[vei] && kVEIIndexInfo[vei].description) || "");
   }
 
   private erupt = () => {
