@@ -11,7 +11,8 @@
     <block type="setWindDirection"></block>
     <block type="setWindSpeed"></block>
     <block type="setEruptionHeight"></block>
-    <block type="setEruptionMass"></block>
+     <!-- <block type="setEruptionMass"></block> -->
+    <block type="setEjectedVolume"></block>
     <block type="setVEI"></block>
     <block type="erupt"></block>
     <block type="outputPaintMap"></block>

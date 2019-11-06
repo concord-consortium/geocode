@@ -71,10 +71,10 @@
                   </block>
                 </value>
                 <next>
-                  <block type="setEruptionMass" id="g1oYU/)m7d,HP{%tyWu3">
-                    <value name="eruptionMass">
+                  <block type="setEjectedVolume" id="0iue3;8^a]`Khi.Ng1pk">
+                    <value name="ejectedVolume">
                       <block type="math_number" id="$=I+kM5Ri!b(U^Vg,`o;">
-                        <field name="NUM">10000000000</field>
+                        <field name="NUM">10</field>
                       </block>
                     </value>
                     <next>
