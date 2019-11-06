@@ -499,7 +499,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             }
             { showSidebar &&
               <MapSidebarComponent
-                width={ mapWidth }
+                width={ mapWidth - 200 }
                 height={ 100 }
                 windSpeed={ windSpeed }
                 windDirection={ windDirection }
