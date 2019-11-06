@@ -2,6 +2,7 @@ import { types, getSnapshot } from "mobx-state-tree";
 import { IInterpreterController, makeInterpreterController } from "../utilities/interpreter";
 import { SimulationAuthoringOptions } from "../components/app";
 import { SerializedStateDataType } from "..";
+import { kVEIIndexInfo } from "../utilities/vei";
 
 let _cityCounter = 0;
 const genCityId = () => `city_${_cityCounter++}`;
@@ -366,6 +367,10 @@ export const SimulationStore = types
         // we want vei 1 = 1e8, vei 8 = 1e15
         const mass = Math.pow(10, clippedVEI + 7);
         self.stagingMass = mass;
+
+        const colHeight = ((kVEIIndexInfo[vei] && kVEIIndexInfo[vei].columnHeight) || .1 * 1000);
+        self.stagingColHeight = colHeight;
+
         if (!self.requireEruption) {
           self.erupt();
         }
