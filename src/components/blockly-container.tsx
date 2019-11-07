@@ -72,7 +72,7 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
       media: "blockly/media/",
       toolbox: `
       <xml id="toolbox" style="display: none">
-        <category name="dummy">
+        <category name="Loading...">
         </category>
       </xml>
       `,
