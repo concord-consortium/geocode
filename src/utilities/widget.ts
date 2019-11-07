@@ -6,15 +6,21 @@ export type WidgetPanelInfo = {
   [type in WidgetPanelTypes]: {
     backgroundColor: string;
     highlightColor: string;
+    textColor: string;
+    highlightTextColor: string;
   }
 };
 export const kWidgetPanelInfo: WidgetPanelInfo = {
   right: {
     backgroundColor: "#DDEDFF",
-    highlightColor: "#4AA9FF",
+    highlightColor: "#4aa9ff",
+    textColor: "#434343",
+    highlightTextColor: "#007eff",
   },
   left: {
     backgroundColor: "#FFDBAC",
-    highlightColor: "#FF9300",
+    highlightColor: "#ffac00",
+    textColor: "#434343",
+    highlightTextColor: "#FF9300",
   },
 };

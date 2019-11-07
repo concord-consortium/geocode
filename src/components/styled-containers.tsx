@@ -35,6 +35,7 @@ export const ValueContainer = styled.div`
   margin-left: auto;
   padding: 2px;
   border-radius: 7px;
+  color: #434343;
   background-color: ${(p: ValueContainerProps) => `${p.backgroundColor ? `${p.backgroundColor}` : "#FFDBAC"}`};
   font-size: 12px;
 `;
