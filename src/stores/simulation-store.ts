@@ -1,7 +1,5 @@
 import { types, getSnapshot } from "mobx-state-tree";
 import { IInterpreterController, makeInterpreterController } from "../utilities/interpreter";
-// import { SimulationAuthoringOptions } from "../components/app";
-import { SerializedStateDataType } from "..";
 import { kVEIIndexInfo } from "../utilities/vei";
 import { SimulationAuthorSettings, SimulationAuthorSettingsProps } from "./stores";
 
@@ -450,13 +448,6 @@ export const SimulationStore = types
       get cityHash() {
         return self.cities.reduce( (pre, cur) => `${pre}-${cur.name}${cur.x}${cur.y}`, "");
       },
-      // returns values we need to save to LARA
-      get userSnapshot(): SerializedStateDataType {
-        return {
-          version: 1,
-          blocklyXmlCode: self.xmlCode
-        };
-      }
     };
   });
 export const simulation = SimulationStore.create({});

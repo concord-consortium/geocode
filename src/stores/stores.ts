@@ -9,6 +9,8 @@ export interface IStore {
 
 export interface IStoreish {simulation: any; uiStore: any; }
 
+export interface SerializedState {version: number; state: IStoreish; }
+
 export const stores = {
   simulation,
   uiStore
@@ -18,6 +20,7 @@ export const stores = {
 // that array at the same time.
 const tuple = <T extends string[]>(...args: T) => args;
 
+// props settable from authoring menu
 const simulationAuthorSettingsProps = tuple(
   "requireEruption",
   "requirePainting",
@@ -25,6 +28,15 @@ const simulationAuthorSettingsProps = tuple(
   "toolbox",
   "initialCodeTitle",
 );
+// additional props directly from current model that author will save
+const simulationAuthorStateProps = (simulationAuthorSettingsProps as string[]).concat(tuple(
+  "xmlCode",
+  "stagingWindSpeed",
+  "stagingWindDirection",
+  "stagingMass",
+  "stagingVei",
+  "stagingColHeight",
+));
 
 const uiAuthorSettingsProps = tuple(
   "showBlocks",
@@ -54,18 +66,40 @@ export type UIAuthorSettings = {
 // picks props into a new object given an array of keys
 const pick = (keys: string[]) => (o: any) => keys.reduce((a, e) => ({ ...a, [e]: o[e] }), {});
 
-// gets the current stores state in a version appropriate for the authoring menu
-export function getAuthorableSettings(): IStoreish {
-  const authoredSimulation = pick(simulationAuthorSettingsProps)(simulation);
-  const authoredUi = pick(uiAuthorSettingsProps)(uiStore);
-  return {
-    simulation: authoredSimulation,
-    uiStore: authoredUi
+// returns a selection of the properties of the store
+function getStoreSubstate(simulationProps: string[], uiProps: string[]): () => IStoreish {
+  return () => {
+    const authoredSimulation = pick(simulationProps)(simulation);
+    const authoredUi = pick(uiProps)(uiStore);
+    return {
+      simulation: authoredSimulation,
+      uiStore: authoredUi
+    };
   };
 }
 
+// gets the current stores state in a version appropriate for the authoring menu
+export const getAuthorableSettings = getStoreSubstate(simulationAuthorSettingsProps, uiAuthorSettingsProps);
+// gets the current store state to be saved by an author or student
+export const getSavableState = getStoreSubstate(simulationAuthorStateProps, uiAuthorSettingsProps);
+
+// makes state appropriate for saving to e.g. LARA. Adds a version number
+export const serializeState = (state: any): SerializedState => {
+  return {
+    version: 1,
+    state
+  };
+};
+// deserializes saved state, migrating data if necessary
+export const deserializeState = (serializedState: SerializedState): IStoreish => {
+  if (serializedState.version === 1) {
+    return serializedState.state;
+  }
+  return {simulation: {}, uiStore: {}};
+};
+
 export function updateStores(state: IStoreish) {
-  const simulationStoreSettings: SimulationAuthorSettings = pick(simulationAuthorSettingsProps)(state.simulation);
+  const simulationStoreSettings: SimulationAuthorSettings = pick(simulationAuthorStateProps)(state.simulation);
   const uiStoreSettings: UIAuthorSettings = pick(uiAuthorSettingsProps)(state.uiStore);
 
   simulation.loadAuthorSettingsData(simulationStoreSettings);
