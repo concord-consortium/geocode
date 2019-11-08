@@ -24,6 +24,7 @@ import WidgetPanel from "./widget-panel";
 import screenfull from "screenfull";
 import ResizeObserver from "react-resize-observer";
 import AuthoringMenu from "./authoring-menu";
+import { getAuthorableSettings, updateStores } from "../stores/stores";
 
 interface IProps extends IBaseProps {}
 
@@ -414,6 +415,16 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               }
             </BottomBar>
           </Tabs>
+          { showOptionsDialog &&
+            <AuthoringMenu
+              options={getAuthorableSettings()}
+              expandOptionsDialog={expandOptionsDialog}
+              toggleShowOptions={this.toggleShowOptions}
+              saveCodeToLocalStorage={this.saveCodeToLocalStorage}
+              loadCodeFromLocalStorage={this.loadCodeFromLocalStorage}
+              handleUpdate={updateStores}
+            />
+          }
         </Row>
       </App>
     );

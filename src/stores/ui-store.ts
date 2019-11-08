@@ -1,4 +1,5 @@
 import { types } from "mobx-state-tree";
+import { UIAuthorSettings, UIAuthorSettingsProps } from "./stores";
 
 const UIStore = types.model("UI", {
   showOptionsDialog: true,
@@ -23,7 +24,16 @@ const UIStore = types.model("UI", {
   setShowOptionsDialog(show: boolean) {
     self.showOptionsDialog = show;
   }
-}));
+}))
+.actions((self) => {
+  return {
+    loadAuthorSettingsData: (data: UIAuthorSettings) => {
+      Object.keys(data).forEach((key: UIAuthorSettingsProps) => {
+        self[key] = data[key];
+      });
+    },
+  };
+});
 
 export type UIModelType = typeof UIStore.Type;
 

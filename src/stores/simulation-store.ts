@@ -3,6 +3,7 @@ import { IInterpreterController, makeInterpreterController } from "../utilities/
 // import { SimulationAuthoringOptions } from "../components/app";
 import { SerializedStateDataType } from "..";
 import { kVEIIndexInfo } from "../utilities/vei";
+import { SimulationAuthorSettings, SimulationAuthorSettingsProps } from "./stores";
 
 let _cityCounter = 0;
 const genCityId = () => `city_${_cityCounter++}`;
@@ -431,6 +432,17 @@ export const SimulationStore = types
           return (out);
         }
       }
+    };
+  })
+  .actions((self) => {
+    return {
+      loadAuthorSettingsData: (data: SimulationAuthorSettings) => {
+        Object.keys(data).forEach((key: SimulationAuthorSettingsProps) => {
+          // annoying `as any ... as any` is needed because we're mixing bool and non-bool props, which combine to never
+          // see https://github.com/microsoft/TypeScript/issues/31663
+          (self[key] as any) = data[key] as any;
+        });
+      },
     };
   })
   .views((self) => {
