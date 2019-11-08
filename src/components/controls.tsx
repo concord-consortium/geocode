@@ -3,7 +3,6 @@ import { BaseComponent, IBaseProps } from "./base";
 import { inject, observer } from "mobx-react";
 import RangeControl from "./range-control";
 import styled from "styled-components";
-import WindSpeedDirectionIcon from "../assets/controls-icons/wind-speed-direction.svg";
 import RunIcon from "../assets/blockly-icons/run.svg";
 import { Icon } from "./icon";
 import IconButton from "./icon-button";
@@ -12,6 +11,7 @@ import { HorizontalContainer, VerticalContainer, ValueContainer,
 import VEIWidget from "./vei-widget";
 import EjectedVolumeWidget from "./ejected-volume-widget";
 import ColumnHeightWidget from "./column-height-widget";
+import WindSpeedDirectionWidget from "./wind-speed-direction-widget";
 import { WidgetPanelTypes } from "../utilities/widget";
 
 const ControlsContainer = styled.div`
@@ -145,30 +145,25 @@ export class Controls extends BaseComponent<IProps, IState> {
                     max={360}
                     value={stagingWindDirection}
                     step={10}
-                    tickStep={90}
+                    tickMap={{
+                      0: "0",
+                      90: "90",
+                      180: "180",
+                      270: "270",
+                      360: "0",
+                    }}
                     width={this.props.width - 220}
                     onChange={this.changeWindDirection}
                   />
                 </HorizontalContainer>}
               </VerticalContainer>
-              <ValueContainer>
-                <IconContainer>
-                  <Icon
-                    width={50}
-                    height={50}
-                    fill={"black"}
-                  >
-                    <WindSpeedDirectionIcon />
-                  </Icon>
-                </IconContainer>
-                <ValueOutput>
-                  <HorizontalContainer alignItems="center" justifyContent="center">
-                  {showWindSpeed && <div>{stagingWindSpeed} m/s</div>}
-                  {(showWindSpeed && showWindDirection) && <ValueDivider/ >}
-                  {showWindDirection && <div>{stagingWindDirection} °</div>}
-                  </HorizontalContainer>
-                </ValueOutput>
-              </ValueContainer>
+              <WindSpeedDirectionWidget
+                type={WidgetPanelTypes.LEFT}
+                showWindDirection={showWindDirection}
+                showWindSpeed={showWindSpeed}
+                windDirection={stagingWindDirection}
+                windSpeed={stagingWindSpeed}
+              />
             </HorizontalContainer>
           </ControlContainer>}
           {showEjectedVolume && <ControlContainer>
