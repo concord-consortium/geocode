@@ -8,9 +8,13 @@ import { SidebarDataDisplay } from "./pixi-sidebar-data-display";
 import { ParticleSizeWidget } from "./pixi-particle-size-widget";
 import * as Color from "color";
 import { observer, inject } from "mobx-react";
+import VEIWidget from "./vei-widget";
+import { WidgetPanelTypes } from "../utilities/widget";
 
 const CanvDiv = styled.div`
-  border: 0px solid black; border-radius: 0px;
+  display: flex;
+  border: 0px solid black;
+  border-radius: 0px;
 `;
 
 const style = new PIXI.TextStyle({
@@ -95,14 +99,13 @@ export class MapSidebarComponent extends BaseComponent <IProps, IState> {
                   colHeight={colHeight}
                   location={{x: 190, y: 90}}
                 />
-                <SidebarDataDisplay
-                  vei={vei}
-                  colHeight={colHeight}
-                  mass={mass}
-                  particleSize={particleSize}
-                  location={{x: 275, y: 10}}
-                />
             </Stage>
+            <VEIWidget
+              type={WidgetPanelTypes.RIGHT}
+              vei={vei}
+              mass={mass}
+              columnHeight={colHeight}
+            />
         </CanvDiv>);
     }
 
