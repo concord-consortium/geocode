@@ -4,7 +4,6 @@ import { inject, observer } from "mobx-react";
 import RangeControl from "./range-control";
 import styled from "styled-components";
 import ColumnHeightIcon from "../assets/controls-icons/column-height.svg";
-import EjectedVolumeIcon from "../assets/controls-icons/ejected-volume.svg";
 import WindSpeedDirectionIcon from "../assets/controls-icons/wind-speed-direction.svg";
 import RunIcon from "../assets/blockly-icons/run.svg";
 import { Icon } from "./icon";
@@ -196,23 +195,10 @@ export class Controls extends BaseComponent<IProps, IState> {
                   />
                 </HorizontalContainer>
               </VerticalContainer>
-              <ValueContainer>
-                <IconContainer>
-                  <Icon
-                    width={50}
-                    height={50}
-                    fill={"black"}
-                  >
-                    <EjectedVolumeIcon />
-                  </Icon>
-                </IconContainer>
-                <ValueOutput>
-                  <div
-                    dangerouslySetInnerHTML={
-                      {__html: `10<sup>${Math.round(Math.log(stagingMass) / Math.LN10) - 12}</sup> km<sup>3</sup>`}
-                  } />
-                </ValueOutput>
-              </ValueContainer>
+              <EjectedVolumeWidget
+                type={WidgetPanelTypes.LEFT}
+                volumeInKilometersCubed={stagingMass / Math.pow(10, 12)}
+              />
             </HorizontalContainer>
           </ControlContainer>}
           {showColumnHeight && <ControlContainer>
