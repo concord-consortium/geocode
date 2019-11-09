@@ -21,6 +21,7 @@ import SyntaxHighlighter from "react-syntax-highlighter";
 import Controls from "./controls";
 import RunButtons from "./run-buttons";
 import { Footer, TabContent } from "./styled-containers";
+import WidgetPanel from "./widget-panel";
 import screenfull from "screenfull";
 import ResizeObserver from "react-resize-observer";
 
@@ -475,7 +476,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                   colHeight={ coloredColHeight }
                   particleSize={ coloredParticleSize }
                   width={ mapWidth }
-                  height={ height - 200 }
+                  height={ height - 190 }
                   cities={ cities }
                   volcanoLat={ volcanoLat }
                   volcanoLng={ volcanoLng }
@@ -512,15 +513,17 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                     />
                   </LineChart>
                 }
-                <MapSidebarComponent
-                  width={ mapWidth - 400 }
-                  height={ 100 }
+                <WidgetPanel
+                  showWindSpeed={showWindSpeed}
+                  showWindDirection={showWindDirection}
+                  showColumnHeight={showColumnHeight}
+                  showEjectedVolume={showEjectedVolume}
+                  showVEI={showVEI}
                   windSpeed={ windSpeed }
                   windDirection={ windDirection }
-                  colHeight={ colHeight }
+                  columnHeight={ colHeight }
                   vei={ vei }
                   mass={ mass }
-                  particleSize={ particleSize }
                 />
               </Simulation>
             </TabPanel>
@@ -537,7 +540,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                   colHeight={ coloredColHeight }
                   particleSize={ coloredParticleSize }
                   width={ mapWidth }
-                  height={ height - 200 }
+                  height={ height - 190 }
                   cities={ cities }
                   volcanoLat={ volcanoLat }
                   volcanoLng={ volcanoLng }
