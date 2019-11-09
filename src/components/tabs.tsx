@@ -177,9 +177,11 @@ const TabPanel = styled(UnstyledTabPanel).attrs({ selectedClassName: "selected" 
   border: none;
   width: 100%;
   background-color: ${props => props.tabcolor || "white"};
-  border-radius: ${props => props.rightpanel && "10px 10px 0 0" || "0 0 10px 10px"};
-  margin: 0;
+  border-radius: ${props => props.rightpanel && "10px 10px 10px 0" || "0 0 10px 10px"};
+  margin: 0px;
   padding: 0px;
+  overflow: hidden;
+  min-height: 0px;
   flex-grow: 1;
   &.selected {
     display: block;

@@ -20,7 +20,7 @@ import { js_beautify } from "js-beautify";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import Controls from "./controls";
 import RunButtons from "./run-buttons";
-
+import { Footer, TabContent } from "./styled-containers";
 import screenfull from "screenfull";
 import ResizeObserver from "react-resize-observer";
 
@@ -83,20 +83,12 @@ const Row = styled.div`
   flex-direction: row;
 `;
 
-const Content = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  height: 100%;
-  width: 100%;
-`;
-
 const BottomBar = styled.div`
   display: flex;
   width: 100%;
   flex-direction: row;
 `;
+
 const TabsContainer = styled.div`
   flex: 1 1 auto;
 `;
@@ -130,25 +122,13 @@ const Code = styled.div`
 const Syntax = styled(SyntaxHighlighter)`
   flex: 1 1 auto;
   border: 2px solid white;
-  margin: 3px;
-`;
-
-const Footer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  flex: 0 1 44px;
-`;
-
-const FullscreenContainer = styled.div`
-  flex: 0 1 33px;
+  margin: 0px;
 `;
 
 const FullscreenButton = styled(StyledButton)`
   width: 25px;
   height: 25px;
-  margin: 2px;
+  margin: 1px;
   padding: 0px;
   border: 0px solid hsl(0, 0%, 0%);
   background-repeat: no-repeat;
@@ -429,7 +409,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 forceRender={true}
                 tabcolor={this.getTabColor(SectionTypes.BLOCKS)}
               >
-                <Content>
+                <TabContent>
                   <BlocklyContainer
                     width={blocklyWidth}
                     height={blocklyHeight}
@@ -438,7 +418,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                     initialCodePath={codePath}
                     setBlocklyCode={setBlocklyCode} />
                   <RunButtons {...{run, stop, step, reset, running}} />
-                </Content>
+                </TabContent>
                 { showLog &&
                   <LogComponent
                     width={logWidth}
@@ -454,14 +434,14 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 width={`${tabWidth}px`}
                 tabcolor={this.getTabColor(SectionTypes.CODE)}
               >
-                <Content>
+                <TabContent>
                   <Code>
                     <Syntax>
                       {js_beautify(code.replace(/endStep\(\)\;\n/g, "").replace(/startStep\(\'.*\'\)\;\n/g, ""))}
                     </Syntax>
                   </Code>
                   <Footer />
-                </Content>
+                </TabContent>
               </TabPanel>
             }
             { showControls &&
@@ -639,14 +619,12 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                   </BottomTab>
                 </TabList>
               </TabsContainer>
-              <FullscreenContainer>
-                { (screenfull && screenfull.isFullscreen) &&
-                  <FullscreenButtonOpen onClick={this.toggleFullscreen} />
-                }
-                { (screenfull && !screenfull.isFullscreen) &&
-                  <FullscreenButtonClosed onClick={this.toggleFullscreen} />
-                }
-              </FullscreenContainer>
+              { (screenfull && screenfull.isFullscreen) &&
+                <FullscreenButtonOpen onClick={this.toggleFullscreen} />
+              }
+              { (screenfull && !screenfull.isFullscreen) &&
+                <FullscreenButtonClosed onClick={this.toggleFullscreen} />
+              }
             </BottomBar>
           </Tabs>
           { showOptionsDialog &&

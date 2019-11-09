@@ -9,26 +9,17 @@ import WindSpeedDirectionIcon from "../assets/controls-icons/wind-speed-directio
 import RunIcon from "../assets/blockly-icons/run.svg";
 import { Icon } from "./icon";
 import IconButton from "./icon-button";
-import { HorizontalContainer, VerticalContainer,
-         ValueContainer, ValueOutput, IconContainer } from "./styled-containers";
+import { HorizontalContainer, VerticalContainer, ValueContainer,
+         ValueOutput, IconContainer, Footer, TabContent } from "./styled-containers";
 import VEIWidget from "./vei-widget";
 import { WidgetPanelTypes } from "../utilities/widget";
-
-const StyledControls = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  height: 100%;
-  width: 100%;
-  padding: 3px;
-  box-sizing: border-box;
-`;
 
 const ControlsContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
+  overflow: auto;
+  min-height: 0px;
   justify-content: flex-start;
   align-items: center;
   box-sizing: border-box;
@@ -60,14 +51,6 @@ const ValueDivider = styled.div`
   height: 21px;
   margin: 0 5px 0 5px;
   background-color: #FFDBAC;
-`;
-
-const EruptContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  flex: 0 1 44px;
 `;
 
 const EruptButtons = styled.div`
@@ -137,7 +120,7 @@ export class Controls extends BaseComponent<IProps, IState> {
     } = this.props;
 
     return(
-      <StyledControls>
+      <TabContent>
         <ControlsContainer>
           {(showWindSpeed || showWindDirection) && <ControlContainer
                                                       height={showWindSpeed && showWindDirection ? 172 : 100}>
@@ -294,7 +277,7 @@ export class Controls extends BaseComponent<IProps, IState> {
             <span> reflected in your Blocks/Code.</span>
           </NoteLabel>
         </ControlsContainer>
-        <EruptContainer>
+        <Footer>
           <EruptButtons>
             <IconButton
               onClick={this.erupt}
@@ -308,8 +291,8 @@ export class Controls extends BaseComponent<IProps, IState> {
               height={26}
             />
           </EruptButtons>
-        </EruptContainer>
-      </StyledControls>
+        </Footer>
+      </TabContent>
     );
   }
 

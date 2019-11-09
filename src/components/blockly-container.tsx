@@ -18,7 +18,6 @@ interface IState {}
 const Wrapper = styled.div`
   flex: 1 1 auto;
   justify-content: flex-start;
-  margin: 3px;
 `;
 const StartBlocks = styled.div``;
 interface WorkspaceProps {

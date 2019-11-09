@@ -21,7 +21,7 @@ const ButtonContainer = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  flex: 0 1 44px;
+  flex: 0 0 44px;
 `;
 
 const RunButton = (props: IProps) => {
