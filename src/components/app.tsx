@@ -495,24 +495,6 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                   showCrossSection={false}
                   hasErupted={ hasErupted }
                 />
-                { showChart &&
-                  <LineChart width={mapWidth} height={200} data={plotData.chartData}>
-                    <Line type="linear" dataKey={plotData.yAxis} stroke="red" strokeWidth={2} />
-                    <CartesianGrid stroke="#ddd" strokeDasharray="5 5" />
-                    <XAxis
-                      type="number"
-                      domain={[0, "auto"]}
-                      allowDecimals={false}
-                      dataKey={plotData.xAxis}
-                      label={{ value: plotData.xAxis, offset: -5, position: "insideBottom" }}
-                    />
-                    <YAxis
-                      type="number"
-                      domain={[0, "auto"]}
-                      label={{ value: plotData.yAxis, angle: -90, offset: 12, position: "insideBottomLeft" }}
-                    />
-                  </LineChart>
-                }
                 <WidgetPanel
                   showWindSpeed={showWindSpeed}
                   showWindDirection={showWindDirection}
@@ -584,7 +566,26 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               tabcolor={this.getRightTabColor(RightSectionTypes.DATA)}
               rightpanel={"true"}
             >
-              <div/>
+              <div>
+              { showChart &&
+                <LineChart width={mapWidth} height={200} data={plotData.chartData}>
+                  <Line type="linear" dataKey={plotData.yAxis} stroke="red" strokeWidth={2} />
+                  <CartesianGrid stroke="#ddd" strokeDasharray="5 5" />
+                  <XAxis
+                    type="number"
+                    domain={[0, "auto"]}
+                    allowDecimals={false}
+                    dataKey={plotData.xAxis}
+                    label={{ value: plotData.xAxis, offset: -5, position: "insideBottom" }}
+                  />
+                  <YAxis
+                    type="number"
+                    domain={[0, "auto"]}
+                    label={{ value: plotData.yAxis, angle: -90, offset: 12, position: "insideBottomLeft" }}
+                  />
+                </LineChart>
+              }
+              </div>
             </TabPanel>
             <RightTabBack
               width={tabWidth}
@@ -642,18 +643,12 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                   options={Object.keys(BlocklyAuthoring.toolbox)} key="toolbox" />,
                 <DatSelect path="initialCodeTitle" label="Initial code"
                   options={Object.keys(BlocklyAuthoring.code)} key="code" />,
-
                 <DatButton label="Save current code to local storage"
                   onClick={this.saveCodeToLocalStorage}
                   key="generate" />,
                 <DatButton label="Load code from local storage"
                   onClick={this.loadCodeFromLocalStorage}
                   key="generate" />,
-
-                <DatBoolean path="showCrossSection" label="Show cross section?" key="showCrossSection" />,
-                <DatBoolean path="showChart" label="Show chart?"
-                  key="showChart" />,
-
                 <DatBoolean path="showBlocks" label="Show blocks?" key="showBlocks" />,
                 <DatBoolean path="showCode" label="Show code?" key="showCode" />,
                 <DatBoolean path="showControls" label="Show controls?" key="showControls" />,
@@ -679,10 +674,9 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                     path="initialVEI" label="Initial VEI" key="initialVEI"
                     min={1} max={8} step={1}/>
                 </DatFolder>,
-
-                <DatBoolean path="showLog" label="Show Log?" key="showLog" />,
-
+                <DatBoolean path="showCrossSection" label="Show cross section?" key="showCrossSection" />,
                 <DatBoolean path="showChart" label="Show chart?" key="showChart" />,
+                <DatBoolean path="showLog" label="Show Log?" key="showLog" />,
                 <DatBoolean path="showSidebar" label="Show sidebar?" key="showSidebar" />,
                 // submit button. Should remain at bottom
                 <DatButton
