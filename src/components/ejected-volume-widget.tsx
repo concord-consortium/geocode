@@ -2,10 +2,8 @@ import * as React from "react";
 import { PureComponent } from "react";
 import styled from "styled-components";
 import { Icon } from "./icon";
-import BoxBackBlueIcon from "../assets/widget-icons/ejected-volume-box-back-blue.svg";
-import BoxBackOrangeIcon from "../assets/widget-icons/ejected-volume-box-back-orange.svg";
-import BoxFrontBlueIcon from "../assets/widget-icons/ejected-volume-box-front-blue.svg";
-import BoxFrontOrangeIcon from "../assets/widget-icons/ejected-volume-box-front-orange.svg";
+import BoxBackIcon from "../assets/widget-icons/ejected-volume-box-back.svg";
+import BoxFrontIcon from "../assets/widget-icons/ejected-volume-box-front.svg";
 import BoxTopIcon from "../assets/widget-icons/ejected-volume-box-top.svg";
 import { ValueContainer, ValueOutput, IconContainer } from "./styled-containers";
 import { WidgetPanelTypes, kWidgetPanelInfo } from "../utilities/widget";
@@ -78,11 +76,9 @@ export default class EjectedVolumeWidget extends PureComponent<IProps, IState> {
           <AbsoluteIcon
             width={54}
             height={48}
-            fill={"black"}
+            fill={kWidgetPanelInfo[type].highlightColor}
           >
-            { type === WidgetPanelTypes.LEFT
-              ? <BoxBackOrangeIcon/>
-              : <BoxBackBlueIcon/> }
+            <BoxBackIcon/>
           </AbsoluteIcon>
           <BoxLeft height={boxHeight} />
           <BoxRight height={boxHeight} />
@@ -97,11 +93,9 @@ export default class EjectedVolumeWidget extends PureComponent<IProps, IState> {
           <AbsoluteIcon
             width={54}
             height={48}
-            fill={"black"}
+            fill={kWidgetPanelInfo[type].highlightColor}
           >
-            { type === WidgetPanelTypes.LEFT
-              ? <BoxFrontOrangeIcon/>
-              : <BoxFrontBlueIcon/> }
+            <BoxFrontIcon/>
           </AbsoluteIcon>
         </RelativeIconContainer>
         <ValueOutput>
