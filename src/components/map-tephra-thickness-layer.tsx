@@ -34,13 +34,13 @@ export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
     // It will however update if given a new unique key.
     private keyval: number = 0;
 
-    private gradient: Color[] = [new Color("rgb(66, 245, 239)"),
-                                new Color("rgb(66, 245, 141)"),
-                                new Color("rgb(117, 245, 66)"),
-                                new Color("rgb(209, 245, 66)"),
-                                new Color("rgb(245, 209, 66)"),
-                                new Color("rgb(245, 126, 66)"),
-                                new Color("rgb(245, 81, 66)"),
+    private gradient: Color[] = [new Color("rgb(238, 226, 112)"),
+                                new Color("rgb(255, 191, 78)"),
+                                new Color("rgb(255, 117, 75)"),
+                                new Color("rgb(233, 78, 131)"),
+                                new Color("rgb(174, 78, 211)"),
+                                new Color("rgb(123, 88, 174)"),
+                                new Color("rgb(81, 90, 148)"),
                                 ];
 
     public render() {
