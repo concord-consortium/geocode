@@ -8,8 +8,8 @@ const ScaleContainer = styled.div`
   justify-content: center;
   align-items: center;
   position: absolute;
-  top: 6px;
-  right: 30px;
+  top: 4px;
+  right: 28px;
 `;
 
 const ScaleText = styled.div`

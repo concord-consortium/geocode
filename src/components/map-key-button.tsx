@@ -17,7 +17,7 @@ const KeyButtonContainer = styled.div`
   border-radius: 5px;
   background-color: white;
   border: solid 2px white;
-  margin: 0 4px 0 4px;
+  margin: 0;
   box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.35);
   &:hover {
     background-color: #cee6c9;
