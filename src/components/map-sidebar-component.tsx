@@ -10,6 +10,7 @@ import { observer, inject } from "mobx-react";
 import VEIWidget from "./vei-widget";
 import EjectedVolumeWidget from "./ejected-volume-widget";
 import ColumnHeightWidget from "./column-height-widget";
+import WindSpeedDirectionWidget from "./wind-speed-direction-widget";
 import { WidgetPanelTypes } from "../utilities/widget";
 
 const CanvDiv = styled.div`
@@ -91,6 +92,13 @@ export class MapSidebarComponent extends BaseComponent <IProps, IState> {
                   location={{x: 70, y: 60}}
                 />
             </Stage>
+            <WindSpeedDirectionWidget
+                type={WidgetPanelTypes.RIGHT}
+                showWindDirection={true}
+                showWindSpeed={true}
+                windDirection={windDirection}
+                windSpeed={windSpeed}
+            />
             <EjectedVolumeWidget
               type={WidgetPanelTypes.RIGHT}
               volumeInKilometersCubed={mass / Math.pow(10, 12)}
