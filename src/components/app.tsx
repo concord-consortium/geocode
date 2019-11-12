@@ -278,14 +278,14 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                     initialCodePath={codePath}
                     setBlocklyCode={setBlocklyCode} />
                   <RunButtons {...{run, stop, step, reset, running}} />
+                  { showLog &&
+                    <LogComponent
+                      width={logWidth}
+                      height={logHeight}
+                      clear={clearLog}
+                    />
+                  }
                 </TabContent>
-                { showLog &&
-                  <LogComponent
-                    width={logWidth}
-                    height={logHeight}
-                    clear={clearLog}
-                  />
-                }
               </TabPanel>
             }
             { showCode &&
