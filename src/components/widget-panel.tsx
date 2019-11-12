@@ -1,5 +1,6 @@
 import * as React from "react";
 import { PureComponent } from "react";
+import ColumnHeightWidget from "./column-height-widget";
 import VEIWidget from "./vei-widget";
 import EjectedVolumeWidget from "./ejected-volume-widget";
 import { WidgetPanelTypes } from "../utilities/widget";
@@ -59,7 +60,7 @@ export default class WidgetPanel extends PureComponent<IProps, IState> {
   };
 
   public render() {
-    const { showVEI, showEjectedVolume, vei, mass, columnHeight } = this.props;
+    const { showVEI, showEjectedVolume, showColumnHeight, vei, mass, columnHeight } = this.props;
     return (
       <WidgetBar>
         { showVEI && <WidgetContainer>
@@ -77,6 +78,13 @@ export default class WidgetPanel extends PureComponent<IProps, IState> {
             type={WidgetPanelTypes.RIGHT}
             volumeInKilometersCubed={mass / Math.pow(10, 12)}
           />
+        </WidgetContainer> }
+        { showColumnHeight && <WidgetContainer>
+          <WidgetTitle>Column Height</WidgetTitle>
+            <ColumnHeightWidget
+              type={WidgetPanelTypes.RIGHT}
+              columnHeightInKilometers={columnHeight / 1000}
+            />
         </WidgetContainer> }
       </WidgetBar>
     );

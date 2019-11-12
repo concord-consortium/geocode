@@ -3,13 +3,13 @@ import styled from "styled-components";
 import { BaseComponent, IBaseProps } from "./base";
 import { Stage, Text } from "@inlet/react-pixi";
 import { WindWidget } from "./pixi-wind-widget";
-import { ColumnHeightWidget } from "./pixi-column-height-widget";
 import { SidebarDataDisplay } from "./pixi-sidebar-data-display";
 import { ParticleSizeWidget } from "./pixi-particle-size-widget";
 import * as Color from "color";
 import { observer, inject } from "mobx-react";
 import VEIWidget from "./vei-widget";
 import EjectedVolumeWidget from "./ejected-volume-widget";
+import ColumnHeightWidget from "./column-height-widget";
 import { WidgetPanelTypes } from "../utilities/widget";
 
 const CanvDiv = styled.div`
@@ -90,21 +90,14 @@ export class MapSidebarComponent extends BaseComponent <IProps, IState> {
                   windSpeed={windSpeed}
                   location={{x: 70, y: 60}}
                 />
-                <Text
-                  x={180}
-                  y={15}
-                  style={style}
-                  anchor={(0.5)}
-                  text="Column Height"
-                />
-                <ColumnHeightWidget
-                  colHeight={colHeight}
-                  location={{x: 190, y: 90}}
-                />
             </Stage>
             <EjectedVolumeWidget
               type={WidgetPanelTypes.RIGHT}
               volumeInKilometersCubed={mass / Math.pow(10, 12)}
+            />
+            <ColumnHeightWidget
+              type={WidgetPanelTypes.RIGHT}
+              columnHeightInKilometers={colHeight / 1000}
             />
             <VEIWidget
               type={WidgetPanelTypes.RIGHT}

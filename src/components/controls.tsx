@@ -3,7 +3,6 @@ import { BaseComponent, IBaseProps } from "./base";
 import { inject, observer } from "mobx-react";
 import RangeControl from "./range-control";
 import styled from "styled-components";
-import ColumnHeightIcon from "../assets/controls-icons/column-height.svg";
 import WindSpeedDirectionIcon from "../assets/controls-icons/wind-speed-direction.svg";
 import RunIcon from "../assets/blockly-icons/run.svg";
 import { Icon } from "./icon";
@@ -12,6 +11,7 @@ import { HorizontalContainer, VerticalContainer, ValueContainer,
          ValueOutput, IconContainer, Footer, TabContent } from "./styled-containers";
 import VEIWidget from "./vei-widget";
 import EjectedVolumeWidget from "./ejected-volume-widget";
+import ColumnHeightWidget from "./column-height-widget";
 import { WidgetPanelTypes } from "../utilities/widget";
 
 const ControlsContainer = styled.div`
@@ -218,20 +218,10 @@ export class Controls extends BaseComponent<IProps, IState> {
                   />
                 </HorizontalContainer>
               </VerticalContainer>
-              <ValueContainer>
-                <IconContainer>
-                  <Icon
-                    width={36}
-                    height={40}
-                    fill={"black"}
-                  >
-                    <ColumnHeightIcon/>
-                  </Icon>
-                </IconContainer>
-                <ValueOutput>
-                  {stagingColHeight / 1000} km
-                </ValueOutput>
-              </ValueContainer>
+              <ColumnHeightWidget
+                type={WidgetPanelTypes.LEFT}
+                columnHeightInKilometers={stagingColHeight / 1000}
+              />
             </HorizontalContainer>
           </ControlContainer>}
           {showVEI && <ControlContainer>
