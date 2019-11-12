@@ -11,6 +11,7 @@ import IconButton from "./icon-button";
 import { HorizontalContainer, VerticalContainer, ValueContainer,
          ValueOutput, IconContainer, Footer, TabContent } from "./styled-containers";
 import VEIWidget from "./vei-widget";
+import EjectedVolumeWidget from "./ejected-volume-widget";
 import { WidgetPanelTypes } from "../utilities/widget";
 
 const ControlsContainer = styled.div`
