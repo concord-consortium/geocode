@@ -9,6 +9,7 @@ import { ParticleSizeWidget } from "./pixi-particle-size-widget";
 import * as Color from "color";
 import { observer, inject } from "mobx-react";
 import VEIWidget from "./vei-widget";
+import EjectedVolumeWidget from "./ejected-volume-widget";
 import { WidgetPanelTypes } from "../utilities/widget";
 
 const CanvDiv = styled.div`
@@ -101,6 +102,10 @@ export class MapSidebarComponent extends BaseComponent <IProps, IState> {
                   location={{x: 190, y: 90}}
                 />
             </Stage>
+            <EjectedVolumeWidget
+              type={WidgetPanelTypes.RIGHT}
+              volumeInKilometersCubed={mass / Math.pow(10, 12)}
+            />
             <VEIWidget
               type={WidgetPanelTypes.RIGHT}
               vei={vei}

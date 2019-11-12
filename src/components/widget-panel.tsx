@@ -1,12 +1,13 @@
 import * as React from "react";
 import { PureComponent } from "react";
 import VEIWidget from "./vei-widget";
+import EjectedVolumeWidget from "./ejected-volume-widget";
 import { WidgetPanelTypes } from "../utilities/widget";
 import styled from "styled-components";
 
 const WidgetBar = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   width: 100%;
@@ -58,7 +59,7 @@ export default class WidgetPanel extends PureComponent<IProps, IState> {
   };
 
   public render() {
-    const { showVEI, vei, mass, columnHeight } = this.props;
+    const { showVEI, showEjectedVolume, vei, mass, columnHeight } = this.props;
     return (
       <WidgetBar>
         { showVEI && <WidgetContainer>
@@ -68,6 +69,13 @@ export default class WidgetPanel extends PureComponent<IProps, IState> {
             vei={vei}
             mass={mass}
             columnHeight={columnHeight}
+          />
+        </WidgetContainer> }
+        { showEjectedVolume && <WidgetContainer>
+          <WidgetTitle>Ejected Volume</WidgetTitle>
+          <EjectedVolumeWidget
+            type={WidgetPanelTypes.RIGHT}
+            volumeInKilometersCubed={mass / Math.pow(10, 12)}
           />
         </WidgetContainer> }
       </WidgetBar>
