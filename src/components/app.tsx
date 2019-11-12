@@ -4,7 +4,6 @@ import { LineChart, Line, CartesianGrid, XAxis, YAxis } from "recharts";
 import { BaseComponent, IBaseProps } from "./base";
 import { MapComponent } from "./map-component";
 import { LogComponent } from "./log-component";
-import { MapSidebarComponent } from "./map-sidebar-component";
 import { CrossSectionComponent } from "./cross-section-component";
 import * as Maps from "./../assets/maps/maps.json";
 import * as Scenarios from "./../assets/maps/scenarios.json";

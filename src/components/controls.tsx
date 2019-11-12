@@ -4,10 +4,8 @@ import { inject, observer } from "mobx-react";
 import RangeControl from "./range-control";
 import styled from "styled-components";
 import RunIcon from "../assets/blockly-icons/run.svg";
-import { Icon } from "./icon";
 import IconButton from "./icon-button";
-import { HorizontalContainer, VerticalContainer, ValueContainer,
-         ValueOutput, IconContainer, Footer, TabContent } from "./styled-containers";
+import { HorizontalContainer, VerticalContainer, Footer, TabContent } from "./styled-containers";
 import VEIWidget from "./vei-widget";
 import EjectedVolumeWidget from "./ejected-volume-widget";
 import ColumnHeightWidget from "./column-height-widget";
@@ -44,13 +42,6 @@ const ControlContainer = styled.div`
 
 const ControlLabel = styled.label`
   margin-top: 6px;
-`;
-
-const ValueDivider = styled.div`
-  width: 1px;
-  height: 21px;
-  margin: 0 5px 0 5px;
-  background-color: #FFDBAC;
 `;
 
 const EruptButtons = styled.div`

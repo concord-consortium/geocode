@@ -87,7 +87,7 @@ export default class WindSpeedDirectionWidget extends PureComponent<IProps, ISta
   public render() {
     const { type, showWindSpeed, showWindDirection, windSpeed, windDirection } = this.props;
     const maxWindSpeed = 30;
-    const arrowPos = 5;
+    const arrowPos = 6;
     const arrowTailPos = -28;
     const arrowHeadOffset = 5;
     const maxArrowLength = 10;
