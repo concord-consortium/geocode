@@ -235,13 +235,11 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           onCrossSectionClick={this.stores.simulation.crossSectionClick}
           onReCenterClick={this.onRecenterClick}
         />
-          { this.state.showKey
-            ? <KeyButton onClick={this.onKeyClick}/>
-            : <TephraLegendComponent onClick={this.onTephraClick}/>
-          }
-          <CompassComponent/>
-          <ScaleComponent width={44} label={"15 km"}/>
-
+        { this.state.showKey
+          ? <KeyButton onClick={this.onKeyClick}/>
+          : <TephraLegendComponent onClick={this.onTephraClick}/>
+        }
+        <CompassComponent/>
       </CanvDiv>
     );
   }
