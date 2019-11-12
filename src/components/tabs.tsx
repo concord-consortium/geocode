@@ -56,19 +56,19 @@ type RightTabInfo = {
 const kRightTabInfo: RightTabInfo = {
   conditions: {
     name: "Conditions",
-    index: 0,
+    index: -1,
     backgroundColor: "#b7dcad",
     hoverBackgroundColor: "#add1a2",
   },
   crossSection: {
     name: "Cross-Section",
-    index: 1,
+    index: -1,
     backgroundColor: "#cee6c9",
     hoverBackgroundColor: "#c3dabd",
   },
   data: {
     name: "Data",
-    index: 2,
+    index: -1,
     backgroundColor: "#e6f2e4",
     hoverBackgroundColor: "#dae6d7",
   },

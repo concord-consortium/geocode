@@ -47,9 +47,9 @@ const uiAuthorSettingsProps = tuple(
   "showEjectedVolume",
   "showColumnHeight",
   "showVEI",
-  "showChart",
-  "showSidebar",
+  "showConditions",
   "showCrossSection",
+  "showData",
   "showLog",
 );
 
