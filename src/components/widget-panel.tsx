@@ -61,11 +61,11 @@ export default class WidgetPanel extends PureComponent<IProps, IState> {
   };
 
   public render() {
-    const { showVEI, showEjectedVolume, showColumnHeight, showWindSpeed,
+    const { showVEI, showEjectedVolume, showColumnHeight, showWindSpeed, showWindDirection,
             vei, mass, columnHeight, windDirection, windSpeed } = this.props;
     return (
       <WidgetBar>
-        { showWindSpeed && <WidgetContainer>
+        { (showWindSpeed || showWindDirection) && <WidgetContainer>
           <WidgetTitle>Wind Speed/Dir.</WidgetTitle>
             <WindSpeedDirectionWidget
               type={WidgetPanelTypes.RIGHT}
