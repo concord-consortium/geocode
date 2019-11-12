@@ -40,6 +40,40 @@ const kTabInfo: TabInfo = {
   },
 };
 
+enum RightSectionTypes {
+  CONDITIONS = "conditions",
+  CROSS_SECTION = "crossSection",
+  DATA = "data"
+}
+type RightTabInfo = {
+  [tab in RightSectionTypes]: {
+    name: string;
+    index: number;
+    backgroundColor: string;
+    hoverBackgroundColor: string;
+  }
+};
+const kRightTabInfo: RightTabInfo = {
+  conditions: {
+    name: "Conditions",
+    index: 0,
+    backgroundColor: "#b7dcad",
+    hoverBackgroundColor: "#add1a2",
+  },
+  crossSection: {
+    name: "Cross-Section",
+    index: 1,
+    backgroundColor: "#cee6c9",
+    hoverBackgroundColor: "#c3dabd",
+  },
+  data: {
+    name: "Data",
+    index: 2,
+    backgroundColor: "#e6f2e4",
+    hoverBackgroundColor: "#dae6d7",
+  },
+};
+
 interface TabBackProps {
   width: number;
   backgroundcolor: string;
@@ -48,9 +82,18 @@ const TabBack = styled.div`
   height: 15px;
   background-color: ${(p: TabBackProps) => p.backgroundcolor};
   position: absolute;
-  width: ${(p: TabBackProps) => `${p.width}px`};
+  width: 50%;
   top: 16px;
-  left: 4px;
+  left: 0px;
+`;
+
+const RightTabBack = styled.div`
+  height: 15px;
+  background-color: ${(p: TabBackProps) => p.backgroundcolor};
+  position: absolute;
+  width: ${(p: TabBackProps) => `${p.width - 33}px`};
+  bottom: 24px;
+  right: 33px;
 `;
 
 const Tabs = styled(UnstyledTabs)`
@@ -58,7 +101,8 @@ const Tabs = styled(UnstyledTabs)`
   background: white;
   display: flex;
   flex-direction: column;
-  margin: 0 0 0 2px;
+  margin:0;
+  width: 50%;
 `;
 
 const TabList = styled(UnstyledTabList)`
@@ -66,7 +110,7 @@ const TabList = styled(UnstyledTabList)`
   justify-content: space-between;
   flex-wrap: wrap;
   padding: 0;
-  margin: 2px 0 0 0;
+  margin: 0;
 `;
 
 interface TabProps {
@@ -108,33 +152,46 @@ const Tab = styled(UnstyledTab)<TabProps>`
     cursor: not-allowed;
   }
 `;
+const BottomTab = styled(Tab)<TabProps>`
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border-top-left-radius: ${props => props.rightofselected === "true" ? "10px" : "0px"};
+  border-top-right-radius: ${props => props.leftofselected === "true" ? "10px" : "0px"};
+  &:first-child {
+    border-bottom-left-radius 10px;
+    border-top-left-radius 0px;
+  }
+  &:last-child {
+    border-bottom-right-radius 10px;
+    border-top-right-radius 0px;
+  }
+`;
 
-const TabPanel = styled(UnstyledTabPanel).attrs({ selectedClassName: "selected" })`
+interface TabPanelProps {
+  tabcolor: string;
+  width: string;
+  rightpanel?: string;
+}
+const TabPanel = styled(UnstyledTabPanel).attrs({ selectedClassName: "selected" })<TabPanelProps>`
   display: none;
-  padding: 0px 0;
   border: none;
-  border-radius: 0 0 10px 10px;
-  margin: 0 0 2px 0;
+  width: 100%;
+  background-color: ${props => props.tabcolor || "white"};
+  border-radius: ${props => props.rightpanel && "10px 10px 10px 0" || "0 0 10px 10px"};
+  margin: 0px;
+  padding: 0px;
+  overflow: hidden;
+  min-height: 0px;
   flex-grow: 1;
   &.selected {
     display: block;
   }
 `;
 
-interface FixWidthTabPanelProps {
-  tabcolor: string;
-  width: string;
-}
-const FixWidthTabPanel = styled(TabPanel)<FixWidthTabPanelProps>`
-  width: ${props => props.width || "300px"};
-  background-color: ${props => props.tabcolor || "white"};
-  padding: 3px;
-`;
-
 (Tab as any).tabsRole = "Tab";
 (Tabs as any).tabsRole = "Tabs";
 (TabPanel as any).tabsRole = "TabPanel";
-(FixWidthTabPanel as any).tabsRole = "TabPanel";
 (TabList as any).tabsRole = "TabList";
 
-export { SectionTypes, TabInfo, kTabInfo, TabBack, Tab, TabList, Tabs, TabPanel, FixWidthTabPanel };
+export { SectionTypes, TabInfo, kTabInfo, TabBack, Tab, TabList, Tabs, TabPanel,
+         RightSectionTypes, kRightTabInfo, RightTabBack, BottomTab };

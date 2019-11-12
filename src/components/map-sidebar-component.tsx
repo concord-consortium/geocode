@@ -15,6 +15,7 @@ const CanvDiv = styled.div`
   display: flex;
   border: 0px solid black;
   border-radius: 0px;
+  margin: 10px 28px 10px 28px;
 `;
 
 const style = new PIXI.TextStyle({

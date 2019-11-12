@@ -11,6 +11,7 @@ const IconButtonContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  box-sizing: border-box;
   width: 83px;
   height: 34px;
   border-radius: 5px;

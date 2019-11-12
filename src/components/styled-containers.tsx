@@ -61,3 +61,22 @@ export const IconContainer = styled.div`
   height: 60px;
   margin: 0 10px 0 10px;
 `;
+
+export const TabContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  height: 100%;
+  width: 100%;
+  padding: 3px;
+  box-sizing: border-box;
+`;
+
+export const Footer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  flex: 0 0 44px;
+`;
