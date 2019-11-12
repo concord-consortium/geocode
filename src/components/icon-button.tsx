@@ -62,14 +62,15 @@ export default class IconButton extends PureComponent<IProps, IState> {
     const { onClick, disabled, children, label, hoverColor, activeColor, fill, width, height } = this.props;
     return (
       <IconButtonContainer onClick={onClick} hoverColor={hoverColor} activeColor={activeColor}>
-        <Icon
-          width={width}
-          height={height}
-          fill={fill}
-          disabled={disabled}
-        >
-          {children}
-        </Icon>
+        { children && <Icon
+            width={width}
+            height={height}
+            fill={fill}
+            disabled={disabled}
+          >
+            {children}
+          </Icon>
+        }
         <IconButtonText disabled={disabled}>{label}</IconButtonText>
       </IconButtonContainer>
     );
