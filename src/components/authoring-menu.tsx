@@ -29,9 +29,18 @@ const AuthoringMenu: React.SFC<IProps> = (props) => {
           <DatSelect path="simulation.initialCodeTitle" label="Initial code"
             options={Object.keys(BlocklyAuthoring.code)} key="code" />,
 
-          <DatBoolean path="uiStore.showBlocks" label="Show blocks?" key="showBlocks" />,
-          <DatBoolean path="uiStore.showCode" label="Show code?" key="showCode" />,
-          <DatBoolean path="uiStore.showControls" label="Show controls?" key="showControls" />,
+          <DatFolder title="Left Tabs" key="leftTabsFolder" closed={false}>
+            <DatBoolean path="uiStore.showBlocks" label="Show blocks?" key="showBlocks" />
+            <DatBoolean path="uiStore.showCode" label="Show code?" key="showCode" />
+            <DatBoolean path="uiStore.showControls" label="Show controls?" key="showControls" />
+          </DatFolder>,
+
+          <DatFolder title="Right Tabs" key="rightTabsFolder" closed={false}>
+          <DatBoolean path="uiStore.showConditions" label="Show conditions?" key="showConditions" />
+            <DatBoolean path="uiStore.showCrossSection" label="Show cross section?" key="showCrossSection" />
+            <DatBoolean path="uiStore.showData" label="Show data?" key="showData" />
+          </DatFolder>,
+
           <DatFolder title="Controls Options" key="controlsFolder" closed={true}>
             <DatBoolean path="uiStore.showWindSpeed" label="Show Wind Speed?" key="showWindSpeed"/>
             <DatBoolean path="uiStore.showWindDirection" label="Show Wind Direction?" key="showWindDirection" />
@@ -41,10 +50,6 @@ const AuthoringMenu: React.SFC<IProps> = (props) => {
           </DatFolder>,
 
           <DatBoolean path="uiStore.showLog" label="Show Log?" key="showLog" />,
-
-          <DatBoolean path="uiStore.showChart" label="Show chart?" key="showChart" />,
-          <DatBoolean path="uiStore.showSidebar" label="Show sidebar?" key="showSidebar" />,
-          <DatBoolean path="uiStore.showCrossSection" label="Show cross section?" key="showCrossSection" />,
 
           <DatButton label="Save current code to local storage"
             onClick={props.saveCodeToLocalStorage}

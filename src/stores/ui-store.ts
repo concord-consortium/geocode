@@ -3,15 +3,16 @@ import { UIAuthorSettings, UIAuthorSettingsProps } from "./stores";
 
 const UIStore = types.model("UI", {
   showOptionsDialog: true,
-  // tabs
+  // left tabs
   showBlocks: true,
   showCode: true,
   showControls: true,
+  // right tabs
+  showConditions: true,
+  showCrossSection: true,
+  showData: true,
   // other ui
   showLog: false,
-  showCrossSection: false,
-  showChart: false,
-  showSidebar: false,
   // slider controls
   showWindSpeed: true,
   showWindDirection: true,

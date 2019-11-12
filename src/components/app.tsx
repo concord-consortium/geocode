@@ -133,8 +133,6 @@ export class AppComponent extends BaseComponent<IProps, IState> {
   public constructor(props: IProps) {
     super(props);
 
-    const { simulation, uiStore } = this.stores;
-
     this.handleTabSelect = this.handleTabSelect.bind(this);
     this.handleRightTabSelect = this.handleRightTabSelect.bind(this);
 
@@ -174,9 +172,9 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         showLog,
         showCode,
         showControls,
+        showConditions,
         showCrossSection,
-        showChart,
-        showSidebar,
+        showData,
       }
     } = this.stores;
 
@@ -211,9 +209,17 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     if (showBlocks)   { enabledTabTypes.push(SectionTypes.BLOCKS); }
     if (showCode)     { enabledTabTypes.push(SectionTypes.CODE); }
     if (showControls) { enabledTabTypes.push(SectionTypes.CONTROLS); }
-    const enabledRightTabTypes = [RightSectionTypes.CONDITIONS,
-                                  RightSectionTypes.CROSS_SECTION,
-                                  RightSectionTypes.DATA];
+
+    kRightTabInfo.conditions.index = showConditions ? 0 : -1;
+    kRightTabInfo.crossSection.index = showCrossSection ? kRightTabInfo.conditions.index + 1 : -1;
+    kRightTabInfo.data.index = showData
+      ? (showCrossSection ? kRightTabInfo.conditions.index + 1 : kRightTabInfo.conditions.index + 1)
+      : -1;
+    const enabledRightTabTypes = [];
+    if (showConditions)   { enabledRightTabTypes.push(RightSectionTypes.CONDITIONS); }
+    if (showCrossSection) { enabledRightTabTypes.push(RightSectionTypes.CROSS_SECTION); }
+    if (showData)         { enabledRightTabTypes.push(RightSectionTypes.DATA); }
+
     const currentTabType = enabledTabTypes[tabIndex || 0];
     const currentRightTabType = enabledRightTabTypes[rightTabIndex || 0];
 
@@ -316,61 +322,65 @@ export class AppComponent extends BaseComponent<IProps, IState> {
           </Tabs>
 
           <Tabs selectedIndex={rightTabIndex} onSelect={this.handleRightTabSelect}>
-            <TabPanel
-              width={`${tabWidth}px`}
-              tabcolor={this.getRightTabColor(RightSectionTypes.CONDITIONS)}
-              rightpanel={"true"}
-            >
-              <Simulation width={mapWidth} backgroundColor={this.getRightTabColor(RightSectionTypes.CONDITIONS)}>
-                <MapComponent
-                  width={ mapWidth }
-                  height={ height - 190 }
-                />
-                <WidgetPanel />
-              </Simulation>
-            </TabPanel>
-            <TabPanel
-              width={`${tabWidth}px`}
-              tabcolor={this.getRightTabColor(RightSectionTypes.CROSS_SECTION)}
-              rightpanel={"true"}
-            >
-              <Simulation width={mapWidth} backgroundColor={this.getRightTabColor(RightSectionTypes.CROSS_SECTION)}>
-                <MapComponent
-                  width={ mapWidth }
-                  height={ height - 190 }
-                />
-                <CrossSectionComponent
-                  width={ mapWidth }
-                  height={ 100 }
-                />
-              </Simulation>
-            </TabPanel>
-            <TabPanel
-              width={`${tabWidth}px`}
-              tabcolor={this.getRightTabColor(RightSectionTypes.DATA)}
-              rightpanel={"true"}
-            >
-              <div>
-              { showChart &&
-                <LineChart width={mapWidth} height={200} data={plotData.chartData}>
-                  <Line type="linear" dataKey={plotData.yAxis} stroke="red" strokeWidth={2} />
-                  <CartesianGrid stroke="#ddd" strokeDasharray="5 5" />
-                  <XAxis
-                    type="number"
-                    domain={[0, "auto"]}
-                    allowDecimals={false}
-                    dataKey={plotData.xAxis}
-                    label={{ value: plotData.xAxis, offset: -5, position: "insideBottom" }}
+            { showConditions &&
+              <TabPanel
+                width={`${tabWidth}px`}
+                tabcolor={this.getRightTabColor(RightSectionTypes.CONDITIONS)}
+                rightpanel={"true"}
+              >
+                <Simulation width={mapWidth} backgroundColor={this.getRightTabColor(RightSectionTypes.CONDITIONS)}>
+                  <MapComponent
+                    width={ mapWidth }
+                    height={ height - 190 }
                   />
-                  <YAxis
-                    type="number"
-                    domain={[0, "auto"]}
-                    label={{ value: plotData.yAxis, angle: -90, offset: 12, position: "insideBottomLeft" }}
+                  <WidgetPanel />
+                </Simulation>
+              </TabPanel>
+            }
+            { showCrossSection &&
+              <TabPanel
+                width={`${tabWidth}px`}
+                tabcolor={this.getRightTabColor(RightSectionTypes.CROSS_SECTION)}
+                rightpanel={"true"}
+              >
+                <Simulation width={mapWidth} backgroundColor={this.getRightTabColor(RightSectionTypes.CROSS_SECTION)}>
+                  <MapComponent
+                    width={ mapWidth }
+                    height={ height - 190 }
                   />
-                </LineChart>
-              }
-              </div>
-            </TabPanel>
+                  <CrossSectionComponent
+                    width={ mapWidth }
+                    height={ 100 }
+                  />
+                </Simulation>
+              </TabPanel>
+            }
+            { showData &&
+              <TabPanel
+                width={`${tabWidth}px`}
+                tabcolor={this.getRightTabColor(RightSectionTypes.DATA)}
+                rightpanel={"true"}
+              >
+                <div>
+                  <LineChart width={mapWidth} height={200} data={plotData.chartData}>
+                    <Line type="linear" dataKey={plotData.yAxis} stroke="red" strokeWidth={2} />
+                    <CartesianGrid stroke="#ddd" strokeDasharray="5 5" />
+                    <XAxis
+                      type="number"
+                      domain={[0, "auto"]}
+                      allowDecimals={false}
+                      dataKey={plotData.xAxis}
+                      label={{ value: plotData.xAxis, offset: -5, position: "insideBottom" }}
+                    />
+                    <YAxis
+                      type="number"
+                      domain={[0, "auto"]}
+                      label={{ value: plotData.yAxis, angle: -90, offset: 12, position: "insideBottomLeft" }}
+                    />
+                  </LineChart>
+                </div>
+              </TabPanel>
+            }
             <RightTabBack
               width={tabWidth}
               backgroundcolor={this.getRightTabColor(currentRightTabType)}
@@ -378,33 +388,39 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             <BottomBar>
               <TabsContainer>
                 <TabList>
-                  <BottomTab
-                    selected={rightTabIndex === kRightTabInfo.conditions.index}
-                    leftofselected={rightTabIndex === (kRightTabInfo.conditions.index + 1) ? "true" : undefined}
-                    rightofselected={rightTabIndex === (kRightTabInfo.conditions.index - 1) ? "true" : undefined}
-                    backgroundcolor={this.getRightTabColor(RightSectionTypes.CONDITIONS)}
-                    backgroundhovercolor={this.getRightTabHoverColor(RightSectionTypes.CONDITIONS)}
-                  >
-                    {this.getRightTabName(RightSectionTypes.CONDITIONS)}
-                  </BottomTab>
-                  <BottomTab
-                    selected={rightTabIndex === kRightTabInfo.crossSection.index}
-                    leftofselected={rightTabIndex === (kRightTabInfo.crossSection.index + 1) ? "true" : undefined}
-                    rightofselected={rightTabIndex === (kRightTabInfo.crossSection.index - 1) ? "true" : undefined}
-                    backgroundcolor={this.getRightTabColor(RightSectionTypes.CROSS_SECTION)}
-                    backgroundhovercolor={this.getRightTabHoverColor(RightSectionTypes.CROSS_SECTION)}
-                  >
-                    {this.getRightTabName(RightSectionTypes.CROSS_SECTION)}
-                  </BottomTab>
-                  <BottomTab
-                    selected={rightTabIndex === kRightTabInfo.data.index}
-                    leftofselected={rightTabIndex === (kRightTabInfo.data.index + 1) ? "true" : undefined}
-                    rightofselected={rightTabIndex === (kRightTabInfo.data.index - 1) ? "true" : undefined}
-                    backgroundcolor={this.getRightTabColor(RightSectionTypes.DATA)}
-                    backgroundhovercolor={this.getRightTabHoverColor(RightSectionTypes.DATA)}
-                  >
-                    {this.getRightTabName(RightSectionTypes.DATA)}
-                  </BottomTab>
+                  { showConditions &&
+                    <BottomTab
+                      selected={rightTabIndex === kRightTabInfo.conditions.index}
+                      leftofselected={rightTabIndex === (kRightTabInfo.conditions.index + 1) ? "true" : undefined}
+                      rightofselected={rightTabIndex === (kRightTabInfo.conditions.index - 1) ? "true" : undefined}
+                      backgroundcolor={this.getRightTabColor(RightSectionTypes.CONDITIONS)}
+                      backgroundhovercolor={this.getRightTabHoverColor(RightSectionTypes.CONDITIONS)}
+                    >
+                      {this.getRightTabName(RightSectionTypes.CONDITIONS)}
+                    </BottomTab>
+                  }
+                  { showCrossSection &&
+                    <BottomTab
+                      selected={rightTabIndex === kRightTabInfo.crossSection.index}
+                      leftofselected={rightTabIndex === (kRightTabInfo.crossSection.index + 1) ? "true" : undefined}
+                      rightofselected={rightTabIndex === (kRightTabInfo.crossSection.index - 1) ? "true" : undefined}
+                      backgroundcolor={this.getRightTabColor(RightSectionTypes.CROSS_SECTION)}
+                      backgroundhovercolor={this.getRightTabHoverColor(RightSectionTypes.CROSS_SECTION)}
+                    >
+                      {this.getRightTabName(RightSectionTypes.CROSS_SECTION)}
+                    </BottomTab>
+                  }
+                  { showData &&
+                    <BottomTab
+                      selected={rightTabIndex === kRightTabInfo.data.index}
+                      leftofselected={rightTabIndex === (kRightTabInfo.data.index + 1) ? "true" : undefined}
+                      rightofselected={rightTabIndex === (kRightTabInfo.data.index - 1) ? "true" : undefined}
+                      backgroundcolor={this.getRightTabColor(RightSectionTypes.DATA)}
+                      backgroundhovercolor={this.getRightTabHoverColor(RightSectionTypes.DATA)}
+                    >
+                      {this.getRightTabName(RightSectionTypes.DATA)}
+                    </BottomTab>
+                  }
                 </TabList>
               </TabsContainer>
               { (screenfull && screenfull.isFullscreen) &&
