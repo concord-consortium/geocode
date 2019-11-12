@@ -83,11 +83,18 @@ export const getAuthorableSettings = getStoreSubstate(simulationAuthorSettingsPr
 // gets the current store state to be saved by an author or student
 export const getSavableState = getStoreSubstate(simulationAuthorStateProps, uiAuthorSettingsProps);
 
-// makes state appropriate for saving to e.g. LARA. Adds a version number
+// makes state appropriate for saving to e.g. LARA. Changes keys or values as needed. Adds a version number
 export const serializeState = (state: any): SerializedState => {
+  const serializedState = {...state};
+
+  // we copy simulation.xmlCode (the current blockly code) to simulation.initialXmlCode (how we want
+  // to initialize blockly) when we save state
+  serializedState.simulation.initialXmlCode = serializedState.simulation.xmlCode;
+  delete serializedState.simulation.xmlCode;
+
   return {
     version: 1,
-    state
+    state: serializedState
   };
 };
 // deserializes saved state, migrating data if necessary
