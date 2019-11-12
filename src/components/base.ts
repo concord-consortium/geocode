@@ -1,15 +1,15 @@
 import * as React from "react";
-import { SimulationModelType } from "../stores/simulation-store";
+import { IStore } from "../stores/stores";
 
 export interface IBaseProps {
-  stores?: SimulationModelType;
+  stores?: IStore;
 }
 
 export class BaseComponent<P, S> extends React.Component<P, S> {
 
   // this assumes that stores are injected by the classes that extend BaseComponent
   get stores() {
-    return (this.props as IBaseProps).stores as SimulationModelType;
+    return (this.props as IBaseProps).stores as IStore;
   }
 
 }

@@ -1,11 +1,12 @@
 import * as React from "react";
-import { PureComponent } from "react";
 import WindSpeedDirectionWidget from "./wind-speed-direction-widget";
 import ColumnHeightWidget from "./column-height-widget";
 import VEIWidget from "./vei-widget";
 import EjectedVolumeWidget from "./ejected-volume-widget";
 import { WidgetPanelTypes } from "../utilities/widget";
 import styled from "styled-components";
+import { inject, observer } from "mobx-react";
+import { BaseComponent } from "./base";
 
 const WidgetBar = styled.div`
   display: flex;
@@ -31,22 +32,13 @@ const WidgetTitle = styled.div`
   margin-bottom: 5px;
 `;
 
-interface IProps {
-  showWindSpeed: boolean;
-  showWindDirection: boolean;
-  showColumnHeight: boolean;
-  showEjectedVolume: boolean;
-  showVEI: boolean;
-  windSpeed: number;
-  windDirection: number;
-  columnHeight: number; // m for vei, km for col height
-  vei: number;
-  mass: number;
-}
+interface IProps {}
 
 interface IState {}
 
-export default class WidgetPanel extends PureComponent<IProps, IState> {
+@inject("stores")
+@observer
+export default class WidgetPanel extends BaseComponent<IProps, IState> {
   public static defaultProps = {
     showWindSpeed: true,
     showWindDirection: true,
@@ -61,8 +53,8 @@ export default class WidgetPanel extends PureComponent<IProps, IState> {
   };
 
   public render() {
-    const { showVEI, showEjectedVolume, showColumnHeight, showWindSpeed, showWindDirection,
-            vei, mass, columnHeight, windDirection, windSpeed } = this.props;
+    const { showVEI, showEjectedVolume, showColumnHeight, showWindSpeed, showWindDirection } = this.stores.uiStore;
+    const { vei, mass, colHeight, windDirection, windSpeed } = this.stores.simulation;
     return (
       <WidgetBar>
         { (showWindSpeed || showWindDirection) && <WidgetContainer>
@@ -81,7 +73,7 @@ export default class WidgetPanel extends PureComponent<IProps, IState> {
             type={WidgetPanelTypes.RIGHT}
             vei={vei}
             mass={mass}
-            columnHeight={columnHeight}
+            columnHeight={colHeight}
           />
         </WidgetContainer> }
         { showEjectedVolume && <WidgetContainer>
@@ -95,7 +87,7 @@ export default class WidgetPanel extends PureComponent<IProps, IState> {
           <WidgetTitle>Column Height</WidgetTitle>
             <ColumnHeightWidget
               type={WidgetPanelTypes.RIGHT}
-              columnHeightInKilometers={columnHeight / 1000}
+              columnHeightInKilometers={colHeight / 1000}
             />
         </WidgetContainer> }
       </WidgetBar>

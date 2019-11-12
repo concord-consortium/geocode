@@ -26,7 +26,7 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
             showCrossSection,
             onCrossSectionClick,
             onReCenterClick} = this.props;
-        const { hasErupted } = this.stores;
+        const { hasErupted } = this.stores.simulation;
 
         const rulerColor = showRuler ? "primary" : "secondary";
         const selectingColor = isSelectingCrossSection ? "primary" : "secondary";

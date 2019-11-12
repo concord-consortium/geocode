@@ -5,34 +5,21 @@ import * as ReactDOM from "react-dom";
 import * as iframePhone from "iframe-phone";
 
 import { AppComponent } from "./components/app";
-import { simulation } from "./stores/simulation-store";
 import { onSnapshot } from "mobx-state-tree";
+import { stores, serializeState, getSavableState, deserializeState, updateStores, SerializedState } from "./stores/stores";
 
 ReactDOM.render(
-  <Provider stores={simulation}>
+  <Provider stores={stores}>
     <AppComponent />
   </Provider>,
   document.getElementById("reactApp")
 );
 
-export interface SerializedStateDataType {
-  version?: number;
-  blocklyXmlCode?: string;
-}
-type Mode = "student" | "author";
-
 // *** LARA Data-Saving ***
 
-/**
- * Load saved student data into the store. (Currently just the xml)
- */
-const loadStateData = (state: SerializedStateDataType) => {
-  if (state.blocklyXmlCode) {
-    simulation.setInitialXmlCode(state.blocklyXmlCode);
-  }
-};
-
 const phone = iframePhone.getIFrameEndpoint();
+
+type Mode = "student" | "author";
 let mode: Mode = "student";
 
 // If we are embedded in LARA, wait for `initInteractive` and initialize model with any student data
@@ -42,29 +29,33 @@ phone.addListener("initInteractive", (data: {
     interactiveState: any,
     linkedState: any}) => {
 
-  const authorState: SerializedStateDataType = data && data.authoredState || {};
+  const authorState: SerializedState = data && data.authoredState || {};
   // student data may be in either the current interactive's saved state, or a previous model's linked state
-  const studentState: SerializedStateDataType = data && (data.interactiveState || data.linkedState) || {};
+  const studentState: SerializedState = data && (data.interactiveState || data.linkedState) || {};
 
   if (data.mode === "authoring") {
     mode = "author";
-    loadStateData(authorState);
+    updateStores(deserializeState(authorState));
   } else {
     // student state overwrites authored state
     const mergedState = {...authorState, ...studentState};
-    loadStateData(mergedState);
+    updateStores(deserializeState(mergedState));
+    stores.uiStore.setShowOptionsDialog(false);
   }
 });
 
 // Save data everytime stores change
 const saveUserData = () => {
   if (mode === "student") {
-    phone.post("interactiveState", simulation.userSnapshot);
+    // currently the student and author save the same data. Eventually we may want some things,
+    // like active tab state, to be saved only for one or the other
+    phone.post("interactiveState", serializeState(getSavableState()));
   } else {
-    phone.post("authoredState", simulation.userSnapshot);
+    phone.post("authoredState", serializeState(getSavableState()));
   }
 };
-onSnapshot(simulation, saveUserData);       // MobX function called on every store change
+onSnapshot(stores.simulation, saveUserData);       // MobX function called on every store change
+onSnapshot(stores.uiStore, saveUserData);
 
 // When we exit page and LARA asks for student data, tell it it's already up-to-date
 phone.addListener("getInteractiveState", () => {

@@ -31,7 +31,6 @@ interface IState{}
 interface IProps extends IBaseProps {
     width: number;
     height: number;
-    log: string;
     clear: any;
 }
 interface ILog {
@@ -46,7 +45,8 @@ export class LogComponent extends BaseComponent<IProps, IState> {
     private ref = React.createRef<HTMLDivElement>();
 
     public render() {
-        const { log, height, width, clear } = this.props;
+        const { height, width, clear } = this.props;
+        const { log } = this.stores.simulation;
 
         return(
             <CanvDiv ref={this.ref} height={height} width={width}>

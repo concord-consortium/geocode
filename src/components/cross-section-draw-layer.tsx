@@ -90,9 +90,9 @@ export class CrossSectionDrawLayer extends BaseComponent<IProps, IState> {
     }
     if (point !== null) {
         if (index === 0) {
-          this.stores.setPoint1Pos(point.lat, point.lng);
+          this.stores.simulation.setPoint1Pos(point.lat, point.lng);
         } else {
-          this.stores.setPoint2Pos(point.lat, point.lng);
+          this.stores.simulation.setPoint2Pos(point.lat, point.lng);
         }
     }
   }

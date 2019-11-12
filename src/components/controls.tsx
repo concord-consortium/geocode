@@ -66,28 +66,8 @@ const BoldSpan = styled.span`
   font-weight: bold;
 `;
 
-interface IControls {
-  windDirection: number;
-  particleSize: number;
-  mass: number;
-  colHeight: number;
-  windSpeed: number;
-
-  changeWindDirection: (a: any) => void;
-  changeWindSpeed: (a: any) => void;
-  changeSize: (a: any) => void;
-  changeColumnHeight: (a: any) => void;
-  changeMass: (a: any) => void;
-  changeVEI: (a: any) => void;
-}
-
 interface IProps extends IBaseProps {
   width: number;
-  showWindSpeed: boolean;
-  showWindDirection: boolean;
-  showEjectedVolume: boolean;
-  showColumnHeight: boolean;
-  showVEI: boolean;
 }
 interface IState {
   animate: boolean;
@@ -104,20 +84,19 @@ export class Controls extends BaseComponent<IProps, IState> {
 
     const {
       stagingWindDirection,
-      stagingParticleSize,
       stagingMass,
-      stagingColHeight, // in meters
+      stagingColHeight,
       stagingWindSpeed,
       stagingVei
-    } = this.stores;
+    } = this.stores.simulation;
 
     const {
       showWindSpeed,
       showWindDirection,
       showEjectedVolume,
       showColumnHeight,
-      showVEI,
-    } = this.props;
+      showVEI
+    } = this.stores.uiStore;
 
     return(
       <TabContent>
@@ -269,34 +248,34 @@ export class Controls extends BaseComponent<IProps, IState> {
   }
 
   private changeWindDirection = (direction: number) => {
-    this.stores.setWindDirection(direction);
+    this.stores.simulation.setWindDirection(direction);
   }
 
   private changeWindSpeed = (speed: number) => {
-    this.stores.setWindSpeed(speed);
+    this.stores.simulation.setWindSpeed(speed);
   }
 
   private changeColumnHeight = (heightInKilometers: number) => {
-    this.stores.setColumnHeight(heightInKilometers);
+    this.stores.simulation.setColumnHeight(heightInKilometers);
   }
 
   private changeMass = (zeroBasedPower: number) => {
     // -4 index conversion, +9 km^3 to m^3, +3 m^3 to kg
     const massInKilograms = Math.pow(10, zeroBasedPower - 4 + 9 + 3);
-    this.stores.setMass(massInKilograms);
+    this.stores.simulation.setMass(massInKilograms);
   }
 
   private changeSize = (size: number) => {
-    this.stores.setParticleSize(size);
+    this.stores.simulation.setParticleSize(size);
   }
 
   private changeVEI = (vei: number) => {
-    this.stores.setVEI(vei);
+    this.stores.simulation.setVEI(vei);
   }
 
   private erupt = () => {
-    this.stores.erupt(this.state.animate);
-    this.stores.paintMap();
+    this.stores.simulation.erupt(this.state.animate);
+    this.stores.simulation.paintMap();
 
     // This code is used for waiting for the animation to complete and then painting
     // if (this.state.animate) {
