@@ -1,5 +1,6 @@
 import * as React from "react";
 import { PureComponent } from "react";
+import WindSpeedDirectionWidget from "./wind-speed-direction-widget";
 import ColumnHeightWidget from "./column-height-widget";
 import VEIWidget from "./vei-widget";
 import EjectedVolumeWidget from "./ejected-volume-widget";
@@ -60,9 +61,20 @@ export default class WidgetPanel extends PureComponent<IProps, IState> {
   };
 
   public render() {
-    const { showVEI, showEjectedVolume, showColumnHeight, vei, mass, columnHeight } = this.props;
+    const { showVEI, showEjectedVolume, showColumnHeight, showWindSpeed,
+            vei, mass, columnHeight, windDirection, windSpeed } = this.props;
     return (
       <WidgetBar>
+        { showWindSpeed && <WidgetContainer>
+          <WidgetTitle>Wind Speed/Dir.</WidgetTitle>
+            <WindSpeedDirectionWidget
+              type={WidgetPanelTypes.RIGHT}
+              showWindDirection={true}
+              showWindSpeed={true}
+              windDirection={windDirection}
+              windSpeed={windSpeed}
+            />
+        </WidgetContainer> }
         { showVEI && <WidgetContainer>
           <WidgetTitle>VEI</WidgetTitle>
           <VEIWidget
