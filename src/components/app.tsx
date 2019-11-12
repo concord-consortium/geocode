@@ -23,7 +23,7 @@ import WidgetPanel from "./widget-panel";
 import screenfull from "screenfull";
 import ResizeObserver from "react-resize-observer";
 import AuthoringMenu from "./authoring-menu";
-import { getAuthorableSettings, updateStores } from "../stores/stores";
+import { getAuthorableSettings, updateStores, serializeState, getSavableState, deserializeState, SerializedState } from "../stores/stores";
 
 interface IProps extends IBaseProps {}
 
@@ -437,8 +437,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               options={getAuthorableSettings()}
               expandOptionsDialog={expandOptionsDialog}
               toggleShowOptions={this.toggleShowOptions}
-              saveCodeToLocalStorage={this.saveCodeToLocalStorage}
-              loadCodeFromLocalStorage={this.loadCodeFromLocalStorage}
+              saveStateToLocalStorage={this.saveStateToLocalStorage}
+              loadStateFromLocalStorage={this.loadStateFromLocalStorage}
               handleUpdate={updateStores}
             />
           }
@@ -490,20 +490,15 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     this.setState({rightTabIndex});
   }
 
-  private saveCodeToLocalStorage = () => {
-    localStorage.setItem("blockly-workspace", this.stores.simulation.xmlCode);
+  private saveStateToLocalStorage = () => {
+    localStorage.setItem("geocode-state", JSON.stringify(serializeState(getSavableState())));
   }
 
-  private loadCodeFromLocalStorage = () => {
-    const { simulation } = this.stores;
-    const code = localStorage.getItem("blockly-workspace");
-    if (code) {
-      // we need to unset and then set the state to force a re-render, if the user has already
-      // loaded the code once.
-      // because of the way Blockly injects to the DOM, we have to wait 100ms, instead of using
-      // the setState callback, or we may end up with two Blockly editors
-      simulation.setInitialXmlCode("<xml></xml>");
-      setTimeout(() => {simulation.setInitialXmlCode(code); }, 100);
+  private loadStateFromLocalStorage = () => {
+    const savedStateJSON = localStorage.getItem("geocode-state");
+    if (savedStateJSON) {
+      const savedState = JSON.parse(savedStateJSON) as SerializedState;
+      updateStores(deserializeState(savedState));
     }
   }
 
