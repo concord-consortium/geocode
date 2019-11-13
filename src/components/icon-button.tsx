@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { Icon } from "./icon";
 
 interface IconButtonContainerProps {
+  backgroundColor?: string;
   hoverColor: string;
   activeColor: string;
 }
@@ -12,17 +13,18 @@ const IconButtonContainer = styled.div`
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
-  width: 83px;
+  min-width: 83px;
   height: 34px;
   border-radius: 5px;
-  background-color: white;
+  background-color: ${(p: IconButtonContainerProps) => p.backgroundColor || "white"};
   border: solid 2px white;
   margin: 0 4px 0 4px;
+  padding: 4px;
   &:hover {
-    background-color: ${(p: IconButtonContainerProps) => `${p.hoverColor}`};
+    background-color: ${(p: IconButtonContainerProps) => p.hoverColor};
   }
   &:active {
-    background-color: ${(p: IconButtonContainerProps) => `${p.activeColor}`};
+    background-color: ${(p: IconButtonContainerProps) => p.activeColor};
   }
 `;
 
@@ -37,6 +39,7 @@ interface IProps {
   onClick: any;
   disabled: any;
   label: string;
+  backgroundColor?: string;
   hoverColor: string;
   activeColor: string;
   fill: string;
@@ -51,6 +54,7 @@ export default class IconButton extends PureComponent<IProps, IState> {
     onClick: undefined,
     disabled: undefined,
     label: undefined,
+    backgroundColor: undefined,
     hoverColor: undefined,
     activeColor: undefined,
     fill: undefined,
@@ -59,9 +63,15 @@ export default class IconButton extends PureComponent<IProps, IState> {
   };
 
   public render() {
-    const { onClick, disabled, children, label, hoverColor, activeColor, fill, width, height } = this.props;
+    const { onClick, disabled, children, label, backgroundColor, hoverColor, activeColor,
+            fill, width, height } = this.props;
     return (
-      <IconButtonContainer onClick={onClick} hoverColor={hoverColor} activeColor={activeColor}>
+      <IconButtonContainer
+        onClick={onClick}
+        backgroundColor={backgroundColor}
+        hoverColor={hoverColor}
+        activeColor={activeColor}
+      >
         { children && <Icon
             width={width}
             height={height}
