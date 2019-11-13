@@ -1,6 +1,6 @@
 import * as React from "react";
-import Button from "./overlay-button";
 import IconButton from "./icon-button";
+import { RightSectionTypes, kRightTabInfo } from "./tabs";
 
 import "../css/overlay-controls.css";
 import { observer, inject } from "mobx-react";
@@ -29,8 +29,10 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
             onReCenterClick} = this.props;
         const { hasErupted } = this.stores.simulation;
 
-        const rulerColor = showRuler ? "primary" : "secondary";
-        const selectingColor = isSelectingCrossSection ? "primary" : "secondary";
+        const rulerColor = showRuler ? kRightTabInfo[RightSectionTypes.CONDITIONS].hoverBackgroundColor : "white";
+        const selectingColor = isSelectingCrossSection
+                               ? kRightTabInfo[RightSectionTypes.CROSS_SECTION].hoverBackgroundColor
+                               : "white";
 
         return (
             <div className="overlay-controls">
@@ -39,8 +41,8 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
                         onClick={onReCenterClick}
                         disabled={false}
                         label={"Re-center"}
-                        hoverColor={"#ADD1A2"}
-                        activeColor={"#B7DCAD"}
+                        hoverColor={kRightTabInfo[RightSectionTypes.CONDITIONS].hoverBackgroundColor}
+                        activeColor={kRightTabInfo[RightSectionTypes.CONDITIONS].backgroundColor}
                         fill={"black"}
                         width={26}
                         height={26}
@@ -49,19 +51,26 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
                         onClick={onRulerClick}
                         disabled={false}
                         label={"Ruler"}
-                        hoverColor={"#ADD1A2"}
-                        activeColor={"#B7DCAD"}
+                        backgroundColor={rulerColor}
+                        hoverColor={kRightTabInfo[RightSectionTypes.CONDITIONS].hoverBackgroundColor}
+                        activeColor={kRightTabInfo[RightSectionTypes.CONDITIONS].backgroundColor}
                         fill={"black"}
                         width={26}
                         height={26}
                     />
                 </div>
                 <div className="controls bottom right">
-                    {(showCrossSection && hasErupted) && <Button
+                    {(showCrossSection && hasErupted) && <IconButton
                         onClick={onCrossSectionClick}
-                        color={selectingColor}>
-                        Draw a cross section line
-                    </Button>}
+                        disabled={false}
+                        label={"Draw a cross section line"}
+                        backgroundColor={selectingColor}
+                        hoverColor={kRightTabInfo[RightSectionTypes.CROSS_SECTION].hoverBackgroundColor}
+                        activeColor={kRightTabInfo[RightSectionTypes.CROSS_SECTION].backgroundColor}
+                        fill={"black"}
+                        width={26}
+                        height={26}
+                    />}
                 </div>
             </div>
         );

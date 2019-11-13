@@ -16,7 +16,7 @@ import { LocalToLatLng } from "../utilities/coordinateSpaceConversion";
 import { MapTephraThicknessLayer } from "./map-tephra-thickness-layer";
 import { OverlayControls } from "./overlay-controls";
 import { RulerDrawLayer } from "./ruler-draw-layer";
-
+import { RightSectionTypes } from "./tabs";
 import KeyButton from "./map-key-button";
 import CompassComponent from "./map-compass";
 import ScaleComponent from "./map-scale";
@@ -45,6 +45,7 @@ interface IState {
 interface IProps extends IBaseProps {
   width: number;
   height: number;
+  panelType: RightSectionTypes;
 }
 
 @inject("stores")
@@ -91,7 +92,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
   }
 
   public render() {
-    const { width, height } = this.props;
+    const { width, height, panelType } = this.props;
 
     const {
       cities,
@@ -154,7 +155,6 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       mapRef = this.map.current.leafletElement;
       viewportBounds = this.map.current.leafletElement.getBounds();
     }
-
     return (
       <CanvDiv
         ref={this.ref}
@@ -231,7 +231,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           showRuler={isSelectingRuler}
           onRulerClick={this.stores.simulation.rulerClick}
           isSelectingCrossSection={isSelectingCrossSection}
-          showCrossSection={hasErupted && showCrossSection}
+          showCrossSection={hasErupted && showCrossSection && panelType === RightSectionTypes.CROSS_SECTION}
           onCrossSectionClick={this.stores.simulation.crossSectionClick}
           onReCenterClick={this.onRecenterClick}
         />

@@ -331,6 +331,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                   <MapComponent
                     width={ mapWidth }
                     height={ height - 190 }
+                    panelType={RightSectionTypes.CONDITIONS}
                   />
                   <WidgetPanel />
                 </Simulation>
@@ -346,6 +347,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                   <MapComponent
                     width={ mapWidth }
                     height={ height - 190 }
+                    panelType={RightSectionTypes.CROSS_SECTION}
                   />
                   <CrossSectionComponent
                     width={ mapWidth }
