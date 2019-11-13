@@ -91,9 +91,9 @@ const RightTabBack = styled.div`
   height: 15px;
   background-color: ${(p: TabBackProps) => p.backgroundcolor};
   position: absolute;
-  width: ${(p: TabBackProps) => `${p.width - 33}px`};
-  bottom: 24px;
-  right: 33px;
+  width: ${(p: TabBackProps) => `${p.width - 27}px`};
+  bottom: 20px;
+  right: 27px;
 `;
 
 const Tabs = styled(UnstyledTabs)`
