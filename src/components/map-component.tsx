@@ -91,6 +91,18 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     this.setState({moveMouse: false});
   }
 
+  public componentDidMount() {
+    if (this.map.current) {
+      this.map.current.leafletElement.on("zoomend", function() {
+        this.forceUpdate();
+      }.bind(this));
+
+      this.map.current.leafletElement.on("moveend", function() {
+        this.forceUpdate();
+      }.bind(this));
+    }
+  }
+
   public render() {
     const { width, height, panelType } = this.props;
 
