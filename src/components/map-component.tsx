@@ -181,7 +181,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           easeLinearity={0.35}
           >
           <ScaleControl
-            position="topright"
+            position="topleft"
           />
           <Pane
             style={{zIndex: 0}}>
