@@ -20,7 +20,6 @@ interface IProps {
     windDirection: number;
     colHeight: number;
     mass: number;
-    particleSize: number;
     hasErupted: boolean;
 }
 
@@ -51,7 +50,6 @@ export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
             windDirection,
             colHeight,
             mass,
-            particleSize,
             viewportBounds,
             hasErupted } = this.props;
 
@@ -87,8 +85,7 @@ export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
                     windSpeed,
                     windDirection,
                     colHeight,
-                    mass,
-                    particleSize
+                    mass
                   );
 
                 const thickness = maxTephra / Math.log10(simResults + 10);

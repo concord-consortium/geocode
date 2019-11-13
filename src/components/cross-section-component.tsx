@@ -55,7 +55,6 @@ export class CrossSectionComponent extends BaseComponent<IProps, IState>{
       windDirection,
       colHeight,
       mass,
-      particleSize,
       isSelectingCrossSection
     } = this.stores.simulation;
 
@@ -81,8 +80,7 @@ export class CrossSectionComponent extends BaseComponent<IProps, IState>{
                 windSpeed={windSpeed}
                 windDirection={windDirection}
                 colHeight={colHeight}
-                mass={mass}
-                particleSize={particleSize} />
+                mass={mass} />
             </Stage>
           </ContainerDiv>}
         </ContainerDiv>}
