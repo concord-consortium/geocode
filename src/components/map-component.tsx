@@ -17,6 +17,11 @@ import { MapTephraThicknessLayer } from "./map-tephra-thickness-layer";
 import { OverlayControls } from "./overlay-controls";
 import { RulerDrawLayer } from "./ruler-draw-layer";
 
+import KeyButton from "./map-key-button";
+import CompassComponent from "./map-compass";
+import ScaleComponent from "./map-scale";
+import TephraLegendComponent from "./map-tephra-legend";
+
 interface WorkspaceProps {
   width: number;
   height: number;
@@ -34,6 +39,7 @@ const CanvDiv = styled.div`
 interface IState {
   moveMouse: boolean;
   showRuler: boolean;
+  showKey: boolean;
 }
 
 interface IProps extends IBaseProps {
@@ -55,7 +61,8 @@ export class MapComponent extends BaseComponent<IProps, IState>{
 
     const initialState: IState = {
       moveMouse: false,
-      showRuler: false
+      showRuler: false,
+      showKey: true,
     };
 
     this.handleDragMove = this.handleDragMove.bind(this);
@@ -228,8 +235,20 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           onCrossSectionClick={this.stores.simulation.crossSectionClick}
           onReCenterClick={this.onRecenterClick}
         />
+        { this.state.showKey
+          ? <KeyButton onClick={this.onKeyClick}/>
+          : <TephraLegendComponent onClick={this.onTephraClick}/>
+        }
+        <CompassComponent/>
       </CanvDiv>
     );
+  }
+
+  private onKeyClick = () => {
+    this.setState({showKey: false});
+  }
+  private onTephraClick = () => {
+    this.setState({showKey: true});
   }
 
   private onRecenterClick = () => {
