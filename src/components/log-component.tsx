@@ -1,8 +1,10 @@
 import * as React from "react";
 import styled from "styled-components";
-import Button from "./overlay-button";
+import IconButton from "./icon-button";
+import { SectionTypes, kTabInfo } from "./tabs";
 import { observer, inject } from "mobx-react";
 import { BaseComponent, IBaseProps } from "./base";
+
 const CanvDiv = styled.div`
     border: 1px solid black; border-radius: 0px;
     margin: 1em;
@@ -20,11 +22,11 @@ const LogDiv = styled.div`
     margin: 4px;
 `;
 
-const AdjustedHighliteButton = styled(Button)`
-    && { position: absolute;
-    top: 0;
-    right: 0;
-    }
+const IconButtonHolder = styled.div`
+    position: absolute;
+    top: 5px;
+    right: 3px;
+    width: 100px;
 `;
 
 interface IState{}
@@ -50,7 +52,18 @@ export class LogComponent extends BaseComponent<IProps, IState> {
 
         return(
             <CanvDiv ref={this.ref} height={height} width={width}>
-                <AdjustedHighliteButton onClick={clear}>Clear Log</AdjustedHighliteButton>
+                <IconButtonHolder>
+                    <IconButton
+                        onClick={clear}
+                        disabled={false}
+                        label={"Clear Log"}
+                        hoverColor={"#BBD9FF"}
+                        activeColor={"#DDEDFF"}
+                        fill={"black"}
+                        width={26}
+                        height={26}
+                    />
+                </IconButtonHolder>
                 <LogDiv>
                     {log}
                 </LogDiv>
