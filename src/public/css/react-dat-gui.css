@@ -9,7 +9,8 @@
   box-sizing: border-box;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  -webkit-tap-highlight-color: transparent; }
+  -webkit-tap-highlight-color: transparent;
+  z-index: 4; }
   .react-dat-gui *, .react-dat-gui *:before, .react-dat-gui *:after {
     box-sizing: inherit; }
   .react-dat-gui .dg {
