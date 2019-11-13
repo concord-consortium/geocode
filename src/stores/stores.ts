@@ -31,6 +31,7 @@ const simulationAuthorSettingsProps = tuple(
 // additional props directly from current model that author will save
 const simulationAuthorStateProps = (simulationAuthorSettingsProps as string[]).concat(tuple(
   "xmlCode",
+  "initialXmlCode",
   "stagingWindSpeed",
   "stagingWindDirection",
   "stagingMass",

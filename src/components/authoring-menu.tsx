@@ -9,8 +9,8 @@ interface IProps {
   options: IStoreish;
   expandOptionsDialog: boolean;
   toggleShowOptions: () => void;
-  saveCodeToLocalStorage: () => void;
-  loadCodeFromLocalStorage: () => void;
+  saveStateToLocalStorage: () => void;
+  loadStateFromLocalStorage: () => void;
   handleUpdate: (state: IStoreish) => void;
 }
 
@@ -51,11 +51,11 @@ const AuthoringMenu: React.SFC<IProps> = (props) => {
 
           <DatBoolean path="uiStore.showLog" label="Show Log?" key="showLog" />,
 
-          <DatButton label="Save current code to local storage"
-            onClick={props.saveCodeToLocalStorage}
+          <DatButton label="Save current state to local storage"
+            onClick={props.saveStateToLocalStorage}
             key="generate" />,
-          <DatButton label="Load code from local storage"
-            onClick={props.loadCodeFromLocalStorage}
+          <DatButton label="Load state from local storage"
+            onClick={props.loadStateFromLocalStorage}
             key="generate" />,
         ]
       }
