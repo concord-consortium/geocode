@@ -35,7 +35,7 @@ interface AbsoluteIconProps {
 }
 const AbsoluteIcon = styled(Icon)`
   position: absolute;
-  left: -6px;
+  left: -5px;
   transform: rotate(180deg);
   top: ${(p: AbsoluteIconProps) => `${p.top ? `${p.top}px` : "0px"}`};
 `;
