@@ -83,7 +83,8 @@ export default class VEIWidget extends PureComponent<IProps, IState> {
   }
 
   private getVEIIcon = (vei: number, type: WidgetPanelTypes) => {
-    switch (vei) {
+    const constrainedVei = Math.min(Math.max(vei, 1), 8);
+    switch (constrainedVei) {
       case 1: return type === WidgetPanelTypes.LEFT ? <VEI1Orange/> : <VEI1Blue/>;
       case 2: return type === WidgetPanelTypes.LEFT ? <VEI2Orange/> : <VEI2Blue/>;
       case 3: return type === WidgetPanelTypes.LEFT ? <VEI3Orange/> : <VEI3Blue/>;

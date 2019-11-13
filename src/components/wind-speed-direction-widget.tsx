@@ -87,11 +87,12 @@ export default class WindSpeedDirectionWidget extends PureComponent<IProps, ISta
   public render() {
     const { type, showWindSpeed, showWindDirection, windSpeed, windDirection } = this.props;
     const maxWindSpeed = 30;
+    const constrainedSpeed = Math.min(Math.max(windSpeed, 0), maxWindSpeed);
     const arrowPos = 6;
     const arrowTailPos = -28;
     const arrowHeadOffset = 5;
     const maxArrowLength = 10;
-    const arrowHeight = 1 + windSpeed / maxWindSpeed * maxArrowLength;
+    const arrowHeight = 1 + constrainedSpeed / maxWindSpeed * maxArrowLength;
     return (
       <ValueContainer backgroundColor={kWidgetPanelInfo[type].backgroundColor}>
         <RelativeIconContainer>
