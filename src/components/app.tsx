@@ -212,7 +212,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     kRightTabInfo.conditions.index = showConditions ? 0 : -1;
     kRightTabInfo.crossSection.index = showCrossSection ? kRightTabInfo.conditions.index + 1 : -1;
     kRightTabInfo.data.index = showData
-      ? (showCrossSection ? kRightTabInfo.conditions.index + 1 : kRightTabInfo.conditions.index + 1)
+      ? (showCrossSection ? kRightTabInfo.crossSection.index + 1 : kRightTabInfo.conditions.index + 1)
       : -1;
     const enabledRightTabTypes = [];
     if (showConditions)   { enabledRightTabTypes.push(RightSectionTypes.CONDITIONS); }
