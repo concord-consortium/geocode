@@ -52,12 +52,14 @@ export default class ColumnHeightWidget extends PureComponent<IProps, IState> {
   };
 
   public render() {
+    const minColumnHeight = .1;
     const maxColumnHeight = 25;
     const maxGuageHeight = 48;
     const maxCoverHeight = 50;
     const { columnHeightInKilometers, type } = this.props;
-    const guageHeight = maxGuageHeight * (columnHeightInKilometers) / maxColumnHeight;
-    const coverHeight = maxCoverHeight - (maxCoverHeight * columnHeightInKilometers / maxColumnHeight);
+    const constrainedColumnHeight = Math.min(Math.max(columnHeightInKilometers, minColumnHeight), maxColumnHeight);
+    const guageHeight = maxGuageHeight * (constrainedColumnHeight) / maxColumnHeight;
+    const coverHeight = maxCoverHeight - (maxCoverHeight * constrainedColumnHeight / maxColumnHeight);
     return (
       <ValueContainer backgroundColor={kWidgetPanelInfo[type].backgroundColor}>
         <RelativeIconContainer>

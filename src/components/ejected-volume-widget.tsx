@@ -63,12 +63,17 @@ export default class EjectedVolumeWidget extends PureComponent<IProps, IState> {
 
   public render() {
     const { type, volumeInKilometersCubed } = this.props;
+    const minVolume = .0001;
+    const maxVolume = 1000;
+    const constrainedVolume = Math.min(Math.max(volumeInKilometersCubed, minVolume), maxVolume);
     const index = Math.round(Math.log(volumeInKilometersCubed) / Math.LN10);
+    const constrainedIndex = Math.round(Math.log(constrainedVolume) / Math.LN10);
     const maxBoxGrowth = 33;
     const minBoxHeight = 1;
     const indexOffset = 4;
     const maxIndex = 7;
-    const boxHeight = minBoxHeight + maxBoxGrowth * (Math.pow(2, index + indexOffset) / Math.pow(2, maxIndex));
+    const boxHeight = minBoxHeight + maxBoxGrowth
+                      * (Math.pow(2, constrainedIndex + indexOffset) / Math.pow(2, maxIndex));
     const topOffset = 25;
     return (
       <ValueContainer backgroundColor={kWidgetPanelInfo[type].backgroundColor}>
