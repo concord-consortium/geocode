@@ -1,5 +1,6 @@
 import * as React from "react";
 import Button from "./overlay-button";
+import IconButton from "./icon-button";
 
 import "../css/overlay-controls.css";
 import { observer, inject } from "mobx-react";
@@ -34,16 +35,26 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
         return (
             <div className="overlay-controls">
                 <div className="controls bottom left">
-                    <Button
+                    <IconButton
                         onClick={onReCenterClick}
-                        color={"secondary"}>
-                            Re-Center
-                    </Button>
-                    <Button
+                        disabled={false}
+                        label={"Re-center"}
+                        hoverColor={"#ADD1A2"}
+                        activeColor={"#B7DCAD"}
+                        fill={"black"}
+                        width={26}
+                        height={26}
+                    />
+                    <IconButton
                         onClick={onRulerClick}
-                        color={rulerColor}>
-                            Ruler
-                    </Button>
+                        disabled={false}
+                        label={"Ruler"}
+                        hoverColor={"#ADD1A2"}
+                        activeColor={"#B7DCAD"}
+                        fill={"black"}
+                        width={26}
+                        height={26}
+                    />
                 </div>
                 <div className="controls bottom right">
                     {(showCrossSection && hasErupted) && <Button
