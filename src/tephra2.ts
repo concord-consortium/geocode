@@ -11,8 +11,11 @@ import { Ipoint } from "./interfaces";
 //
 
 // the following constants are reasonable values that may be changed for speed vs. accuracy
-const kDiskRadius = 10000;
-const kDiskGridSize = 3000;           // larger = fewer claculations
+const kLargeDiskRadius = 10000;
+const kLargeDiskGridSize = 3000;          // larger = fewer calculations
+const kSmallDiskRadius = 500;
+const kSmallDiskGridSize = 300;
+const kLargeDiskMassThreshold = 1e11;      // when to use the large disk size (1e11 = VEI 4)
 const kNumSimulatedPhiClasses = 7;    // 7 or 15, or you'll need to pre-calculate more massFractions
 // the following constants should not be changed
 const g = 9.81;             // gravitational constant m*s^-2
@@ -249,10 +252,16 @@ const gridTephraCalc3 = (
   windDirectionFromNorth: number,
   colHeight: number,
   mass: number,
-  diskRadius = kDiskRadius,
-  diskGridSize = kDiskGridSize,
+  diskRadius?: number,        // optional, normally set by mass
+  diskGridSize?: number,      //  "
   numPhiClasses = kNumSimulatedPhiClasses
   ) => {
+  if (!diskRadius) {
+    diskRadius = mass >= kLargeDiskMassThreshold ? kLargeDiskRadius : kSmallDiskRadius;
+  }
+  if (!diskGridSize) {
+    diskGridSize = mass >= kLargeDiskMassThreshold ? kLargeDiskGridSize : kSmallDiskGridSize;
+  }
   const dScale = 1000; // 1 km per grid cell.
   const modelX = gridX * dScale;
   const modelY = gridY * dScale;
