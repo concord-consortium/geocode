@@ -271,6 +271,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             { showBlocks &&
               <TabPanel
                 width={`${tabWidth}px`}
+                forceRender={true}
                 tabcolor={this.getTabColor(SectionTypes.BLOCKS)}
               >
                 <TabContent>
