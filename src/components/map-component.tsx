@@ -101,6 +101,9 @@ export class MapComponent extends BaseComponent<IProps, IState>{
         this.forceUpdate();
       }.bind(this));
     }
+    if (!this.tephraRef.current) {
+      this.forceUpdate();
+    }
   }
 
   public render() {
