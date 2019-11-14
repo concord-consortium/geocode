@@ -173,11 +173,11 @@ export class Controls extends BaseComponent<IProps, IState> {
                 <ControlLabel>Column Height (km)</ControlLabel>
                 <HorizontalContainer>
                   <RangeControl
-                    min={.1}
+                    min={.5}
                     max={25}
                     value={stagingColHeight / 1000}
                     step={.1}
-                    tickArray={[.1, 5, 10, 15, 20, 25]}
+                    tickArray={[.5, 5, 10, 15, 20, 25]}
                     width={this.props.width - 220}
                     onChange={this.changeColumnHeight}
                   />
