@@ -58,7 +58,6 @@ export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
         }
 
         const longDist = Math.abs(viewportBounds.getNorthEast().lng - viewportBounds.getSouthWest().lng);
-        const maxTephra = 1;
         const samplesPerScreenPerAxis = 75;
         const squareSize = longDist / (samplesPerScreenPerAxis); // This assumes a square map
         const latSegments = samplesPerScreenPerAxis;
@@ -88,16 +87,16 @@ export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
                     mass
                   );
 
-                const thickness = maxTephra / Math.log10(simResults + 10);
+                const thickness = simResults * 10;      // cm => mm
 
-                data.push(1 - thickness);
+                data.push(thickness);
             }
         }
 
         const contours = d3.contours()
                         .size([latSegments, longSegments])
-                        .thresholds(d3.range(1, 8).map(p => Math.pow(1.1, p) - 1))
-                        .smooth(true)
+                        .thresholds([1000, 300, 100, 30, 10, 3, 1])
+                        .smooth(false)
                         (data);
 
         contours.forEach(multipolygon => {
