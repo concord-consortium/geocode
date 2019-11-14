@@ -52,7 +52,7 @@ export default class ColumnHeightWidget extends PureComponent<IProps, IState> {
   };
 
   public render() {
-    const minColumnHeight = .1;
+    const minColumnHeight = .5;
     const maxColumnHeight = 25;
     const maxGuageHeight = 48;
     const maxCoverHeight = 50;

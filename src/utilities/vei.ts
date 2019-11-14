@@ -6,7 +6,7 @@ interface VEIIndexInfo {
 export const kVEIIndexInfo: { [index: number]: VEIIndexInfo } = {
   1: {
     description: "Gentle",
-    columnHeight: .1 * 1000,
+    columnHeight: .5 * 1000,
   },
   2: {
     description: "Explosive",
