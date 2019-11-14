@@ -21,7 +21,6 @@ interface IProps {
   windDirection: number;
   colHeight: number;
   mass: number;
-  particleSize: number;
 }
 
 interface IHsla {
@@ -68,8 +67,7 @@ export const PixiTephraCrossSection = (props: IProps) => {
     windSpeed,
     windDirection,
     colHeight,
-    mass,
-    particleSize
+    mass
   } = props;
   const { height, width } = canvasMetrics;
   const cells = [];
@@ -100,8 +98,7 @@ export const PixiTephraCrossSection = (props: IProps) => {
       windSpeed,
       windDirection,
       colHeight,
-      mass,
-      particleSize
+      mass
     );
 
     // Add 10 to the calculation so that the return of the log is between 0 and 1

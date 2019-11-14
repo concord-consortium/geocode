@@ -18,7 +18,6 @@ const UIStore = types.model("UI", {
   showWindDirection: true,
   showEjectedVolume: true,
   showColumnHeight: true,
-  showParticleSize: true,
   showVEI: true,
 })
 .actions((self) => ({

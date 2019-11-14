@@ -114,7 +114,6 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       windSpeed,
       colHeight,
       mass,
-      particleSize,
       hasErupted,
       scenario,
     } = this.stores.simulation;
@@ -212,7 +211,6 @@ export class MapComponent extends BaseComponent<IProps, IState>{
               windDirection={windDirection}
               colHeight={colHeight}
               mass={mass}
-              particleSize={particleSize}
               hasErupted={hasErupted}
             />
           </Pane>
