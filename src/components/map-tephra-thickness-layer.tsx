@@ -58,8 +58,10 @@ export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
         }
 
         const longDist = Math.abs(viewportBounds.getNorthEast().lng - viewportBounds.getSouthWest().lng);
+        const latDist = Math.abs(viewportBounds.getNorthEast().lat - viewportBounds.getSouthWest().lat);
         const samplesPerScreenPerAxis = 75;
-        const squareSize = longDist / (samplesPerScreenPerAxis); // This assumes a square map
+        const longSize = longDist / (samplesPerScreenPerAxis);
+        const latSize = latDist / (samplesPerScreenPerAxis);
         const latSegments = samplesPerScreenPerAxis;
         const longSegments = samplesPerScreenPerAxis;
 
@@ -74,10 +76,10 @@ export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
                                     viewportBounds.getNorthEast().lng :
                                     viewportBounds.getSouthWest().lng;
 
-                const lat = startingLat + currentLat * squareSize;
-                const long = startingLong + currentLong * squareSize;
+                const lat = startingLat + currentLat * latSize;
+                const long = startingLong + currentLong * longSize;
 
-                const localPos = LatLngToLocal(Leaflet.latLng(lat + squareSize / 2, long + squareSize / 2), volcanoPos);
+                const localPos = LatLngToLocal(Leaflet.latLng(lat + latSize / 2, long + longSize / 2), volcanoPos);
 
                 const simResults = gridTephraCalc(
                     localPos.x, localPos.y, 0, 0,
@@ -103,8 +105,8 @@ export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
             multipolygon.coordinates.forEach(polygon => {
                 polygon.forEach(poly => {
                     poly.forEach(coord => {
-                        coord[0] = (coord[0] * squareSize) + viewportBounds.getSouthWest().lng;
-                        coord[1] = (coord[1] * squareSize) + viewportBounds.getSouthWest().lat;
+                        coord[0] = (coord[0] * longSize) + viewportBounds.getSouthWest().lng;
+                        coord[1] = (coord[1] * latSize) + viewportBounds.getSouthWest().lat;
                     });
                 });
             });
