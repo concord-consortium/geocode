@@ -19,7 +19,6 @@ import { RulerDrawLayer } from "./ruler-draw-layer";
 import { RightSectionTypes } from "./tabs";
 import KeyButton from "./map-key-button";
 import CompassComponent from "./map-compass";
-import ScaleComponent from "./map-scale";
 import TephraLegendComponent from "./map-tephra-legend";
 
 interface WorkspaceProps {
@@ -40,6 +39,7 @@ interface IState {
   moveMouse: boolean;
   showRuler: boolean;
   showKey: boolean;
+  mapLeafletRef: any;
 }
 
 interface IProps extends IBaseProps {
@@ -64,6 +64,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       moveMouse: false,
       showRuler: false,
       showKey: true,
+      mapLeafletRef: null,
     };
 
     this.handleDragMove = this.handleDragMove.bind(this);
@@ -92,6 +93,8 @@ export class MapComponent extends BaseComponent<IProps, IState>{
   }
 
   public componentDidMount() {
+    // zoomend and moveend are needed because viewportZoom is not a dependency
+    // of the render function and setting it in reRenderMap will not cause re-render
     if (this.map.current) {
       this.map.current.leafletElement.on("zoomend", function() {
         this.forceUpdate();
@@ -100,6 +103,9 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       this.map.current.leafletElement.on("moveend", function() {
         this.forceUpdate();
       }.bind(this));
+    }
+    if (this.map.current) {
+      this.setState({mapLeafletRef: this.map.current.leafletElement});
     }
   }
 
@@ -161,9 +167,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     const corner2 = L.latLng(bottomRightLat, bottomRightLng);
     const bounds = L.latLngBounds(corner1, corner2);
     let viewportBounds = bounds;
-    let mapRef = null;
     if (this.map.current) {
-      mapRef = this.map.current.leafletElement;
       viewportBounds = this.map.current.leafletElement.getBounds();
     }
     return (
@@ -206,7 +210,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
               viewportBounds={viewportBounds}
               volcanoPos={volcanoPos}
               gridSize={1}
-              map={mapRef}
+              map={this.state.mapLeafletRef}
               windSpeed={windSpeed}
               windDirection={windDirection}
               colHeight={colHeight}
@@ -226,14 +230,14 @@ export class MapComponent extends BaseComponent<IProps, IState>{
             {cityItems}
             { isSelectingCrossSection && <CrossSectionDrawLayer
               ref={this.crossRef}
-              map={mapRef}
+              map={this.state.mapLeafletRef}
               p1Lat={crossPoint1Lat}
               p2Lat={crossPoint2Lat}
               p1Lng={crossPoint1Lng}
               p2Lng={crossPoint2Lng}
             /> }
             {isSelectingRuler && <RulerDrawLayer
-              map={mapRef}
+              map={this.state.mapLeafletRef}
             />}
           </Pane>
         </LeafletMap>
@@ -273,8 +277,8 @@ export class MapComponent extends BaseComponent<IProps, IState>{
 
   private reRenderMap = () => {
     if (this.tephraRef.current) {
-
       // Update values in the store to trigger a rerender of this component
+      // note: this does NOT trigger rerender since viewportZoom is not a dependency of the render function
       if (this.map.current) {
         const center = this.map.current.leafletElement.getCenter();
         const zoom = this.map.current.leafletElement.getZoom();
