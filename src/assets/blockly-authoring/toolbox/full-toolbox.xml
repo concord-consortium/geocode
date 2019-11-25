@@ -19,6 +19,13 @@
     <block type="outputPlot"></block>
     <block type="redrawMap"></block>
   </category>
+ <category name="Historic Data" colour="%{BKY_TEXTS_HUE}">
+    <block type="data_sampler"></block>
+    <block type="random_sample"></block>
+    <block type="sample_speed"></block>
+    <block type="sample_direction"></block>
+    <block type="sample_wind"></block>
+  </category>
   <category name="Logic" colour="%{BKY_LOGIC_HUE}">
     <block type="controls_if"></block>
     <block type="logic_compare"></block>
