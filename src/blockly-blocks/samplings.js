@@ -4,7 +4,7 @@
 Blockly.Blocks['data_sampler'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField("Sample wind data from")
+        .appendField("Load wind data from")
         .appendField(new Blockly.FieldDropdown([["Winter","winter"], ["Spring","spring"], ["Summer","summer"], ["Fall","fall"]]), "season");
     this.setInputsInline(true);
     this.setPreviousStatement(true, null);
