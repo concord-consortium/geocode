@@ -19,12 +19,14 @@
     <block type="outputPlot"></block>
     <block type="redrawMap"></block>
   </category>
- <category name="Historic Data" colour="%{BKY_TEXTS_HUE}">
+ <category name="Data" colour="%{BKY_TEXTS_HUE}">
     <block type="data_sampler"></block>
     <block type="random_sample"></block>
     <block type="sample_speed"></block>
     <block type="sample_direction"></block>
     <block type="sample_wind"></block>
+    <block type="create_scenario"></block>
+    <block type="add_scenario_to_list"></block>
   </category>
   <category name="Logic" colour="%{BKY_LOGIC_HUE}">
     <block type="controls_if"></block>
@@ -32,6 +34,22 @@
     <block type="logic_operation"></block>
     <block type="logic_negate"></block>
     <block type="logic_boolean"></block>
+  </category>
+  <category name="Lists" colour="120">
+      <block type="lists_create_empty"></block>
+      <block type="lists_create_with"></block>
+      <block type="lists_create_with_container"></block>
+      <block type="lists_create_with_item"></block>
+      <block type="lists_getIndex"></block>
+      <block type="lists_getSublist"></block>
+      <block type="lists_indexOf"></block>
+      <block type="lists_isEmpty"></block>
+      <block type="lists_length"></block>
+      <block type="lists_repeat"></block>
+      <block type="lists_reverse"></block>
+      <block type="lists_setIndex"></block>
+      <block type="lists_sort"></block>
+      <block type="lists_split"></block>
   </category>
   <category name="Loops" colour="120">
     <block type="controls_repeat_ext">
@@ -62,30 +80,8 @@
     <block type="controls_forEach"></block>
     <block type="controls_flow_statements"></block>
   </category>
-  <category name="Variables" colour="330" custom="VARIABLE">
-  </category>
-  <category name="Data" colour="%{BKY_MATH_HUE}">
-    <block type="text">
-      <field name="TEXT"></field>
-    </block>
-    <block type="math_number">
-      <field name="NUM">123</field>
-    </block>
-    <block type="math_arithmetic"></block>
-    <block type="math_single"></block>
-    <block type="math_random_int">
-      <value name="FROM">
-        <block type="math_number">
-          <field name="NUM">1</field>
-        </block>
-      </value>
-      <value name="TO">
-        <block type="math_number">
-          <field name="NUM">100</field>
-        </block>
-      </value>
-    </block>
-  </category>
+  <category name="Variables" colour="330" custom="VARIABLE"></category>
+  <category name="Functions" custom="PROCEDURE"></category>
   <category name="Logging" colour="260">
     <block type="logprint"></block>
     <block type="stringconcat"></block>
