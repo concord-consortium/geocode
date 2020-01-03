@@ -1,5 +1,5 @@
 <xml id="toolbox" style="display: none">
-  <category name="Volcano" colour="%{BKY_TEXTS_HUE}">
+  <category name="Volcano" colour="32">
     <!-- <block type="console_logger"></block> -->
     <!-- <block type="run_sumilation"></block>
     <block type="fill_cell"></block>
@@ -82,8 +82,8 @@
   </category>
   <category name="Variables" colour="330" custom="VARIABLE"></category>
   <category name="Functions" custom="PROCEDURE"></category>
-  <category name="Logging" colour="260">
+  <!-- <category name="Logging" colour="260">
     <block type="logprint"></block>
     <block type="stringconcat"></block>
-  </category>
+  </category> -->
 </xml>
