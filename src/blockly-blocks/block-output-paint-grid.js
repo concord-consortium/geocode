@@ -7,7 +7,7 @@ Blockly.Blocks['outputPaintGrid'] = {
           .appendField(new Blockly.FieldDropdown([["tephra thickness", "thickness"]]), "result_type");
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
-      this.setColour(230);
+      this.setColour(0);
    this.setTooltip("Color the results of the simulation in the grid with a color");
    this.setHelpUrl("");
     }

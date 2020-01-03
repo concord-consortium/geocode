@@ -8,7 +8,7 @@ Blockly.Blocks['setVEI'] = {
       this.setInputsInline(true);
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
-      this.setColour(150);
+      this.setColour(32);
       this.setTooltip("Volcanic Explosivity Index");
       this.setHelpUrl("Volcanic Explosivity Index");
     }
