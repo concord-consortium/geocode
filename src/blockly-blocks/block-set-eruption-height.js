@@ -9,7 +9,7 @@ Blockly.Blocks['setEruptionHeight'] = {
       this.setInputsInline(true);
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
-      this.setColour(150);
+      this.setColour(32);
    this.setTooltip("");
    this.setHelpUrl("");
     }
