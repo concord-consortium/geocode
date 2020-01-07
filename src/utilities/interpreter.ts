@@ -43,7 +43,7 @@ const makeInterperterFunc = (simulation: SimulationModelType, workspace: IBlockl
       simulation.erupt(animate);
     });
 
-    addFunc("setWinddirection", (direction: number) => {
+    addFunc("setWindDirection", (direction: number) => {
       simulation.setWindDirection(direction);
     });
 
