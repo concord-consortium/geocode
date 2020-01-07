@@ -96,7 +96,7 @@ export class CircularHisto extends React.Component<IProps, IState> {
           <circle cx={0} cy={0} r={50} fill="none" stroke="black" strokeWidth={0.01} />
           <circle cx={0} cy={0} r={25} fill="none" stroke="black" strokeWidth={0.01} />
           { data.map(toPoint) }
-          {selectedDatum && toPoint(selectedDatum!, data.length + 1, true) }
+          {selectedDatum && toPoint(selectedDatum!, data.length + 1) }
           }
         </svg>
         {selectedDatum &&
