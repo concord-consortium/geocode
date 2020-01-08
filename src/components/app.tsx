@@ -191,7 +191,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     const tabWidth = Math.floor(width * .5);
     const mapWidth = Math.floor(width * .5);
     const blocklyWidth = tabWidth - (blocklyMargin * 2);
-    const blocklyHeight = Math.floor(height * .7);
+    const blocklyHeight = Math.floor(height - 90);
     const logWidth = Math.floor(tabWidth * 0.95);
     const logHeight = Math.floor(height * .2);
     const scenarioData = (Scenarios as {[key: string]: {[key: string]: number}})[scenario];

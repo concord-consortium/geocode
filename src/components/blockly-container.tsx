@@ -27,7 +27,7 @@ interface WorkspaceProps {
 const WorkSpace = styled.div`
   font-family: sans-serif;
   width: ${(p: WorkspaceProps) => `${p.width}px`};
-  height: 100%;
+  height: ${(p: WorkspaceProps) => `${p.height}px`};
 `;
 
 export default class BlocklyContainer extends React.Component<IProps, IState> {
