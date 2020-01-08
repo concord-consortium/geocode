@@ -4,6 +4,7 @@ import { inject, observer } from "mobx-react";
 import RangeControl from "./range-control";
 import styled from "styled-components";
 import RunIcon from "../assets/blockly-icons/run.svg";
+import ResetIcon from "../assets/blockly-icons/reset.svg";
 import IconButton from "./icon-button";
 import { HorizontalContainer, VerticalContainer, Footer, TabContent } from "./styled-containers";
 import VEIWidget from "./vei-widget";
@@ -46,6 +47,8 @@ const ControlLabel = styled.label`
 
 const EruptButtons = styled.div`
   position: relative;
+  display: flex;
+  flex-direction: row;
 `;
 
 const NoteLabel = styled.label`
@@ -78,7 +81,8 @@ export class Controls extends BaseComponent<IProps, IState> {
       stagingMass,
       stagingColHeight,
       stagingWindSpeed,
-      stagingVei
+      stagingVei,
+      reset
     } = this.stores.simulation;
 
     const {
@@ -221,6 +225,17 @@ export class Controls extends BaseComponent<IProps, IState> {
         </ControlsContainer>
         <Footer>
           <EruptButtons>
+            <IconButton
+              onClick={reset}
+              disabled={false}
+              children={<ResetIcon />}
+              label={"Reset"}
+              hoverColor={"#FFDBAC"}
+              activeColor={"#FFECD6"}
+              fill={"#FFAC00"}
+              width={26}
+              height={26}
+            />
             <IconButton
               onClick={this.erupt}
               disabled={false}
