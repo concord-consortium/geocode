@@ -116,9 +116,15 @@ export const deserializeState = (serializedState: SerializedState): IStoreish =>
 };
 
 export function updateStores(state: IStoreish) {
-  const simulationStoreSettings: SimulationAuthorSettings = pick(simulationAuthorStateProps)(state.simulation);
-  const uiStoreSettings: UIAuthorSettings = pick(uiAuthorSettingsProps)(state.uiStore);
+  // TODO: FixMe NP 2020-01-09 :
+  // For some reason this filtering was preventing stagingVei from saving
+  // when it the slider was hidden in the UI …
 
-  simulation.loadAuthorSettingsData(simulationStoreSettings);
-  uiStore.loadAuthorSettingsData(uiStoreSettings);
+  // const simulationStoreSettings: SimulationAuthorSettings = pick(simulationAuthorStateProps)(state.simulation);
+  // const uiStoreSettings: UIAuthorSettings = pick(uiAuthorSettingsProps)(state.uiStore);
+  // uiStore.loadAuthorSettingsData(uiStoreSettings);
+  // simulation.loadAuthorSettingsData(simulationStoreSettings);
+
+  uiStore.loadAuthorSettingsData(state.uiStore);
+  simulation.loadAuthorSettingsData(state.simulation);
 }
