@@ -23,14 +23,9 @@ Blockly.Blocks['run_simulation'] = {
   }
 
   Blockly.JavaScript['run_simulation'] = function(block) {
-    console.log("C START");
     var value_vei = Blockly.JavaScript.valueToCode(block, 'vei', Blockly.JavaScript.ORDER_ATOMIC);
-    console.log(`C vei ${value_vei}`);
     var value_wind_speed = Blockly.JavaScript.valueToCode(block, 'wind_speed', Blockly.JavaScript.ORDER_ATOMIC);
-    console.log(`C value_wind_speed ${value_wind_speed}`);
     var value_direction = Blockly.JavaScript.valueToCode(block, 'wind_direction', Blockly.JavaScript.ORDER_ATOMIC);
-    console.log(`C value_direction ${value_direction}`);
-    console.log("C END");
     var code = `
       var vei=${value_vei||4};
       var speed=${value_wind_speed || 0};

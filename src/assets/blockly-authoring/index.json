@@ -1,7 +1,11 @@
 {
   "toolbox": {
     "First": "./assets/blockly-authoring/toolbox/first-toolbox.xml",
-    "Everything": "./assets/blockly-authoring/toolbox/full-toolbox.xml"
+    "Everything": "./assets/blockly-authoring/toolbox/full-toolbox.xml",
+    "Wind": "./assets/blockly-authoring/toolbox/wind-toolbox.xml",
+    "Wind and VEI": "./assets/blockly-authoring/toolbox/wind-vei-toolbox.xml",
+    "Wind and height": "./assets/blockly-authoring/toolbox/wind-height-toolbox.xml",
+    "Wind + 2": "./assets/blockly-authoring/toolbox/wind-2-toolbox.xml"
   },
   "code": {
     "Basic": "./assets/blockly-authoring/code/basic-setup.xml",
