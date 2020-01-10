@@ -4,7 +4,7 @@ import * as L from "leaflet";
 import { Map as LeafletMap, TileLayer, Marker, Popup, ScaleControl, Pane } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "../css/map-component.css";
-import { iconVolcano, getCachedDivIcon } from "./icons";
+import { iconVolcano, iconMarker, getCachedDivIcon } from "./icons";
 
 import { CityType  } from "../stores/simulation-store";
 import * as Scenarios from "./../assets/maps/scenarios.json";
@@ -20,11 +20,25 @@ import { RightSectionTypes } from "./tabs";
 import KeyButton from "./map-key-button";
 import CompassComponent from "./map-compass";
 import TephraLegendComponent from "./map-tephra-legend";
+import { number } from "mobx-state-tree/dist/internal";
 
 interface WorkspaceProps {
   width: number;
   height: number;
 }
+export interface Scenario {
+  initialZoom: number;
+  minZoom: number;
+  maxZoom: number;
+  topLeftLat: number;
+  topLeftLng: number;
+  bottomRightLat: number;
+  bottomRightLng: number;
+  volcanoLat: number;
+  volcanoLng: number;
+  extraMarkers?: any[];
+}
+
 const CanvDiv = styled.div`
   border: 0px solid black; border-radius: 0px;
   width: ${(p: WorkspaceProps) => `${p.width - 56}px`};
@@ -126,7 +140,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
 
     const { showCrossSection } = this.stores.uiStore;
 
-    const scenarioData = (Scenarios as {[key: string]: {[key: string]: number}})[scenario];
+    const scenarioData = (Scenarios as {[key: string]: Scenario})[scenario];
 
     const {
       initialZoom,
@@ -135,7 +149,8 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       topLeftLat,
       topLeftLng,
       bottomRightLat,
-      bottomRightLng
+      bottomRightLng,
+      extraMarkers,
     } = scenarioData;
 
     const {
@@ -150,7 +165,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
         const cityIcon = getCachedDivIcon(name);
         return (
           <Marker
-          position={[mapPos.lat, mapPos.lng]}
+          position={[x, y]}
           icon={cityIcon}
           key={name}>
             <Popup>
@@ -160,7 +175,23 @@ export class MapComponent extends BaseComponent<IProps, IState>{
         );
       }
     });
-
+    const pinItems = extraMarkers
+      ? extraMarkers.map( (city: CityType) => {
+        const {x, y, name} = city;
+        if (x && y && name) {
+          return (
+            <Marker
+            position={[x, y]}
+            icon={iconMarker}
+            key={name}>
+              <Popup>
+                {name}
+              </Popup>
+            </Marker>
+          );
+        }
+      })
+    : null;
     const { crossPoint1Lat, crossPoint1Lng, crossPoint2Lat, crossPoint2Lng } = this.stores.simulation;
     const volcanoPos = L.latLng(volcanoLat, volcanoLng);
     const corner1 = L.latLng(topLeftLat, topLeftLng);
@@ -228,6 +259,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
               </Popup>
             </Marker>
             {cityItems}
+            {pinItems}
             { isSelectingCrossSection && <CrossSectionDrawLayer
               ref={this.crossRef}
               map={this.state.mapLeafletRef}
@@ -268,7 +300,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
   private onRecenterClick = () => {
     if (this.map.current) {
       const { volcanoLat, volcanoLng, scenario } = this.stores.simulation;
-      const scenarioData = (Scenarios as {[key: string]: {[key: string]: number}})[scenario];
+      const scenarioData = (Scenarios as {[key: string]: Scenario})[scenario];
       const { initialZoom } = scenarioData;
 
       this.map.current.leafletElement.flyTo(L.latLng(volcanoLat, volcanoLng), initialZoom);
