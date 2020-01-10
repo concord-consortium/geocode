@@ -10,6 +10,28 @@
         "maxZoom": 10,
         "initialZoom": 8
     },
+    "Cerro Negro (markers)": {
+        "topLeftLat": 22,
+        "topLeftLng": -96,
+        "bottomRightLat": 2,
+        "bottomRightLng": -76,
+        "volcanoLat": 12.5078,
+        "volcanoLng": -86.7022,
+        "minZoom": 6,
+        "maxZoom": 10,
+        "initialZoom": 8,
+        "extraMarkers": [
+            {
+                "x": 12.1150,
+                "y": -86.2362,
+                "name": "Managua, Nicaragua"
+            },{
+                "x": 11.1292,
+                "y": -84.7772,
+                "name": "San Carlos, Nicaragua"
+            }
+        ]
+    },
     "Mt. St. Helens": {
         "topLeftLat": 56,
         "topLeftLng": -130,

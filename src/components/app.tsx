@@ -2,7 +2,7 @@ import { inject, observer } from "mobx-react";
 import * as React from "react";
 import { LineChart, Line, CartesianGrid, XAxis, YAxis } from "recharts";
 import { BaseComponent, IBaseProps } from "./base";
-import { MapComponent } from "./map-component";
+import { MapComponent, Scenario } from "./map-component";
 import { LogComponent } from "./log-component";
 import { CrossSectionComponent } from "./cross-section-component";
 import * as Maps from "./../assets/maps/maps.json";
@@ -194,12 +194,9 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     const blocklyHeight = Math.floor(height - 90);
     const logWidth = Math.floor(tabWidth * 0.95);
     const logHeight = Math.floor(height * .2);
-    const scenarioData = (Scenarios as {[key: string]: {[key: string]: number}})[scenario];
+    const scenarioData = (Scenarios as {[key: string]: Scenario})[scenario];
 
-    const latKey = "volcanoLat";
-    const lngKey = "volcanoLng";
-
-    this.stores.simulation.setVolcano(scenarioData[latKey], scenarioData[lngKey]);
+    this.stores.simulation.setVolcano(scenarioData.volcanoLat, scenarioData.volcanoLng);
 
     kTabInfo.blocks.index = showBlocks ? 0 : -1;
     kTabInfo.code.index = showCode ? kTabInfo.blocks.index + 1 : -1;
