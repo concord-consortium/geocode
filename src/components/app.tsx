@@ -7,7 +7,7 @@ import { LogComponent } from "./log-component";
 import { CrossSectionComponent } from "./crosssection/cross-section-component";
 import * as Scenarios from "./../assets/maps/scenarios.json";
 import * as BlocklyAuthoring from "./../assets/blockly-authoring/index.json";
-
+import { enableShutterbug, disableShutterbug } from "../utilities/shutterbug-support";
 import BlocklyContainer from "./blockly-container";
 import styled from "styled-components";
 import { StyledButton } from "./buttons/styled-button";
@@ -153,6 +153,14 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     this.state = initialState;
 
     this.blocklyController = new BlocklyController(this.stores);
+  }
+
+  public componentDidMount() {
+    enableShutterbug("app");
+  }
+
+  public componentWillUnmount() {
+    disableShutterbug();
   }
 
   public render() {
