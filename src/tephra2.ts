@@ -16,8 +16,8 @@ const kLargeDiskGridSize = 3000;          // larger = fewer calculations
 const kSmallDiskRadius = 500;
 const kSmallDiskGridSize = 300;
 const kLargeDiskMassThreshold = 1e11;    // when to use the large disk size (1e11 = VEI 4)
-const kNumSimulatedPhiClasses = 7;       // 7 or 15, or you'll need to pre-calculate more massFractions
-const kNumColumnHeightSteps = 5;         // >=1, smaller = fewer calculations
+const kNumSimulatedPhiClasses = 8;       // 7 or 15, or you'll need to pre-calculate more massFractions
+const kNumColumnHeightSteps = 3;         // >=1, smaller = fewer calculations
 // the following constants should not be changed
 const g = 9.81;             // gravitational constant m*s^-2
 const airVisc = 1.8325e-5;  // air viscosity in N s / m^2 at 24C
@@ -61,6 +61,16 @@ const massFractions: {[numClasses: number]: {[phi: number]: number}} = {
     "1": 0.18326601312220842,
     "2": 0.15114071638352605,
     "3": 0.10739993035291956,
+  },
+  8: {
+    "-1": 0.145919098501,
+    "0": 0.169752077988,
+    "1": 0.164207346091,
+    "1.6": 0.147325762083,
+    "2.2": 0.1236854215,
+    "2.5": 0.110540294723,
+    "2.7": 0.101620643448,
+    "3": 0.0883412633216
   }
 };
 
@@ -204,7 +214,7 @@ const tephraCalc3 = (
   const cellMass = mass / diskGrid.length;     // mass per eruption cell, total at all heights
   const cellMassAtHeight = cellMass / kNumColumnHeightSteps;
   const heights = Array.from(Array(kNumColumnHeightSteps).keys()).map(step =>
-    colHeight - (colHeight * columnHeightSpread * (step / (kNumColumnHeightSteps - 1))));   // array of heights
+    colHeight - (colHeight * columnHeightSpread * ((step / (kNumColumnHeightSteps - 1)) || 0)));   // array of heights
   const simulatedPhiClasses = Object.keys(massFractions[numPhiClasses]).map(Number);
 
   let totalLoad = 0;
