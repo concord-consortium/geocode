@@ -201,7 +201,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           <Pane
             style={{zIndex: 0}}>
             <TileLayer
-                url="https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}@2x.png"
+                url="https://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
             />
             <MapTephraThicknessLayer
               ref={this.tephraRef}
