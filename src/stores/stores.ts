@@ -35,7 +35,6 @@ const simulationAuthorStateProps = (simulationAuthorSettingsProps as string[]).c
   "stagingWindSpeed",
   "stagingWindDirection",
   "stagingMass",
-  "stagingVei",
   "stagingColHeight",
 ));
 

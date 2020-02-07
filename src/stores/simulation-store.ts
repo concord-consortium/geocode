@@ -91,13 +91,11 @@ export const SimulationStore = types
     windSpeed: 6,
     windDirection: 0,    // from north
     mass: 10000000000000,
-    vei: 1,
     colHeight: 20000,      // meters
     particleSize: 1,
     stagingWindSpeed: 6,
     stagingWindDirection: 0,
     stagingMass: 10000000000000,
-    stagingVei: 1,
     stagingColHeight: 20000,
     stagingParticleSize: 1,
     coloredWindSpeed: 6,
@@ -136,6 +134,34 @@ export const SimulationStore = types
     running: false,
     steppingThroughBlock: false,
   }))
+  .views((self) => {
+    const getVei = (mass: number, colHeight: number) => {
+      // calculate the vei given the mass and the column height.
+      // If the mass and column height were set by setting vei, these values will agree. If the user manually
+      // changes mass and column height, we must make our best guess. We take the averge and round towards the
+      // value given by mass.
+      const massVEI =  Math.max(7, Math.min(15, Math.round(Math.log(mass) / Math.LN10))) - 7;
+      let columnVEI = 1;
+      while (columnVEI < 9 && kVEIIndexInfo[columnVEI].columnHeight < colHeight) {
+        columnVEI++;
+      }
+      if (massVEI === columnVEI) {
+        return massVEI;
+      }
+      const round = massVEI < columnVEI ? Math.floor : Math.ceil;
+      return round((massVEI + columnVEI) / 2);
+    };
+    return {
+      get vei() {
+        // calculate the vei given the mass and the column height.
+        return getVei(self.mass, self.colHeight);
+      },
+      get stagingVei() {
+        // calculate the vei given the staging mass and the column height, used for vei slider
+        return getVei(self.stagingMass, self.stagingColHeight);
+      }
+    };
+  })
   .actions((self) => ({
     endEruption() {
       self.isErupting = false;
@@ -292,7 +318,6 @@ export const SimulationStore = types
       self.windDirection = self.stagingWindDirection;
       self.colHeight = self.stagingColHeight;
       self.mass = self.stagingMass;
-      self.vei = self.stagingVei;
       self.particleSize = self.stagingParticleSize;
 
       // auto-repaint if necessary
@@ -356,16 +381,13 @@ export const SimulationStore = types
       },
       setMass(mass: number) {
         self.stagingMass = mass;
-        // set equivalent VEI for reporting
-        self.vei = Math.max(7, Math.min(15, Math.round(Math.log(mass) / Math.LN10))) - 7;
         if (!self.requireEruption) {
           self.erupt();
         }
       },
       setVEI(vei: number) {
+        // setting vei just sets mass and column height
         const clippedVEI = Math.max(0, Math.min(vei, 8));
-        self.stagingVei = clippedVEI;
-        // for now this is just setting the mass
         // we want vei 1 = 1e8, vei 8 = 1e15
         const mass = Math.pow(10, clippedVEI + 7);
         self.stagingMass = mass;
