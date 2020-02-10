@@ -1,46 +1,40 @@
 Blockly.Blocks['run_simulation'] = {
     init: function() {
-      this.appendValueInput("mass")
+      this.appendDummyInput()
+          .appendField("Run simulation");
+      this.appendValueInput("vei")
           .setCheck("Number")
           .setAlign(Blockly.ALIGN_RIGHT)
-          .appendField("Mass (kg)");
-      this.appendValueInput("coumn_height")
-          .setCheck("Number")
-          .setAlign(Blockly.ALIGN_RIGHT)
-          .appendField("Column Height (km)");
+          .appendField("VEI");
       this.appendValueInput("wind_speed")
           .setCheck("Number")
           .setAlign(Blockly.ALIGN_RIGHT)
           .appendField("Wind Speed (m/s)");
-      this.appendValueInput("particle_size")
+      this.appendValueInput("wind_direction")
           .setCheck("Number")
           .setAlign(Blockly.ALIGN_RIGHT)
-          .appendField("Particle Size");
+          .appendField("Wind Direction");
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
-      this.setColour(230);
+      this.setColour(0);
       this.setTooltip("Simulation parameters");
       this.setHelpUrl("");
     }
   }
 
   Blockly.JavaScript['run_simulation'] = function(block) {
-    var value_mass = Blockly.JavaScript.valueToCode(block, 'mass', Blockly.JavaScript.ORDER_ATOMIC);
-    var value_coumn_height = Blockly.JavaScript.valueToCode(block, 'coumn_height', Blockly.JavaScript.ORDER_ATOMIC);
+    var value_vei = Blockly.JavaScript.valueToCode(block, 'vei', Blockly.JavaScript.ORDER_ATOMIC);
     var value_wind_speed = Blockly.JavaScript.valueToCode(block, 'wind_speed', Blockly.JavaScript.ORDER_ATOMIC);
-    var value_particle_size = Blockly.JavaScript.valueToCode(block, 'particle_size', Blockly.JavaScript.ORDER_ATOMIC);
-    // TODO: Assemble JavaScript into code variable.
-    var code = '...;\n';
+    var value_direction = Blockly.JavaScript.valueToCode(block, 'wind_direction', Blockly.JavaScript.ORDER_ATOMIC);
     var code = `
-      var mass=${value_mass};
-      var modelParams = {
-        mass: ${value_mass || 100},
-        colHeight: ${value_coumn_height || 10},
-        windSpeed: ${value_wind_speed || 0},
-        particleSize: ${value_particle_size || 1}
-      }
-      // this.setModelParams(modelParams);
-      this.setModelParams(modelParams);
+      var vei=${value_vei||4};
+      var speed=${value_wind_speed || 0};
+      var direction=${value_direction || 0};
+      this.setVEI(vei);
+      this.setWindspeed(speed);
+      this.setWindDirection(direction);
+      this.erupt();
+      this.paintMap();
     `;
     return code;
   }
