@@ -6,7 +6,7 @@ import * as iframePhone from "iframe-phone";
 
 import { AppComponent } from "./components/app";
 import { onSnapshot } from "mobx-state-tree";
-import { stores, serializeState, getSavableState, deserializeState, updateStores, SerializedState } from "./stores/stores";
+import { stores, serializeState, getSavableState, deserializeState, updateStores, SerializedState, IStoreish } from "./stores/stores";
 
 ReactDOM.render(
   <Provider stores={stores}>
@@ -21,6 +21,25 @@ const phone = iframePhone.getIFrameEndpoint();
 
 type Mode = "student" | "author";
 let mode: Mode = "student";
+let initialState: IStoreish;
+let unsaved = true;
+
+// Save data everytime stores change (after initInteractive is called)
+const saveUserData = () => {
+  if (unsaved && JSON.stringify(initialState) === JSON.stringify(serializeState(getSavableState()).state)) {
+    // only save state if either we've made a real change to the store, or we've saved at least once
+    return;
+  }
+
+  if (mode === "student") {
+    // currently the student and author save the same data. Eventually we may want some things,
+    // like active tab state, to be saved only for one or the other
+    phone.post("interactiveState", serializeState(getSavableState()));
+  } else {
+    phone.post("authoredState", serializeState(getSavableState()));
+  }
+  unsaved = false;
+};
 
 // If we are embedded in LARA, wait for `initInteractive` and initialize model with any student data
 phone.addListener("initInteractive", (data: {
@@ -35,27 +54,18 @@ phone.addListener("initInteractive", (data: {
 
   if (data.mode === "authoring") {
     mode = "author";
-    updateStores(deserializeState(authorState));
+    initialState = deserializeState(authorState);
   } else {
     // student state overwrites authored state
     const mergedState = {...authorState, ...studentState};
-    updateStores(deserializeState(mergedState));
+    initialState = deserializeState(mergedState);
     stores.uiStore.setShowOptionsDialog(false);
   }
-});
+  updateStores(initialState);
 
-// Save data everytime stores change
-const saveUserData = () => {
-  if (mode === "student") {
-    // currently the student and author save the same data. Eventually we may want some things,
-    // like active tab state, to be saved only for one or the other
-    phone.post("interactiveState", serializeState(getSavableState()));
-  } else {
-    phone.post("authoredState", serializeState(getSavableState()));
-  }
-};
-onSnapshot(stores.simulation, saveUserData);       // MobX function called on every store change
-onSnapshot(stores.uiStore, saveUserData);
+  onSnapshot(stores.simulation, saveUserData);       // MobX function called on every store change
+  onSnapshot(stores.uiStore, saveUserData);
+});
 
 // When we exit page and LARA asks for student data, tell it it's already up-to-date
 phone.addListener("getInteractiveState", () => {
