@@ -10,6 +10,12 @@ const iconVolcano = new L.Icon({
     iconSize: new L.Point(25, 25),
 });
 
+const iconMarker = new L.Icon({
+    iconUrl: "./assets/marker.png",
+    iconRetinaUrl: "./assets/marker.png",
+    iconSize: new L.Point(20, 30),
+});
+
 // Cache icons. First, it's just faster. Second, it prevents us from unnecessary re-rendering and buttons blinking.
 const iconsCache: Map<string, DivIcon> = new Map<string, DivIcon>();
 
@@ -34,4 +40,4 @@ export function getCachedDivIcon(label: string) {
     return iconsCache.get(iconKey);
 }
 
-export { iconVolcano };
+export { iconVolcano, iconMarker };
