@@ -16,7 +16,7 @@ const kLargeDiskGridSize = 3000;          // larger = fewer calculations
 const kSmallDiskRadius = 500;
 const kSmallDiskGridSize = 300;
 const kLargeDiskMassThreshold = 1e11;    // when to use the large disk size (1e11 = VEI 4)
-const kNumSimulatedPhiClasses = 8;       // 7 or 15, or you'll need to pre-calculate more massFractions
+const kNumSimulatedPhiClasses = 8;       // 7, 8 or 15, or you'll need to pre-calculate more massFractions
 const kNumColumnHeightSteps = 3;         // >=1, smaller = fewer calculations
 // the following constants should not be changed
 const g = 9.81;             // gravitational constant m*s^-2
@@ -221,7 +221,6 @@ const tephraCalc3 = (
 
   heights.forEach(height => {
     simulatedPhiClasses.forEach(phi => {
-      // if (phi !== 3) return;
       const phiCellMass = cellMassAtHeight * massFractions[numPhiClasses][phi];
       const settlingSpeed = getSettlingSpeed(phi, colHeight);
       diskGrid.forEach(diskCell => {
