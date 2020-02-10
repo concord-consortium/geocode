@@ -57,8 +57,8 @@ describe("tephra3 calculations", () => {
 
     it("for low mass, no wind", () => {
       const tephraThicknessData = [
-        {y: 0, expectedThickness: 12.306},
-        {y: 51000, expectedThickness: 0.078227},
+        {y: 0, expectedThickness: 13.095311},
+        {y: 51000, expectedThickness: 0.072006},
         {y: 102000, expectedThickness: 0.007534},
         {y: 153000, expectedThickness: 0.002121},
         {y: 204000, expectedThickness: 0.000829}
@@ -85,8 +85,8 @@ describe("tephra3 calculations", () => {
 
     it("for high mass, no wind", () => {
       const tephraThicknessData = [
-        {y: 0, expectedThickness: 61.5321},
-        {y: 51000, expectedThickness: 0.391136},
+        {y: 0, expectedThickness: 65.476559},
+        {y: 51000, expectedThickness: 0.360033},
         {y: 102000, expectedThickness: 0.037672},
         {y: 153000, expectedThickness: 0.010605},
         {y: 204000, expectedThickness: 0.004145}
@@ -113,11 +113,11 @@ describe("tephra3 calculations", () => {
 
     it("for low mass with wind", () => {
       const tephraThicknessData = [
-        {y: 0, expectedThickness: 4.73862},
-        {y: 5100, expectedThickness: 7.33958},
-        {y: 51000, expectedThickness: 1.324843},
-        {y: 102000, expectedThickness: 0.486613},
-        {y: 153000, expectedThickness: 0.024951},
+        {y: 0, expectedThickness: 5.51739},
+        {y: 5100, expectedThickness: 8.28432},
+        {y: 51000, expectedThickness: 1.256186},
+        {y: 102000, expectedThickness: 0.367375},
+        {y: 153000, expectedThickness: 0.079771},
       ];
 
       tephraThicknessData.forEach( (test) => {

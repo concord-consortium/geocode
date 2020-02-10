@@ -15,8 +15,9 @@ const kLargeDiskRadius = 10000;
 const kLargeDiskGridSize = 3000;          // larger = fewer calculations
 const kSmallDiskRadius = 500;
 const kSmallDiskGridSize = 300;
-const kLargeDiskMassThreshold = 1e11;      // when to use the large disk size (1e11 = VEI 4)
-const kNumSimulatedPhiClasses = 7;    // 7 or 15, or you'll need to pre-calculate more massFractions
+const kLargeDiskMassThreshold = 1e11;    // when to use the large disk size (1e11 = VEI 4)
+const kNumSimulatedPhiClasses = 8;       // 7, 8 or 15, or you'll need to pre-calculate more massFractions
+const kNumColumnHeightSteps = 3;         // >=1, smaller = fewer calculations
 // the following constants should not be changed
 const g = 9.81;             // gravitational constant m*s^-2
 const airVisc = 1.8325e-5;  // air viscosity in N s / m^2 at 24C
@@ -27,6 +28,7 @@ const rhoPMax = 1000;       // maximum particle density Kg*m^-3
 const rhoAS = 1.225;        // air density at sea level in Kg*m^-3
 const diffusionCoeff = 10000;
 const bulkDensity = 1000;
+const columnHeightSpread = 0.2;    // the mass is in the top 20% of the column, when using kNumColumnHeightSteps > 1
 
 // get the fraction of total mass for each phi class.
 // in the original Python code, there are a number of steps involving Cumulative Distribution Functions
@@ -59,6 +61,16 @@ const massFractions: {[numClasses: number]: {[phi: number]: number}} = {
     "1": 0.18326601312220842,
     "2": 0.15114071638352605,
     "3": 0.10739993035291956,
+  },
+  8: {
+    "-1": 0.145919098501,
+    "0": 0.169752077988,
+    "1": 0.164207346091,
+    "1.6": 0.147325762083,
+    "2.2": 0.1236854215,
+    "2.5": 0.110540294723,
+    "2.7": 0.101620643448,
+    "3": 0.0883412633216
   }
 };
 
@@ -199,16 +211,23 @@ const tephraCalc3 = (
   numPhiClasses: number
   ) => {
   const diskGrid = getEruptionDiskGrid(xVent, yVent, diskRadius, diskGridSize);
-  const cellMass = mass / diskGrid.length;     // mass per eruption cell
-  let totalLoad = 0;
+  const cellMass = mass / diskGrid.length;     // mass per eruption cell, total at all heights
+  const cellMassAtHeight = cellMass / kNumColumnHeightSteps;
+  const heights = Array.from(Array(kNumColumnHeightSteps).keys()).map(step =>
+    colHeight - (colHeight * columnHeightSpread * ((step / (kNumColumnHeightSteps - 1)) || 0)));   // array of heights
   const simulatedPhiClasses = Object.keys(massFractions[numPhiClasses]).map(Number);
-  simulatedPhiClasses.forEach(phi => {
-    const phiCellMass = cellMass * massFractions[numPhiClasses][phi];
-    const settlingSpeed = getSettlingSpeed(phi, colHeight);
-    diskGrid.forEach(diskCell => {
-      const load = tephraLoadFromDiskCell(
-        x, y, diskCell.x, diskCell.y, windSpeed, phiCellMass, colHeight, settlingSpeed);
-      totalLoad += load;
+
+  let totalLoad = 0;
+
+  heights.forEach(height => {
+    simulatedPhiClasses.forEach(phi => {
+      const phiCellMass = cellMassAtHeight * massFractions[numPhiClasses][phi];
+      const settlingSpeed = getSettlingSpeed(phi, colHeight);
+      diskGrid.forEach(diskCell => {
+        const load = tephraLoadFromDiskCell(
+          x, y, diskCell.x, diskCell.y, windSpeed, phiCellMass, height, settlingSpeed);
+        totalLoad += load;
+      });
     });
   });
   const tephraTickeness = (totalLoad / bulkDensity) * 100;
