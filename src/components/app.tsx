@@ -329,7 +329,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 width={`${tabWidth}px`}
                 tabcolor={this.getRightTabColor(RightSectionTypes.CONDITIONS)}
                 rightpanel={"true"}
-                data-test={this.getRightTabColor(RightSectionTypes.CONDITIONS) + "-panel"}
+                data-test={this.getRightTabName(RightSectionTypes.CONDITIONS) + "-panel"}
               >
                 <Simulation width={mapWidth} backgroundColor={this.getRightTabColor(RightSectionTypes.CONDITIONS)}>
                   <MapComponent
@@ -346,7 +346,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 width={`${tabWidth}px`}
                 tabcolor={this.getRightTabColor(RightSectionTypes.CROSS_SECTION)}
                 rightpanel={"true"}
-                data-test={this.getRightTabColor(RightSectionTypes.CROSS_SECTION) + "-panel"}
+                data-test={this.getRightTabName(RightSectionTypes.CROSS_SECTION) + "-panel"}
               >
                 <Simulation width={mapWidth} backgroundColor={this.getRightTabColor(RightSectionTypes.CROSS_SECTION)}>
                   <MapComponent
@@ -366,7 +366,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 width={`${tabWidth}px`}
                 tabcolor={this.getRightTabColor(RightSectionTypes.DATA)}
                 rightpanel={"true"}
-                data-test={this.getRightTabColor(RightSectionTypes.DATA) + "-panel"}
+                data-test={this.getRightTabName(RightSectionTypes.DATA) + "-panel"}
               >
                 <div>
                   <LineChart width={mapWidth} height={200} data={plotData.chartData}>
