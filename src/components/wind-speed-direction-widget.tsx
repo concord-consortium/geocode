@@ -121,7 +121,7 @@ export default class WindSpeedDirectionWidget extends PureComponent<IProps, ISta
             </RotateDiv>
           }
         </RelativeIconContainer>
-        <ValueOutput>
+        <ValueOutput data-test="info">
           <HorizontalContainer alignItems="center" justifyContent="center">
           {showWindSpeed && <div>{windSpeed} m/s</div>}
           {(showWindSpeed && showWindDirection) && <ValueDivider/ >}

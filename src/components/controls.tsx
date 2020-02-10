@@ -98,10 +98,10 @@ export class Controls extends BaseComponent<IProps, IState> {
         <ControlsContainer>
           {(showWindSpeed || showWindDirection) && <ControlContainer
                                                       height={showWindSpeed && showWindDirection ? 172 : 100}>
-            <HorizontalContainer alignItems="center">
+            <HorizontalContainer alignItems="center" data-test="wind-direction-speed-slider-container">
               <VerticalContainer alignItems="center" justifyContent="center">
                 {showWindSpeed && <ControlLabel>Wind Speed (m/s)</ControlLabel>}
-                {showWindSpeed && <HorizontalContainer>
+                {showWindSpeed && <HorizontalContainer data-test="wind-speed-slider">
                   <RangeControl
                     min={0}
                     max={30}
@@ -113,7 +113,7 @@ export class Controls extends BaseComponent<IProps, IState> {
                   />
                 </HorizontalContainer> }
                 {showWindDirection && <ControlLabel>Wind Direction (° from North)</ControlLabel>}
-                {showWindDirection && <HorizontalContainer>
+                {showWindDirection && <HorizontalContainer data-test="wind-direction-slider">
                   <RangeControl
                     min={0}
                     max={360}
@@ -141,10 +141,10 @@ export class Controls extends BaseComponent<IProps, IState> {
             </HorizontalContainer>
           </ControlContainer>}
           {showEjectedVolume && <ControlContainer>
-            <HorizontalContainer>
+            <HorizontalContainer data-test="ejected-volume-slider-container">
               <VerticalContainer alignItems="center" justifyContent="center">
                 <ControlLabel>Ejected Volume (km<sup>3</sup>)</ControlLabel>
-                <HorizontalContainer>
+                <HorizontalContainer data-test="ejected-volume-slider">
                   <RangeControl
                     min={0}
                     max={7}
@@ -172,10 +172,10 @@ export class Controls extends BaseComponent<IProps, IState> {
             </HorizontalContainer>
           </ControlContainer>}
           {showColumnHeight && <ControlContainer>
-            <HorizontalContainer>
+            <HorizontalContainer data-test="column-height-slider-container">
               <VerticalContainer alignItems="center" justifyContent="center">
                 <ControlLabel>Column Height (km)</ControlLabel>
-                <HorizontalContainer>
+                <HorizontalContainer data-test="column-height-slider">
                   <RangeControl
                     min={.5}
                     max={25}
@@ -194,10 +194,10 @@ export class Controls extends BaseComponent<IProps, IState> {
             </HorizontalContainer>
           </ControlContainer>}
           {showVEI && <ControlContainer>
-            <HorizontalContainer>
+            <HorizontalContainer data-test="vei-slider-container">
               <VerticalContainer alignItems="center" justifyContent="center">
                 <label>VEI</label>
-                <HorizontalContainer>
+                <HorizontalContainer data-test="vei-slider">
                   <RangeControl
                     min={1}
                     max={8}

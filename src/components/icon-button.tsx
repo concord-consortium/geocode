@@ -71,6 +71,7 @@ export default class IconButton extends PureComponent<IProps, IState> {
         backgroundColor={backgroundColor}
         hoverColor={hoverColor}
         activeColor={activeColor}
+        data-test={label + "-button"}
       >
         { children && <Icon
             width={width}

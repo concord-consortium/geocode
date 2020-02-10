@@ -238,6 +238,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                   rightofselected={tabIndex === (kTabInfo.blocks.index - 1) ? "true" : undefined}
                   backgroundcolor={this.getTabColor(SectionTypes.BLOCKS)}
                   backgroundhovercolor={this.getTabHoverColor(SectionTypes.BLOCKS)}
+                  data-test={this.getTabName(SectionTypes.BLOCKS) + "-tab"}
                 >
                   {this.getTabName(SectionTypes.BLOCKS)}
                 </Tab>
@@ -249,6 +250,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                   rightofselected={tabIndex === (kTabInfo.code.index - 1) ? "true" : undefined}
                   backgroundcolor={this.getTabColor(SectionTypes.CODE)}
                   backgroundhovercolor={this.getTabHoverColor(SectionTypes.CODE)}
+                  data-test={this.getTabName(SectionTypes.CODE) + "-tab"}
                 >
                   {this.getTabName(SectionTypes.CODE)}
                 </Tab>
@@ -260,6 +262,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                   rightofselected={tabIndex === (kTabInfo.controls.index - 1) ? "true" : undefined}
                   backgroundcolor={this.getTabColor(SectionTypes.CONTROLS)}
                   backgroundhovercolor={this.getTabHoverColor(SectionTypes.CONTROLS)}
+                  data-test={this.getTabName(SectionTypes.CONTROLS) + "-tab"}
                 >
                   {this.getTabName(SectionTypes.CONTROLS)}
                 </Tab>
@@ -270,6 +273,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 width={`${tabWidth}px`}
                 forceRender={true}
                 tabcolor={this.getTabColor(SectionTypes.BLOCKS)}
+                data-test={this.getTabName(SectionTypes.BLOCKS) + "-panel"}
               >
                 <TabContent>
                   <BlocklyContainer
@@ -294,6 +298,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               <TabPanel
                 width={`${tabWidth}px`}
                 tabcolor={this.getTabColor(SectionTypes.CODE)}
+                data-test={this.getTabName(SectionTypes.CODE) + "-panel"}
               >
                 <TabContent>
                   <Code>
@@ -309,6 +314,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               <TabPanel
                 width={`${tabWidth}px`}
                 tabcolor={this.getTabColor(SectionTypes.CONTROLS)}
+                data-test={this.getTabName(SectionTypes.CONTROLS) + "-panel"}
               >
                 <Controls
                   width={tabWidth}
@@ -323,6 +329,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 width={`${tabWidth}px`}
                 tabcolor={this.getRightTabColor(RightSectionTypes.CONDITIONS)}
                 rightpanel={"true"}
+                data-test={this.getRightTabColor(RightSectionTypes.CONDITIONS) + "-panel"}
               >
                 <Simulation width={mapWidth} backgroundColor={this.getRightTabColor(RightSectionTypes.CONDITIONS)}>
                   <MapComponent
@@ -339,6 +346,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 width={`${tabWidth}px`}
                 tabcolor={this.getRightTabColor(RightSectionTypes.CROSS_SECTION)}
                 rightpanel={"true"}
+                data-test={this.getRightTabColor(RightSectionTypes.CROSS_SECTION) + "-panel"}
               >
                 <Simulation width={mapWidth} backgroundColor={this.getRightTabColor(RightSectionTypes.CROSS_SECTION)}>
                   <MapComponent
@@ -358,6 +366,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 width={`${tabWidth}px`}
                 tabcolor={this.getRightTabColor(RightSectionTypes.DATA)}
                 rightpanel={"true"}
+                data-test={this.getRightTabColor(RightSectionTypes.DATA) + "-panel"}
               >
                 <div>
                   <LineChart width={mapWidth} height={200} data={plotData.chartData}>
@@ -393,6 +402,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                       rightofselected={rightTabIndex === (kRightTabInfo.conditions.index - 1) ? "true" : undefined}
                       backgroundcolor={this.getRightTabColor(RightSectionTypes.CONDITIONS)}
                       backgroundhovercolor={this.getRightTabHoverColor(RightSectionTypes.CONDITIONS)}
+                      data-test={this.getRightTabName(RightSectionTypes.CONDITIONS) + "-tab"}
                     >
                       {this.getRightTabName(RightSectionTypes.CONDITIONS)}
                     </BottomTab>
@@ -404,6 +414,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                       rightofselected={rightTabIndex === (kRightTabInfo.crossSection.index - 1) ? "true" : undefined}
                       backgroundcolor={this.getRightTabColor(RightSectionTypes.CROSS_SECTION)}
                       backgroundhovercolor={this.getRightTabHoverColor(RightSectionTypes.CROSS_SECTION)}
+                      data-test={this.getRightTabName(RightSectionTypes.CROSS_SECTION) + "-tab"}
                     >
                       {this.getRightTabName(RightSectionTypes.CROSS_SECTION)}
                     </BottomTab>
@@ -415,6 +426,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                       rightofselected={rightTabIndex === (kRightTabInfo.data.index - 1) ? "true" : undefined}
                       backgroundcolor={this.getRightTabColor(RightSectionTypes.DATA)}
                       backgroundhovercolor={this.getRightTabHoverColor(RightSectionTypes.DATA)}
+                      data-test={this.getRightTabName(RightSectionTypes.DATA) + "-tab"}
                     >
                       {this.getRightTabName(RightSectionTypes.DATA)}
                     </BottomTab>
