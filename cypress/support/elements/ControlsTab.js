@@ -23,7 +23,7 @@ class ControlsTab{
     getEjectedVolumeSlider(){
         return cy.get('[data-test=ejected-volume-slider]')
     }
-    getColmunHeightSlider(){
+    getColumnHeightSlider(){
         return cy.get('[data-test=column-height-slider]')
     }
     getVEISlider(){
