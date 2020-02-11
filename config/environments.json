@@ -1,0 +1,17 @@
+{
+  "production": {
+    "baseUrl": "https://geocode-app.concord.org/"
+  },
+  "master": {
+    "baseUrl": "https://geocode-app.concord.org/branch/master/"
+  },
+  "branch": {
+    "baseUrl": "https://geocode-app.concord.org/branch/master/"
+  },
+  "dev": {
+    "baseUrl": "dev baseUrl needs to be set in config/user-config.json (see config/user-config.sample.json)"
+  },
+  "local":{
+    "baseUrl": "http://localhost:8080/"
+  }
+}
