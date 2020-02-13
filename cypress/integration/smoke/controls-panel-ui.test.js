@@ -1,17 +1,17 @@
-import LeftPanel from "../support/elements/LeftPanel"
-import ControlsTab from "../support/elements/ControlsTab"
+import LeftPanel from "../../support/elements/LeftPanel"
+import ControlsTab from "../../support/elements/ControlsTab"
 
 const leftPanel = new LeftPanel;
 const controlsTab = new ControlsTab;
 
-context("Blocks panel", () => {
+context("Controls panel", () => {
     before(() => {
       cy.visit("");
       leftPanel.getControlsTab().should('be.visible').click();
     });
   
-    describe("block panel ui", () => {
-      it('verify Blocks tab shows correct elements',()=>{
+    describe("Controls panel ui", () => {
+      it('verify Controls tab shows correct elements',()=>{
         controlsTab.getControlsPanel().should('be.visible');
         controlsTab.getWindSpeedDirectionContainer().should('be.visible');
         controlsTab.getEjectedVolumeContainer().should('be.visible');
@@ -26,4 +26,9 @@ context("Blocks panel", () => {
         controlsTab.getEruptButton().should('be.visible');
       })
     });
+    describe.skip('sliders functionality',()=>{
+      it('verify wind speed slider updates wind speed widget',()=>{
+
+      })
+    })
   });

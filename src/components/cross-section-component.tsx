@@ -64,7 +64,7 @@ export class CrossSectionComponent extends BaseComponent<IProps, IState>{
       <CanvDiv ref={this.ref}>
         {hasErupted && <ContainerDiv>
           {isSelectingCrossSection &&
-          <ContainerDiv>
+          <ContainerDiv data-test="tephra-thickness-cross-section-container">
             <Stage
               width={width}
               height={height}

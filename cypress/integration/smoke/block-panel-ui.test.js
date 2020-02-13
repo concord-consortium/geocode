@@ -1,5 +1,5 @@
-import LeftPanel from "../support/elements/LeftPanel"
-import BlocksTab from "../support/elements/BlocksTab"
+import LeftPanel from "../../support/elements/LeftPanel"
+import BlocksTab from "../../support/elements/BlocksTab"
 
 const leftPanel = new LeftPanel;
 const blocksTab = new BlocksTab;

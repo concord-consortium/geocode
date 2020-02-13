@@ -128,7 +128,7 @@ export const PixiTephraCrossSection = (props: IProps) => {
                     L.latLng(crossPoint2Lat, crossPoint2Lng));
 
   return (
-    <Container >
+    <Container>
       {cells}
     <Text
       text="0"
