@@ -16,8 +16,8 @@ interface IProps {
 
 const AuthoringMenu: React.SFC<IProps> = (props) => {
   return (
-    <DatGui data={props.options} onUpdate={props.handleUpdate}>
-      <DatButton label="Model options" onClick={props.toggleShowOptions} />
+    <DatGui data={props.options} onUpdate={props.handleUpdate} data-test="Model-option-toggle">
+      <DatButton label="Model options" onClick={props.toggleShowOptions}/>
       { props.expandOptionsDialog &&
         [
           <DatBoolean path="simulation.requireEruption" label="Require eruption?" key="requireEruption" />,

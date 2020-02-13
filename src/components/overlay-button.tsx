@@ -38,7 +38,6 @@ export default class OverlayButton extends PureComponent<IProps, IState> {
         title={title}
         disabled={disabled}
         onClick={onClick}
-        data-test={dataTest}
       >
         {iconComponent}
         {children}

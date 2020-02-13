@@ -40,6 +40,7 @@ interface IProps {
 interface IState {}
 
 export default class KeyButton extends PureComponent<IProps, IState> {
+
   public static defaultProps = {
     onClick: undefined,
   };
@@ -47,7 +48,7 @@ export default class KeyButton extends PureComponent<IProps, IState> {
   public render() {
     const { onClick } = this.props;
     return (
-      <KeyButtonContainer onClick={onClick}>
+      <KeyButtonContainer onClick={onClick} data-test="Key-button">
         <Icon
           width={26}
           height={26}

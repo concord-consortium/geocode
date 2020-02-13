@@ -104,7 +104,7 @@ export default class EjectedVolumeWidget extends PureComponent<IProps, IState> {
           </AbsoluteIcon>
         </RelativeIconContainer>
         <ValueOutput>
-          <div
+          <div data-test="info"
             dangerouslySetInnerHTML={
               {__html: `10<sup>${index}</sup> km<sup>3</sup>`}
           } />

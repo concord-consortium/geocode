@@ -69,7 +69,7 @@ export default class VEIWidget extends PureComponent<IProps, IState> {
             <VEIlabel color={kWidgetPanelInfo[type].highlightTextColor}>Column Height</VEIlabel>
             <VEIvalue>{columnHeight / 1000} km</VEIvalue>
             <VEIlabel color={kWidgetPanelInfo[type].highlightTextColor}>Ejected Volume</VEIlabel>
-            <VEIvalue
+            <VEIvalue data-test="info"
               dangerouslySetInnerHTML={
                 {__html: `10<sup>${Math.round(Math.log(mass) / Math.LN10) - 12}</sup> km<sup>3</sup>`}
               } />

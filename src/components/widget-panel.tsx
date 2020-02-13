@@ -57,7 +57,7 @@ export default class WidgetPanel extends BaseComponent<IProps, IState> {
     const { vei, mass, colHeight, windDirection, windSpeed } = this.stores.simulation;
     return (
       <WidgetBar>
-        { (showWindSpeed || showWindDirection) && <WidgetContainer>
+        { (showWindSpeed || showWindDirection) && <WidgetContainer data-test="wind-info-widget">
           <WidgetTitle>Wind Speed/Dir.</WidgetTitle>
             <WindSpeedDirectionWidget
               type={WidgetPanelTypes.RIGHT}
@@ -67,7 +67,7 @@ export default class WidgetPanel extends BaseComponent<IProps, IState> {
               windSpeed={windSpeed}
             />
         </WidgetContainer> }
-        { showVEI && <WidgetContainer>
+        { showVEI && <WidgetContainer data-test="vei-widget">
           <WidgetTitle>VEI</WidgetTitle>
           <VEIWidget
             type={WidgetPanelTypes.RIGHT}
@@ -76,14 +76,14 @@ export default class WidgetPanel extends BaseComponent<IProps, IState> {
             columnHeight={colHeight}
           />
         </WidgetContainer> }
-        { showEjectedVolume && <WidgetContainer>
+        { showEjectedVolume && <WidgetContainer data-test="ejected-volume-widget">
           <WidgetTitle>Ejected Volume</WidgetTitle>
           <EjectedVolumeWidget
             type={WidgetPanelTypes.RIGHT}
             volumeInKilometersCubed={mass / Math.pow(10, 12)}
           />
         </WidgetContainer> }
-        { showColumnHeight && <WidgetContainer>
+        { showColumnHeight && <WidgetContainer data-test="column-height-widget">
           <WidgetTitle>Column Height</WidgetTitle>
             <ColumnHeightWidget
               type={WidgetPanelTypes.RIGHT}

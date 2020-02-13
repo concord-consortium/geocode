@@ -46,6 +46,7 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
                         fill={"black"}
                         width={26}
                         height={26}
+                        dataTest={"Re-center-button"}
                     />
                     <IconButton
                         onClick={onRulerClick}
@@ -57,10 +58,12 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
                         fill={"black"}
                         width={26}
                         height={26}
+                        dataTest={"Ruler-button"}
                     />
                 </div>
                 <div className="controls bottom right">
                     {(showCrossSection && hasErupted) && <IconButton
+                        dataTest={isSelectingCrossSection ? "drawing-cross-section" : "not-drawing-cross-section"}
                         onClick={onCrossSectionClick}
                         disabled={false}
                         label={"Draw a cross section line"}
