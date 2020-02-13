@@ -61,6 +61,7 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
                 </div>
                 <div className="controls bottom right">
                     {(showCrossSection && hasErupted) && <IconButton
+                        dataTest={isSelectingCrossSection ? "drawing-cross-section" : "not-drawing-cross-section"}
                         onClick={onCrossSectionClick}
                         disabled={false}
                         label={"Draw a cross section line"}

@@ -45,6 +45,7 @@ interface IProps {
   fill: string;
   width: number;
   height: number;
+  dataTest: string;
 }
 
 interface IState {}
@@ -60,18 +61,19 @@ export default class IconButton extends PureComponent<IProps, IState> {
     fill: undefined,
     width: undefined,
     height: undefined,
+    dataTest: undefined,
   };
 
   public render() {
     const { onClick, disabled, children, label, backgroundColor, hoverColor, activeColor,
-            fill, width, height } = this.props;
+            fill, width, height, dataTest } = this.props;
     return (
       <IconButtonContainer
         onClick={onClick}
         backgroundColor={backgroundColor}
         hoverColor={hoverColor}
         activeColor={activeColor}
-        data-test={label + "-button"}
+        data-test={dataTest}
       >
         { children && <Icon
             width={width}
