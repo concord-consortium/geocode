@@ -235,6 +235,7 @@ export class Controls extends BaseComponent<IProps, IState> {
               fill={"#FFAC00"}
               width={26}
               height={26}
+              dataTest={"Reset-button"}
             />
             <IconButton
               onClick={this.erupt}
@@ -246,6 +247,7 @@ export class Controls extends BaseComponent<IProps, IState> {
               fill={"#FFAC00"}
               width={26}
               height={26}
+              dataTest={"Erupt-button"}
             />
           </EruptButtons>
         </Footer>

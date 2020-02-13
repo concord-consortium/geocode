@@ -37,6 +37,7 @@ const RunButton = (props: IProps) => {
       fill={"#4AA9FF"}
       width={26}
       height={26}
+      dataTest={"Run-button"}
     />
   );
 };
@@ -54,6 +55,7 @@ const StepButton = (props: IProps) => {
       fill={"#4AA9FF"}
       width={26}
       height={26}
+      dataTest={"Step-button"}
     />
   );
 };
@@ -71,6 +73,7 @@ const StopButton = (props: IProps) => {
       fill={"#4AA9FF"}
       width={26}
       height={26}
+      dataTest={"Stop-button"}
     />
   );
 };
@@ -88,6 +91,7 @@ const ResetButton = (props: IProps) => {
       fill={"#4AA9FF"}
       width={26}
       height={26}
+      dataTest={"Reset-button"}
     />
   );
 };

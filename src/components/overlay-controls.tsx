@@ -46,6 +46,7 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
                         fill={"black"}
                         width={26}
                         height={26}
+                        dataTest={"Re-center-button"}
                     />
                     <IconButton
                         onClick={onRulerClick}
@@ -57,6 +58,7 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
                         fill={"black"}
                         width={26}
                         height={26}
+                        dataTest={"Ruler-button"}
                     />
                 </div>
                 <div className="controls bottom right">

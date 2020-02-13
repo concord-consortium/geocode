@@ -11,8 +11,11 @@ class Map {
     getKeyButton(){
         return cy.get('[data-test=Key-button]');
     }
-    getDrawCrossSectionLineButton(){
-        return cy.get('[data-test="Draw a cross section line-button"]')
+    getDrawCrossSectionLineButtonOff(){
+        return cy.get('[data-test="not-drawing-cross-section"]')
+    }
+    getDrawCrossSectionLineButtonOn(){
+        return cy.get('[data-test="drawing-cross-section"]')
     }
     drawCrossSectionLine(){
         this.getDrawCrossSectionLineButton().click()

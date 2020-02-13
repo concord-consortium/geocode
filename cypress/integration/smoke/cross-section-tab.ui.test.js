@@ -27,7 +27,7 @@ context("Cross Section panel", () => {
         it('verify Draw Cross section button only appears if volcano has erupted',()=>{
             leftPanel.getControlsTab().click();
             controlsTab.getEruptButton().click();
-            map.getDrawCrossSectionLineButton().should('be.visible')
+            map.getDrawCrossSectionLineButtonOff().should('be.visible')
         })
     });
   });
