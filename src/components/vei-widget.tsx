@@ -54,7 +54,7 @@ export default class VEIWidget extends PureComponent<IProps, IState> {
   public render() {
     const { vei, mass, columnHeight, type } = this.props;
     return (
-      <ValueContainer width={160} backgroundColor={kWidgetPanelInfo[type].backgroundColor}>
+      <ValueContainer width={160} backgroundColor={kWidgetPanelInfo[type].backgroundColor}  data-test="info">
         <HorizontalContainer>
           <IconContainer>
             <Icon
@@ -67,9 +67,9 @@ export default class VEIWidget extends PureComponent<IProps, IState> {
           </IconContainer>
           <VerticalContainer alignItems="center" justifyContent="center">
             <VEIlabel color={kWidgetPanelInfo[type].highlightTextColor}>Column Height</VEIlabel>
-            <VEIvalue>{columnHeight / 1000} km</VEIvalue>
+            <VEIvalue data-test="column-height-info">{columnHeight / 1000} km</VEIvalue>
             <VEIlabel color={kWidgetPanelInfo[type].highlightTextColor}>Ejected Volume</VEIlabel>
-            <VEIvalue data-test="info"
+            <VEIvalue data-test="ejected-volume-info"
               dangerouslySetInnerHTML={
                 {__html: `10<sup>${Math.round(Math.log(mass) / Math.LN10) - 12}</sup> km<sup>3</sup>`}
               } />

@@ -14,6 +14,5 @@ context("Code panel", () => {
       it('verify Code tab shows correct elements',()=>{
         codeTab.getCodePanel().should('be.visible');
       })
-
     });
   });

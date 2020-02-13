@@ -32,7 +32,7 @@ const railInnerStyle: CSSProperties = {
 function SliderRail({ getRailProps }: { getRailProps: () => void }) {
   return (
     <React.Fragment>
-      <div style={railOuterStyle} {...getRailProps()} />
+      <div style={railOuterStyle} {...getRailProps()} data-test="slider-rail"/>
       <div style={railInnerStyle} />
     </React.Fragment>
   );

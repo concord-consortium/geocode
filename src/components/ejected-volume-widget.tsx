@@ -82,6 +82,7 @@ export default class EjectedVolumeWidget extends PureComponent<IProps, IState> {
             width={54}
             height={48}
             fill={kWidgetPanelInfo[type].highlightColor}
+            data-test="ejected-volume-height-visual"
           >
             <BoxBackIcon/>
           </AbsoluteIcon>
