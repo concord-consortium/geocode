@@ -14,6 +14,9 @@ class ControlsTab{
     getVEIContainer(){
         return cy.get('[data-test=vei-slider-container]')
     }
+    getSliderTrackEl(){
+        return '[data-test=slider-rail]'
+    }
     getWindSpeedSlider(){
         return cy.get('[data-test=wind-speed-slider]')
     }
@@ -29,17 +32,42 @@ class ControlsTab{
     getVEISlider(){
         return cy.get('[data-test=vei-slider]')
     }
+    getWindSymbol(){
+        return cy.get('[data-name="Wind Symbol - orange"]')
+    }
+    getEjectedVolumeHeightVisual(){
+        return cy.get('[data-test="ejected-volume-height-visual"]')
+    }
+    getColumnHeightVisual(){
+        return cy.get('[data-test="column-height-visual"]')
+    }
     getResetButton(){
         return cy.get('[data-test=Reset-button]')
     }
     getEruptButton(){
         return cy.get('[data-test=Erupt-button]')
     }
-    setSliderValue(slider, value){
-        cy.get('[data-test='+slider+'-slider]')
-            .invoke('val', value)
-            .trigger('change',{data: value})
-    }    
+    setSliderValue(slider, value){ //pass in -0.1 as value for min slider value
+        var unit=0;
+        switch (slider) {
+            case "wind-speed":
+                unit=9.21;
+                break;
+            case "wind-direction":
+                unit=0.78;
+                break;
+            case "ejected-volume":
+                unit=110;
+                break;
+            case "column-height":
+                unit=11.007;
+                break;
+            case "vei":
+                unit=27;
+                break;            
+        } 
+        cy.log("slider: "+slider+" value: "+value+" unit: "+unit+" slider to: "+value*unit)
+        cy.get('[data-test='+slider+'-slider]').find(this.getSliderTrackEl()).click(value*unit,-1,{force:true})
+    }
 }
-
 export default ControlsTab;

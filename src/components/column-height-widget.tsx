@@ -71,7 +71,7 @@ export default class ColumnHeightWidget extends PureComponent<IProps, IState> {
             <ColumnHeightIcon/>
           </Icon>
           <Cover height={coverHeight} backgroundColor={kWidgetPanelInfo[type].backgroundColor} />
-          <Guage height={guageHeight} color={kWidgetPanelInfo[type].highlightColor} />
+          <Guage height={guageHeight} color={kWidgetPanelInfo[type].highlightColor} data-test="column-height-visual"/>
         </RelativeIconContainer>
         <ValueOutput  data-test="info">
           {columnHeightInKilometers} km
