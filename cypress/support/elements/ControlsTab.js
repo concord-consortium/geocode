@@ -41,8 +41,8 @@ class ControlsTab{
     getColumnHeightVisual(){
         return cy.get('[data-test="column-height-visual"]')
     }
-    getResetButton(){
-        return cy.get('[data-test=Reset-button]')
+    getResetButtonEl(){
+        return ('[data-test=Reset-button]')
     }
     getEruptButton(){
         return cy.get('[data-test=Erupt-button]')
@@ -51,19 +51,19 @@ class ControlsTab{
         var unit=0;
         switch (slider) {
             case "wind-speed":
-                unit=9.21;
+                unit=16.21;
                 break;
             case "wind-direction":
-                unit=0.78;
+                unit=1.30;
                 break;
             case "ejected-volume":
-                unit=110;
+                unit=210;
                 break;
             case "column-height":
-                unit=11.007;
+                unit=18.907;
                 break;
             case "vei":
-                unit=27;
+                unit=47;
                 break;            
         } 
         cy.log("slider: "+slider+" value: "+value+" unit: "+unit+" slider to: "+value*unit)

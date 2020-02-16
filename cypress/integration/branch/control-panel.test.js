@@ -11,7 +11,6 @@ context("Controls panel", () => {
     before(() => {
       cy.visit("");
       leftPanel.getControlsTab().should('be.visible').click();
-
     });
     describe('slider/widget tests',()=>{
         it('verify wind speed slider',()=>{
