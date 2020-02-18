@@ -1,13 +1,13 @@
 import * as React from "react";
 import { PureComponent } from "react";
 import styled from "styled-components";
-import { Icon } from "./icon";
-import WindWSDBlueIcon from "../assets/widget-icons/wind-speed-and-direction-blue.svg";
-import WindWSDOrangeIcon from "../assets/widget-icons/wind-speed-and-direction-orange.svg";
-import WindSymbolOrangeIcon from "../assets/widget-icons/wind-symbol-orange.svg";
-import WindSymbolBlueIcon from "../assets/widget-icons/wind-symbol-blue.svg";
-import { HorizontalContainer, ValueContainer, ValueOutput, IconContainer } from "./styled-containers";
-import { WidgetPanelTypes, kWidgetPanelInfo } from "../utilities/widget";
+import { Icon } from "../icon";
+import WindWSDBlueIcon from "../../assets/widget-icons/wind-speed-and-direction-blue.svg";
+import WindWSDOrangeIcon from "../../assets/widget-icons/wind-speed-and-direction-orange.svg";
+import WindSymbolOrangeIcon from "../../assets/widget-icons/wind-symbol-orange.svg";
+import WindSymbolBlueIcon from "../../assets/widget-icons/wind-symbol-blue.svg";
+import { HorizontalContainer, ValueContainer, ValueOutput, IconContainer } from "../styled-containers";
+import { WidgetPanelTypes, kWidgetPanelInfo } from "../../utilities/widget";
 
 const ValueDivider = styled.div`
   width: 1px;

@@ -2,12 +2,12 @@ import { inject, observer } from "mobx-react";
 import Leaflet from "leaflet";
 import * as L from "leaflet";
 import * as React from "react";
-import { BaseComponent } from "./base";
-import { getCachedCircleIcon, divIcon } from "./icons";
+import { BaseComponent } from "../../base";
+import { getCachedCircleIcon, divIcon } from "../../icons";
 import { LayerGroup, Marker, Polyline } from "react-leaflet";
-import { getDistanceFromLatLonInKm } from "../utilities/coordinateSpaceConversion";
+import { getDistanceFromLatLonInKm } from "../../../utilities/coordinateSpaceConversion";
 
-import "../css/custom-leaflet-icons.css";
+import "../../../css/custom-leaflet-icons.css";
 
 const MOUSE_DOWN = "mousedown touchstart";
 const MOUSE_MOVE = "mousemove touchmove";

@@ -2,12 +2,12 @@ import * as React from "react";
 
 import { PixiComponent, Text, Container } from "@inlet/react-pixi";
 import { TextStyle } from "pixi.js";
-import { ICanvasShape } from "../interfaces";
+import { ICanvasShape } from "../../interfaces";
 import * as PIXI from "pixi.js";
 import * as Color from "color";
 import * as L from "leaflet";
-import gridTephraCalc from "../tephra2";
-import { LatLngToLocal, getDistanceFromLatLonInKm } from "../utilities/coordinateSpaceConversion";
+import gridTephraCalc from "../../tephra2";
+import { LatLngToLocal, getDistanceFromLatLonInKm } from "../../utilities/coordinateSpaceConversion";
 
 interface IProps {
   canvasMetrics: ICanvasShape;

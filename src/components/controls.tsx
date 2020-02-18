@@ -7,10 +7,10 @@ import RunIcon from "../assets/blockly-icons/run.svg";
 import ResetIcon from "../assets/blockly-icons/reset.svg";
 import IconButton from "./icon-button";
 import { HorizontalContainer, VerticalContainer, Footer, TabContent } from "./styled-containers";
-import VEIWidget from "./vei-widget";
-import EjectedVolumeWidget from "./ejected-volume-widget";
-import ColumnHeightWidget from "./column-height-widget";
-import WindSpeedDirectionWidget from "./wind-speed-direction-widget";
+import VEIWidget from "./widgets/vei-widget";
+import EjectedVolumeWidget from "./widgets/ejected-volume-widget";
+import ColumnHeightWidget from "./widgets/column-height-widget";
+import WindSpeedDirectionWidget from "./widgets/wind-speed-direction-widget";
 import { WidgetPanelTypes } from "../utilities/widget";
 
 const ControlsContainer = styled.div`
