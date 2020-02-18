@@ -3,6 +3,8 @@ import { IPoint, CanvasD3ScatterChart } from "./canvas-d3-scatter-chart";
 import { IVector, CanvasD3RadialChart } from "./canvas-d3-radial-chart";
 import styled from "styled-components";
 import { SvgD3ScatterChart } from "./svg-d3-scatter-chart";
+import { inject, observer } from "mobx-react";
+import { BaseComponent } from "../base";
 
 interface IProps {
   width: number;
@@ -35,7 +37,9 @@ const Row = styled.div`
   width: 100%;
 `;
 
-export class ChartPanel extends React.Component<IProps, IState> {
+@inject("stores")
+@observer
+export class ChartPanel extends BaseComponent<IProps, IState> {
   public state: IState = {
     charts: []
   };
@@ -45,6 +49,20 @@ export class ChartPanel extends React.Component<IProps, IState> {
   public render() {
     return (
       <Background width={this.props.width}>
+        {
+          this.stores.uiStore.showDemoCharts &&
+          <React.Fragment>
+            <Row>Add demo chart:</Row>
+            <Row>
+              <button onClick={this.addDemoChart("scatter", 0)}>Tiny scatter</button>
+              <button onClick={this.addDemoChart("scatter", 1)}>Medium scatter</button>
+              <button onClick={this.addDemoChart("scatter", 2)}>Large scatter</button>
+              <button onClick={this.addDemoChart("radial", 0)}>Tiny radial</button>
+              <button onClick={this.addDemoChart("radial", 1)}>Medium radial</button>
+              <button onClick={this.addDemoChart("radial", 2)}>Large radial</button>
+            </Row>
+          </React.Fragment>
+        }
         <Row>
           <Scroll>
             {
@@ -80,7 +98,7 @@ export class ChartPanel extends React.Component<IProps, IState> {
     }
   }
 
-  private addChart = (type: "scatter" | "radial", size: 0 | 1 | 2) => {
+  private addDemoChart = (type: "scatter" | "radial", size: 0 | 1 | 2) => {
     return () => {
       const numPoints = size === 0 ? 100 : size === 1 ? 1600 : 16000;
       const max = Math.random() * 1000;

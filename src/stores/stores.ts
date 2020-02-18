@@ -51,6 +51,7 @@ const uiAuthorSettingsProps = tuple(
   "showCrossSection",
   "showData",
   "showLog",
+  "showDemoCharts",
 );
 
 export type SimulationAuthorSettingsProps = typeof simulationAuthorSettingsProps[number];

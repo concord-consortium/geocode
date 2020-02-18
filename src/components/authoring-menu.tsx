@@ -51,6 +51,8 @@ const AuthoringMenu: React.SFC<IProps> = (props) => {
 
           <DatBoolean path="uiStore.showLog" label="Show Log?" key="showLog" />,
 
+          <DatBoolean path="uiStore.showDemoCharts" label="Show Demo Charts?" key="showDemoCharts" />,
+
           <DatButton label="Save current state to local storage"
             onClick={props.saveStateToLocalStorage}
             key="generate" />,
