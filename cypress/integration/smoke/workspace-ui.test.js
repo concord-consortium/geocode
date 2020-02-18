@@ -30,9 +30,5 @@ context("Test app workspace", () => {
         rightPanel.getCrossSectionTab().should('be.visible');
         rightPanel.getDataTab().should('be.visible')
     });
-    it.skip('verify moving from one panel to another rerenders correctly',()=>{
-      //TODO
-    })
-
   });  
 })

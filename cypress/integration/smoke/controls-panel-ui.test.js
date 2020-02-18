@@ -22,13 +22,8 @@ context("Controls panel", () => {
         controlsTab.getEjectedVolumeSlider().should('be.visible');
         controlsTab.getColumnHeightSlider().should('be.visible');
         controlsTab.getVEISlider().should('be.visible');
-        controlsTab.getResetButton().should('be.visible');
+        cy.get(controlsTab.getResetButtonEl()).should('be.visible');
         controlsTab.getEruptButton().should('be.visible');
       })
     });
-    describe.skip('sliders functionality',()=>{
-      it('verify wind speed slider updates wind speed widget',()=>{
-
-      })
-    })
   });
