@@ -1,9 +1,8 @@
 import * as ReactFauxDOM from "react-faux-dom";
 import * as d3 from "d3";
-import { IPoint } from "./canvas-d3-scatter-chart";
 
 interface IProps {
-  data: IPoint[];
+  data: number[][];         // (x,y) tuples: [[x,y], [x,y], ...]
   width: number;
   height: number;
   xAxisLabel?: string;
@@ -26,10 +25,10 @@ export const SvgD3ScatterChart = (props: IProps) => {
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
   const xScale = d3.scaleLinear()
-    .domain([0, Math.max(...data.map(d => d.x))])
+    .domain([0, Math.max(...data.map(d => d[0]))])
     .range([ 0, chartWidth ]);
   const yScale = d3.scaleLinear()
-    .domain([0, Math.max(...data.map(d => d.y))])
+    .domain([0, Math.max(...data.map(d => d[1]))])
     .range([ chartHeight, 0]);
 
   // add axes
@@ -60,8 +59,8 @@ export const SvgD3ScatterChart = (props: IProps) => {
     .data(props.data)
     .enter()
     .append("circle")
-      .attr("cx", d => xScale(d.x) )
-      .attr("cy", d => yScale(d.y) )
+      .attr("cx", d => xScale(d[0]) )
+      .attr("cy", d => yScale(d[1]) )
       .attr("r", 1.5)
       .style("fill", "#3c7769");
 

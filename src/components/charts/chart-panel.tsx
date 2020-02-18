@@ -1,19 +1,14 @@
 import * as React from "react";
-import { IPoint, CanvasD3ScatterChart } from "./canvas-d3-scatter-chart";
-import { IVector, CanvasD3RadialChart } from "./canvas-d3-radial-chart";
+import { CanvasD3ScatterChart } from "./canvas-d3-scatter-chart";
+import { CanvasD3RadialChart } from "./canvas-d3-radial-chart";
 import styled from "styled-components";
-import { SvgD3ScatterChart } from "./svg-d3-scatter-chart";
 import { inject, observer } from "mobx-react";
 import { BaseComponent } from "../base";
 
 interface IProps {
   width: number;
 }
-
-interface Chart { type: "scatter" | "radial"; points: IPoint[] | IVector[]; }
-interface IState {
-  charts: Chart[];
-}
+interface IState {}
 
 const Background = styled.div`
   position: fixed;
@@ -40,9 +35,6 @@ const Row = styled.div`
 @inject("stores")
 @observer
 export class ChartPanel extends BaseComponent<IProps, IState> {
-  public state: IState = {
-    charts: []
-  };
 
   private lastScrollEl = React.createRef<HTMLDivElement>();
 
@@ -66,20 +58,20 @@ export class ChartPanel extends BaseComponent<IProps, IState> {
         <Row>
           <Scroll>
             {
-              this.state.charts.map((chart, i) =>
+              this.stores.chartsStore.charts.map((chart, i) =>
                 <Row key={"row" + i}>
                   {
                     chart.type === "scatter" ?
                       <CanvasD3ScatterChart
                         width={this.props.width * 0.8}
                         height={this.props.width * 0.4}
-                        data={chart.points as IPoint[]}
-                        xAxisLabel="X Axis"
-                        yAxisLabel="Y Axis"
+                        data={chart.data}
+                        xAxisLabel={chart.xAxisLabel}
+                        yAxisLabel={chart.yAxisLabel}
                       /> :
                       <CanvasD3RadialChart
                         width={this.props.width * 0.5}
-                        data={chart.points as IVector[]}
+                        data={chart.data}
                       />
                   }
                 </Row>
@@ -102,16 +94,18 @@ export class ChartPanel extends BaseComponent<IProps, IState> {
     return () => {
       const numPoints = size === 0 ? 100 : size === 1 ? 1600 : 16000;
       const max = Math.random() * 1000;
-      const points: IPoint[] | IVector[] = [];
+      const points: number[][] = [];
       for (let i = 0; i < numPoints; i++) {
-        const point = type === "scatter" ?
-          {x: Math.random() * max, y: Math.random() * max} :
-          {deg: Math.random() * 360, magnitude: Math.random() * max};
-        points.push(point as any);
+        type === "scatter" ?
+          points.push([Math.random() * max, Math.random() * max]) :
+          points.push([Math.random() * 360, Math.random() * max]);
       }
-      const charts = this.state.charts;
-      charts.push({type, points});
-      this.setState({charts});
+
+      if (type === "scatter") {
+        this.stores.chartsStore.addChart(type, points, "Some X Axis", "Some Y Axis");
+      } else {
+        this.stores.chartsStore.addChart(type, points);
+      }
     };
   }
 }

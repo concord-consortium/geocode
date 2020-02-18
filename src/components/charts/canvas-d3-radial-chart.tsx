@@ -1,9 +1,8 @@
 import * as React from "react";
 import * as d3 from "d3";
 
-export interface IVector {deg: number; magnitude: number; }
 interface IProps {
-  data: IVector[];
+  data: number[][];     // (deg,mag) tuples: [[deg,mag], [deg,mag], ...]
   width: number;
 }
 
@@ -42,7 +41,7 @@ export class CanvasD3RadialChart extends React.Component<IProps> {
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    const maxMagnitude = d3.max(data, d => d.magnitude) || 1;
+    const maxMagnitude = d3.max(data, d => d[1]) || 1;
     const maxRadius = chartWidth / 2;
     const xScale = d3.scaleLinear()
       .domain([-maxMagnitude, maxMagnitude])
@@ -82,8 +81,8 @@ export class CanvasD3RadialChart extends React.Component<IProps> {
     ctx.strokeStyle = "#3c7769";
     ctx.beginPath();
     data.forEach(point => {
-      const px = center.x + Math.cos((90 - point.deg) * Math.PI / 180) * magScale(point.magnitude);
-      const py = center.y - Math.sin((90 - point.deg) * Math.PI / 180) * magScale(point.magnitude);
+      const px = center.x + Math.cos((90 - point[0]) * Math.PI / 180) * magScale(point[1]);
+      const py = center.y - Math.sin((90 - point[0]) * Math.PI / 180) * magScale(point[1]);
       // const px = center.x + xScale(x);
       // const py = yScale(y);
       const headlen = 10; // length of head in pixels

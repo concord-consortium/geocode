@@ -1,9 +1,8 @@
 import * as React from "react";
 import * as d3 from "d3";
 
-export interface IPoint {x: number; y: number; }
 interface IProps {
-  data: IPoint[];
+  data: number[][];         // (x,y) tuples: [[x,y], [x,y], ...]
   width: number;
   height: number;
   xAxisLabel?: string;
@@ -47,10 +46,10 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     const xScale = d3.scaleLinear()
-      .domain([0, Math.max(...data.map(d => d.x))])
+      .domain([0, Math.max(...data.map(d => d[0]))])
       .range([ 0, chartWidth ]);
     const yScale = d3.scaleLinear()
-      .domain([0, Math.max(...data.map(d => d.y))])
+      .domain([0, Math.max(...data.map(d => d[1]))])
       .range([ chartHeight, 0]);
 
     // add axes
@@ -89,8 +88,8 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
     this.props.data.forEach(point => {
       ctx.beginPath();
       ctx.fillStyle = "#3c7769";
-      const px = xScale(point.x);
-      const py = yScale(point.y);
+      const px = xScale(point[0]);
+      const py = yScale(point[1]);
 
       ctx.arc(px, py, 1.2, 0, 2 * Math.PI, true);
       ctx.fill();
