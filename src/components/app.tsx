@@ -1,6 +1,5 @@
 import { inject, observer } from "mobx-react";
 import * as React from "react";
-import { LineChart, Line, CartesianGrid, XAxis, YAxis } from "recharts";
 import { BaseComponent, IBaseProps } from "./base";
 import { MapComponent, Scenario } from "./map/map-component";
 import { LogComponent } from "./log-component";
@@ -368,22 +367,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 data-test={this.getRightTabName(RightSectionTypes.DATA) + "-panel"}
               >
                 <div>
-                  <LineChart width={mapWidth} height={200} data={plotData.chartData}>
-                    <Line type="linear" dataKey={plotData.yAxis} stroke="red" strokeWidth={2} />
-                    <CartesianGrid stroke="#ddd" strokeDasharray="5 5" />
-                    <XAxis
-                      type="number"
-                      domain={[0, "auto"]}
-                      allowDecimals={false}
-                      dataKey={plotData.xAxis}
-                      label={{ value: plotData.xAxis, offset: -5, position: "insideBottom" }}
-                    />
-                    <YAxis
-                      type="number"
-                      domain={[0, "auto"]}
-                      label={{ value: plotData.yAxis, angle: -90, offset: 12, position: "insideBottomLeft" }}
-                    />
-                  </LineChart>
+                  { }
                 </div>
               </TabPanel>
             }
