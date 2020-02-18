@@ -59,22 +59,28 @@ export class ChartPanel extends BaseComponent<IProps, IState> {
           <Scroll>
             {
               this.stores.chartsStore.charts.map((chart, i) =>
-                <Row key={"row" + i}>
+                <div key={"row" + i}>
                   {
-                    chart.type === "scatter" ?
-                      <CanvasD3ScatterChart
-                        width={this.props.width * 0.8}
-                        height={this.props.width * 0.4}
-                        data={chart.data}
-                        xAxisLabel={chart.xAxisLabel}
-                        yAxisLabel={chart.yAxisLabel}
-                      /> :
-                      <CanvasD3RadialChart
-                        width={this.props.width * 0.5}
-                        data={chart.data}
-                      />
+                    chart.title &&
+                    <Row><strong>{chart.title}</strong></Row>
                   }
-                </Row>
+                  <Row>
+                    {
+                      chart.type === "scatter" ?
+                        <CanvasD3ScatterChart
+                          width={this.props.width * 0.8}
+                          height={this.props.width * 0.4}
+                          data={chart.data}
+                          xAxisLabel={chart.xAxisLabel}
+                          yAxisLabel={chart.yAxisLabel}
+                        /> :
+                        <CanvasD3RadialChart
+                          width={this.props.width * 0.5}
+                          data={chart.data}
+                        />
+                    }
+                  </Row>
+                </div>
               )
             }
             <Row ref={this.lastScrollEl} />
@@ -101,10 +107,11 @@ export class ChartPanel extends BaseComponent<IProps, IState> {
           points.push([Math.random() * 360, Math.random() * max]);
       }
 
+      const title = "Chart " + (this.stores.chartsStore.charts.length + 1);
       if (type === "scatter") {
-        this.stores.chartsStore.addChart(type, points, "Some X Axis", "Some Y Axis");
+        this.stores.chartsStore.addChart(type, points, title, "Some X Axis", "Some Y Axis");
       } else {
-        this.stores.chartsStore.addChart(type, points);
+        this.stores.chartsStore.addChart(type, points, title);
       }
     };
   }
