@@ -5,6 +5,8 @@ import * as Scenarios from "./../assets/maps/scenarios.json";
 import * as BlocklyAuthoring from "./../assets/blockly-authoring/index.json";
 import { IStoreish } from "../stores/stores.js";
 
+import "../css/dat-gui.css";
+
 interface IProps {
   options: IStoreish;
   expandOptionsDialog: boolean;
