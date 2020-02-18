@@ -22,6 +22,7 @@ import screenfull from "screenfull";
 import ResizeObserver from "react-resize-observer";
 import AuthoringMenu from "./authoring-menu";
 import { getAuthorableSettings, updateStores, serializeState, getSavableState, deserializeState, SerializedState } from "../stores/stores";
+import { ChartPanel } from "./charts/chart-panel";
 
 interface IProps extends IBaseProps {}
 
@@ -367,7 +368,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 data-test={this.getRightTabName(RightSectionTypes.DATA) + "-panel"}
               >
                 <div>
-                  { }
+                  <ChartPanel width={mapWidth} />
                 </div>
               </TabPanel>
             }
