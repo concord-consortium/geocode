@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as d3 from "d3";
+import { svg } from "d3";
 
 interface IProps {
   data: number[][];         // (x,y) tuples: [[x,y], [x,y], ...]
@@ -15,6 +16,18 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
   private svgRef = React.createRef<SVGSVGElement>();
 
   public componentDidMount() {
+    this.drawChart();
+  }
+
+  public componentDidUpdate() {
+    if (this.canvasRef.current && this.svgRef.current) {
+      // clear everything
+      const ctx = this.canvasRef.current.getContext("2d")!;
+      ctx.clearRect(0, 0, this.props.width, this.props.height);
+      while (this.svgRef.current.lastChild) {
+        this.svgRef.current.removeChild(this.svgRef.current.lastChild);
+      }
+    }
     this.drawChart();
   }
 
@@ -35,7 +48,7 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
 
     const { width, height, data } = this.props;
 
-    const margin = {top: 20, right: 20, bottom: 30, left: 50};
+    const margin = {top: 15, right: 20, bottom: 35, left: 50};
     const chartWidth = width - margin.left - margin.right;
     const chartHeight = height - margin.top - margin.bottom;
 
@@ -63,8 +76,9 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
     // Add labels
     if (this.props.xAxisLabel) {
       svgAxes.append("text")
-        .attr("x", `${width / 2}`)
-        .attr("y", `${height - 20}`)
+        .attr("x", `${width / 3}`)
+        .attr("y", `${height - margin.top}`)
+        .style("font-size", "0.9em")
         .style("fill", "#555")
         .text(this.props.xAxisLabel);
     }
@@ -73,6 +87,7 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
         .attr("x", `-${height / 2}`)
         .attr("dy", "-30px")
         .attr("transform", "rotate(-90)")
+        .style("font-size", "0.9em")
         .style("fill", "#555")
         .text(this.props.yAxisLabel);
     }
@@ -87,7 +102,7 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
 
     this.props.data.forEach(point => {
       ctx.beginPath();
-      ctx.fillStyle = "#3c7769";
+      ctx.fillStyle = "#448878";
       const px = xScale(point[0]);
       const py = yScale(point[1]);
 

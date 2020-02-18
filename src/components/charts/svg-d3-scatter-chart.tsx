@@ -12,7 +12,7 @@ interface IProps {
 export const SvgD3ScatterChart = (props: IProps) => {
   const { width, height, data, xAxisLabel, yAxisLabel } = props;
 
-  const margin = {top: 20, right: 20, bottom: 30, left: 50};
+  const margin = {top: 15, right: 20, bottom: 35, left: 50};
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
 
@@ -43,7 +43,7 @@ export const SvgD3ScatterChart = (props: IProps) => {
   if (xAxisLabel) {
     svg.append("text")
     .attr("x", `${width / 2}`)
-    .attr("y", `${height - 20}`)
+    .attr("y", `${height - margin.top}`)
     .text(xAxisLabel);
   }
   if (yAxisLabel) {
@@ -62,7 +62,7 @@ export const SvgD3ScatterChart = (props: IProps) => {
       .attr("cx", d => xScale(d[0]) )
       .attr("cy", d => yScale(d[1]) )
       .attr("r", 1.5)
-      .style("fill", "#3c7769");
+      .style("fill", "#448878");
 
   return div.toReact();
 };

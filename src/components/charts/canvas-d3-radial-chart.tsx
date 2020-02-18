@@ -15,6 +15,18 @@ export class CanvasD3RadialChart extends React.Component<IProps> {
     this.drawChart();
   }
 
+  public componentDidUpdate() {
+    if (this.canvasRef.current && this.svgRef.current) {
+      // clear everything
+      const ctx = this.canvasRef.current.getContext("2d")!;
+      ctx.clearRect(0, 0, this.props.width, this.props.width);
+      while (this.svgRef.current.lastChild) {
+        this.svgRef.current.removeChild(this.svgRef.current.lastChild);
+      }
+    }
+    this.drawChart();
+  }
+
   public render() {
     const width = this.props.width;
     const relativeStyle: React.CSSProperties = {position: "relative", width, height: width};
@@ -32,7 +44,7 @@ export class CanvasD3RadialChart extends React.Component<IProps> {
 
     const { data, width: totalWidth } = this.props;
 
-    const margin = {top: 20, right: 20, bottom: 30, left: 50};
+    const margin = {top: 20, right: 20, bottom: 35, left: 20};
     const chartWidth = totalWidth - margin.left - margin.right;
 
     const svgAxes = d3.select(this.svgRef.current)
@@ -55,7 +67,7 @@ export class CanvasD3RadialChart extends React.Component<IProps> {
 
     // add axes. Assume NESW for now, can add props to customize later if needed
     svgAxes.append("g")
-    .call(d3.axisTop(xScale).tickValues([0]).tickFormat(() => "N"));
+      .call(d3.axisTop(xScale).tickValues([0]).tickFormat(() => "N"));
     svgAxes.append("g")
       .attr("transform", "translate(" + chartWidth + ", 0)")
       .call(d3.axisRight(yScale).tickValues([0]).tickFormat(() => "W"));
