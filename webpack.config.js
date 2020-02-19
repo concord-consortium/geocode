@@ -70,7 +70,13 @@ module.exports = (env, argv) => {
               loader: '@svgr/webpack'
             }
           ]
-        }				
+        },
+        {
+          test: /\.csv$/,
+          use: [
+            'dsv-loader?rows'
+          ]
+        }
       ]
     },
     resolve: {
