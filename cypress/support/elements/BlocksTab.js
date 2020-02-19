@@ -3,11 +3,11 @@ class BlocksTab{
     getBlockPanel(){
         return cy.get('[data-test=Blocks-panel]')
      }
-    getVolcanoTag(){
-         return cy.get('.blocklyTreeLabel').contains('Volcano')
+    getTag(tagName){ //tagName=['Volcano','Logic','Loops','Data','Variables','Functions']
+        return cy.get('.blocklyTreeLabel').contains(tagName)
     }
-    getVariablesTag(){
-        return cy.get('.blocklyTreeLabel').contains('Variables')
+    getCanvas(){
+        return cy.get('.blocklyBlockCanvas')
     }
      getRunButton(){
         return cy.get('[data-test=Run-button]')
@@ -23,6 +23,20 @@ class BlocksTab{
     }
     runProgram(){
         this.getRunButton().click()
+    }
+    getBlockEl(){
+        return '.blocklyDraggable';
+    }
+    getEditableTextEl(){
+        return '.blocklyEditableText';
+    }
+
+    //Data blocks
+    getTextBlock(){
+        return cy.get(this.getEditableTextEl())
+    }
+    editText(text, whichOne=0){
+        cy.get('.blocklyWidgetDiv').find('.blocklyHtmlInput').eq(whichOne).type('{backspace}'+text+'{enter}');
     }
 }
 export default BlocksTab;
