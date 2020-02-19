@@ -13,8 +13,12 @@ context("Blocks panel", () => {
     describe("block panel ui", () => {
       it('verify Blocks tab shows correct elements',()=>{
         blocksTab.getBlockPanel().should('be.visible');
-        blocksTab.getVolcanoTag().should('be.visible');
-        blocksTab.getVariablesTag().should('be.visible');
+        blocksTab.getTag('Volcano').should('be.visible');
+        blocksTab.getTag('Logic').should('be.visible');
+        blocksTab.getTag('Loops').should('be.visible');
+        blocksTab.getTag('Data').should('be.visible');
+        blocksTab.getTag('Variables').should('be.visible');
+        blocksTab.getTag('Functions').should('be.visible');
         blocksTab.getRunButton().should('be.visible');
         blocksTab.getStepButton().should('be.visible');
         blocksTab.getResetButton().should('be.visible');
