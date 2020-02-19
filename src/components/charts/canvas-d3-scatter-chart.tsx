@@ -1,13 +1,11 @@
 import * as React from "react";
 import * as d3 from "d3";
-import { svg } from "d3";
+import { ChartType } from "../../stores/charts-store";
 
 interface IProps {
-  data: number[][];         // (x,y) tuples: [[x,y], [x,y], ...]
+  chart: ChartType;
   width: number;
   height: number;
-  xAxisLabel?: string;
-  yAxisLabel?: string;
 }
 
 export class CanvasD3ScatterChart extends React.Component<IProps> {
@@ -46,7 +44,8 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
   private drawChart() {
     if (!this.canvasRef.current || !this.svgRef.current) return;
 
-    const { width, height, data } = this.props;
+    const { width, height, chart } = this.props;
+    const { data, xAxisLabel, yAxisLabel } = chart;
 
     const margin = {top: 15, right: 20, bottom: 35, left: 50};
     const chartWidth = width - margin.left - margin.right;
@@ -74,22 +73,22 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
       .call(d3.axisLeft(yScale));
 
     // Add labels
-    if (this.props.xAxisLabel) {
+    if (xAxisLabel) {
       svgAxes.append("text")
         .attr("x", `${width / 3}`)
         .attr("y", `${height - margin.top}`)
         .style("font-size", "0.9em")
         .style("fill", "#555")
-        .text(this.props.xAxisLabel);
+        .text(xAxisLabel);
     }
-    if (this.props.yAxisLabel) {
+    if (yAxisLabel) {
       svgAxes.append("text")
         .attr("x", `-${height / 2}`)
         .attr("dy", "-30px")
         .attr("transform", "rotate(-90)")
         .style("font-size", "0.9em")
         .style("fill", "#555")
-        .text(this.props.yAxisLabel);
+        .text(yAxisLabel);
     }
 
     d3.select(this.canvasRef.current)
@@ -100,7 +99,7 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
 
     const ctx = this.canvasRef.current.getContext("2d")!;
 
-    this.props.data.forEach(point => {
+    data.forEach(point => {
       ctx.beginPath();
       ctx.fillStyle = "#448878";
       const px = xScale(point[0]);

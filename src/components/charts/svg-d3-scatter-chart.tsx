@@ -2,15 +2,14 @@ import * as ReactFauxDOM from "react-faux-dom";
 import * as d3 from "d3";
 
 interface IProps {
-  data: number[][];         // (x,y) tuples: [[x,y], [x,y], ...]
+  chart: ChartType;
   width: number;
   height: number;
-  xAxisLabel?: string;
-  yAxisLabel?: string;
 }
 
 export const SvgD3ScatterChart = (props: IProps) => {
-  const { width, height, data, xAxisLabel, yAxisLabel } = props;
+  const { width, height, chart } = props;
+  const { data, xAxisLabel, yAxisLabel } = chart;
 
   const margin = {top: 15, right: 20, bottom: 35, left: 50};
   const chartWidth = width - margin.left - margin.right;

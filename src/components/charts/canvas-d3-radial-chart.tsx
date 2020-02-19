@@ -1,8 +1,9 @@
 import * as React from "react";
 import * as d3 from "d3";
+import { ChartType } from "../../stores/charts-store";
 
 interface IProps {
-  data: number[][];     // (deg,mag) tuples: [[deg,mag], [deg,mag], ...]
+  chart: ChartType;
   width: number;
 }
 
@@ -42,7 +43,8 @@ export class CanvasD3RadialChart extends React.Component<IProps> {
   private drawChart() {
     if (!this.canvasRef.current || !this.svgRef.current) return;
 
-    const { data, width: totalWidth } = this.props;
+    const { chart, width: totalWidth } = this.props;
+    const data = chart.data;
 
     const margin = {top: 20, right: 20, bottom: 35, left: 20};
     const chartWidth = totalWidth - margin.left - margin.right;
@@ -70,7 +72,7 @@ export class CanvasD3RadialChart extends React.Component<IProps> {
       .call(d3.axisTop(xScale).tickValues([0]).tickFormat(() => "N"));
     svgAxes.append("g")
       .attr("transform", "translate(" + chartWidth + ", 0)")
-      .call(d3.axisRight(yScale).tickValues([0]).tickFormat(() => "W"));
+      .call(d3.axisRight(yScale).tickValues([0]).tickFormat(() => "E"));
     svgAxes.append("g")
       .attr("transform", "translate(0," + chartWidth + ")")
       .call(d3.axisBottom(xScale).tickValues([0]).tickFormat(() => "S"));

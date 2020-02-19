@@ -80,13 +80,11 @@ export class ChartPanel extends BaseComponent<IProps, IState> {
                         <CanvasD3ScatterChart
                           width={this.props.width * 0.85}
                           height={this.props.width * 0.4}
-                          data={chart.data}
-                          xAxisLabel={chart.xAxisLabel}
-                          yAxisLabel={chart.yAxisLabel}
+                          chart={chart}
                         /> :
                         <CanvasD3RadialChart
                           width={this.props.width * 0.55}
-                          data={chart.data}
+                          chart={chart}
                         />
                     }
                   </Row>
