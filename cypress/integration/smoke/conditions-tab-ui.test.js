@@ -20,11 +20,8 @@ context("Conditions panel", () => {
             map.getKeyButton().should('be.visible');
             map.getMap().should('be.visible');
         })
-        it.skip('maps should render',()=>{
-            //TODO
-        })
-        it.skip('tephra renders correctly after switching tabs',()=>{
-            //TODO
+        it.skip('map should render',()=>{
+            //TODO https://www.pivotaltracker.com/story/show/171138096
         })
     });
   });

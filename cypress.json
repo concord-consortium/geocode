@@ -1,5 +1,7 @@
 {
   "video": false,
   "defaultCommandTimeout": 10000,
+  "viewportWidth": 1400,
+  "viewportHeight": 1000,
   "projectId": "97wsoi"
 }
