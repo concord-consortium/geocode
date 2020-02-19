@@ -4,6 +4,7 @@ import { CanvasD3RadialChart } from "./canvas-d3-radial-chart";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import { BaseComponent } from "../base";
+import { DataSampler } from "../../stores/data-sampler";
 
 interface IProps {
   width: number;
@@ -108,17 +109,17 @@ export class ChartPanel extends BaseComponent<IProps, IState> {
   private addDemoChart = (type: "scatter" | "radial", size: 0 | 1 | 2) => {
     return () => {
       const numPoints = size === 0 ? 100 : size === 1 ? 1600 : 16000;
-      const max = Math.random() * 1000;
       const points: number[][] = [];
+      const sample = DataSampler.getRandomSampleWithoutReplacement("Wind Data", numPoints);
       for (let i = 0; i < numPoints; i++) {
         type === "scatter" ?
-          points.push([Math.random() * max, Math.random() * max]) :
-          points.push([Math.random() * 360, Math.random() * max]);
+          points.push([sample[i].month, sample[i].speed]) :
+          points.push([sample[i].direction, sample[i].speed]);
       }
 
       const title = "Chart " + (this.stores.chartsStore.charts.length + 1);
       if (type === "scatter") {
-        this.stores.chartsStore.addChart(type, points, title, "Some X Axis", "Some Y Axis");
+        this.stores.chartsStore.addChart(type, points, title, "Month", "Wind Speed");
       } else {
         this.stores.chartsStore.addChart(type, points, title);
       }
