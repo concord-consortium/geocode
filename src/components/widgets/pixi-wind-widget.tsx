@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { Container, PixiComponent } from "@inlet/react-pixi";
-import { Ipoint } from "../interfaces";
+import { Ipoint } from "../../interfaces";
 
 interface IWindWidgetProps {
   windDirection: number;

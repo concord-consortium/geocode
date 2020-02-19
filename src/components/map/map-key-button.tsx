@@ -1,8 +1,8 @@
 import * as React from "react";
 import { PureComponent } from "react";
 import styled from "styled-components";
-import { Icon } from "./icon";
-import KeyIcon from "../assets/map-icons/key.svg";
+import { Icon } from "../icon";
+import KeyIcon from "../../assets/map-icons/key.svg";
 
 const KeyButtonContainer = styled.div`
   display: flex;

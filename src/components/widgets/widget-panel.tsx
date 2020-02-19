@@ -3,10 +3,10 @@ import WindSpeedDirectionWidget from "./wind-speed-direction-widget";
 import ColumnHeightWidget from "./column-height-widget";
 import VEIWidget from "./vei-widget";
 import EjectedVolumeWidget from "./ejected-volume-widget";
-import { WidgetPanelTypes } from "../utilities/widget";
+import { WidgetPanelTypes } from "../../utilities/widget";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
-import { BaseComponent } from "./base";
+import { BaseComponent } from "../base";
 
 const WidgetBar = styled.div`
   display: flex;

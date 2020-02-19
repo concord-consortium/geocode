@@ -3,10 +3,10 @@ import * as Leaflet from "leaflet";
 import * as Color from "color";
 import * as d3 from "d3";
 import { inject, observer } from "mobx-react";
-import { BaseComponent } from "./base";
-import gridTephraCalc from "../tephra2";
+import { BaseComponent } from "../base";
+import gridTephraCalc from "../../tephra2";
 import { LayerGroup, GeoJSON } from "react-leaflet";
-import { LatLngToLocal } from "../utilities/coordinateSpaceConversion";
+import { LatLngToLocal } from "../../utilities/coordinateSpaceConversion";
 import { MultiPolygon } from "geojson";
 
 interface IProps {

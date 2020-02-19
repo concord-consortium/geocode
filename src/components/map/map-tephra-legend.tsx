@@ -1,8 +1,8 @@
 import * as React from "react";
 import { PureComponent } from "react";
 import styled from "styled-components";
-import { Icon } from "./icon";
-import CloseIcon from "../assets/map-icons/close.svg";
+import { Icon } from "../icon";
+import CloseIcon from "../../assets/map-icons/close.svg";
 
 export interface TephraRange {
   color: string;

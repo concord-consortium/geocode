@@ -2,8 +2,8 @@ import { inject, observer } from "mobx-react";
 import Leaflet from "leaflet";
 import * as L from "leaflet";
 import * as React from "react";
-import { BaseComponent } from "./base";
-import { getCachedCircleIcon } from "./icons";
+import { BaseComponent } from "../../base";
+import { getCachedCircleIcon } from "../../icons";
 import { LayerGroup, Marker, Polyline } from "react-leaflet";
 
 const MOUSE_DOWN = "mousedown touchstart";

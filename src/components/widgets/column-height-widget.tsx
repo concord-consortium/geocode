@@ -1,10 +1,10 @@
 import * as React from "react";
 import { PureComponent } from "react";
 import styled from "styled-components";
-import { Icon } from "./icon";
-import ColumnHeightIcon from "../assets/widget-icons/column-height.svg";
-import { ValueContainer, ValueOutput, IconContainer } from "./styled-containers";
-import { WidgetPanelTypes, kWidgetPanelInfo } from "../utilities/widget";
+import { Icon } from "../icon";
+import ColumnHeightIcon from "../../assets/widget-icons/column-height.svg";
+import { ValueContainer, ValueOutput, IconContainer } from "../styled-containers";
+import { WidgetPanelTypes, kWidgetPanelInfo } from "../../utilities/widget";
 
 interface CoverProps {
   height?: number;

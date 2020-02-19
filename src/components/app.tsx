@@ -1,11 +1,9 @@
 import { inject, observer } from "mobx-react";
 import * as React from "react";
-import { LineChart, Line, CartesianGrid, XAxis, YAxis } from "recharts";
 import { BaseComponent, IBaseProps } from "./base";
-import { MapComponent, Scenario } from "./map-component";
+import { MapComponent, Scenario } from "./map/map-component";
 import { LogComponent } from "./log-component";
-import { CrossSectionComponent } from "./cross-section-component";
-import * as Maps from "./../assets/maps/maps.json";
+import { CrossSectionComponent } from "./crosssection/cross-section-component";
 import * as Scenarios from "./../assets/maps/scenarios.json";
 import * as BlocklyAuthoring from "./../assets/blockly-authoring/index.json";
 
@@ -19,7 +17,7 @@ import SyntaxHighlighter from "react-syntax-highlighter";
 import Controls from "./controls";
 import RunButtons from "./run-buttons";
 import { Footer, TabContent } from "./styled-containers";
-import WidgetPanel from "./widget-panel";
+import WidgetPanel from "./widgets/widget-panel";
 import screenfull from "screenfull";
 import ResizeObserver from "react-resize-observer";
 import AuthoringMenu from "./authoring-menu";
@@ -369,22 +367,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 data-test={this.getRightTabName(RightSectionTypes.DATA) + "-panel"}
               >
                 <div>
-                  <LineChart width={mapWidth} height={200} data={plotData.chartData}>
-                    <Line type="linear" dataKey={plotData.yAxis} stroke="red" strokeWidth={2} />
-                    <CartesianGrid stroke="#ddd" strokeDasharray="5 5" />
-                    <XAxis
-                      type="number"
-                      domain={[0, "auto"]}
-                      allowDecimals={false}
-                      dataKey={plotData.xAxis}
-                      label={{ value: plotData.xAxis, offset: -5, position: "insideBottom" }}
-                    />
-                    <YAxis
-                      type="number"
-                      domain={[0, "auto"]}
-                      label={{ value: plotData.yAxis, angle: -90, offset: 12, position: "insideBottomLeft" }}
-                    />
-                  </LineChart>
+                  { }
                 </div>
               </TabPanel>
             }

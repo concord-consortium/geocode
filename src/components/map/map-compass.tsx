@@ -1,7 +1,7 @@
 import * as React from "react";
 import styled from "styled-components";
-import { Icon } from "./icon";
-import PointerIcon from "../assets/map-icons/pointer.svg";
+import { Icon } from "../icon";
+import PointerIcon from "../../assets/map-icons/pointer.svg";
 
 const CompassContainer = styled.div`
   display: flex;
