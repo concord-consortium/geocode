@@ -55,7 +55,7 @@ export class CanvasD3RadialChart extends React.Component<IProps> {
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    const maxMagnitude = d3.max(data, d => d[1]) || 1;
+    const maxMagnitude = chart.extent(1)[1];
     const maxRadius = chartWidth / 2;
     const xScale = d3.scaleLinear()
       .domain([-maxMagnitude, maxMagnitude])
@@ -94,7 +94,8 @@ export class CanvasD3RadialChart extends React.Component<IProps> {
     ctx.lineWidth = 0.5 - (0.3 * lineWidthShrink);
     ctx.strokeStyle = "#3c7769";
     ctx.beginPath();
-    data.forEach(point => {
+
+    (data as number[][]).forEach((point) => {
       const px = center.x + Math.cos((90 - point[0]) * Math.PI / 180) * magScale(point[1]);
       const py = center.y - Math.sin((90 - point[0]) * Math.PI / 180) * magScale(point[1]);
       // const px = center.x + xScale(x);

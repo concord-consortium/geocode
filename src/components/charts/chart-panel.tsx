@@ -5,6 +5,8 @@ import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import { BaseComponent } from "../base";
 import { DataSampler } from "../../stores/data-sampler";
+import * as d3 from "d3";
+import { SvgD3ScatterChart } from "./svg-d3-scatter-chart";
 
 interface IProps {
   width: number;
@@ -55,12 +57,12 @@ export class ChartPanel extends BaseComponent<IProps, IState> {
           <React.Fragment>
             <Row>
               Add:&nbsp;
-              <button onClick={this.addDemoChart("scatter", 0)}>Tiny scatter</button>
-              <button onClick={this.addDemoChart("scatter", 1)}>Medium scatter</button>
-              <button onClick={this.addDemoChart("scatter", 2)}>Large scatter</button>
-              <button onClick={this.addDemoChart("radial", 0)}>Tiny radial</button>
-              <button onClick={this.addDemoChart("radial", 1)}>Medium radial</button>
-              <button onClick={this.addDemoChart("radial", 2)}>Large radial</button>
+              <button onClick={this.addDemoChart("all-time-scatter", 0)}>Speed-time (sm)</button>
+              <button onClick={this.addDemoChart("all-time-scatter", 1)}>Speed-time (lg)</button>
+              <button onClick={this.addDemoChart("month-scatter", 0)}>Speed-month (sm)</button>
+              <button onClick={this.addDemoChart("month-scatter", 1)}>Speed-month (lg)</button>
+              <button onClick={this.addDemoChart("radial", 0)}>Direction (sm)</button>
+              <button onClick={this.addDemoChart("radial", 1)}>Direction (lg)</button>
             </Row>
           </React.Fragment> :
           <Row><Title>Data Charts</Title></Row>
@@ -76,16 +78,23 @@ export class ChartPanel extends BaseComponent<IProps, IState> {
                   }
                   <Row>
                     {
-                      chart.type === "scatter" ?
-                        <CanvasD3ScatterChart
+                      chart.type === "radial" ?
+                        <CanvasD3RadialChart
+                          width={this.props.width * 0.55}
+                          chart={chart}
+                        /> :
+                        chart.data.length < 5000 ?
+                        <SvgD3ScatterChart
                           width={this.props.width * 0.85}
                           height={this.props.width * 0.4}
                           chart={chart}
                         /> :
-                        <CanvasD3RadialChart
-                          width={this.props.width * 0.55}
+                        <CanvasD3ScatterChart
+                          width={this.props.width * 0.85}
+                          height={this.props.width * 0.4}
                           chart={chart}
                         />
+
                     }
                   </Row>
                 </div>
@@ -104,22 +113,43 @@ export class ChartPanel extends BaseComponent<IProps, IState> {
     }
   }
 
-  private addDemoChart = (type: "scatter" | "radial", size: 0 | 1 | 2) => {
+  private addDemoChart = (type: "all-time-scatter" | "month-scatter" | "radial", size: 0 | 1) => {
     return () => {
-      const numPoints = size === 0 ? 100 : size === 1 ? 1600 : 16000;
-      const points: number[][] = [];
-      const sample = DataSampler.getRandomSampleWithoutReplacement("Wind Data", numPoints);
-      for (let i = 0; i < numPoints; i++) {
-        type === "scatter" ?
-          points.push([sample[i].month, sample[i].speed]) :
-          points.push([sample[i].direction, sample[i].speed]);
-      }
+      const numPoints = size === 0 ? 500 : 16000;
+      const sample = numPoints === 16000 ?
+        DataSampler.getAllData("Wind Data") :
+        DataSampler.getRandomSampleWithReplacement("Wind Data", numPoints);
 
       const title = "Chart " + (this.stores.chartsStore.charts.length + 1);
-      if (type === "scatter") {
-        this.stores.chartsStore.addChart(type, points, title, "Month", "Wind Speed");
+
+      const data: number[][] = [];
+
+      if (type === "all-time-scatter") {
+        const dateParser = d3.timeParse("%Y-%m-%d");
+        for (let i = 0; i < numPoints; i++) {
+          const dateStr = sample[i].year + "-" + sample[i].month + "-" + sample[i].day;
+          const date = dateParser(dateStr)!;
+          data.push([date, sample[i].speed]);
+        }
+        const xAxisLabel = "Date";
+        const yAxisLabel = "Wind speed";
+        const dateLabelFormat = "%b %Y";
+        this.stores.chartsStore.addChart({type: "scatter", data, title, xAxisLabel, yAxisLabel, dateLabelFormat});
+      } else if (type === "month-scatter") {
+        const dateParser = d3.timeParse("%m");
+        for (let i = 0; i < numPoints; i++) {
+          const date = dateParser(sample[i].month)!;
+          data.push([date, sample[i].speed]);
+        }
+        const xAxisLabel = "Month";
+        const yAxisLabel = "Wind speed";
+        const dateLabelFormat = "%b";
+        this.stores.chartsStore.addChart({type: "scatter", data, title, xAxisLabel, yAxisLabel, dateLabelFormat});
       } else {
-        this.stores.chartsStore.addChart(type, points, title);
+        for (let i = 0; i < numPoints; i++) {
+          data.push([sample[i].direction, sample[i].speed]);
+        }
+        this.stores.chartsStore.addChart({type, data, title});
       }
     };
   }
