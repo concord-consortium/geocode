@@ -190,9 +190,9 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     const tabWidth = Math.floor(width * .5);
     const mapWidth = Math.floor(width * .5);
     const blocklyWidth = tabWidth - (blocklyMargin * 2);
-    const blocklyHeight = Math.floor(height - 90);
     const logWidth = Math.floor(tabWidth * 0.95);
     const logHeight = Math.floor(height * .2);
+    const blocklyHeight = Math.floor(height - 90 - (showLog ? logHeight : 0));
     const scenarioData = (Scenarios as {[key: string]: Scenario})[scenario];
 
     this.stores.simulation.setVolcano(scenarioData.volcanoLat, scenarioData.volcanoLng);
