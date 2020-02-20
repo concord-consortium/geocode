@@ -5,6 +5,8 @@ import * as Scenarios from "./../assets/maps/scenarios.json";
 import * as BlocklyAuthoring from "./../assets/blockly-authoring/index.json";
 import { IStoreish } from "../stores/stores.js";
 
+import "../css/dat-gui.css";
+
 interface IProps {
   options: IStoreish;
   expandOptionsDialog: boolean;
@@ -50,6 +52,8 @@ const AuthoringMenu: React.SFC<IProps> = (props) => {
           </DatFolder>,
 
           <DatBoolean path="uiStore.showLog" label="Show Log?" key="showLog" />,
+
+          <DatBoolean path="uiStore.showDemoCharts" label="Show Demo Charts?" key="showDemoCharts" />,
 
           <DatButton label="Save current state to local storage"
             onClick={props.saveStateToLocalStorage}

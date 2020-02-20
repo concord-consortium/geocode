@@ -19,6 +19,8 @@ const UIStore = types.model("UI", {
   showEjectedVolume: true,
   showColumnHeight: true,
   showVEI: true,
+  // chart demo buttons
+  showDemoCharts: false,
 })
 .actions((self) => ({
   setShowOptionsDialog(show: boolean) {
