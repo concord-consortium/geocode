@@ -1,7 +1,7 @@
 import * as React from "react";
 import { PureComponent } from "react";
 import styled from "styled-components";
-import { Icon } from "./icon";
+import { Icon } from "../icon";
 
 interface IconButtonContainerProps {
   backgroundColor?: string;

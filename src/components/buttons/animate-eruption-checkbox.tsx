@@ -1,8 +1,8 @@
 import * as React from "react";
 import { PureComponent } from "react";
 import styled from "styled-components";
-import { Icon } from "./icon";
-import CheckIcon from "../assets/controls-icons/check.svg";
+import { Icon } from "../icon";
+import CheckIcon from "../../assets/controls-icons/check.svg";
 
 const Container = styled.div`
   display: flex;

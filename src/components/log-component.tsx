@@ -1,6 +1,6 @@
 import * as React from "react";
 import styled from "styled-components";
-import IconButton from "./icon-button";
+import IconButton from "./buttons/icon-button";
 import { SectionTypes, kTabInfo } from "./tabs";
 import { observer, inject } from "mobx-react";
 import { BaseComponent, IBaseProps } from "./base";

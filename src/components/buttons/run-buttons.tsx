@@ -1,9 +1,9 @@
 import * as React from "react";
 import styled from "styled-components";
-import RunIcon from "../assets/blockly-icons/run.svg";
-import StopIcon from "../assets/blockly-icons/stop.svg";
-import ResetIcon from "../assets/blockly-icons/reset.svg";
-import StepIcon from "../assets/blockly-icons/step.svg";
+import RunIcon from "../../assets/blockly-icons/run.svg";
+import StopIcon from "../../assets/blockly-icons/stop.svg";
+import ResetIcon from "../../assets/blockly-icons/reset.svg";
+import StepIcon from "../../assets/blockly-icons/step.svg";
 import IconButton from "./icon-button";
 
 interface IProps {
