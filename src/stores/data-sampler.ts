@@ -1,7 +1,15 @@
-const WindDataSet = require("../assets/data/winds_Cerro_Negro.csv");
+// @ts-ignore
+import * as WindDataSet from "../assets/data/winds_Cerro_Negro.csv";
 
 type Dataset = "Wind Data";
 export const WIND_DATA = "Wind Data";
+
+// dsv-loader loads in all data as strings. For now we know they are all numbers, so we can quick-convert
+WindDataSet.forEach((item: any) => {
+  for (const key of Object.keys(item)) {
+    item[key] = parseFloat(item[key]);
+  }
+});
 
 const datasets: {[key in Dataset]: any} = {
   [WIND_DATA]: WindDataSet
@@ -14,6 +22,7 @@ export const DataSampler = {
   },
 
   getRandomSampleWithReplacement(name: Dataset, sampleSize: number) {
+    debugger;
     const dataset = datasets[name];
     const samples = [];
     for (let i = 0; i < sampleSize; i++) {

@@ -74,7 +74,7 @@ module.exports = (env, argv) => {
         {
           test: /\.csv$/,
           use: [
-            'dsv-loader?rows'
+            'dsv-loader'
           ]
         }
       ]
