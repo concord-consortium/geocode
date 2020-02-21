@@ -5,7 +5,7 @@ import RangeControl from "./range-control";
 import styled from "styled-components";
 import RunIcon from "../assets/blockly-icons/run.svg";
 import ResetIcon from "../assets/blockly-icons/reset.svg";
-import IconButton from "./icon-button";
+import IconButton from "./buttons/icon-button";
 import { HorizontalContainer, VerticalContainer, Footer, TabContent } from "./styled-containers";
 import VEIWidget from "./widgets/vei-widget";
 import EjectedVolumeWidget from "./widgets/ejected-volume-widget";

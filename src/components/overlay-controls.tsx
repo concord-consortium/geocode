@@ -1,5 +1,5 @@
 import * as React from "react";
-import IconButton from "./icon-button";
+import IconButton from "./buttons/icon-button";
 import { RightSectionTypes, kRightTabInfo } from "./tabs";
 
 import "../css/overlay-controls.css";

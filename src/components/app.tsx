@@ -9,13 +9,13 @@ import * as BlocklyAuthoring from "./../assets/blockly-authoring/index.json";
 
 import BlocklyContainer from "./blockly-container";
 import styled from "styled-components";
-import { StyledButton } from "./styled-button";
+import { StyledButton } from "./buttons/styled-button";
 import { SectionTypes, RightSectionTypes, TabInfo, kTabInfo, kRightTabInfo,
          TabBack, Tab, Tabs, TabList, TabPanel, RightTabBack, BottomTab } from "./tabs";
 import { js_beautify } from "js-beautify";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import Controls from "./controls";
-import RunButtons from "./run-buttons";
+import RunButtons from "./buttons/run-buttons";
 import { Footer, TabContent } from "./styled-containers";
 import WidgetPanel from "./widgets/widget-panel";
 import screenfull from "screenfull";
