@@ -1,29 +1,31 @@
 // @ts-ignore
-import * as WindDataSet from "../assets/data/winds_Cerro_Negro.csv";
+import * as RawWindDataSet from "../assets/data/winds_Cerro_Negro.csv";
 
-type Dataset = "Wind Data";
+interface DatasetCase {[key: string]: number; }
+export type Dataset = DatasetCase[];
+
+type DatasetName = "Wind Data";         // currently only one option
 export const WIND_DATA = "Wind Data";
 
 // dsv-loader loads in all data as strings. For now we know they are all numbers, so we can quick-convert
-WindDataSet.forEach((item: any) => {
+const WindDataSet: Dataset = RawWindDataSet.map((item: any) => {
   for (const key of Object.keys(item)) {
     item[key] = parseFloat(item[key]);
   }
+  return item;
 });
 
-const datasets: {[key in Dataset]: any} = {
+const datasets: {[key in DatasetName]: any} = {
   [WIND_DATA]: WindDataSet
 };
 
-export const DataSampler = {
+export const Datasets = {
 
-  getAllData(name: Dataset) {
+  getAllData(name: DatasetName) {
     return datasets[name];
   },
 
-  getRandomSampleWithReplacement(name: Dataset, sampleSize: number) {
-    debugger;
-    const dataset = datasets[name];
+  getRandomSampleWithReplacement(dataset: Dataset, sampleSize: number): Dataset {
     const samples = [];
     for (let i = 0; i < sampleSize; i++) {
       samples.push(dataset[Math.floor(Math.random() * dataset.length)]);
@@ -31,8 +33,7 @@ export const DataSampler = {
     return samples;
   },
 
-  getRandomSampleWithoutReplacement(name: Dataset, sampleSize: number) {
-    const dataset = datasets[name];
+  getRandomSampleWithoutReplacement(dataset: Dataset, sampleSize: number): Dataset {
     const indices: number[] = [];
     const samples = new Array(sampleSize);
     for (let i = 0; i < sampleSize; i++ ) {

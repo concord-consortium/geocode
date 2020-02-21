@@ -4,7 +4,7 @@ import { CanvasD3RadialChart } from "./canvas-d3-radial-chart";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import { BaseComponent } from "../base";
-import { DataSampler } from "../../stores/data-sampler";
+import { Datasets } from "../../stores/data-sets";
 import * as d3 from "d3";
 import { SvgD3ScatterChart } from "./svg-d3-scatter-chart";
 
@@ -117,10 +117,11 @@ export class ChartPanel extends BaseComponent<IProps, IState> {
 
   private addDemoChart = (type: "all-time-scatter" | "month-scatter" | "radial-arrows" | "radial-dots", size: 0|1) => {
     return () => {
+      const allData = Datasets.getAllData("Wind Data");
       const numPoints = size === 0 ? 500 : 16000;
       const sample = numPoints === 16000 ?
-        DataSampler.getAllData("Wind Data") :
-        DataSampler.getRandomSampleWithReplacement("Wind Data", numPoints);
+        allData :
+        Datasets.getRandomSampleWithReplacement(allData, numPoints);
 
       const title = "Chart " + (this.stores.chartsStore.charts.length + 1);
 
