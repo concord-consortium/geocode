@@ -16,7 +16,6 @@
     <block type="setVEI"></block>
     <block type="erupt"></block>
     <block type="outputPaintMap"></block>
-    <block type="outputPlot"></block>
     <block type="redrawMap"></block>
   </category>
  <category name="Data" colour="%{BKY_TEXTS_HUE}">

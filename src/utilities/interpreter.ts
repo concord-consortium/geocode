@@ -35,14 +35,11 @@ const makeInterperterFunc = (simulation: SimulationModelType, workspace: IBlockl
       addVar(name, wrapped);
     };
 
+    /** ==== Tephra simulation model setters ==== */
+
     addFunc("setModelParams", (params: IModelParams) => {
       simulation.setModelParams(params);
     });
-
-    addFunc("erupt", (animate: boolean) => {
-      simulation.erupt(animate);
-    });
-
     addFunc("setWindDirection", (direction: number) => {
       simulation.setWindDirection(direction);
     });
@@ -73,25 +70,23 @@ const makeInterperterFunc = (simulation: SimulationModelType, workspace: IBlockl
       simulation.setVolcano(params.x, params.y);
     });
 
-    addFunc("addCity", (params: {x: number, y: number, name: string}) => {
-      simulation.addCity(params.x, params.y, params.name);
+    /** ==== Run tephra simulation model ==== */
+
+    addFunc("erupt", () => {
+      simulation.erupt();
     });
 
-    addFunc("paintGrid", (params: {resultType: SimOutput, color: string}) => {
-      simulation.paintGrid(params.resultType, params.color);
-    });
+    /** ==== Draw on tephra map ==== */
 
     addFunc("paintMap", () => {
       simulation.paintMap();
     });
 
-    addFunc("numberGrid", (params: {resultType: SimOutput}) => {
-      simulation.numberGrid(params.resultType);
+    addFunc("addCity", (params: {x: number, y: number, name: string}) => {
+      simulation.addCity(params.x, params.y, params.name);
     });
 
-    addFunc("calculateAndAddPlotPoint", (params: {xData: SimulationVariable, yData: SimOutput, cityName: string}) => {
-      simulation.calculateAndAddPlotPoint(params.xData, params.yData, params.cityName);
-    });
+    /** ==== Utility methods ==== */
 
     addFunc("log", (params) => {
       console.log(params);
@@ -106,6 +101,8 @@ const makeInterperterFunc = (simulation: SimulationModelType, workspace: IBlockl
     addFunc("stringConcat", (params: {lv: any, rv: any}) => {
       return simulation.stringConcat(params.lv, params.rv);
     });
+
+    /** ==== Used under the hood to control highlighting and stepping ==== */
 
     addFunc("startStep", (blockId: number) => {
       if (workspace) {

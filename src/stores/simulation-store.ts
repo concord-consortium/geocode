@@ -286,10 +286,6 @@ export const SimulationStore = types
     }
   }))
   .actions((self) => ({
-    paintGrid(resultType: SimOutput, colorStr: string) {
-      console.warn("WARNING: Painting Grid is no longer supported");
-      self.hasErupted = true;
-    },
     paintMap() {
       self.hasErupted = true;
       self.coloredColHeight = self.colHeight;
@@ -298,10 +294,6 @@ export const SimulationStore = types
       self.coloredVei = self.vei;
       self.coloredWindDirection = self.windDirection;
       self.coloredWindSpeed = self.windSpeed;
-    },
-    numberGrid(resultType: SimOutput) {
-      console.warn("WARNING: Numbering Grid is no longer supported ");
-      self.hasErupted = true;
     },
     addPlotPoint(xAxis: string, yAxis: string, x: number, y: number) {
       self.plotData.setXAxis(xAxis);
@@ -341,21 +333,6 @@ export const SimulationStore = types
           setTimeout(self.unpause, 3000);
         }
       }
-    },
-    calculateAndAddPlotPoint(xData: SimulationVariable, yData: SimOutput, cityName: string) {
-      console.warn("WARNING: Plot Point is not currently supported");
-      // const xLabel = MeasurementLabel[xData];
-      // const yLabel = MeasurementLabel[yData];
-
-      // const city = self.cities.find(c => c.name === cityName);
-      // if (!city) return;
-
-      // const dataIndex = city.x + city.y * self.numCols;
-
-      // const xVal = self[xData];
-      // const yVal = self.data[dataIndex][yData];
-
-      // self.addPlotPoint(xLabel, yLabel, xVal, yVal);
     }
   }))
   .actions((self) => {
