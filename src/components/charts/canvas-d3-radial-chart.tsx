@@ -104,35 +104,46 @@ export class CanvasD3RadialChart extends React.Component<IProps> {
 
     const ctx = this.canvasRef.current.getContext("2d")!;
 
-
     // shrink path width from 0.5 to 0.1 between 1000 and 3000 data points
     const lineWidthShrink = Math.max(0, Math.min(1, (data.length - 1000) / 2000));
     ctx.lineWidth = 0.5 - (0.3 * lineWidthShrink);
     ctx.strokeStyle = "#3c7769";
-    ctx.beginPath();
 
-    (data as number[][]).forEach((point) => {
-      const px = center.x + Math.cos((90 - point[0]) * Math.PI / 180) * magScale(point[1]);
-      const py = center.y - Math.sin((90 - point[0]) * Math.PI / 180) * magScale(point[1]);
-      // const px = center.x + xScale(x);
-      // const py = yScale(y);
-      const headlen = 10; // length of head in pixels
-      const dx = px - center.x;
-      const dy = py - center.y;
-      const rads = Math.atan2(dy, dx);
-      ctx.moveTo(center.x, center.y);
-      ctx.lineTo(px, py);
-      ctx.lineTo(
-        px - headlen * Math.cos(rads - Math.PI / 6),
-        py - headlen * Math.sin(rads - Math.PI / 6)
-      );
-      ctx.moveTo(px, py);
-      ctx.lineTo(
-        px - headlen * Math.cos(rads + Math.PI / 6),
-        py - headlen * Math.sin(rads + Math.PI / 6)
-      );
-    });
-    ctx.stroke();
+    if (chart.chartStyle === "dot") {
+      (data as number[][]).forEach((point) => {
+        ctx.beginPath();
+        ctx.fillStyle = "#448878";
+        const px = center.x + Math.cos((90 - point[0]) * Math.PI / 180) * magScale(point[1]);
+        const py = center.y - Math.sin((90 - point[0]) * Math.PI / 180) * magScale(point[1]);
+
+        ctx.arc(px, py, 1.5, 0, 2 * Math.PI, true);
+        ctx.fill();
+      });
+    } else {
+      ctx.beginPath();
+      (data as number[][]).forEach((point) => {
+        const px = center.x + Math.cos((90 - point[0]) * Math.PI / 180) * magScale(point[1]);
+        const py = center.y - Math.sin((90 - point[0]) * Math.PI / 180) * magScale(point[1]);
+        // const px = center.x + xScale(x);
+        // const py = yScale(y);
+        const headlen = 10; // length of head in pixels
+        const dx = px - center.x;
+        const dy = py - center.y;
+        const rads = Math.atan2(dy, dx);
+        ctx.moveTo(center.x, center.y);
+        ctx.lineTo(px, py);
+        ctx.lineTo(
+          px - headlen * Math.cos(rads - Math.PI / 6),
+          py - headlen * Math.sin(rads - Math.PI / 6)
+        );
+        ctx.moveTo(px, py);
+        ctx.lineTo(
+          px - headlen * Math.cos(rads + Math.PI / 6),
+          py - headlen * Math.sin(rads + Math.PI / 6)
+        );
+      });
+      ctx.stroke();
+    }
   }
 
 }

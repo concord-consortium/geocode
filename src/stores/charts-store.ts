@@ -4,11 +4,15 @@ import * as d3 from "d3";
 export const ChartType = types.enumeration("type", ["scatter", "radial"]);
 export type ChartTypeType = typeof ChartType.Type;
 
+export const ChartStyle = types.enumeration("type", ["dot", "arrow"]);
+export type ChartStyleType = typeof ChartStyle.Type;
+
 type ChartData = Array<Array<number|Date>>;
 type Column = number|Date;
 
 const Chart = types.model("Chart", {
   type: ChartType,
+  chartStyle: types.maybe(ChartStyle),      // rendering options, given a specific type
   data: types.array(types.array(types.union(types.number, types.Date))), // [x,y], [deg,mag], or [date, y] tuples
   title: types.maybe(types.string),
   customExtents: types.array(types.array(types.number)),
@@ -57,8 +61,8 @@ const ChartsStore = types.model("Charts", {
   charts: types.array(Chart)
 })
 .actions((self) => ({
-  addChart(chart: {type: ChartTypeType, data: ChartData, customExtents?: number[][], title?: string,
-          xAxisLabel?: string, yAxisLabel?: string, dateLabelFormat?: string}) {
+  addChart(chart: {type: ChartTypeType, chartStyle?: ChartStyleType, data: ChartData, customExtents?: number[][],
+          title?: string, xAxisLabel?: string, yAxisLabel?: string, dateLabelFormat?: string}) {
     self.charts.push(Chart.create(chart));
   }
 }));

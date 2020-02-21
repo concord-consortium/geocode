@@ -61,8 +61,10 @@ export class ChartPanel extends BaseComponent<IProps, IState> {
               <button onClick={this.addDemoChart("all-time-scatter", 1)}>Speed-time (lg)</button>
               <button onClick={this.addDemoChart("month-scatter", 0)}>Speed-month (sm)</button>
               <button onClick={this.addDemoChart("month-scatter", 1)}>Speed-month (lg)</button>
-              <button onClick={this.addDemoChart("radial", 0)}>Direction (sm)</button>
-              <button onClick={this.addDemoChart("radial", 1)}>Direction (lg)</button>
+              <button onClick={this.addDemoChart("radial-arrows", 0)}>Radial (sm)</button>
+              <button onClick={this.addDemoChart("radial-arrows", 1)}>Radial (lg)</button>
+              <button onClick={this.addDemoChart("radial-dots", 0)}>Radial dots (sm)</button>
+              <button onClick={this.addDemoChart("radial-dots", 1)}>Radial dots (lg)</button>
             </Row>
           </React.Fragment> :
           <Row><Title>Data Charts</Title></Row>
@@ -113,7 +115,7 @@ export class ChartPanel extends BaseComponent<IProps, IState> {
     }
   }
 
-  private addDemoChart = (type: "all-time-scatter" | "month-scatter" | "radial", size: 0 | 1) => {
+  private addDemoChart = (type: "all-time-scatter" | "month-scatter" | "radial-arrows" | "radial-dots", size: 0|1) => {
     return () => {
       const numPoints = size === 0 ? 500 : 16000;
       const sample = numPoints === 16000 ?
@@ -149,8 +151,9 @@ export class ChartPanel extends BaseComponent<IProps, IState> {
         for (let i = 0; i < numPoints; i++) {
           data.push([sample[i].direction, sample[i].speed]);
         }
+        const chartStyle = type === "radial-dots" ? "dot" : "arrow";
         const customExtents = [[], [0, 23]];
-        this.stores.chartsStore.addChart({type, data, customExtents, title});
+        this.stores.chartsStore.addChart({type: "radial", data, customExtents, title, chartStyle});
       }
     };
   }
