@@ -11,6 +11,7 @@ const Chart = types.model("Chart", {
   type: ChartType,
   data: types.array(types.array(types.union(types.number, types.Date))), // [x,y], [deg,mag], or [date, y] tuples
   title: types.maybe(types.string),
+  customExtents: types.array(types.array(types.number)),
   xAxisLabel: types.maybe(types.string),
   yAxisLabel: types.maybe(types.string),
   dateLabelFormat: types.maybe(types.string),
@@ -31,6 +32,9 @@ const Chart = types.model("Chart", {
 
   // returns min and max of column
   const extent = (column: 0|1) => {
+    if (self.customExtents[column] && self.customExtents[column].length) {
+      return self.customExtents[column];
+    }
     const columnData = getColumnData(column);
     if (columnData.length === 0) return [0, 0];
     if (typeof columnData[0] === "number") {
@@ -53,7 +57,7 @@ const ChartsStore = types.model("Charts", {
   charts: types.array(Chart)
 })
 .actions((self) => ({
-  addChart(chart: {type: ChartTypeType, data: ChartData, title?: string,
+  addChart(chart: {type: ChartTypeType, data: ChartData, customExtents?: number[][], title?: string,
           xAxisLabel?: string, yAxisLabel?: string, dateLabelFormat?: string}) {
     self.charts.push(Chart.create(chart));
   }

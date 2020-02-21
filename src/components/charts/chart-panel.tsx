@@ -149,7 +149,8 @@ export class ChartPanel extends BaseComponent<IProps, IState> {
         for (let i = 0; i < numPoints; i++) {
           data.push([sample[i].direction, sample[i].speed]);
         }
-        this.stores.chartsStore.addChart({type, data, title});
+        const customExtents = [[], [0, 23]];
+        this.stores.chartsStore.addChart({type, data, customExtents, title});
       }
     };
   }
