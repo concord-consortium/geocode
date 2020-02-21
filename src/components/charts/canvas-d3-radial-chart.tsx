@@ -34,8 +34,8 @@ export class CanvasD3RadialChart extends React.Component<IProps> {
     const absoluteStyle: React.CSSProperties = {position: "absolute", top: 0, left: 0};
     return (
       <div style={relativeStyle}>
-        <canvas ref={this.canvasRef} style={absoluteStyle} />
         <svg ref={this.svgRef} style={absoluteStyle} />
+        <canvas ref={this.canvasRef} style={absoluteStyle} />
       </div>
     );
   }
@@ -79,6 +79,23 @@ export class CanvasD3RadialChart extends React.Component<IProps> {
     svgAxes.append("g")
       .call(d3.axisLeft(yScale).tickValues([0]).tickFormat(() => "W"));
 
+    const center = {x: chartWidth / 2, y: chartWidth / 2};
+
+    // add circular scale
+    const rAxes = svgAxes.append("g")
+      .attr("class", "r axis")
+      .selectAll("g")
+      .data(magScale.ticks(5).slice(1))
+      .enter().append("g");
+
+    rAxes.append("circle")
+      .attr("fill", "none")
+      .attr("stroke", "#BBB")
+      .attr("stroke-dasharray", "4")
+      .attr("cx", center.x)
+      .attr("cy", center.y)
+      .attr("r", magScale);
+
     d3.select(this.canvasRef.current)
       .attr("width", chartWidth)
       .attr("height", chartWidth)
@@ -87,7 +104,6 @@ export class CanvasD3RadialChart extends React.Component<IProps> {
 
     const ctx = this.canvasRef.current.getContext("2d")!;
 
-    const center = {x: chartWidth / 2, y: chartWidth / 2};
 
     // shrink path width from 0.5 to 0.1 between 1000 and 3000 data points
     const lineWidthShrink = Math.max(0, Math.min(1, (data.length - 1000) / 2000));
