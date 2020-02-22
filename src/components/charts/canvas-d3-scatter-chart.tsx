@@ -1,15 +1,20 @@
 import * as React from "react";
 import * as d3 from "d3";
-import { svg } from "d3";
+import { ChartType } from "../../stores/charts-store";
+
+type Scale = d3.ScaleLinear<number, number> | d3.ScaleTime<number, number>;
 
 interface IProps {
-  data: number[][];         // (x,y) tuples: [[x,y], [x,y], ...]
+  chart: ChartType;
   width: number;
   height: number;
-  xAxisLabel?: string;
-  yAxisLabel?: string;
 }
 
+/**
+ * A D3-based canvas scatter chart, made for render large amounts of data quickly.
+ *
+ * Chart data may be numeric or Date on either axis (when needed we could support strings as well)
+ */
 export class CanvasD3ScatterChart extends React.Component<IProps> {
 
   private canvasRef = React.createRef<HTMLCanvasElement>();
@@ -37,8 +42,8 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
     const absoluteStyle: React.CSSProperties = {position: "absolute", top: 0, left: 0};
     return (
       <div style={relativeStyle}>
-        <canvas ref={this.canvasRef} style={absoluteStyle} />
         <svg ref={this.svgRef} style={absoluteStyle} />
+        <canvas ref={this.canvasRef} style={absoluteStyle} />
       </div>
     );
   }
@@ -46,11 +51,13 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
   private drawChart() {
     if (!this.canvasRef.current || !this.svgRef.current) return;
 
-    const { width, height, data } = this.props;
+    const { width, height, chart } = this.props;
+    const { data, xAxisLabel, yAxisLabel } = chart;
 
     const margin = {top: 15, right: 20, bottom: 35, left: 50};
-    const chartWidth = width - margin.left - margin.right;
-    const chartHeight = height - margin.top - margin.bottom;
+    const canvasPadding = 3;      // extend canvas slightly beyond axes
+    const chartWidth = width - margin.left - margin.right + (canvasPadding * 2);
+    const chartHeight = height - margin.top - margin.bottom + (canvasPadding * 2);
 
     const svgAxes = d3.select(this.svgRef.current)
       .attr("width", width)
@@ -58,55 +65,61 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    const xScale = d3.scaleLinear()
-      .domain([0, Math.max(...data.map(d => d[0]))])
-      .range([ 0, chartWidth ]);
-    const yScale = d3.scaleLinear()
-      .domain([0, Math.max(...data.map(d => d[1]))])
-      .range([ chartHeight, 0]);
+    const xScale: Scale = chart.isDate(0) ? d3.scaleTime() : d3.scaleLinear();
+    xScale.rangeRound([0, chartWidth]).domain(chart.extent(0));
+    xScale.nice();
+
+    const yScale: Scale = chart.isDate(1) ? d3.scaleTime().nice() : d3.scaleLinear();
+    yScale.rangeRound([chartHeight, 0]).domain(chart.extent(1));
 
     // add axes
+    const axisBottom = chart.isDate(0) ?
+        d3.axisBottom(xScale).tickFormat(chart.toDateString()) :
+        d3.axisBottom(xScale);
     svgAxes.append("g")
       .attr("transform", "translate(0," + chartHeight + ")")
-      .call(d3.axisBottom(xScale));
+      .call(axisBottom);
 
+    const axisLeft = chart.isDate(1) ?
+      d3.axisLeft(yScale).tickFormat(chart.toDateString()) :
+      d3.axisLeft(yScale);
     svgAxes.append("g")
-      .call(d3.axisLeft(yScale));
+      .call(axisLeft);
 
     // Add labels
-    if (this.props.xAxisLabel) {
+    if (xAxisLabel) {
       svgAxes.append("text")
         .attr("x", `${width / 3}`)
         .attr("y", `${height - margin.top}`)
         .style("font-size", "0.9em")
         .style("fill", "#555")
-        .text(this.props.xAxisLabel);
+        .text(xAxisLabel);
     }
-    if (this.props.yAxisLabel) {
+    if (yAxisLabel) {
       svgAxes.append("text")
         .attr("x", `-${height / 2}`)
         .attr("dy", "-30px")
         .attr("transform", "rotate(-90)")
         .style("font-size", "0.9em")
         .style("fill", "#555")
-        .text(this.props.yAxisLabel);
+        .text(yAxisLabel);
     }
 
     d3.select(this.canvasRef.current)
-      .attr("width", width)
-      .attr("height", height)
-      .style("margin-left", margin.left + "px")
-      .style("margin-top", margin.top + "px");
+      .attr("width", width + (canvasPadding * 2))
+      .attr("height", height + (canvasPadding * 2))
+      .style("margin-left", margin.left - canvasPadding + "px")
+      .style("margin-top", margin.top - canvasPadding + "px");
 
     const ctx = this.canvasRef.current.getContext("2d")!;
 
-    this.props.data.forEach(point => {
+    data.forEach(d => {
       ctx.beginPath();
       ctx.fillStyle = "#448878";
-      const px = xScale(point[0]);
-      const py = yScale(point[1]);
+      const px = xScale(d[0]) + canvasPadding;
+      const py = yScale(d[1]) + canvasPadding;
 
-      ctx.arc(px, py, 1.2, 0, 2 * Math.PI, true);
+      ctx.arc(px, py, 1.5, 0, 2 * Math.PI, true);
       ctx.fill();
     });
   }

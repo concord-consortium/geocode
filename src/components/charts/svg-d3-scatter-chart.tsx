@@ -1,16 +1,18 @@
 import * as ReactFauxDOM from "react-faux-dom";
 import * as d3 from "d3";
+import { ChartType } from "../../stores/charts-store";
+
+type Scale = d3.ScaleLinear<number, number> | d3.ScaleTime<number, number>;
 
 interface IProps {
-  data: number[][];         // (x,y) tuples: [[x,y], [x,y], ...]
+  chart: ChartType;
   width: number;
   height: number;
-  xAxisLabel?: string;
-  yAxisLabel?: string;
 }
 
 export const SvgD3ScatterChart = (props: IProps) => {
-  const { width, height, data, xAxisLabel, yAxisLabel } = props;
+  const { width, height, chart } = props;
+  const { data, xAxisLabel, yAxisLabel } = chart;
 
   const margin = {top: 15, right: 20, bottom: 35, left: 50};
   const chartWidth = width - margin.left - margin.right;
@@ -24,43 +26,53 @@ export const SvgD3ScatterChart = (props: IProps) => {
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-  const xScale = d3.scaleLinear()
-    .domain([0, Math.max(...data.map(d => d[0]))])
-    .range([ 0, chartWidth ]);
-  const yScale = d3.scaleLinear()
-    .domain([0, Math.max(...data.map(d => d[1]))])
-    .range([ chartHeight, 0]);
+  const xScale: Scale = chart.isDate(0) ? d3.scaleTime() : d3.scaleLinear();
+  xScale.rangeRound([0, chartWidth]).domain(chart.extent(0));
+  xScale.nice();
+
+  const yScale: Scale = chart.isDate(1) ? d3.scaleTime().nice() : d3.scaleLinear();
+  yScale.rangeRound([chartHeight, 0]).domain(chart.extent(1));
 
   // add axes
+  const axisBottom = chart.isDate(0) ?
+      d3.axisBottom(xScale).tickFormat(chart.toDateString()) :
+      d3.axisBottom(xScale);
   svg.append("g")
     .attr("transform", "translate(0," + chartHeight + ")")
-    .call(d3.axisBottom(xScale));
+    .call(axisBottom);
 
+  const axisLeft = chart.isDate(1) ?
+    d3.axisLeft(yScale).tickFormat(chart.toDateString()) :
+    d3.axisLeft(yScale);
   svg.append("g")
-    .call(d3.axisLeft(yScale));
+    .call(axisLeft);
 
   // Add labels
   if (xAxisLabel) {
     svg.append("text")
-    .attr("x", `${width / 2}`)
-    .attr("y", `${height - margin.top}`)
-    .text(xAxisLabel);
+      .attr("x", `${width / 3}`)
+      .attr("y", `${height - margin.top}`)
+      .style("font-size", "0.9em")
+      .style("fill", "#555")
+      .text(xAxisLabel);
   }
   if (yAxisLabel) {
     svg.append("text")
       .attr("x", `-${height / 2}`)
       .attr("dy", "-30px")
       .attr("transform", "rotate(-90)")
+      .style("font-size", "0.9em")
+      .style("fill", "#555")
       .text(yAxisLabel);
   }
 
   svg.append("g")
     .selectAll("dot")
-    .data(props.data)
+    .data(data)
     .enter()
     .append("circle")
-      .attr("cx", d => xScale(d[0]) )
-      .attr("cy", d => yScale(d[1]) )
+      .attr("cx", d => xScale((d as number[] | Date[])[0]) )
+      .attr("cy", d => yScale((d as number[] | Date[])[1]) )
       .attr("r", 1.5)
       .style("fill", "#448878");
 

@@ -1,8 +1,9 @@
 import * as React from "react";
 import * as d3 from "d3";
+import { ChartType } from "../../stores/charts-store";
 
 interface IProps {
-  data: number[][];     // (deg,mag) tuples: [[deg,mag], [deg,mag], ...]
+  chart: ChartType;
   width: number;
 }
 
@@ -33,8 +34,8 @@ export class CanvasD3RadialChart extends React.Component<IProps> {
     const absoluteStyle: React.CSSProperties = {position: "absolute", top: 0, left: 0};
     return (
       <div style={relativeStyle}>
-        <canvas ref={this.canvasRef} style={absoluteStyle} />
         <svg ref={this.svgRef} style={absoluteStyle} />
+        <canvas ref={this.canvasRef} style={absoluteStyle} />
       </div>
     );
   }
@@ -42,7 +43,8 @@ export class CanvasD3RadialChart extends React.Component<IProps> {
   private drawChart() {
     if (!this.canvasRef.current || !this.svgRef.current) return;
 
-    const { data, width: totalWidth } = this.props;
+    const { chart, width: totalWidth } = this.props;
+    const data = chart.data;
 
     const margin = {top: 20, right: 20, bottom: 35, left: 20};
     const chartWidth = totalWidth - margin.left - margin.right;
@@ -53,7 +55,7 @@ export class CanvasD3RadialChart extends React.Component<IProps> {
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    const maxMagnitude = d3.max(data, d => d[1]) || 1;
+    const maxMagnitude = chart.extent(1)[1];
     const maxRadius = chartWidth / 2;
     const xScale = d3.scaleLinear()
       .domain([-maxMagnitude, maxMagnitude])
@@ -70,12 +72,29 @@ export class CanvasD3RadialChart extends React.Component<IProps> {
       .call(d3.axisTop(xScale).tickValues([0]).tickFormat(() => "N"));
     svgAxes.append("g")
       .attr("transform", "translate(" + chartWidth + ", 0)")
-      .call(d3.axisRight(yScale).tickValues([0]).tickFormat(() => "W"));
+      .call(d3.axisRight(yScale).tickValues([0]).tickFormat(() => "E"));
     svgAxes.append("g")
       .attr("transform", "translate(0," + chartWidth + ")")
       .call(d3.axisBottom(xScale).tickValues([0]).tickFormat(() => "S"));
     svgAxes.append("g")
       .call(d3.axisLeft(yScale).tickValues([0]).tickFormat(() => "W"));
+
+    const center = {x: chartWidth / 2, y: chartWidth / 2};
+
+    // add circular scale
+    const rAxes = svgAxes.append("g")
+      .attr("class", "r axis")
+      .selectAll("g")
+      .data(magScale.ticks(5).slice(1))
+      .enter().append("g");
+
+    rAxes.append("circle")
+      .attr("fill", "none")
+      .attr("stroke", "#BBB")
+      .attr("stroke-dasharray", "4")
+      .attr("cx", center.x)
+      .attr("cy", center.y)
+      .attr("r", magScale);
 
     d3.select(this.canvasRef.current)
       .attr("width", chartWidth)
@@ -85,35 +104,46 @@ export class CanvasD3RadialChart extends React.Component<IProps> {
 
     const ctx = this.canvasRef.current.getContext("2d")!;
 
-    const center = {x: chartWidth / 2, y: chartWidth / 2};
-
     // shrink path width from 0.5 to 0.1 between 1000 and 3000 data points
     const lineWidthShrink = Math.max(0, Math.min(1, (data.length - 1000) / 2000));
     ctx.lineWidth = 0.5 - (0.3 * lineWidthShrink);
     ctx.strokeStyle = "#3c7769";
-    ctx.beginPath();
-    data.forEach(point => {
-      const px = center.x + Math.cos((90 - point[0]) * Math.PI / 180) * magScale(point[1]);
-      const py = center.y - Math.sin((90 - point[0]) * Math.PI / 180) * magScale(point[1]);
-      // const px = center.x + xScale(x);
-      // const py = yScale(y);
-      const headlen = 10; // length of head in pixels
-      const dx = px - center.x;
-      const dy = py - center.y;
-      const rads = Math.atan2(dy, dx);
-      ctx.moveTo(center.x, center.y);
-      ctx.lineTo(px, py);
-      ctx.lineTo(
-        px - headlen * Math.cos(rads - Math.PI / 6),
-        py - headlen * Math.sin(rads - Math.PI / 6)
-      );
-      ctx.moveTo(px, py);
-      ctx.lineTo(
-        px - headlen * Math.cos(rads + Math.PI / 6),
-        py - headlen * Math.sin(rads + Math.PI / 6)
-      );
-    });
-    ctx.stroke();
+
+    if (chart.chartStyle === "dot") {
+      (data as number[][]).forEach((point) => {
+        ctx.beginPath();
+        ctx.fillStyle = "#448878";
+        const px = center.x + Math.cos((90 - point[0]) * Math.PI / 180) * magScale(point[1]);
+        const py = center.y - Math.sin((90 - point[0]) * Math.PI / 180) * magScale(point[1]);
+
+        ctx.arc(px, py, 1.5, 0, 2 * Math.PI, true);
+        ctx.fill();
+      });
+    } else {
+      ctx.beginPath();
+      (data as number[][]).forEach((point) => {
+        const px = center.x + Math.cos((90 - point[0]) * Math.PI / 180) * magScale(point[1]);
+        const py = center.y - Math.sin((90 - point[0]) * Math.PI / 180) * magScale(point[1]);
+        // const px = center.x + xScale(x);
+        // const py = yScale(y);
+        const headlen = 10; // length of head in pixels
+        const dx = px - center.x;
+        const dy = py - center.y;
+        const rads = Math.atan2(dy, dx);
+        ctx.moveTo(center.x, center.y);
+        ctx.lineTo(px, py);
+        ctx.lineTo(
+          px - headlen * Math.cos(rads - Math.PI / 6),
+          py - headlen * Math.sin(rads - Math.PI / 6)
+        );
+        ctx.moveTo(px, py);
+        ctx.lineTo(
+          px - headlen * Math.cos(rads + Math.PI / 6),
+          py - headlen * Math.sin(rads + Math.PI / 6)
+        );
+      });
+      ctx.stroke();
+    }
   }
 
 }
