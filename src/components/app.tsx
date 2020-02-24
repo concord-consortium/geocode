@@ -23,6 +23,7 @@ import ResizeObserver from "react-resize-observer";
 import AuthoringMenu from "./authoring-menu";
 import { getAuthorableSettings, updateStores, serializeState, getSavableState, deserializeState, SerializedState } from "../stores/stores";
 import { ChartPanel } from "./charts/chart-panel";
+import { BlocklyController } from "../blockly/blockly-controller";
 
 interface IProps extends IBaseProps {}
 
@@ -127,6 +128,7 @@ const FullscreenButtonClosed = styled(FullscreenButton)`
 @observer
 export class AppComponent extends BaseComponent<IProps, IState> {
   private rootComponent = React.createRef<HTMLDivElement>();
+  private blocklyController: BlocklyController;
 
   public constructor(props: IProps) {
     super(props);
@@ -145,20 +147,14 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     };
 
     this.state = initialState;
+
+    this.blocklyController = new BlocklyController(this.stores);
   }
 
   public render() {
     const {
       simulation: {
-        code,
-        setBlocklyCode,
-        plotData,
-        run,
         clearLog,
-        step,
-        stop,
-        reset,
-        running,
         initialXmlCode,
         initialCodeTitle,
         toolbox,
@@ -175,6 +171,15 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         showData,
       }
     } = this.stores;
+    const {
+      setCode,
+      run,
+      step,
+      stop,
+      reset,
+      running,
+      code,
+   } = this.blocklyController;
 
     const {
       tabIndex,
@@ -281,7 +286,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                     toolboxPath={toolboxPath}
                     initialCode={initialXmlCode}
                     initialCodePath={codePath}
-                    setBlocklyCode={setBlocklyCode} />
+                    setBlocklyCode={setCode} />
                   <RunButtons {...{run, stop, step, reset, running}} />
                   { showLog &&
                     <LogComponent

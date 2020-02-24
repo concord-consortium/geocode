@@ -1,11 +1,11 @@
 import { IModelParams, SimOutput, SimulationVariable } from "../stores/simulation-store";
-
-// import { Interpreter } from "js-interpreter";
+import { BlocklyController } from "./blockly-controller";
 import { SimulationModelType } from "../stores/simulation-store";
 import { IBlocklyWorkspace } from "../interfaces";
 const Interpreter = require("js-interpreter");
 
-const makeInterperterFunc = (simulation: SimulationModelType, workspace: IBlocklyWorkspace) => {
+const makeInterperterFunc = (blocklyController: BlocklyController, simulation: SimulationModelType,
+                             workspace: IBlocklyWorkspace) => {
   return (interpreter: any, scope: any) => {
     const addVar = (name: string, value: any) => {
       interpreter.setProperty(scope, name, value);
@@ -108,11 +108,11 @@ const makeInterperterFunc = (simulation: SimulationModelType, workspace: IBlockl
       if (workspace) {
         workspace.highlightBlock(blockId);
       }
-      simulation.startStep();
+      blocklyController.startStep();
     });
 
     addFunc("endStep", () => {
-      simulation.endStep();
+      blocklyController.endStep();
     });
   };
 };
@@ -127,11 +127,12 @@ export interface IInterpreterController {
   pause: () => void;
 }
 
-export const makeInterpreterController = (code: string, store: any, workspace: any) => {
+export const makeInterpreterController = (code: string, blocklyController: BlocklyController,
+                                          store: any, workspace: any) => {
   if (lastRunID) {
     window.clearTimeout(lastRunID);
   }
-  const interpreter = new Interpreter(code, makeInterperterFunc(store, workspace));
+  const interpreter = new Interpreter(code, makeInterperterFunc(blocklyController, store, workspace));
   const step = () => {
     interpreter.step();
   };

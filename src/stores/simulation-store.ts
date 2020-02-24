@@ -1,12 +1,9 @@
 import { types, getSnapshot } from "mobx-state-tree";
-import { IInterpreterController, makeInterpreterController } from "../utilities/interpreter";
 import { kVEIIndexInfo } from "../utilities/vei";
 import { SimulationAuthorSettings, SimulationAuthorSettingsProps } from "./stores";
 
 let _cityCounter = 0;
 const genCityId = () => `city_${_cityCounter++}`;
-let interpreterController: IInterpreterController | null;
-let cachedBlocklyWorkspace: {highlightBlock: (id: string|null) => void};
 
 export interface IModelParams {
   mass: number;
@@ -113,7 +110,6 @@ export const SimulationStore = types
     viewportCenterLat: 0,
     viewportCenterLng: 0,
     cities: types.array(City),
-    code: "",                   // current blockly JS code
     xmlCode: "",                // current blockly xml code
     initialXmlCode: "",         // initial blockly xml code
     log: "",
@@ -128,10 +124,6 @@ export const SimulationStore = types
     toolbox: "Everything",
     initialCodeTitle: "Basic",
   })
-  .volatile(self => ({
-    running: false,
-    steppingThroughBlock: false,
-  }))
   .views((self) => {
     const getVei = (mass: number, colHeight: number) => {
       // calculate the vei given the mass and the column height.
@@ -178,16 +170,7 @@ export const SimulationStore = types
   }))
   .actions((self) => ({
     setBlocklyCode(code: string, workspace: any) {
-      self.code = code;
       self.xmlCode = Blockly.Xml.domToPrettyText(Blockly.Xml.workspaceToDom(workspace));
-
-      if (interpreterController) {
-        interpreterController.stop();
-        workspace.highlightBlock(null);
-      }
-      self.running = false;
-      cachedBlocklyWorkspace = workspace;
-      interpreterController = makeInterpreterController(code, simulation, workspace);
     },
     setInitialXmlCode(xmlCode: string) {
       self.initialXmlCode = xmlCode;
@@ -197,42 +180,10 @@ export const SimulationStore = types
       self.viewportCenterLat = viewportCenterLat;
       self.viewportCenterLng = viewportCenterLng;
     },
-    run() {
-      const reset = () => {
-        this.setBlocklyCode(self.code, cachedBlocklyWorkspace);
-      };
-      if (interpreterController) {
-        interpreterController.run(reset);
-        self.running = true;
-      }
-    },
     reset() {
-      this.setBlocklyCode(self.code, cachedBlocklyWorkspace);
       self.hasErupted = false;
       self.log = "";
       self.plotData = PlotData.create({});
-    },
-    stop() {
-      if (interpreterController) {
-        interpreterController.stop();
-        self.running = false;
-      }
-    },
-    // pauses the interpreter run without setting self.running = false
-    pause() {
-      if (interpreterController) {
-        interpreterController.pause();
-      }
-    },
-    // only restarts if self.running = true. If user hit stop between `pause` and this
-    // function, this won't restart the run.
-    unpause() {
-      if (interpreterController && self.running) {
-        const reset = () => {
-          this.setBlocklyCode(self.code, cachedBlocklyWorkspace);
-        };
-        interpreterController.run(reset);
-      }
     },
     clearLog() {
       self.log = "";
@@ -245,36 +196,6 @@ export const SimulationStore = types
       self.crossPoint2Lat = lat;
       self.crossPoint2Lng = lng;
     },
-    /**
-     * Steps through one complete block.
-     * This sets steppingThroughBlock to true, and then repeatedly calls `step` on the interpreter
-     * until steppingThroughBlock is false. All blocks are wrapped with code that will call endStep
-     * at the end of the block's function, which will set steppingThroughBlock to false.
-     */
-    step() {
-      self.steppingThroughBlock = true;
-
-      // guard against infinite loops or a block failing to call endStep
-      const maxInvocations = 100;
-      let invocations = 0;
-
-      function stepAsync() {
-        if (interpreterController) {
-          interpreterController.step();
-        }
-        if (self.steppingThroughBlock && invocations++ < maxInvocations) {
-          setTimeout(stepAsync, 0); // async to allow endStep to be called
-        }
-      }
-      stepAsync();
-    },
-    startStep() {
-      // anything we need to do at start of step (previously we turned off
-      // animation before moving to next block)
-    },
-    endStep() {
-      self.steppingThroughBlock = false;
-    }
   }))
   .actions((self) => ({
     paintMap() {
