@@ -2,10 +2,14 @@ import { IModelParams, SimOutput, SimulationVariable } from "../stores/simulatio
 import { BlocklyController } from "./blockly-controller";
 import { SimulationModelType } from "../stores/simulation-store";
 import { IBlocklyWorkspace } from "../interfaces";
+import { IStore } from "../stores/stores";
 const Interpreter = require("js-interpreter");
 
-const makeInterperterFunc = (blocklyController: BlocklyController, simulation: SimulationModelType,
+const makeInterperterFunc = (blocklyController: BlocklyController, store: IStore,
                              workspace: IBlocklyWorkspace) => {
+
+  const { simulation } = store;
+
   return (interpreter: any, scope: any) => {
     const addVar = (name: string, value: any) => {
       interpreter.setProperty(scope, name, value);
@@ -128,7 +132,7 @@ export interface IInterpreterController {
 }
 
 export const makeInterpreterController = (code: string, blocklyController: BlocklyController,
-                                          store: any, workspace: any) => {
+                                          store: IStore, workspace: any) => {
   if (lastRunID) {
     window.clearTimeout(lastRunID);
   }

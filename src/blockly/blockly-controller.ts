@@ -28,7 +28,7 @@ export class BlocklyController {
     }
     this.running = false;
     this.workspace = workspace;
-    this.interpreterController = makeInterpreterController(code, this, this.stores.simulation, workspace);
+    this.interpreterController = makeInterpreterController(code, this, this.stores, workspace);
 
     this.stores.simulation.setBlocklyCode(code, workspace);
   }
