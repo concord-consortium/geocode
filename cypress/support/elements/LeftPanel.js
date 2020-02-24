@@ -10,4 +10,4 @@ class LeftPanel {
     }
 }
 
-export default LeftPanel;
+export default LeftPanel

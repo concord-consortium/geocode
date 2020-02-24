@@ -13,4 +13,4 @@ class RightPanel {
     }
 }
 
-export default RightPanel;
+export default RightPanel
