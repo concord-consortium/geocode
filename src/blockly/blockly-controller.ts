@@ -41,11 +41,13 @@ export class BlocklyController {
       this.interpreterController.run(reset);
       this.running = true;
     }
+    this.stores.chartsStore.reset();
   }
 
   public reset = () => {
     this.setCode(this.code, this.workspace);
     this.stores.simulation.reset();
+    this.stores.chartsStore.reset();
   }
 
   public stop = () => {

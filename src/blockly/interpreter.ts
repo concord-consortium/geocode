@@ -3,12 +3,13 @@ import { BlocklyController } from "./blockly-controller";
 import { SimulationModelType } from "../stores/simulation-store";
 import { IBlocklyWorkspace } from "../interfaces";
 import { IStore } from "../stores/stores";
+import { Datasets, Dataset } from "../stores/data-sets";
 const Interpreter = require("js-interpreter");
 
 const makeInterperterFunc = (blocklyController: BlocklyController, store: IStore,
                              workspace: IBlocklyWorkspace) => {
 
-  const { simulation } = store;
+  const { simulation, chartsStore } = store;
 
   return (interpreter: any, scope: any) => {
     const addVar = (name: string, value: any) => {
@@ -88,6 +89,19 @@ const makeInterperterFunc = (blocklyController: BlocklyController, store: IStore
 
     addFunc("addCity", (params: {x: number, y: number, name: string}) => {
       simulation.addCity(params.x, params.y, params.name);
+    });
+
+    /** ==== Data and graphing ==== */
+
+    addFunc("getAllWindData", () => {
+      // all data returned by functions must be wrapped in `{ data: ret }`
+      return {
+        data: Datasets.getAllData("Wind Data")
+      };
+    });
+
+    addFunc("graphSpeedDateScatterPlot", (dataset: Dataset) => {
+      chartsStore.addDateScatterChart(dataset, "speed", "Wind speed");
     });
 
     /** ==== Utility methods ==== */

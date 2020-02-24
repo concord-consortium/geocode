@@ -21,3 +21,5 @@ import "../blockly-blocks/block-simulate-wind";
 import "../blockly-blocks/block-simulate-wind-vei";
 import "../blockly-blocks/block-simulate-wind-height";
 import "../blockly-blocks/block-simulate-wind-2";
+import "../blockly-blocks/block-wind-data";
+import "../blockly-blocks/block-graph-data";
