@@ -16,7 +16,6 @@ export interface IModelParams {
   windDirection: number;
   volcanoLat: number;
   volcanoLng: number;
-  isErupting: boolean;
 }
 
 // This is a bit silly at the moment because our model only outputs one value:
@@ -119,7 +118,6 @@ export const SimulationStore = types
     initialXmlCode: "",         // initial blockly xml code
     log: "",
     plotData: types.optional(PlotData, getSnapshot(plotData)),
-    isErupting: false,
     hasErupted: false,
     isSelectingRuler: false,
     isSelectingCrossSection: false,
@@ -162,11 +160,6 @@ export const SimulationStore = types
       }
     };
   })
-  .actions((self) => ({
-    endEruption() {
-      self.isErupting = false;
-    }
-  }))
   .actions((self) => ({
     rulerClick() {
       self.isSelectingRuler = !self.isSelectingRuler;
@@ -215,7 +208,6 @@ export const SimulationStore = types
     },
     reset() {
       this.setBlocklyCode(self.code, cachedBlocklyWorkspace);
-      self.isErupting = false;
       self.hasErupted = false;
       self.log = "";
       self.plotData = PlotData.create({});
@@ -225,7 +217,6 @@ export const SimulationStore = types
         interpreterController.stop();
         self.running = false;
       }
-      self.isErupting = false;
     },
     // pauses the interpreter run without setting self.running = false
     pause() {
@@ -278,8 +269,8 @@ export const SimulationStore = types
       stepAsync();
     },
     startStep() {
-      // turn off animation at beginning of next block
-      self.endEruption();
+      // anything we need to do at start of step (previously we turned off
+      // animation before moving to next block)
     },
     endStep() {
       self.steppingThroughBlock = false;
@@ -302,7 +293,7 @@ export const SimulationStore = types
     },
   }))
   .actions((self) => ({
-    erupt(animate = false) {
+    erupt() {
       // This currently exists within erupt, but will probably move
       // to another block (like the paint by...)once there is some other
       // feedback for eruption
@@ -316,22 +307,6 @@ export const SimulationStore = types
       if (!self.requirePainting) {
         // self.paintGrid("thickness", "#ff0000");
         self.paintMap();
-      }
-
-      // will be used when we add animations
-      if (animate) {
-        console.warn("WARNING: Animated eruptions are not currently supported");
-        animate = false;
-      }
-
-      if (animate) {
-        self.isErupting = true;
-        self.pause();
-
-        // if user hit run button, this stop lasts 3000 ms
-        if (self.running) {
-          setTimeout(self.unpause, 3000);
-        }
       }
     }
   }))
