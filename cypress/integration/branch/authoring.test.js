@@ -46,11 +46,11 @@ context ('Authoring Options',()=>{
             modelOptions.getRequireEruptionOption().should('have.attr', 'checked');
             leftPanel.getControlsTab().click();
             controlsTab.getEruptButton().click();
-            //verify tephra is visible at a location north of volcano
+            //TODO verify tephra is visible at a location north of volcano
             //change conditions to see tephra change without having to erupt again
             var slider="wind-direction", windDirection = 0;
             controlsTab.setSliderValue(slider,windDirection);
-            //verify location has not changed north of volcano
+            //TODO verify location has not changed north of volcano
         })
     })
     describe('Require painting options',()=>{
@@ -124,7 +124,7 @@ context ('Authoring Options',()=>{
 
         })
     })
-    describe('Constrols options',()=>{
+    describe('Controls options',()=>{
         it('verify Show log checked shows log area', ()=>{
 
         })

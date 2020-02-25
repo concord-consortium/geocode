@@ -27,6 +27,9 @@ class Map {
     getMapTransform(){
         return cy.get('.map .leaflet-proxy.leaflet-zoom-animated')
     }
+    getTephra(){
+        return cy.get('.leaflet-pane .leaflet-zoom-animated .leaflet-interactive')
+    }
 }
 
 export default Map;

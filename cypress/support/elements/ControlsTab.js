@@ -48,7 +48,9 @@ class ControlsTab{
         return cy.get('[data-test=Erupt-button]')
     }
     resetModel(){
-        cy.get(this.getResetButtonEl).click();
+        this.getControlsPanel().within(($panel)=>{
+            cy.get(this.getResetButtonEl()).click();
+        })
     }
     setSliderValue(slider, value){ //pass in -0.1 as value for min slider value
         var unit=0;
