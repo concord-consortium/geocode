@@ -28,6 +28,8 @@
     <block type="graph_speed_date_wind_data"></block>
     <block type="all_wind_data"></block>
     <block type="sample_data"></block>
+    <block type="filter_data"></block>
+    <block type="input_range"></block>
   </category>
 
   <category name="Logic" colour="%{BKY_LOGIC_HUE}">

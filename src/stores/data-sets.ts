@@ -1,11 +1,15 @@
 // @ts-ignore
 import * as RawWindDataSet from "../assets/data/winds_Cerro_Negro.csv";
+import { filters } from "pixi.js";
 
 interface DatasetCase {[key: string]: number; }
 export type Dataset = DatasetCase[];
 
 type DatasetName = "Wind Data";         // currently only one option
 export const WIND_DATA = "Wind Data";
+
+export interface Range {min: number; max: number; }
+export interface Filter{[key: string]: number | Range; }
 
 // dsv-loader loads in all data as strings. For now we know they are all numbers, so we can quick-convert
 const WindDataSet: Dataset = RawWindDataSet.map((item: any) => {
@@ -42,5 +46,23 @@ export const Datasets = {
         indices[j] = indices[i] === undefined ? i : indices[i];
     }
     return samples;
-  }
+  },
+
+  filter(dataset: Dataset, filter: Filter): Dataset {
+    if (!dataset) return [];
+
+    return dataset.filter(item => {
+
+      return Object.keys(filter).every(key => {
+        const itemValue = item[key];
+        const filterValue = filter[key];
+        if (typeof filterValue === "number") {
+          return itemValue === filterValue;
+        } else {
+          return itemValue >= filterValue.min && itemValue <= filterValue.max;
+        }
+      });
+    });
+  },
+
 };
