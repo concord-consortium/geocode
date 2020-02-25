@@ -24,6 +24,7 @@ import AuthoringMenu from "./authoring-menu";
 import { getAuthorableSettings, updateStores, serializeState, getSavableState, deserializeState, SerializedState } from "../stores/stores";
 import { ChartPanel } from "./charts/chart-panel";
 import { BlocklyController } from "../blockly/blockly-controller";
+import { HistogramPanel } from "./montecarlo/histogram-panel";
 
 interface IProps extends IBaseProps {}
 
@@ -169,6 +170,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         showConditions,
         showCrossSection,
         showData,
+        showMonteCarlo,
       }
     } = this.stores;
     const {
@@ -212,12 +214,18 @@ export class AppComponent extends BaseComponent<IProps, IState> {
 
     kRightTabInfo.conditions.index = showConditions ? 0 : -1;
     kRightTabInfo.crossSection.index = showCrossSection ? kRightTabInfo.conditions.index + 1 : -1;
-    kRightTabInfo.data.index = showData
+    kRightTabInfo.monteCarlo.index = showMonteCarlo
       ? (showCrossSection ? kRightTabInfo.crossSection.index + 1 : kRightTabInfo.conditions.index + 1)
       : -1;
+    kRightTabInfo.data.index = showData
+    ? (showMonteCarlo
+        ? kRightTabInfo.monteCarlo.index + 1 :
+        (showCrossSection ? kRightTabInfo.crossSection.index + 1 : kRightTabInfo.conditions.index + 1))
+    : -1;
     const enabledRightTabTypes = [];
     if (showConditions)   { enabledRightTabTypes.push(RightSectionTypes.CONDITIONS); }
     if (showCrossSection) { enabledRightTabTypes.push(RightSectionTypes.CROSS_SECTION); }
+    if (showMonteCarlo)   { enabledRightTabTypes.push(RightSectionTypes.MONTE_CARLO); }
     if (showData)         { enabledRightTabTypes.push(RightSectionTypes.DATA); }
 
     const currentTabType = enabledTabTypes[tabIndex || 0];
@@ -365,6 +373,26 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 </Simulation>
               </TabPanel>
             }
+            { showMonteCarlo &&
+              <TabPanel
+                width={`${tabWidth}px`}
+                tabcolor={this.getRightTabColor(RightSectionTypes.MONTE_CARLO)}
+                rightpanel={"true"}
+                data-test={this.getRightTabName(RightSectionTypes.MONTE_CARLO) + "-panel"}
+              >
+                <Simulation width={mapWidth} backgroundColor={this.getRightTabColor(RightSectionTypes.MONTE_CARLO)}>
+                  <MapComponent
+                    width={ mapWidth }
+                    height={ (height - 90) * .65 }
+                    panelType={RightSectionTypes.MONTE_CARLO}
+                  />
+                  <HistogramPanel
+                    width={ mapWidth }
+                    height={ (height - 90) * .35 }
+                  />
+                </Simulation>
+              </TabPanel>
+            }
             { showData &&
               <TabPanel
                 width={`${tabWidth}px`}
@@ -406,6 +434,18 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                       data-test={this.getRightTabName(RightSectionTypes.CROSS_SECTION) + "-tab"}
                     >
                       {this.getRightTabName(RightSectionTypes.CROSS_SECTION)}
+                    </BottomTab>
+                  }
+                  { showMonteCarlo &&
+                    <BottomTab
+                      selected={rightTabIndex === kRightTabInfo.monteCarlo.index}
+                      leftofselected={rightTabIndex === (kRightTabInfo.monteCarlo.index + 1) ? "true" : undefined}
+                      rightofselected={rightTabIndex === (kRightTabInfo.monteCarlo.index - 1) ? "true" : undefined}
+                      backgroundcolor={this.getRightTabColor(RightSectionTypes.MONTE_CARLO)}
+                      backgroundhovercolor={this.getRightTabHoverColor(RightSectionTypes.MONTE_CARLO)}
+                      data-test={this.getRightTabName(RightSectionTypes.MONTE_CARLO) + "-tab"}
+                    >
+                      {this.getRightTabName(RightSectionTypes.MONTE_CARLO)}
                     </BottomTab>
                   }
                   { showData &&

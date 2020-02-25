@@ -52,6 +52,7 @@ const uiAuthorSettingsProps = tuple(
   "showVEI",
   "showConditions",
   "showCrossSection",
+  "showMonteCarlo",
   "showData",
   "showLog",
   "showDemoCharts",

@@ -38,8 +38,9 @@ const AuthoringMenu: React.SFC<IProps> = (props) => {
           </DatFolder>,
 
           <DatFolder title="Right Tabs" key="rightTabsFolder" closed={false}>
-          <DatBoolean path="uiStore.showConditions" label="Show conditions?" key="showConditions" />
-            <DatBoolean path="uiStore.showCrossSection" label="Show cross section?" key="showCrossSection" />
+            <DatBoolean path="uiStore.showConditions" label="Show conditions?" key="showConditions" />
+            <DatBoolean path="uiStore.showCrossSection" label="Show monte carlo?" key="showMonteCarlo" />
+            <DatBoolean path="uiStore.showMonteCarlo" label="Show cross section?" key="showCrossSection" />
             <DatBoolean path="uiStore.showData" label="Show data?" key="showData" />
           </DatFolder>,
 

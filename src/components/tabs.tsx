@@ -43,6 +43,7 @@ const kTabInfo: TabInfo = {
 enum RightSectionTypes {
   CONDITIONS = "conditions",
   CROSS_SECTION = "crossSection",
+  MONTE_CARLO = "monteCarlo",
   DATA = "data"
 }
 type RightTabInfo = {
@@ -62,6 +63,12 @@ const kRightTabInfo: RightTabInfo = {
   },
   crossSection: {
     name: "Cross-Section",
+    index: -1,
+    backgroundColor: "#cee6c9",
+    hoverBackgroundColor: "#c3dabd",
+  },
+  monteCarlo: {
+    name: "Monte Carlo",
     index: -1,
     backgroundColor: "#cee6c9",
     hoverBackgroundColor: "#c3dabd",

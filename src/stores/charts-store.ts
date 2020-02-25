@@ -2,7 +2,7 @@ import { types } from "mobx-state-tree";
 import * as d3 from "d3";
 import { Dataset } from "./data-sets";
 
-export const ChartType = types.enumeration("type", ["scatter", "radial"]);
+export const ChartType = types.enumeration("type", ["scatter", "radial", "histogram"]);
 export type ChartTypeType = typeof ChartType.Type;
 
 export const ChartStyle = types.enumeration("type", ["dot", "arrow"]);
