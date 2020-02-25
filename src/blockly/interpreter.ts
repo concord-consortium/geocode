@@ -3,7 +3,7 @@ import { BlocklyController } from "./blockly-controller";
 import { SimulationModelType } from "../stores/simulation-store";
 import { IBlocklyWorkspace } from "../interfaces";
 import { IStore } from "../stores/stores";
-import { Datasets, Dataset } from "../stores/data-sets";
+import { Datasets, Dataset, Filter } from "../stores/data-sets";
 const Interpreter = require("js-interpreter");
 
 const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore,
@@ -109,6 +109,12 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     addFunc("sampleDataset", (params: {dataset: Dataset, sampleSize: number}) => {
       return {
         data: Datasets.getRandomSampleWithReplacement(params.dataset, params.sampleSize)
+      };
+    });
+
+    addFunc("filter", (params: {dataset: Dataset, filter: Filter}) => {
+      return {
+        data: Datasets.filter(params.dataset, params.filter)
       };
     });
 
