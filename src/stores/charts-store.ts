@@ -1,6 +1,6 @@
 import { types } from "mobx-state-tree";
 import * as d3 from "d3";
-import { Dataset } from "./data-sets";
+import { Dataset, WindData } from "./data-sets";
 
 export const ChartType = types.enumeration("type", ["scatter", "radial"]);
 export type ChartTypeType = typeof ChartType.Type;
@@ -87,8 +87,9 @@ const ChartsStore = types.model("Charts", {
     });
     const xAxisLabel = "Date";
     const dateLabelFormat = "%b %Y";
+    const customExtents = [[], WindData.extents.speed];
     const title = _title || "Chart " + (self.charts.length + 1);
-    self.addChart({type: "scatter", data, title, xAxisLabel, yAxisLabel, dateLabelFormat});
+    self.addChart({type: "scatter", data, customExtents, title, xAxisLabel, yAxisLabel, dateLabelFormat});
   },
 
   /**
@@ -99,7 +100,7 @@ const ChartsStore = types.model("Charts", {
     const data = dataset.map(d => [d.direction, d[yAxis]]);
 
     const chartStyle = "dot"; // may later give students option for "arrow";
-    const customExtents = [[], [0, 23]];
+    const customExtents = [[], WindData.extents.speed];
     const title = _title || "Chart " + (self.charts.length + 1);
     self.addChart({type: "radial", data, customExtents, title, chartStyle});
   },

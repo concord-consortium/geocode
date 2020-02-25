@@ -66,3 +66,14 @@ export const Datasets = {
   },
 
 };
+
+// ** Custom winfo about wind data **
+interface DataSetInfo {
+  extents: {[key: string]: [number, number]};
+}
+export const WindData: DataSetInfo = {
+  extents: {
+    elevation: [1450, 1600],
+    speed: [0, 23]
+  }
+};
