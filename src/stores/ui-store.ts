@@ -9,7 +9,7 @@ const UIStore = types.model("UI", {
   showControls: true,
   // right tabs
   showConditions: true,
-  showCrossSection: true,
+  showCrossSection: false,
   showMonteCarlo: true,
   showData: true,
   // other ui

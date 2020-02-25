@@ -27,8 +27,8 @@ context("Test app workspace", () => {
         leftPanel.getCodeTab().should('be.visible');
         leftPanel.getControlsTab().should('be.visible');
         rightPanel.getConditionsTab().should('be.visible');
-        rightPanel.getCrossSectionTab().should('be.visible');
+        rightPanel.getMonteCarloTab().should('be.visible');
         rightPanel.getDataTab().should('be.visible')
     });
-  });  
+  });
 })

@@ -13,10 +13,10 @@ const controlsTab = new ControlsTab;
 context("Cross Section panel", () => {
     before(() => {
       cy.visit("");
-      rightPanel.getCrossSectionTab().should('be.visible').click();
+      // rightPanel.getCrossSectionTab().should('be.visible').click();
     });
-  
-    describe("Cross Section panel ui", () => {
+
+    describe.skip("Cross Section panel ui", () => {
         it('verify Cross Section tab shows correct elements',()=>{
             crossSectionTab.getCrossSectionPanel().should('be.visible');
             map.getRecenterButton().should('be.visible');

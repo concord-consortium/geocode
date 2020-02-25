@@ -68,7 +68,7 @@ const kRightTabInfo: RightTabInfo = {
     hoverBackgroundColor: "#c3dabd",
   },
   monteCarlo: {
-    name: "Monte Carlo",
+    name: "Monte-Carlo",
     index: -1,
     backgroundColor: "#cee6c9",
     hoverBackgroundColor: "#c3dabd",
