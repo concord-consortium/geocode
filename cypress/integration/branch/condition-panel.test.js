@@ -29,18 +29,18 @@ context("Controls panel", () => {
     });
     describe('Verify control tab slider settings reflect in the conditions tab widget',()=>{
         it('verify wind speed widget',()=>{
-            conditionsTab.getWindSpeedDirectionWidget().find('[data-test=info]').should('contain',windSpeed +' m/s')   
+            conditionsTab.getWindSpeedDirectionWidget().find('[data-test=info]').should('contain',windSpeed +' m/s')
         })
         it('verify wind direction slider',()=>{
-            conditionsTab.getWindSpeedDirectionWidget().find('[data-test=info]').should('contain',windDirection)    
+            conditionsTab.getWindSpeedDirectionWidget().find('[data-test=info]').should('contain',windDirection)
             conditionsTab.getWindSymbol().parent().parent().should('have.attr','rotate',windDirection.toString())
         })
         it('verify eject volume widget',()=>{
-            conditionsTab.getEjectedVolumeWidget().find('[data-test=info]').should('contain',volume)    
+            conditionsTab.getEjectedVolumeWidget().find('[data-test=info]').should('contain',volume)
             conditionsTab.getEjectedVolumeHeightVisual().siblings('div').should('have.attr','height',evHeight, {multiple:true})
         })
         it('verify column height widget',()=>{
-            conditionsTab.getColumnHeightWidget().find('[data-test=info]').should('contain',cHeight)    
+            conditionsTab.getColumnHeightWidget().find('[data-test=info]').should('contain',cHeight)
             conditionsTab.getColumnHeightVisual().should('have.attr','height',visualHeight)
         })
     })
@@ -48,11 +48,11 @@ context("Controls panel", () => {
         it('verify tephra is visible',()=>{
             conditionsTab.getTephra().should('be.visible');
         })
-        it('verify switching to Cross Section tab shows tephra',()=>{
-            rightPanel.getCrossSectionTab().click();
+        it('verify switching to Monte Carol tab shows tephra',()=>{
+            rightPanel.getMonteCarloTab().click();
             conditionsTab.getTephra().should('be.visible');
         })
-        it('verify Reset in Control Panel removes tephra in Cross Section tab',()=>{
+        it('verify Reset in Control Panel removes tephra in Monte Carlo tab',()=>{
             controlsTab.getControlsPanel().find(controlsTab.getResetButtonEl()).click();
             conditionsTab.getTephra().should('not.exist');
         })
@@ -60,8 +60,8 @@ context("Controls panel", () => {
             rightPanel.getConditionsTab().click();
             conditionsTab.getTephra().should('not.exist');
         })
-        it('verify Erupt while in Cross Section tab shows tephra in Cross Section tab',()=>{
-            rightPanel.getCrossSectionTab().click();
+        it('verify Erupt while in Monte Carlo tab shows tephra in Monte Carlo tab',()=>{
+            rightPanel.getMonteCarloTab().click();
             controlsTab.getEruptButton().click();
             conditionsTab.getTephra().should('be.visible');
         })
