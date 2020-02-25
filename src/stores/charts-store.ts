@@ -1,5 +1,6 @@
 import { types } from "mobx-state-tree";
 import * as d3 from "d3";
+import { Dataset } from "./data-sets";
 
 export const ChartType = types.enumeration("type", ["scatter", "radial"]);
 export type ChartTypeType = typeof ChartType.Type;
@@ -64,6 +65,30 @@ const ChartsStore = types.model("Charts", {
   addChart(chart: {type: ChartTypeType, chartStyle?: ChartStyleType, data: ChartData, customExtents?: number[][],
           title?: string, xAxisLabel?: string, yAxisLabel?: string, dateLabelFormat?: string}) {
     self.charts.push(Chart.create(chart));
+  },
+
+  reset() {
+    self.charts.length = 0;
+  }
+}))
+.actions((self) => ({
+  // Utility functions for common charts
+
+  /**
+   * Creates a scatter plot of `yAxis` vs date, for a dataset that is assumed to contain
+   * year, month and day values
+   */
+  addDateScatterChart(dataset: Dataset, yAxis: string, yAxisLabel: string, _title?: string) {
+    const dateParser = d3.timeParse("%Y-%m-%d");
+    const data = dataset.map(d => {
+      const dateStr = d.year + "-" + d.month + "-" + d.day;
+      const date = dateParser(dateStr)!;
+      return [date, d[yAxis]];
+    });
+    const xAxisLabel = "Date";
+    const dateLabelFormat = "%b %Y";
+    const title = _title || "Chart " + (self.charts.length + 1);
+    self.addChart({type: "scatter", data, title, xAxisLabel, yAxisLabel, dateLabelFormat});
   }
 }));
 

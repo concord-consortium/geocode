@@ -24,6 +24,11 @@
     <!-- <block type="redrawMap"></block> -->
   </category>
 
+  <category name="Wind data" colour="%{BKY_LISTS_HUE}">
+    <block type="graph_speed_date_wind_data"></block>
+    <block type="all_wind_data"></block>
+  </category>
+
   <category name="Logic" colour="%{BKY_LOGIC_HUE}">
     <block type="controls_if"></block>
     <block type="logic_compare"></block>

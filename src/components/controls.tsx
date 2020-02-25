@@ -64,15 +64,11 @@ interface IProps extends IBaseProps {
   width: number;
 }
 interface IState {
-  animate: boolean;
 }
 
 @inject("stores")
 @observer
 export class Controls extends BaseComponent<IProps, IState> {
-  public state = {
-    animate: true
-  };
 
   public render() {
 
@@ -282,7 +278,7 @@ export class Controls extends BaseComponent<IProps, IState> {
   }
 
   private erupt = () => {
-    this.stores.simulation.erupt(this.state.animate);
+    this.stores.simulation.erupt();
     this.stores.simulation.paintMap();
 
     // This code is used for waiting for the animation to complete and then painting
@@ -294,12 +290,6 @@ export class Controls extends BaseComponent<IProps, IState> {
     // } else {
     //   this.stores.paintMap();
     // }
-  }
-
-  private setAnimation = () => {
-    this.setState(prevState => ({
-      animate: !prevState.animate
-    }));
   }
 }
 

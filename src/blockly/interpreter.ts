@@ -1,11 +1,16 @@
 import { IModelParams, SimOutput, SimulationVariable } from "../stores/simulation-store";
-
-// import { Interpreter } from "js-interpreter";
+import { BlocklyController } from "./blockly-controller";
 import { SimulationModelType } from "../stores/simulation-store";
 import { IBlocklyWorkspace } from "../interfaces";
+import { IStore } from "../stores/stores";
+import { Datasets, Dataset } from "../stores/data-sets";
 const Interpreter = require("js-interpreter");
 
-const makeInterperterFunc = (simulation: SimulationModelType, workspace: IBlocklyWorkspace) => {
+const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore,
+                             workspace: IBlocklyWorkspace) => {
+
+  const { simulation, chartsStore } = store;
+
   return (interpreter: any, scope: any) => {
     const addVar = (name: string, value: any) => {
       interpreter.setProperty(scope, name, value);
@@ -35,14 +40,11 @@ const makeInterperterFunc = (simulation: SimulationModelType, workspace: IBlockl
       addVar(name, wrapped);
     };
 
+    /** ==== Tephra simulation model setters ==== */
+
     addFunc("setModelParams", (params: IModelParams) => {
       simulation.setModelParams(params);
     });
-
-    addFunc("erupt", (animate: boolean) => {
-      simulation.erupt(animate);
-    });
-
     addFunc("setWindDirection", (direction: number) => {
       simulation.setWindDirection(direction);
     });
@@ -73,25 +75,36 @@ const makeInterperterFunc = (simulation: SimulationModelType, workspace: IBlockl
       simulation.setVolcano(params.x, params.y);
     });
 
-    addFunc("addCity", (params: {x: number, y: number, name: string}) => {
-      simulation.addCity(params.x, params.y, params.name);
+    /** ==== Run tephra simulation model ==== */
+
+    addFunc("erupt", () => {
+      simulation.erupt();
     });
 
-    addFunc("paintGrid", (params: {resultType: SimOutput, color: string}) => {
-      simulation.paintGrid(params.resultType, params.color);
-    });
+    /** ==== Draw on tephra map ==== */
 
     addFunc("paintMap", () => {
       simulation.paintMap();
     });
 
-    addFunc("numberGrid", (params: {resultType: SimOutput}) => {
-      simulation.numberGrid(params.resultType);
+    addFunc("addCity", (params: {x: number, y: number, name: string}) => {
+      simulation.addCity(params.x, params.y, params.name);
     });
 
-    addFunc("calculateAndAddPlotPoint", (params: {xData: SimulationVariable, yData: SimOutput, cityName: string}) => {
-      simulation.calculateAndAddPlotPoint(params.xData, params.yData, params.cityName);
+    /** ==== Data and graphing ==== */
+
+    addFunc("getAllWindData", () => {
+      // all data returned by functions must be wrapped in `{ data: ret }`
+      return {
+        data: Datasets.getAllData("Wind Data")
+      };
     });
+
+    addFunc("graphSpeedDateScatterPlot", (dataset: Dataset) => {
+      chartsStore.addDateScatterChart(dataset, "speed", "Wind speed");
+    });
+
+    /** ==== Utility methods ==== */
 
     addFunc("log", (params) => {
       console.log(params);
@@ -107,15 +120,17 @@ const makeInterperterFunc = (simulation: SimulationModelType, workspace: IBlockl
       return simulation.stringConcat(params.lv, params.rv);
     });
 
+    /** ==== Used under the hood to control highlighting and stepping ==== */
+
     addFunc("startStep", (blockId: number) => {
       if (workspace) {
         workspace.highlightBlock(blockId);
       }
-      simulation.startStep();
+      blocklyController.startStep();
     });
 
     addFunc("endStep", () => {
-      simulation.endStep();
+      blocklyController.endStep();
     });
   };
 };
@@ -130,11 +145,12 @@ export interface IInterpreterController {
   pause: () => void;
 }
 
-export const makeInterpreterController = (code: string, store: any, workspace: any) => {
+export const makeInterpreterController = (code: string, blocklyController: BlocklyController,
+                                          store: IStore, workspace: any) => {
   if (lastRunID) {
     window.clearTimeout(lastRunID);
   }
-  const interpreter = new Interpreter(code, makeInterperterFunc(store, workspace));
+  const interpreter = new Interpreter(code, makeInterpreterFunc(blocklyController, store, workspace));
   const step = () => {
     interpreter.step();
   };

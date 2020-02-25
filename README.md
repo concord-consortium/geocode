@@ -87,20 +87,30 @@ Each existing GeoCode block has UI and code generation methods defined in its Ja
 
 Similarly, the code generation for the new block is defined in the block's JavaScript module in a global variable named `Blockly.JavaScript`.
 
-Any custom functions added to a block's code generation must be defined in `interpeter.js` in the function named
-`makeInterperterFunc`.  Look at an example to see how the function is registered:
+Any custom functions added to a block's code generation must be defined in `interpreter.js` in the function named
+`makeInterpreterFunc`.  Look at an example to see how the function is registered:
 
 ```
-    addFunc("setWindspeed", (...args) => {
-      const params = (unwrap(args)[0]);
-      simulation.setWindSpeed(params);
+    addFunc("setWindspeed", (speed) => {
+      simulation.setWindSpeed(speed);
     });
-
 ```
 
 The above method adds "setWindspeed" as a new javascript function that the
 blockly generated code can use.  In this example, it modifies a parameter in the
 simulation store.
+
+If a function needs to return data, in order to plug it into another block, the
+return value must be wrapped in a `{ data: any }` object:
+
+```
+    addFunc("add", (params: {a: number, b: number}) => {
+      const val = params.a + params.b;
+      return {
+        data: val
+      };
+    });
+```
 
 ##### Adding the block to a toolbox
 For a new block to be available in the list of blocks that a user can add from the Blocks panel, it must be added to one or both of the toolboxes located in `src/assets/blockly-authoring/toolbox/first-toolbox.xml` and `src/assets/blockly-authoring/toolbox/full-toolbox.xml`. Modify one or both of these XML files to include your new block. Create a new XML `block` element nested inside the proper `category` element. Be sure to set the `type` to the unique camelCase key that was created for your block (e.g., `myExampleBlock`). For example, the add volcano block is added to the volcano category by inserting `<block type="addVolcano"></block>` inside of the volcano category element. If your block requires default fields, then add the appropriate `field` elements inside of the `block` element.

@@ -1,12 +1,9 @@
 import { types, getSnapshot } from "mobx-state-tree";
-import { IInterpreterController, makeInterpreterController } from "../utilities/interpreter";
 import { kVEIIndexInfo } from "../utilities/vei";
 import { SimulationAuthorSettings, SimulationAuthorSettingsProps } from "./stores";
 
 let _cityCounter = 0;
 const genCityId = () => `city_${_cityCounter++}`;
-let interpreterController: IInterpreterController | null;
-let cachedBlocklyWorkspace: {highlightBlock: (id: string|null) => void};
 
 export interface IModelParams {
   mass: number;
@@ -16,7 +13,6 @@ export interface IModelParams {
   windDirection: number;
   volcanoLat: number;
   volcanoLng: number;
-  isErupting: boolean;
 }
 
 // This is a bit silly at the moment because our model only outputs one value:
@@ -114,12 +110,10 @@ export const SimulationStore = types
     viewportCenterLat: 0,
     viewportCenterLng: 0,
     cities: types.array(City),
-    code: "",                   // current blockly JS code
     xmlCode: "",                // current blockly xml code
     initialXmlCode: "",         // initial blockly xml code
     log: "",
     plotData: types.optional(PlotData, getSnapshot(plotData)),
-    isErupting: false,
     hasErupted: false,
     isSelectingRuler: false,
     isSelectingCrossSection: false,
@@ -130,10 +124,6 @@ export const SimulationStore = types
     toolbox: "Everything",
     initialCodeTitle: "Basic",
   })
-  .volatile(self => ({
-    running: false,
-    steppingThroughBlock: false,
-  }))
   .views((self) => {
     const getVei = (mass: number, colHeight: number) => {
       // calculate the vei given the mass and the column height.
@@ -163,11 +153,6 @@ export const SimulationStore = types
     };
   })
   .actions((self) => ({
-    endEruption() {
-      self.isErupting = false;
-    }
-  }))
-  .actions((self) => ({
     rulerClick() {
       self.isSelectingRuler = !self.isSelectingRuler;
       self.isSelectingCrossSection = false;
@@ -185,16 +170,7 @@ export const SimulationStore = types
   }))
   .actions((self) => ({
     setBlocklyCode(code: string, workspace: any) {
-      self.code = code;
       self.xmlCode = Blockly.Xml.domToPrettyText(Blockly.Xml.workspaceToDom(workspace));
-
-      if (interpreterController) {
-        interpreterController.stop();
-        workspace.highlightBlock(null);
-      }
-      self.running = false;
-      cachedBlocklyWorkspace = workspace;
-      interpreterController = makeInterpreterController(code, simulation, workspace);
     },
     setInitialXmlCode(xmlCode: string) {
       self.initialXmlCode = xmlCode;
@@ -204,44 +180,10 @@ export const SimulationStore = types
       self.viewportCenterLat = viewportCenterLat;
       self.viewportCenterLng = viewportCenterLng;
     },
-    run() {
-      const reset = () => {
-        this.setBlocklyCode(self.code, cachedBlocklyWorkspace);
-      };
-      if (interpreterController) {
-        interpreterController.run(reset);
-        self.running = true;
-      }
-    },
     reset() {
-      this.setBlocklyCode(self.code, cachedBlocklyWorkspace);
-      self.isErupting = false;
       self.hasErupted = false;
       self.log = "";
       self.plotData = PlotData.create({});
-    },
-    stop() {
-      if (interpreterController) {
-        interpreterController.stop();
-        self.running = false;
-      }
-      self.isErupting = false;
-    },
-    // pauses the interpreter run without setting self.running = false
-    pause() {
-      if (interpreterController) {
-        interpreterController.pause();
-      }
-    },
-    // only restarts if self.running = true. If user hit stop between `pause` and this
-    // function, this won't restart the run.
-    unpause() {
-      if (interpreterController && self.running) {
-        const reset = () => {
-          this.setBlocklyCode(self.code, cachedBlocklyWorkspace);
-        };
-        interpreterController.run(reset);
-      }
     },
     clearLog() {
       self.log = "";
@@ -254,42 +196,8 @@ export const SimulationStore = types
       self.crossPoint2Lat = lat;
       self.crossPoint2Lng = lng;
     },
-    /**
-     * Steps through one complete block.
-     * This sets steppingThroughBlock to true, and then repeatedly calls `step` on the interpreter
-     * until steppingThroughBlock is false. All blocks are wrapped with code that will call endStep
-     * at the end of the block's function, which will set steppingThroughBlock to false.
-     */
-    step() {
-      self.steppingThroughBlock = true;
-
-      // guard against infinite loops or a block failing to call endStep
-      const maxInvocations = 100;
-      let invocations = 0;
-
-      function stepAsync() {
-        if (interpreterController) {
-          interpreterController.step();
-        }
-        if (self.steppingThroughBlock && invocations++ < maxInvocations) {
-          setTimeout(stepAsync, 0); // async to allow endStep to be called
-        }
-      }
-      stepAsync();
-    },
-    startStep() {
-      // turn off animation at beginning of next block
-      self.endEruption();
-    },
-    endStep() {
-      self.steppingThroughBlock = false;
-    }
   }))
   .actions((self) => ({
-    paintGrid(resultType: SimOutput, colorStr: string) {
-      console.warn("WARNING: Painting Grid is no longer supported");
-      self.hasErupted = true;
-    },
     paintMap() {
       self.hasErupted = true;
       self.coloredColHeight = self.colHeight;
@@ -299,10 +207,6 @@ export const SimulationStore = types
       self.coloredWindDirection = self.windDirection;
       self.coloredWindSpeed = self.windSpeed;
     },
-    numberGrid(resultType: SimOutput) {
-      console.warn("WARNING: Numbering Grid is no longer supported ");
-      self.hasErupted = true;
-    },
     addPlotPoint(xAxis: string, yAxis: string, x: number, y: number) {
       self.plotData.setXAxis(xAxis);
       self.plotData.setYAxis(yAxis);
@@ -310,7 +214,7 @@ export const SimulationStore = types
     },
   }))
   .actions((self) => ({
-    erupt(animate = false) {
+    erupt() {
       // This currently exists within erupt, but will probably move
       // to another block (like the paint by...)once there is some other
       // feedback for eruption
@@ -325,37 +229,6 @@ export const SimulationStore = types
         // self.paintGrid("thickness", "#ff0000");
         self.paintMap();
       }
-
-      // will be used when we add animations
-      if (animate) {
-        console.warn("WARNING: Animated eruptions are not currently supported");
-        animate = false;
-      }
-
-      if (animate) {
-        self.isErupting = true;
-        self.pause();
-
-        // if user hit run button, this stop lasts 3000 ms
-        if (self.running) {
-          setTimeout(self.unpause, 3000);
-        }
-      }
-    },
-    calculateAndAddPlotPoint(xData: SimulationVariable, yData: SimOutput, cityName: string) {
-      console.warn("WARNING: Plot Point is not currently supported");
-      // const xLabel = MeasurementLabel[xData];
-      // const yLabel = MeasurementLabel[yData];
-
-      // const city = self.cities.find(c => c.name === cityName);
-      // if (!city) return;
-
-      // const dataIndex = city.x + city.y * self.numCols;
-
-      // const xVal = self[xData];
-      // const yVal = self.data[dataIndex][yData];
-
-      // self.addPlotPoint(xLabel, yLabel, xVal, yVal);
     }
   }))
   .actions((self) => {

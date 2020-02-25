@@ -1,4 +1,3 @@
-import "../blockly-blocks/block-output-value-grid.js";
 import "../blockly-blocks/block-fill-cell.js";
 import "../blockly-blocks/block-run-simulation.js";
 import "../blockly-blocks/block-thickness.js";
@@ -16,11 +15,11 @@ import "../blockly-blocks/block-set-eruption-mass";
 import "../blockly-blocks/block-set-ejected-volume";
 import "../blockly-blocks/block-set-vei";
 import "../blockly-blocks/block-erupt";
-import "../blockly-blocks/block-output-paint-grid";
 import "../blockly-blocks/block-output-paint-map";
-import "../blockly-blocks/block-output-plot";
 import "../blockly-blocks/block-redraw-map";
 import "../blockly-blocks/block-simulate-wind";
 import "../blockly-blocks/block-simulate-wind-vei";
 import "../blockly-blocks/block-simulate-wind-height";
 import "../blockly-blocks/block-simulate-wind-2";
+import "../blockly-blocks/block-wind-data";
+import "../blockly-blocks/block-graph-data";
