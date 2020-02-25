@@ -89,7 +89,20 @@ const ChartsStore = types.model("Charts", {
     const dateLabelFormat = "%b %Y";
     const title = _title || "Chart " + (self.charts.length + 1);
     self.addChart({type: "scatter", data, title, xAxisLabel, yAxisLabel, dateLabelFormat});
-  }
+  },
+
+  /**
+   * Creates a radial plot of `yAxis` vs direction, for a dataset that is assumed to contain
+   * direction values
+   */
+  addDirectionRadialChart(dataset: Dataset, yAxis: string, yAxisLabel: string, _title?: string){
+    const data = dataset.map(d => [d.direction, d[yAxis]]);
+
+    const chartStyle = "dot"; // may later give students option for "arrow";
+    const customExtents = [[], [0, 23]];
+    const title = _title || "Chart " + (self.charts.length + 1);
+    self.addChart({type: "radial", data, customExtents, title, chartStyle});
+  },
 }));
 
 export type ChartType = typeof Chart.Type;
