@@ -10,6 +10,7 @@ const UIStore = types.model("UI", {
   // right tabs
   showConditions: true,
   showCrossSection: true,
+  showMonteCarlo: true,
   showData: true,
   // other ui
   showLog: false,
