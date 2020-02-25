@@ -49,23 +49,23 @@ Blockly.Blocks['filter_data'] = {
       .setAlign(Blockly.ALIGN_RIGHT)
       .appendField('Input Data')
     this.appendValueInput('day')
-      .setCheck('Number')
+      .setCheck(['Number', 'range'])
       .setAlign(Blockly.ALIGN_RIGHT)
       .appendField('Day')
     this.appendValueInput('month')
-      .setCheck('Number')
+      .setCheck(['Number', 'range'])
       .setAlign(Blockly.ALIGN_RIGHT)
       .appendField('Month')
     this.appendValueInput('year')
-      .setCheck('Number')
+      .setCheck(['Number', 'range'])
       .setAlign(Blockly.ALIGN_RIGHT)
       .appendField('Year')
     this.appendValueInput('direction')
-      .setCheck('Number')
+      .setCheck(['Number', 'range'])
       .setAlign(Blockly.ALIGN_RIGHT)
       .appendField('Direction')
     this.appendValueInput('speed')
-      .setCheck('Number')
+      .setCheck(['Number', 'range'])
       .setAlign(Blockly.ALIGN_RIGHT)
       .appendField('Speed')
     this.setInputsInline(false)
@@ -98,7 +98,9 @@ Blockly.JavaScript['filter_data'] = function (block) {
       filter[key] = parseFloat(filter[key]);
     }
   });
-  var code = `filter({dataset: ${dataset}, filter: ${JSON.stringify(filter)}})`
+  let filterObj = JSON.stringify(filter);
+  filterObj = filterObj.replace(/\"/g, "");
+  var code = `filter({dataset: ${dataset}, filter: ${filterObj}})`
   // TODO: Change ORDER_NONE to the correct strength.
   return [code, Blockly.JavaScript.ORDER_NONE]
 }

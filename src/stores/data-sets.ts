@@ -8,7 +8,8 @@ export type Dataset = DatasetCase[];
 type DatasetName = "Wind Data";         // currently only one option
 export const WIND_DATA = "Wind Data";
 
-export interface Filter{[key: string]: number; }
+export interface Range {min: number; max: number; }
+export interface Filter{[key: string]: number | Range; }
 
 // dsv-loader loads in all data as strings. For now we know they are all numbers, so we can quick-convert
 const WindDataSet: Dataset = RawWindDataSet.map((item: any) => {
@@ -55,7 +56,11 @@ export const Datasets = {
       return Object.keys(filter).every(key => {
         const itemValue = item[key];
         const filterValue = filter[key];
-        return itemValue === filterValue;
+        if (typeof filterValue === "number") {
+          return itemValue === filterValue;
+        } else {
+          return itemValue >= filterValue.min && itemValue <= filterValue.max;
+        }
       });
     });
   },
