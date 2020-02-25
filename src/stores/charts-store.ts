@@ -104,6 +104,32 @@ const ChartsStore = types.model("Charts", {
     const title = _title || "Chart " + (self.charts.length + 1);
     self.addChart({type: "radial", data, customExtents, title, chartStyle});
   },
+
+  /**
+   * Creates a curstom charts based on known properties of wind data.
+   */
+  addArbitraryChart(dataset: Dataset, xAxis: string, yAxis: string) {
+    let data;
+
+    const timeParser = WindData.timeParsers[xAxis];
+    if (timeParser) {
+      const dateParser = d3.timeParse(timeParser.parser);
+      data = dataset.map(d => {
+        const dateStr = timeParser.fields.map(f => d[f]).join("-");
+        const date = dateParser(dateStr)!;
+        return [date, d[yAxis]];
+      });
+    } else {
+      data = dataset.map(d => [d[xAxis], d[yAxis]]);
+    }
+
+    const dateLabelFormat = timeParser ? timeParser.label : "";
+    const type = xAxis === "direction" ? "radial" : "scatter";
+    const chartStyle = "dot";
+    const customExtents = [WindData.extents[xAxis] || [], WindData.extents[yAxis] || []];
+    const title = "Chart " + (self.charts.length + 1);
+    self.addChart({type, data, customExtents, title, chartStyle, dateLabelFormat});
+  },
 }));
 
 export type ChartType = typeof Chart.Type;

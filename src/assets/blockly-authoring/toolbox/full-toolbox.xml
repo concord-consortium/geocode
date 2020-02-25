@@ -27,6 +27,7 @@
   <category name="Wind data" colour="%{BKY_LISTS_HUE}">
     <block type="graph_speed_date_wind_data"></block>
     <block type="graph_speed_direction_wind_data"></block>
+    <block type="graph_any_wind_data"></block>
     <block type="all_wind_data"></block>
     <block type="sample_data"></block>
     <block type="filter_data"></block>

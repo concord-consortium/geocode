@@ -67,13 +67,42 @@ export const Datasets = {
 
 };
 
-// ** Custom winfo about wind data **
+// ** Custom info about wind data **
+interface TimeParser {fields: string[]; parser: string; label: string; }
 interface DataSetInfo {
   extents: {[key: string]: [number, number]};
+  timeParsers: {[key: string]: TimeParser};
 }
 export const WindData: DataSetInfo = {
   extents: {
     elevation: [1450, 1600],
     speed: [0, 23]
+  },
+  timeParsers: {
+    date: {
+      fields: ["year", "month", "day"],
+      parser: "%Y-%m-%d",
+      label: "%b %Y"
+    },
+    dayOfYear: {
+      fields: ["month", "day"],
+      parser: "%m-%d",
+      label: "%b"
+    },
+    month: {
+      fields: ["month"],
+      parser: "%m",
+      label: "%b"
+    },
+    year: {
+      fields: ["year"],
+      parser: "%Y",
+      label: "%Y"
+    },
+    hour: {
+      fields: ["hour"],
+      parser: "%H",
+      label: "%I%p"
+    }
   }
 };
