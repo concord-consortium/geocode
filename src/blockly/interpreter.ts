@@ -16,18 +16,24 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       interpreter.setProperty(scope, name, value);
     };
 
+    // the native function wraps arguments to functions as {data: any} or {properties: {data: any}[]}
     const unwrap = (args: any[]) => {
-      const modifiedArgs = args.map( (a) => {
+      const unwrapArg = (a: any) => {
         if (a.data !== undefined && a.data !== null) {return a.data; }
         if (a.properties) {
           const returnObject: { [key: string]: any } = {};
           const keys = Object.keys(a.properties);
           keys.forEach( (k) => {
-            returnObject[k] = a.properties[k].data;
+            if (typeof a.properties[k].properties === "object") {
+              returnObject[k] = unwrapArg(a.properties[k]); // recurse
+            } else {
+              returnObject[k] = a.properties[k].data;
+            }
           });
           return returnObject;
         }
-      });
+      };
+      const modifiedArgs = args.map(unwrapArg);
       return modifiedArgs;
     };
 
