@@ -100,6 +100,12 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       };
     });
 
+    addFunc("sampleDataset", (params: {dataset: Dataset, sampleSize: number}) => {
+      return {
+        data: Datasets.getRandomSampleWithReplacement(params.dataset, params.sampleSize)
+      };
+    });
+
     addFunc("graphSpeedDateScatterPlot", (dataset: Dataset) => {
       chartsStore.addDateScatterChart(dataset, "speed", "Wind speed");
     });
