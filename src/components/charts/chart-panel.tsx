@@ -88,12 +88,12 @@ export class ChartPanel extends BaseComponent<IProps, IState> {
                         chart.data.length < 5000 ?
                         <SvgD3ScatterChart
                           width={this.props.width * 0.85}
-                          height={this.props.width * 0.4}
+                          height={this.props.width * 0.45}
                           chart={chart}
                         /> :
                         <CanvasD3ScatterChart
                           width={this.props.width * 0.85}
-                          height={this.props.width * 0.4}
+                          height={this.props.width * 0.45}
                           chart={chart}
                         />
 

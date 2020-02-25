@@ -54,7 +54,7 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
     const { width, height, chart } = this.props;
     const { data, xAxisLabel, yAxisLabel } = chart;
 
-    const margin = {top: 15, right: 20, bottom: 35, left: 50};
+    const margin = {top: 15, right: 20, bottom: 43, left: 50};
     const canvasPadding = 3;      // extend canvas slightly beyond axes
     const chartWidth = width - margin.left - margin.right + (canvasPadding * 2);
     const chartHeight = height - margin.top - margin.bottom + (canvasPadding * 2);
@@ -89,8 +89,9 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
     // Add labels
     if (xAxisLabel) {
       svgAxes.append("text")
-        .attr("x", `${width / 3}`)
-        .attr("y", `${height - margin.top}`)
+        .attr("x", `${chartWidth / 2}`)
+        .attr("y", `${height - 20}`)
+        .style("text-anchor", "middle")
         .style("font-size", "0.9em")
         .style("fill", "#555")
         .text(xAxisLabel);
