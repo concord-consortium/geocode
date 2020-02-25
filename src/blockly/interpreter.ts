@@ -6,7 +6,7 @@ import { IStore } from "../stores/stores";
 import { Datasets, Dataset } from "../stores/data-sets";
 const Interpreter = require("js-interpreter");
 
-const makeInterperterFunc = (blocklyController: BlocklyController, store: IStore,
+const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore,
                              workspace: IBlocklyWorkspace) => {
 
   const { simulation, chartsStore } = store;
@@ -150,7 +150,7 @@ export const makeInterpreterController = (code: string, blocklyController: Block
   if (lastRunID) {
     window.clearTimeout(lastRunID);
   }
-  const interpreter = new Interpreter(code, makeInterperterFunc(blocklyController, store, workspace));
+  const interpreter = new Interpreter(code, makeInterpreterFunc(blocklyController, store, workspace));
   const step = () => {
     interpreter.step();
   };
