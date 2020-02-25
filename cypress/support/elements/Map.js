@@ -24,8 +24,8 @@ class Map {
             .trigger('mousemove', {offsetX:275, offsetY:0})
             .trigger('mouseup');
     }
-    getMap(){
-        return cy.get('.map')
+    getMapTransform(){
+        return cy.get('.map .leaflet-proxy.leaflet-zoom-animated')
     }
 }
 
