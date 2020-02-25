@@ -72,6 +72,7 @@ interface TimeParser {fields: string[]; parser: string; label: string; }
 interface DataSetInfo {
   extents: {[key: string]: [number, number]};
   timeParsers: {[key: string]: TimeParser};
+  axisLabel: {[key: string]: string};
 }
 export const WindData: DataSetInfo = {
   extents: {
@@ -104,5 +105,9 @@ export const WindData: DataSetInfo = {
       parser: "%H",
       label: "%I%p"
     }
+  },
+  axisLabel: {
+    speed: "Wind Speed",
+    dayOfYear: "Day"
   }
 };

@@ -128,7 +128,10 @@ const ChartsStore = types.model("Charts", {
     const chartStyle = "dot";
     const customExtents = [WindData.extents[xAxis] || [], WindData.extents[yAxis] || []];
     const title = "Chart " + (self.charts.length + 1);
-    self.addChart({type, data, customExtents, title, chartStyle, dateLabelFormat});
+    const capFirst = (name: string) => name.charAt(0).toUpperCase() + name.slice(1);
+    const xAxisLabel = WindData.axisLabel[xAxis] ?  WindData.axisLabel[xAxis] : capFirst(xAxis);
+    const yAxisLabel = WindData.axisLabel[yAxis] ?  WindData.axisLabel[yAxis] : capFirst(yAxis);
+    self.addChart({type, data, customExtents, title, xAxisLabel, yAxisLabel, chartStyle, dateLabelFormat});
   },
 }));
 
