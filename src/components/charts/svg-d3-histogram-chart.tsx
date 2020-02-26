@@ -76,6 +76,7 @@ export const SvgD3HistogramChart = (props: IProps) => {
       .text(yAxisLabel);
   }
   if (!showBars) {
+    const dotRadius = Math.min(chartWidth / numBins * .45, chartHeight / max * .45);
     bins.forEach((bin, binIndex) => {
       const binMap = bin.map((x, i) => i);
       svg.append("g")
@@ -83,9 +84,9 @@ export const SvgD3HistogramChart = (props: IProps) => {
         .data(binMap)
         .enter()
         .append("circle")
-          .attr("cx", d => (xScale(binIndex) * 10 + (chartWidth / numBins * .45)) )
+          .attr("cx", d => (xScale(binIndex) * 10 + dotRadius) )
           .attr("cy", d => (yScale(d) - 5) )
-          .attr("r", chartWidth / numBins * .45)
+          .attr("r", dotRadius)
           .style("fill", "#448878");
     });
   } else {
