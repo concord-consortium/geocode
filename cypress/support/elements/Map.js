@@ -2,6 +2,9 @@ class Map {
     getMap(){
         return cy.get('.map')
     }
+    getVolcanoMarker(){
+        return cy.get('img.leaflet-marker-icon')
+    }
     getRecenterButton(){
         return cy.get('[data-test=Re-center-button]');
     }

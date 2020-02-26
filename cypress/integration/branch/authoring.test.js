@@ -2,13 +2,22 @@ import ModelOptions from "../../support/elements/ModelOptionPanel";
 import LeftPanel from "../../support/elements/LeftPanel";
 import RightPanel from "../../support/elements/RightPanel";
 import ControlsTab from "../../support/elements/ControlsTab";
+import Map from "../../support/elements/Map"
 
 const modelOptions = new ModelOptions;
 const leftPanel = new LeftPanel;
 const rightPanel = new RightPanel;
 const controlsTab = new ControlsTab;
+const map = new Map;
 
+beforeEach(()=>{
+    cy.fixture('vei-mapping.json').as('veiMap');
+    cy.fixture('volcanoes.json').as('volcanoes');
+})
 context ('Authoring Options',()=>{
+    before(() => {
+        cy.visit("");
+      });
     describe('Model Option panel visibility',()=>{
         it('verify Options Menu panel shows',()=>{
             modelOptions.getModelOptionsMenu().click();
@@ -16,7 +25,7 @@ context ('Authoring Options',()=>{
         })
         it('verify Option Menu closes',()=>{
             modelOptions.getModelOptionsMenu().click();
-            modelOptions.getRequireEruptionOption().should('not.exist');
+            modelOptions.getModelOptionsList().should('have.length',1);
         })
     })
     describe('Require Eruption options',()=>{
@@ -30,15 +39,19 @@ context ('Authoring Options',()=>{
             leftPanel.getControlsTab().click();
             controlsTab.getEruptButton().click();
             //verify tephra is visible at a location south of volcano
+            map.getTephra().last().attribute('d').should('contain',"M326 407L331 412L339 412L352 428L352 461L343 471L343 525L331 541L313 541L301 525L301 471L292 461L292 428L305 412L313 412L322 401z")
+
             //change conditions to see tephra change without having to erupt again
             var slider="wind-direction", windDirection = 190;
             controlsTab.setSliderValue(slider,windDirection);
             //verify is in new location north of volcano
+            map.getTephra().last().attribute('d').should('contain', "M361 277L361 374L339 401L313 401L301 385L301 353L309 342L309 320L318 309L318 299L326 288L326 277L331 272L356 272z")
 
             //reset state for nexxt test
             controlsTab.resetModel();
+            modelOptions.getModelOptionsMenu().click();
         })
-        it('verify require eruption=true shows tephra only when Erupt button is clicked',()=>{
+        it ('verify require eruption=true shows tephra only when Erupt button is clicked',()=>{
             modelOptions.getModelOptionsMenu().click();
             modelOptions.getRequireEruptionOption().click();            
             modelOptions.getModelOptionsMenu().click(); //'checked' state attr doesn't update until menu is closed and re-opened 
@@ -46,20 +59,34 @@ context ('Authoring Options',()=>{
             modelOptions.getRequireEruptionOption().should('have.attr', 'checked');
             leftPanel.getControlsTab().click();
             controlsTab.getEruptButton().click();
-            //TODO verify tephra is visible at a location north of volcano
+            //verify tephra is visible at a location south of volcano
+            map.getTephra().last().attribute('d').should('contain',"M326 407L331 412L339 412L352 428L352 461L343 471L343 525L331 541L313 541L301 525L301 471L292 461L292 428L305 412L313 412L322 401z")
+
             //change conditions to see tephra change without having to erupt again
-            var slider="wind-direction", windDirection = 0;
+            var slider="wind-direction", windDirection = 190;
             controlsTab.setSliderValue(slider,windDirection);
-            //TODO verify location has not changed north of volcano
-        })
-    })
-    describe('Require painting options',()=>{
-        it('verify require eruption state matches events',()=>{
-            //Need to have nested loop option on
-        })
+            //verify location has not changed north of volcano
+            map.getTephra().last().attribute('d').should('contain',"M326 407L331 412L339 412L352 428L352 461L343 471L343 525L331 541L313 541L301 525L301 471L292 461L292 428L305 412L313 412L322 401z")
+
+            controlsTab.resetModel();//clean up
+         })
     })
     describe('Map Scenarios show the correct area',()=>{
-        //TODO need to try using x,y leaflet transforms mapped in volcanoes.json
+        it('verify selected volcano is shown in the map',()=>{
+            modelOptions.getModelOptionsMenu().click();
+
+            cy.get('@volcanoes').then((volcanoes)=>{
+                cy.wrap(volcanoes.volcanoes).each((volcano,index,volcano_list)=>{
+                    cy.log(volcanoes.volcanoes[index].name)
+                    modelOptions.getModelOptionsMenu().click();
+                    modelOptions.selectMapScenario(volcanoes.volcanoes[index].name)
+                    modelOptions.getModelOptionsMenu().click();
+                    cy.wait(1000)
+                    map.getRecenterButton().click(); //x,y,z, coordinates are identical if you recenter first
+                    map.getVolcanoMarker().first().attribute('style').should('contain', 'translate3d('+volcanoes.volcanoes[index].x+'px, '+ volcanoes.volcanoes[index].y+'px, '+ volcanoes.volcanoes[index].z+'px);');
+                })
+            })
+        })
     })
     describe('Code Toolbox authoring shows the correct options',()=>{
         it('verify selecting First shows correct toolboxes in Blocks',()=>{
@@ -138,13 +165,18 @@ context ('Authoring Options',()=>{
             // TODO don't know what it is supposed to do
         })
     })
-    describe('authoring save and restore state',()=>{
-        beforeAll(()=>{
+    describe('Require painting options',()=>{
+        it('verify require eruption state matches events',()=>{
+            //Need to have nested loop option on
+        })
+    })
+    describe.skip('authoring save and restore state',()=>{
+        //before(()=>{
             //Eruption off, painting on, scenarion Mount Pinatubo, Toolbox Wind and VEI
             //Initial Code Basic, show bloxks, & Code, hids controls
             //Show cross-section, data, hide condtions
             //Show log, hide demo charts
-        })
+        //})
         it('verify save and restore of selections',()=>{
 
         })

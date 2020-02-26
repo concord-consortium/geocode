@@ -2,11 +2,13 @@ import LeftPanel from "../../support/elements/LeftPanel"
 import ControlsTab from "../../support/elements/ControlsTab"
 import RightPanel from "../../support/elements/RightPanel";
 import ConditionsTab from "../../support/elements/ConditionsTab"
+import Map from "../../support/elements/Map"
 
 const leftPanel = new LeftPanel;
 const controlsTab = new ControlsTab;
 const rightPanel = new RightPanel;
 const conditionsTab = new ConditionsTab;
+const map = new Map;
 
 beforeEach(()=>{
     cy.fixture('vei-mapping.json').as('veiMap');
@@ -46,7 +48,7 @@ context("Controls panel", () => {
     })
     describe('verify tephra after eruption',()=>{
         it('verify tephra is visible',()=>{
-            conditionsTab.getTephra().should('be.visible');
+            map.getTephra().should('be.visible');
         })
         it('verify switching to Monte Carol tab shows tephra',()=>{
             rightPanel.getMonteCarloTab().click();
@@ -54,20 +56,20 @@ context("Controls panel", () => {
         })
         it('verify Reset in Control Panel removes tephra in Monte Carlo tab',()=>{
             controlsTab.getControlsPanel().find(controlsTab.getResetButtonEl()).click();
-            conditionsTab.getTephra().should('not.exist');
+            map.getTephra().should('not.exist');
         })
         it('verify Conditions tab does not show tephra',()=>{
             rightPanel.getConditionsTab().click();
-            conditionsTab.getTephra().should('not.exist');
+            map.getTephra().should('not.exist');
         })
         it('verify Erupt while in Monte Carlo tab shows tephra in Monte Carlo tab',()=>{
             rightPanel.getMonteCarloTab().click();
             controlsTab.getEruptButton().click();
-            conditionsTab.getTephra().should('be.visible');
+            map.getTephra().should('be.visible');
         })
         it('verify tephra is still visible after switch back to Conditions tab',()=>{
             rightPanel.getConditionsTab().click();
-            conditionsTab.getTephra().should('be.visible');
+            map.getTephra().should('be.visible');
         })
     })
 });

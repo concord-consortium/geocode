@@ -2,6 +2,9 @@ class ModelOptions {
     getModelOptionsMenu(){
         return cy.get('.button .label-text').contains('Model options');
     }
+    getModelOptionsList(){
+        return cy.get('.dg.main li');
+    }
     getRequireEruptionOption(){
         return cy.get('.label-text').contains('Require eruption?').siblings('input')
     }
