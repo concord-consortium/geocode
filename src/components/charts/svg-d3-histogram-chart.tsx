@@ -43,12 +43,8 @@ export const SvgD3HistogramChart = (props: IProps) => {
     .domain([ xDomain[0], xDomain[1] ])
     .thresholds(xScale.ticks(numBins));
 
-  // histogram data is stored in 2D array where
-  // internal arrays contain single value
-  const binData: any[] = data.map(d => d[0]);
-
   // And apply this function to data to get the bins
-  const bins = histogram(binData);
+  const bins = histogram(data as number[]);
   let max = 0;
   bins.forEach(bin => {
     max = Math.max(max, bin.length);
@@ -79,7 +75,7 @@ export const SvgD3HistogramChart = (props: IProps) => {
       .style("fill", "#555")
       .text(yAxisLabel);
   }
-  if (showBars) {
+  if (!showBars) {
     bins.forEach((bin, binIndex) => {
       const binMap = bin.map((x, i) => i);
       svg.append("g")

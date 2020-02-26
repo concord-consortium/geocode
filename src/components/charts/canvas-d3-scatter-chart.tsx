@@ -114,7 +114,7 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
 
     const ctx = this.canvasRef.current.getContext("2d")!;
 
-    data.forEach(d => {
+    data.forEach((d: number[] | Date[]) => {
       ctx.beginPath();
       ctx.fillStyle = "#448878";
       const px = xScale(d[0]) + canvasPadding;

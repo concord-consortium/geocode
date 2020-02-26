@@ -67,16 +67,15 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
     const { width, height } = this.props;
     const { data } = chart;
 
-    const dataArray: any[] = data.map(d => d[0]);
     const threshold = kTephaThreshold;
     let above = 0;
-    dataArray.forEach(d => {
+    data.forEach((d: number) => {
       if (d > threshold) {
         above++;
       }
     });
-    const below = dataArray.length - above;
-    const abovePercent = Math.round(above / dataArray.length * 100);
+    const below = data.length - above;
+    const abovePercent = Math.round(above / data.length * 100);
     const belowPercent = 100 - abovePercent;
 
     return (
@@ -121,9 +120,9 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
   private addHistogram = () => {
       const numPoints = 300;
       const title = "Chart " + (this.stores.chartsStore.charts.length + 1);
-      const data: number[][] = [];
+      const data: number[] = [];
       for (let i = 0; i < numPoints; i++) {
-        data.push([Math.floor(this.randomG(3) * (kTephaMax + 1))]);
+        data.push(Math.floor(this.randomG(3) * (kTephaMax + 1)));
       }
       const xAxisLabel = "Tephra Thickness (mm)";
       const yAxisLabel = "Number of Runs";
