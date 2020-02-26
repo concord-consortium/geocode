@@ -4,9 +4,9 @@ Blockly.Blocks['input_range'] = {
       .appendField('range from')
       .appendField(new Blockly.FieldNumber(0), 'min')
       .appendField('to')
-      .appendField(new Blockly.FieldNumber(0), 'max')
+      .appendField(new Blockly.FieldNumber(10), 'max')
     this.setOutput(true, 'range')
-    this.setColour(230)
+    this.setColour(130)
     this.setTooltip('')
     this.setHelpUrl('')
   }

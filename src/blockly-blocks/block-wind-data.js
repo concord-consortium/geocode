@@ -3,7 +3,7 @@ Blockly.Blocks['all_wind_data'] = {
     this.appendDummyInput()
       .appendField('All Wind Data')
     this.setOutput(true, 'Dataset')
-    this.setColour(230)
+    this.setColour("%{BKY_LISTS_HUE}")
     this.setTooltip('')
     this.setHelpUrl('')
   }
@@ -26,7 +26,7 @@ Blockly.Blocks['sample_data'] = {
       .setAlign(Blockly.ALIGN_RIGHT)
       .appendField('from')
     this.setOutput(true, 'Dataset')
-    this.setColour(230)
+    this.setColour("%{BKY_LISTS_HUE}")
     this.setTooltip('')
     this.setHelpUrl('')
   }
@@ -70,7 +70,7 @@ Blockly.Blocks['filter_data'] = {
       .appendField('Speed')
     this.setInputsInline(false)
     this.setOutput(true, 'Dataset')
-    this.setColour(225)
+    this.setColour("%{BKY_LISTS_HUE}")
     this.setTooltip('Filter Data')
     this.setHelpUrl('')
   }
