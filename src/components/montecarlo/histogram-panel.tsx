@@ -6,6 +6,11 @@ import { HorizontalContainer, VerticalContainer } from "../styled-containers";
 import { SvgD3HistogramChart } from "../charts/svg-d3-histogram-chart";
 import { ChartType } from "../../stores/charts-store";
 
+// TODO threshold and histogram min/max will need to be set elsewhere
+const kTephaThreshold = 201;
+const kTephaMin = 0;
+const kTephaMax = 400;
+
 interface PanelProps {
   height: number;
   width: number;
@@ -24,7 +29,7 @@ const PanelStat = styled.div`
 `;
 
 interface IState {
-  bars: boolean;
+  showBars: boolean; // TODO: remove once we decide on plot style
 }
 
 interface IProps extends IBaseProps {
@@ -39,7 +44,7 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
   constructor(props: IProps) {
     super(props);
     const initialState: IState = {
-      bars: false,
+      showBars: false,
     };
     this.state = initialState;
   }
@@ -59,18 +64,19 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
   }
 
   private renderHistogram = (chart: ChartType) => {
-    const {width, height} = this.props;
+    const { width, height } = this.props;
     const { data } = chart;
-    const fakeData: any[] = data.map(d => d[1]);
-    const threshold = 201;
+
+    const dataArray: any[] = data.map(d => d[0]);
+    const threshold = kTephaThreshold;
     let above = 0;
-    fakeData.forEach(d => {
+    dataArray.forEach(d => {
       if (d > threshold) {
         above++;
       }
     });
-    const below = fakeData.length - above;
-    const abovePercent = Math.round(above / fakeData.length * 100);
+    const below = dataArray.length - above;
+    const abovePercent = Math.round(above / dataArray.length * 100);
     const belowPercent = 100 - abovePercent;
 
     return (
@@ -79,42 +85,53 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
           width={width - 200}
           height={height - 10}
           chart={chart}
-          bars={this.state.bars}
+          chartMin={kTephaMin}
+          chartMax={kTephaMax}
+          showBars={this.state.showBars}
         />
         <VerticalContainer>
-          <PanelStat>Threshold = 201mm</PanelStat>
+          <PanelStat>{`Threshold = ${threshold}mm`}</PanelStat>
           <PanelStat>{`Count below threshold: ${below} (${belowPercent}%)`}</PanelStat>
           <PanelStat>{`Count above threshold: ${above} (${abovePercent}%)`}</PanelStat>
-          <PanelStat>Risk: Medium</PanelStat>
-          <button onClick={this.changeDisplayType}>Change display type</button>
+          <PanelStat>{`Risk: ${this.calculateRisk(abovePercent)}`}</PanelStat>
+          <button onClick={this.changeDisplayType}>Toggle display</button>
         </VerticalContainer>
       </HorizontalContainer>
     );
   }
 
+  private calculateRisk = (percent: number) => {
+    if (percent > 80) {
+      return "High";
+    } else if (percent > 31) {
+      return "Medium";
+    } else {
+      return "Low";
+    }
+  }
+
+  // TODO: for testing only, remove once we decide on plot style
   private changeDisplayType = () => {
     this.setState(prevState => ({
-      bars: !prevState.bars
+      showBars: !prevState.showBars
     }));
   }
 
+  // TODO: for testing only, remove when we have real data
   private addHistogram = () => {
       const numPoints = 300;
-
       const title = "Chart " + (this.stores.chartsStore.charts.length + 1);
-
       const data: number[][] = [];
       for (let i = 0; i < numPoints; i++) {
-        data.push([Date.now(), Math.floor(this.randomG(3) * 401)]);
-        // data.push([Date.now(), Math.floor(Math.random() * 401)]);
+        data.push([Math.floor(this.randomG(3) * (kTephaMax + 1))]);
       }
-
       const xAxisLabel = "Tephra Thickness (mm)";
       const yAxisLabel = "Number of Runs";
       const dateLabelFormat = "%b";
       this.stores.chartsStore.addChart({type: "histogram", data, title, xAxisLabel, yAxisLabel, dateLabelFormat});
   }
 
+  // TODO: for testing only, remove when we have real data
   private randomG = (v: number) => {
     let r = 0;
     for (let i = v; i > 0; i--) {
