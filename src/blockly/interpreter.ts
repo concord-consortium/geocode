@@ -126,6 +126,10 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       chartsStore.addDirectionRadialChart(dataset, "speed", "Wind speed");
     });
 
+    addFunc("graphArbitraryPlot", (params: {dataset: Dataset, xAxis: string, yAxis: string}) => {
+      chartsStore.addArbitraryChart(params.dataset, params.xAxis, params.yAxis);
+    });
+
     /** ==== Utility methods ==== */
 
     addFunc("log", (params) => {
