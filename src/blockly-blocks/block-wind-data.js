@@ -47,7 +47,7 @@ Blockly.Blocks['filter_data'] = {
     this.appendValueInput('source')
       .setCheck('Dataset')
       .setAlign(Blockly.ALIGN_RIGHT)
-      .appendField('Input Data')
+      .appendField('Select from')
     this.appendValueInput('day')
       .setCheck(['Number', 'range'])
       .setAlign(Blockly.ALIGN_RIGHT)
