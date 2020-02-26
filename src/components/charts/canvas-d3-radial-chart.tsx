@@ -46,7 +46,7 @@ export class CanvasD3RadialChart extends React.Component<IProps> {
     const { chart, width: totalWidth } = this.props;
     const data = chart.data;
 
-    const margin = {top: 20, right: 20, bottom: 35, left: 20};
+    const margin = {top: 25, right: 55, bottom: 25, left: 55};
     const chartWidth = totalWidth - margin.left - margin.right;
 
     const svgAxes = d3.select(this.svgRef.current)
@@ -69,15 +69,15 @@ export class CanvasD3RadialChart extends React.Component<IProps> {
 
     // add axes. Assume NESW for now, can add props to customize later if needed
     svgAxes.append("g")
-      .call(d3.axisTop(xScale).tickValues([0]).tickFormat(() => "N"));
+      .call(d3.axisTop(xScale).tickValues([0]).tickFormat(() => "N (0º)"));
     svgAxes.append("g")
       .attr("transform", "translate(" + chartWidth + ", 0)")
-      .call(d3.axisRight(yScale).tickValues([0]).tickFormat(() => "E"));
+      .call(d3.axisRight(yScale).tickValues([0]).tickFormat(() => "E (90º)"));
     svgAxes.append("g")
       .attr("transform", "translate(0," + chartWidth + ")")
-      .call(d3.axisBottom(xScale).tickValues([0]).tickFormat(() => "S"));
+      .call(d3.axisBottom(xScale).tickValues([0]).tickFormat(() => "S (180º)"));
     svgAxes.append("g")
-      .call(d3.axisLeft(yScale).tickValues([0]).tickFormat(() => "W"));
+      .call(d3.axisLeft(yScale).tickValues([0]).tickFormat(() => "W (270º)"));
 
     const center = {x: chartWidth / 2, y: chartWidth / 2};
 
