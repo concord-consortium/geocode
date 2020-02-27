@@ -43,6 +43,7 @@ Blockly.Blocks['graph_any_wind_data'] = {
       .appendField('Graph Wind Data')
       .appendField(new Blockly.FieldDropdown([
           ['speed', 'speed'],
+          ['direction', 'direction'],
       ]), 'yAxis')
       .appendField('against')
       .appendField(new Blockly.FieldDropdown([
@@ -52,6 +53,7 @@ Blockly.Blocks['graph_any_wind_data'] = {
           ['year', 'year'],
           ['hour', 'hour'],
           ['elevation', 'elevation'],
+          ['speed', 'speed'],
           ['direction', 'direction'],
       ]), 'xAxis');
     this.setPreviousStatement(true, null)

@@ -107,7 +107,8 @@ export const WindData: DataSetInfo = {
     }
   },
   axisLabel: {
-    speed: "Wind Speed",
-    dayOfYear: "Day"
+    speed: "Wind Speed (m/s)",
+    dayOfYear: "Day",
+    direction: "Direction (degrees)"
   }
 };

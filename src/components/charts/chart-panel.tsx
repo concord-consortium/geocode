@@ -82,7 +82,7 @@ export class ChartPanel extends BaseComponent<IProps, IState> {
                     {
                       chart.type === "radial" ?
                         <CanvasD3RadialChart
-                          width={this.props.width * 0.55}
+                          width={this.props.width * 0.6}
                           chart={chart}
                         /> :
                         chart.data.length < 5000 ?
