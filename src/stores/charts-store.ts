@@ -8,13 +8,14 @@ export type ChartTypeType = typeof ChartType.Type;
 export const ChartStyle = types.enumeration("type", ["dot", "arrow"]);
 export type ChartStyleType = typeof ChartStyle.Type;
 
-type ChartData = Array<Array<number|Date>>;
+type ChartData = Array<Array<number|Date>> | number[];
 type Column = number|Date;
 
 const Chart = types.model("Chart", {
   type: ChartType,
   chartStyle: types.maybe(ChartStyle),      // rendering options, given a specific type
-  data: types.array(types.array(types.union(types.number, types.Date))), // [x,y], [deg,mag], or [date, y] tuples
+  // [x,y], [deg,mag], or [date, y] tuples
+  data: types.array(types.union(types.array(types.union(types.number, types.Date)), types.number)),
   title: types.maybe(types.string),
   customExtents: types.array(types.array(types.number)),
   xAxisLabel: types.maybe(types.string),
@@ -23,12 +24,15 @@ const Chart = types.model("Chart", {
 })
 .views((self) => {
   const isDate = (column: 0|1) => {
-    if (self.data.length === 0) return false;
+    if (self.data.length === 0 || !Array.isArray(self.data[0])) return false;
     return self.data[0][column] instanceof Date;
   };
 
   // returns one column as an array
-  const getColumnData = (column: 0|1) => self.data.map(d => d[column]);
+  const getColumnData = (column: 0|1) => {
+    if (!Array.isArray(self.data[0])) return self.data;
+    return self.data.map((d: any) => d[column]);
+  };
 
   // returns a function to convert a Date to a string, given an axis
   const toDateString = () => {
