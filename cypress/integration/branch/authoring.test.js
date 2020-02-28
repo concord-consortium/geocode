@@ -3,12 +3,14 @@ import LeftPanel from "../../support/elements/LeftPanel";
 import RightPanel from "../../support/elements/RightPanel";
 import ControlsTab from "../../support/elements/ControlsTab";
 import Map from "../../support/elements/Map"
+import BlocksTab from "../../support/elements/BlocksTab";
 
 const modelOptions = new ModelOptions;
 const leftPanel = new LeftPanel;
 const rightPanel = new RightPanel;
 const controlsTab = new ControlsTab;
 const map = new Map;
+const blocksTab = new BlocksTab
 
 beforeEach(()=>{
     cy.fixture('vei-mapping.json').as('veiMap');
@@ -89,11 +91,35 @@ context ('Authoring Options',()=>{
         })
     })
     describe('Code Toolbox authoring shows the correct options',()=>{
+        before(()=>{
+            leftPanel.getBlocksTab().click();
+            modelOptions.getModelOptionsMenu().click();
+        })
         it('verify selecting First shows correct toolboxes in Blocks',()=>{
             // Volcano, Data
+            modelOptions.selectCodeToolbox('First');
+            blocksTab.getTag('Volcano').should('be.visible');
+            blocksTab.getTag('Data').should('be.visible');
+            blocksTab.getTag('Logic').should('not.exist');
+            blocksTab.getTag('Loops').should('not.exist');
+            blocksTab.getTag('Variables').should('not.exist');
+            blocksTab.getTag('Functions').should('not.exist');
+
+            blocksTab.getTag('Volcano').click();
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 6)
+
+            blocksTab.getTag('Data').click();
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
         })
         it('verify selecting Everything shows correct toolboxes in Blocks',()=>{
             // Volcano, Logic, Loops, Data, Variables, Functions
+            modelOptions.selectCodeToolbox('Everything');
+            blocksTab.getTag('Volcano').should('be.visible');
+            blocksTab.getTag('Data').should('be.visible');
+            blocksTab.getTag('Logic').should('be.visible');
+            blocksTab.getTag('Loops').should('be.visible');
+            blocksTab.getTag('Variables').should('be.visible');
+            blocksTab.getTag('Functions').should('be.visible');
         })
         it('verify selecting Wind shows correct toolboxes in Blocks',()=>{
             // Volcano, Loops, Data, Variables. Volcano only has Create town and Wind block

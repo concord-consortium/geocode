@@ -6,6 +6,9 @@ class BlocksTab{
     getTag(tagName){ //tagName=['Volcano','Logic','Loops','Data','Variables','Functions']
         return cy.get('.blocklyTreeLabel').contains(tagName)
     }
+    getFlyout(){
+        return cy.get('.blocklyFlyout');
+    }
     getCanvas(){
         return cy.get('.blocklyBlockCanvas')
     }
