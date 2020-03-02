@@ -135,6 +135,7 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
 
   private renderHistogram = (chart: ChartType) => {
     const { width, height } = this.props;
+    const threshold = kTephraThreshold;
     return (
       <SvgD3HistogramChart
         width={width - 200}
@@ -143,6 +144,7 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
         chartMin={kTephraMin}
         chartMax={kTephraMax}
         showBars={this.state.showBars}
+        threshold={threshold}
       />
     );
   }
