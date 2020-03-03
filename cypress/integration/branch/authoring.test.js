@@ -107,6 +107,13 @@ context ('Authoring Options',()=>{
 
             blocksTab.getTag('Volcano').click();
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 6)
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length',20)
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(4).should('contain','Create a volcano at')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(7).should('contain','Create a town named')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(11).should('contain','Set wind direction')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(13).should('contain','Set wind speed')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(15).should('contain','Erupt with current values')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(0).should('contain','Color the grid')
 
             blocksTab.getTag('Data').click();
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
@@ -120,25 +127,160 @@ context ('Authoring Options',()=>{
             blocksTab.getTag('Loops').should('be.visible');
             blocksTab.getTag('Variables').should('be.visible');
             blocksTab.getTag('Functions').should('be.visible');
+
+            blocksTab.getTag('Volcano').click();
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 5)
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length',20)
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(0).should('contain','Create a volcano at')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(4).should('contain','Compute and visualize tephra with')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(5).should('contain','wind speed')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(6).should('contain','wind direction')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(7).should('contain','Compute and visualize tephra with')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(8).should('contain','wind speed')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(9).should('contain','wind direction')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(10).should('contain','VEI')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(11).should('contain','Compute and visualize tephra with')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(12).should('contain','wind speed')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(13).should('contain','wind direction')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(14).should('contain','column height')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(15).should('contain','Compute and visualize tephra with')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(16).should('contain','wind speed')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(17).should('contain','wind direction')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(18).should('contain','column height')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(19).should('contain','ejected volume')
+
+            blocksTab.getTag('Logic').click();
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 5)
+
+            blocksTab.getTag('Loops').click();
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 5)
+
+            blocksTab.getTag('Data').click();
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
+
+            blocksTab.getTag('Variables').click();
+            blocksTab.getFlyout().find(blocksTab.getFlyoutButtonEl()).should('have.length', 1).and('contain','Create variable...')
+
+            blocksTab.getTag('Functions').click();
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 3)
         })
         it('verify selecting Wind shows correct toolboxes in Blocks',()=>{
             // Volcano, Loops, Data, Variables. Volcano only has Create town and Wind block
+            modelOptions.selectCodeToolbox('Wind');
+            blocksTab.getTag('Volcano').should('be.visible');
+            blocksTab.getTag('Data').should('be.visible');
+            blocksTab.getTag('Logic').should('not.be.visible');
+            blocksTab.getTag('Loops').should('be.visible');
+            blocksTab.getTag('Variables').should('be.visible');
+            blocksTab.getTag('Functions').should('not.be.visible');
+
+            blocksTab.getTag('Volcano').click();
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length',7)
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(0).should('contain','Create a town named')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(4).should('contain','Compute and visualize tephra with')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(5).should('contain','wind speed')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(6).should('contain','wind direction')
+
+            blocksTab.getTag('Loops').click();
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 5)
+
+            blocksTab.getTag('Data').click();
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
+
+            blocksTab.getTag('Variables').click();
+            blocksTab.getFlyout().find(blocksTab.getFlyoutButtonEl()).should('have.length', 1).and('contain','Create variable...')
         })
         it('verify selecting Wind and VEI shows correct toolboxes in Blocks',()=>{
             // Volcano, Loops, Data, Variables. Volcano only has Create town and Wind + VEI block
+            blocksTab.getTag('Volcano').should('be.visible');
+            blocksTab.getTag('Data').should('be.visible');
+            blocksTab.getTag('Logic').should('not.be.visible');
+            blocksTab.getTag('Loops').should('be.visible');
+            blocksTab.getTag('Variables').should('be.visible');
+            blocksTab.getTag('Functions').should('not.be.visible');
+
+            blocksTab.getTag('Volcano').click();
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length',8)
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(0).should('contain','Create a town named')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(4).should('contain','Compute and visualize tephra with')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(5).should('contain','wind speed')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(6).should('contain','wind direction')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(7).should('contain','VEI')
+
+            blocksTab.getTag('Loops').click();
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 5)
+
+            blocksTab.getTag('Data').click();
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
+
+            blocksTab.getTag('Variables').click();
+            blocksTab.getFlyout().find(blocksTab.getFlyoutButtonEl()).should('have.length', 1).and('contain','Create variable...')
+
         })
         it('verify selecting Wind and height shows correct toolboxes in Blocks',()=>{
             // Volcano, Loops, Data, Variables. Volcano only has Create town and Wind + column block            
+            blocksTab.getTag('Volcano').should('be.visible');
+            blocksTab.getTag('Data').should('be.visible');
+            blocksTab.getTag('Logic').should('not.be.visible');
+            blocksTab.getTag('Loops').should('be.visible');
+            blocksTab.getTag('Variables').should('be.visible');
+            blocksTab.getTag('Functions').should('not.be.visible');
+
+            blocksTab.getTag('Volcano').click();
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length',8)
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(0).should('contain','Create a town named')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(4).should('contain','Compute and visualize tephra with')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(5).should('contain','wind speed')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(6).should('contain','wind direction')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(7).should('contain','column height')
+
+            blocksTab.getTag('Loops').click();
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 5)
+
+            blocksTab.getTag('Data').click();
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
+
+            blocksTab.getTag('Variables').click();
+            blocksTab.getFlyout().find(blocksTab.getFlyoutButtonEl()).should('have.length', 1).and('contain','Create variable...')
         })
         it('verify selecting Wind + 2 shows correct toolboxes in Blocks',()=>{
             // Volcano, Loops, Data, Variables. Volcano only has Create town and Wind + height + ejected volumn block            
+            blocksTab.getTag('Volcano').should('be.visible');
+            blocksTab.getTag('Data').should('be.visible');
+            blocksTab.getTag('Logic').should('not.be.visible');
+            blocksTab.getTag('Loops').should('be.visible');
+            blocksTab.getTag('Variables').should('be.visible');
+            blocksTab.getTag('Functions').should('not.be.visible');
+
+            blocksTab.getTag('Volcano').click();
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length',9)
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(0).should('contain','Create a town named')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(4).should('contain','Compute and visualize tephra with')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(5).should('contain','wind speed')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(6).should('contain','wind direction')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(7).should('contain','column height')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(8).should('contain','ejected volume')
+
+            blocksTab.getTag('Loops').click();
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 5)
+
+            blocksTab.getTag('Data').click();
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
+
+            blocksTab.getTag('Variables').click();
+            blocksTab.getFlyout().find(blocksTab.getFlyoutButtonEl()).should('have.length', 1).and('contain','Create variable...')
         })
     })
-    describe('Initial Code authoring shows the correct blocks',()=>{
+    // describe('Initial Code authoring shows the correct blocks',()=>{
 
-    })
+    // })
     describe('Left tabs options',()=>{
         it('verify Show blocks unchecked does not show Blocks tab',()=>{
+            modelOptions.getModelOptionsMenu().click();
 
         })
         it('verify Show code unchecked does not show Code tab',()=>{
