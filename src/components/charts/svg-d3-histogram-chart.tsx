@@ -87,7 +87,7 @@ export const SvgD3HistogramChart = (props: IProps) => {
           .attr("cx", d => (xScale(binIndex) * 10 + dotRadius) )
           .attr("cy", d => (yScale(d) - 5) )
           .attr("r", dotRadius)
-          .style("fill", "#448878");
+          .style("fill", "#797979");
     });
   } else {
     svg.selectAll("rect")
@@ -98,7 +98,7 @@ export const SvgD3HistogramChart = (props: IProps) => {
       .attr("transform", d => "translate(" + xScale(d.x0 as number) + "," + (yScale(d.length)) + ")")
       .attr("width", d => (Math.max(0, xScale(d.x1 as number) - xScale(d.x0 as number) - 1)))
       .attr("height", d => (chartHeight - yScale(d.length)))
-      .style("fill", "#448878");
+      .style("fill", "#797979");
   }
 
   return div.toReact();

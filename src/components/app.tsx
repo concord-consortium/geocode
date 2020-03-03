@@ -389,6 +389,9 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                   <HistogramPanel
                     width={ mapWidth }
                     height={ (height - 90) * .35 }
+                    percentComplete={ this.stores.chartsStore.charts.find(chart => chart.type === "histogram")
+                                      ? 100
+                                      : 0 }
                   />
                 </Simulation>
               </TabPanel>
