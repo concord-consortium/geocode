@@ -116,7 +116,9 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
             <PanelStat>{`Threshold = ${threshold} mm`}</PanelStat>
             <PanelStat>{`Count below threshold: ${below} (${belowPercent}%)`}</PanelStat>
             <PanelStat>{`Count above threshold: ${above} (${abovePercent}%)`}</PanelStat>
-            <PanelStat>{`Risk: ${data ? this.calculateRisk(abovePercent) : "---"}`}</PanelStat>
+            <PanelStat>
+              {`Risk: ${data && percentComplete === 100 ? this.calculateRisk(abovePercent) : "---"}`}
+            </PanelStat>
             { histogramChart
               ? <button onClick={this.changeDisplayType}>Toggle display</button>
               : <button onClick={this.addHistogram}>Add data</button>
