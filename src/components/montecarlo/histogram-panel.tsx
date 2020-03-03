@@ -61,7 +61,7 @@ interface IState {
 interface IProps extends IBaseProps {
   height: number;
   width: number;
-  percentComplete: number;
+  percentComplete?: number;
 }
 
 @inject("stores")
@@ -103,21 +103,25 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
               />
           }
           <VerticalContainer>
-            <PanelStat>
-              <PanelPercent>
-                <PercentBack/>
-                { percentComplete > 0
-                  ? <PercentFront percent={percentComplete}/>
-                  : null
-                }
-              </PanelPercent>
-              {`${percentComplete}% complete`}
-            </PanelStat>
+            { percentComplete !== undefined &&
+              <PanelStat>
+                <PanelPercent>
+                  <PercentBack/>
+                  { percentComplete > 0
+                    ? <PercentFront percent={percentComplete}/>
+                    : null
+                  }
+                </PanelPercent>
+                {`${percentComplete}% complete`}
+              </PanelStat>
+            }
             <PanelStat>{`Threshold = ${threshold} mm`}</PanelStat>
             <PanelStat>{`Count below threshold: ${below} (${belowPercent}%)`}</PanelStat>
             <PanelStat>{`Count above threshold: ${above} (${abovePercent}%)`}</PanelStat>
             <PanelStat>
-              {`Risk: ${data && percentComplete === 100 ? this.calculateRisk(abovePercent) : "---"}`}
+              {`Risk: ${data && (!percentComplete || percentComplete === 100)
+                        ? this.calculateRisk(abovePercent)
+                        : "---"}`}
             </PanelStat>
             { histogramChart
               ? <button onClick={this.changeDisplayType}>Toggle display</button>
