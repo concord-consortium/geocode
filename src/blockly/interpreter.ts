@@ -9,7 +9,7 @@ const Interpreter = require("js-interpreter");
 const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore,
                              workspace: IBlocklyWorkspace) => {
 
-  const { simulation, chartsStore } = store;
+  const { simulation, chartsStore, samplesCollectionsStore } = store;
 
   return (interpreter: any, scope: any) => {
     const addVar = (name: string, value: any) => {
@@ -128,6 +128,16 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
 
     addFunc("graphArbitraryPlot", (params: {dataset: Dataset, xAxis: string, yAxis: string}) => {
       chartsStore.addArbitraryChart(params.dataset, params.xAxis, params.yAxis);
+    });
+
+    /** ==== Sample Collections ==== */
+
+    addFunc("createSampleCollection", (params: {name: string, x: number, y: number}) => {
+      samplesCollectionsStore.createSamplesCollection(params);
+    });
+
+    addFunc("addToSampleCollection", (params: {name: string, sample: number}) => {
+      samplesCollectionsStore.addToSamplesCollection(params.name, 0);
     });
 
     /** ==== Utility methods ==== */

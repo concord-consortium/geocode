@@ -2,11 +2,13 @@
 import { simulation, SimulationModelType } from "./simulation-store";
 import { uiStore, UIModelType } from "./ui-store";
 import { chartsStore, ChartsModelType } from "./charts-store";
+import { samplesCollectionsStore, SamplesCollectionsModelType } from "./samples-collections-store";
 
 export interface IStore {
   simulation: SimulationModelType;
   uiStore: UIModelType;
   chartsStore: ChartsModelType;
+  samplesCollectionsStore: SamplesCollectionsModelType;
 }
 
 export interface IStoreish {simulation: any; uiStore: any; }
@@ -17,6 +19,7 @@ export const stores: IStore = {
   simulation,
   uiStore,
   chartsStore,
+  samplesCollectionsStore,
 };
 
 // this tuple syntx allows us to declare an array of strings and a type based on
