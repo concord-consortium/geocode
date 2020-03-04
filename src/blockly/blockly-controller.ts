@@ -31,6 +31,7 @@ export class BlocklyController {
     this.interpreterController = makeInterpreterController(code, this, this.stores, workspace);
 
     this.stores.simulation.setBlocklyCode(code, workspace);
+    this.parseVariables();
   }
 
   public run = () => {
@@ -108,5 +109,29 @@ export class BlocklyController {
   // called by interpreted block code
   public endStep = () => {
     this.steppingThroughBlock = false;
+  }
+
+  /**
+   * This manually parses code to find fields that the user has named, for use
+   * in pull-down menus or similar. This is essentially doing what Blockly's
+   * variables system does, without the hassle of dealing with Blockly's custom
+   * variable syntax and dynamic creation of blocks to deal with them.
+   *
+   * Currently the only thing we parse for is the "create_sample_collection" block,
+   * so that we can populate the "add_to_samples_collection" dropdowns.
+   *
+   * Note that this process doesn't actually create a samplesCollection, that happens
+   * when the code is actually run.
+   */
+  private parseVariables() {
+    const sampleCollectionsRegex = /createSampleCollection\({name: "([^"]*)"/gm;
+    const sampleCollections = [];
+    let match;
+    // tslint:disable-next-line
+    while ((match = sampleCollectionsRegex.exec(this.code)) !== null) {
+      const collectionName = match[1];
+      if (collectionName) sampleCollections.push([collectionName, collectionName]);   // dropdowns need two strings
+    }
+    (Blockly as any).sampleCollections = sampleCollections;
   }
 }

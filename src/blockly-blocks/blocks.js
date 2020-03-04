@@ -24,3 +24,4 @@ import "../blockly-blocks/block-simulate-wind-2";
 import "../blockly-blocks/block-wind-data";
 import "../blockly-blocks/block-graph-data";
 import "../blockly-blocks/block-range";
+import "./block-create-add-to-sample-collection";
