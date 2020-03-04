@@ -9,10 +9,11 @@ interface IProps {
   width: number;
   height: number;
   showBars: boolean;
+  threshold: number;
 }
 
 export const SvgD3HistogramChart = (props: IProps) => {
-  const { width, height, chart, showBars, chartMin, chartMax } = props;
+  const { width, height, chart, showBars, chartMin, chartMax, threshold } = props;
   const { data, xAxisLabel, yAxisLabel } = chart;
 
   const margin = {top: 15, right: 20, bottom: 35, left: 50};
@@ -100,6 +101,23 @@ export const SvgD3HistogramChart = (props: IProps) => {
       .attr("height", d => (chartHeight - yScale(d.length)))
       .style("fill", "#797979");
   }
+
+  const thresholdX = threshold / (chartMax - chartMin) * chartWidth;
+  svg.append("line")
+    .attr("x1", thresholdX)
+    .attr("y1", 0)
+    .attr("x2", thresholdX)
+    .attr("y2", chartHeight)
+    .attr("stroke", "#4AA9FF")
+    .attr("stroke-width", 3);
+  svg.append("text")
+    .attr("x", thresholdX)
+    .attr("y", -3)
+    .attr("text-anchor", "middle")
+    .style("font-size", "0.8em")
+    .style("font-weight", "bold")
+    .style("fill", "#4AA9FF")
+    .text(threshold.toString());
 
   return div.toReact();
 };
