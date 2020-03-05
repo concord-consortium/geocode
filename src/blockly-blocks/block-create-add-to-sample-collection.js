@@ -56,7 +56,9 @@ Blockly.Blocks['add_to_sample_collection'] = {
   }
 }
 Blockly.JavaScript['add_to_sample_collection'] = function (block) {
-  var tephra_sample = Blockly.JavaScript.valueToCode(block, 'tephra sample', Blockly.JavaScript.ORDER_ATOMIC) || null
+  // if tephra_sample is null, this ought to throw an error and alert the user,
+  // but we don't yet have a mechanism for that.
+  var tephra_sample = Blockly.JavaScript.valueToCode(block, 'tephra sample', Blockly.JavaScript.ORDER_ATOMIC) || 0
   var collection = block.getFieldValue('collections')
 
   var code = `addToSampleCollection({name: "${collection}", sample: ${tephra_sample}});\n`

@@ -93,7 +93,9 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
 
       const samplesCollection = samplesCollectionsStore.samplesCollection(collection);
       if (!samplesCollection) {
-        return;
+        return {
+          data: 0       // ought to stop and throw an error to the user
+        };
       }
 
       const VEI = vei || 1;
@@ -165,7 +167,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     });
 
     addFunc("addToSampleCollection", (params: {name: string, sample: number}) => {
-      samplesCollectionsStore.addToSamplesCollection(params.name, 0);
+      samplesCollectionsStore.addToSamplesCollection(params.name, params.sample);
     });
 
     /** ==== Utility methods ==== */
