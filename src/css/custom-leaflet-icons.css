@@ -11,7 +11,38 @@
     color: #666;
     z-index: 500 !important;
   }
-  
+
+  .diamond-container {
+    width: 40px !important;
+    height: 40px !important;
+    margin-top: -20px !important;
+    margin-left: -20px !important;
+    z-index: 500 !important;
+  }
+
+  .diamond-icon {
+    opacity: .75;
+    background: #C4C4C4;
+    width: 40px !important;
+    height: 40px !important;
+    transform: rotate(45deg);
+    text-align: center;
+    border: solid 2px #979797;
+    border-radius: 4px;
+  }
+  .diamond-icon.selected {
+    border: 4px solid #3578F4;
+  }
+  .diamond-text {
+    width: 40px !important;
+    height: 40px !important;
+    transform: rotate(-45deg);
+    font-size: 38px;
+    font-weight: bold;
+    color: white;
+    line-height: 38px;
+  }
+
   .div-icon {
     height: 0px;
   }

@@ -4,7 +4,7 @@ import * as L from "leaflet";
 import { Map as LeafletMap, TileLayer, Marker, Popup, ScaleControl, Pane } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "../../css/map-component.css";
-import { iconVolcano, iconMarker, getCachedDivIcon } from "../icons";
+import { iconVolcano, iconMarker, getCachedDivIcon, riskIcon } from "../icons";
 
 import { CityType  } from "../../stores/simulation-store";
 import * as Scenarios from "../../assets/maps/scenarios.json";
@@ -20,7 +20,9 @@ import { RightSectionTypes } from "../tabs";
 import KeyButton from "./map-key-button";
 import CompassComponent from "./map-compass";
 import TephraLegendComponent from "./map-tephra-legend";
-import { number } from "mobx-state-tree/dist/internal";
+import RiskLegendComponent from "./map-risk-legend";
+import { kTephraThreshold, ThresholdData, RiskLevel,
+         calculateThresholdData, calculateRisk } from "../montecarlo/monte-carlo";
 
 interface WorkspaceProps {
   width: number;
@@ -192,6 +194,9 @@ export class MapComponent extends BaseComponent<IProps, IState>{
         }
       })
     : null;
+
+    const riskItems = this.getRiskItems();
+
     const { crossPoint1Lat, crossPoint1Lng, crossPoint2Lat, crossPoint2Lng } = this.stores.simulation;
     const volcanoPos = L.latLng(volcanoLat, volcanoLng);
     const corner1 = L.latLng(topLeftLat, topLeftLng);
@@ -260,6 +265,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
             </Marker>
             {cityItems}
             {pinItems}
+            {panelType === RightSectionTypes.MONTE_CARLO && riskItems}
             { isSelectingCrossSection && <CrossSectionDrawLayer
               ref={this.crossRef}
               map={this.state.mapLeafletRef}
@@ -283,7 +289,9 @@ export class MapComponent extends BaseComponent<IProps, IState>{
         />
         { this.state.showKey
           ? <KeyButton onClick={this.onKeyClick}/>
-          : <TephraLegendComponent onClick={this.onTephraClick}/>
+          : panelType === RightSectionTypes.MONTE_CARLO
+            ? <RiskLegendComponent onClick={this.onKeyButtonClick}/>
+            : <TephraLegendComponent onClick={this.onKeyButtonClick}/>
         }
         <CompassComponent/>
       </CanvDiv>
@@ -293,7 +301,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
   private onKeyClick = () => {
     this.setState({showKey: false});
   }
-  private onTephraClick = () => {
+  private onKeyButtonClick = () => {
     this.setState({showKey: true});
   }
 
@@ -317,5 +325,24 @@ export class MapComponent extends BaseComponent<IProps, IState>{
         this.stores.simulation.setViewportParameters(zoom, center.lat, center.lng);
       }
     }
+  }
+
+  private getRiskItems = () => {
+    // TODO: this code adds a risk map item for every sample collection with threshold kTephraThreshold
+    // need to specify correct samples to add risk item and correct threshold
+    const { samplesCollectionsStore } = this.stores;
+    const riskItems: any[] = [];
+    samplesCollectionsStore.samplesCollections.forEach( (samplesCollection: any, i) => {
+      const thresholdData: ThresholdData = calculateThresholdData(samplesCollection.samples, kTephraThreshold);
+      const riskLevel = calculateRisk(thresholdData.greaterThanPercent);
+      riskLevel && riskItems.push(
+        <Marker
+          position={[samplesCollection.x, samplesCollection.y]}
+          icon={riskIcon(riskLevel.iconColor, riskLevel.iconText, true)}
+          key={"risk-" + i}
+        />
+      );
+    });
+    return riskItems;
   }
 }

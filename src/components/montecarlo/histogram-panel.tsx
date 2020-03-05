@@ -5,11 +5,8 @@ import { BaseComponent, IBaseProps } from "../base";
 import { HorizontalContainer, VerticalContainer } from "../styled-containers";
 import { SvgD3HistogramChart } from "../charts/svg-d3-histogram-chart";
 import { ChartType } from "../../stores/charts-store";
-
-// TODO threshold and histogram min/max will need to be set elsewhere
-const kTephraThreshold = 201;
-const kTephraMin = 0;
-const kTephraMax = 400;
+import { kTephraThreshold, kTephraMin, kTephraMax, ThresholdData,
+         calculateThresholdData, calculateRisk } from "./monte-carlo";
 
 interface PanelProps {
   height: number;
@@ -79,24 +76,15 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
   public render() {
     const {width, height, percentComplete} = this.props;
     const histogramChart = this.stores.chartsStore.charts.find(chart => chart.type === "histogram");
-
     const data = histogramChart && histogramChart.data;
     const threshold = kTephraThreshold;
-    let above = 0;
-    data && data.forEach((d: number) => {
-      if (d > threshold) {
-        above++;
-      }
-    });
-    const below = data ? data.length - above : 0;
-    const abovePercent = data ? Math.round(above / data.length * 100) : 0;
-    const belowPercent = data ? 100 - abovePercent : 0;
-
+    const thresholdData: ThresholdData = calculateThresholdData(data, threshold);
+    const riskLevel = calculateRisk(thresholdData.greaterThanPercent);
     return (
       <Panel height={height} width={width}>
         <HorizontalContainer>
           { histogramChart
-            ? this.renderHistogram(histogramChart)
+            ? this.renderHistogram(histogramChart, threshold)
             : <PanelHistogramDiv
                 width={width - 200}
                 height={height - 10}
@@ -116,11 +104,15 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
               </PanelStat>
             }
             <PanelStat>{`Threshold = ${threshold} mm`}</PanelStat>
-            <PanelStat>{`Count below threshold: ${below} (${belowPercent}%)`}</PanelStat>
-            <PanelStat>{`Count above threshold: ${above} (${abovePercent}%)`}</PanelStat>
             <PanelStat>
-              {`Risk: ${data && (!percentComplete || percentComplete === 100)
-                        ? this.calculateRisk(abovePercent)
+              {`Count below threshold: ${thresholdData.lessThanEqual} (${thresholdData.lessThanEqualPercent}%)`}
+            </PanelStat>
+            <PanelStat>
+              {`Count above threshold: ${thresholdData.greaterThan} (${thresholdData.greaterThanPercent}%)`}
+            </PanelStat>
+            <PanelStat>
+              {`Risk: ${data && riskLevel && (!percentComplete || percentComplete === 100)
+                        ? riskLevel.level
                         : "---"}`}
             </PanelStat>
             { histogramChart
@@ -133,9 +125,8 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
     );
   }
 
-  private renderHistogram = (chart: ChartType) => {
+  private renderHistogram = (chart: ChartType, threshold: number) => {
     const { width, height } = this.props;
-    const threshold = kTephraThreshold;
     return (
       <SvgD3HistogramChart
         width={width - 200}
@@ -147,16 +138,6 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
         threshold={threshold}
       />
     );
-  }
-
-  private calculateRisk = (percent: number) => {
-    if (percent > 80) {
-      return "High";
-    } else if (percent > 31) {
-      return "Medium";
-    } else {
-      return "Low";
-    }
   }
 
   // TODO: for testing only, remove once we decide on plot style
@@ -171,8 +152,11 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
       const numPoints = 300;
       const title = "Chart " + (this.stores.chartsStore.charts.length + 1);
       const data: number[] = [];
+      const shift = Math.random();
       for (let i = 0; i < numPoints; i++) {
-        data.push(Math.floor(this.randomG(3) * (kTephraMax + 1)));
+        let r = this.randomG(3) + shift;
+        if (r > 1) r = r - 1;
+        data.push(Math.floor(r * (kTephraMax + 1)));
       }
       const xAxisLabel = "Tephra Thickness (mm)";
       const yAxisLabel = "Number of Runs";
