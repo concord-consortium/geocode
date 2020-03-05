@@ -59,6 +59,16 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       simulation.setWindSpeed(speed);
     });
 
+    addFunc("setWindspeedAndDirection", (windSample?: any) => {
+      if (windSample) {
+        simulation.setWindSpeed(windSample.speed);
+        simulation.setWindDirection(windSample.direction);
+      } else {
+        simulation.setWindSpeed(0);
+        simulation.setWindDirection(0);
+      }
+    });
+
     addFunc("setMass", (mass: number) => {
       simulation.setMass(mass);
     });
@@ -139,6 +149,12 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     addFunc("sampleDataset", (params: {dataset: Dataset, sampleSize: number}) => {
       return {
         data: Datasets.getRandomSampleWithReplacement(params.dataset, params.sampleSize)
+      };
+    });
+
+    addFunc("getSingleSample", (params: Dataset) => {
+      return {
+        data: Datasets.getRandomSampleWithReplacement(params, 1)[0]
       };
     });
 
