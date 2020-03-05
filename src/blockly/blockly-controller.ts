@@ -43,12 +43,14 @@ export class BlocklyController {
       this.running = true;
     }
     this.stores.chartsStore.reset();
+    this.stores.samplesCollectionsStore.reset();
   }
 
   public reset = () => {
     this.setCode(this.code, this.workspace);
     this.stores.simulation.reset();
     this.stores.chartsStore.reset();
+    this.stores.samplesCollectionsStore.reset();
   }
 
   public stop = () => {

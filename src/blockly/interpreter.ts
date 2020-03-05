@@ -160,6 +160,15 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       chartsStore.addArbitraryChart(params.dataset, params.xAxis, params.yAxis);
     });
 
+    addFunc("graphExceedance", (params: {location: string, threshold: number}) => {
+      const { location, threshold } = params;
+      const samplesCollection = samplesCollectionsStore.samplesCollection(location);
+      if (!samplesCollection) {
+        return;
+      }
+      chartsStore.addHistogram(samplesCollection, threshold, `Tephra Thickness at ${samplesCollection.name} (mm)`);
+    });
+
     /** ==== Sample Collections ==== */
 
     addFunc("createSampleCollection", (params: {name: string, x: number, y: number}) => {
