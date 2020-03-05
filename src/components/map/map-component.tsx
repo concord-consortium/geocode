@@ -331,13 +331,17 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     // TODO: this code adds a risk map item for every sample collection with threshold kTephraThreshold
     // need to specify correct samples to add risk item and correct threshold
     const { samplesCollectionsStore } = this.stores;
+    const { volcanoLat, volcanoLng } = this.stores.simulation;
     const riskItems: any[] = [];
     samplesCollectionsStore.samplesCollections.forEach( (samplesCollection: any, i) => {
       const thresholdData: ThresholdData = calculateThresholdData(samplesCollection.samples, kTephraThreshold);
       const riskLevel = calculateRisk(thresholdData.greaterThanPercent);
+      const x = samplesCollection.x;
+      const y = samplesCollection.y;
+      const riskPos = LocalToLatLng({x, y}, L.latLng(volcanoLat, volcanoLng));
       riskLevel && riskItems.push(
         <Marker
-          position={[samplesCollection.x, samplesCollection.y]}
+          position={[riskPos.lat, riskPos.lng]}
           icon={riskIcon(riskLevel.iconColor, riskLevel.iconText, true)}
           key={"risk-" + i}
         />
