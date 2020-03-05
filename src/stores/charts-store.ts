@@ -1,6 +1,7 @@
 import { types } from "mobx-state-tree";
 import * as d3 from "d3";
 import { Dataset, WindData } from "./data-sets";
+import { SamplesCollectionModelType } from "./samples-collections-store";
 
 export const ChartType = types.enumeration("type", ["scatter", "radial", "histogram"]);
 export type ChartTypeType = typeof ChartType.Type;
@@ -66,9 +67,11 @@ const ChartsStore = types.model("Charts", {
   charts: types.array(Chart)
 })
 .actions((self) => ({
-  addChart(chart: {type: ChartTypeType, chartStyle?: ChartStyleType, data: ChartData, customExtents?: number[][],
+  addChart(chartProps: {type: ChartTypeType, chartStyle?: ChartStyleType, data: ChartData, customExtents?: number[][],
           title?: string, xAxisLabel?: string, yAxisLabel?: string, dateLabelFormat?: string}) {
-    self.charts.push(Chart.create(chart));
+    const chart = Chart.create(chartProps);
+    self.charts.push(chart);
+    return chart;     // returns in case anyone wants to use the new chart
   },
 
   reset() {
@@ -137,6 +140,26 @@ const ChartsStore = types.model("Charts", {
     const yAxisLabel = WindData.axisLabel[yAxis] ?  WindData.axisLabel[yAxis] : capFirst(yAxis);
     self.addChart({type, data, customExtents, title, xAxisLabel, yAxisLabel, chartStyle, dateLabelFormat});
   },
+
+  /**
+   * Adds new histogram for a tephra samplesCollection, or updates an existing one.
+   */
+  addHistogram(samplesCollection: SamplesCollectionModelType, threshold: number, xAxisLabel: string) {
+    if (!samplesCollection) return;
+
+    const title = samplesCollection.name;
+    let chart = self.charts.find(c => c.title === title);
+    if (!chart) {
+      chart = self.addChart({
+        type: "histogram",
+        data: [],
+        title,
+        xAxisLabel,
+        yAxisLabel: "Number of Runs"
+      });
+    }
+    chart.data = samplesCollection.samples.toJS() as any;
+}
 }));
 
 export type ChartType = typeof Chart.Type;

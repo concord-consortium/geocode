@@ -42,5 +42,6 @@ const SamplesCollectionsStore = types.model("SamplesCollections", {
   },
 }));
 
+export type SamplesCollectionModelType = typeof SamplesCollection.Type;
 export type SamplesCollectionsModelType = typeof SamplesCollectionsStore.Type;
 export const samplesCollectionsStore = SamplesCollectionsStore.create({});
