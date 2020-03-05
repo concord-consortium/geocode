@@ -1,6 +1,7 @@
 import { types, getSnapshot } from "mobx-state-tree";
 import { kVEIIndexInfo } from "../utilities/vei";
 import { SimulationAuthorSettings, SimulationAuthorSettingsProps } from "./stores";
+import gridTephraCalc from "../tephra2";
 
 let _cityCounter = 0;
 const genCityId = () => `city_${_cityCounter++}`;
@@ -214,10 +215,16 @@ export const SimulationStore = types
     },
   }))
   .actions((self) => ({
+    /**
+     * The whole erupt-paintMap cycle is odd "erupt" simply means shift all the values
+     * from "stagingX" to "X". "paintMap" simply means setting "hasErupted" to true. The
+     *  map layer itself then listens to the "hasErupted" value, and calculates all the
+     *  data and paints itself.
+     *
+     * This seems fairly confusing. Erupt should calculate all the data. The map layer
+     *  should just read the data.
+     */
     erupt() {
-      // This currently exists within erupt, but will probably move
-      // to another block (like the paint by...)once there is some other
-      // feedback for eruption
       self.windSpeed = self.stagingWindSpeed;
       self.windDirection = self.stagingWindDirection;
       self.colHeight = self.stagingColHeight;
@@ -229,6 +236,28 @@ export const SimulationStore = types
         // self.paintGrid("thickness", "#ff0000");
         self.paintMap();
       }
+    },
+
+    /**
+     * Performs the tephra calculation for a specific location away from the volcano
+     * @param dx x-distance from volcano
+     * @param dy y-distance from volcano
+     */
+    calculateTephraAtLocation(dx: number, dy: number) {
+      self.windSpeed = self.stagingWindSpeed;
+      self.windDirection = self.stagingWindDirection;
+      self.colHeight = self.stagingColHeight;
+      self.mass = self.stagingMass;
+
+      const thicknessCm = gridTephraCalc(
+        dx, dy, 0, 0,
+        self.stagingWindSpeed,
+        self.stagingWindDirection,
+        self.stagingColHeight,
+        self.stagingMass
+      );
+
+      return thicknessCm * 10;      // cm => mm
     }
   }))
   .actions((self) => {
