@@ -1,4 +1,4 @@
-import { IModelParams, SimOutput, SimulationVariable } from "../stores/simulation-store";
+import { IModelParams, SimOutput, SimulationVariable, SimulationStore } from "../stores/simulation-store";
 import { BlocklyController } from "./blockly-controller";
 import { SimulationModelType } from "../stores/simulation-store";
 import { IBlocklyWorkspace } from "../interfaces";
@@ -9,7 +9,7 @@ const Interpreter = require("js-interpreter");
 const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore,
                              workspace: IBlocklyWorkspace) => {
 
-  const { simulation, chartsStore } = store;
+  const { simulation, chartsStore, samplesCollectionsStore } = store;
 
   return (interpreter: any, scope: any) => {
     const addVar = (name: string, value: any) => {
@@ -87,6 +87,36 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       simulation.erupt();
     });
 
+    // Returns tephra thickness at a specific location, given by a samples collection, with various inputs
+    addFunc("computeTephra", (params: {collection: string, windSamples?: Dataset, vei?: number}) => {
+      const { collection, windSamples, vei } = params;
+
+      const samplesCollection = samplesCollectionsStore.samplesCollection(collection);
+      if (!samplesCollection) {
+        return {
+          data: 0       // ought to stop and throw an error to the user
+        };
+      }
+
+      const VEI = vei || 1;
+      let windSpeed = 0;
+      let windDirection = 0;
+      if (windSamples && windSamples.length > 0) {
+        const windSample = Datasets.getRandomSampleWithReplacement(windSamples, 1)[0];
+        windSpeed = windSample.speed;
+        windDirection = windSample.direction;
+      }
+      simulation.setWindSpeed(windSpeed);
+      simulation.setWindDirection(windDirection);
+      simulation.setVEI(VEI);
+
+      const thickness = simulation.calculateTephraAtLocation(samplesCollection.x, samplesCollection.y);
+
+      return {
+        data: thickness
+      };
+    });
+
     /** ==== Draw on tephra map ==== */
 
     addFunc("paintMap", () => {
@@ -128,6 +158,25 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
 
     addFunc("graphArbitraryPlot", (params: {dataset: Dataset, xAxis: string, yAxis: string}) => {
       chartsStore.addArbitraryChart(params.dataset, params.xAxis, params.yAxis);
+    });
+
+    addFunc("graphExceedance", (params: {location: string, threshold: number}) => {
+      const { location, threshold } = params;
+      const samplesCollection = samplesCollectionsStore.samplesCollection(location);
+      if (!samplesCollection) {
+        return;
+      }
+      chartsStore.addHistogram(samplesCollection, threshold, `Tephra Thickness at ${samplesCollection.name} (mm)`);
+    });
+
+    /** ==== Sample Collections ==== */
+
+    addFunc("createSampleCollection", (params: {name: string, x: number, y: number}) => {
+      samplesCollectionsStore.createSamplesCollection(params);
+    });
+
+    addFunc("addToSampleCollection", (params: {name: string, sample: number}) => {
+      samplesCollectionsStore.addToSamplesCollection(params.name, params.sample);
     });
 
     /** ==== Utility methods ==== */

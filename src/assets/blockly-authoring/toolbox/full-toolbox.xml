@@ -19,6 +19,8 @@
     <block type="simulate_wind_vei"></block>
     <block type="simulate_wind_height"></block>
     <block type="simulate_wind_2"></block>
+
+    <block type="calculate_tephra_vei_wind"></block>
     <!-- <block type="outputPaintMap"></block> -->
     <!-- <block type="outputPlot"></block> -->
     <!-- <block type="redrawMap"></block> -->
@@ -31,6 +33,12 @@
     <block type="all_wind_data"></block>
     <block type="sample_data"></block>
     <block type="filter_data"></block>
+  </category>
+
+  <category name="Samples Collections" colour="240">
+    <block type="create_sample_collection"></block>
+    <block type="add_to_sample_collection"></block>
+    <block type="graph_exceedance"></block>
   </category>
 
   <category name="Logic" colour="%{BKY_LOGIC_HUE}">

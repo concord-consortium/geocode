@@ -71,3 +71,38 @@ Blockly.JavaScript['graph_any_wind_data'] = function (block) {
   var code = `graphArbitraryPlot({dataset: ${value_wind_data}, xAxis: "${value_x_axis}", yAxis: "${value_y_axis}"});\n`
   return code
 }
+
+Blockly.Blocks['graph_exceedance'] = {
+  init: function() {
+    this.appendDummyInput()
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("Graph excedence for");
+    this.appendDummyInput()
+        .appendField("samples from")
+        .appendField(new Blockly.FieldDropdown(this.generateOptions), "locations");
+    this.appendValueInput("threshold")
+        .setCheck(null)
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("exceeding (mm)");
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(230);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  },
+
+  generateOptions: function() {
+    if (Blockly.sampleCollections && Blockly.sampleCollections.length > 0) {
+      return Blockly.sampleCollections;
+    } else {
+      return [["<Create collection>",""]];
+    }
+  }
+}
+Blockly.JavaScript['graph_exceedance'] = function (block) {
+  var location = block.getFieldValue('locations')
+  var threshold = block.getFieldValue('threshold') || 0
+
+  var code = `graphExceedance({location: "${location}", threshold: ${threshold}});\n`
+  return code
+}
