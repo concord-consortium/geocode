@@ -34,7 +34,7 @@ export const SvgD3HistogramChart = (props: IProps) => {
   xScale.range([0, chartWidth]);
 
   // add axes
-  const axisBottom = d3.axisBottom(xScale);
+  const axisBottom = d3.axisBottom(xScale).tickFormat(x => (x === chartMax) ? `${x}+` : `${x}`);
   svg.append("g")
     .attr("transform", "translate(0," + chartHeight + ")")
     .call(axisBottom);
@@ -45,7 +45,8 @@ export const SvgD3HistogramChart = (props: IProps) => {
     .thresholds(xScale.ticks(numBins));
 
   // And apply this function to data to get the bins
-  const bins = histogram(data as number[]);
+  // Add all the cases exceeding the max into the max's bin
+  const bins = histogram((data as number[]).map(d => Math.min(d, xDomain[1] - 1)));
   let max = 0;
   bins.forEach(bin => {
     max = Math.max(max, bin.length);
