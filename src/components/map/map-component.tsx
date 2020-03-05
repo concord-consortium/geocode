@@ -21,8 +21,8 @@ import KeyButton from "./map-key-button";
 import CompassComponent from "./map-compass";
 import TephraLegendComponent from "./map-tephra-legend";
 import RiskLegendComponent from "./map-risk-legend";
-import { kTephraThreshold, ThresholdData, RiskLevel,
-         calculateThresholdData, calculateRisk } from "../montecarlo/monte-carlo";
+import { SamplesCollectionModelType } from "../../stores/samples-collections-store";
+import { kTephraThreshold, ThresholdData, calculateThresholdData, calculateRisk } from "../montecarlo/monte-carlo";
 
 interface WorkspaceProps {
   width: number;
@@ -195,7 +195,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       })
     : null;
 
-    const riskItems = this.getRiskItems();
+    const riskItems = panelType === RightSectionTypes.MONTE_CARLO && this.getRiskItems();
 
     const { crossPoint1Lat, crossPoint1Lng, crossPoint2Lat, crossPoint2Lng } = this.stores.simulation;
     const volcanoPos = L.latLng(volcanoLat, volcanoLng);
@@ -265,7 +265,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
             </Marker>
             {cityItems}
             {pinItems}
-            {panelType === RightSectionTypes.MONTE_CARLO && riskItems}
+            {riskItems}
             { isSelectingCrossSection && <CrossSectionDrawLayer
               ref={this.crossRef}
               map={this.state.mapLeafletRef}
@@ -332,16 +332,14 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     // need to specify correct samples to add risk item and correct threshold
     const { samplesCollectionsStore } = this.stores;
     const { volcanoLat, volcanoLng } = this.stores.simulation;
-    const riskItems: any[] = [];
-    samplesCollectionsStore.samplesCollections.forEach( (samplesCollection: any, i) => {
+    const riskItems: React.ReactElement[] = [];
+    samplesCollectionsStore.samplesCollections.forEach( (samplesCollection: SamplesCollectionModelType, i) => {
       const thresholdData: ThresholdData = calculateThresholdData(samplesCollection.samples, kTephraThreshold);
       const riskLevel = calculateRisk(thresholdData.greaterThanPercent);
-      const x = samplesCollection.x;
-      const y = samplesCollection.y;
-      const riskPos = LocalToLatLng({x, y}, L.latLng(volcanoLat, volcanoLng));
+      const pos = LocalToLatLng({x: samplesCollection.x, y: samplesCollection.y}, L.latLng(volcanoLat, volcanoLng));
       riskLevel && riskItems.push(
         <Marker
-          position={[riskPos.lat, riskPos.lng]}
+          position={[pos.lat, pos.lng]}
           icon={riskIcon(riskLevel.iconColor, riskLevel.iconText, true)}
           key={"risk-" + i}
         />
