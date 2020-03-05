@@ -85,7 +85,7 @@ export const SvgD3HistogramChart = (props: IProps) => {
         .data(binMap)
         .enter()
         .append("circle")
-          .attr("cx", d => (xScale(binIndex) * 10 + dotRadius) )
+          .attr("cx", d => (xScale(binIndex) * (chartMax / numBins) + dotRadius) )
           .attr("cy", d => (yScale(d) - 5) )
           .attr("r", dotRadius)
           .style("fill", "#797979");
