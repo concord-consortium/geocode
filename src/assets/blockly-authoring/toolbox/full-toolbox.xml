@@ -19,6 +19,8 @@
     <block type="simulate_wind_vei"></block>
     <block type="simulate_wind_height"></block>
     <block type="simulate_wind_2"></block>
+
+    <block type="calculate_tephra_vei_wind"></block>
     <!-- <block type="outputPaintMap"></block> -->
     <!-- <block type="outputPlot"></block> -->
     <!-- <block type="redrawMap"></block> -->

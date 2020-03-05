@@ -1,4 +1,4 @@
-import { IModelParams, SimOutput, SimulationVariable } from "../stores/simulation-store";
+import { IModelParams, SimOutput, SimulationVariable, SimulationStore } from "../stores/simulation-store";
 import { BlocklyController } from "./blockly-controller";
 import { SimulationModelType } from "../stores/simulation-store";
 import { IBlocklyWorkspace } from "../interfaces";
@@ -85,6 +85,34 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
 
     addFunc("erupt", () => {
       simulation.erupt();
+    });
+
+    // Returns tephra thickness at a specific location, given by a samples collection, with various inputs
+    addFunc("computeTephra", (params: {collection: string, windSamples?: Dataset, vei?: number}) => {
+      const { collection, windSamples, vei } = params;
+
+      const samplesCollection = samplesCollectionsStore.samplesCollection(collection);
+      if (!samplesCollection) {
+        return;
+      }
+
+      const VEI = vei || 1;
+      let windSpeed = 0;
+      let windDirection = 0;
+      if (windSamples && windSamples.length > 0) {
+        const windSample = Datasets.getRandomSampleWithReplacement(windSamples, 1)[0];
+        windSpeed = windSample.speed;
+        windDirection = windSample.direction;
+      }
+      simulation.setWindSpeed(windSpeed);
+      simulation.setWindDirection(windDirection);
+      simulation.setVEI(VEI);
+
+      const thickness = simulation.calculateTephraAtLocation(samplesCollection.x, samplesCollection.y);
+
+      return {
+        data: thickness
+      };
     });
 
     /** ==== Draw on tephra map ==== */
