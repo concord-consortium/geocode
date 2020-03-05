@@ -30,6 +30,7 @@ export const Datasets = {
   },
 
   getRandomSampleWithReplacement(dataset: Dataset, sampleSize: number): Dataset {
+    if (!dataset) return [];
     const samples = [];
     for (let i = 0; i < sampleSize; i++) {
       samples.push(dataset[Math.floor(Math.random() * dataset.length)]);
@@ -38,6 +39,7 @@ export const Datasets = {
   },
 
   getRandomSampleWithoutReplacement(dataset: Dataset, sampleSize: number): Dataset {
+    if (!dataset) return [];
     const indices: number[] = [];
     const samples = new Array(sampleSize);
     for (let i = 0; i < sampleSize; i++ ) {
