@@ -185,6 +185,12 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       chartsStore.addHistogram(samplesCollection, threshold, `Tephra Thickness at ${samplesCollection.name} (mm)`);
     });
 
+    /** ==== Risk level ==== */
+
+    addFunc("showRisk", (params: {location: string, threshold: number}) => {
+      samplesCollectionsStore.setSamplesCollectionRiskLevel(params.location, params.threshold);
+    });
+
     /** ==== Sample Collections ==== */
 
     addFunc("createSampleCollection", (params: {name: string, x: number, y: number}) => {

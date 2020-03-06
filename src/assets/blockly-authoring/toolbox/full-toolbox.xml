@@ -40,6 +40,7 @@
     <block type="create_sample_collection"></block>
     <block type="add_to_sample_collection"></block>
     <block type="graph_exceedance"></block>
+    <block type="show_risk"></block>
   </category>
 
   <category name="Logic" colour="%{BKY_LOGIC_HUE}">

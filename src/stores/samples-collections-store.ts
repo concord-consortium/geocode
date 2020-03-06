@@ -1,4 +1,8 @@
 import { types } from "mobx-state-tree";
+import { calculateThresholdData, calculateRisk, ThresholdData } from "../components/montecarlo/monte-carlo";
+
+export const RiskLevel = types.enumeration("type", ["Undefined", "Low", "Medium", "High"]);
+export type RiskLevelType = typeof RiskLevel.Type;
 
 /**
  * For now each sample is a single number.
@@ -10,10 +14,15 @@ const SamplesCollection = types.model("SamplesCollection", {
   x: types.number,
   y: types.number,
   samples: types.array(types.number),
+  risk: types.maybe(RiskLevel)
 })
 .actions((self) => ({
   addSample(sample: number) {
     self.samples.push(sample);
+  },
+  setRiskLevel(threshold: number) {
+    const thresholdData: ThresholdData = calculateThresholdData(self.samples, threshold);
+    self.risk = calculateRisk(thresholdData.greaterThanPercent);
   }
 }));
 
@@ -40,6 +49,13 @@ const SamplesCollectionsStore = types.model("SamplesCollections", {
       collection.addSample(sample);
     }
   },
+
+  setSamplesCollectionRiskLevel(name: string, threshold: number) {
+    const collection = self.samplesCollection(name);
+    if (collection) {
+      collection.setRiskLevel(threshold);
+    }
+  }
 }));
 
 export type SamplesCollectionModelType = typeof SamplesCollection.Type;
