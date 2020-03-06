@@ -128,8 +128,8 @@ export default class RiskLegendComponent extends PureComponent<IProps, IState> {
                   </RiskDiamondText>
                 </RiskDiamond>
                 { isNumber(riskLevel.max) && isNumber(riskLevel.min)
-                  ? <RiskLabel>{`${riskLevel.level} (${riskLevel.min}-${riskLevel.max}%)`}</RiskLabel>
-                  : <RiskLabel>{riskLevel.level}</RiskLabel>
+                  ? <RiskLabel>{`${riskLevel.type} (${riskLevel.min}-${riskLevel.max}%)`}</RiskLabel>
+                  : <RiskLabel>{riskLevel.type}</RiskLabel>
                 }
               </RiskContainer>
             );
