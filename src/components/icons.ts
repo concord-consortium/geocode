@@ -23,6 +23,13 @@ export function circleIcon(label: string): DivIcon {
     return new DivIcon({ className: "circle-icon", html: label });
 }
 
+export function riskIcon(color: string, label: string, selected: boolean): DivIcon {
+    const iconClass = "diamond-icon " + (selected ? "selected" : "");
+    const iconStyle = "background:" + color + ";";
+    const html = "<div class='" + iconClass + "' style='" + iconStyle + "'><div class='diamond-text'>" + label + "</div></div>";
+    return new DivIcon({ className: "diamond-container", html });
+}
+
 export function getCachedCircleIcon(label: string) {
     const iconKey = "circle-icon" + label;
     if (!iconsCache.get(iconKey)) iconsCache.set(iconKey, circleIcon(label)); // = circleIcon();
