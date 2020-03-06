@@ -2,18 +2,19 @@ import * as ReactFauxDOM from "react-faux-dom";
 import * as d3 from "d3";
 import { ChartType } from "../../stores/charts-store";
 
+const kShowDotPlot = true;
+
 interface IProps {
   chart: ChartType;
   chartMin: number;
   chartMax: number;
   width: number;
   height: number;
-  showBars: boolean;
   threshold: number;
 }
 
 export const SvgD3HistogramChart = (props: IProps) => {
-  const { width, height, chart, showBars, chartMin, chartMax, threshold } = props;
+  const { width, height, chart, chartMin, chartMax, threshold } = props;
   const { data, xAxisLabel, yAxisLabel } = chart;
 
   const margin = {top: 15, right: 20, bottom: 35, left: 50};
@@ -77,7 +78,7 @@ export const SvgD3HistogramChart = (props: IProps) => {
       .style("fill", "#555")
       .text(yAxisLabel);
   }
-  if (!showBars) {
+  if (kShowDotPlot) {
     const dotRadius = Math.min(chartWidth / numBins * .45, chartHeight / max * .45);
     bins.forEach((bin, binIndex) => {
       const binMap = bin.map((x, i) => i);

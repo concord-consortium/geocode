@@ -51,9 +51,7 @@ const PercentFront = styled.div`
   position: absolute;
 `;
 
-interface IState {
-  showBars: boolean; // TODO: remove once we decide on plot style
-}
+interface IState {}
 
 interface IProps extends IBaseProps {
   height: number;
@@ -64,14 +62,6 @@ interface IProps extends IBaseProps {
 @inject("stores")
 @observer
 export class HistogramPanel extends BaseComponent<IProps, IState>{
-
-  constructor(props: IProps) {
-    super(props);
-    const initialState: IState = {
-      showBars: false,
-    };
-    this.state = initialState;
-  }
 
   public render() {
     const {width, height, percentComplete} = this.props;
@@ -115,10 +105,6 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
                         ? riskLevel.level
                         : "---"}`}
             </PanelStat>
-            { histogramChart
-              ? <button onClick={this.changeDisplayType}>Toggle display</button>
-              : <button onClick={this.addHistogram}>Add data</button>
-            }
           </VerticalContainer>
         </HorizontalContainer>
       </Panel>
@@ -134,42 +120,9 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
         chart={chart}
         chartMin={kTephraMin}
         chartMax={kTephraMax}
-        showBars={this.state.showBars}
         threshold={threshold}
       />
     );
   }
 
-  // TODO: for testing only, remove once we decide on plot style
-  private changeDisplayType = () => {
-    this.setState(prevState => ({
-      showBars: !prevState.showBars
-    }));
-  }
-
-  // TODO: for testing only, remove when we have real data
-  private addHistogram = () => {
-      const numPoints = 300;
-      const title = "Chart " + (this.stores.chartsStore.charts.length + 1);
-      const data: number[] = [];
-      const shift = Math.random();
-      for (let i = 0; i < numPoints; i++) {
-        let r = this.randomG(3) + shift;
-        if (r > 1) r = r - 1;
-        data.push(Math.floor(r * (kTephraMax + 1)));
-      }
-      const xAxisLabel = "Tephra Thickness (mm)";
-      const yAxisLabel = "Number of Runs";
-      const dateLabelFormat = "%b";
-      this.stores.chartsStore.addChart({type: "histogram", data, title, xAxisLabel, yAxisLabel, dateLabelFormat});
-  }
-
-  // TODO: for testing only, remove when we have real data
-  private randomG = (v: number) => {
-    let r = 0;
-    for (let i = v; i > 0; i--) {
-        r += Math.random();
-    }
-    return r / v;
-  }
 }
