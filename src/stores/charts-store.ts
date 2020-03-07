@@ -22,6 +22,7 @@ const Chart = types.model("Chart", {
   xAxisLabel: types.maybe(types.string),
   yAxisLabel: types.maybe(types.string),
   dateLabelFormat: types.maybe(types.string),
+  threshold: types.maybe(types.number),
 })
 .views((self) => {
   const isDate = (column: 0|1) => {
@@ -159,6 +160,7 @@ const ChartsStore = types.model("Charts", {
       });
     }
     chart.data = samplesCollection.samples.toJS() as any;
+    chart.threshold = threshold;
 }
 }));
 

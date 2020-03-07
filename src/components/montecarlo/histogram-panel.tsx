@@ -5,8 +5,7 @@ import { BaseComponent, IBaseProps } from "../base";
 import { HorizontalContainer, VerticalContainer } from "../styled-containers";
 import { SvgD3HistogramChart } from "../charts/svg-d3-histogram-chart";
 import { ChartType } from "../../stores/charts-store";
-import { kTephraThreshold, kTephraMin, kTephraMax, ThresholdData,
-         calculateThresholdData, calculateRisk } from "./monte-carlo";
+import { kTephraMin, kTephraMax, ThresholdData, calculateThresholdData, calculateRisk } from "./monte-carlo";
 
 interface PanelProps {
   height: number;
@@ -67,7 +66,7 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
     const {width, height, percentComplete} = this.props;
     const histogramChart = this.stores.chartsStore.charts.find(chart => chart.type === "histogram");
     const data = histogramChart && histogramChart.data;
-    const threshold = kTephraThreshold;
+    const threshold = histogramChart && histogramChart.threshold ? histogramChart.threshold : 0;
     const thresholdData: ThresholdData = calculateThresholdData(data, threshold);
     const riskLevel = calculateRisk(thresholdData.greaterThanPercent);
     return (

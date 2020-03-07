@@ -101,7 +101,7 @@ Blockly.Blocks['graph_exceedance'] = {
 }
 Blockly.JavaScript['graph_exceedance'] = function (block) {
   var location = block.getFieldValue('locations')
-  var threshold = block.getFieldValue('threshold') || 0
+  var threshold = Blockly.JavaScript.valueToCode(block, 'threshold', Blockly.JavaScript.ORDER_ATOMIC) || 0;
 
   var code = `graphExceedance({location: "${location}", threshold: ${threshold}});\n`
   return code
