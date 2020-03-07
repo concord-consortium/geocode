@@ -1,8 +1,7 @@
 import { isNumber } from "util";
 import { RiskLevelType } from "../../stores/samples-collections-store";
 
-// TODO threshold and histogram min/max will need to be set elsewhere
-export const kTephraThreshold = 201;
+// TODO histogram min/max ideally set elsewhere
 export const kTephraMin = 0;
 export const kTephraMax = 400;
 
