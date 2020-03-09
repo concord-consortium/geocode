@@ -2,7 +2,7 @@ Blockly.Blocks['show_risk'] = {
   init: function() {
     this.appendDummyInput()
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("Show risk on graph for");
+        .appendField("Show risk on map for");
     this.appendDummyInput()
         .appendField("samples from")
         .appendField(new Blockly.FieldDropdown(this.generateOptions), "locations");
