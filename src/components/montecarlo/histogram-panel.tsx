@@ -5,7 +5,7 @@ import { BaseComponent, IBaseProps } from "../base";
 import { HorizontalContainer, VerticalContainer } from "../styled-containers";
 import { SvgD3HistogramChart } from "../charts/svg-d3-histogram-chart";
 import { ChartType } from "../../stores/charts-store";
-import { kTephraMin, kTephraMax, ThresholdData, calculateThresholdData, calculateRisk } from "./monte-carlo";
+import { kTephraMin, kTephraMax, ThresholdData, calculateThresholdData, calculateRisk, RiskLevel, RiskLevels } from "./monte-carlo";
 
 interface PanelProps {
   height: number;
@@ -68,7 +68,9 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
     const data = histogramChart && histogramChart.data;
     const threshold = histogramChart && histogramChart.threshold ? histogramChart.threshold : 0;
     const thresholdData: ThresholdData = calculateThresholdData(data, threshold);
-    const riskLevel = calculateRisk(thresholdData.greaterThanPercent);
+    const riskLevelType = calculateRisk(thresholdData.greaterThanPercent);
+    const riskLevel: RiskLevel | undefined = RiskLevels.find((risk) => risk.type === riskLevelType);
+    const riskStyle = riskLevel && {color: riskLevel.iconColor};
     return (
       <Panel height={height} width={width}>
         <HorizontalContainer>
@@ -100,9 +102,11 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
               {`Count above threshold: ${thresholdData.greaterThan} (${thresholdData.greaterThanPercent}%)`}
             </PanelStat>
             <PanelStat>
-              {`Risk: ${data && riskLevel && (!percentComplete || percentComplete === 100)
-                        ? riskLevel
-                        : "---"}`}
+              {"Risk: "}
+              {data && riskLevelType && (!percentComplete || percentComplete === 100)
+                ? <span style={riskStyle}>{riskLevelType}</span>
+                : "---"
+              }
             </PanelStat>
           </VerticalContainer>
         </HorizontalContainer>
