@@ -111,6 +111,10 @@ const Tabs = styled(UnstyledTabs)`
   margin:0;
   width: 50%;
 `;
+const HistogramTabs = styled(Tabs)`
+  width: 100%;
+  background: none;
+`;
 
 const TabList = styled(UnstyledTabList)`
   display: flex;
@@ -126,6 +130,7 @@ interface TabProps {
   rightofselected?: string;
   backgroundcolor: string;
   backgroundhovercolor: string;
+  color?: string;
 }
 const Tab = styled(UnstyledTab)<TabProps>`
   flex-grow: 1;
@@ -134,7 +139,7 @@ const Tab = styled(UnstyledTab)<TabProps>`
   margin: 0;
   list-style: none;
   cursor: pointer;
-  color: #434343;
+  color: ${props => props.color ? props.color : "#434343"};
   background-color: ${props => props.backgroundcolor};
   font-size: 16px;
   border-style: solid;
@@ -201,4 +206,4 @@ const TabPanel = styled(UnstyledTabPanel).attrs({ selectedClassName: "selected" 
 (TabList as any).tabsRole = "TabList";
 
 export { SectionTypes, TabInfo, kTabInfo, TabBack, Tab, TabList, Tabs, TabPanel,
-         RightSectionTypes, kRightTabInfo, RightTabBack, BottomTab };
+         RightSectionTypes, kRightTabInfo, RightTabBack, BottomTab, HistogramTabs };

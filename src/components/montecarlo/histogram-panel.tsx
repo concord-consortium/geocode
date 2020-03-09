@@ -5,8 +5,9 @@ import { BaseComponent, IBaseProps } from "../base";
 import { HorizontalContainer, VerticalContainer } from "../styled-containers";
 import { SvgD3HistogramChart } from "../charts/svg-d3-histogram-chart";
 import { ChartType } from "../../stores/charts-store";
-import { kTephraMin, kTephraMax, ThresholdData, calculateThresholdData, calculateRisk, RiskLevel, RiskLevels } from "./monte-carlo";
 import { RiskDiamond, RiskDiamondText } from "../map/map-risk-legend";
+import { kTephraMin, kTephraMax, ThresholdData, calculateThresholdData, calculateRisk, RiskLevel, RiskLevels } from "./monte-carlo";
+import { Tab, HistogramTabs, TabList, TabPanel } from "../tabs";
 
 interface PanelProps {
   height: number;
@@ -14,11 +15,25 @@ interface PanelProps {
 }
 const Panel = styled.div`
   border: 0px solid black; border-radius: 0px;
-  background-color: white;
+  background-color: #cee6c9;
+  border-radius: 10px 10px 0 0;
   height: ${(p: PanelProps) => `${p.height}px`};
   width: ${(p: PanelProps) => `${p.width - 56}px`};
   margin: 10px 28px;
   box-sizing: content-box;
+`;
+interface PanelContentProps {
+  color?: string;
+}
+const PanelContent = styled.div`
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  border-radius: 10px 10px 0 0;
+  background-color: ${(p: PanelContentProps) => p.color ? p.color : "none"};
 `;
 const PanelHistogramDiv = styled.div`
   min-width: ${(p: PanelProps) => `${p.width}px`};
@@ -58,7 +73,9 @@ const PercentFront = styled.div`
   position: absolute;
 `;
 
-interface IState {}
+interface IState {
+  tabIndex: number;
+}
 
 interface IProps extends IBaseProps {
   height: number;
@@ -69,10 +86,59 @@ interface IProps extends IBaseProps {
 @observer
 export class HistogramPanel extends BaseComponent<IProps, IState>{
 
+  public constructor(props: IProps) {
+    super(props);
+    this.handleTabSelect = this.handleTabSelect.bind(this);
+    const initialState: IState = {
+      tabIndex: 0,
+    };
+    this.state = initialState;
+  }
+
   public render() {
     const {width, height} = this.props;
+    const histogramCharts = this.stores.chartsStore.charts.filter(chart => chart.type === "histogram");
+    return (
+      <Panel height={height} width={width}>
+        <PanelContent color={histogramCharts.length ? undefined : "white"}>
+          <HistogramTabs selectedIndex={this.state.tabIndex} onSelect={this.handleTabSelect}>
+            <TabList>
+              { histogramCharts.map( (chart: ChartType, i) => {
+                  return (
+                    <Tab
+                      selected={this.state.tabIndex === i}
+                      backgroundcolor={this.state.tabIndex === i ? "white" : "#E6E6E6"}
+                      backgroundhovercolor={this.state.tabIndex === i ? "white" : "#C0C0C0"}
+                      color={this.state.tabIndex === i ? "#4AA9FF" : "#434343"}
+                      key={"histogramTab-" + i}
+                    >
+                      {chart.title}
+                    </Tab>
+                  );
+                })
+              }
+            </TabList>
+            { histogramCharts.map((chart, i) => this.renderHistogramTab(chart, i)) }
+          </HistogramTabs>
+        </PanelContent>
+      </Panel>
+    );
+  }
+
+  public componentDidUpdate() {
+    const histogramCharts = this.stores.chartsStore.charts.filter(chart => chart.type === "histogram");
+    if (this.state.tabIndex > 0 && histogramCharts && this.state.tabIndex > (histogramCharts.length - 1)) {
+      this.setState({tabIndex: 0});
+    }
+  }
+
+  private handleTabSelect(tabIndex: number) {
+    this.setState({tabIndex});
+  }
+
+  private renderHistogramTab = (histogramChart: ChartType, i: number) => {
+    const {width, height} = this.props;
     const percentComplete = undefined;
-    const histogramChart = this.stores.chartsStore.charts.find(chart => chart.type === "histogram");
     const data = histogramChart && histogramChart.data;
     const threshold = histogramChart && histogramChart.threshold ? histogramChart.threshold : 0;
     const thresholdData: ThresholdData = calculateThresholdData(data, threshold);
@@ -80,7 +146,11 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
     const riskLevel: RiskLevel | undefined = RiskLevels.find((risk) => risk.type === riskLevelType);
     const riskStyle = riskLevel && {color: riskLevel.iconColor};
     return (
-      <Panel height={height} width={width}>
+      <TabPanel
+        width={"100%"}
+        tabcolor={"white"}
+        key={"histogramTabPanel-" + i}
+      >
         <HorizontalContainer>
           { histogramChart
             ? this.renderHistogram(histogramChart, threshold)
@@ -128,7 +198,7 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
             </RiskContainer>
           </VerticalContainer>
         </HorizontalContainer>
-      </Panel>
+      </TabPanel>
     );
   }
 
@@ -137,7 +207,7 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
     return (
       <SvgD3HistogramChart
         width={width - 200}
-        height={height - 10}
+        height={height - 40}
         chart={chart}
         chartMin={kTephraMin}
         chartMax={kTephraMax}
