@@ -55,7 +55,6 @@ interface IState {}
 interface IProps extends IBaseProps {
   height: number;
   width: number;
-  percentComplete?: number;
 }
 
 @inject("stores")
@@ -63,7 +62,8 @@ interface IProps extends IBaseProps {
 export class HistogramPanel extends BaseComponent<IProps, IState>{
 
   public render() {
-    const {width, height, percentComplete} = this.props;
+    const {width, height} = this.props;
+    const percentComplete = undefined;
     const histogramChart = this.stores.chartsStore.charts.find(chart => chart.type === "histogram");
     const data = histogramChart && histogramChart.data;
     const threshold = histogramChart && histogramChart.threshold ? histogramChart.threshold : 0;
@@ -92,6 +92,7 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
                 {`${percentComplete}% complete`}
               </PanelStat>
             }
+            <PanelStat>{`Runs completed: ${data ? data.length : 0}`}</PanelStat>
             <PanelStat>{`Threshold = ${threshold} mm`}</PanelStat>
             <PanelStat>
               {`Count below threshold: ${thresholdData.lessThanEqual} (${thresholdData.lessThanEqualPercent}%)`}
