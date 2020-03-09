@@ -1,8 +1,8 @@
-import RightPanel from "../../support/elements/RightPanel"
-import LeftPanel from "../../support/elements/LeftPanel"
-import CrossSectionTab from "../../support/elements/CrossSectionTab"
-import ControlsTab from "../../support/elements/ControlsTab"
-import Map from "../../support/elements/Map";
+import RightPanel from "../support/elements/RightPanel"
+import LeftPanel from "../support/elements/LeftPanel"
+import CrossSectionTab from "../support/elements/CrossSectionTab"
+import ControlsTab from "../support/elements/ControlsTab"
+import Map from "../support/elements/Map";
 
 const rightPanel = new RightPanel;
 const leftPanel = new LeftPanel;

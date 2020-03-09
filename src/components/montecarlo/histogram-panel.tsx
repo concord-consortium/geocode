@@ -8,6 +8,7 @@ import { ChartType } from "../../stores/charts-store";
 import { RiskDiamond, RiskDiamondText } from "../map/map-risk-legend";
 import { ThresholdData, calculateThresholdData, calculateRisk, RiskLevel, RiskLevels } from "./monte-carlo";
 import { Tab, HistogramTabs, TabList, TabPanel } from "../tabs";
+import { string } from "prop-types";
 
 interface PanelProps {
   height: number;
@@ -102,7 +103,7 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
       <Panel height={height} width={width}>
         <PanelContent color={histogramCharts.length ? undefined : "white"}>
           <HistogramTabs selectedIndex={this.state.tabIndex} onSelect={this.handleTabSelect}>
-            <TabList>
+            <TabList data-test="monte-carlo-locations-tab-list">
               { histogramCharts.map( (chart: ChartType, i) => {
                   return (
                     <Tab
@@ -152,8 +153,9 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
         width={"100%"}
         tabcolor={"white"}
         key={"histogramTabPanel-" + i}
+        data-test={"histogram-tab-panel"}
       >
-        <HorizontalContainer>
+        <HorizontalContainer data-test={"histogram-chart-container"}>
           { histogramChart
             ? this.renderHistogram(histogramChart, threshold)
             : <PanelHistogramDiv
@@ -161,7 +163,7 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
                 height={height - 10}
               />
           }
-          <VerticalContainer>
+          <VerticalContainer data-test={"monte-carlo-stat-container"}>
             { percentComplete !== undefined &&
               <PanelStat>
                 <PanelPercent>
@@ -215,7 +217,8 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
         chartMax={threshold * 2}
         threshold={threshold}
         showBarHistogram={this.stores.uiStore.showBarHistogram}
-      />
+        data-test={"histogram-chart-container"}
+        />
     );
   }
 
