@@ -1,7 +1,7 @@
 import { isNumber } from "util";
+import { RiskLevelType } from "../../stores/samples-collections-store";
 
-// TODO threshold and histogram min/max will need to be set elsewhere
-export const kTephraThreshold = 201;
+// TODO histogram min/max ideally set elsewhere
 export const kTephraMin = 0;
 export const kTephraMax = 400;
 
@@ -12,7 +12,7 @@ export interface ThresholdData {
   lessThanEqualPercent: number;
 }
 export interface RiskLevel {
-  level: string;
+  type: RiskLevelType;
   iconColor: string;
   iconText: string;
   min: number | undefined;
@@ -20,28 +20,28 @@ export interface RiskLevel {
 }
 export const RiskLevels: RiskLevel[] = [
   {
-    level: "Undefined",
+    type: "Undefined",
     iconColor: "#C4C4C4",
     iconText: "",
     min: undefined,
     max: undefined
   },
   {
-    level: "Low",
+    type: "Low",
     iconColor: "#63CC19",
     iconText: "",
     min: 0,
     max: 30
   },
   {
-    level: "Medium",
+    type: "Medium",
     iconColor: "#ECA519",
     iconText: "!",
     min: 31,
     max: 79
   },
   {
-    level: "High",
+    type: "High",
     iconColor: "#FF1919",
     iconText: "!",
     min: 80,
@@ -71,5 +71,5 @@ export const calculateRisk = (percentAbove: number) => {
   const riskLevel: RiskLevel | undefined = RiskLevels.find((rl: RiskLevel) => {
     return ((isNumber(rl.min) && (rl.min <= intVal)) && (isNumber(rl.max) && (rl.max >= intVal)));
   });
-  return riskLevel;
+  return riskLevel && riskLevel.type;
 };

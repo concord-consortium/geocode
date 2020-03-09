@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { Icon } from "../icon";
 import CloseIcon from "../../assets/map-icons/close.svg";
 import { isNumber } from "util";
-import { RiskLevels, RiskLevel } from "../montecarlo/monte-carlo";
+import { RiskLevels } from "../montecarlo/monte-carlo";
 
 const LegendContainer = styled.div`
   display: flex;
@@ -128,8 +128,8 @@ export default class RiskLegendComponent extends PureComponent<IProps, IState> {
                   </RiskDiamondText>
                 </RiskDiamond>
                 { isNumber(riskLevel.max) && isNumber(riskLevel.min)
-                  ? <RiskLabel>{`${riskLevel.level} (${riskLevel.min}-${riskLevel.max}%)`}</RiskLabel>
-                  : <RiskLabel>{riskLevel.level}</RiskLabel>
+                  ? <RiskLabel>{`${riskLevel.type} (${riskLevel.min}-${riskLevel.max}%)`}</RiskLabel>
+                  : <RiskLabel>{riskLevel.type}</RiskLabel>
                 }
               </RiskContainer>
             );

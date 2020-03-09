@@ -101,7 +101,7 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
             </PanelStat>
             <PanelStat>
               {`Risk: ${data && riskLevel && (!percentComplete || percentComplete === 100)
-                        ? riskLevel.level
+                        ? riskLevel
                         : "---"}`}
             </PanelStat>
           </VerticalContainer>

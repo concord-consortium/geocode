@@ -22,7 +22,7 @@ import CompassComponent from "./map-compass";
 import TephraLegendComponent from "./map-tephra-legend";
 import RiskLegendComponent from "./map-risk-legend";
 import { SamplesCollectionModelType } from "../../stores/samples-collections-store";
-import { kTephraThreshold, ThresholdData, calculateThresholdData, calculateRisk } from "../montecarlo/monte-carlo";
+import { RiskLevels } from "../montecarlo/monte-carlo";
 
 interface WorkspaceProps {
   width: number;
@@ -328,14 +328,11 @@ export class MapComponent extends BaseComponent<IProps, IState>{
   }
 
   private getRiskItems = () => {
-    // TODO: this code adds a risk map item for every sample collection with threshold kTephraThreshold
-    // need to specify correct samples to add risk item and correct threshold
     const { samplesCollectionsStore } = this.stores;
     const { volcanoLat, volcanoLng } = this.stores.simulation;
     const riskItems: React.ReactElement[] = [];
     samplesCollectionsStore.samplesCollections.forEach( (samplesCollection: SamplesCollectionModelType, i) => {
-      const thresholdData: ThresholdData = calculateThresholdData(samplesCollection.samples, kTephraThreshold);
-      const riskLevel = calculateRisk(thresholdData.greaterThanPercent);
+      const riskLevel = RiskLevels.find((risk) => risk.type === samplesCollection.risk);
       const pos = LocalToLatLng({x: samplesCollection.x, y: samplesCollection.y}, L.latLng(volcanoLat, volcanoLng));
       riskLevel && riskItems.push(
         <Marker
