@@ -67,7 +67,7 @@ const RiskContainer = styled.div`
 interface RiskDiamondProps {
   backgroundColor?: string;
 }
-const RiskDiamond = styled.div`
+export const RiskDiamond = styled.div`
   width: 24px;
   height: 24px;
   box-sizing: border-box;
@@ -78,7 +78,7 @@ const RiskDiamond = styled.div`
   border: 2px solid #A1A1A1;
   border-radius: 4px;
 `;
-const RiskDiamondText = styled.div`
+export const RiskDiamondText = styled.div`
   width: 24px;
   height: 24px;
   transform: rotate(-45deg);

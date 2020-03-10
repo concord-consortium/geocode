@@ -5,7 +5,8 @@ import { BaseComponent, IBaseProps } from "../base";
 import { HorizontalContainer, VerticalContainer } from "../styled-containers";
 import { SvgD3HistogramChart } from "../charts/svg-d3-histogram-chart";
 import { ChartType } from "../../stores/charts-store";
-import { kTephraMin, kTephraMax, ThresholdData, calculateThresholdData, calculateRisk } from "./monte-carlo";
+import { kTephraMin, kTephraMax, ThresholdData, calculateThresholdData, calculateRisk, RiskLevel, RiskLevels } from "./monte-carlo";
+import { RiskDiamond, RiskDiamondText } from "../map/map-risk-legend";
 
 interface PanelProps {
   height: number;
@@ -23,9 +24,16 @@ const PanelHistogramDiv = styled.div`
   min-width: ${(p: PanelProps) => `${p.width}px`};
   height: ${(p: PanelProps) => `${p.height}px`};
 `;
+interface PanelStatProps {
+  marginRight?: number;
+}
 const PanelStat = styled.div`
   margin: 5px;
   font-size: 14px;
+  margin-right: ${(p: PanelStatProps) => `${p.marginRight ? p.marginRight : 5}px`};
+`;
+const RiskContainer = styled(HorizontalContainer)`
+  margin-top: 15px;
 `;
 const PanelPercent = styled.div`
   height: 15px;
@@ -68,7 +76,9 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
     const data = histogramChart && histogramChart.data;
     const threshold = histogramChart && histogramChart.threshold ? histogramChart.threshold : 0;
     const thresholdData: ThresholdData = calculateThresholdData(data, threshold);
-    const riskLevel = calculateRisk(thresholdData.greaterThanPercent);
+    const riskLevelType = calculateRisk(thresholdData.greaterThanPercent);
+    const riskLevel: RiskLevel | undefined = RiskLevels.find((risk) => risk.type === riskLevelType);
+    const riskStyle = riskLevel && {color: riskLevel.iconColor};
     return (
       <Panel height={height} width={width}>
         <HorizontalContainer>
@@ -99,11 +109,22 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
             <PanelStat>
               {`Count above threshold: ${thresholdData.greaterThan} (${thresholdData.greaterThanPercent}%)`}
             </PanelStat>
-            <PanelStat>
-              {`Risk: ${data && riskLevel && (!percentComplete || percentComplete === 100)
-                        ? riskLevel
-                        : "---"}`}
-            </PanelStat>
+            <RiskContainer>
+              <PanelStat marginRight={10}>
+                {"Risk:"}
+                {data && riskLevelType && (!percentComplete || percentComplete === 100)
+                  ? <span style={riskStyle}>{` ${riskLevelType}`}</span>
+                  : " ---"
+                }
+              </PanelStat>
+              {data && riskLevel &&
+                <RiskDiamond backgroundColor={riskLevel.iconColor}>
+                  <RiskDiamondText>
+                    {riskLevel.iconText}
+                  </RiskDiamondText>
+                </RiskDiamond>
+              }
+            </RiskContainer>
           </VerticalContainer>
         </HorizontalContainer>
       </Panel>
