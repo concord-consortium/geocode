@@ -254,11 +254,28 @@ export const makeInterpreterController = (code: string, blocklyController: Block
 
   const run = (complete: () => void) => {
     if (lastRunID) return;
+
+    // If we're running at slow speed (ui.speed === 0), we will call interpreter.step() with a
+    // 10ms setTimeout.
+    // If we're running at fast speed (ui.speed > 0), we will call interpreter.step() numerous
+    // times synchronously, but we must still occasionally call it asynchronously with 0ms setTimeout,
+    // or (1) the blocks won't flash, as control will never pass to the renderer, and (2) the React
+    // views won't update.
+    const timeout = store.uiStore.speed > 0 ? 0 : 10;
+    const skip = store.uiStore.speed === 0 ? 1 :
+                  store.uiStore.speed === 1 ? 2 :
+                  store.uiStore.speed === 2 ? 6 : 20;
+    let stepCount = 0;
     paused = false;
     function runLoop() {
       if (paused) return;
+      stepCount++;
       if (interpreter.step()) {
-        lastRunID = window.setTimeout(() => runLoop(), 10);
+        if (stepCount % skip === 0) {
+          lastRunID = window.setTimeout(() => runLoop(), timeout);
+        } else {
+          runLoop();
+        }
       }
       else {
         lastRunID = null;

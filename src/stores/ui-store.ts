@@ -13,6 +13,7 @@ const UIStore = types.model("UI", {
   showMonteCarlo: true,
   showData: true,
   // other ui
+  speed: 0,       // 0-3 (for now)
   showLog: false,
   // slider controls
   showWindSpeed: true,
