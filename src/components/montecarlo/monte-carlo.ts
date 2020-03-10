@@ -61,8 +61,10 @@ export const calculateThresholdData = (data: any, threshold: number) => {
     }
   });
   thresholdData.lessThanEqual = data ? data.length - thresholdData.greaterThan : 0;
-  thresholdData.greaterThanPercent = data ? Math.round(thresholdData.greaterThan / data.length * 100) : 0;
-  thresholdData.lessThanEqualPercent = data ? 100 - thresholdData.greaterThanPercent : 0;
+  thresholdData.greaterThanPercent = data && data.length
+                                     ? Math.round(thresholdData.greaterThan / data.length * 100)
+                                     : 0;
+  thresholdData.lessThanEqualPercent = data && data.length ? 100 - thresholdData.greaterThanPercent : 0;
   return thresholdData;
 };
 
