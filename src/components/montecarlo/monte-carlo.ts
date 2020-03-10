@@ -20,13 +20,6 @@ export interface RiskLevel {
 }
 export const RiskLevels: RiskLevel[] = [
   {
-    type: "Undefined",
-    iconColor: "#C4C4C4",
-    iconText: "",
-    min: undefined,
-    max: undefined
-  },
-  {
     type: "Low",
     iconColor: "#63CC19",
     iconText: "",
