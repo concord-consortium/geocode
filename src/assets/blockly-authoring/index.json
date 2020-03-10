@@ -9,6 +9,7 @@
   },
   "code": {
     "Basic": "./assets/blockly-authoring/code/basic-setup.xml",
-    "Nested loops": "./assets/blockly-authoring/code/nested-loops.xml"
+    "Nested loops": "./assets/blockly-authoring/code/nested-loops.xml",
+    "Monte Carlo": "./assets/blockly-authoring/code/monte-carlo.xml"
   }
 }

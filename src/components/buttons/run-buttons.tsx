@@ -5,6 +5,7 @@ import StopIcon from "../../assets/blockly-icons/stop.svg";
 import ResetIcon from "../../assets/blockly-icons/reset.svg";
 import StepIcon from "../../assets/blockly-icons/step.svg";
 import IconButton from "./icon-button";
+import RangeControl from "../range-control";
 
 interface IProps {
   run: () => void;
@@ -12,6 +13,9 @@ interface IProps {
   step: () => void;
   reset: () => void;
   running?: boolean;
+  showSpeedControls?: boolean;
+  speed?: number;
+  setSpeed?: (speed: number) => void;
 }
 
 interface IState {}
@@ -96,11 +100,36 @@ const ResetButton = (props: IProps) => {
   );
 };
 
+const SpeedSliderContainer = styled.div`
+  margin: 0 50px 0 -100px;
+`;
+
+const SpeedSlider = (props: IProps) => {
+  const { speed, setSpeed } = props;
+  return (
+    <SpeedSliderContainer>
+      <RangeControl
+        min={0}
+        max={3}
+        value={speed!}
+        step={1}
+        tickMap={{0: "Slow", 3: "Fast"}}
+        width={100}
+        onChange={setSpeed!}
+      />
+    </SpeedSliderContainer>
+  );
+};
+
 export default class RunButtons extends React.Component<IProps, IState> {
   public render() {
-    const { running } = this.props;
+    const { running, showSpeedControls, speed, setSpeed } = this.props;
     return (
       <ButtonContainer>
+        {
+          showSpeedControls &&
+          <SpeedSlider {...this.props} />
+        }
         { running
           ? <StopButton   {...this.props} />
           : <RunButton  {...this.props} />

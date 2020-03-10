@@ -1,0 +1,44 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+   <block type="create_sample_collection" id="]c@!uM_F8Yw]Fa_LMS{9" x="120" y="50">
+      <field name="name">Close-by</field>
+      <field name="x">30</field>
+      <field name="y">30</field>
+      <next>
+         <block type="controls_repeat_ext" id="R?F$YDIm5Bb.1LUW`)+L">
+            <value name="TIMES">
+               <shadow type="math_number" id="W]yjMlTa3D`qB!GXlz`:">
+                  <field name="NUM">200</field>
+               </shadow>
+            </value>
+            <statement name="DO">
+               <block type="add_to_sample_collection" id="YMU1B}QLdE?j8=-OE2sv">
+                  <field name="collections">Close-by</field>
+                  <value name="tephra sample">
+                     <block type="calculate_tephra_vei_wind" id="`8h~{fOeN1UCF~^k$15g">
+                        <field name="collections">Close-by</field>
+                        <value name="vei">
+                           <block type="math_number" id="tOhdDtSe|~T7nk!OPFir">
+                              <field name="NUM">6</field>
+                           </block>
+                        </value>
+                        <value name="wind samples">
+                           <block type="all_wind_data" id="k*`?E[@Rp2K[dc%z~Dc_" />
+                        </value>
+                     </block>
+                  </value>
+                  <next>
+                     <block type="graph_exceedance" id="yYniI4@KIx*fK6Kwx/|P">
+                        <field name="locations">Close-by</field>
+                        <value name="threshold">
+                           <block type="math_number" id="lw$y+)7Pn$yXM?=-zrg!">
+                              <field name="NUM">200</field>
+                           </block>
+                        </value>
+                     </block>
+                  </next>
+               </block>
+            </statement>
+         </block>
+      </next>
+   </block>
+</xml>
