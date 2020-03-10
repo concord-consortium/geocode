@@ -13,6 +13,7 @@ const UIStore = types.model("UI", {
   showMonteCarlo: true,
   showData: true,
   // other ui
+  showSpeedControls: false,
   speed: 0,       // 0-3 (for now)
   showLog: false,
   // slider controls
@@ -35,6 +36,17 @@ const UIStore = types.model("UI", {
       Object.keys(data).forEach((key: UIAuthorSettingsProps) => {
         self[key] = data[key];
       });
+
+      // if author is showing fast speed, set model to fast initially
+      if (self.showSpeedControls) {
+        self.speed = 2;
+      } else {
+        self.speed = 0;
+      }
+    },
+
+    setSpeed: (speed: number) => {
+      self.speed = speed;
     },
   };
 });

@@ -57,6 +57,7 @@ const uiAuthorSettingsProps = tuple(
   "showCrossSection",
   "showMonteCarlo",
   "showData",
+  "showSpeedControls",
   "showLog",
   "showDemoCharts",
 );

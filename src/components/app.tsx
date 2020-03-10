@@ -25,6 +25,7 @@ import { getAuthorableSettings, updateStores, serializeState, getSavableState, d
 import { ChartPanel } from "./charts/chart-panel";
 import { BlocklyController } from "../blockly/blockly-controller";
 import { HistogramPanel } from "./montecarlo/histogram-panel";
+import { uiStore } from "../stores/ui-store";
 
 interface IProps extends IBaseProps {}
 
@@ -171,6 +172,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         showCrossSection,
         showData,
         showMonteCarlo,
+        showSpeedControls,
+        speed,
       }
     } = this.stores;
     const {
@@ -230,6 +233,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
 
     const currentTabType = enabledTabTypes[tabIndex || 0];
     const currentRightTabType = enabledRightTabTypes[rightTabIndex || 0];
+
+    const setSpeed = (_speed: number) => uiStore.setSpeed(_speed);
 
     return (
       <App className="app" ref={this.rootComponent}>
@@ -295,7 +300,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                     initialCode={initialXmlCode}
                     initialCodePath={codePath}
                     setBlocklyCode={setCode} />
-                  <RunButtons {...{run, stop, step, reset, running}} />
+                  <RunButtons {...{run, stop, step, reset, running, showSpeedControls, speed, setSpeed}} />
                   { showLog &&
                     <LogComponent
                       width={logWidth}
