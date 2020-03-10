@@ -16,7 +16,7 @@ const LegendContainer = styled.div`
   top: 35px;
   right: 38px;
   width: 165px;
-  height: 230px;
+  height: 190px;
   border-radius: 5px;
   background-color: white;
   border: solid 2px white;
