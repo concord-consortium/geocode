@@ -73,6 +73,7 @@ export class ChartPanel extends BaseComponent<IProps, IState> {
           <Scroll>
             {
               this.stores.chartsStore.charts.map((chart, i) =>
+                chart.type !== "histogram" ?
                 <div key={"row" + i}>
                   {
                     chart.title &&
@@ -100,6 +101,7 @@ export class ChartPanel extends BaseComponent<IProps, IState> {
                     }
                   </Row>
                 </div>
+                : null
               )
             }
             <Row ref={this.lastScrollEl} />
