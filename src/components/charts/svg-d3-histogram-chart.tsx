@@ -86,14 +86,14 @@ export const SvgD3HistogramChart = (props: IProps) => {
   }
   if (kShowDotPlot) {
     const dotRadius = Math.min(chartWidth / numBins * .45, chartHeight / max * .45);
-    bins.forEach((bin, binIndex) => {
+    bins.forEach((bin) => {
       const binMap = bin.map((x, i) => i);
       svg.append("g")
         .selectAll("dot")
         .data(binMap)
         .enter()
         .append("circle")
-          .attr("cx", d => (1 + xScale(binIndex) * (chartMax / numBins) + dotRadius) )
+          .attr("cx", d => (1 + xScale(bin.x0 as number) + dotRadius) )
           .attr("cy", d => (yScale(d) - dotRadius) )
           .attr("r", dotRadius)
           .style("fill", "#448878");
