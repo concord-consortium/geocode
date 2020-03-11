@@ -129,11 +129,13 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
     const histogramCharts = this.stores.chartsStore.charts.filter(chart => chart.type === "histogram");
     if (this.state.tabIndex > 0 && histogramCharts && this.state.tabIndex > (histogramCharts.length - 1)) {
       this.setState({tabIndex: 0});
+      this.stores.uiStore.setCurrentHistogramTab(0);
     }
   }
 
   private handleTabSelect(tabIndex: number) {
     this.setState({tabIndex});
+    this.stores.uiStore.setCurrentHistogramTab(tabIndex);
   }
 
   private renderHistogramTab = (histogramChart: ChartType, i: number) => {

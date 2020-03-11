@@ -331,13 +331,17 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     const { samplesCollectionsStore } = this.stores;
     const { volcanoLat, volcanoLng } = this.stores.simulation;
     const riskItems: React.ReactElement[] = [];
+    const tabIndex = this.stores.uiStore.currentHistogramTab;
+    const histogramCharts = this.stores.chartsStore.charts.filter(chart => chart.type === "histogram");
+    const currentChart = histogramCharts && histogramCharts[tabIndex];
+    const chartName = currentChart && currentChart.title ? currentChart.title : undefined;
     samplesCollectionsStore.samplesCollections.forEach( (samplesCollection: SamplesCollectionModelType, i) => {
       const riskLevel = RiskLevels.find((risk) => risk.type === samplesCollection.risk);
       const pos = LocalToLatLng({x: samplesCollection.x, y: samplesCollection.y}, L.latLng(volcanoLat, volcanoLng));
       riskLevel && riskItems.push(
         <Marker
           position={[pos.lat, pos.lng]}
-          icon={riskIcon(riskLevel.iconColor, riskLevel.iconText, true)}
+          icon={riskIcon(riskLevel.iconColor, riskLevel.iconText, chartName === samplesCollection.name)}
           key={"risk-" + i}
         />
       );

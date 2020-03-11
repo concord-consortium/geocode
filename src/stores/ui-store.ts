@@ -24,6 +24,7 @@ const UIStore = types.model("UI", {
   showVEI: true,
   // chart demo buttons
   showDemoCharts: false,
+  currentHistogramTab: 0,
 })
 .actions((self) => ({
   setShowOptionsDialog(show: boolean) {
@@ -47,6 +48,9 @@ const UIStore = types.model("UI", {
 
     setSpeed: (speed: number) => {
       self.speed = speed;
+    },
+    setCurrentHistogramTab: (tab: number) => {
+      self.currentHistogramTab = tab;
     },
   };
 });
