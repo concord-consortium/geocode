@@ -45,13 +45,14 @@ export const SvgD3HistogramChart = (props: IProps) => {
     .domain([ xDomain[0], xDomain[1] ])
     .thresholds(xScale.ticks(numBins));
 
-  // And apply this function to data to get the bins
   // Add all the cases exceeding the max into the max's bin
   const bins = histogram((data as number[]).map(d => Math.min(d, xDomain[1] - 1)));
   let binMax = 0;
   bins.forEach(bin => {
     binMax = Math.max(binMax, bin.length);
   });
+  // if the binMax is small and will result in excess vertical space,
+  // increase the y max so dots will stack directly on top of one another
   const radius = Math.min(chartWidth / numBins * .45, chartHeight / binMax * .45);
   const max = chartHeight / binMax * .45 > chartWidth / numBins * .45
               ? Math.floor(chartHeight / radius * .45)
