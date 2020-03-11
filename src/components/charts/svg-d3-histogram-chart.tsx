@@ -48,10 +48,15 @@ export const SvgD3HistogramChart = (props: IProps) => {
   // And apply this function to data to get the bins
   // Add all the cases exceeding the max into the max's bin
   const bins = histogram((data as number[]).map(d => Math.min(d, xDomain[1] - 1)));
-  let max = 0;
+  let binMax = 0;
   bins.forEach(bin => {
-    max = Math.max(max, bin.length);
+    binMax = Math.max(binMax, bin.length);
   });
+  const radius = Math.min(chartWidth / numBins * .45, chartHeight / binMax * .45);
+  const max = chartHeight / binMax * .45 > chartWidth / numBins * .45
+              ? Math.floor(chartHeight / radius * .45)
+              : binMax;
+
   const yScale = d3.scaleLinear();
   yScale.range([chartHeight, 0]);
   yScale.domain([0, max]);
@@ -87,10 +92,10 @@ export const SvgD3HistogramChart = (props: IProps) => {
         .data(binMap)
         .enter()
         .append("circle")
-          .attr("cx", d => (xScale(binIndex) * (chartMax / numBins) + dotRadius) )
-          .attr("cy", d => (yScale(d) - 5) )
+          .attr("cx", d => (1 + xScale(binIndex) * (chartMax / numBins) + dotRadius) )
+          .attr("cy", d => (yScale(d) - dotRadius) )
           .attr("r", dotRadius)
-          .style("fill", "#797979");
+          .style("fill", "#448878");
     });
   } else {
     svg.selectAll("rect")
@@ -101,7 +106,7 @@ export const SvgD3HistogramChart = (props: IProps) => {
       .attr("transform", d => "translate(" + xScale(d.x0 as number) + "," + (yScale(d.length)) + ")")
       .attr("width", d => (Math.max(0, xScale(d.x1 as number) - xScale(d.x0 as number) - 1)))
       .attr("height", d => (chartHeight - yScale(d.length)))
-      .style("fill", "#797979");
+      .style("fill", "#448878");
   }
 
   const thresholdX = threshold / (chartMax - chartMin) * chartWidth;

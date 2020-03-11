@@ -6,7 +6,7 @@ import { HorizontalContainer, VerticalContainer } from "../styled-containers";
 import { SvgD3HistogramChart } from "../charts/svg-d3-histogram-chart";
 import { ChartType } from "../../stores/charts-store";
 import { RiskDiamond, RiskDiamondText } from "../map/map-risk-legend";
-import { kTephraMin, kTephraMax, ThresholdData, calculateThresholdData, calculateRisk, RiskLevel, RiskLevels } from "./monte-carlo";
+import { ThresholdData, calculateThresholdData, calculateRisk, RiskLevel, RiskLevels } from "./monte-carlo";
 import { Tab, HistogramTabs, TabList, TabPanel } from "../tabs";
 
 interface PanelProps {
@@ -211,8 +211,8 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
         width={width - 200}
         height={height - 40}
         chart={chart}
-        chartMin={kTephraMin}
-        chartMax={kTephraMax}
+        chartMin={0}
+        chartMax={threshold * 2}
         threshold={threshold}
       />
     );
