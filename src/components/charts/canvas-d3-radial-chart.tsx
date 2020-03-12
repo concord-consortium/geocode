@@ -34,8 +34,8 @@ export class CanvasD3RadialChart extends React.Component<IProps> {
     const absoluteStyle: React.CSSProperties = {position: "absolute", top: 0, left: 0};
     return (
       <div style={relativeStyle}>
-        <svg ref={this.svgRef} style={absoluteStyle} />
         <canvas ref={this.canvasRef} style={absoluteStyle} />
+        <svg ref={this.svgRef} style={absoluteStyle} />
       </div>
     );
   }
@@ -95,6 +95,20 @@ export class CanvasD3RadialChart extends React.Component<IProps> {
       .attr("cx", center.x)
       .attr("cy", center.y)
       .attr("r", magScale);
+
+    const text = svgAxes.append("g")
+      .selectAll("g")
+      .data(magScale.ticks(5).slice(1))
+      .enter();
+
+    text.append("text")
+      .attr("x", center.x)
+      .attr("y",  d => center.y + magScale(d))
+      .text(d => `${d} m/s`)
+      .attr("dominant-baseline", "middle")
+      .attr("text-anchor", "middle")
+      .attr("fill", "#555")
+      .attr("font-size", "14px");
 
     d3.select(this.canvasRef.current)
       .attr("width", chartWidth)
