@@ -125,7 +125,7 @@ export class CanvasD3RadialChart extends React.Component<IProps> {
 
     // shrink path width from 0.5 to 0.1 between 1000 and 3000 data points
     const lineWidthShrink = Math.max(0, Math.min(1, (data.length - 1000) / 2000));
-    ctx.lineWidth = 0.5 - (0.3 * lineWidthShrink);
+    ctx.lineWidth = 0.8 - (0.4 * lineWidthShrink);
     ctx.strokeStyle = "#3c7769";
 
     if (chart.chartStyle === "dot") {
@@ -146,7 +146,7 @@ export class CanvasD3RadialChart extends React.Component<IProps> {
         const py = center.y - Math.sin((180 + 90 - point[0]) * Math.PI / 180) * magScale(point[1]);
         // const px = center.x + xScale(x);
         // const py = yScale(y);
-        const headlen = 10; // length of head in pixels
+        const headlen = 6; // length of head in pixels
         const dx = px - center.x;
         const dy = py - center.y;
         const rads = Math.atan2(dy, dx);
