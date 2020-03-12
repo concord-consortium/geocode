@@ -13,7 +13,10 @@ interface IProps {
   height: number;
 }
 
-interface IState {}
+interface IState {
+  containerWidth: number;
+  containerHeight: number;
+}
 
 const Wrapper = styled.div`
   flex: 1 1 auto;
@@ -35,6 +38,14 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
   private workSpaceRef = React.createRef<HTMLDivElement>();
   private startBlockRef = React.createRef<HTMLDivElement>();
 
+  constructor(props: IProps) {
+    super(props);
+    this.state = {
+      containerWidth: 0,
+      containerHeight: 0,
+    };
+  }
+
   public render() {
     const {width, height} = this.props;
     return (
@@ -55,6 +66,14 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
         prevProps.initialCode !== this.props.initialCode ||
         prevProps.initialCodePath !== this.props.initialCodePath) {
       this.setupBlockly();
+    }
+    if (this.workSpaceRef.current) {
+      const { offsetHeight, offsetWidth } = this.workSpaceRef.current;
+      if ((this.state.containerHeight !== offsetHeight || this.state.containerWidth !== offsetWidth) &&
+          (offsetHeight !== 0 && offsetWidth !== 0)) {
+        this.setState({ containerHeight: offsetHeight, containerWidth: offsetWidth });
+        Blockly.svgResize(this.workSpace);
+      }
     }
   }
 
