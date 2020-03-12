@@ -14,6 +14,7 @@ const UIStore = types.model("UI", {
   showData: true,
   // other ui
   showSpeedControls: false,
+  showBarHistogram: false,
   speed: 0,       // 0-3 (for now)
   showLog: false,
   // slider controls

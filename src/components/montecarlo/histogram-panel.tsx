@@ -214,6 +214,7 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
         chartMin={kTephraMin}
         chartMax={kTephraMax}
         threshold={threshold}
+        showBarHistogram={this.stores.uiStore.showBarHistogram}
       />
     );
   }

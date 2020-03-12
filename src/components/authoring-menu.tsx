@@ -54,6 +54,8 @@ const AuthoringMenu: React.SFC<IProps> = (props) => {
 
           <DatBoolean path="uiStore.showSpeedControls" label="Show Speed Controls?" key="showSpeedControls" />,
 
+          <DatBoolean path="uiStore.showBarHistogram" label="Show Bar Histogram?" key="showBarHistogram" />,
+
           <DatBoolean path="uiStore.showLog" label="Show Log?" key="showLog" />,
 
           <DatBoolean path="uiStore.showDemoCharts" label="Show Demo Charts?" key="showDemoCharts" />,
