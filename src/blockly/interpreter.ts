@@ -165,11 +165,11 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     });
 
     addFunc("graphSpeedDateScatterPlot", (dataset: Dataset) => {
-      chartsStore.addDateScatterChart(dataset, "speed", "Wind speed");
+      chartsStore.addDateScatterChart(dataset, "speed", "Wind speed (m/s)");
     });
 
     addFunc("graphSpeedDirectionRadialPlot", (dataset: Dataset) => {
-      chartsStore.addDirectionRadialChart(dataset, "speed", "Wind speed");
+      chartsStore.addDirectionRadialChart(dataset, "speed", "Wind speed (m/s)");
     });
 
     addFunc("graphArbitraryPlot", (params: {dataset: Dataset, xAxis: string, yAxis: string}) => {
