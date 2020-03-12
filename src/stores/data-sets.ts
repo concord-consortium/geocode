@@ -87,7 +87,7 @@ export const WindData: DataSetInfo = {
       parser: "%Y-%m-%d",
       label: "%b %Y"
     },
-    dayOfYear: {
+    timeOfYear: {
       fields: ["month", "day"],
       parser: "%m-%d",
       label: "%b"
@@ -110,7 +110,7 @@ export const WindData: DataSetInfo = {
   },
   axisLabel: {
     speed: "Wind Speed (m/s)",
-    dayOfYear: "Day",
+    timeOfYear: "Time of year",
     direction: "Direction (degrees)"
   }
 };
