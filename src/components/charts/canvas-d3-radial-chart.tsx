@@ -34,8 +34,8 @@ export class CanvasD3RadialChart extends React.Component<IProps> {
     const absoluteStyle: React.CSSProperties = {position: "absolute", top: 0, left: 0};
     return (
       <div style={relativeStyle}>
-        <svg ref={this.svgRef} style={absoluteStyle} />
         <canvas ref={this.canvasRef} style={absoluteStyle} />
+        <svg ref={this.svgRef} style={absoluteStyle} />
       </div>
     );
   }
@@ -69,15 +69,19 @@ export class CanvasD3RadialChart extends React.Component<IProps> {
 
     // add axes. Assume NESW for now, can add props to customize later if needed
     svgAxes.append("g")
-      .call(d3.axisTop(xScale).tickValues([0]).tickFormat(() => "N (0º)"));
+      .call(d3.axisTop(xScale).tickValues([0]).tickFormat(() => "N (0º)"))
+      .call(g => g.select(".domain").remove());
     svgAxes.append("g")
       .attr("transform", "translate(" + chartWidth + ", 0)")
-      .call(d3.axisRight(yScale).tickValues([0]).tickFormat(() => "E (90º)"));
+      .call(d3.axisRight(yScale).tickValues([0]).tickFormat(() => "E (90º)"))
+      .call(g => g.select(".domain").remove());
     svgAxes.append("g")
       .attr("transform", "translate(0," + chartWidth + ")")
-      .call(d3.axisBottom(xScale).tickValues([0]).tickFormat(() => "S (180º)"));
+      .call(d3.axisBottom(xScale).tickValues([0]).tickFormat(() => "S (180º)"))
+      .call(g => g.select(".domain").remove());
     svgAxes.append("g")
-      .call(d3.axisLeft(yScale).tickValues([0]).tickFormat(() => "W (270º)"));
+      .call(d3.axisLeft(yScale).tickValues([0]).tickFormat(() => "W (270º)"))
+      .call(g => g.select(".domain").remove());
 
     const center = {x: chartWidth / 2, y: chartWidth / 2};
 
@@ -91,10 +95,25 @@ export class CanvasD3RadialChart extends React.Component<IProps> {
     rAxes.append("circle")
       .attr("fill", "none")
       .attr("stroke", "#BBB")
-      .attr("stroke-dasharray", "4")
+      .attr("stroke-width", "1.5px")
+      .attr("stroke-dasharray", "8")
       .attr("cx", center.x)
       .attr("cy", center.y)
       .attr("r", magScale);
+
+    const text = svgAxes.append("g")
+      .selectAll("g")
+      .data(magScale.ticks(5).slice(1))
+      .enter();
+
+    text.append("text")
+      .attr("x", center.x)
+      .attr("y",  d => center.y + magScale(d))
+      .text(d => `${d} m/s`)
+      .attr("dominant-baseline", "middle")
+      .attr("text-anchor", "middle")
+      .attr("fill", "#555")
+      .attr("font-size", "14px");
 
     d3.select(this.canvasRef.current)
       .attr("width", chartWidth)
@@ -106,15 +125,16 @@ export class CanvasD3RadialChart extends React.Component<IProps> {
 
     // shrink path width from 0.5 to 0.1 between 1000 and 3000 data points
     const lineWidthShrink = Math.max(0, Math.min(1, (data.length - 1000) / 2000));
-    ctx.lineWidth = 0.5 - (0.3 * lineWidthShrink);
+    ctx.lineWidth = 0.8 - (0.4 * lineWidthShrink);
     ctx.strokeStyle = "#3c7769";
 
     if (chart.chartStyle === "dot") {
       (data as number[][]).forEach((point) => {
         ctx.beginPath();
         ctx.fillStyle = "#448878";
-        const px = center.x + Math.cos((90 - point[0]) * Math.PI / 180) * magScale(point[1]);
-        const py = center.y - Math.sin((90 - point[0]) * Math.PI / 180) * magScale(point[1]);
+        // for both charts, we want to rotate 180º so that 0º is downward
+        const px = center.x + Math.cos((180 + 90 - point[0]) * Math.PI / 180) * magScale(point[1]);
+        const py = center.y - Math.sin((180 + 90 - point[0]) * Math.PI / 180) * magScale(point[1]);
 
         ctx.arc(px, py, 1.5, 0, 2 * Math.PI, true);
         ctx.fill();
@@ -122,11 +142,11 @@ export class CanvasD3RadialChart extends React.Component<IProps> {
     } else {
       ctx.beginPath();
       (data as number[][]).forEach((point) => {
-        const px = center.x + Math.cos((90 - point[0]) * Math.PI / 180) * magScale(point[1]);
-        const py = center.y - Math.sin((90 - point[0]) * Math.PI / 180) * magScale(point[1]);
+        const px = center.x + Math.cos((180 + 90 - point[0]) * Math.PI / 180) * magScale(point[1]);
+        const py = center.y - Math.sin((180 + 90 - point[0]) * Math.PI / 180) * magScale(point[1]);
         // const px = center.x + xScale(x);
         // const py = yScale(y);
-        const headlen = 10; // length of head in pixels
+        const headlen = 6; // length of head in pixels
         const dx = px - center.x;
         const dy = py - center.y;
         const rads = Math.atan2(dy, dx);

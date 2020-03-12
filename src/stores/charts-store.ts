@@ -107,7 +107,7 @@ const ChartsStore = types.model("Charts", {
   addDirectionRadialChart(dataset: Dataset, yAxis: string, yAxisLabel: string, _title?: string){
     const data = dataset.map(d => [d.direction, d[yAxis]]);
 
-    const chartStyle = "dot"; // may later give students option for "arrow";
+    const chartStyle = "arrow"; // may later give students option for "arrow";
     const customExtents = [[], WindData.extents.speed];
     const title = _title || "Chart " + (self.charts.length + 1);
     self.addChart({type: "radial", data, customExtents, title, chartStyle});
@@ -133,7 +133,7 @@ const ChartsStore = types.model("Charts", {
 
     const dateLabelFormat = timeParser ? timeParser.label : "";
     const type = xAxis === "direction" ? "radial" : "scatter";
-    const chartStyle = "dot";
+    const chartStyle = "arrow";
     const customExtents = [WindData.extents[xAxis] || [], WindData.extents[yAxis] || []];
     const title = "Chart " + (self.charts.length + 1);
     const capFirst = (name: string) => name.charAt(0).toUpperCase() + name.slice(1);
