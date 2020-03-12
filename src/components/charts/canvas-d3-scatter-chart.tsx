@@ -74,7 +74,11 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
 
     // add axes
     const axisBottom = chart.isDate(0) ?
-        d3.axisBottom(xScale).tickFormat(chart.toDateString()) :
+        d3.axisBottom(xScale).tickFormat((date: Date) => {
+          // remove last "Jan" from Time of Year chart
+          if (chart.dateLabelFormat === "%b" && date.getFullYear() === 1901) return "";
+          return chart.toDateString()(date);
+        }) :
         d3.axisBottom(xScale);
     svgAxes.append("g")
       .attr("transform", "translate(0," + chartHeight + ")")
