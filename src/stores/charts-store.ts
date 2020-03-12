@@ -133,7 +133,7 @@ const ChartsStore = types.model("Charts", {
 
     const dateLabelFormat = timeParser ? timeParser.label : "";
     const type = xAxis === "direction" ? "radial" : "scatter";
-    const chartStyle = "dot";
+    const chartStyle = "arrow";
     const customExtents = [WindData.extents[xAxis] || [], WindData.extents[yAxis] || []];
     const title = "Chart " + (self.charts.length + 1);
     const capFirst = (name: string) => name.charAt(0).toUpperCase() + name.slice(1);
