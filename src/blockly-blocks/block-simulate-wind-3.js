@@ -42,11 +42,11 @@ Blockly.JavaScript['simulate_wind_3'] = function(block) {
   var value_vei = Blockly.JavaScript.valueToCode(block, 'vei', Blockly.JavaScript.ORDER_ATOMIC);
 
   var code = `
-  this.setWindspeed(${value_wspeed || 0});
-  this.setWindDirection(${value_wdirection || 0});
-  this.setColumnHeight(${value_columnheight || 0});)
-  this.setEjectedVolume(${value_ejectedvolume || 0});)
-  this.setVEI(${value_vei||4});
+  this.setWindspeed(${value_wspeed});
+  this.setWindDirection(${value_wdirection});
+  this.setColumnHeight(${value_columnheight});)
+  this.setEjectedVolume(${value_ejectedvolume});)
+  this.setVEI(${value_vei});
   this.erupt();
   this.paintMap();
 `;

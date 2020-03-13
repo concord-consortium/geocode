@@ -17,6 +17,10 @@ Blockly.Blocks['simulate_wind_sample_vei'] = {
 Blockly.JavaScript['simulate_wind_sample_vei'] = function(block) {
   var dataset = Blockly.JavaScript.valueToCode(block, 'wind samples', Blockly.JavaScript.ORDER_ATOMIC) || "null";
 
+  if (dataset === "null") {
+    window.blocklyErrorMessage = "null";
+  }
+
   var code = `
     var windSample = getSingleSample(${dataset});
     this.setWindspeedAndDirection(windSample);

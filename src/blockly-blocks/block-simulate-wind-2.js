@@ -36,10 +36,10 @@ Blockly.JavaScript['simulate_wind_2'] = function(block) {
   var value_ejectedvolume = Blockly.JavaScript.valueToCode(block, 'ejectedvolume', Blockly.JavaScript.ORDER_ATOMIC);
 
   var code = `
-  this.setWindspeed(${value_wspeed || 0});
-  this.setWindDirection(${value_wdirection || 0});
-  this.setColumnHeight(${value_columnheight || 0.5});
-  this.setVolume(${value_ejectedvolume || 0});
+  this.setWindspeed(${value_wspeed});
+  this.setWindDirection(${value_wdirection});
+  this.setColumnHeight(${value_columnheight});
+  this.setVolume(${value_ejectedvolume});
   this.erupt();
   this.paintMap();
 `;

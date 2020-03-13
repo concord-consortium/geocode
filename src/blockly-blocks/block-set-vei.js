@@ -14,12 +14,12 @@ Blockly.Blocks['setVEI'] = {
     }
   };
 
-  Blockly.JavaScript['setVEI'] = function(block) {
-    var value_vei = Blockly.JavaScript.valueToCode(block, 'vei', Blockly.JavaScript.ORDER_ATOMIC);
-    // TODO: Assemble JavaScript into code variable.
-    var code = `
-      setVEI(${value_vei});
+Blockly.JavaScript['setFoo'] = function(block) {
+  var foo = Blockly.JavaScript.valueToCode(block, 'foo', Blockly.JavaScript.ORDER_ATOMIC);
 
-    `;
-    return code;
+  if (foo === "") {
+    window.blocklyErrorMessage = "You are missing an input for 'Foo'";
   }
+
+  // [...]
+}
