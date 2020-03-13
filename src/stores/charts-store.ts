@@ -93,8 +93,8 @@ const ChartsStore = types.model("Charts", {
       const date = dateParser(dateStr)!;
       return [date, d[yAxis]];
     });
-    const xAxisLabel = "Date";
-    const dateLabelFormat = "%b %Y";
+    const xAxisLabel = "Year";
+    const dateLabelFormat = "%Y";
     const customExtents = [[], WindData.extents.speed];
     const title = _title || "Chart " + (self.charts.length + 1);
     self.addChart({type: "scatter", data, customExtents, title, xAxisLabel, yAxisLabel, dateLabelFormat});

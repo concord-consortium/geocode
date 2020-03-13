@@ -48,7 +48,7 @@ Blockly.Blocks['graph_any_wind_data'] = {
       .appendField('against')
       .appendField(new Blockly.FieldDropdown([
           ['date', 'date'],
-          ['day of year', 'dayOfYear'],
+          ['time of year', 'timeOfYear'],
           ['month', 'month'],
           ['year', 'year'],
           ['hour', 'hour'],
