@@ -268,7 +268,10 @@ export const makeInterpreterController = (code: string, blocklyController: Block
     let stepCount = 0;
     paused = false;
     function runLoop() {
-      if (paused) return;
+      if (paused) {
+        lastRunID = null;
+        return;
+      }
       stepCount++;
       if (interpreter.step()) {
         if (stepCount % skip === 0) {

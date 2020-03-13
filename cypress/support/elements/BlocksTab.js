@@ -9,8 +9,11 @@ class BlocksTab{
     getVariablesTag(){
         return cy.get('.blocklyTreeLabel').contains('Variables')
     }
-     getRunButton(){
+    getRunButton(){
         return cy.get('[data-test=Run-button]')
+    }
+    getPauseButton(){
+        return cy.get('[data-test=Pause-button]')
     }
     getStopButton(){
         return cy.get('[data-test=Stop-button]')

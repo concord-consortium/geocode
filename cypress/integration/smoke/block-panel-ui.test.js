@@ -9,7 +9,7 @@ context("Blocks panel", () => {
       cy.visit("");
       leftPanel.getBlocksTab().should('be.visible').click();
     });
-  
+
     describe("block panel ui", () => {
       it('verify Blocks tab shows correct elements',()=>{
         blocksTab.getBlockPanel().should('be.visible');
@@ -19,10 +19,10 @@ context("Blocks panel", () => {
         blocksTab.getStepButton().should('be.visible');
         blocksTab.getResetButton().should('be.visible');
       })
-      it('verify Run button switches to Stop after click and vice versa',()=>{
+      it('verify Run button switches to Pause after click and vice versa',()=>{
           blocksTab.getRunButton().click();
-          blocksTab.getStopButton().should('be.visible');
-          blocksTab.getStopButton().click();
+          blocksTab.getPauseButton().should('be.visible');
+          blocksTab.getPauseButton().click();
           blocksTab.getRunButton().should('be.visible');
       })
     });

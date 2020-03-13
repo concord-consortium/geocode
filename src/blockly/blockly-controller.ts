@@ -8,6 +8,8 @@ export class BlocklyController {
 
   @observable
   public running = false;
+  @observable
+  public paused = false;
   public code = "";
 
   private stores: IStore;
@@ -27,6 +29,7 @@ export class BlocklyController {
       workspace.highlightBlock(null);
     }
     this.running = false;
+    this.paused = false;
     this.workspace = workspace;
     this.interpreterController = makeInterpreterController(code, this, this.stores, workspace);
 
@@ -57,6 +60,7 @@ export class BlocklyController {
     if (this.interpreterController) {
       this.interpreterController.stop();
       this.running = false;
+      this.paused = false;
     }
   }
 
@@ -64,6 +68,7 @@ export class BlocklyController {
   public pause = () => {
     if (this.interpreterController) {
       this.interpreterController.pause();
+      this.paused = true;
     }
   }
 
@@ -75,6 +80,7 @@ export class BlocklyController {
         this.setCode(this.code, this.workspace);
       };
       this.interpreterController.run(reset);
+      this.paused = false;
     }
   }
 
