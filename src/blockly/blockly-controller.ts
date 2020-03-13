@@ -119,6 +119,12 @@ export class BlocklyController {
     this.steppingThroughBlock = false;
   }
 
+  public throwError = (errorMessage: string) => {
+    this.pause();
+    alert(errorMessage);
+    this.reset();
+  }
+
   /**
    * This manually parses code to find fields that the user has named, for use
    * in pull-down menus or similar. This is essentially doing what Blockly's
