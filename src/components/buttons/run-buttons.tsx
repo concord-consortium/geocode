@@ -1,7 +1,7 @@
 import * as React from "react";
 import styled from "styled-components";
 import RunIcon from "../../assets/blockly-icons/run.svg";
-import StopIcon from "../../assets/blockly-icons/stop.svg";
+import PauseIcon from "../../assets/blockly-icons/pause.svg";
 import ResetIcon from "../../assets/blockly-icons/reset.svg";
 import StepIcon from "../../assets/blockly-icons/step.svg";
 import IconButton from "./icon-button";
@@ -10,9 +10,12 @@ import RangeControl from "../range-control";
 interface IProps {
   run: () => void;
   stop: () => void;
+  pause: () => void;
+  unpause: () => void;
   step: () => void;
   reset: () => void;
   running?: boolean;
+  paused?: boolean;
   showSpeedControls?: boolean;
   speed?: number;
   setSpeed?: (speed: number) => void;
@@ -29,13 +32,13 @@ const ButtonContainer = styled.div`
 `;
 
 const RunButton = (props: IProps) => {
-  const { run } = props;
+  const { run, unpause, paused } = props;
   return (
     <IconButton
-      onClick={run}
+      onClick={paused ? unpause : run}
       disabled={false}
       children={<RunIcon />}
-      label={"Run"}
+      label={paused ? "Resume" : "Run"}
       hoverColor={"#BBD9FF"}
       activeColor={"#DDEDFF"}
       fill={"#4AA9FF"}
@@ -70,7 +73,7 @@ const StopButton = (props: IProps) => {
     <IconButton
       onClick={stop}
       disabled={false}
-      children={<StopIcon />}
+      children={<PauseIcon />}
       label={"Stop"}
       hoverColor={"#BBD9FF"}
       activeColor={"#DDEDFF"}
@@ -78,6 +81,24 @@ const StopButton = (props: IProps) => {
       width={26}
       height={26}
       dataTest={"Stop-button"}
+    />
+  );
+};
+
+const PauseButton = (props: IProps) => {
+  const { pause } = props;
+  return (
+    <IconButton
+      onClick={pause}
+      disabled={false}
+      children={<PauseIcon />}
+      label={"Pause"}
+      hoverColor={"#BBD9FF"}
+      activeColor={"#DDEDFF"}
+      fill={"#4AA9FF"}
+      width={26}
+      height={26}
+      dataTest={"Pause-button"}
     />
   );
 };
@@ -123,7 +144,7 @@ const SpeedSlider = (props: IProps) => {
 
 export default class RunButtons extends React.Component<IProps, IState> {
   public render() {
-    const { running, showSpeedControls, speed, setSpeed } = this.props;
+    const { running, paused, showSpeedControls, speed, setSpeed } = this.props;
     return (
       <ButtonContainer>
         {
@@ -131,8 +152,8 @@ export default class RunButtons extends React.Component<IProps, IState> {
           <SpeedSlider {...this.props} />
         }
         { running
-          ? <StopButton   {...this.props} />
-          : <RunButton  {...this.props} />
+          ? paused ? <RunButton {...this.props} /> : <PauseButton {...this.props} />
+          : <RunButton {...this.props} />
         }
         <StepButton  {...this.props} />
         <ResetButton {...this.props} />

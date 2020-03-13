@@ -181,10 +181,13 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       run,
       step,
       stop,
+      pause,
+      unpause,
       reset,
       running,
+      paused,
       code,
-   } = this.blocklyController;
+    } = this.blocklyController;
 
     const {
       tabIndex,
@@ -300,7 +303,19 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                     initialCode={initialXmlCode}
                     initialCodePath={codePath}
                     setBlocklyCode={setCode} />
-                  <RunButtons {...{run, stop, step, reset, running, showSpeedControls, speed, setSpeed}} />
+                  <RunButtons
+                    run={run}
+                    stop={stop}
+                    pause={pause}
+                    unpause={unpause}
+                    step={step}
+                    reset={reset}
+                    running={running}
+                    paused={paused}
+                    showSpeedControls={showSpeedControls}
+                    speed={speed}
+                    setSpeed={setSpeed}
+                   />
                   { showLog &&
                     <LogComponent
                       width={logWidth}

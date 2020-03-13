@@ -10,6 +10,8 @@ describe("RunButtons component", () => {
       stop={nullfunc}
       step={nullfunc}
       reset={nullfunc}
+      pause={nullfunc}
+      unpause={nullfunc}
     />);
     expect(wrapper.contains("<RunButton />"));
     expect(wrapper.contains("<StopButton />"));
