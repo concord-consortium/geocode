@@ -80,10 +80,11 @@ Blockly.Blocks['graph_exceedance'] = {
     this.appendDummyInput()
         .appendField("samples from")
         .appendField(new Blockly.FieldDropdown(this.generateOptions), "locations");
-    this.appendValueInput("threshold")
-        .setCheck(null)
+    this.appendDummyInput()
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("exceeding (mm)");
+        .appendField("exceeding")
+        .appendField(new Blockly.FieldNumber(200), "threshold")
+        .appendField("mm");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(230);
@@ -101,7 +102,7 @@ Blockly.Blocks['graph_exceedance'] = {
 }
 Blockly.JavaScript['graph_exceedance'] = function (block) {
   var location = block.getFieldValue('locations')
-  var threshold = Blockly.JavaScript.valueToCode(block, 'threshold', Blockly.JavaScript.ORDER_ATOMIC) || 0;
+  var threshold = block.getFieldValue('threshold');
 
   var code = `graphExceedance({location: "${location}", threshold: ${threshold}});\n`
   return code
