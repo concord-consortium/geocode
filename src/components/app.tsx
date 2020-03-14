@@ -156,7 +156,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
   }
 
   public componentDidMount() {
-    enableShutterbug("reactApp");
+    enableShutterbug("app");
   }
 
   public componentWillUnmount() {
