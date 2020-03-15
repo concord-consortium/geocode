@@ -52,10 +52,18 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       simulation.setModelParams(params);
     });
     addFunc("setWindDirection", (direction: number) => {
+      if (direction === undefined) {
+        blocklyController.throwError("You must set a value for the wind direction.");
+        return;
+      }
       simulation.setWindDirection(direction);
     });
 
     addFunc("setWindspeed", (speed: number) => {
+      if (speed === undefined) {
+        blocklyController.throwError("You must set a value for the wind speed.");
+        return;
+      }
       simulation.setWindSpeed(speed);
     });
 
@@ -64,26 +72,42 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
         simulation.setWindSpeed(windSample.speed);
         simulation.setWindDirection(windSample.direction);
       } else {
-        simulation.setWindSpeed(0);
-        simulation.setWindDirection(0);
+        blocklyController.throwError("You must add a dataset for the wind sample.");
+        return;
       }
     });
 
     addFunc("setMass", (mass: number) => {
+      if (mass === undefined) {
+        blocklyController.throwError("You must set a value for the eruption mass.");
+        return;
+      }
       simulation.setMass(mass);
     });
 
     addFunc("setVolume", (volume: number) => {
+      if (volume === undefined) {
+        blocklyController.throwError("You must set a value for the eruption volume.");
+        return;
+      }
       // +9 km^3 to m^3, +3 m^3 to kg
       const massInKilograms = volume * Math.pow(10, 9 + 3);
       simulation.setMass(massInKilograms);
     });
 
     addFunc("setVEI", (vei: number) => {
+      if (vei === undefined) {
+        blocklyController.throwError("You must set a value for the eruption VEI.");
+        return;
+      }
       simulation.setVEI(vei);
     });
 
     addFunc("setColumnHeight", (height: number) => {
+      if (height === undefined) {
+        blocklyController.throwError("You must set a value for the eruption column height.");
+        return;
+      }
       simulation.setColumnHeight(height);
     });
 
@@ -101,14 +125,22 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     addFunc("computeTephra", (params: {collection: string, windSamples?: Dataset, vei?: number}) => {
       const { collection, windSamples, vei } = params;
 
-      const samplesCollection = samplesCollectionsStore.samplesCollection(collection);
-      if (!samplesCollection) {
-        return {
-          data: 0       // ought to stop and throw an error to the user
-        };
+      if (vei === undefined) {
+        blocklyController.throwError("You must set a value for the eruption VEI.");
+        return;
+      }
+      if (!windSamples) {
+        blocklyController.throwError("You must add a dataset for the wind sample.");
+        return;
       }
 
-      const VEI = vei || 1;
+      const samplesCollection = samplesCollectionsStore.samplesCollection(collection);
+      if (!samplesCollection) {
+        blocklyController.throwError("The samples collection selected is not valid. Make sure you create it first.");
+        return;
+      }
+
+      const VEI = vei;
       let windSpeed = 0;
       let windDirection = 0;
       if (windSamples && windSamples.length > 0) {
@@ -147,32 +179,56 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     });
 
     addFunc("sampleDataset", (params: {dataset: Dataset, sampleSize: number}) => {
+      if (!params.dataset) {
+        blocklyController.throwError("You must add a dataset for the wind sample.");
+        return;
+      }
       return {
         data: Datasets.getRandomSampleWithReplacement(params.dataset, params.sampleSize)
       };
     });
 
-    addFunc("getSingleSample", (params: Dataset) => {
+    addFunc("getSingleSample", (dataset: Dataset) => {
+      if (!dataset) {
+        blocklyController.throwError("You must add a dataset for the wind sample.");
+        return;
+      }
       return {
-        data: Datasets.getRandomSampleWithReplacement(params, 1)[0]
+        data: Datasets.getRandomSampleWithReplacement(dataset, 1)[0]
       };
     });
 
     addFunc("filter", (params: {dataset: Dataset, filter: Filter}) => {
+      if (!params.dataset) {
+        blocklyController.throwError("You must add a dataset for the wind sample.");
+        return;
+      }
       return {
         data: Datasets.filter(params.dataset, params.filter)
       };
     });
 
     addFunc("graphSpeedDateScatterPlot", (dataset: Dataset) => {
+      if (!dataset) {
+        blocklyController.throwError("You must add a dataset for the wind sample.");
+        return;
+      }
       chartsStore.addDateScatterChart(dataset, "speed", "Wind speed (m/s)");
     });
 
     addFunc("graphSpeedDirectionRadialPlot", (dataset: Dataset) => {
+      if (!dataset) {
+        blocklyController.throwError("You must add a dataset for the wind sample.");
+        return;
+      }
       chartsStore.addDirectionRadialChart(dataset, "speed", "Wind speed (m/s)");
     });
 
     addFunc("graphArbitraryPlot", (params: {dataset: Dataset, xAxis: string, yAxis: string}) => {
+      if (!params.dataset) {
+        blocklyController.throwError("You must add a dataset for the wind sample.");
+        return;
+      }
       chartsStore.addArbitraryChart(params.dataset, params.xAxis, params.yAxis);
     });
 
@@ -180,6 +236,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       const { location, threshold } = params;
       const samplesCollection = samplesCollectionsStore.samplesCollection(location);
       if (!samplesCollection) {
+        blocklyController.throwError("The samples collection selected is not valid. Make sure you create it first.");
         return;
       }
       chartsStore.addHistogram(samplesCollection, threshold, `Tephra Thickness at ${samplesCollection.name} (mm)`);
@@ -198,7 +255,12 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     });
 
     addFunc("addToSampleCollection", (params: {name: string, sample: number}) => {
-      samplesCollectionsStore.addToSamplesCollection(params.name, params.sample);
+      const samplesCollection = samplesCollectionsStore.samplesCollection(params.name);
+      if (!samplesCollection) {
+        blocklyController.throwError("The samples collection selected is not valid. Make sure you create it first.");
+        return;
+      }
+      samplesCollection.addSample(params.sample);
     });
 
     /** ==== Utility methods ==== */

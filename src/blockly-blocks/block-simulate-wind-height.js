@@ -30,9 +30,9 @@ Blockly.JavaScript['simulate_wind_height'] = function(block) {
   var value_columnheight = Blockly.JavaScript.valueToCode(block, 'columnheight', Blockly.JavaScript.ORDER_ATOMIC);
 
   var code = `
-  this.setWindspeed(${value_wspeed || 0});
-  this.setWindDirection(${value_wdirection || 0});
-  this.setColumnHeight(${value_columnheight || 0.5});
+  this.setWindspeed(${value_wspeed});
+  this.setWindDirection(${value_wdirection});
+  this.setColumnHeight(${value_columnheight});
   this.erupt();
   this.paintMap();
 `;

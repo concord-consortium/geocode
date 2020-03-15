@@ -24,8 +24,8 @@ Blockly.JavaScript['simulate_wind'] = function(block) {
   var value_wdirection = Blockly.JavaScript.valueToCode(block, 'wdirection', Blockly.JavaScript.ORDER_ATOMIC);
 
   var code = `
-  this.setWindspeed(${value_wspeed || 0});
-  this.setWindDirection(${value_wdirection || 0});
+  this.setWindspeed(${value_wspeed});
+  this.setWindDirection(${value_wdirection});
   this.erupt();
   this.paintMap();
 `;

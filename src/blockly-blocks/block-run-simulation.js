@@ -27,9 +27,9 @@ Blockly.Blocks['run_simulation'] = {
     var value_wind_speed = Blockly.JavaScript.valueToCode(block, 'wind_speed', Blockly.JavaScript.ORDER_ATOMIC);
     var value_direction = Blockly.JavaScript.valueToCode(block, 'wind_direction', Blockly.JavaScript.ORDER_ATOMIC);
     var code = `
-      var vei=${value_vei||4};
-      var speed=${value_wind_speed || 0};
-      var direction=${value_direction || 0};
+      var vei=${value_vei};
+      var speed=${value_wind_speed};
+      var direction=${value_direction};
       this.setVEI(vei);
       this.setWindspeed(speed);
       this.setWindDirection(direction);

@@ -28,9 +28,9 @@ Blockly.JavaScript['simulate_wind_vei'] = function(block) {
   var value_vei = Blockly.JavaScript.valueToCode(block, 'vei', Blockly.JavaScript.ORDER_ATOMIC);
 
   var code = `
-  this.setWindspeed(${value_wspeed || 0});
-  this.setWindDirection(${value_wdirection || 0});
-  this.setVEI(${value_vei||4});
+  this.setWindspeed(${value_wspeed});
+  this.setWindDirection(${value_wdirection});
+  this.setVEI(${value_vei});
   this.erupt();
   this.paintMap();
 `;

@@ -31,7 +31,7 @@ Blockly.Blocks['calculate_tephra_vei_wind'] = {
 Blockly.JavaScript['calculate_tephra_vei_wind'] = function(block) {
     var collection = block.getFieldValue('collections');
     var wind_samples = Blockly.JavaScript.valueToCode(block, 'wind samples', Blockly.JavaScript.ORDER_ATOMIC) || "null";
-    var value_vei = Blockly.JavaScript.valueToCode(block, 'vei', Blockly.JavaScript.ORDER_ATOMIC) || 0;
+    var value_vei = Blockly.JavaScript.valueToCode(block, 'vei', Blockly.JavaScript.ORDER_ATOMIC) || "undefined";
 
     var code = `computeTephra({collection: "${collection}", windSamples: ${wind_samples}, vei: ${value_vei}})`;
 
