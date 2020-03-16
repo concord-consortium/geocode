@@ -77,7 +77,7 @@ Blockly.JavaScript['create_sample_collection'] = function (block) {
 Blockly.Blocks['add_to_sample_collection'] = {
   init: function () {
     this.appendDummyInput()
-      .appendField("Add sample for")
+      .appendField("Add data to")
     this.appendValueInput('tephra sample')
       .setAlign(Blockly.ALIGN_RIGHT)
       .setCheck('Sample')
@@ -104,6 +104,6 @@ Blockly.JavaScript['add_to_sample_collection'] = function (block) {
   var tephra_sample = Blockly.JavaScript.valueToCode(block, 'tephra sample', Blockly.JavaScript.ORDER_ATOMIC) || 0
   var collection = block.getFieldValue('collections')
 
-  var code = `addToSampleCollection({name: "${collection}", sample: ${tephra_sample}});\n`
+  var code = `addToSampleCollection({collection: "${collection}", sample: ${tephra_sample}});\n`
   return code
 }

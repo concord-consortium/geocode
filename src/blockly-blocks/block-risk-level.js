@@ -4,11 +4,11 @@ Blockly.Blocks['show_risk'] = {
         .setAlign(Blockly.ALIGN_RIGHT)
         .appendField("Show risk on map for");
     this.appendDummyInput()
-        .appendField("samples from")
-        .appendField(new Blockly.FieldDropdown(this.generateOptions), "locations");
+        .appendField("data collection")
+        .appendField(new Blockly.FieldDropdown(this.generateOptions), "collections");
     this.appendDummyInput()
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("exceeding")
+        .appendField("above threshold")
         .appendField(new Blockly.FieldNumber(200), "threshold")
         .appendField("mm");
     this.setPreviousStatement(true, null);
@@ -27,9 +27,9 @@ Blockly.Blocks['show_risk'] = {
   }
 }
 Blockly.JavaScript['show_risk'] = function (block) {
-  var location = block.getFieldValue('locations')
+  var collection = block.getFieldValue('collections')
   var threshold = block.getFieldValue('threshold');
 
-  var code = `showRisk({location: "${location}", threshold: ${threshold}});\n`
+  var code = `showRisk({collection: "${collection}", threshold: ${threshold}});\n`
   return code
 }

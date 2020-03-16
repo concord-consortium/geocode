@@ -134,9 +134,9 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
         return;
       }
 
-      const samplesCollection = samplesCollectionsStore.samplesCollection(collection);
-      if (!samplesCollection) {
-        blocklyController.throwError("The samples collection selected is not valid. Make sure you create it first.");
+      const samplesLocation = samplesCollectionsStore.samplesLocation(location);
+      if (!samplesLocation) {
+        blocklyController.throwError("The samples location selected is not valid. Make sure you create it first.");
         return;
       }
 
@@ -152,7 +152,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       simulation.setWindDirection(windDirection);
       simulation.setVEI(VEI);
 
-      const thickness = simulation.calculateTephraAtLocation(samplesCollection.x, samplesCollection.y);
+      const thickness = simulation.calculateTephraAtLocation(samplesLocation.x, samplesLocation.y);
 
       return {
         data: thickness
@@ -232,9 +232,9 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       chartsStore.addArbitraryChart(params.dataset, params.xAxis, params.yAxis);
     });
 
-    addFunc("graphExceedance", (params: {location: string, threshold: number}) => {
-      const { location, threshold } = params;
-      const samplesCollection = samplesCollectionsStore.samplesCollection(location);
+    addFunc("graphExceedance", (params: {collection: string, threshold: number}) => {
+      const { collection, threshold } = params;
+      const samplesCollection = samplesCollectionsStore.samplesCollection(collection);
       if (!samplesCollection) {
         blocklyController.throwError("The samples collection selected is not valid. Make sure you create it first.");
         return;
@@ -244,8 +244,8 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
 
     /** ==== Risk level ==== */
 
-    addFunc("showRisk", (params: {location: string, threshold: number}) => {
-      samplesCollectionsStore.setSamplesCollectionRiskLevel(params.location, params.threshold);
+    addFunc("showRisk", (params: {collection: string, threshold: number}) => {
+      samplesCollectionsStore.setSamplesCollectionRiskLevel(params.collection, params.threshold);
     });
 
     /** ==== Sample Collections ==== */
@@ -263,8 +263,8 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       samplesCollectionsStore.createSamplesCollection({name: params.name, location: samplesLocation});
     });
 
-    addFunc("addToSampleCollection", (params: {name: string, sample: number}) => {
-      const samplesCollection = samplesCollectionsStore.samplesCollection(params.name);
+    addFunc("addToSampleCollection", (params: {collection: string, sample: number}) => {
+      const samplesCollection = samplesCollectionsStore.samplesCollection(params.collection);
       if (!samplesCollection) {
         blocklyController.throwError("The samples collection selected is not valid. Make sure you create it first.");
         return;
