@@ -1,9 +1,9 @@
 Blockly.Blocks['show_risk'] = {
   init: function() {
     this.appendDummyInput()
-        .setAlign(Blockly.ALIGN_RIGHT)
         .appendField("Show risk on map for");
     this.appendDummyInput()
+        .setAlign(Blockly.ALIGN_RIGHT)
         .appendField("data collection")
         .appendField(new Blockly.FieldDropdown(this.generateOptions), "collections");
     this.appendDummyInput()

@@ -75,7 +75,6 @@ Blockly.JavaScript['graph_any_wind_data'] = function (block) {
 Blockly.Blocks['graph_exceedance'] = {
   init: function() {
     this.appendDummyInput()
-        .setAlign(Blockly.ALIGN_RIGHT)
         .appendField("Graph data collection")
         .appendField(new Blockly.FieldDropdown(this.generateOptions), "collections");
     this.appendDummyInput()
