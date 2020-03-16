@@ -4,7 +4,7 @@ Blockly.Blocks['calculate_tephra_vei_wind'] = {
         .appendField("Compute tephra depth at location")
     this.appendDummyInput()
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField(new Blockly.FieldDropdown(this.generateOptions), "collections");
+        .appendField(new Blockly.FieldDropdown(this.generateOptions), "locations");
     this.appendValueInput("vei")
         .setCheck("Number")
         .setAlign(Blockly.ALIGN_RIGHT)
@@ -21,19 +21,19 @@ Blockly.Blocks['calculate_tephra_vei_wind'] = {
 
   generateOptions: function() {
     if (Blockly.sampleCollections && Blockly.sampleCollections.length > 0) {
-      return Blockly.sampleCollections;
+      return Blockly.sampleLocations;
     } else {
-      return [["<Create collection>",""]];
+      return [["<Create location>",""]];
     }
   }
 };
 
 Blockly.JavaScript['calculate_tephra_vei_wind'] = function(block) {
-    var collection = block.getFieldValue('collections');
+    var location = block.getFieldValue('locations');
     var wind_samples = Blockly.JavaScript.valueToCode(block, 'wind samples', Blockly.JavaScript.ORDER_ATOMIC) || "null";
     var value_vei = Blockly.JavaScript.valueToCode(block, 'vei', Blockly.JavaScript.ORDER_ATOMIC) || "undefined";
 
-    var code = `computeTephra({collection: "${collection}", windSamples: ${wind_samples}, vei: ${value_vei}})`;
+    var code = `computeTephra({location: "${location}", windSamples: ${wind_samples}, vei: ${value_vei}})`;
 
     return [code, Blockly.JavaScript.ORDER_NONE]
   };

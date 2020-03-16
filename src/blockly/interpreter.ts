@@ -122,8 +122,8 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     });
 
     // Returns tephra thickness at a specific location, given by a samples collection, with various inputs
-    addFunc("computeTephra", (params: {collection: string, windSamples?: Dataset, vei?: number}) => {
-      const { collection, windSamples, vei } = params;
+    addFunc("computeTephra", (params: {location: string, windSamples?: Dataset, vei?: number}) => {
+      const { location, windSamples, vei } = params;
 
       if (vei === undefined) {
         blocklyController.throwError("You must set a value for the eruption VEI.");
