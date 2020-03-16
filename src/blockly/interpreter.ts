@@ -250,8 +250,17 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
 
     /** ==== Sample Collections ==== */
 
-    addFunc("createSampleCollection", (params: {name: string, x: number, y: number}) => {
-      samplesCollectionsStore.createSamplesCollection(params);
+    addFunc("createSampleLocation", (params: {name: string, x: number, y: number}) => {
+      samplesCollectionsStore.createSamplesLocation(params);
+    });
+
+    addFunc("createSampleCollection", (params: {name: string, location: string}) => {
+      const samplesLocation = samplesCollectionsStore.samplesLocation(params.location);
+      if (!samplesLocation) {
+        blocklyController.throwError("The location selected is not valid. Make sure you create it first.");
+        return;
+      }
+      samplesCollectionsStore.createSamplesCollection({name: params.name, location: samplesLocation});
     });
 
     addFunc("addToSampleCollection", (params: {name: string, sample: number}) => {

@@ -131,21 +131,28 @@ export class BlocklyController {
    * variables system does, without the hassle of dealing with Blockly's custom
    * variable syntax and dynamic creation of blocks to deal with them.
    *
-   * Currently the only thing we parse for is the "create_sample_collection" block,
-   * so that we can populate the "add_to_samples_collection" dropdowns.
+   * Currently we parse for is the "create_sample_location" and "create_sample_collection"
+   * blocks, so that we can populate the relevant dropdowns.
    *
    * Note that this process doesn't actually create a samplesCollection, that happens
    * when the code is actually run.
    */
   private parseVariables() {
+    const sampleLocationsRegex = /createSampleLocation\({name: "([^"]*)"/gm;
     const sampleCollectionsRegex = /createSampleCollection\({name: "([^"]*)"/gm;
-    const sampleCollections = [];
-    let match;
-    // tslint:disable-next-line
-    while ((match = sampleCollectionsRegex.exec(this.code)) !== null) {
-      const collectionName = match[1];
-      if (collectionName) sampleCollections.push([collectionName, collectionName]);   // dropdowns need two strings
-    }
-    (Blockly as any).sampleCollections = sampleCollections;
+
+    const findValues = (regex: RegExp) => {
+      const results = [];
+      let match;
+      // tslint:disable-next-line
+      while ((match = regex.exec(this.code)) !== null) {
+        const value = match[1];
+        if (value) results.push([value, value]);   // dropdowns need two strings
+      }
+      return results;
+    };
+
+    (Blockly as any).sampleLocations = findValues(sampleLocationsRegex);
+    (Blockly as any).sampleCollections = findValues(sampleCollectionsRegex);
   }
 }
