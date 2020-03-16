@@ -70,6 +70,7 @@ const SamplesCollectionsStore = types.model("SamplesCollections", {
   },
 
   reset() {
+    self.samplesLocations.length = 0;
     self.samplesCollections.length = 0;
   },
 
