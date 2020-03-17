@@ -19,5 +19,6 @@ const modelOptions = new ModelOptions;
 before(() => {
     cy.visit("");
     modelOptions.getModelOptionsMenu().click();
-    modelOptions.selectInitialCode('')
+    modelOptions.selectInitialCode('Monte Carlo (2 locs)');
+    modelOptions.
   });

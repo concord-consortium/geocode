@@ -38,6 +38,12 @@ class ModelOptions {
     getShowDataOption(){
         return cy.get('.label-text').contains('Show data?').siblings('input')
     }
+    getShowSpeedControl(){
+        return cy.get('.label-text').contains('Show Speed Controls?')
+    }
+    getShowBarHistogram(){
+        return cy.get('.label-text').contains('Show Bar Histogram?')
+    }
     getShowLogOption(){
         return cy.get('.label-text').contains('Show Log?').siblings('input')
     }
