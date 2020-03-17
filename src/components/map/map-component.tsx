@@ -4,7 +4,7 @@ import * as L from "leaflet";
 import { Map as LeafletMap, TileLayer, Marker, Popup, ScaleControl, Pane } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "../../css/map-component.css";
-import { iconVolcano, iconMarker, getCachedDivIcon, riskIcon } from "../icons";
+import { iconVolcano, iconMarker, getCachedDivIcon, riskIcon, getCachedSampleLocationIcon } from "../icons";
 
 import { CityType  } from "../../stores/simulation-store";
 import * as Scenarios from "../../assets/maps/scenarios.json";
@@ -21,7 +21,7 @@ import KeyButton from "./map-key-button";
 import CompassComponent from "./map-compass";
 import TephraLegendComponent from "./map-tephra-legend";
 import RiskLegendComponent from "./map-risk-legend";
-import { SamplesCollectionModelType } from "../../stores/samples-collections-store";
+import { SamplesCollectionModelType, SamplesLocationModelType } from "../../stores/samples-collections-store";
 import { RiskLevels } from "../montecarlo/monte-carlo";
 
 interface WorkspaceProps {
@@ -195,6 +195,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       })
     : null;
 
+    const sampleLocations = panelType === RightSectionTypes.MONTE_CARLO && this.getSampleLocations();
     const riskItems = panelType === RightSectionTypes.MONTE_CARLO && this.getRiskItems();
 
     const { crossPoint1Lat, crossPoint1Lng, crossPoint2Lat, crossPoint2Lng } = this.stores.simulation;
@@ -266,6 +267,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
             {cityItems}
             {pinItems}
             {riskItems}
+            {sampleLocations}
             { isSelectingCrossSection && <CrossSectionDrawLayer
               ref={this.crossRef}
               map={this.state.mapLeafletRef}
@@ -325,6 +327,23 @@ export class MapComponent extends BaseComponent<IProps, IState>{
         this.stores.simulation.setViewportParameters(zoom, center.lat, center.lng);
       }
     }
+  }
+
+  private getSampleLocations = () => {
+    const { samplesCollectionsStore } = this.stores;
+    const { volcanoLat, volcanoLng } = this.stores.simulation;
+    const locations: React.ReactElement[] = [];
+    samplesCollectionsStore.samplesLocations.forEach( (samplesLocation: SamplesLocationModelType, i) => {
+      const pos = LocalToLatLng({x: samplesLocation.x, y: samplesLocation.y}, L.latLng(volcanoLat, volcanoLng));
+      locations.push(
+        <Marker
+          position={[pos.lat, pos.lng]}
+          icon={getCachedSampleLocationIcon(samplesLocation.name)}
+          key={"location-" + i}
+        />
+      );
+    });
+    return locations;
   }
 
   private getRiskItems = () => {

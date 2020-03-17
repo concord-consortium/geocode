@@ -47,4 +47,15 @@ export function getCachedDivIcon(label: string) {
     return iconsCache.get(iconKey);
 }
 
+export function sampleLocationIcon(label: string, anchorCorner: string = "top-left"): DivIcon {
+    const html = "<div class='icon-content sample-label " + anchorCorner + "'>" + label + "</div>";
+    return new DivIcon({ className: "div-icon sample-label", html });
+}
+
+export function getCachedSampleLocationIcon(label: string) {
+    const iconKey = "div-icon" + label;
+    if (!iconsCache.get(iconKey)) iconsCache.set(iconKey, sampleLocationIcon(label));
+    return iconsCache.get(iconKey);
+}
+
 export { iconVolcano, iconMarker };
