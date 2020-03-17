@@ -1,6 +1,5 @@
 import LeftPanel from "../../support/elements/LeftPanel"
 import ControlsTab from "../../support/elements/ControlsTab"
-import { find } from "tslint/lib/utils";
 
 const leftPanel = new LeftPanel;
 const controlsTab = new ControlsTab;

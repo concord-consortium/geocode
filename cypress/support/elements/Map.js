@@ -2,6 +2,9 @@ class Map {
     getMap(){
         return cy.get('.map')
     }
+    getVolcanoMarker(){
+        return cy.get('img.leaflet-marker-icon')
+    }
     getRecenterButton(){
         return cy.get('[data-test=Re-center-button]');
     }
@@ -24,8 +27,16 @@ class Map {
             .trigger('mousemove', {offsetX:275, offsetY:0})
             .trigger('mouseup');
     }
-    getMap(){
-        return cy.get('.map')
+    getMapTransform(){
+        return cy.get('.map .leaflet-proxy.leaflet-zoom-animated')
+    }
+    getTephra(){
+        return cy.get('.leaflet-pane .leaflet-zoom-animated .leaflet-interactive')
+    }
+
+    //Monte Carlo Tab
+    getDiamondMarker(){
+        return cy.get('.diamond-icon')
     }
 }
 

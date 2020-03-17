@@ -29,11 +29,7 @@
                   <next>
                      <block type="graph_exceedance" id="yYniI4@KIx*fK6Kwx/|P">
                         <field name="locations">Close-by</field>
-                        <value name="threshold">
-                           <block type="math_number" id="lw$y+)7Pn$yXM?=-zrg!">
-                              <field name="NUM">200</field>
-                           </block>
-                        </value>
+                        <field name="threshold">200</field>
                      </block>
                   </next>
                </block>

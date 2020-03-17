@@ -1,0 +1,50 @@
+{"volcanoes":[
+    {
+        "name":"Cerro Negro",
+        "x":"322",
+        "y":"405",
+        "z":"0"
+    },
+    {
+        "name":"Cerro Negro (markers)",
+        "x":"322",
+        "y":"405",
+        "z":"0"
+    },
+    {
+        "name":"Mt. St. Helens",
+        "x":"322",
+        "y":"405",
+        "z":"0"
+    },
+    {
+        "name":"Mount Pinatubo",
+        "x":"322",
+        "y":"405",
+        "z":"0"
+    }, 
+    {
+        "name":"Volcan de Fuego",
+        "x":"322",
+        "y":"405",
+        "z":"0"
+    },
+    {
+        "name":"Mount Ruapehu",
+        "x":"322",
+        "y":"405",
+        "z":"0"
+    },
+    {
+        "name":"Mount Fuji",
+        "x":"322",
+        "y":"405",
+        "z":"0"
+    },
+    {
+        "name":"Mount Vesuvius",
+        "x":"322",
+        "y":"405",
+        "z":"0"
+    }                       
+]}
