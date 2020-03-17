@@ -100,7 +100,7 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
     const {width, height} = this.props;
     const histogramCharts = this.stores.chartsStore.charts.filter(chart => chart.type === "histogram");
     return (
-      <Panel height={height} width={width}>
+      <Panel height={height} width={width} data-test={"histogram-tab-panel"}>
         <PanelContent color={histogramCharts.length ? undefined : "white"}>
           <HistogramTabs selectedIndex={this.state.tabIndex} onSelect={this.handleTabSelect}>
             <TabList data-test="monte-carlo-locations-tab-list">
@@ -153,7 +153,6 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
         width={"100%"}
         tabcolor={"white"}
         key={"histogramTabPanel-" + i}
-        data-test={"histogram-tab-panel"}
       >
         <HorizontalContainer data-test={"histogram-chart-container"}>
           { histogramChart

@@ -2,6 +2,9 @@ class MonteCarloTab {
     getMonteCarloPanel(){
         return cy.get('[data-test=Monte-Carlo-panel]');
     }
+    getHistogramPanel(){
+        return cy.get('[data-test=histogram-tab-panel]');
+    }
     getTabList(){
         return cy.get('[data-test=monte-carlo-locations-tab-list] li')
     }
