@@ -193,7 +193,7 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
                 }
               </PanelStat>
               {data && riskLevel &&
-                <RiskDiamond backgroundColor={riskLevel.iconColor}>
+                <RiskDiamond backgroundColor={riskLevel.iconColor} data-test={"risk-diamond"}>
                   <RiskDiamondText>
                     {riskLevel.iconText}
                   </RiskDiamondText>

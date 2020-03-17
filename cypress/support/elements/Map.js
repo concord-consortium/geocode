@@ -33,6 +33,11 @@ class Map {
     getTephra(){
         return cy.get('.leaflet-pane .leaflet-zoom-animated .leaflet-interactive')
     }
+
+    //Monte Carlo Tab
+    getDiamondMarker(){
+        return cy.get('.diamond-icon')
+    }
 }
 
 export default Map;

@@ -33,6 +33,16 @@ class BlocksTab{
     getEditableTextEl(){
         return '.blocklyEditableText';
     }
+    setSpeedControl(speed){
+        switch (speed) {
+            case ("fast"):
+                cy.get('[data-test=slider-rail').click("right")
+                break;
+            case ("slow"):
+                cy.get('[data-test=slider-rail').click("left")
+                break;
+        }
+    }
 
     //Data blocks
     getTextBlock(){
