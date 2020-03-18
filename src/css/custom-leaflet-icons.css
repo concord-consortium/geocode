@@ -62,6 +62,26 @@
     z-index: 200 !important;
   }
 
+  .div-icon.sample-label .icon-content {
+    background: #fffc;
+    margin-left: 22px !important;
+    margin-top: 1px !important;
+    line-height: 15px;
+    border: 1px solid #444;
+    border-radius: 2px;
+    box-shadow: none;
+  }
+  .div-icon.sample-label::before {
+    content: "";
+    display: inline-block;
+    transform: rotate(45deg);
+    margin-left: 2px;
+    margin-top: 18px;
+    width: 23px;
+    height: 0px;
+    border: 1px solid #444;
+  }
+
   .top-left {
     transform: translate(0%, 0%);
   }

@@ -36,7 +36,8 @@
     <block type="filter_data"></block>
   </category>
 
-  <category name="Samples Collections" colour="240">
+  <category name="Data Collections" colour="240">
+    <block type="create_sample_location"></block>
     <block type="create_sample_collection"></block>
     <block type="add_to_sample_collection"></block>
     <block type="graph_exceedance"></block>
