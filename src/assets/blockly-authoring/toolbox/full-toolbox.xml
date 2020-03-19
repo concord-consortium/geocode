@@ -20,6 +20,7 @@
     <block type="simulate_wind_height"></block>
     <block type="simulate_wind_2"></block>
     <block type="simulate_wind_sample_vei"></block>
+    <block type="simulate_wind_sample_vei_2"></block>
 
     <block type="calculate_tephra_vei_wind"></block>
     <!-- <block type="outputPaintMap"></block> -->
