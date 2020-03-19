@@ -3,14 +3,14 @@ class BlocksTab{
     getBlockPanel(){
         return cy.get('[data-test=Blocks-panel]')
      }
-    getTag(tagName){ //tagName=['Volcano','Logic','Loops','Data','Variables','Functions']
+    getTag(tagName){ //tagName=['Volcano','Wind data','Samples Collections',Logic','Loops','Data','Variables','Functions']
         return cy.get('.blocklyTreeLabel').contains(tagName)
     }
     getFlyout(){
         return cy.get('.blocklyFlyout');
     }
     getFlyoutButtonEl(){
-        return ('blocklyFlyoutButton')
+        return ('.blocklyFlyoutButton')
     }
     getCanvas(){
         return cy.get('.blocklyBlockCanvas')

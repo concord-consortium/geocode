@@ -1,20 +1,8 @@
 import LeftPanel from "../../support/elements/LeftPanel"
 import RightPanel from "../../support/elements/RightPanel"
-import CodeTab from "../../support/elements/CodeTab"
-import ControlsTab from "../../support/elements/ControlsTab"
-import ConditionsTab from "../../support/elements/ConditionsTab"
-import MonteCarloTab from "../../support/elements/MonteCarloTab"
-import DataTab from "../../support/elements/DataTab"
-
-
 
 const leftPanel = new LeftPanel;
 const rightPanel = new RightPanel;
-const codeTab = new CodeTab;
-const controlsTab = new ControlsTab;
-const conditionsTab = new ConditionsTab;
-const MonteCarloTab = new MonteCarloTab;
-const dataTab = new DataTab;
 
 context("Test app workspace", () => {
   before(() => {
