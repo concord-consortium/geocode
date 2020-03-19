@@ -41,12 +41,24 @@ const saveUserData = () => {
   unsaved = false;
 };
 
+// mutates passed-in object by parsing any props that ought to be objects but might be strings
+// (see bug https://www.pivotaltracker.com/n/projects/736901/stories/171888125)
+const parseJSON = (obj: any, propsToParse: string[]) => {
+  for (const prop of propsToParse) {
+    if (typeof obj[prop] === "string") {
+      obj[prop] = JSON.parse(obj[prop]);
+    }
+  }
+};
+
 // If we are embedded in LARA, wait for `initInteractive` and initialize model with any student data
 phone.addListener("initInteractive", (data: {
     mode: any,
     authoredState: any,
     interactiveState: any,
     linkedState: any}) => {
+
+  parseJSON(data, ["authoredState", "interactiveState", "linkedState"]);
 
   const authorState: SerializedState = data && data.authoredState || {};
   // student data may be in either the current interactive's saved state, or a previous model's linked state
