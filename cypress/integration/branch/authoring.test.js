@@ -60,13 +60,13 @@ context ('Authoring Options',()=>{
             leftPanel.getControlsTab().click();
             controlsTab.getEruptButton().click();
             //verify tephra is visible at a location south of volcano
-            map.getTephra().last().attribute('d').should('contain',"M326 407L331 412L339 412L352 428L352 461L343 471L343 525L331 541L313 541L301 525L301 471L292 461L292 428L305 412L313 412L322 401z")
+            map.getTephra().last().attribute('d').should('contain',"M361 277L361 374L339 401L313 401L301 385L301 353L309 342L309 320L318 309L318 299L326 288L326 277L331 272L356 272z")
 
             //change conditions to see tephra change without having to erupt again
             var slider="wind-direction", windDirection = 190;
             controlsTab.setSliderValue(slider,windDirection);
             //verify location has not changed north of volcano
-            map.getTephra().last().attribute('d').should('contain',"M326 407L331 412L339 412L352 428L352 461L343 471L343 525L331 541L313 541L301 525L301 471L292 461L292 428L305 412L313 412L322 401z")
+            map.getTephra().last().attribute('d').should('contain',"M361 277L361 374L339 401L313 401L301 385L301 353L309 342L309 320L318 309L318 299L326 288L326 277L331 272L356 272z")
 
             controlsTab.resetModel();//clean up
          })
