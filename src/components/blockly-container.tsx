@@ -11,6 +11,7 @@ interface IProps {
   setBlocklyCode: (code: string, workspace: any) => void;
   width: number;
   height: number;
+  hideToolbox: boolean;
 }
 
 interface IState {
@@ -47,7 +48,7 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
   }
 
   public render() {
-    const {width, height} = this.props;
+    const {width, height, hideToolbox} = this.props;
     return (
       <Wrapper>
         <StartBlocks ref={this.startBlockRef} />
@@ -64,7 +65,8 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
   public componentDidUpdate(prevProps: IProps) {
     if ((prevProps.toolboxPath !== this.props.toolboxPath) ||
         prevProps.initialCode !== this.props.initialCode ||
-        prevProps.initialCodePath !== this.props.initialCodePath) {
+        prevProps.initialCodePath !== this.props.initialCodePath ||
+        prevProps.hideToolbox !== this.props.hideToolbox) {
       this.setupBlockly();
     }
     if (this.workSpaceRef.current) {
@@ -78,7 +80,7 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
   }
 
   private initializeBlockly = () => {
-    const {setBlocklyCode} = this.props;
+    const {setBlocklyCode, hideToolbox} = this.props;
 
     Blockly.JavaScript.STATEMENT_PREFIX = "startStep(%1);\n";
     Blockly.JavaScript.STATEMENT_SUFFIX = "endStep();\n";
@@ -102,6 +104,10 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
       }
     };
 
+    if (hideToolbox) {
+      delete blockOpts.toolbox;
+    }
+
     this.workSpace = Blockly.inject(this.workSpaceRef.current, blockOpts);
 
     const myUpdateFunction = (event: any) => {
@@ -113,7 +119,7 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
   }
 
   private setupBlockly = async () => {
-    const {toolboxPath, initialCode, initialCodePath} = this.props;
+    const {toolboxPath, initialCode, initialCodePath, hideToolbox} = this.props;
 
     // because we may be loading in code and toolboxes asynchronously, this function may
     // occasionally complete after newer invocations have completed, overwriting the newer
@@ -136,7 +142,13 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
 
     this.workSpace.clear();
 
-    this.workSpace.updateToolbox(toolbox);
+    if (hideToolbox) {
+      // the only way to remove a toolbox is to destroy blockly and recreate it without one
+      this.workSpace.dispose();
+      this.initializeBlockly();
+    } else {
+      this.workSpace.updateToolbox(toolbox);
+    }
 
     const xml = Blockly.Xml.textToDom(codeString);
     Blockly.Xml.domToWorkspace(xml, this.workSpace);
