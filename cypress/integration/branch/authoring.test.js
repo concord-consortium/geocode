@@ -137,7 +137,7 @@ context ('Authoring Options',()=>{
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
         })
         it('verify selecting Everything shows correct toolboxes in Blocks',()=>{
-            // Volcano, Logic, Loops, Data, Variables, Functions
+            // Volcano, Wind data, Data Collections, Logic, Loops, Data, Variables, Functions
             modelOptions.selectCodeToolbox('Everything');
             cy.wait(1000)
             blocksTab.getTag('Volcano').should('be.visible');
@@ -148,11 +148,11 @@ context ('Authoring Options',()=>{
             blocksTab.getTag('Loops').should('be.visible');
             blocksTab.getTag('Variables').should('be.visible');
             blocksTab.getTag('Functions').should('be.visible');
-
+            //Volcano
             blocksTab.getTag('Volcano').click();
             cy.wait(500)
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 8)
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length',26)
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length',29)
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(0).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("Create a town")
             })
@@ -202,29 +202,109 @@ context ('Authoring Options',()=>{
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(19).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("ejected volume (km³)")
             })
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(20).text().then((text)=>{
+                expect(removeNBSP(text)).to.contain("Compute and visualize tephra with")
+            })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(21).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("a random wind sample from")
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(22).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Compute tephra depth at location")
+                expect(removeNBSP(text)).to.contain("Compute and visualize tephra with")
+            })
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(23).text().then((text)=>{
+                expect(removeNBSP(text)).to.contain("a random wind sample from")
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(24).should('contain','VEI')
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(25).text().then((text)=>{
+                expect(removeNBSP(text)).to.contain("Compute tephra depth at location")
+            })
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(27).should('contain','VEI')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(28).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("a random wind sample from")
             })
-
+            //Wind data
+            blocksTab.getTag('Wind data').click();
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 6)
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length',18)
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(0).text().then((text)=>{
+                expect(removeNBSP(text)).to.contain("Graph Wind Data")
+            })
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(1).text().then((text)=>{
+                expect(removeNBSP(text)).to.contain("Graph Wind Speed and Direction")
+            })
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(2).text().then((text)=>{
+                expect(removeNBSP(text)).to.contain("Graph Wind Data")
+            })
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(4).should('contain','against')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(6).text().then((text)=>{
+                expect(removeNBSP(text)).to.contain("All Wind Data")
+            })
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(7).should('contain','sample')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(9).should('contain','items')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(10).should('contain','from')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(11).should('contain','Filter')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(12).text().then((text)=>{
+                expect(removeNBSP(text)).to.contain("Select from")
+            })
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(13).should('contain','Day')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(14).should('contain','Month')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(15).should('contain','Year')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(16).text().then((text)=>{
+                expect(removeNBSP(text)).to.contain("Direction (º from North)")
+            })
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(17).text().then((text)=>{
+                expect(removeNBSP(text)).to.contain("Speed (m/s)")
+            })
+            //Data Collections
+            blocksTab.getTag('Data Collections').click();
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 5)
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length',28)
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(0).text().then((text)=>{
+                expect(removeNBSP(text)).to.contain("Create a location")
+            })
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(9).text().then((text)=>{
+                expect(removeNBSP(text)).to.contain("and mark it on the map")
+            })
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(10).text().then((text)=>{
+                expect(removeNBSP(text)).to.contain("Create a data collection")
+            })
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(11).text().then((text)=>{
+                expect(removeNBSP(text)).to.contain("named")
+            })
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(13).text().then((text)=>{
+                expect(removeNBSP(text)).to.contain("for location")
+            })
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(15).text().then((text)=>{
+                expect(removeNBSP(text)).to.contain("Add data to")
+            })
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(17).text().then((text)=>{
+                expect(removeNBSP(text)).to.contain("Graph data collection")
+            })
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(19).text().then((text)=>{
+                expect(removeNBSP(text)).to.contain("and set threshold to")
+            })
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(22).text().then((text)=>{
+                expect(removeNBSP(text)).to.contain("Show risk on map for")
+            })
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(23).text().then((text)=>{
+                expect(removeNBSP(text)).to.contain("data collection")
+            })
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(25).text().then((text)=>{
+                expect(removeNBSP(text)).to.contain("above threshold")
+            })
+            //Logic
             blocksTab.getTag('Logic').click();
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 5)
-
+            //Loops
             blocksTab.getTag('Loops').click();
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 5)
-
-            blocksTab.getTag('Data').click();
+            //Data
+            blocksTab.getTag(DataRegEx).click();
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 3)
-
+            //variables
             blocksTab.getTag('Variables').click();
             blocksTab.getFlyout().find(blocksTab.getFlyoutButtonEl()).should('have.length', 1).and('contain','Create variable...')
-
+            //Functions
             blocksTab.getTag('Functions').click();
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 3)
         })
