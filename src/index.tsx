@@ -72,6 +72,10 @@ phone.addListener("initInteractive", (data: {
     const mergedState = {...authorState, ...studentState};
     initialState = deserializeState(mergedState);
     stores.uiStore.setShowOptionsDialog(false);
+
+    if (data.mode === "report") {
+      stores.uiStore.setHideBlocklyToolbox(true);
+    }
   }
   updateStores(initialState);
 
