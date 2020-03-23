@@ -26,11 +26,16 @@ const UIStore = types.model("UI", {
   // chart demo buttons
   showDemoCharts: false,
   currentHistogramTab: 0,
+  // hide toolbar in reports mode
+  hideBlocklyToolbox: false,
 })
 .actions((self) => ({
   setShowOptionsDialog(show: boolean) {
     self.showOptionsDialog = show;
-  }
+  },
+  setHideBlocklyToolbox(show: boolean) {
+    self.hideBlocklyToolbox = show;
+  },
 }))
 .actions((self) => {
   return {

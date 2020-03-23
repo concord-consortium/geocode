@@ -174,6 +174,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         showMonteCarlo,
         showSpeedControls,
         speed,
+        hideBlocklyToolbox,
       }
     } = this.stores;
     const {
@@ -302,7 +303,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                     toolboxPath={toolboxPath}
                     initialCode={initialXmlCode}
                     initialCodePath={codePath}
-                    setBlocklyCode={setCode} />
+                    setBlocklyCode={setCode}
+                    hideToolbox={hideBlocklyToolbox}/>
                   <RunButtons
                     run={run}
                     stop={stop}
