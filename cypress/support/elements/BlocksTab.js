@@ -3,8 +3,14 @@ class BlocksTab{
     getBlockPanel(){
         return cy.get('[data-test=Blocks-panel]')
      }
-    getTag(tagName){ //tagName=['Volcano','Logic','Loops','Data','Variables','Functions']
+    getTag(tagName){ //tagName=['Volcano','Wind data','Samples Collections',Logic','Loops','Data','Variables','Functions']
         return cy.get('.blocklyTreeLabel').contains(tagName)
+    }
+    getFlyout(){
+        return cy.get('.blocklyFlyout');
+    }
+    getFlyoutButtonEl(){
+        return ('.blocklyFlyoutButton')
     }
     getCanvas(){
         return cy.get('.blocklyBlockCanvas')
@@ -30,6 +36,9 @@ class BlocksTab{
     getBlockEl(){
         return '.blocklyDraggable';
     }
+    getBlockTextEl(){
+        return '.blocklyDraggable .blocklyText'
+    }
     getEditableTextEl(){
         return '.blocklyEditableText';
     }
@@ -51,5 +60,51 @@ class BlocksTab{
     editText(text, whichOne=0){
         cy.get('.blocklyWidgetDiv').find('.blocklyHtmlInput').eq(whichOne).type('{backspace}'+text+'{enter}');
     }
+
+    //Logic blocks
+    getIfBlock(){
+        return cy.get(this.getBlockTextEl()).contains('if')
+    }
+    getMathOperatorBlock(operator){
+        return cy.get(this.getBlockEl()).find('[text-anchor="start"]').contains(operator)
+    }
+    getLogicOperatorBlock(logic){
+        return cy.get(this.getBlockEl()).find('[text-anchor="start"]').contains(logic)
+    }
+    getNotBlock(){
+        return cy.get(this.getBlockTextEl()).contains('not')
+    }
+    getBooleanBlock(state){
+        return cy.get(this.getBlockEl()).find('[text-anchor="start"]').contains(state)
+    }
+
+    // Loop blocks
+    getRepeatLoopBlock(){
+        return cy.get(this.getBlockEl()).find('times')
+    }
+    setRepeatLoopBlock(num){
+        this.getRepeatLoopBlock().within(()=>{
+            cy.get('blocklyHtmlInput').type(num)
+        })
+    }
+    getWhileLoopBlock(condition){
+        return cy.get(this.getBlockEl()).find(condition)
+    }
+    setWhileLoopState(condition){
+        this.getWhileLoopBlock().within(()=>{
+            cy.get('[text-anchor="start]').click();
+            cy.get('.goog-menuitem-content').contains(condition).click();
+        })
+    }
+    getForLoopBlock(variable,fromNum,toNum, inc){
+
+    }
+    getForEachLoopBlock(variable){
+
+    }
+    getBreakBlock(state){
+
+    }
+    //
 }
 export default BlocksTab;
