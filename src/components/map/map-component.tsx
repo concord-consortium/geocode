@@ -195,8 +195,8 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       })
     : null;
 
-    const sampleLocations = panelType === RightSectionTypes.MONTE_CARLO && this.getSampleLocations();
-    const riskItems = panelType === RightSectionTypes.MONTE_CARLO && this.getRiskItems();
+    const sampleLocations = this.getSampleLocations();
+    const riskItems = this.getRiskItems();
 
     const { crossPoint1Lat, crossPoint1Lng, crossPoint2Lat, crossPoint2Lng } = this.stores.simulation;
     const volcanoPos = L.latLng(volcanoLat, volcanoLng);
