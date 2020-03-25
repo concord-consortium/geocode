@@ -5,14 +5,14 @@ Blockly.Blocks['calculate_tephra_vei_wind'] = {
     this.appendDummyInput()
         .setAlign(Blockly.ALIGN_RIGHT)
         .appendField(new Blockly.FieldDropdown(this.generateOptions), "locations");
-    this.appendValueInput("vei")
-        .setCheck("Number")
-        .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("VEI");
     this.appendValueInput("wind samples")
         .setCheck("Dataset")
         .setAlign(Blockly.ALIGN_RIGHT)
         .appendField("a random wind sample from");
+    this.appendValueInput("vei")
+        .setCheck("Number")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("VEI");
     this.setOutput(true, "Sample");
     this.setColour(0);
     this.setTooltip("");
