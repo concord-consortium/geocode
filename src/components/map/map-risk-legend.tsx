@@ -11,16 +11,8 @@ const LegendContainer = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  position: absolute;
-  box-sizing: border-box;
-  top: 35px;
-  right: 38px;
   width: 165px;
-  height: 190px;
-  border-radius: 5px;
-  background-color: white;
-  border: solid 2px white;
-  box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.35);
+  height: 185px;
 `;
 
 const LegendTitleText = styled.div`

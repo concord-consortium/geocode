@@ -19,8 +19,7 @@ import { RulerDrawLayer } from "./layers/ruler-draw-layer";
 import { RightSectionTypes } from "../tabs";
 import KeyButton from "./map-key-button";
 import CompassComponent from "./map-compass";
-import TephraLegendComponent from "./map-tephra-legend";
-import RiskLegendComponent from "./map-risk-legend";
+import { LegendComponent } from "./map-legend";
 import { SamplesCollectionModelType, SamplesLocationModelType } from "../../stores/samples-collections-store";
 import { RiskLevels } from "../montecarlo/monte-carlo";
 
@@ -195,8 +194,8 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       })
     : null;
 
-    const sampleLocations = panelType === RightSectionTypes.MONTE_CARLO && this.getSampleLocations();
-    const riskItems = panelType === RightSectionTypes.MONTE_CARLO && this.getRiskItems();
+    const sampleLocations = this.getSampleLocations();
+    const riskItems = this.getRiskItems();
 
     const { crossPoint1Lat, crossPoint1Lng, crossPoint2Lat, crossPoint2Lng } = this.stores.simulation;
     const volcanoPos = L.latLng(volcanoLat, volcanoLng);
@@ -291,9 +290,10 @@ export class MapComponent extends BaseComponent<IProps, IState>{
         />
         { this.state.showKey
           ? <KeyButton onClick={this.onKeyClick}/>
-          : panelType === RightSectionTypes.MONTE_CARLO
-            ? <RiskLegendComponent onClick={this.onKeyButtonClick}/>
-            : <TephraLegendComponent onClick={this.onKeyButtonClick}/>
+          : <LegendComponent
+              onClick={this.onKeyButtonClick}
+              showTephra={panelType !== RightSectionTypes.MONTE_CARLO}
+            />
         }
         <CompassComponent/>
       </CanvDiv>
