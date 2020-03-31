@@ -218,8 +218,8 @@ context ('Authoring Options',()=>{
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(25).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("Compute tephra depth at location")
             })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(27).should('contain','VEI')
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(28).text().then((text)=>{
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(28).should('contain','VEI')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(27).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("a random wind sample from")
             })
             //Wind data

@@ -12,6 +12,7 @@
     "Nested loops": "./assets/blockly-authoring/code/nested-loops.xml",
     "Monte Carlo": "./assets/blockly-authoring/code/monte-carlo.xml",
     "Monte Carlo (3 locs)": "./assets/blockly-authoring/code/monte-carlo-3-locs.xml",
-    "Wind Data Collection": "./assets/blockly-authoring/code/wind-data-collection.xml"
+    "Wind Data Collection": "./assets/blockly-authoring/code/wind-data-collection.xml",
+    "Filtered Wind Data Collection": "./assets/blockly-authoring/code/filter-wind-data-collection.xml"
   }
 }

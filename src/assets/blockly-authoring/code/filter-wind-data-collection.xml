@@ -1,0 +1,32 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+  <block type="create_sample_location" id="$I(JcCxa9GLRXI3jkkqc" x="-111" y="58">
+    <field name="x">10</field>
+    <field name="y">10</field>
+    <field name="name">Crypt</field>
+    <next>
+      <block type="graph_any_wind_data" id="FX,+9Piq%8ru#HNYXa3k">
+        <field name="yAxis">direction</field>
+        <field name="xAxis">elevation</field>
+        <value name="wind data">
+          <block type="filter_data" id="kLku:I2s?J*tsHxdx[l~">
+            <value name="source">
+              <block type="all_wind_data" id="#xxGX6W@RfJ5ot+826Ue"></block>
+            </value>
+            <value name="month">
+              <block type="input_range" id="}NZ(QDCCa4sao_Fl;zvT">
+                <field name="min">4</field>
+                <field name="max">9</field>
+              </block>
+            </value>
+            <value name="year">
+              <block type="input_range" id="R~W0[R]|=X(bDvcQa}-0">
+                <field name="min">1970</field>
+                <field name="max">2019</field>
+              </block>
+            </value>
+          </block>
+        </value>
+      </block>
+    </next>
+  </block>
+</xml>"

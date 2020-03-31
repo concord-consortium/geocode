@@ -16,15 +16,6 @@
                 <value name="wind data">
                   <block type="all_wind_data" id="|OQlTau229XEJ0Uz7Rv,"></block>
                 </value>
-                <next>
-                  <block type="graph_any_wind_data" id="so.wP{J,;(Ucz_!VBGG7">
-                    <field name="yAxis">speed</field>
-                    <field name="xAxis">elevation</field>
-                    <value name="wind data">
-                      <block type="all_wind_data" id="){hR8Cj@D=qjlPk]m8[D"></block>
-                    </value>
-                  </block>
-                </next>
               </block>
             </next>
           </block>

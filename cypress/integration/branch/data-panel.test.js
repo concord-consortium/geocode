@@ -8,30 +8,38 @@ const blocksTab = new BlocksTab;
 const modelOptions = new ModelOptions;
 const dataTab = new DataTab
 
-before(() => {
-    cy.visit("");
-    modelOptions.getModelOptionsMenu().click();
-    modelOptions.selectInitialCode('Wind Data Collection');
-    modelOptions.getShowSpeedControl().click();
-    modelOptions.getModelOptionsMenu().click();
-    blocksTab.setSpeedControl("fast")
-    blocksTab.runProgram();
-    cy.wait(2000)
-    rightPanel.getDataTab().click();
-  });
-
   context('Data Tab',()=>{
+    before(() => {
+      cy.visit("");
+      modelOptions.getModelOptionsMenu().click();
+      modelOptions.selectInitialCode('Wind Data Collection');
+      modelOptions.getShowSpeedControl().click();
+      modelOptions.getModelOptionsMenu().click();
+      blocksTab.setSpeedControl("fast")
+      blocksTab.runProgram();
+      cy.wait(2000)
+      rightPanel.getDataTab().click();
+    });
       describe('Wind speed and direction graphs',()=>{
           it('verify wind data graph is visible',()=>{
             cy.get('[data-test=data-chart-scatter]').eq(0).matchImageSnapshot('Chart 1')
           })
           it('verify wind speed and direction graph is visible',()=>{
-            cy.get('[data-test=data-chart-radial]').scrollIntoView();
+            // cy.get('[data-test=data-chart-radial]').scrollIntoView();
             cy.get('[data-test=data-chart-radial]').eq(0).matchImageSnapshot('Chart 2')
           })
-          it('verify Wind Data speed v elevation',()=>{
-            cy.get('[data-test=data-chart-scatter]').eq(1).scrollIntoView().wait(1000).matchImageSnapshot('Chart 3', { capture: 'fullPage' })
-            // cy.get('[data-test=data-chart-scatter]').eq(1)
-          })
       })
+      describe('Direction v elevation graph',()=>{ //had to make this separate because of scrolling issues for three graphs
+        before(() => {
+          modelOptions.getModelOptionsMenu().click();
+          modelOptions.selectInitialCode('Filtered Wind Data Collection');
+          modelOptions.getModelOptionsMenu().click();
+          blocksTab.runProgram();
+          cy.wait(1000)
+          rightPanel.getDataTab().click();
+        });
+        it('verify sirection v elevation graph is visible',()=>{
+          cy.get('[data-test=data-chart-scatter]').eq(0).matchImageSnapshot('Chart 3')
+        })
+    })
   })
