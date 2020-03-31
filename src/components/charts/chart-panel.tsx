@@ -79,7 +79,7 @@ export class ChartPanel extends BaseComponent<IProps, IState> {
                     chart.title &&
                     <Row><strong><u>{chart.title}</u></strong></Row>
                   }
-                  <Row>
+                  <Row data-test={"data-chart-" + chart.type}>
                     {
                       chart.type === "radial" ?
                         <CanvasD3RadialChart
