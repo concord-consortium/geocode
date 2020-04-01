@@ -25,10 +25,6 @@ const dataTab = new DataTab
             cy.get('[data-test=data-chart-scatter]').parent().parent().scrollTo('top')
             dataTab.getDataPanel().matchImageSnapshot('Chart 1')
           })
-          // it('verify wind speed and direction graph is visible',()=>{
-          //   cy.get('[data-test=data-chart-scatter]').parent().parent().scrollTo('bottom')
-          //   cy.get('[data-test=data-chart-radial]').matchImageSnapshot('Chart 2')
-          // })
       })
       describe('Direction v elevation graph',()=>{ //had to make this separate because of scrolling issues for three graphs
         before(() => {
@@ -39,7 +35,7 @@ const dataTab = new DataTab
           cy.wait(1000)
           rightPanel.getDataTab().click();
         });
-        it('verify sirection v elevation graph is visible',()=>{
+        it('verify direction v elevation graph is visible',()=>{
           cy.get('[data-test=data-chart-scatter]').eq(0).matchImageSnapshot('Chart 3')
         })
     })
