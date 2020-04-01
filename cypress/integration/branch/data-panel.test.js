@@ -21,7 +21,8 @@ const dataTab = new DataTab
       rightPanel.getDataTab().click();
     });
       describe('Wind speed and direction graphs',()=>{
-          it('verify wind data graph and wind speed and direction graph are visible',()=>{
+          it('verify wind data graph and wind speed and direction graph are visible',()=>{ //Need to do this at the same time bec. snapshot does not work
+            cy.get('[data-test=data-chart-scatter]').parent().parent().scrollTo('top')
             dataTab.getDataPanel().matchImageSnapshot('Chart 1')
           })
           // it('verify wind speed and direction graph is visible',()=>{
