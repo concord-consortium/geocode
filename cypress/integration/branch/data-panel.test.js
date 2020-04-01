@@ -21,13 +21,13 @@ const dataTab = new DataTab
       rightPanel.getDataTab().click();
     });
       describe('Wind speed and direction graphs',()=>{
-          it('verify wind data graph is visible',()=>{
-            cy.get('[data-test=data-chart-scatter]').eq(0).matchImageSnapshot('Chart 1')
+          it('verify wind data graph and wind speed and direction graph are visible',()=>{
+            dataTab.getDataPanel().matchImageSnapshot('Chart 1')
           })
-          it('verify wind speed and direction graph is visible',()=>{
-            // cy.get('[data-test=data-chart-radial]').scrollIntoView();
-            cy.get('[data-test=data-chart-radial]').eq(0).matchImageSnapshot('Chart 2')
-          })
+          // it('verify wind speed and direction graph is visible',()=>{
+          //   cy.get('[data-test=data-chart-scatter]').parent().parent().scrollTo('bottom')
+          //   cy.get('[data-test=data-chart-radial]').matchImageSnapshot('Chart 2')
+          // })
       })
       describe('Direction v elevation graph',()=>{ //had to make this separate because of scrolling issues for three graphs
         before(() => {
