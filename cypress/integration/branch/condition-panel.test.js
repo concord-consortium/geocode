@@ -14,7 +14,7 @@ beforeEach(()=>{
     cy.fixture('vei-mapping.json').as('veiMap');
 })
 context("Controls panel", () => {
-    var wsSlider='wind-speed', windSpeed = 15;
+    var wsSlider='wind-speed', windSpeed = 19;
     var wdSlider="wind-direction", windDirection = 190;
     var evSlider="ejected-volume", volume = '2', evHeight='17.5';
     var chSlider="column-height", cHeight = '15', visualHeight='28.8';

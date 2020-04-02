@@ -53,22 +53,22 @@ class ControlsTab{
         })
     }
     setSliderValue(slider, value){ //pass in -0.1 as value for min slider value
-        var unit=0;
+        var unit=0; //brittle to changes in viewport size
         switch (slider) {
             case "wind-speed":
-                unit=16.21;
+                unit=9.5;
                 break;
             case "wind-direction":
-                unit=1.30;
+                unit=0.78;
                 break;
             case "ejected-volume":
-                unit=210;
+                unit=120;
                 break;
             case "column-height":
-                unit=18.907;
+                unit=11.05;
                 break;
             case "vei":
-                unit=47;
+                unit=27;
                 break;            
         } 
         cy.log("slider: "+slider+" value: "+value+" unit: "+unit+" slider to: "+value*unit)

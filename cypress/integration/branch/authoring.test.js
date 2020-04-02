@@ -49,14 +49,14 @@ context ('Authoring Options',()=>{
             modelOptions.getRequireEruptionOption().should('not.have.attr', 'checked');
             leftPanel.getControlsTab().click();
             controlsTab.getEruptButton().click();
-            //verify tephra is visible at a location south of volcano
-            map.getTephra().last().attribute('d').should('contain',"M326 407L331 412L339 412L352 428L352 461L343 471L343 525L331 541L313 541L301 525L301 471L292 461L292 428L305 412L313 412L322 401z")
+            //verify tephra is visible at a location south of volcano - brittle if the viewport size changes
+            map.getTephra().last().attribute('d').should('contain',"M237 242L249 254L249 336L243 342L243 354L237 361L237 367L234 370L228 370L222 376L201 354L201 336L195 329L195 254L210 239L234 239z")
 
             //change conditions to see tephra change without having to erupt again
             var slider="wind-direction", windDirection = 190;
             controlsTab.setSliderValue(slider,windDirection);
             //verify is in new location north of volcano
-            map.getTephra().last().attribute('d').should('contain', "M361 277L361 374L339 401L313 401L301 385L301 353L309 342L309 320L318 309L318 299L326 288L326 277L331 272L356 272z")
+            map.getTephra().last().attribute('d').should('contain', "M249 98L260 110L260 204L255 211L255 217L240 232L216 232L201 217L201 179L207 173L207 167L213 160L213 135L219 129L219 123L225 116L225 110L234 101L240 101L246 94z")
 
             //reset state for nexxt test
             controlsTab.resetModel();
@@ -71,19 +71,19 @@ context ('Authoring Options',()=>{
             leftPanel.getControlsTab().click();
             controlsTab.getEruptButton().click();
             //verify tephra is visible at a location south of volcano
-            map.getTephra().last().attribute('d').should('contain', "M361 277L361 374L339 401L313 401L301 385L301 353L309 342L309 320L318 309L318 299L326 288L326 277L331 272L356 272z")
+            map.getTephra().last().attribute('d').should('contain', "M249 98L260 110L260 204L255 211L255 217L240 232L216 232L201 217L201 179L207 173L207 167L213 160L213 135L219 129L219 123L225 116L225 110L234 101L240 101L246 94z")
 
             //change conditions to see tephra change without having to erupt again
             var slider="wind-direction", windDirection = 190;
             controlsTab.setSliderValue(slider,windDirection);
             //verify location has not changed north of volcano
-            map.getTephra().last().attribute('d').should('contain', "M361 277L361 374L339 401L313 401L301 385L301 353L309 342L309 320L318 309L318 299L326 288L326 277L331 272L356 272z")
+            map.getTephra().last().attribute('d').should('contain', "M249 98L260 110L260 204L255 211L255 217L240 232L216 232L201 217L201 179L207 173L207 167L213 160L213 135L219 129L219 123L225 116L225 110L234 101L240 101L246 94z")
 
             controlsTab.resetModel();//clean up
          })
     })
     describe('Map Scenarios show the correct area',()=>{
-        it('verify selected volcano is shown in the map',()=>{
+        it('verify selected volcano is shown in the map',()=>{ //222px, 235px, 0px
             modelOptions.getModelOptionsMenu().click();
 
             cy.get('@volcanoes').then((volcanoes)=>{
@@ -218,8 +218,8 @@ context ('Authoring Options',()=>{
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(25).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("Compute tephra depth at location")
             })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(27).should('contain','VEI')
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(28).text().then((text)=>{
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(28).should('contain','VEI')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(27).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("a random wind sample from")
             })
             //Wind data

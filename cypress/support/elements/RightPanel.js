@@ -6,7 +6,7 @@ class RightPanel {
         return cy.get('[data-test=Cross-Section-tab')
     }
     getDataTab(){
-        return cy.get('[data-test=Data-tab')
+        return cy.get('[data-test=Data-tab]')
     }
     getMonteCarloTab(){
         return cy.get('[data-test=Monte-Carlo-tab')
