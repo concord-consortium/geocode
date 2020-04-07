@@ -14,9 +14,9 @@ const blocksTab = new BlocksTab
 
 const DataRegEx = /Data$/gm;        // regex to ignore "Data Samples"
 
-//need to convert Blockly strings Bec they have &nbsp; in the DOM 
+//need to convert Blockly strings Bec they have &nbsp; in the DOM
 //but when run thru Cypress, Cypress converts it so `contain` never matches
-function removeNBSP(text){ 
+function removeNBSP(text){
     var re = new RegExp(String.fromCharCode(160), "g");
     return text.replace(re, " ");
 }
@@ -43,9 +43,9 @@ context ('Authoring Options',()=>{
         it('verify require eruption=false shows tephra without clicking on Erupt button',()=>{
             modelOptions.getModelOptionsMenu().click();
             modelOptions.getRequireEruptionOption().should('have.attr', 'checked');
-            modelOptions.getRequireEruptionOption().click();            
-            modelOptions.getModelOptionsMenu().click(); //'checked' state attr doesn't update until menu is closed and re-opened 
-            modelOptions.getModelOptionsMenu().click(); //re-open           
+            modelOptions.getRequireEruptionOption().click();
+            modelOptions.getModelOptionsMenu().click(); //'checked' state attr doesn't update until menu is closed and re-opened
+            modelOptions.getModelOptionsMenu().click(); //re-open
             modelOptions.getRequireEruptionOption().should('not.have.attr', 'checked');
             leftPanel.getControlsTab().click();
             controlsTab.getEruptButton().click();
@@ -64,9 +64,9 @@ context ('Authoring Options',()=>{
         })
         it ('verify require eruption=true shows tephra only when Erupt button is clicked',()=>{
             modelOptions.getModelOptionsMenu().click();
-            modelOptions.getRequireEruptionOption().click();            
-            modelOptions.getModelOptionsMenu().click(); //'checked' state attr doesn't update until menu is closed and re-opened 
-            modelOptions.getModelOptionsMenu().click(); //re-open           
+            modelOptions.getRequireEruptionOption().click();
+            modelOptions.getModelOptionsMenu().click(); //'checked' state attr doesn't update until menu is closed and re-opened
+            modelOptions.getModelOptionsMenu().click(); //re-open
             modelOptions.getRequireEruptionOption().should('have.attr', 'checked');
             leftPanel.getControlsTab().click();
             controlsTab.getEruptButton().click();
@@ -103,38 +103,6 @@ context ('Authoring Options',()=>{
         before(()=>{
             leftPanel.getBlocksTab().click();
             modelOptions.getModelOptionsMenu().click();
-        })
-        it('verify selecting First shows correct toolboxes in Blocks',()=>{
-            // Volcano, Data
-            modelOptions.selectCodeToolbox('First');
-            blocksTab.getTag('Volcano').should('be.visible');
-            blocksTab.getTag('Data').should('be.visible');
-            blocksTab.getTag('Logic').should('not.exist');
-            blocksTab.getTag('Loops').should('not.exist');
-            blocksTab.getTag('Variables').should('not.exist');
-            blocksTab.getTag('Functions').should('not.exist');
-
-            blocksTab.getTag('Volcano').click();
-            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 5)
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length',12)
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(0).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Create the volcano")
-            })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(3).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Create a town")
-            })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(7).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Set wind direction")
-            })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(9).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Set wind speed")
-            })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(11).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Erupt with current values")
-            })
-
-            blocksTab.getTag('Data').click();
-            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
         })
         it('verify selecting Everything shows correct toolboxes in Blocks',()=>{
             // Volcano, Wind data, Data Collections, Logic, Loops, Data, Variables, Functions
@@ -336,7 +304,7 @@ context ('Authoring Options',()=>{
             })
 
             blocksTab.getTag('Loops').click();
-            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 5)
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
 
             blocksTab.getTag('Data').click();
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
@@ -373,7 +341,7 @@ context ('Authoring Options',()=>{
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(7).should('contain','VEI')
 
             blocksTab.getTag('Loops').click();
-            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 5)
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
 
             blocksTab.getTag('Data').click();
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
@@ -383,8 +351,8 @@ context ('Authoring Options',()=>{
 
         })
         it('verify selecting Wind and height shows correct toolboxes in Blocks',()=>{
-            // Volcano, Loops, Data, Variables. Volcano only has Create town and Wind + column block   
-            modelOptions.selectCodeToolbox('Wind and height');
+            // Volcano, Loops, Data, Variables. Volcano only has Create town and Wind + column block
+            modelOptions.selectCodeToolbox('Wind and Height');
             cy.wait(1000)
 
             blocksTab.getTag('Volcano').should('be.visible');
@@ -413,7 +381,7 @@ context ('Authoring Options',()=>{
             })
 
             blocksTab.getTag('Loops').click();
-            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 5)
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
 
             blocksTab.getTag('Data').click();
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
@@ -454,10 +422,72 @@ context ('Authoring Options',()=>{
                 expect(removeNBSP(text)).to.contain("ejected volume (km³)")
             })
             blocksTab.getTag('Loops').click();
-            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 5)
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
 
             blocksTab.getTag('Data').click();
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
+
+            blocksTab.getTag('Variables').click();
+            blocksTab.getFlyout().find(blocksTab.getFlyoutButtonEl()).should('have.length', 1).and('contain','Create variable...')
+        })
+        it('verify selecting A4 + 5 shows correct toolboxes in Blocks',()=>{
+            // Volcano, Loops, Data, Variables.
+            modelOptions.selectCodeToolbox('A4 + 5');
+            cy.wait(1000)
+
+            blocksTab.getTag('Volcano').should('be.visible');
+            blocksTab.getTag('Data').should('be.visible');
+            blocksTab.getTag('Loops').should('be.visible');
+            blocksTab.getTag('Variables').should('be.visible');
+
+            blocksTab.getTag('Volcano').click();
+            cy.wait(500)
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 3)
+
+            //Wind data
+            blocksTab.getTag('Wind data').click();
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 6)
+
+            //Data Collections
+            blocksTab.getTag('Data Collections').click();
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 1)
+
+            blocksTab.getTag('Loops').click();
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
+
+            blocksTab.getTag(DataRegEx).click();
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 3)
+
+            blocksTab.getTag('Variables').click();
+            blocksTab.getFlyout().find(blocksTab.getFlyoutButtonEl()).should('have.length', 1).and('contain','Create variable...')
+        })
+        it('verify selecting Monte Carlo shows correct toolboxes in Blocks',()=>{
+            // Volcano, Loops, Data, Variables.
+            modelOptions.selectCodeToolbox('Monte Carlo');
+            cy.wait(1000)
+
+            blocksTab.getTag('Volcano').should('be.visible');
+            blocksTab.getTag('Data').should('be.visible');
+            blocksTab.getTag('Loops').should('be.visible');
+            blocksTab.getTag('Variables').should('be.visible');
+
+            blocksTab.getTag('Volcano').click();
+            cy.wait(500)
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 4)
+
+            //Wind data
+            blocksTab.getTag('Wind data').click();
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 6)
+
+            //Data Collections
+            blocksTab.getTag('Data Collections').click();
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 5)
+
+            blocksTab.getTag('Loops').click();
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
+
+            blocksTab.getTag(DataRegEx).click();
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 3)
 
             blocksTab.getTag('Variables').click();
             blocksTab.getFlyout().find(blocksTab.getFlyoutButtonEl()).should('have.length', 1).and('contain','Create variable...')
@@ -474,45 +504,45 @@ context ('Authoring Options',()=>{
             modelOptions.getModelOptionsMenu().click();
             modelOptions.getShowBlocksOption().should('have.attr', 'checked');
             modelOptions.getShowBlocksOption().click();
-            modelOptions.getModelOptionsMenu().click(); //'checked' state attr doesn't update until menu is closed and re-opened 
-            modelOptions.getModelOptionsMenu().click(); //re-open 
+            modelOptions.getModelOptionsMenu().click(); //'checked' state attr doesn't update until menu is closed and re-opened
+            modelOptions.getModelOptionsMenu().click(); //re-open
             modelOptions.getShowBlocksOption().should('not.have.attr', 'checked');
             leftPanel.getBlocksTab().should('not.exist');
         })
         it('verify Show code unchecked does not show Code tab',()=>{
             modelOptions.getShowCodeOption().should('have.attr', 'checked');
             modelOptions.getShowCodeOption().click();
-            modelOptions.getModelOptionsMenu().click(); //'checked' state attr doesn't update until menu is closed and re-opened 
-            modelOptions.getModelOptionsMenu().click(); //re-open 
+            modelOptions.getModelOptionsMenu().click(); //'checked' state attr doesn't update until menu is closed and re-opened
+            modelOptions.getModelOptionsMenu().click(); //re-open
             modelOptions.getShowCodeOption().should('not.have.attr', 'checked');
             leftPanel.getCodeTab().should('not.exist');
         })
         it('verify Show controls unchecked does not show Controls tab',()=>{
             modelOptions.getShowControlsOption().should('have.attr', 'checked');
             modelOptions.getShowControlsOption().click();
-            modelOptions.getModelOptionsMenu().click(); //'checked' state attr doesn't update until menu is closed and re-opened 
-            modelOptions.getModelOptionsMenu().click(); //re-open 
+            modelOptions.getModelOptionsMenu().click(); //'checked' state attr doesn't update until menu is closed and re-opened
+            modelOptions.getModelOptionsMenu().click(); //re-open
             modelOptions.getShowControlsOption().should('not.have.attr', 'checked');
             leftPanel.getControlsTab().should('not.exist');
         })
         it('verify Show controls checked shows Controls tab',()=>{
             modelOptions.getShowControlsOption().click();
-            modelOptions.getModelOptionsMenu().click(); //'checked' state attr doesn't update until menu is closed and re-opened 
-            modelOptions.getModelOptionsMenu().click(); //re-open 
+            modelOptions.getModelOptionsMenu().click(); //'checked' state attr doesn't update until menu is closed and re-opened
+            modelOptions.getModelOptionsMenu().click(); //re-open
             modelOptions.getShowControlsOption().should('have.attr', 'checked');
             leftPanel.getControlsTab().should('be.visible');
         })
         it('verify Show blocks checked shows Blocks tab',()=>{
             modelOptions.getShowBlocksOption().click();
-            modelOptions.getModelOptionsMenu().click(); //'checked' state attr doesn't update until menu is closed and re-opened 
-            modelOptions.getModelOptionsMenu().click(); //re-open 
+            modelOptions.getModelOptionsMenu().click(); //'checked' state attr doesn't update until menu is closed and re-opened
+            modelOptions.getModelOptionsMenu().click(); //re-open
             modelOptions.getShowBlocksOption().should('have.attr', 'checked');
             leftPanel.getBlocksTab().should('be.visible');
         })
         it('verify Show code checked shows Codes tab',()=>{
             modelOptions.getShowCodeOption().click();
-            modelOptions.getModelOptionsMenu().click(); //'checked' state attr doesn't update until menu is closed and re-opened 
-            modelOptions.getModelOptionsMenu().click(); //re-open 
+            modelOptions.getModelOptionsMenu().click(); //'checked' state attr doesn't update until menu is closed and re-opened
+            modelOptions.getModelOptionsMenu().click(); //re-open
             modelOptions.getShowCodeOption().should('have.attr', 'checked');
             leftPanel.getCodeTab().should('be.visible');
         })
@@ -525,45 +555,45 @@ context ('Authoring Options',()=>{
             modelOptions.getModelOptionsMenu().click();
             modelOptions.getShowCrossSectionOption().should('not.have.attr', 'checked');
             modelOptions.getShowCrossSectionOption().click();
-            modelOptions.getModelOptionsMenu().click(); //'checked' state attr doesn't update until menu is closed and re-opened 
-            modelOptions.getModelOptionsMenu().click(); //re-open 
+            modelOptions.getModelOptionsMenu().click(); //'checked' state attr doesn't update until menu is closed and re-opened
+            modelOptions.getModelOptionsMenu().click(); //re-open
             modelOptions.getShowCrossSectionOption().should('have.attr', 'checked');
             rightPanel.getCrossSectionTab().should('be.visible');
         })
         it('verify Show conditions unchecked does not show Conditions tab',()=>{
             modelOptions.getShowConditionsOption().should('have.attr', 'checked');
             modelOptions.getShowConditionsOption().click();
-            modelOptions.getModelOptionsMenu().click(); //'checked' state attr doesn't update until menu is closed and re-opened 
-            modelOptions.getModelOptionsMenu().click(); //re-open 
+            modelOptions.getModelOptionsMenu().click(); //'checked' state attr doesn't update until menu is closed and re-opened
+            modelOptions.getModelOptionsMenu().click(); //re-open
             modelOptions.getShowConditionsOption().should('not.have.attr', 'checked');
             rightPanel.getConditionsTab().should('not.be.visible');
         })
         it('verify Show data unchecked does not show Data tab',()=>{
             modelOptions.getShowDataOption().should('have.attr', 'checked');
             modelOptions.getShowDataOption().click();
-            modelOptions.getModelOptionsMenu().click(); //'checked' state attr doesn't update until menu is closed and re-opened 
-            modelOptions.getModelOptionsMenu().click(); //re-open 
+            modelOptions.getModelOptionsMenu().click(); //'checked' state attr doesn't update until menu is closed and re-opened
+            modelOptions.getModelOptionsMenu().click(); //re-open
             modelOptions.getShowDataOption().should('not.have.attr', 'checked');
             rightPanel.getDataTab().should('not.be.visible');
         })
         it('verify Show conditions checked does not show Conditions tab',()=>{
             modelOptions.getShowConditionsOption().click();
-            modelOptions.getModelOptionsMenu().click(); //'checked' state attr doesn't update until menu is closed and re-opened 
-            modelOptions.getModelOptionsMenu().click(); //re-open 
+            modelOptions.getModelOptionsMenu().click(); //'checked' state attr doesn't update until menu is closed and re-opened
+            modelOptions.getModelOptionsMenu().click(); //re-open
             modelOptions.getShowConditionsOption().should('have.attr', 'checked');
             rightPanel.getConditionsTab().should('be.visible');
         })
         it('verify Show data checked does not show Data tab',()=>{
             modelOptions.getShowDataOption().click();
-            modelOptions.getModelOptionsMenu().click(); //'checked' state attr doesn't update until menu is closed and re-opened 
-            modelOptions.getModelOptionsMenu().click(); //re-open 
+            modelOptions.getModelOptionsMenu().click(); //'checked' state attr doesn't update until menu is closed and re-opened
+            modelOptions.getModelOptionsMenu().click(); //re-open
             modelOptions.getShowDataOption().should('have.attr', 'checked');
             rightPanel.getDataTab().should('be.visible');
         })
         it('verify Show cross section checked does not show Cross Section tab',()=>{
             modelOptions.getShowCrossSectionOption().click();
-            modelOptions.getModelOptionsMenu().click(); //'checked' state attr doesn't update until menu is closed and re-opened 
-            modelOptions.getModelOptionsMenu().click(); //re-open 
+            modelOptions.getModelOptionsMenu().click(); //'checked' state attr doesn't update until menu is closed and re-opened
+            modelOptions.getModelOptionsMenu().click(); //re-open
             modelOptions.getShowCrossSectionOption().should('not.have.attr', 'checked');
             rightPanel.getCrossSectionTab().should('not.exist');
         })
