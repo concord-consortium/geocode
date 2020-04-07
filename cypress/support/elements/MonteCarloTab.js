@@ -25,7 +25,10 @@ class MonteCarloTab {
     }
     getDataPoints(){
         return cy.get(this.histogramChartContainerEl()).find('circle')
-        }
+    }
+    getDataBars(){
+        return cy.get(this.histogramChartContainerEl()).find('rect')
+    }
     riskDiamondEl(){
         return ('[data-test="risk-diamond"]')
     }
