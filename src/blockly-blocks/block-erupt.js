@@ -1,25 +1,26 @@
+Blockly.HSV_SATURATION=0.7;
+Blockly.HSV_VALUE=.9;
+Blockly.Msg.LOOPS_HUE=195;
+Blockly.Msg.TEXTS_HUE=130;
+Blockly.Msg.MATH_HUE=130;
+Blockly.Msg.VARIABLES_HUE=130;
+Blockly.Msg.VARIABLES_DYNAMIC_HUE=130;
 Blockly.Blocks['erupt'] = {
     init: function() {
       this.appendDummyInput()
           .appendField("Erupt with current values");
-      this.appendDummyInput()
-          .setAlign(Blockly.ALIGN_RIGHT)
-          .appendField(new Blockly.FieldCheckbox("TRUE"), "animate")
-          .appendField("Show animation");
       this.setInputsInline(false);
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
-      this.setColour(330);
+      this.setColour(0);
    this.setTooltip("have the volcano erupt");
    this.setHelpUrl("have the volcano erupt");
     }
   };
-  
+
   Blockly.JavaScript['erupt'] = function(block) {
-    var animate = block.getFieldValue('animate') == 'TRUE';
     var code = `
-      erupt(${animate});
+      erupt();
     `;
     return code;
   }
-  

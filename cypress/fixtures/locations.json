@@ -1,0 +1,27 @@
+{"locations":[
+    {
+        "name":"City A",
+        "x":"75",
+        "y":"75",
+        "threshold":"100",
+        "risk":"Low",
+        "danger":""
+    },
+    {
+        "name":"Close-by",
+        "x":"15",
+        "y":"15",
+        "threshold":"50",
+        "risk":"High",
+        "danger":"!"
+    },
+    {
+        "name":"Midtown",
+        "x":"50",
+        "y":"50",
+        "threshold":"200",
+        "risk":"Medium",
+        "danger":"!"
+    }
+]
+}

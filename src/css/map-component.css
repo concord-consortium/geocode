@@ -1,0 +1,14 @@
+.map-component {
+    position: relative;
+    height: 100%;
+  
+    
+  }
+  .map {
+    height: 100%;
+    z-index: 0;
+  }
+
+  .leaflet-marker-icon {
+    cursor: pointer;
+  }

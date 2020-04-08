@@ -3,217 +3,293 @@ import { BaseComponent, IBaseProps } from "./base";
 import { inject, observer } from "mobx-react";
 import RangeControl from "./range-control";
 import styled from "styled-components";
-import { StyledButton } from "./styled-button";
+import RunIcon from "../assets/blockly-icons/run.svg";
+import ResetIcon from "../assets/blockly-icons/reset.svg";
+import IconButton from "./buttons/icon-button";
+import { HorizontalContainer, VerticalContainer, Footer, TabContent } from "./styled-containers";
+import VEIWidget from "./widgets/vei-widget";
+import EjectedVolumeWidget from "./widgets/ejected-volume-widget";
+import ColumnHeightWidget from "./widgets/column-height-widget";
+import WindSpeedDirectionWidget from "./widgets/wind-speed-direction-widget";
+import { WidgetPanelTypes } from "../utilities/widget";
 
-const StyledControls = styled.div`
+const ControlsContainer = styled.div`
   display: flex;
   flex-direction: column;
+  flex: 1 1 auto;
+  overflow: auto;
+  min-height: 0px;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 20px 28px 7px 28px;
+  background-color: white;
 `;
 
-const ValueOutput = styled.div`
-  margin: 0.5em 1em;
-  padding: 3px 14px;
-  border: 1px solid #BBB;
-  border-radius: 4px;
-  background-color: #F1F1F1;
-`;
-
-interface HorizontalContainerProps {
-  alignItems?: string;
+interface ControlContainerProps {
+  height?: number;
 }
-const HorizontalContainer = styled.div`
+const ControlContainer = styled.div`
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 10px 8px 10px;
+  height: ${(p: ControlContainerProps) => `${p.height ? `${p.height}px` : "100px"}`};
+  margin-bottom: 20px;
+  border-radius: 10px;
+  background-color: #F0F0F0;
+  font-size: 16px;
+`;
+
+const ControlLabel = styled.label`
+  margin-top: 6px;
+`;
+
+const EruptButtons = styled.div`
+  position: relative;
   display: flex;
-  align-items: ${(p: HorizontalContainerProps) => `${p.alignItems ? p.alignItems : "flex-start"}`};
+  flex-direction: row;
 `;
 
-interface IControls {
-  windDirection: number;
-  particleSize: number;
-  mass: number;
-  colHeight: number;
-  windSpeed: number;
+const NoteLabel = styled.label`
+  font-size: 13px;
+  font-style: italic;
+`;
 
-  changeWindDirection: (a: any) => void;
-  changeWindSpeed: (a: any) => void;
-  changeSize: (a: any) => void;
-  changeColumnHeight: (a: any) => void;
-  changeMass: (a: any) => void;
+const BoldSpan = styled.span`
+  font-weight: bold;
+`;
+
+interface IProps extends IBaseProps {
+  width: number;
 }
-
-interface IProps extends IBaseProps {}
 interface IState {
-  animate: boolean;
 }
 
 @inject("stores")
 @observer
 export class Controls extends BaseComponent<IProps, IState> {
-  public state = {
-    animate: true
-  };
 
   public render() {
 
     const {
-      windDirection,
-      particleSize,
-      mass,
-      colHeight,
-      windSpeed
-    } = this.stores;
+      stagingWindDirection,
+      stagingMass,
+      stagingColHeight,
+      stagingWindSpeed,
+      stagingVei,
+      reset
+    } = this.stores.simulation;
+
+    const {
+      showWindSpeed,
+      showWindDirection,
+      showEjectedVolume,
+      showColumnHeight,
+      showVEI
+    } = this.stores.uiStore;
 
     return(
-      <StyledControls>
-        <label>
-          Wind speed:
-          <HorizontalContainer>
-            <RangeControl
-              min={0}
-              max={30}
-              value={windSpeed}
-              step={1}
-              tickStep={5}
-              width={300}
-              onChange={this.changeWindSpeed}
+      <TabContent>
+        <ControlsContainer>
+          {(showWindSpeed || showWindDirection) && <ControlContainer
+                                                      height={showWindSpeed && showWindDirection ? 172 : 100}>
+            <HorizontalContainer alignItems="center" data-test="wind-direction-speed-slider-container">
+              <VerticalContainer alignItems="center" justifyContent="center">
+                {showWindSpeed && <ControlLabel>Wind Speed (m/s)</ControlLabel>}
+                {showWindSpeed && <HorizontalContainer data-test="wind-speed-slider">
+                  <RangeControl
+                    min={0}
+                    max={30}
+                    value={stagingWindSpeed}
+                    step={1}
+                    tickStep={5}
+                    width={this.props.width - 220}
+                    onChange={this.changeWindSpeed}
+                  />
+                </HorizontalContainer> }
+                {showWindDirection && <ControlLabel>Wind Direction (° from North)</ControlLabel>}
+                {showWindDirection && <HorizontalContainer data-test="wind-direction-slider">
+                  <RangeControl
+                    min={0}
+                    max={360}
+                    value={stagingWindDirection}
+                    step={10}
+                    tickMap={{
+                      0: "0",
+                      90: "90",
+                      180: "180",
+                      270: "270",
+                      360: "0",
+                    }}
+                    width={this.props.width - 220}
+                    onChange={this.changeWindDirection}
+                  />
+                </HorizontalContainer>}
+              </VerticalContainer>
+              <WindSpeedDirectionWidget
+                type={WidgetPanelTypes.LEFT}
+                showWindDirection={showWindDirection}
+                showWindSpeed={showWindSpeed}
+                windDirection={stagingWindDirection}
+                windSpeed={stagingWindSpeed}
+              />
+            </HorizontalContainer>
+          </ControlContainer>}
+          {showEjectedVolume && <ControlContainer>
+            <HorizontalContainer data-test="ejected-volume-slider-container">
+              <VerticalContainer alignItems="center" justifyContent="center">
+                <ControlLabel>Ejected Volume (km<sup>3</sup>)</ControlLabel>
+                <HorizontalContainer data-test="ejected-volume-slider">
+                  <RangeControl
+                    min={0}
+                    max={7}
+                    value={Math.round(Math.log(stagingMass) / Math.LN10) - 8}
+                    step={1}
+                    tickMap={{
+                      0: "10<sup>-4</sup>",
+                      1: "10<sup>-3</sup>",
+                      2: "10<sup>-2</sup>",
+                      3: "10<sup>-1</sup>",
+                      4: "10<sup>0</sup>",
+                      5: "10<sup>1</sup>",
+                      6: "10<sup>2</sup>",
+                      7: "10<sup>3</sup>",
+                    }}
+                    width={this.props.width - 220}
+                    onChange={this.changeMass}
+                  />
+                </HorizontalContainer>
+              </VerticalContainer>
+              <EjectedVolumeWidget
+                type={WidgetPanelTypes.LEFT}
+                volumeInKilometersCubed={stagingMass / Math.pow(10, 12)}
+              />
+            </HorizontalContainer>
+          </ControlContainer>}
+          {showColumnHeight && <ControlContainer>
+            <HorizontalContainer data-test="column-height-slider-container">
+              <VerticalContainer alignItems="center" justifyContent="center">
+                <ControlLabel>Column Height (km)</ControlLabel>
+                <HorizontalContainer data-test="column-height-slider">
+                  <RangeControl
+                    min={.5}
+                    max={25}
+                    value={stagingColHeight / 1000}
+                    step={.1}
+                    tickArray={[.5, 5, 10, 15, 20, 25]}
+                    width={this.props.width - 220}
+                    onChange={this.changeColumnHeight}
+                  />
+                </HorizontalContainer>
+              </VerticalContainer>
+              <ColumnHeightWidget
+                type={WidgetPanelTypes.LEFT}
+                columnHeightInKilometers={stagingColHeight / 1000}
+              />
+            </HorizontalContainer>
+          </ControlContainer>}
+          {showVEI && <ControlContainer>
+            <HorizontalContainer data-test="vei-slider-container">
+              <VerticalContainer alignItems="center" justifyContent="center">
+                <label>VEI</label>
+                <HorizontalContainer data-test="vei-slider">
+                  <RangeControl
+                    min={1}
+                    max={8}
+                    value={stagingVei}
+                    step={1}
+                    tickArray={[1, 2, 3, 4, 5, 6, 7, 8]}
+                    width={this.props.width - 274}
+                    onChange={this.changeVEI}
+                  />
+                </HorizontalContainer>
+              </VerticalContainer>
+              <VEIWidget
+                type={WidgetPanelTypes.LEFT}
+                vei={stagingVei}
+                mass={stagingMass}
+                columnHeight={stagingColHeight}
+              />
+            </HorizontalContainer>
+          </ControlContainer>}
+          <NoteLabel>
+            <span>Note: changes made here will </span>
+            <BoldSpan>not be</BoldSpan>
+            <span> reflected in your Blocks/Code.</span>
+          </NoteLabel>
+        </ControlsContainer>
+        <Footer>
+          <EruptButtons>
+            <IconButton
+              onClick={reset}
+              disabled={false}
+              children={<ResetIcon />}
+              label={"Reset"}
+              hoverColor={"#FFDBAC"}
+              activeColor={"#FFECD6"}
+              fill={"#FFAC00"}
+              width={26}
+              height={26}
+              dataTest={"Reset-button"}
             />
-            <ValueOutput>
-              {windSpeed} m/s
-            </ValueOutput>
-          </HorizontalContainer>
-        </label>
-        <label>
-          Wind direction:
-          <HorizontalContainer>
-            <RangeControl
-              min={0}
-              max={360}
-              value={windDirection}
-              step={10}
-              tickStep={90}
-              width={300}
-              onChange={this.changeWindDirection}
+            <IconButton
+              onClick={this.erupt}
+              disabled={false}
+              children={<RunIcon />}
+              label={"Erupt"}
+              hoverColor={"#FFDBAC"}
+              activeColor={"#FFECD6"}
+              fill={"#FFAC00"}
+              width={26}
+              height={26}
+              dataTest={"Erupt-button"}
             />
-            <ValueOutput>
-              {windDirection} degrees from North
-            </ValueOutput>
-          </HorizontalContainer>
-        </label>
-        <label>
-          Eruption mass:
-          <HorizontalContainer>
-            <RangeControl
-              min={8}
-              max={15}
-              value={Math.round(Math.log(mass) / Math.LN10)}
-              step={1}
-              tickMap={{
-                8: "10<sup>8</sup>",
-                9: "10<sup>9</sup>",
-                10: "10<sup>10</sup>",
-                11: "10<sup>11</sup>",
-                12: "10<sup>12</sup>",
-                13: "10<sup>13</sup>",
-                14: "10<sup>14</sup>",
-                15: "10<sup>15</sup>",
-              }}
-              width={300}
-              onChange={this.changeMass}
-            />
-            <ValueOutput
-              dangerouslySetInnerHTML={
-                {__html: `10<sup>${Math.round(Math.log(mass) / Math.LN10)}</sup> kg`}
-            } />
-          </HorizontalContainer>
-        </label>
-        <label>
-          Column height
-          <HorizontalContainer>
-            <RangeControl
-              min={1}
-              max={30}
-              value={colHeight / 1000}
-              step={1}
-              tickArray={[1, 5, 10, 15, 20, 25, 30]}
-              width={300}
-              onChange={this.changeColumnHeight}
-            />
-            <ValueOutput>
-              {colHeight / 1000} km
-            </ValueOutput>
-          </HorizontalContainer>
-        </label>
-        <label>
-          Particle size:
-          <HorizontalContainer>
-            <RangeControl
-              min={1}
-              max={64}
-              value={particleSize}
-              step={1}
-              tickArray={[1, 10, 20, 30, 40, 50, 64]}
-              width={300}
-              onChange={this.changeSize}
-            />
-            <ValueOutput>
-              {particleSize} mm
-            </ValueOutput>
-          </HorizontalContainer>
-        </label>
-        <HorizontalContainer
-            alignItems="baseline">
-          <StyledButton onClick={this.erupt}>Erupt</StyledButton>
-          <label>
-            <input
-              name="animate eruption"
-              type="checkbox"
-              checked={this.state.animate}
-              onChange={this.setAnimation} />
-            Animate eruption
-          </label>
-        </HorizontalContainer>
-      </StyledControls>
+          </EruptButtons>
+        </Footer>
+      </TabContent>
     );
   }
 
   private changeWindDirection = (direction: number) => {
-    this.stores.setWindDirection(direction);
+    this.stores.simulation.setWindDirection(direction);
   }
 
   private changeWindSpeed = (speed: number) => {
-    this.stores.setWindSpeed(speed);
+    this.stores.simulation.setWindSpeed(speed);
   }
 
-  private changeColumnHeight = (height: number) => {
-    this.stores.setColumnHeight(height * 1000);
+  private changeColumnHeight = (heightInKilometers: number) => {
+    this.stores.simulation.setColumnHeight(heightInKilometers);
   }
 
-  private changeMass = (vei: number) => {
-    const mass =  Math.pow(10, vei);
-    this.stores.setMass(mass);
+  private changeMass = (zeroBasedPower: number) => {
+    // -4 index conversion, +9 km^3 to m^3, +3 m^3 to kg
+    const massInKilograms = Math.pow(10, zeroBasedPower - 4 + 9 + 3);
+    this.stores.simulation.setMass(massInKilograms);
   }
 
   private changeSize = (size: number) => {
-    this.stores.setParticleSize(size);
+    this.stores.simulation.setParticleSize(size);
+  }
+
+  private changeVEI = (vei: number) => {
+    this.stores.simulation.setVEI(vei);
   }
 
   private erupt = () => {
-    this.stores.erupt(this.state.animate);
-    if (this.state.animate) {
-      setTimeout(() => {
-        this.stores.endEruption();
-        this.stores.paintGrid("thickness", "#ff0000");
-      }, 3000);
-    } else {
-      this.stores.paintGrid("thickness", "#ff0000");
-    }
-  }
+    this.stores.simulation.erupt();
+    this.stores.simulation.paintMap();
 
-  private setAnimation = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({
-      animate: event.target.checked
-    });
+    // This code is used for waiting for the animation to complete and then painting
+    // if (this.state.animate) {
+    //   setTimeout(() => {
+    //     this.stores.endEruption();
+    //     this.stores.paintMap();
+    //   }, 3000);
+    // } else {
+    //   this.stores.paintMap();
+    // }
   }
 }
 

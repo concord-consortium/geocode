@@ -1,89 +1,100 @@
+<xml id="toolbox" style="display: none">
+  <category name="Volcano" colour="0">
+    <!-- <block type="console_logger"></block> -->
+    <!-- <block type="run_sumilation"></block>
+    <block type="fill_cell"></block>
+    <block type="thickness"></block>
+    <block type="x"></block>
+    <block type="y"></block> -->
+    <!-- <block type="addVolcano"></block> -->
+    <block type="addTown"></block>
+    <!-- <block type="setWindDirection"></block> -->
+    <!-- <block type="setWindSpeed"></block> -->
+    <!-- <block type="setEruptionHeight"></block> -->
+     <!-- <block type="setEruptionMass"></block> -->
+    <!-- <block type="setEjectedVolume"></block> -->
+    <!-- <block type="setVEI"></block> -->
+    <!-- <block type="erupt"></block> -->
+    <block type="simulate_wind"></block>
+    <block type="simulate_wind_vei"></block>
+    <block type="simulate_wind_height"></block>
+    <block type="simulate_wind_2"></block>
+    <block type="simulate_wind_sample_vei"></block>
+    <block type="simulate_wind_sample_vei_2"></block>
 
-    <xml id="toolbox" style="display: none">
-        <category name="Volcano" colour="%{BKY_TEXTS_HUE}">
-          <!-- <block type="console_logger"></block> -->
-          <!-- <block type="run_sumilation"></block>
-          <block type="fill_cell"></block>
-          <block type="thickness"></block>
-          <block type="x"></block>
-          <block type="y"></block> -->
-          <block type="addVolcano"></block>
-          <block type="addTown"></block>
-          <block type="setWindDirection"></block>
-          <block type="setWindSpeed"></block>
-          <block type="setEruptionHeight"></block>
-          <block type="setEruptionMass"></block>
-          <block type="setVEI"></block>
-          <block type="erupt"></block>
-          <block type="outputPaintGrid"></block>
-          <block type="outputValueGrid"></block>
-          <block type="outputPlot"></block>
-          <block type="redrawMap"></block>
-        </category>
-        <category name="Logic" colour="%{BKY_LOGIC_HUE}">
-          <block type="controls_if"></block>
-          <block type="logic_compare"></block>
-          <block type="logic_operation"></block>
-          <block type="logic_negate"></block>
-          <block type="logic_boolean"></block>
-        </category>
-      <category name="Loops" colour="120">
-      <block type="controls_repeat_ext">
-        <value name="TIMES">
-          <shadow type="math_number">
-            <field name="NUM">10</field>
-          </shadow>
-        </value>
-      </block>
-      <block type="controls_whileUntil"></block>
-      <block type="controls_for">
-        <value name="FROM">
-          <shadow type="math_number">
-            <field name="NUM">1</field>
-          </shadow>
-        </value>
-        <value name="TO">
-          <shadow type="math_number">
-            <field name="NUM">10</field>
-          </shadow>
-        </value>
-        <value name="BY">
-          <shadow type="math_number">
-            <field name="NUM">1</field>
-          </shadow>
-        </value>
-      </block>
-      <block type="controls_forEach"></block>
-      <block type="controls_flow_statements"></block>
+    <block type="calculate_tephra_vei_wind"></block>
+    <!-- <block type="outputPaintMap"></block> -->
+    <!-- <block type="outputPlot"></block> -->
+    <!-- <block type="redrawMap"></block> -->
+  </category>
 
-    </category>
-    <category name="Variables" colour="330" custom="VARIABLE">
-    </category>
-      <category name="Data" colour="%{BKY_MATH_HUE}">
-        <block type="text">
-            <field name="TEXT"></field>
-        </block>
-        <block type="math_number">
-          <field name="NUM">123</field>
-        </block>
-        <block type="math_arithmetic"></block>
-        <block type="math_single"></block>
-        <block type="math_random_int">
-          <value name="FROM">
-            <block type="math_number">
-              <field name="NUM">1</field>
-            </block>
-          </value>
-          <value name="TO">
-            <block type="math_number">
-              <field name="NUM">100</field>
-            </block>
-          </value>
-        </block>
-      </category>
-      <category name="Logging" colour="260">
-        <block type="logprint"></block>
-        <block type="stringconcat"></block>
-      </category>
-      
-      </xml>
+  <category name="Wind data" colour="%{BKY_LISTS_HUE}">
+    <block type="graph_speed_date_wind_data"></block>
+    <block type="graph_speed_direction_wind_data"></block>
+    <block type="graph_any_wind_data"></block>
+    <block type="all_wind_data"></block>
+    <block type="sample_data"></block>
+    <block type="filter_data"></block>
+  </category>
+
+  <category name="Data Collections" colour="240">
+    <block type="create_sample_location"></block>
+    <block type="create_sample_collection"></block>
+    <block type="add_to_sample_collection"></block>
+    <block type="graph_exceedance"></block>
+    <block type="show_risk"></block>
+  </category>
+
+  <category name="Logic" colour="%{BKY_LOGIC_HUE}">
+    <block type="controls_if"></block>
+    <block type="logic_compare"></block>
+    <block type="logic_operation"></block>
+    <block type="logic_negate"></block>
+    <block type="logic_boolean"></block>
+  </category>
+
+  <category name="Loops" colour="%{BKY_LOOPS_HUE}">
+    <block type="controls_repeat_ext">
+      <value name="TIMES">
+        <shadow type="math_number">
+          <field name="NUM">10</field>
+        </shadow>
+      </value>
+    </block>
+    <block type="controls_whileUntil"></block>
+    <block type="controls_for">
+      <value name="FROM">
+        <shadow type="math_number">
+          <field name="NUM">1</field>
+        </shadow>
+      </value>
+      <value name="TO">
+        <shadow type="math_number">
+          <field name="NUM">10</field>
+        </shadow>
+      </value>
+      <value name="BY">
+        <shadow type="math_number">
+          <field name="NUM">1</field>
+        </shadow>
+      </value>
+    </block>
+    <block type="controls_forEach"></block>
+    <block type="controls_flow_statements"></block>
+  </category>
+  <category name="Data" colour="130">
+    <block type="text">
+      <field name="TEXT">Name</field>
+    </block>
+    <block type="math_number">
+      <field name="NUM">4</field>
+    </block>
+    <block type="input_range"></block>
+  </category>
+  <category name="Variables" colour="130" custom="VARIABLE"></category>
+  <category name="Functions" custom="PROCEDURE"></category>
+  <!-- <category name="Logging" colour="260">
+    <block type="logprint"></block>
+    <block type="stringconcat"></block>
+  </category> -->
+</xml>

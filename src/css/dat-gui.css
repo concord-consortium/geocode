@@ -1,0 +1,13 @@
+.react-dat-gui {
+  top: -11px;
+  opacity: 0.5;
+  transition: all 0.3s;
+}
+.react-dat-gui:hover {
+  top: 0px;
+  opacity: 1;
+}
+
+.react-dat-gui .cr .label-text {
+  width: 55%;
+}

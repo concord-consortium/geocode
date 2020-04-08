@@ -1,9 +1,9 @@
 import * as React from "react";
 import styled from "styled-components";
-import { HighliteButton } from "./styled-button";
+import IconButton from "./buttons/icon-button";
+import { SectionTypes, kTabInfo } from "./tabs";
 import { observer, inject } from "mobx-react";
 import { BaseComponent, IBaseProps } from "./base";
-import { Stage } from "@inlet/react-pixi";
 
 const CanvDiv = styled.div`
     border: 1px solid black; border-radius: 0px;
@@ -22,18 +22,18 @@ const LogDiv = styled.div`
     margin: 4px;
 `;
 
-const AdjustedHighliteButton = styled(HighliteButton)`
+const IconButtonHolder = styled.div`
     position: absolute;
-    top: 0;
-    right: 0;
+    top: 5px;
+    right: 3px;
+    width: 100px;
 `;
 
 interface IState{}
 interface IProps extends IBaseProps {
     width: number;
     height: number;
-    log: string;
-    clear: () => void;
+    clear: any;
 }
 interface ILog {
     width: number;
@@ -47,11 +47,23 @@ export class LogComponent extends BaseComponent<IProps, IState> {
     private ref = React.createRef<HTMLDivElement>();
 
     public render() {
-        const { log, height, width, clear } = this.props;
+        const { height, width, clear } = this.props;
+        const { log } = this.stores.simulation;
 
         return(
             <CanvDiv ref={this.ref} height={height} width={width}>
-                <AdjustedHighliteButton onClick={clear}>Clear Log</AdjustedHighliteButton>
+                <IconButtonHolder>
+                    <IconButton
+                        onClick={clear}
+                        disabled={false}
+                        label={"Clear Log"}
+                        hoverColor={"#BBD9FF"}
+                        activeColor={"#DDEDFF"}
+                        fill={"black"}
+                        width={26}
+                        height={26}
+                    />
+                </IconButtonHolder>
                 <LogDiv>
                     {log}
                 </LogDiv>

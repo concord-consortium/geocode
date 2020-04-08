@@ -1,0 +1,88 @@
+<xml id="toolbox" style="display: none">
+  <category name="Volcano" colour="32">
+    <!-- <block type="console_logger"></block> -->
+    <!-- <block type="run_sumilation"></block>
+    <block type="fill_cell"></block>
+    <block type="thickness"></block>
+    <block type="x"></block>
+    <block type="y"></block> -->
+    <!-- <block type="addVolcano"></block> -->
+    <block type="addTown"></block>
+    <block type="setWindDirection"></block>
+    <block type="setWindSpeed"></block>
+    <block type="setEruptionHeight"></block>
+     <!-- <block type="setEruptionMass"></block> -->
+    <block type="setEjectedVolume"></block>
+    <block type="setVEI"></block>
+    <block type="erupt"></block>
+    <block type="outputPaintMap"></block>
+    <block type="redrawMap"></block>
+  </category>
+ <category name="Data" colour="%{BKY_TEXTS_HUE}">
+    <block type="data_sampler"></block>
+    <block type="random_sample"></block>
+    <block type="sample_speed"></block>
+    <block type="sample_direction"></block>
+    <block type="sample_wind"></block>
+    <block type="create_scenario"></block>
+    <block type="add_scenario_to_list"></block>
+  </category>
+  <category name="Logic" colour="%{BKY_LOGIC_HUE}">
+    <block type="controls_if"></block>
+    <block type="logic_compare"></block>
+    <block type="logic_operation"></block>
+    <block type="logic_negate"></block>
+    <block type="logic_boolean"></block>
+  </category>
+  <category name="Lists" colour="120">
+      <block type="lists_create_empty"></block>
+      <block type="lists_create_with"></block>
+      <block type="lists_create_with_container"></block>
+      <block type="lists_create_with_item"></block>
+      <block type="lists_getIndex"></block>
+      <block type="lists_getSublist"></block>
+      <block type="lists_indexOf"></block>
+      <block type="lists_isEmpty"></block>
+      <block type="lists_length"></block>
+      <block type="lists_repeat"></block>
+      <block type="lists_reverse"></block>
+      <block type="lists_setIndex"></block>
+      <block type="lists_sort"></block>
+      <block type="lists_split"></block>
+  </category>
+  <category name="Loops" colour="120">
+    <block type="controls_repeat_ext">
+      <value name="TIMES">
+        <shadow type="math_number">
+          <field name="NUM">10</field>
+        </shadow>
+      </value>
+    </block>
+    <block type="controls_whileUntil"></block>
+    <block type="controls_for">
+      <value name="FROM">
+        <shadow type="math_number">
+          <field name="NUM">1</field>
+        </shadow>
+      </value>
+      <value name="TO">
+        <shadow type="math_number">
+          <field name="NUM">10</field>
+        </shadow>
+      </value>
+      <value name="BY">
+        <shadow type="math_number">
+          <field name="NUM">1</field>
+        </shadow>
+      </value>
+    </block>
+    <block type="controls_forEach"></block>
+    <block type="controls_flow_statements"></block>
+  </category>
+  <category name="Variables" colour="330" custom="VARIABLE"></category>
+  <category name="Functions" custom="PROCEDURE"></category>
+  <!-- <category name="Logging" colour="260">
+    <block type="logprint"></block>
+    <block type="stringconcat"></block>
+  </category> -->
+</xml>

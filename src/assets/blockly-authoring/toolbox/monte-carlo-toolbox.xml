@@ -1,0 +1,65 @@
+<xml id="toolbox" style="display: none">
+  <category name="Volcano" colour="0">
+    <block type="simulate_wind_vei"></block>
+    <block type="simulate_wind_sample_vei"></block>
+    <block type="simulate_wind_sample_vei_2"></block>
+    <block type="calculate_tephra_vei_wind"></block>
+  </category>
+
+  <category name="Wind data" colour="%{BKY_LISTS_HUE}">
+    <block type="graph_speed_date_wind_data"></block>
+    <block type="graph_speed_direction_wind_data"></block>
+    <block type="graph_any_wind_data"></block>
+    <block type="all_wind_data"></block>
+    <block type="sample_data"></block>
+    <block type="filter_data"></block>
+  </category>
+
+  <category name="Data Collections" colour="240">
+    <block type="create_sample_location"></block>
+    <block type="create_sample_collection"></block>
+    <block type="add_to_sample_collection"></block>
+    <block type="graph_exceedance"></block>
+    <block type="show_risk"></block>
+  </category>
+
+  <category name="Loops" colour="%{BKY_LOOPS_HUE}">
+    <block type="controls_repeat_ext">
+      <value name="TIMES">
+        <shadow type="math_number">
+          <field name="NUM">10</field>
+        </shadow>
+      </value>
+    </block>
+    <block type="controls_for">
+      <value name="FROM">
+        <shadow type="math_number">
+          <field name="NUM">1</field>
+        </shadow>
+      </value>
+      <value name="TO">
+        <shadow type="math_number">
+          <field name="NUM">10</field>
+        </shadow>
+      </value>
+      <value name="BY">
+        <shadow type="math_number">
+          <field name="NUM">1</field>
+        </shadow>
+      </value>
+    </block>
+  </category>
+
+  <category name="Data" colour="130">
+    <block type="text">
+      <field name="TEXT">Name</field>
+    </block>
+    <block type="math_number">
+      <field name="NUM">4</field>
+    </block>
+    <block type="input_range"></block>
+  </category>
+
+  <category name="Variables" colour="130" custom="VARIABLE"></category>
+
+</xml>

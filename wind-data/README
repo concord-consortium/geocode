@@ -1,0 +1,13 @@
+Wind data are downloaded from the NOAA REANALYSIS database.
+Wind data are for Cerro Negro volcano (Nicaragua)
+
+Columns:
+
+1. counter /ID
+2. Year
+3. Month
+4. Day
+5. Hour (hours since midnight)
+6. Approximate elevation of the reading (masl), this corresponds to geopotenital height of 850 mbar
+7. wind velocity (m/s)
+8. wind direction (degrees) (wind is blowing from Cerro Negro toward this direction)

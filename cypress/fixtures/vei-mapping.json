@@ -1,0 +1,50 @@
+{"map":[
+    {
+        "value": 1,
+        "type": "Gentle",
+        "column": 0.5,
+        "ejectedVolume": -4
+    },
+    {
+        "value": 2,
+        "type": "Explosive",
+        "column": 1,
+        "ejectedVolume": -3
+    },
+    {
+        "value": 3,
+        "type": "Catastrophic",
+        "column": 5,
+        "ejectedVolume": -2
+    },
+    {
+        "value": 4,
+        "type": "Cataclysmic",
+        "column": 10,
+        "ejectedVolume": -1
+    },
+    {
+        "value": 5,
+        "type": "Disastrous",
+        "column": 15,
+        "ejectedVolume": 0
+    },
+    {
+        "value": 6,
+        "type": "Colossal",
+        "column": 20,
+        "ejectedVolume": 1
+    },
+    {
+        "value": 7,
+        "type": "Super-Colossal",
+        "column": 25,
+        "ejectedVolume": 2
+    },
+    {
+        "value": 8,
+        "type": "Mega-Colossal",
+        "column": 30,
+        "ejectedVolume": 3
+    }    
+]}

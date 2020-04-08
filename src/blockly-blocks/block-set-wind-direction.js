@@ -9,7 +9,7 @@ Blockly.Blocks['setWindDirection'] = {
       this.setInputsInline(true);
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
-      this.setColour(150);
+      this.setColour(32);
    this.setTooltip("Compass direction,  0 == north 180 == south");
    this.setHelpUrl("Compass direction,  0 == north 180 == south");
     }
@@ -19,7 +19,7 @@ Blockly.Blocks['setWindDirection'] = {
     var value_winddirection = Blockly.JavaScript.valueToCode(block, 'windDirection', Blockly.JavaScript.ORDER_ATOMIC);
     // TODO: Assemble JavaScript into code variable.
     var code = `
-      setWinddirection(${value_winddirection});
+      setWindDirection(${value_winddirection});
   
     `;
     return code;

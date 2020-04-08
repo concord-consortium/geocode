@@ -1,25 +1,23 @@
-
-    <xml id="toolbox" style="display: none">
-        <category name="Volcano" colour="%{BKY_TEXTS_HUE}">
-          <!-- <block type="console_logger"></block> -->
-          <!-- <block type="run_sumilation"></block>
-          <block type="fill_cell"></block>
-          <block type="thickness"></block>
-          <block type="x"></block>
-          <block type="y"></block> -->
-          <block type="addVolcano"></block>
-          <block type="addTown"></block>
-          <block type="setWindDirection"></block>
-          <block type="setWindSpeed"></block>
-          <block type="erupt"></block>
-          <block type="outputPaintGrid"></block>
-        </category>
-        <category name="Data" colour="%{BKY_MATH_HUE}">
-          <block type="text">
-              <field name="TEXT"></field>
-          </block>
-          <block type="math_number">
-            <field name="NUM">123</field>
-          </block>
-        </category>
-      </xml>
+<xml id="toolbox" style="display: none">
+  <category name="Volcano" colour="%{BKY_TEXTS_HUE}">
+    <!-- <block type="console_logger"></block> -->
+    <!-- <block type="run_simulation"></block>
+    <block type="fill_cell"></block>
+    <block type="thickness"></block>
+    <block type="x"></block>
+    <block type="y"></block> -->
+    <block type="addVolcano"></block>
+    <block type="addTown"></block>
+    <block type="setWindDirection"></block>
+    <block type="setWindSpeed"></block>
+    <block type="erupt"></block>
+  </category>
+  <category name="Data" colour="%{BKY_MATH_HUE}">
+    <block type="text">
+      <field name="TEXT"></field>
+    </block>
+    <block type="math_number">
+      <field name="NUM">123</field>
+    </block>
+  </category>
+</xml>

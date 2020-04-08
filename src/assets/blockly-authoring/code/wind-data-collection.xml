@@ -1,0 +1,26 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+<block type="create_sample_location" id="ZZO7p}Syhpf,7XrOTK/r" x="210" y="244">
+    <field name="x">0</field>    <field name="y">0</field>
+        <field name="name">bibi</field>
+    <next>
+      <block type="create_sample_collection" id="O1R?1x~q1K5))jd2@bxg">
+        <field name="name">win</field>
+        <field name="locations">bibi</field>
+        <next>
+          <block type="graph_speed_date_wind_data" id="@@qF7-cF,{,Qx:EHt+RV">
+            <value name="wind data">
+              <block type="all_wind_data" id="(7+gx,.zAeM?(8:O4vuT"></block>
+            </value>
+            <next>
+              <block type="graph_speed_direction_wind_data" id="ig/|KFehHHsd=H}Q/fPV">
+                <value name="wind data">
+                  <block type="all_wind_data" id="|OQlTau229XEJ0Uz7Rv,"></block>
+                </value>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </next>
+  </block>
+</xml>

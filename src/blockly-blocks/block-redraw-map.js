@@ -5,7 +5,7 @@ Blockly.Blocks['redrawMap'] = {
       this.setInputsInline(true);
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
-      this.setColour(75);
+      this.setColour(0);
    this.setTooltip("have the volcano erupt");
    this.setHelpUrl("have the volcano erupt");
     }

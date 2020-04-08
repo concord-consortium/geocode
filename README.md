@@ -41,17 +41,17 @@ You *do not* need to build to deploy the code, that is automatic.  See more info
 * Copy the Story ID, you will need it in the next step.
 * Create a git topic branch in the format of  `#####-pt-story-headline-abbreviated`
 where the PT story ID is thefirst part of the branch name.
-* In your commit comment-body reference the PT Story ID  and URL.  
+* In your commit comment-body reference the PT Story ID  and URL.
 e.g.: `[#1234567] https://www.pivotaltracker.com/story/show/1234567`
 Commits should have concise headlines with details in the body.
 * Test and lint your branch.
 * Push it to GitHub e.g. `git push --set-upstream origin #####-pt-story-headline-abbreviated`
 * After a few moments, your deployed branch should be available at
-`http://geocode-app.concord.org/branch/<branchname>/index.html`.  
+`http://geocode-app.concord.org/branch/<branchname>/index.html`.
 Verify that your deploy worked, and copy the URL.
 * When you are satisfied with your commits, and the deployment looks good, submit
 a pull request for your branch in GitHub, adding `npaessel` or `sfentress`
-as code reviewers. In your pull request summarize the work, reference the PT  
+as code reviewers. In your pull request summarize the work, reference the PT
 story, and provide a link to the deployed demo branch.
 * Update the PT story with a link to the demo deployment and the GitHub pull request.
 
@@ -67,42 +67,64 @@ The simulation is a simple tephra calculation function defined in `tephra2.ts`.
 This function will be improved, modified with the help of our volcanologist partners.
 
 ### Developing new Blockly code blocks
-The Blockly configurations and blocks are configured in:
-* `public/blocks.js` These are the custom blocks.
-* `public/normal-setup.xml` This is the saved workspace (program in progress).
-* `public/toolboc.xml` This is the list of blocks available in the toolbox.
+The Blockly configurations and blocks are specified in the GeoCode project in the following locations:
+* `src/blockly-blocks/blocks.js` Imports the files used for the custom blocks. Individual files are located in `src/blockly-blocks` (e.g., `src/blockly-blocks/block-add-town.js`, `src/blockly-blocks/block-add-volcano.js`, etc.).
+* `src/assets/blockly-authoring/code/basic-setup.xml` and `src/assets/blockly-authoring/code/nested-loops.xml` These are the two default programs that are loaded in the Blocks panel (which file is used depends on settings).
+* `src/assets/blockly-authoring/toolbox/first-toolbox.xml` and `src/assets/blockly-authoring/toolbox/full-toolbox.xml` These are the list of blocks available in the toolbox (which file is used depends on settings).
 
-You can use the [block factory](https://blockly-demo.appspot.com/static/demos/blockfactory/index.html)
-to create new block elements, or you can just look at `blocks.js` for examples to copy from.
+##### Creating a new block
+You can create new blocks using the Blockly Developer Tools [block factory](https://blockly-demo.appspot.com/static/demos/blockfactory/index.html) or by copying and modifying an existing block in the GeoCode project.
 
-If you want to set a default block program modify the contents of `public/normal-setup.xml`.
-You can copy your current workspace (from eg http://localhost:8080/) by viewing the
-developer tools, ckicking on the "Application" tab, and looking in Local Storage. The
-XML will be stored in local storage under the key "blockly-workspace".
+If using the Block Factory, use the browser interface to create your new block.
 
-The block's UI and code generation methods are both defined in `blocks.js`.  
+If copying and modifying an existing block, start with one of the blocks located in `src/blockly-blocks` (e.g., `src/blockly-blocks/block-add-town.js`, `src/blockly-blocks/block-add-volcano.js`, etc.). Make a copy of one of the block files, and then make any needed changes or additions.
 
-The UI the blocks get defined in the `Blockly.Blocks` global object.
-Blocks register themselves in this object using a unique key, such as
-`Blockly.Blocks['print]`.
+Whether using the Block Factory or copying and modifying an existing block, each new block must be added to the GeoCode project. To add a block to the project, create a new JavaScript module containing the block's UI and code generation methods. Name the new JavaScript module using kebab-case (e.g., `block-my-example-block.js`). Add the new JavaScript module to `src\blockly-blocks`, and add an import for the new JavaScript module in `blocks.js`. A new block must have a unique camelCase key (e.g., `myExampleBlock`).
 
-The Code generation for the blocks are defined in the same file in a global variable
-named `Blockly.JavaScript`.
+Each existing GeoCode block has UI and code generation methods defined in its JavaScript module. Therefore, we must also define UI and code generation methods for our new block in the newly created JavaScript module that we added to `src\blockly-blocks` and imported in `blocks.js`. If you are using the Blockly Developer Tools Block Factory, take the Block Definition JavaScript and the Generator stub JavaScript and add it to your new block's JavaScript module. If copying and modifying an existing block, then be sure to make changes to both of these sections.
 
-The any custom functions must be defined in `interpeter.js` in the function named
-`makeInterperterFunc`.  Look at example to see how the function is registered:
+ The UI generation for the new block is defined in the `Blockly.Blocks` global object. This is done in the block's JavaScript module. Blocks register themselves in this object using a unique key (the block `name` field if you are using the Block Factory), such as `Blockly.Blocks['print']`.
+
+Similarly, the code generation for the new block is defined in the block's JavaScript module in a global variable named `Blockly.JavaScript`.
+
+Any custom functions added to a block's code generation must be defined in `interpreter.js` in the function named
+`makeInterpreterFunc`.  Look at an example to see how the function is registered:
 
 ```
-    addFunc("setWindspeed", (...args) => {
-      const params = (unwrap(args)[0]);
-      simulation.setWindSpeed(params);
+    addFunc("setWindspeed", (speed) => {
+      simulation.setWindSpeed(speed);
     });
-
 ```
 
 The above method adds "setWindspeed" as a new javascript function that the
 blockly generated code can use.  In this example, it modifies a parameter in the
 simulation store.
+
+If a function needs to return data, in order to plug it into another block, the
+return value must be wrapped in a `{ data: any }` object:
+
+```
+    addFunc("add", (params: {a: number, b: number}) => {
+      const val = params.a + params.b;
+      return {
+        data: val
+      };
+    });
+```
+
+##### Adding the block to a toolbox
+For a new block to be available in the list of blocks that a user can add from the Blocks panel, it must be added to one or both of the toolboxes located in `src/assets/blockly-authoring/toolbox/first-toolbox.xml` and `src/assets/blockly-authoring/toolbox/full-toolbox.xml`. Modify one or both of these XML files to include your new block. Create a new XML `block` element nested inside the proper `category` element. Be sure to set the `type` to the unique camelCase key that was created for your block (e.g., `myExampleBlock`). For example, the add volcano block is added to the volcano category by inserting `<block type="addVolcano"></block>` inside of the volcano category element. If your block requires default fields, then add the appropriate `field` elements inside of the `block` element.
+
+##### Setting the default block program
+To change the default block program that is shown in the Blocks panel when the app is loaded, modify the contents of `src/assets/blockly-authoring/code/basic-setup.xml`
+or `src/assets/blockly-authoring/code/nested-loops.xml`. Depending on your settings, the program specified in one of these XML files will be loaded as the default program.
+
+You can also create a program in the Blocks panel (from eg http://localhost:8080/), access a copy of the XML defining the program, and copy it into one of the above files. To access the XML of the current program in the Blocks panel by doing the following:
+* in GeoCode open the model options and press Save current code to local storage
+* open the browser developer tools
+* click on the "Application" tab
+* under "Storage" open "Local Storage"
+* the program XML is stored in local storage under the key "blockly-workspace"
 
 ### Notes
 

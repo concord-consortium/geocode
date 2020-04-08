@@ -1,0 +1,138 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+   <block type="create_sample_location" id="]?Q@Lg(g)5XL3c*l7jV8" x="120" y="-385">
+      <field name="x">75</field>
+      <field name="y">75</field>
+      <field name="name">City A</field>
+      <next>
+         <block type="create_sample_collection" id="]c@!uM_F8Yw]Fa_LMS{9">
+            <field name="name">City A</field>
+            <field name="locations">City A</field>
+            <next>
+               <block type="create_sample_location" id="J1O+99A^f[4roxtt6Xw#">
+                  <field name="x">15</field>
+                  <field name="y">15</field>
+                  <field name="name">Close-by</field>
+                  <next>
+                     <block type="create_sample_collection" id="bQ_vJ+7zwNa-.NoOu#OF">
+                        <field name="name">Close-by</field>
+                        <field name="locations">Close-by</field>
+                        <next>
+                           <block type="create_sample_location" id="?3wxH?MpM02kliTUGX21">
+                              <field name="x">30</field>
+                              <field name="y">30</field>
+                              <field name="name">Midtown</field>
+                              <next>
+                                 <block type="create_sample_collection" id="DJRU2{K^DrStv+@u.[CH">
+                                    <field name="name">Midtown</field>
+                                    <field name="locations">Midtown</field>
+                                    <next>
+                                       <block type="controls_repeat_ext" id="R?F$YDIm5Bb.1LUW`)+L">
+                                          <value name="TIMES">
+                                             <shadow type="math_number" id="W]yjMlTa3D`qB!GXlz`:">
+                                                <field name="NUM">100</field>
+                                             </shadow>
+                                          </value>
+                                          <statement name="DO">
+                                             <block type="add_to_sample_collection" id="YMU1B}QLdE?j8=-OE2sv">
+                                                <field name="collections">Close-by</field>
+                                                <value name="tephra sample">
+                                                   <block type="calculate_tephra_vei_wind" id="`8h~{fOeN1UCF~^k$15g">
+                                                      <field name="locations">Close-by</field>
+                                                      <value name="vei">
+                                                         <block type="math_number" id="tOhdDtSe|~T7nk!OPFir">
+                                                            <field name="NUM">6</field>
+                                                         </block>
+                                                      </value>
+                                                      <value name="wind samples">
+                                                         <block type="all_wind_data" id="k*`?E[@Rp2K[dc%z~Dc_" />
+                                                      </value>
+                                                   </block>
+                                                </value>
+                                                <next>
+                                                   <block type="add_to_sample_collection" id="=0fBSk4NcrWG[H}Zqf^O">
+                                                      <field name="collections">City A</field>
+                                                      <value name="tephra sample">
+                                                         <block type="calculate_tephra_vei_wind" id="W8L#ApwxsC(#VlK!4uqK">
+                                                            <field name="locations">City A</field>
+                                                            <value name="vei">
+                                                               <block type="math_number" id="jTbk1EE+K^K0vhKc(+)D">
+                                                                  <field name="NUM">6</field>
+                                                               </block>
+                                                            </value>
+                                                            <value name="wind samples">
+                                                               <block type="all_wind_data" id="e(|USH;SqCBX}o?d4sP8" />
+                                                            </value>
+                                                         </block>
+                                                      </value>
+                                                      <next>
+                                                         <block type="add_to_sample_collection" id="7gLG2W|qM^{pbU!p-rxN">
+                                                            <field name="collections">Midtown</field>
+                                                            <value name="tephra sample">
+                                                               <block type="calculate_tephra_vei_wind" id="J4I2+q(x@L6ZhU|wfl0?">
+                                                                  <field name="locations">Midtown</field>
+                                                                  <value name="vei">
+                                                                     <block type="math_number" id="sGej|b=e@0w0Q.eK`tuF">
+                                                                        <field name="NUM">6</field>
+                                                                     </block>
+                                                                  </value>
+                                                                  <value name="wind samples">
+                                                                     <block type="all_wind_data" id="(^ZPVt^K(41:LS@.{fTq" />
+                                                                  </value>
+                                                               </block>
+                                                            </value>
+                                                            <next>
+                                                               <block type="graph_exceedance" id="yYniI4@KIx*fK6Kwx/|P">
+                                                                  <field name="collections">City A</field>
+                                                                  <field name="threshold">100</field>
+                                                                  <next>
+                                                                     <block type="graph_exceedance" id="L^Czl|N3ySTzU`FIWpPC">
+                                                                        <field name="collections">Close-by</field>
+                                                                        <field name="threshold">50</field>
+                                                                        <next>
+                                                                           <block type="graph_exceedance" id="wF[20H%MnV;6^7BrAV-X">
+                                                                              <field name="collections">Midtown</field>
+                                                                              <field name="threshold">200</field>
+                                                                           </block>
+                                                                        </next>
+                                                                     </block>
+                                                                  </next>
+                                                               </block>
+                                                            </next>
+                                                         </block>
+                                                      </next>
+                                                   </block>
+                                                </next>
+                                             </block>
+                                          </statement>
+                                          <next>
+                                             <block type="show_risk" id="8MWNnp$D5#TtHOsvRVM(">
+                                                <field name="collections">City A</field>
+                                                <field name="threshold">100</field>
+                                                <next>
+                                                   <block type="show_risk" id="J-x,U-qj%P;[c?~98*;7">
+                                                      <field name="collections">Close-by</field>
+                                                      <field name="threshold">50</field>
+                                                      <next>
+                                                         <block type="show_risk" id="la*o8b#`#a#pACO:;-}2">
+                                                            <field name="collections">Midtown</field>
+                                                            <field name="threshold">200</field>
+                                                         </block>
+                                                      </next>
+                                                   </block>
+                                                </next>
+                                             </block>
+                                          </next>
+                                       </block>
+                                    </next>
+                                 </block>
+                              </next>
+                           </block>
+                        </next>
+                     </block>
+                  </next>
+               </block>
+            </next>
+         </block>
+      </next>
+   </block>
+</xml>

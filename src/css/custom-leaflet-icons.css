@@ -1,0 +1,119 @@
+.circle-icon {
+    background: #fff;
+    width: 20px !important;
+    height: 20px !important;
+    margin-top: -10px !important;
+    margin-left: -10px !important;
+    border-radius: 10px;
+    box-shadow: 0 0 7px rgba(0,0,0,0.55);
+    text-align: center;
+    line-height: 20px;
+    color: #666;
+    z-index: 500 !important;
+  }
+
+  .diamond-container {
+    width: 40px !important;
+    height: 40px !important;
+    margin-top: -24px !important;
+    margin-left: -24px !important;
+    z-index: 500 !important;
+  }
+
+  .diamond-icon {
+    opacity: .75;
+    background: #C4C4C4;
+    width: 40px !important;
+    height: 40px !important;
+    transform: rotate(45deg);
+    text-align: center;
+    border: solid 2px #979797;
+    border-radius: 4px;
+  }
+  .diamond-icon.selected {
+    border: 4px solid #3578F4;
+  }
+  .diamond-text {
+    width: 40px !important;
+    height: 40px !important;
+    transform: rotate(-45deg);
+    font-size: 38px;
+    font-weight: bold;
+    color: white;
+    line-height: 38px;
+  }
+
+  .div-icon {
+    height: 0px;
+  }
+
+  .icon-content {
+    background: #fff;
+    width: max-content !important;
+    height: max-content !important;
+    margin-top: 5px !important;
+    margin-left: 5px !important;
+    padding: 5px !important;
+    border-radius: 10px;
+    box-shadow: 0 0 7px rgba(0,0,0,0.55);
+    text-align: center;
+    line-height: 20px;
+    color: #666;
+    z-index: 200 !important;
+  }
+
+  .div-icon.sample-label .icon-content {
+    background: #fffc;
+    margin-left: 22px !important;
+    margin-top: 1px !important;
+    line-height: 15px;
+    border: 1px solid #444;
+    border-radius: 2px;
+    box-shadow: none;
+  }
+  .div-icon.sample-label::before {
+    content: "";
+    display: inline-block;
+    transform: rotate(45deg);
+    margin-left: 2px;
+    margin-top: 18px;
+    width: 23px;
+    height: 0px;
+    border: 1px solid #444;
+  }
+
+  .top-left {
+    transform: translate(0%, 0%);
+  }
+
+  .top-right {
+    transform: translate(-100%, 0%);
+  }
+
+  .top-center {
+    transform: translate(-50%, 0%);
+  }
+
+  .bottom-left {
+    transform: translate(0%, -100%);
+  }
+
+  .bottom-right {
+    transform: translate(-100%, -100%);
+  }
+
+  .bottom-center {
+    transform: translate(-50%, -100%);
+  }
+
+  .center-left {
+    transform: translate(0%, -50%);
+  }
+
+  .center-right {
+    transform: translate(-100%, -50%);
+  }
+
+  .center-center {
+    transform: translate(-50%, -50%);
+  }

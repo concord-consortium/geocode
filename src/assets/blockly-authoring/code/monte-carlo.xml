@@ -1,0 +1,52 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+   <block type="create_sample_location" id="WfgW]kA4PDP~n5Dd7uzy" x="86" y="27">
+      <field name="x">30</field>
+      <field name="y">30</field>
+      <field name="name">Close By</field>
+      <next>
+         <block type="create_sample_collection" id="Q4cS2J{e0O#ch3_7;O!m">
+            <field name="name">Close-by Samples</field>
+            <field name="locations">Close By</field>
+            <next>
+               <block type="controls_repeat_ext" id=".6|Dl=z^3)Qrq*8[i^7`">
+                  <value name="TIMES">
+                     <shadow type="math_number" id="XeP|O7C]TK|)w_AqjeJ]">
+                        <field name="NUM">200</field>
+                     </shadow>
+                  </value>
+                  <statement name="DO">
+                     <block type="add_to_sample_collection" id="pXrVf~Ml-?/h1hy-,WQn">
+                        <field name="collections">Close-by Samples</field>
+                        <value name="tephra sample">
+                           <block type="calculate_tephra_vei_wind" id="s`UZWM?2-0:XEcnI$HnK">
+                              <field name="locations">Close By</field>
+                              <value name="vei">
+                                 <block type="math_number" id="KTuipEy:.w.zmas?IE4G">
+                                    <field name="NUM">6</field>
+                                 </block>
+                              </value>
+                              <value name="wind samples">
+                                 <block type="all_wind_data" id="GfkV8Q%5bCr)A}3^BmPw" />
+                              </value>
+                           </block>
+                        </value>
+                        <next>
+                           <block type="graph_exceedance" id="L8I(o}@G+y_yZ?@!dbQ.">
+                              <field name="collections">Close-by Samples</field>
+                              <field name="threshold">200</field>
+                              <next>
+                                 <block type="show_risk" id="]~7PIu`)u!{@-$T_5[i2">
+                                    <field name="collections">Close-by Samples</field>
+                                    <field name="threshold">200</field>
+                                 </block>
+                              </next>
+                           </block>
+                        </next>
+                     </block>
+                  </statement>
+               </block>
+            </next>
+         </block>
+      </next>
+   </block>
+</xml>
