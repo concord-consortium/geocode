@@ -78,7 +78,7 @@ context('histogram graph type',()=>{
             modelOptions.getShowBarHistogram().click();
         })
         it('verify bar histogram option checked',()=>{
-            modelOptions.getShowBarHistogram().siblings('input').should('be.checked')
+            modelOptions.getShowBarHistogram().should('be.checked')
         })
         it('verify bar histogram is shown',()=>{
             monteCarloTab.getDataBars().should('be.visible');
@@ -86,7 +86,7 @@ context('histogram graph type',()=>{
         })
         it('verify revert back to data points when bar histogram option is unchecked',()=>{
             modelOptions.getShowBarHistogram().click();
-            modelOptions.getShowBarHistogram().siblings('input').should('not.be.checked')
+            modelOptions.getShowBarHistogram().should('not.be.checked')
             monteCarloTab.getDataBars().should('not.exist');
             monteCarloTab.getDataPoints().should('be.visible');
         })
