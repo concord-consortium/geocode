@@ -38,11 +38,29 @@ class ModelOptions {
     getShowDataOption(){
         return cy.get('.label-text').contains('Show data?').siblings('input')
     }
+    getControlOptionFolderHeader(){
+        return cy.get('li.folder .title').contains('Controls Options')
+    }
+    getShowWindSpeedOption(){
+        return cy.get('.label-text').contains('Show Wind Speed?').siblings('input')
+    }
+    getShowWindDirectionOption(){
+        return cy.get('.label-text').contains('Show Wind Direction?').siblings('input')
+    }
+    getShowEjectedVolumeOption(){
+        return cy.get('.label-text').contains('Show Ejected Volume?').siblings('input')
+    }
+    getShowColumnHeightOption(){
+        return cy.get('.label-text').contains('Show Column Height?').siblings('input')
+    }
+    getShowVEIOption(){
+        return cy.get('.label-text').contains('Show VEI?').siblings('input')
+    }
     getShowSpeedControl(){
-        return cy.get('.label-text').contains('Show Speed Controls?')
+        return cy.get('.label-text').contains('Show Speed Controls?').siblings('input')
     }
     getShowBarHistogram(){
-        return cy.get('.label-text').contains('Show Bar Histogram?')
+        return cy.get('.label-text').contains('Show Bar Histogram?').siblings('input')
     }
     getShowLogOption(){
         return cy.get('.label-text').contains('Show Log?').siblings('input')
