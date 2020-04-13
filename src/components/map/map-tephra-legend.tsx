@@ -129,7 +129,7 @@ export default class TephraLegendComponent extends PureComponent<IProps, IState>
         </AbsoluteIcon>
         {TephraRanges.map((tephraRange, index) => {
             return (
-              <TephraContainer key={index}>
+              <TephraContainer key={index} data-test="tephra-key">
                 <TephraBox backgroundColor={tephraRange.color}/>
                 { tephraRange.max
                   ? <TephraLabel>{`- ${tephraRange.min}-${tephraRange.max}`}</TephraLabel>

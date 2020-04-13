@@ -50,7 +50,7 @@ context("Controls panel", () => {
         it('verify tephra is visible',()=>{
             map.getTephra().should('be.visible');
         })
-        it('verify switching to Cross Section tab shows tephra',()=>{
+        it('verify switching to Monte Carlo tab shows tephra',()=>{
             rightPanel.getMonteCarloTab().click();
             map.getTephra().should('be.visible');
         })
@@ -58,11 +58,11 @@ context("Controls panel", () => {
             controlsTab.getControlsPanel().find(controlsTab.getResetButtonEl()).click();
             map.getTephra().should('not.exist');
         })
-        it('verify Conditions tab does not show tephra',()=>{
+        it('verify Monte Carlo tab does not show tephra',()=>{
             rightPanel.getConditionsTab().click();
             map.getTephra().should('not.exist');
         })
-        it('verify Erupt while in Cross Section tab shows tephra in Cross Section tab',()=>{
+        it('verify Erupt while in Monte Carlo tab shows tephra in Monte Carlo tab',()=>{
             rightPanel.getMonteCarloTab().click();
             controlsTab.getEruptButton().click();
             map.getTephra().should('be.visible');

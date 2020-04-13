@@ -33,6 +33,12 @@ class Map {
     getTephra(){
         return cy.get('.leaflet-pane .leaflet-zoom-animated .leaflet-interactive')
     }
+    getMapKeyToggle(){
+        return cy.get('[data-test="map-key-toggle"')
+    }
+    getKeyContainer(){
+        return cy.get('[data-test="key-container')
+    }
 
     //Monte Carlo Tab
     getDiamondMarker(){
