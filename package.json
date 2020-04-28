@@ -36,6 +36,7 @@
   },
   "scripts": {
     "start": "webpack-dev-server --inline --hot --content-base dist/",
+    "start:secure": "webpack-dev-server --https --inline --hot --content-base dist/ --cert ./LocalhostCertificates/localhost.pem --key ./LocalhostCertificates/localhost.key",
     "build": "npm-run-all lint:build clean build:webpack",
     "build:webpack": "webpack --mode production --devtool false",
     "clean": "rimraf dist",
@@ -161,6 +162,8 @@
     "styled-components": "^4.1.3",
     "transformation-matrix": "^1.15.3",
     "uuid": "^3.3.2",
-    "wait-on": "^3.2.0"
+    "wait-on": "^3.2.0",
+    "jquery": "^3.4.1",
+    "shutterbug": "1.3.0-pre.1"
   }
 }
