@@ -4,7 +4,7 @@ node_modules
 npm-error.log
 .env
 cypress/screenshots
-
+LocalhostCertificates
 # Editors
 .idea
 
