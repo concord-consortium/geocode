@@ -43,6 +43,17 @@
         "maxZoom": 10,
         "initialZoom": 8
     },
+    "Everything": {
+        "topLeftLat": 180,
+        "topLeftLng": -180,
+        "bottomRightLat": -180,
+        "bottomRightLng": 180,
+        "volcanoLat": 36,
+        "volcanoLng": -120,
+        "minZoom": 6,
+        "maxZoom": 10000,
+        "initialZoom": 8
+    },
     "Mount Pinatubo": {
         "topLeftLat": 25,
         "topLeftLng": 130,

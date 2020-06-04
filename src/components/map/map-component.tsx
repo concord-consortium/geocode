@@ -14,6 +14,7 @@ import { BaseComponent, IBaseProps } from "../base";
 import { CrossSectionDrawLayer } from "./layers/cross-section-draw-layer";
 import { LocalToLatLng } from "../../utilities/coordinateSpaceConversion";
 import { MapTephraThicknessLayer } from "./map-tephra-thickness-layer";
+import { MapTriangulatedStrainLayer } from "./map-triangulated-strain-layer";
 import { OverlayControls } from "../overlay-controls";
 import { RulerDrawLayer } from "./layers/ruler-draw-layer";
 import { RightSectionTypes } from "../tabs";
@@ -252,6 +253,9 @@ export class MapComponent extends BaseComponent<IProps, IState>{
               colHeight={colHeight}
               mass={mass}
               hasErupted={hasErupted}
+            />
+            <MapTriangulatedStrainLayer
+              map={this.state.mapLeafletRef}
             />
           </Pane>
           <Pane
