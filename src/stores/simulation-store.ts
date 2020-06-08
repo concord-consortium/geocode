@@ -121,7 +121,7 @@ export const SimulationStore = types
     // authoring props
     requireEruption: true,
     requirePainting: true,
-    scenario: "Cerro Negro",
+    scenario: "Everything",
     toolbox: "Everything",
     initialCodeTitle: "Basic",
   })

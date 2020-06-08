@@ -256,6 +256,10 @@ export class MapComponent extends BaseComponent<IProps, IState>{
             />
             <MapTriangulatedStrainLayer
               map={this.state.mapLeafletRef}
+              minLat={35}
+              maxLat={37}
+              minLng={-123}
+              maxLng={-119}
             />
           </Pane>
           <Pane
