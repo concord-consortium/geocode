@@ -258,7 +258,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
               map={this.state.mapLeafletRef}
               minLat={35}
               maxLat={37}
-              minLng={-123}
+              minLng={-124}
               maxLng={-119}
             />
           </Pane>

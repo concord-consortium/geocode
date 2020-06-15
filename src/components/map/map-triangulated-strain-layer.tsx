@@ -76,7 +76,7 @@ export class MapTriangulatedStrainLayer extends BaseComponent<IProps, IState> {
                         requests.push(axios.get("https://web-services.unavco.org/gps/data/velocity/" + element.id + "/beta", {
                             params: {
                                 analysisCenter: "pbo",
-                                referenceFrame: "igs08",
+                                referenceFrame: "nam08",
                                 report: "short",
                                 solutionType: "snaps"
                             }
@@ -93,7 +93,7 @@ export class MapTriangulatedStrainLayer extends BaseComponent<IProps, IState> {
                                 const responseData = responseText.split(/\r|\n|\r/);
                                 const splitResponseData = responseData[8].split(",");
                                 const station: StationData = {
-                                    longitude: parseFloat(splitResponseData[3]),
+                                    longitude: parseFloat(splitResponseData[3]) - 360,
                                     latitude: parseFloat(splitResponseData[2]),
                                     eastVelocity: parseFloat(splitResponseData[6]),
                                     eastVelocityUncertainty: 0.01,
@@ -131,7 +131,7 @@ export class MapTriangulatedStrainLayer extends BaseComponent<IProps, IState> {
         const coords: number[] = [];
         for (let i = 0; i < data.length; i++) {
             const lat = data[i].latitude;
-            const lng = data[i].longitude - 360;
+            const lng = data[i].longitude;
 
             coords.push(lat);
             coords.push(lng);
@@ -143,6 +143,32 @@ export class MapTriangulatedStrainLayer extends BaseComponent<IProps, IState> {
         // It outputs a 2D array containing sets of vertecies
         // Each vertex is returned as an index to an array of coordinates
         const mesh = new Delaunator(coords);
+        const strainValues: number[] = [];
+        let strainMin: number = 0;
+        let strainMax: number = 0;
+
+        for (let i = 0; i < mesh.triangles.length; i += 3) {
+            const strain = Math.log10(strainCalc({data: [ data[points[mesh.triangles[i]][2]],
+                data[points[mesh.triangles[i + 1]][2]],
+                data[points[mesh.triangles[i + 2]][2]],
+            ]}));
+            // strain = Math.sign(strain) * Math.log10(Math.abs(strain));
+            strainValues.push(strain);
+            if (i === 0) {
+                strainMin = strain;
+                strainMax = strain;
+            } else {
+                strainMax = strain > strainMax ? strain : strainMax;
+                strainMin = strain < strainMin ? strain : strainMin;
+            }
+        }
+
+        for (let i = 0; i < strainValues.length; i++) {
+            const percent = (strainValues[i] - strainMin) / (strainMax - strainMin);
+            strainValues[i] = percent * (1) + 0;
+            strainValues[i] = Number.isNaN(strainValues[i]) ? strainMin : strainValues[i];
+
+        }
 
         for (let i = 0; i < mesh.triangles.length; i += 3) {
             if (map) {
@@ -159,23 +185,33 @@ export class MapTriangulatedStrainLayer extends BaseComponent<IProps, IState> {
                     points[mesh.triangles[i + 2]][1]
                 );
 
-                const strain = strainCalc({data: [ data[points[mesh.triangles[i]][2]],
-                                                   data[points[mesh.triangles[i + 1]][2]],
-                                                   data[points[mesh.triangles[i + 2]][2]],
-                ]});
-
                 const polygon: Leaflet.Polygon = Leaflet.polygon(
                     [p1, p2, p3],
                     {
                         stroke: true,
                         color: "#FFF",
                         weight: 1,
-                        fillOpacity: (0.2 * (strain * 4) * 0.8),
+                        fillOpacity: strainValues[(i - i % 3) / 3],
                         fillColor: Color.rgb(255, 0, 0).toString()
                     }
                     ).addTo(map);
             }
         }
+
+        // Additional code for simple display of GPS site velocities as lines
+        // for (const d of data) {
+        //     if (map) {
+        //         const velocityArrow: Leaflet.Polygon = Leaflet.polygon(
+        //             [Leaflet.latLng(d.latitude, d.longitude),
+        //             Leaflet.latLng(d.latitude + d.northVelocity, d.longitude + d.eastVelocity)],
+        //             {
+        //                 stroke: true,
+        //                 color: "#0000ffff",
+        //                 weight: 3,
+        //                 fillOpacity: 0
+        //             }).addTo(map);
+        //     }
+        // }
     }
 
 }
