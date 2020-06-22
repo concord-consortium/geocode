@@ -3,6 +3,7 @@
 // Saul Amster 06/2020
 // Translated from GPS strain calculator--gps_strain_calculator_excel.v3.xls by Vince Cronin
 import * as math from "mathjs";
+import { area } from "d3";
 
 // The following are constants and should not be changed (except for maybe the excessively large value of PI)
 // Do understand though, that many of these values are being scaled by tremendous factors, so innacuracy in PI
@@ -22,6 +23,7 @@ export interface StrainInput {
 }
 
 export interface StationData {
+    id: string;
     longitude: number;
     latitude: number;
     eastVelocity: number;
@@ -32,7 +34,11 @@ export interface StationData {
 
 // This is all of the outputs of the algorithm. Currently only maxShearStrain is returned
 // This interface is unused
-interface StrainOutput {
+export interface StrainOutput {
+    triangleCenter: {
+        latitude: number;
+        longitude: number;
+    };
     translationVector: {
         eastComponent: number;
         northComponent: number;
@@ -46,6 +52,7 @@ interface StrainOutput {
     minHorizontalExtension: number;
     maxShearStrain: number;
     areaStrain: number;
+    secondInvariant: number;
 }
 
 // This is an interface containing all of the data that is calculated for a single GPS station
@@ -77,7 +84,7 @@ interface StationDataComputedValues {
 }
 
 // returns Max Shear Strain for the three data GPS stations inputed
-const strainCalc = (inputData: StrainInput) => {
+const strainCalc = (inputData: StrainInput): StrainOutput => {
     const stationData: StationDataComputedValues[] = [];
     inputData.data.forEach(element => {
         stationData.push(calcStationData(element));
@@ -162,7 +169,7 @@ function calcStationData(data: StationData): StationDataComputedValues {
 
 // returns calculated Max Shear Strain within the three GPS stations
 // Uses mathjs for matrix manipulation
-function calculateStrainOutputData(inputData: StrainInput, calculatedData: StationDataComputedValues[]) {
+function calculateStrainOutputData(inputData: StrainInput, calculatedData: StationDataComputedValues[]): StrainOutput {
     const utmZones: number[] = [];
     calculatedData.forEach((element: StationDataComputedValues) => {
         utmZones.push(element.utmZone);
@@ -173,13 +180,20 @@ function calculateStrainOutputData(inputData: StrainInput, calculatedData: Stati
 
     const eastingCoords: number[] = [];
     const northingCoords: number[] = [];
-    calculatedData.forEach(( element: StationDataComputedValues) => {
-        northingCoords.push(element.utmZone === S1WesternmostZone ? element.trueNorthing : element.pseudoNorthing);
-        eastingCoords.push(element.utmZone === S1WesternmostZone ? element.trueEasting : element.pseudoEasting);
-    });
+    const gpsLats: number[] = [];
+    const gpsLngs: number[] = [];
+    for (let i = 0; i < inputData.data.length; i++) {
+        northingCoords.push(calculatedData[i].utmZone === S1WesternmostZone ? calculatedData[i].trueNorthing : calculatedData[i].pseudoNorthing);
+        eastingCoords.push(calculatedData[i].utmZone === S1WesternmostZone ? calculatedData[i].trueEasting : calculatedData[i].pseudoEasting);
+        gpsLats.push(inputData.data[i].latitude);
+        gpsLngs.push(inputData.data[i].longitude);
+    }
 
     const meanEasting = average(eastingCoords);
     const meanNorthing = average(northingCoords);
+
+    const meanLatitude = average(gpsLats);
+    const meanLongitude = average(gpsLngs);
 
     const revisedData: number[][] = [];
     for (let i = 0; i < eastingCoords.length; i++) {
@@ -242,9 +256,30 @@ function calculateStrainOutputData(inputData: StrainInput, calculatedData: Stati
                                             Math.pow(m6[1][1], 2));
     const areaStrain = correctedValues[0] + correctedValues[1];
 
-    const secondInvariant = correctedValues[0] * correctedValues[1];
+    const strainSecondInvariant = correctedValues[0] * correctedValues[1];
 
-    return maximumIninitesimalShearStrain * Math.pow(10, 9);
+    const output: StrainOutput = {
+        triangleCenter: {
+            latitude: meanLatitude,
+            longitude: meanLongitude
+        },
+        translationVector: {
+            eastComponent: m5.get([0]),
+            northComponent: m5.get([1]),
+            azimuth_degrees: azimutOfTranslationVector,
+            speed: magnitudeOfTranslationVector
+        },
+        rotation_degrees: m5.get([2]) * (180 / PI),
+        rotation_nanoRad: m5.get([2]) * Math.pow(10, 9),
+        directionOfRotation: m5.get([2]) < 0 ? "clockwise" : "anit-clockwise",
+        maxHorizontalExtension: correctedValues[0],
+        minHorizontalExtension: correctedValues[1],
+        maxShearStrain: maximumIninitesimalShearStrain * Math.pow(10, 9),
+        areaStrain: areaStrain * Math.pow(10, 9),
+        secondInvariant: strainSecondInvariant * Math.pow(10, 9)
+    };
+
+    return output;
 }
 
 // Helper standard deviation and averaging functions

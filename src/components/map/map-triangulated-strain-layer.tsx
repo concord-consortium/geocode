@@ -6,7 +6,8 @@ import { BaseComponent } from "../base";
 import Delaunator from "delaunator";
 import axios from "axios";
 import strainCalc from "../../strain";
-import { StationData } from "../../strain";
+import { StationData, StrainOutput } from "../../strain";
+import "../../css/custom-leaflet-icons.css";
 
 interface IProps {
     map: Leaflet.Map | null;
@@ -75,7 +76,7 @@ export class MapTriangulatedStrainLayer extends BaseComponent<IProps, IState> {
                         filteredSet.add(element.station_name);
                         requests.push(axios.get("https://web-services.unavco.org/gps/data/velocity/" + element.id + "/beta", {
                             params: {
-                                analysisCenter: "pbo",
+                                analysisCenter: "cwu",
                                 referenceFrame: "nam08",
                                 report: "short",
                                 solutionType: "snaps"
@@ -93,6 +94,7 @@ export class MapTriangulatedStrainLayer extends BaseComponent<IProps, IState> {
                                 const responseData = responseText.split(/\r|\n|\r/);
                                 const splitResponseData = responseData[8].split(",");
                                 const station: StationData = {
+                                    id: splitResponseData[0],
                                     longitude: parseFloat(splitResponseData[3]) - 360,
                                     latitude: parseFloat(splitResponseData[2]),
                                     eastVelocity: parseFloat(splitResponseData[6]),
@@ -127,11 +129,38 @@ export class MapTriangulatedStrainLayer extends BaseComponent<IProps, IState> {
         const { map } = this.props;
         const { data } = this.state;
 
+        // Proximity based point removal
+        // GPS points that are very close to each other will produce extremely high strain values
+        // By removing these points, it becomes easier to plot the data using an infinite scale
+        // Other methods of solving this problem would be by plotting the data in a bucketed gradient
+        // e.g. 0 - 5: Blue, 5 - 50: Green, 50 - 250: Yellow, 250+: Red
+        const removablePoints: Set<string> = new Set<string>();
+        for (let i = 0; i < data.length; i++) {
+            for (let k = 0; k < data.length; k++) {
+                if (i !== k && !removablePoints.has(data[i].id) && !removablePoints.has(data[k].id)) {
+                    const dist = Math.sqrt(Math.pow(data[i].latitude - data[k].latitude, 2) +
+                                           Math.pow(data[i].longitude - data[k].longitude, 2));
+                    if (dist < 0.1) {
+                        removablePoints.add(data[i].id);
+                    }
+                }
+            }
+        }
+
+        // Output station id for all points removed from the mesh
+        // let removedPoints: string = "";
+        // removablePoints.forEach(element => {
+        //     removedPoints += element + ", ";
+        // });
+        // console.log(removedPoints);
+
+        const filteredData: StationData[] = data.filter((obj: StationData) => !removablePoints.has(obj.id));
+
         const points: number[][] = [];
         const coords: number[] = [];
-        for (let i = 0; i < data.length; i++) {
-            const lat = data[i].latitude;
-            const lng = data[i].longitude;
+        for (let i = 0; i < filteredData.length; i++) {
+            const lat = filteredData[i].latitude;
+            const lng = filteredData[i].longitude;
 
             coords.push(lat);
             coords.push(lng);
@@ -143,17 +172,21 @@ export class MapTriangulatedStrainLayer extends BaseComponent<IProps, IState> {
         // It outputs a 2D array containing sets of vertecies
         // Each vertex is returned as an index to an array of coordinates
         const mesh = new Delaunator(coords);
-        const strainValues: number[] = [];
+        const strainOutputs: StrainOutput[] = [];
+        const adjustedStrainValues: number[] = [];
         let strainMin: number = 0;
         let strainMax: number = 0;
 
         for (let i = 0; i < mesh.triangles.length; i += 3) {
-            const strain = Math.log10(strainCalc({data: [ data[points[mesh.triangles[i]][2]],
-                data[points[mesh.triangles[i + 1]][2]],
-                data[points[mesh.triangles[i + 2]][2]],
-            ]}));
+            const strainOutput: StrainOutput = strainCalc({data: [ filteredData[points[mesh.triangles[i]][2]],
+                filteredData[points[mesh.triangles[i + 1]][2]],
+                filteredData[points[mesh.triangles[i + 2]][2]],
+            ]});
+
+            const strain = Math.log10(strainOutput.maxShearStrain);
             // strain = Math.sign(strain) * Math.log10(Math.abs(strain));
-            strainValues.push(strain);
+            strainOutputs.push(strainOutput);
+            adjustedStrainValues.push(strain);
             if (i === 0) {
                 strainMin = strain;
                 strainMax = strain;
@@ -163,10 +196,10 @@ export class MapTriangulatedStrainLayer extends BaseComponent<IProps, IState> {
             }
         }
 
-        for (let i = 0; i < strainValues.length; i++) {
-            const percent = (strainValues[i] - strainMin) / (strainMax - strainMin);
-            strainValues[i] = percent * (1) + 0;
-            strainValues[i] = Number.isNaN(strainValues[i]) ? strainMin : strainValues[i];
+        for (let i = 0; i < strainOutputs.length; i++) {
+            const percent = (adjustedStrainValues[i] - strainMin) / (strainMax - strainMin);
+            adjustedStrainValues[i] = percent * (1) + 0;
+            adjustedStrainValues[i] = Number.isNaN(adjustedStrainValues[i]) ? strainMin : adjustedStrainValues[i];
 
         }
 
@@ -191,27 +224,33 @@ export class MapTriangulatedStrainLayer extends BaseComponent<IProps, IState> {
                         stroke: true,
                         color: "#FFF",
                         weight: 1,
-                        fillOpacity: strainValues[(i - i % 3) / 3],
+                        fillOpacity: adjustedStrainValues[(i - i % 3) / 3],
                         fillColor: Color.rgb(255, 0, 0).toString()
                     }
                     ).addTo(map);
+
+                const label = Leaflet.divIcon({className: "div-icon",
+                                               html: strainOutputs[(i - i % 3) / 3].maxShearStrain.toFixed(2)});
+                const marker = Leaflet.marker(Leaflet.latLng(strainOutputs[(i - i % 3) / 3].triangleCenter.latitude,
+                                                             strainOutputs[(i - i % 3) / 3].triangleCenter.longitude),
+                                              {icon: label}).addTo(map);
             }
         }
 
         // Additional code for simple display of GPS site velocities as lines
-        // for (const d of data) {
-        //     if (map) {
-        //         const velocityArrow: Leaflet.Polygon = Leaflet.polygon(
-        //             [Leaflet.latLng(d.latitude, d.longitude),
-        //             Leaflet.latLng(d.latitude + d.northVelocity, d.longitude + d.eastVelocity)],
-        //             {
-        //                 stroke: true,
-        //                 color: "#0000ffff",
-        //                 weight: 3,
-        //                 fillOpacity: 0
-        //             }).addTo(map);
-        //     }
-        // }
+        for (const d of filteredData) {
+            if (map) {
+                const velocityArrow: Leaflet.Polygon = Leaflet.polygon(
+                    [Leaflet.latLng(d.latitude, d.longitude),
+                    Leaflet.latLng(d.latitude + d.northVelocity, d.longitude + d.eastVelocity)],
+                    {
+                        stroke: true,
+                        color: "#0000ffff",
+                        weight: 3,
+                        fillOpacity: 0
+                    }).addTo(map);
+            }
+        }
     }
 
 }
