@@ -1,6 +1,10 @@
 import * as React from "react";
 import * as Color from "color";
 import * as Leaflet from "leaflet";
+
+// @ts-ignore
+import * as RawVelocityDataSet from "../../assets/data/cwu.snaps_nam14.vel";
+
 import { inject, observer } from "mobx-react";
 import { BaseComponent } from "../base";
 import Delaunator from "delaunator";
@@ -8,6 +12,8 @@ import axios from "axios";
 import strainCalc from "../../strain";
 import { StationData, StrainOutput } from "../../strain";
 import "../../css/custom-leaflet-icons.css";
+import { parse } from "path";
+import { stat } from "fs";
 
 interface IProps {
     map: Leaflet.Map | null;
@@ -37,14 +43,18 @@ export class MapTriangulatedStrainLayer extends BaseComponent<IProps, IState> {
     constructor(props: IProps) {
         super(props);
 
-        this.getUNAVCOData();
+        // this.getUNAVCOData();
 
         const initialState: IState = {
           data: [],
         };
 
         this.state = initialState;
-      }
+    }
+
+    public componentDidMount() {
+        this.parseOfflineUNAVCOData();
+    }
 
     // Polygon data is added to the map directly, so there is no react render
     // This might want to be changed in the future
@@ -55,6 +65,7 @@ export class MapTriangulatedStrainLayer extends BaseComponent<IProps, IState> {
     // This is a multi-step method that pulls UNAVCO GPS data from within the bounds defined in the props
     // Most of it runs asynchronously and updates the state when complete
     // It uses the axios library to handle GET requests
+    // [Deprecated: Now using offline parseOfflineUNAVCOData() method for same results]
     private getUNAVCOData() {
         const { minLat, maxLat, minLng, maxLng } = this.props;
         const outputData: StationData[] = [];
@@ -107,7 +118,7 @@ export class MapTriangulatedStrainLayer extends BaseComponent<IProps, IState> {
                         }
                     });
                     this.setState({data: outputData});
-                    this.buildMesh();
+                    this.buildMesh(outputData);
                 }).catch(err => {
                     if (err.response) {
                         console.log(err.response);
@@ -122,12 +133,47 @@ export class MapTriangulatedStrainLayer extends BaseComponent<IProps, IState> {
         });
     }
 
+    // This method parses the offline UNAVCO velocity data found within "../../assets/data/cwu.snaps_nam14.vel"
+    // It converts the file into a parsable format and extracts
+    // the necessary data to be passed onto the buildMesh() method
+    private parseOfflineUNAVCOData() {
+        const { minLat, maxLat, minLng, maxLng } = this.props;
+
+        const parsedData: string[][] = [];
+        // Convert UNAVCO's ASCII file into a computer readable data set
+        (RawVelocityDataSet as string).split("\n").forEach((value) => {parsedData.push(value.split(/\ +/g)); });
+        const outputData: StationData[] = [];
+        const filteredSet: Set<any> = new Set<any>();
+
+        for (let i = 36; i < parsedData.length - 1; i++) {
+            if (!filteredSet.has(parsedData[i][1])) {
+                filteredSet.add(parsedData[i][1]);
+                const station: StationData = {
+                    id: parsedData[i][1],
+                    longitude: parseFloat(parsedData[i][9]) - 360,
+                    latitude: parseFloat(parsedData[i][8]),
+                    eastVelocity: parseFloat(parsedData[i][21]),
+                    eastVelocityUncertainty: 0.01,
+                    northVelocity: parseFloat(parsedData[i][20]),
+                    northVelocityUncertainty: 0.01
+                };
+
+                if ((station.longitude < maxLng && station.longitude > minLng) &&
+                    (station.latitude < maxLat && station.latitude > minLat)) {
+                        outputData.push(station);
+                }
+            }
+        }
+
+        this.setState({data: outputData});
+        this.buildMesh(outputData);
+    }
+
     // This method creates and displays a mesh based on the GPS stations acquired from getUNAVCOData()
     // It uses Delaunator to calculate the mesh and colors each triangle based on calculated strain
     // The strain calculation can be found in "../../strain.ts"
-    private buildMesh() {
+    private buildMesh(data: StationData[]) {
         const { map } = this.props;
-        const { data } = this.state;
 
         // Proximity based point removal
         // GPS points that are very close to each other will produce extremely high strain values

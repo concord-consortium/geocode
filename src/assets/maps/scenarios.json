@@ -50,7 +50,7 @@
         "bottomRightLng": 180,
         "volcanoLat": 36,
         "volcanoLng": -120,
-        "minZoom": 6,
+        "minZoom": 0,
         "maxZoom": 10000,
         "initialZoom": 8
     },
