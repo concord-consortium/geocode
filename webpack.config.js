@@ -88,6 +88,14 @@ module.exports = (env, argv) => {
             },
           ],
         },
+        {
+          test: /\.(kmz)$/i,
+          use: [
+            {
+              loader: 'file-loader'
+            },
+          ],
+        }
       ]
     },
     resolve: {

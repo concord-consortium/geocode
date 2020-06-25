@@ -2,6 +2,9 @@ import * as React from "react";
 import * as Color from "color";
 import * as Leaflet from "leaflet";
 
+import "leaflet-kmz";
+import * as KMZFile from "../../assets/data/qfaults.kmz";
+
 // @ts-ignore
 import * as RawVelocityDataSet from "../../assets/data/cwu.snaps_nam14.vel";
 
@@ -296,6 +299,17 @@ export class MapTriangulatedStrainLayer extends BaseComponent<IProps, IState> {
                         fillOpacity: 0
                     }).addTo(map);
             }
+        }
+
+        if (map) {
+            // Instantiate KMZ parser (async)
+            const kmzParser = new Leaflet.KMZParser({
+                onKMZLoaded: function(layer, name) {
+                    layer.addTo(map);
+                }
+            });
+            // Add remote KMZ files as layers (NB if they are 3rd-party servers, they MUST have CORS enabled)
+            kmzParser.load(KMZFile);
         }
     }
 

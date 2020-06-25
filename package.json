@@ -143,6 +143,7 @@
     "js-beautify": "^1.9.1",
     "js-interpreter": "^1.4.6",
     "leaflet": "^1.5.1",
+    "leaflet-kmz": "^0.3.8",
     "less-loader": "^5.0.0",
     "lodash": "^4.17.11",
     "mathjs": "^7.0.1",
