@@ -6,7 +6,7 @@ import "leaflet-kmz";
 import * as KMZFile from "../../assets/data/qfaults.kmz";
 
 // @ts-ignore
-import * as RawVelocityDataSet from "../../assets/data/cwu.snaps_nam14.vel";
+import * as RawVelocityDataSet from "../../assets/data/cwu.final_nam14.vel";
 
 import { inject, observer } from "mobx-react";
 import { BaseComponent } from "../base";
