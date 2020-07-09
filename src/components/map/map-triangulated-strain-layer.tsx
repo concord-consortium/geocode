@@ -17,6 +17,7 @@ import { StationData, StrainOutput } from "../../strain";
 import "../../css/custom-leaflet-icons.css";
 import { parse } from "path";
 import { stat } from "fs";
+import * as tinygradient from "tinygradient";
 
 interface IProps {
     map: Leaflet.Map | null;
@@ -42,6 +43,22 @@ axios.interceptors.response.use(
 @inject("stores")
 @observer
 export class MapTriangulatedStrainLayer extends BaseComponent<IProps, IState> {
+
+    // Gradient used for strain triangle coloration
+    // Usually data has outliers which skew the data up towards the top
+    // Most of the gradient is also skewed towards the top (0.97 and above)
+    // This is not an ideal solution because changing the plotted boundaries yields extremely varying results
+    // depending on how extreme the outliers are
+    // Using standard deviation or some normalization method could fix this
+    private gradient: tinygradient.Instance = tinygradient([
+        {color: "rgb(238, 226, 112)", pos: 0},
+        {color: "rgb(255, 191, 78)", pos: 0.97},
+        {color: "rgb(255, 117, 75)", pos: 0.976},
+        {color: "rgb(233, 78, 131)", pos: 0.982},
+        {color: "rgb(174, 78, 211)", pos: 0.988},
+        {color: "rgb(123, 88, 174)", pos: 0.994},
+        {color: "rgb(81, 90, 148)", pos: 1}
+    ]);
 
     constructor(props: IProps) {
         super(props);
@@ -232,7 +249,8 @@ export class MapTriangulatedStrainLayer extends BaseComponent<IProps, IState> {
                 filteredData[points[mesh.triangles[i + 2]][2]],
             ]});
 
-            const strain = Math.log10(strainOutput.maxShearStrain);
+            const strain = strainOutput.secondInvariant;
+            // const strain = Math.log10(strainOutput.maxShearStrain);
             // strain = Math.sign(strain) * Math.log10(Math.abs(strain));
             strainOutputs.push(strainOutput);
             adjustedStrainValues.push(strain);
@@ -244,6 +262,8 @@ export class MapTriangulatedStrainLayer extends BaseComponent<IProps, IState> {
                 strainMin = strain < strainMin ? strain : strainMin;
             }
         }
+
+        console.log(strainMax + " " + strainMin);
 
         for (let i = 0; i < strainOutputs.length; i++) {
             const percent = (adjustedStrainValues[i] - strainMin) / (strainMax - strainMin);
@@ -273,44 +293,49 @@ export class MapTriangulatedStrainLayer extends BaseComponent<IProps, IState> {
                         stroke: true,
                         color: "#FFF",
                         weight: 1,
-                        fillOpacity: adjustedStrainValues[(i - i % 3) / 3],
-                        fillColor: Color.rgb(255, 0, 0).toString()
+                        fillOpacity: 1,
+                        fillColor: this.gradient.rgbAt(adjustedStrainValues[(i - i % 3) / 3]).toRgbString()
                     }
                     ).addTo(map);
 
-                const label = Leaflet.divIcon({className: "div-icon",
-                                               html: strainOutputs[(i - i % 3) / 3].maxShearStrain.toFixed(2)});
-                const marker = Leaflet.marker(Leaflet.latLng(strainOutputs[(i - i % 3) / 3].triangleCenter.latitude,
-                                                             strainOutputs[(i - i % 3) / 3].triangleCenter.longitude),
-                                              {icon: label}).addTo(map);
+                // // Addition code for displaying text labels for adjusted strain values at the center of each triangle
+                // // Use html: strainOutputs[(i - i % 3) / 3].secondInvariant.toFixed(4)}) for raw values
+                // // instead of normalized 0-1 values
+                // const label = Leaflet.divIcon({className: "div-icon",
+                //                                html: adjustedStrainValues[(i - i % 3) / 3].toFixed(4)});
+                // const marker = Leaflet.marker(Leaflet.latLng(strainOutputs[(i - i % 3) / 3].triangleCenter.latitude,
+                //                                              strainOutputs[(i - i % 3) / 3].triangleCenter.longitude),
+                //                               {icon: label}).addTo(map);
             }
         }
 
-        // Additional code for simple display of GPS site velocities as lines
-        for (const d of filteredData) {
-            if (map) {
-                const velocityArrow: Leaflet.Polygon = Leaflet.polygon(
-                    [Leaflet.latLng(d.latitude, d.longitude),
-                    Leaflet.latLng(d.latitude + d.northVelocity, d.longitude + d.eastVelocity)],
-                    {
-                        stroke: true,
-                        color: "#0000ffff",
-                        weight: 3,
-                        fillOpacity: 0
-                    }).addTo(map);
-            }
-        }
+        // // Additional code for simple display of GPS site velocities as lines
+        // for (const d of filteredData) {
+        //     if (map) {
+        //         const velocityArrow: Leaflet.Polygon = Leaflet.polygon(
+        //             [Leaflet.latLng(d.latitude, d.longitude),
+        //             Leaflet.latLng(d.latitude + d.northVelocity, d.longitude + d.eastVelocity)],
+        //             {
+        //                 stroke: true,
+        //                 color: "#0000ffff",
+        //                 weight: 3,
+        //                 fillOpacity: 0
+        //             }).addTo(map);
+        //     }
+        // }
 
-        if (map) {
-            // Instantiate KMZ parser (async)
-            const kmzParser = new Leaflet.KMZParser({
-                onKMZLoaded: function(layer, name) {
-                    layer.addTo(map);
-                }
-            });
-            // Add remote KMZ files as layers (NB if they are 3rd-party servers, they MUST have CORS enabled)
-            kmzParser.load(KMZFile);
-        }
+        // // Additional code for displaying USGS fault line maps
+        // // Can only load entire data set. (Very slow)
+        // if (map) {
+        //     // Instantiate KMZ parser (async)
+        //     const kmzParser = new Leaflet.KMZParser({
+        //         onKMZLoaded: function(layer, name) {
+        //             layer.addTo(map);
+        //         }
+        //     });
+        //     // Add remote KMZ files as layers (NB if they are 3rd-party servers, they MUST have CORS enabled)
+        //     kmzParser.load(KMZFile);
+        // }
     }
 
 }
