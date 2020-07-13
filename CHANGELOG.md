@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.1.2 - released April 7, 2020
+
+- Fix wind direction in radial plot
+
 ## Version 0.1.1 - released April 7, 2020
 
 - Add wind data
