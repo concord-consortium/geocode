@@ -142,8 +142,8 @@ export class CanvasD3RadialChart extends React.Component<IProps> {
     } else {
       ctx.beginPath();
       (data as number[][]).forEach((point) => {
-        const px = center.x + Math.cos((180 + 90 - point[0]) * Math.PI / 180) * magScale(point[1]);
-        const py = center.y - Math.sin((180 + 90 - point[0]) * Math.PI / 180) * magScale(point[1]);
+        const px = center.x + Math.cos((90 - point[0]) * Math.PI / 180) * magScale(point[1]);
+        const py = center.y - Math.sin((90 - point[0]) * Math.PI / 180) * magScale(point[1]);
         // const px = center.x + xScale(x);
         // const py = yScale(y);
         const headlen = 6; // length of head in pixels
