@@ -4,13 +4,16 @@ import RightPanel from "../../support/elements/RightPanel";
 import ControlsTab from "../../support/elements/ControlsTab";
 import Map from "../../support/elements/Map"
 import BlocksTab from "../../support/elements/BlocksTab";
+import ConditionsTab from "../../support/elements/ConditionsTab";
+
 
 const modelOptions = new ModelOptions;
 const leftPanel = new LeftPanel;
 const rightPanel = new RightPanel;
 const controlsTab = new ControlsTab;
 const map = new Map;
-const blocksTab = new BlocksTab
+const blocksTab = new BlocksTab;
+const conditionsTab = new ConditionsTab;
 
 const DataRegEx = /Data$/gm;        // regex to ignore "Data Samples"
 
@@ -599,33 +602,234 @@ context ('Authoring Options',()=>{
         })
     })
     describe('Controls options',()=>{
-        it('verify Show log checked shows log area', ()=>{
+        describe('Controls Tab Options',()=>{
+            before(()=>{
+                modelOptions.getControlOptionFolderHeader().click()
+            })
+            it('verify Wind Speed slider hides',()=>{
+                leftPanel.getControlsTab().click();
+                modelOptions.getShowWindSpeedOption().should('be.checked')
+                modelOptions.getShowWindSpeedOption().click();
+                modelOptions.getShowWindSpeedOption().should('not.be.checked')
+                controlsTab.getWindSpeedSlider().should('not.exist')
+                controlsTab.getWindDirectionSlider().should('be.visible')
+                controlsTab.getWindSpeedDirectionContainer().find('[data-test="info"]').should('be.visible')
+                controlsTab.getWindSpeedDirectionContainer().find('[data-test="info"]>div>div').should('have.length',1)
+                conditionsTab.getWindSpeedDirectionWidget().should('be.visible')
+            })
+            it('verify Wind Direction slider hides',()=>{
+                modelOptions.getShowWindDirectionOption().should('be.checked')
+                modelOptions.getShowWindDirectionOption().click();
+                modelOptions.getShowWindDirectionOption().should('not.be.checked')
+                controlsTab.getWindDirectionSlider().should('not.exist')
+                controlsTab.getWindSpeedDirectionContainer().should('not.exist')
+                conditionsTab.getWindSpeedDirectionWidget().should('not.exist')
+            })
+            it('verify Ejected Volume slider hides',()=>{
+                modelOptions.getShowEjectedVolumeOption().should('be.checked')
+                modelOptions.getShowEjectedVolumeOption().click();
+                modelOptions.getShowEjectedVolumeOption().should('not.be.checked')
+                controlsTab.getEjectedVolumeSlider().should('not.exist')
+                controlsTab.getEjectedVolumeContainer().should('not.exist')
+                conditionsTab.getEjectedVolumeWidget().should('not.exist')
+            })
+            it('verify Column Height slider hides',()=>{
+                modelOptions.getShowColumnHeightOption().should('be.checked')
+                modelOptions.getShowColumnHeightOption().click();
+                modelOptions.getShowColumnHeightOption().should('not.be.checked')
+                controlsTab.getColumnHeightSlider().should('not.exist')
+                controlsTab.getColumnHeightContainer().should('not.exist')
+                conditionsTab.getColumnHeightWidget().should('not.exist')
+            })
+            it('verify VEI slider hides',()=>{
+                modelOptions.getShowVEIOption().should('be.checked')
+                modelOptions.getShowVEIOption().click();
+                modelOptions.getShowVEIOption().should('not.be.checked')
+                controlsTab.getVEISlider().should('not.exist')
+                controlsTab.getVEIContainer().should('not.exist')
+                conditionsTab.getVEIWidget().should('not.exist')
+            })
+            it('verify Wind speed and direction sliders show again',()=>{
+                modelOptions.getShowWindSpeedOption().click();
+                modelOptions.getShowWindSpeedOption().should('be.checked')
+                controlsTab.getWindSpeedSlider().should('be.visible')
+                controlsTab.getWindSpeedDirectionContainer().find('[data-test="info"]').should('be.visible')
+                modelOptions.getShowWindDirectionOption().click();
+                modelOptions.getShowWindDirectionOption().should('be.checked')
+                controlsTab.getWindDirectionSlider().should('be.visible')
+                controlsTab.getWindSpeedDirectionContainer().find('[data-test="info"]>div>div').should('have.length',3)
+                conditionsTab.getWindSpeedDirectionWidget().should('be.visible')
+            })
+            it('verify ejected volume slider shows again',()=>{    
+                modelOptions.getShowEjectedVolumeOption().click();
+                modelOptions.getShowEjectedVolumeOption().should('be.checked')
+                controlsTab.getEjectedVolumeSlider().should('be.visible')
+                controlsTab.getEjectedVolumeContainer().should('be.visible')
+                controlsTab.getEjectedVolumeContainer().find('[data-test="info"]').should('be.visible')
+                conditionsTab.getEjectedVolumeWidget().should('be.visible')
+            })
+            it('verify VEI slider shows again',()=>{
+                modelOptions.getShowVEIOption().click();
+                modelOptions.getShowVEIOption().should('be.checked')
+                controlsTab.getVEISlider().should('be.visible')
+                controlsTab.getVEIContainer().should('be.visible')
+                controlsTab.getVEIContainer().find('[data-test="info"]').should('be.visible')
+                conditionsTab.getVEIWidget().should('be.visible')
+            })
+            it('verify column height slider shows again',()=>{    
+                modelOptions.getShowColumnHeightOption().click();
+                modelOptions.getShowColumnHeightOption().should('be.checked')
+                controlsTab.getColumnHeightSlider().should('be.visible')
+                controlsTab.getColumnHeightContainer().should('be.visible')
+                controlsTab.getColumnHeightContainer().find('[data-test="info"]').should('be.visible')
+                conditionsTab.getColumnHeightWidget().should('be.visible')
+            })
+        })
+
+        it.skip('verify Show log checked shows log area', ()=>{
 
         })
-        it('verify Show Demo Charts checked shows demo charts',()=>{
+        it.skip('verify Show Demo Charts checked shows demo charts',()=>{
             // TODO don't know what it is supposed to do
         })
-        it('verify Show log umchecked hides log area', ()=>{
-
-        })
-        it('verify Show Demo Charts unchecked does not show demo charts',()=>{
+        it.skip('verify Show log umchecked hides log area', ()=>{
             // TODO don't know what it is supposed to do
         })
-    })
-    describe('Require painting options',()=>{
-        it('verify require eruption state matches events',()=>{
-            //Need to have nested loop option on
+        it.skip('verify Show Demo Charts unchecked does not show demo charts',()=>{
+            // TODO don't know what it is supposed to do
+        })
+        after(()=>{
+            modelOptions.getModelOptionsMenu().click() //Close Option Panel
         })
     })
-    describe.skip('authoring save and restore state',()=>{
-        //before(()=>{
+    describe('authoring save and restore state',()=>{
+        before(()=>{
+            modelOptions.getModelOptionsMenu().click() //Open Option Panel
             //Eruption off, painting on, scenarion Mount Pinatubo, Toolbox Wind and VEI
-            //Initial Code Basic, show bloxks, & Code, hids controls
-            //Show cross-section, data, hide condtions
-            //Show log, hide demo charts
-        //})
-        it('verify save and restore of selections',()=>{
+            modelOptions.getRequireEruptionOption().click()
+            modelOptions.selectMapScenario('Mount Pinatubo')
+            modelOptions.selectCodeToolbox('Wind and VEI')
+            //Initial Code Basic, show blocks, & controls, hide code
+            modelOptions.selectInitialCode('Basic')
+            modelOptions.getShowCodeOption().click();
+            //Show monte carlo, conditions, hide data, cross section
+            modelOptions.getShowDataOption().click();
+            //Show wind direction and VEI, hide all other sliders
+            modelOptions.getControlOptionFolderHeader().click()
+            modelOptions.getShowWindSpeedOption().click();
+            modelOptions.getShowEjectedVolumeOption().click();
+            modelOptions.getShowColumnHeightOption().click();
+            //show bar histogram
+            modelOptions.getShowBarHistogram().click();
+        })
+        it('verify selected options',()=>{
+            modelOptions.getRequireEruptionOption().should('not.be.checked')
+            modelOptions.getRequirePaintingOption().should('be.checked')
+            //can't verify dropdown selections
+            leftPanel.getBlocksTab().click();
+            blocksTab.getTag('Volcano').should('be.visible');
+            blocksTab.getTag('Data').should('be.visible');
+            blocksTab.getTag('Loops').should('be.visible');
+            blocksTab.getTag('Variables').should('be.visible');
 
+            blocksTab.getTag('Volcano').click();
+            cy.wait(500)
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length',8)
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(0).text().then((text)=>{
+                expect(removeNBSP(text)).to.contain("Create a town")
+            })
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(4).text().then((text)=>{
+                expect(removeNBSP(text)).to.contain("Compute and visualize tephra with")
+            })
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(5).text().then((text)=>{
+                expect(removeNBSP(text)).to.contain("wind speed (m/s)")
+            })
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(6).text().then((text)=>{
+                expect(removeNBSP(text)).to.contain("wind direction (degrees)")
+            })
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(7).should('contain','VEI')
+
+            blocksTab.getTag('Loops').click();
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
+
+            blocksTab.getTag('Data').click();
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
+            leftPanel.getBlocksTab().should('be.visible')
+            leftPanel.getCodeTab().should('not.exist')
+            leftPanel.getControlsTab().should('be.visible')
+            rightPanel.getConditionsTab().should('be.visible')
+            rightPanel.getMonteCarloTab().should('be.visible')
+            rightPanel.getCrossSectionTab().should('not.exist')
+            rightPanel.getDataTab().should('not.exist')
+            leftPanel.getControlsTab().click();
+            controlsTab.getWindSpeedSlider().should('not.exist');
+            controlsTab.getWindDirectionSlider().should('be.visible')
+            controlsTab.getEjectedVolumeContainer().should('not.exist')
+            controlsTab.getColumnHeightContainer().should('not.exist')
+            controlsTab.getVEIContainer().should('be.visible')
+            modelOptions.getShowBarHistogram().should('be.checked')
+            modelOptions.getShowSpeedControl().should('not.be.checked')
+        })
+        it('verify save and restore of selections',()=>{
+            modelOptions.saveCurrentState().scrollIntoView().click({force:true});
+
+            //Change options to verify restore
+            modelOptions.getShowCrossSectionOption().click();
+            rightPanel.getCrossSectionTab().should('be.visible')
+            modelOptions.getShowEjectedVolumeOption().click();
+            controlsTab.getEjectedVolumeContainer().should('be.visible')
+
+            //restore
+            modelOptions.restoreSavedState().scrollIntoView().click({force:true});
+
+            modelOptions.getRequireEruptionOption().should('not.be.checked')
+            modelOptions.getRequirePaintingOption().should('be.checked')
+            //can't verify dropdown selections
+            leftPanel.getBlocksTab().click()
+            blocksTab.getTag('Volcano').should('be.visible');
+            blocksTab.getTag('Data').should('be.visible');
+            blocksTab.getTag('Loops').should('be.visible');
+            blocksTab.getTag('Variables').should('be.visible');
+
+            blocksTab.getTag('Volcano').click();
+            cy.wait(500)
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length',8)
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(0).text().then((text)=>{
+                expect(removeNBSP(text)).to.contain("Create a town")
+            })
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(4).text().then((text)=>{
+                expect(removeNBSP(text)).to.contain("Compute and visualize tephra with")
+            })
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(5).text().then((text)=>{
+                expect(removeNBSP(text)).to.contain("wind speed (m/s)")
+            })
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(6).text().then((text)=>{
+                expect(removeNBSP(text)).to.contain("wind direction (degrees)")
+            })
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(7).should('contain','VEI')
+
+            blocksTab.getTag('Loops').click();
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
+
+            blocksTab.getTag('Data').click();
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
+            leftPanel.getBlocksTab().should('be.visible')
+            leftPanel.getCodeTab().should('not.exist')
+            leftPanel.getControlsTab().should('be.visible')
+            rightPanel.getConditionsTab().should('be.visible')
+            rightPanel.getMonteCarloTab().should('be.visible')
+            rightPanel.getCrossSectionTab().should('not.exist')
+            rightPanel.getDataTab().should('not.exist')
+            leftPanel.getControlsTab().click();
+            controlsTab.getWindSpeedSlider().should('not.exist');
+            controlsTab.getWindDirectionSlider().should('be.visible')
+            controlsTab.getEjectedVolumeContainer().should('not.exist')
+            controlsTab.getColumnHeightContainer().should('not.exist')
+            controlsTab.getVEIContainer().should('be.visible')
+            modelOptions.getShowBarHistogram().should('be.checked')
+            modelOptions.getShowSpeedControl().should('not.be.checked')
         })
     })
 })

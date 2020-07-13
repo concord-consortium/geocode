@@ -70,4 +70,35 @@ context("Monte Carlo tab",()=>{
             map.getDiamondMarker().find('.diamond-text').contains('!').should('be.visible')
         })
     })
-})  
+    describe('verify risk diamonds persist when switching tabs',()=>{
+        it('verify risk diamonds on map',()=>{
+            rightPanel.getConditionsTab().click();
+            map.getDiamondMarker().should('be.visible').and('have.length',3)
+            map.getDiamondMarker().find('.diamond-text').contains('!').should('be.visible')
+            rightPanel.getMonteCarloTab().click();
+            map.getDiamondMarker().should('be.visible').and('have.length',3)
+            map.getDiamondMarker().find('.diamond-text').contains('!').should('be.visible')
+        })
+    })
+})
+context('histogram graph type',()=>{
+    describe('Bar histogram',()=>{
+        before(()=>{
+            modelOptions.getModelOptionsMenu().click();
+            modelOptions.getShowBarHistogram().click();
+        })
+        it('verify bar histogram option checked',()=>{
+            modelOptions.getShowBarHistogram().should('be.checked')
+        })
+        it('verify bar histogram is shown',()=>{
+            monteCarloTab.getDataBars().should('be.visible');
+            monteCarloTab.getDataPoints().should('not.exist');
+        })
+        it('verify revert back to data points when bar histogram option is unchecked',()=>{
+            modelOptions.getShowBarHistogram().click();
+            modelOptions.getShowBarHistogram().should('not.be.checked')
+            monteCarloTab.getDataBars().should('not.exist');
+            monteCarloTab.getDataPoints().should('be.visible');
+        })
+    })
+})

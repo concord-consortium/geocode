@@ -44,7 +44,7 @@ export class LegendComponent extends BaseComponent<IProps, IState> {
   public render() {
     const { onClick } = this.props;
     return (
-      <LegendContainer>
+      <LegendContainer data-test="key-container">
         { this.state.showTephra
           ? <TephraLegendComponent onClick={onClick}/>
           : <RiskLegendComponent onClick={onClick}/>
@@ -60,6 +60,7 @@ export class LegendComponent extends BaseComponent<IProps, IState> {
           fill={"black"}
           width={26}
           height={26}
+          dataTest={"map-key-toggle"}
         />
       </LegendContainer>
     );
