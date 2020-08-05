@@ -146,7 +146,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       if (windSamples && windSamples.length > 0) {
         const windSample = Datasets.getRandomSampleWithReplacement(windSamples, 1)[0];
         windSpeed = windSample.speed;
-        windDirection = windSample.direction;
+        windDirection = windSample.direction < 180 ? windSample.direction + 180 : windSample.direction - 180;
       }
       simulation.setWindSpeed(windSpeed);
       simulation.setWindDirection(windDirection);
