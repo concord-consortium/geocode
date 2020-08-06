@@ -123,8 +123,8 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
 
     // Returns tephra thickness at a specific location, given by a samples collection, with various inputs
     addFunc("computeTephra", (params: {location: string, windSamples?: Dataset, vei?: number}) => {
-      const { location, windSamples, vei } = params;
 
+      const { location, windSamples, vei } = params;
       if (vei === undefined) {
         blocklyController.throwError("You must set a value for the eruption VEI.");
         return;
@@ -146,7 +146,8 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       if (windSamples && windSamples.length > 0) {
         const windSample = Datasets.getRandomSampleWithReplacement(windSamples, 1)[0];
         windSpeed = windSample.speed;
-        windDirection = windSample.direction;
+        // Wind data is stored using direction to, but we use direction from. Need to convert.
+        windDirection = windSample.direction < 180 ? windSample.direction + 180 : windSample.direction - 180;
       }
       simulation.setWindSpeed(windSpeed);
       simulation.setWindDirection(windDirection);
@@ -193,8 +194,11 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
         blocklyController.throwError("You must add a dataset for the wind sample.");
         return;
       }
+      // Wind data is stored using direction to, but we use direction from. Need to convert.
+      const sampleData = Datasets.getRandomSampleWithReplacement(dataset, 1)[0];
+      sampleData.direction = sampleData.direction < 180 ? sampleData.direction + 180 : sampleData.direction - 180;
       return {
-        data: Datasets.getRandomSampleWithReplacement(dataset, 1)[0]
+        data: sampleData
       };
     });
 
