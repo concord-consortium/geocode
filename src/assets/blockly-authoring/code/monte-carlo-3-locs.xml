@@ -9,8 +9,8 @@
             <field name="locations">City A</field>
             <next>
                <block type="create_sample_location" id="J1O+99A^f[4roxtt6Xw#">
-                  <field name="x">15</field>
-                  <field name="y">15</field>
+                  <field name="x">-10</field>
+                  <field name="y">-10</field>
                   <field name="name">Close-by</field>
                   <next>
                      <block type="create_sample_collection" id="bQ_vJ+7zwNa-.NoOu#OF">
@@ -18,8 +18,8 @@
                         <field name="locations">Close-by</field>
                         <next>
                            <block type="create_sample_location" id="?3wxH?MpM02kliTUGX21">
-                              <field name="x">30</field>
-                              <field name="y">30</field>
+                              <field name="x">-20</field>
+                              <field name="y">-20</field>
                               <field name="name">Midtown</field>
                               <next>
                                  <block type="create_sample_collection" id="DJRU2{K^DrStv+@u.[CH">
