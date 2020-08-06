@@ -1,6 +1,6 @@
 {
   "name": "geocode",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Concord Consortium GeoCode project",
   "main": "index.js",
   "jest": {
