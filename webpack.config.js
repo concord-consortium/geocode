@@ -95,13 +95,15 @@ module.exports = (env, argv) => {
         filename: 'index.html',
         template: 'src/index.html'
       }),
-      new CopyWebpackPlugin([
-        {from: 'src/public'}
-      ]),
-      new CopyWebpackPlugin([{
-        from: 'src/assets',
-        to: 'assets'
-      }])
+      new CopyWebpackPlugin({
+        patterns: [
+          {from: 'src/public'},
+          {
+            from: 'src/assets',
+            to: 'assets'
+          }
+        ],
+      })
     ]
   };
 };
