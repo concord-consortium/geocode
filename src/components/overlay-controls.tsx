@@ -9,6 +9,7 @@ import { BaseComponent } from "./base";
 interface IProps {
     showRuler: boolean;
     onRulerClick: () => void;
+    onLatLngClick: () => void;
     isSelectingCrossSection: boolean;
     showCrossSection: boolean;
     onCrossSectionClick: () => void;
@@ -23,6 +24,7 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
     public render() {
         const { showRuler,
             onRulerClick,
+            onLatLngClick,
             isSelectingCrossSection,
             showCrossSection,
             onCrossSectionClick,
@@ -59,6 +61,18 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
                         width={26}
                         height={26}
                         dataTest={"Ruler-button"}
+                    />
+                    <IconButton
+                        onClick={onLatLngClick}
+                        disabled={false}
+                        label={"LatLng"}
+                        backgroundColor={rulerColor}
+                        hoverColor={kRightTabInfo[RightSectionTypes.CONDITIONS].hoverBackgroundColor}
+                        activeColor={kRightTabInfo[RightSectionTypes.CONDITIONS].backgroundColor}
+                        fill={"black"}
+                        width={26}
+                        height={26}
+                        dataTest={"Latlng-button"}
                     />
                 </div>
                 <div className="controls bottom right">

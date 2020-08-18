@@ -118,6 +118,9 @@ export const SimulationStore = types
     hasErupted: false,
     isSelectingRuler: false,
     isSelectingCrossSection: false,
+    isSelectingLatlng: false,
+    currentLat: 0,
+    currentLng: 0,
     // authoring props
     requireEruption: true,
     requirePainting: true,
@@ -158,6 +161,9 @@ export const SimulationStore = types
       self.isSelectingRuler = !self.isSelectingRuler;
       self.isSelectingCrossSection = false;
     },
+    latlngClick() {
+      self.isSelectingLatlng = !self.isSelectingLatlng;
+    },
     crossSectionClick() {
       self.isSelectingCrossSection = !self.isSelectingCrossSection;
       self.isSelectingRuler = false;
@@ -180,6 +186,10 @@ export const SimulationStore = types
       self.viewportZoom = zoom;
       self.viewportCenterLat = viewportCenterLat;
       self.viewportCenterLng = viewportCenterLng;
+    },
+    setLatLng(lat: number, lng: number) {
+      self.currentLat = lat;
+      self.currentLng = lng;
     },
     reset() {
       self.hasErupted = false;

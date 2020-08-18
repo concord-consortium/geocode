@@ -156,7 +156,10 @@ export class MapComponent extends BaseComponent<IProps, IState>{
 
     const {
       isSelectingCrossSection,
-      isSelectingRuler
+      isSelectingRuler,
+      isSelectingLatlng,
+      currentLat,
+      currentLng
     } = this.stores.simulation;
 
     const cityItems = cities.map( (city: CityType) => {
@@ -202,6 +205,13 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     const corner1 = L.latLng(topLeftLat, topLeftLng);
     const corner2 = L.latLng(bottomRightLat, bottomRightLng);
     const bounds = L.latLngBounds(corner1, corner2);
+    const currentLatLngMarker = (isSelectingLatlng && currentLat !== 0 && currentLng !== 0) ?
+      <Marker position={[currentLat, currentLng]} icon={iconVolcano} >
+        <Popup>
+          {`${currentLat},${currentLng}`}
+        </Popup>
+      </Marker> :
+      undefined;
     let viewportBounds = bounds;
     if (this.map.current) {
       viewportBounds = this.map.current.leafletElement.getBounds();
@@ -215,6 +225,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
         <LeafletMap
           className="map"
           ref={this.map}
+          onclick={this.onMapClick}
           ondragend={this.reRenderMap}
           onzoomend={this.reRenderMap}
           center={[volcanoLat, volcanoLng]}
@@ -267,6 +278,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
             {pinItems}
             {riskItems}
             {sampleLocations}
+            {currentLatLngMarker}
             { isSelectingCrossSection && <CrossSectionDrawLayer
               ref={this.crossRef}
               map={this.state.mapLeafletRef}
@@ -283,6 +295,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
         <OverlayControls
           showRuler={isSelectingRuler}
           onRulerClick={this.stores.simulation.rulerClick}
+          onLatLngClick={this.stores.simulation.latlngClick}
           isSelectingCrossSection={isSelectingCrossSection}
           showCrossSection={hasErupted && showCrossSection && panelType === RightSectionTypes.CROSS_SECTION}
           onCrossSectionClick={this.stores.simulation.crossSectionClick}
@@ -315,6 +328,13 @@ export class MapComponent extends BaseComponent<IProps, IState>{
 
       this.map.current.leafletElement.flyTo(L.latLng(volcanoLat, volcanoLng), initialZoom);
     }
+  }
+  private onMapClick = (e: any) => {
+    const { simulation } = this.stores;
+    if (this.stores.simulation.isSelectingLatlng) {
+      console.log(e.latlng);
+      simulation.setLatLng(e.latlng.lat, e.latlng.lng);
+    } else return;
   }
 
   private reRenderMap = () => {
