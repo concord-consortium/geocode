@@ -157,7 +157,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
 
   public render() {
     const {
-      simulation: {
+      tephraSimulation: {
         clearLog,
         initialXmlCode,
         initialCodeTitle,
@@ -211,7 +211,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     const blocklyHeight = Math.floor(height - 90 - (showLog ? logHeight : 0));
     const scenarioData = (Scenarios as {[key: string]: Scenario})[scenario];
 
-    this.stores.simulation.setVolcano(scenarioData.volcanoLat, scenarioData.volcanoLng);
+    this.stores.tephraSimulation.setVolcano(scenarioData.volcanoLat, scenarioData.volcanoLng);
 
     kTabInfo.blocks.index = showBlocks ? 0 : -1;
     kTabInfo.code.index = showCode ? kTabInfo.blocks.index + 1 : -1;
@@ -557,7 +557,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
 
     // delete the initialXml code that was serialized, or we will never update the blocks when
     // the author changes the initial code
-    delete localState.simulation.initialXmlCode;
+    delete localState.tephraSimulation.initialXmlCode;
 
     // the the authored state from the authoring menu overwrites local state
     const mergedState = deepmerge(localState, authorMenuState);

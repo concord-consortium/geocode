@@ -59,7 +59,7 @@ export class LatLngDrawLayer extends BaseComponent<IProps, IState> {
   }
   public drawPoints(event: Leaflet.LeafletMouseEvent) {
     const { map } = this.props;
-    const { latLngPoint1Lat } = this.stores.simulation;
+    const { latLngPoint1Lat } = this.stores.tephraSimulation;
     if (map !== null) {
       if (latLngPoint1Lat === 0) {
         map.dragging.disable();
@@ -99,7 +99,7 @@ export class LatLngDrawLayer extends BaseComponent<IProps, IState> {
       map.dragging.disable();
       let latLng = (event as Leaflet.LeafletMouseEvent).latlng;
       if (!latLng) latLng = event.target.getLatLng(); // for when we are dragging
-      this.stores.simulation.setLatLngP1(latLng.lat, latLng.lng);
+      this.stores.tephraSimulation.setLatLngP1(latLng.lat, latLng.lng);
     }
   }
 
@@ -109,7 +109,7 @@ export class LatLngDrawLayer extends BaseComponent<IProps, IState> {
       map.dragging.disable();
       let latLng = (event as Leaflet.LeafletMouseEvent).latlng;
       if (!latLng) latLng = event.target.getLatLng(); // for when we are dragging
-      this.stores.simulation.setLatLngP2(latLng.lat, latLng.lng);
+      this.stores.tephraSimulation.setLatLngP2(latLng.lat, latLng.lng);
     }
   }
 

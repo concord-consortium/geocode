@@ -56,7 +56,7 @@ export class CrossSectionComponent extends BaseComponent<IProps, IState>{
       colHeight,
       mass,
       isSelectingCrossSection
-    } = this.stores.simulation;
+    } = this.stores.tephraSimulation;
 
     const { width } = this.metrics;
 

@@ -31,7 +31,7 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
             showCrossSection,
             onCrossSectionClick,
             onReCenterClick} = this.props;
-        const { hasErupted } = this.stores.simulation;
+        const { hasErupted } = this.stores.tephraSimulation;
 
         const rulerColor = showRuler ? kRightTabInfo[RightSectionTypes.CONDITIONS].hoverBackgroundColor : "white";
         const selectingLatLngColor = isSelectingLatLng

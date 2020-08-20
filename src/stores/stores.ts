@@ -1,22 +1,22 @@
 
-import { simulation, SimulationModelType } from "./simulation-store";
+import { tephraSimulation, TephraSimulationModelType } from "./tephra-simulation-store";
 import { uiStore, UIModelType } from "./ui-store";
 import { chartsStore, ChartsModelType } from "./charts-store";
 import { samplesCollectionsStore, SamplesCollectionsModelType } from "./samples-collections-store";
 
 export interface IStore {
-  simulation: SimulationModelType;
+  tephraSimulation: TephraSimulationModelType;
   uiStore: UIModelType;
   chartsStore: ChartsModelType;
   samplesCollectionsStore: SamplesCollectionsModelType;
 }
 
-export interface IStoreish {simulation: any; uiStore: any; }
+export interface IStoreish {tephraSimulation: any; uiStore: any; }
 
 export interface SerializedState {version: number; state: IStoreish; }
 
 export const stores: IStore = {
-  simulation,
+  tephraSimulation,
   uiStore,
   chartsStore,
   samplesCollectionsStore,
@@ -27,7 +27,7 @@ export const stores: IStore = {
 const tuple = <T extends string[]>(...args: T) => args;
 
 // props settable from authoring menu
-const simulationAuthorSettingsProps = tuple(
+const tephraSimulationAuthorSettingsProps = tuple(
   "requireEruption",
   "requirePainting",
   "scenario",
@@ -35,7 +35,7 @@ const simulationAuthorSettingsProps = tuple(
   "initialCodeTitle",
 );
 // additional props directly from current model that author will save
-const simulationAuthorStateProps = (simulationAuthorSettingsProps as string[]).concat(tuple(
+const tephraSimulationAuthorStateProps = (tephraSimulationAuthorSettingsProps as string[]).concat(tuple(
   "xmlCode",
   "initialXmlCode",
   "stagingWindSpeed",
@@ -63,11 +63,11 @@ const uiAuthorSettingsProps = tuple(
   "showDemoCharts",
 );
 
-export type SimulationAuthorSettingsProps = typeof simulationAuthorSettingsProps[number];
+export type TephraSimulationAuthorSettingsProps = typeof tephraSimulationAuthorSettingsProps[number];
 export type UIAuthorSettingsProps = typeof uiAuthorSettingsProps[number];
 
-export type SimulationAuthorSettings = {
-  [key in SimulationAuthorSettingsProps]?: any;
+export type TephraSimulationAuthorSettings = {
+  [key in TephraSimulationAuthorSettingsProps]?: any;
 };
 export type UIAuthorSettings = {
   [key in UIAuthorSettingsProps]?: any;
@@ -79,19 +79,19 @@ const pick = (keys: string[]) => (o: any) => keys.reduce((a, e) => ({ ...a, [e]:
 // returns a selection of the properties of the store
 function getStoreSubstate(simulationProps: string[], uiProps: string[]): () => IStoreish {
   return () => {
-    const authoredSimulation = pick(simulationProps)(simulation);
+    const authoredTephraSimulation = pick(simulationProps)(tephraSimulation);
     const authoredUi = pick(uiProps)(uiStore);
     return {
-      simulation: authoredSimulation,
+      tephraSimulation: authoredTephraSimulation,
       uiStore: authoredUi
     };
   };
 }
 
 // gets the current stores state in a version appropriate for the authoring menu
-export const getAuthorableSettings = getStoreSubstate(simulationAuthorSettingsProps, uiAuthorSettingsProps);
+export const getAuthorableSettings = getStoreSubstate(tephraSimulationAuthorSettingsProps, uiAuthorSettingsProps);
 // gets the current store state to be saved by an author or student
-export const getSavableState = getStoreSubstate(simulationAuthorStateProps, uiAuthorSettingsProps);
+export const getSavableState = getStoreSubstate(tephraSimulationAuthorStateProps, uiAuthorSettingsProps);
 
 // makes state appropriate for saving to e.g. LARA. Changes keys or values as needed. Adds a version number
 export const serializeState = (state: any): SerializedState => {
@@ -99,8 +99,8 @@ export const serializeState = (state: any): SerializedState => {
 
   // we copy simulation.xmlCode (the current blockly code) to simulation.initialXmlCode (how we want
   // to initialize blockly) when we save state
-  serializedState.simulation.initialXmlCode = serializedState.simulation.xmlCode;
-  delete serializedState.simulation.xmlCode;
+  serializedState.tephraSimulation.initialXmlCode = serializedState.tephraSimulation.xmlCode;
+  delete serializedState.tephraSimulation.xmlCode;
 
   return {
     version: 1,
@@ -112,13 +112,14 @@ export const deserializeState = (serializedState: SerializedState): IStoreish =>
   if (serializedState.version === 1) {
     return serializedState.state;
   }
-  return {simulation: {}, uiStore: {}};
+  return {tephraSimulation: {}, uiStore: {}};
 };
 
 export function updateStores(state: IStoreish) {
-  const simulationStoreSettings: SimulationAuthorSettings = pick(simulationAuthorStateProps)(state.simulation);
+  const tephraSimulationStoreSettings: TephraSimulationAuthorSettings =
+    pick(tephraSimulationAuthorStateProps)(state.tephraSimulation);
   const uiStoreSettings: UIAuthorSettings = pick(uiAuthorSettingsProps)(state.uiStore);
 
-  simulation.loadAuthorSettingsData(simulationStoreSettings);
+  tephraSimulation.loadAuthorSettingsData(tephraSimulationStoreSettings);
   uiStore.loadAuthorSettingsData(uiStoreSettings);
 }

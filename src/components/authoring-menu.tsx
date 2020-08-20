@@ -22,13 +22,13 @@ const AuthoringMenu: React.SFC<IProps> = (props) => {
       <DatButton label="Model options" onClick={props.toggleShowOptions}/>
       { props.expandOptionsDialog &&
         [
-          <DatBoolean path="simulation.requireEruption" label="Require eruption?" key="requireEruption" />,
-          <DatBoolean path="simulation.requirePainting" label="Require painting?" key="requirePainting" />,
-          <DatSelect path="simulation.scenario" label="Map Scenario"
+          <DatBoolean path="tephraSimulation.requireEruption" label="Require eruption?" key="requireEruption" />,
+          <DatBoolean path="tephraSimulation.requirePainting" label="Require painting?" key="requirePainting" />,
+          <DatSelect path="tephraSimulation.scenario" label="Map Scenario"
             options={Object.keys(Scenarios)} key="background" />,
-          <DatSelect path="simulation.toolbox" label="Code toolbox"
+          <DatSelect path="tephraSimulation.toolbox" label="Code toolbox"
             options={Object.keys(BlocklyAuthoring.toolbox)} key="toolbox" />,
-          <DatSelect path="simulation.initialCodeTitle" label="Initial code"
+          <DatSelect path="tephraSimulation.initialCodeTitle" label="Initial code"
             options={Object.keys(BlocklyAuthoring.code)} key="code" />,
 
           <DatFolder title="Left Tabs" key="leftTabsFolder" closed={false}>
