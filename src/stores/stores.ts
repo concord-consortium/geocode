@@ -1,25 +1,37 @@
 
 import { tephraSimulation, TephraSimulationModelType } from "./tephra-simulation-store";
+import { seismicSimulation, SeismicSimulationModelType } from "./seismic-simulation-store";
 import { uiStore, UIModelType } from "./ui-store";
 import { chartsStore, ChartsModelType } from "./charts-store";
 import { samplesCollectionsStore, SamplesCollectionsModelType } from "./samples-collections-store";
 import { BlocklyStoreModelType, blocklyStore } from "./blockly-store";
+import { UnitStoreType, unitStore } from "./unit-store";
 
 export interface IStore {
+  unit: UnitStoreType;
   blocklyStore: BlocklyStoreModelType;
   tephraSimulation: TephraSimulationModelType;
+  seismicSimulation: SeismicSimulationModelType;
   uiStore: UIModelType;
   chartsStore: ChartsModelType;
   samplesCollectionsStore: SamplesCollectionsModelType;
 }
 
-export interface IStoreish {blocklyStore: any; tephraSimulation: any; uiStore: any; }
+export interface IStoreish {
+  unit: {name: "Tephra" | "Seismic"};
+  blocklyStore: any;
+  tephraSimulation: any;
+  seismicSimulation: any;
+  uiStore: any;
+}
 
 export interface SerializedState {version: number; state: IStoreish; }
 
 export const stores: IStore = {
+  unit: unitStore,
   blocklyStore,
   tephraSimulation,
+  seismicSimulation,
   uiStore,
   chartsStore,
   samplesCollectionsStore,
@@ -98,8 +110,10 @@ const pick = (keys: string[]) => (o: any) => keys.reduce((a, e) => ({ ...a, [e]:
 function getStoreSubstate(blocklyStoreProps: string[], tephraSimulationProps: string[], uiProps: string[]) {
   return (): IStoreish => {
     return {
+      unit: { name: stores.unit.name },
       blocklyStore: pick(blocklyStoreProps)(blocklyStore),
       tephraSimulation: pick(tephraSimulationProps)(tephraSimulation),
+      seismicSimulation: {},      // nothing to save yet
       uiStore: pick(uiProps)(uiStore)
     };
   };
@@ -131,7 +145,7 @@ export const deserializeState = (serializedState: SerializedState): IStoreish =>
   if (serializedState.version === 1) {
     return serializedState.state;
   }
-  return {blocklyStore: {}, tephraSimulation: {}, uiStore: {}};
+  return {unit: {name: "Tephra"}, blocklyStore: {}, tephraSimulation: {}, seismicSimulation: {}, uiStore: {}};
 };
 
 export function updateStores(state: IStoreish) {
@@ -141,6 +155,7 @@ export function updateStores(state: IStoreish) {
     pick(tephraSimulationAuthorStateProps)(state.tephraSimulation);
   const uiStoreSettings: UIAuthorSettings = pick(uiAuthorSettingsProps)(state.uiStore);
 
+  unitStore.setUnit(state.unit.name);
   blocklyStore.loadAuthorSettingsData(blocklyStoreSettings);
   tephraSimulation.loadAuthorSettingsData(tephraSimulationStoreSettings);
   uiStore.loadAuthorSettingsData(uiStoreSettings);
