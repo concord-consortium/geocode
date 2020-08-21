@@ -119,8 +119,10 @@ export const SimulationStore = types
     isSelectingRuler: false,
     isSelectingCrossSection: false,
     isSelectingLatlng: false,
-    currentLat: 0,
-    currentLng: 0,
+    latLngPoint1Lat: 0,
+    latLngPoint1Lng: 0,
+    latLngPoint2Lat: 0,
+    latLngPoint2Lng: 0,
     // authoring props
     requireEruption: true,
     requirePainting: true,
@@ -160,13 +162,17 @@ export const SimulationStore = types
     rulerClick() {
       self.isSelectingRuler = !self.isSelectingRuler;
       self.isSelectingCrossSection = false;
+      self.isSelectingLatlng = false;
     },
     latlngClick() {
       self.isSelectingLatlng = !self.isSelectingLatlng;
+      self.isSelectingRuler = false;
+      self.isSelectingCrossSection = false;
     },
     crossSectionClick() {
       self.isSelectingCrossSection = !self.isSelectingCrossSection;
       self.isSelectingRuler = false;
+      self.isSelectingLatlng = false;
     },
     setIsSelectingRuler(val: boolean) {
       self.isSelectingRuler = val;
@@ -187,9 +193,13 @@ export const SimulationStore = types
       self.viewportCenterLat = viewportCenterLat;
       self.viewportCenterLng = viewportCenterLng;
     },
-    setLatLng(lat: number, lng: number) {
-      self.currentLat = lat;
-      self.currentLng = lng;
+    setLatLngP1(lat: number, lng: number) {
+      self.latLngPoint1Lat = lat;
+      self.latLngPoint1Lng = lng;
+    },
+    setLatLngP2(lat: number, lng: number) {
+      self.latLngPoint2Lat = lat;
+      self.latLngPoint2Lng = lng;
     },
     reset() {
       self.hasErupted = false;

@@ -4,7 +4,7 @@ import * as L from "leaflet";
 import { Map as LeafletMap, TileLayer, Marker, Popup, ScaleControl, Pane } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "../../css/map-component.css";
-import { iconVolcano, iconMarker, getCachedDivIcon, riskIcon, getCachedSampleLocationIcon } from "../icons";
+import { iconVolcano, iconMarker, getCachedDivIcon, getCachedCircleIcon, riskIcon, getCachedSampleLocationIcon } from "../icons";
 
 import { CityType  } from "../../stores/simulation-store";
 import * as Scenarios from "../../assets/maps/scenarios.json";
@@ -22,6 +22,7 @@ import CompassComponent from "./map-compass";
 import { LegendComponent } from "./map-legend";
 import { SamplesCollectionModelType, SamplesLocationModelType } from "../../stores/samples-collections-store";
 import { RiskLevels } from "../montecarlo/monte-carlo";
+import { LatLngDrawLayer } from "./layers/latlng-draw-layer";
 
 interface WorkspaceProps {
   width: number;
@@ -71,6 +72,8 @@ export class MapComponent extends BaseComponent<IProps, IState>{
   private map = React.createRef<LeafletMap>();
   private crossRef = React.createRef<CrossSectionDrawLayer>();
   private tephraRef = React.createRef<MapTephraThicknessLayer>();
+  private latlngRef = React.createRef<LatLngDrawLayer>();
+  private hoverCoords = React.createRef<L.LatLng>();
 
   constructor(props: IProps) {
     super(props);
@@ -81,11 +84,9 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       showKey: true,
       mapLeafletRef: null,
     };
-
     this.handleDragMove = this.handleDragMove.bind(this);
     this.handleDragEnter = this.handleDragEnter.bind(this);
     this.handleDragExit = this.handleDragExit.bind(this);
-
     this.state = initialState;
   }
 
@@ -117,6 +118,10 @@ export class MapComponent extends BaseComponent<IProps, IState>{
 
       this.map.current.leafletElement.on("moveend", function() {
         this.forceUpdate();
+      }.bind(this));
+
+      this.map.current.leafletElement.on("mousemove", function(e: any) {
+        this.hoverCoords.current = e.latlng;
       }.bind(this));
     }
     if (this.map.current) {
@@ -157,9 +162,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     const {
       isSelectingCrossSection,
       isSelectingRuler,
-      isSelectingLatlng,
-      currentLat,
-      currentLng
+      isSelectingLatlng
     } = this.stores.simulation;
 
     const cityItems = cities.map( (city: CityType) => {
@@ -200,15 +203,17 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     const sampleLocations = this.getSampleLocations();
     const riskItems = this.getRiskItems();
 
-    const { crossPoint1Lat, crossPoint1Lng, crossPoint2Lat, crossPoint2Lng } = this.stores.simulation;
+    const { crossPoint1Lat, crossPoint1Lng, crossPoint2Lat, crossPoint2Lng,
+            latLngPoint1Lat, latLngPoint1Lng, latLngPoint2Lat, latLngPoint2Lng } =
+      this.stores.simulation;
     const volcanoPos = L.latLng(volcanoLat, volcanoLng);
     const corner1 = L.latLng(topLeftLat, topLeftLng);
     const corner2 = L.latLng(bottomRightLat, bottomRightLng);
     const bounds = L.latLngBounds(corner1, corner2);
-    const currentLatLngMarker = (isSelectingLatlng && currentLat !== 0 && currentLng !== 0) ?
-      <Marker position={[currentLat, currentLng]} icon={iconVolcano} >
+    const currentLatLngMarker = (isSelectingLatlng && crossPoint1Lat !== 0 && crossPoint1Lng !== 0) ?
+      <Marker position={[crossPoint1Lat, crossPoint1Lng]} icon={getCachedCircleIcon("P1")} >
         <Popup>
-          {`${currentLat},${currentLng}`}
+          {`${crossPoint1Lat},${crossPoint1Lng}`}
         </Popup>
       </Marker> :
       undefined;
@@ -279,6 +284,14 @@ export class MapComponent extends BaseComponent<IProps, IState>{
             {riskItems}
             {sampleLocations}
             {currentLatLngMarker}
+            {isSelectingLatlng && <LatLngDrawLayer
+              ref={this.latlngRef}
+              map={this.state.mapLeafletRef}
+              p1Lat={latLngPoint1Lat}
+              p2Lat={latLngPoint2Lat}
+              p1Lng={latLngPoint1Lng}
+              p2Lng={latLngPoint2Lng}
+            /> }
             { isSelectingCrossSection && <CrossSectionDrawLayer
               ref={this.crossRef}
               map={this.state.mapLeafletRef}
@@ -297,6 +310,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           onRulerClick={this.stores.simulation.rulerClick}
           onLatLngClick={this.stores.simulation.latlngClick}
           isSelectingCrossSection={isSelectingCrossSection}
+          isSelectingLatLng={isSelectingLatlng}
           showCrossSection={hasErupted && showCrossSection && panelType === RightSectionTypes.CROSS_SECTION}
           onCrossSectionClick={this.stores.simulation.crossSectionClick}
           onReCenterClick={this.onRecenterClick}
@@ -332,8 +346,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
   private onMapClick = (e: any) => {
     const { simulation } = this.stores;
     if (this.stores.simulation.isSelectingLatlng) {
-      console.log(e.latlng);
-      simulation.setLatLng(e.latlng.lat, e.latlng.lng);
+      simulation.setPoint1Pos(e.latlng.lat, e.latlng.lng);
     } else return;
   }
 
