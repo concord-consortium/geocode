@@ -5,8 +5,8 @@ const UIStore = types.model("UI", {
   showOptionsDialog: true,
   // left tabs
   showBlocks: true,
-  showCode: true,
-  showControls: true,
+  showCode: false,
+  showControls: false,
   // right tabs
   showConditions: true,
   showCrossSection: false,
