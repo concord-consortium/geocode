@@ -3,7 +3,7 @@ import Leaflet from "leaflet";
 import * as L from "leaflet";
 import * as React from "react";
 import { BaseComponent } from "../../base";
-import { getCachedCircleIcon } from "../../icons";
+import { divIcon } from "../../icons";
 import { LayerGroup, Marker, Polyline } from "react-leaflet";
 
 const MOUSE_DOWN = "mousedown touchstart";
@@ -23,7 +23,6 @@ interface IState {}
 @inject("stores")
 @observer
 export class LatLngDrawLayer extends BaseComponent<IProps, IState> {
-  private _tempPoint1: Leaflet.LatLng;
 
   constructor(props: IProps) {
     super(props);
@@ -31,6 +30,8 @@ export class LatLngDrawLayer extends BaseComponent<IProps, IState> {
     this.endDraw = this.endDraw.bind(this);
     this.setPoint1 = this.setPoint1.bind(this);
     this.setPoint2 = this.setPoint2.bind(this);
+    this.dragPointStart = this.dragPointStart.bind(this);
+    this.dragPointEnd = this.dragPointEnd.bind(this);
   }
 
   public componentDidMount() {
@@ -54,36 +55,77 @@ export class LatLngDrawLayer extends BaseComponent<IProps, IState> {
     const { latLngPoint1Lat } = this.stores.simulation;
     if (map !== null) {
       if (latLngPoint1Lat === 0) {
+        console.log("adding p1 and p2");
         map.dragging.disable();
         this.setPoint1(event);
         this.setPoint2(event);
         map.on(MOUSE_MOVE, this.setPoint2);
       }
       else {
+        console.log("setting p2");
         this.setPoint2(event);
         map.dragging.enable();
         map.off(MOUSE_MOVE, this.setPoint2);
+        map.off(MOUSE_DOWN, this.drawPoints);
       }
     }
   }
   public endDraw() {
     const { map } = this.props;
-    map.dragging.enable();
+    if (map !== null) {
+      map.dragging.enable();
+      map.off(MOUSE_MOVE, this.setPoint1);
+      map.off(MOUSE_MOVE, this.setPoint2);
+    }
   }
+
   public setPoint1(event: Leaflet.LeafletEvent | null) {
     const { map } = this.props;
-    if (event) {
+    if (map !== null && event) {
       map.dragging.disable();
-      const latLng = (event as Leaflet.LeafletMouseEvent).latlng;
+      let latLng = (event as Leaflet.LeafletMouseEvent).latlng;
+      if (!latLng) latLng = event.target.getLatLng(); // for when we are dragging
       this.stores.simulation.setLatLngP1(latLng.lat, latLng.lng);
     }
   }
+
   public setPoint2(event: Leaflet.LeafletEvent | null) {
     const { map } = this.props;
-    if (event) {
+    if (map !== null && event) {
       map.dragging.disable();
-      const latLng = (event as Leaflet.LeafletMouseEvent).latlng;
+      let latLng = (event as Leaflet.LeafletMouseEvent).latlng;
+      if (!latLng) latLng = event.target.getLatLng(); // for when we are dragging
       this.stores.simulation.setLatLngP2(latLng.lat, latLng.lng);
+    }
+  }
+
+  public dragPointStart(event: Leaflet.LeafletEvent | null) {
+    const { map } = this.props;
+    if (map !== null && event) {
+      map.dragging.disable();
+      const markerIndex = event.target.options.marker_index;
+      if (markerIndex === 1) {
+        map.on(MOUSE_MOVE, this.setPoint1);
+      }
+      else {
+        map.on(MOUSE_MOVE, this.setPoint2);
+      }
+    }
+  }
+
+  public dragPointEnd(event: Leaflet.LeafletEvent | null) {
+    const { map } = this.props;
+    if (map !== null && event) {
+      map.dragging.enable();
+      const markerIndex = event.target.options.marker_index;
+      if (markerIndex === 1) {
+        map.off(MOUSE_MOVE, this.setPoint1);
+        this.setPoint1(event);
+      }
+      else {
+        map.off(MOUSE_MOVE, this.setPoint2);
+        this.setPoint2(event);
+      }
     }
   }
 
@@ -94,13 +136,15 @@ export class LatLngDrawLayer extends BaseComponent<IProps, IState> {
     const point2 = L.latLng(p2Lat, p2Lng);
     const point1a = L.latLng(p1Lat, p2Lng);
     const point2a = L.latLng(p2Lat, p1Lng);
-    const p1Icon = getCachedCircleIcon("P1");
-    const p2Icon = getCachedCircleIcon("P2");
+    const p1Icon = divIcon(`${p1Lat.toFixed(4)}, ${p1Lng.toFixed(4)}`);
+    const p2Icon = divIcon(`${p2Lat.toFixed(4)}, ${p2Lng.toFixed(4)}`);
 
     return (
       <LayerGroup map={map}>
-        {point1 && <Marker position={point1} draggable={true} icon={p1Icon} onLeafletDrag={this.setPoint1} />}
-        {point2 && <Marker position={point2} draggable={true} icon={p2Icon} onLeafletDrag={this.setPoint2} />}
+        {point1 && <Marker key={1} marker_index={1} position={point1} icon={p1Icon}
+          draggable={true} onDragStart={this.dragPointStart} onDragEnd={this.dragPointEnd} />}
+        {point2 && <Marker key={2} marker_index={2} position={point2} icon={p2Icon}
+          draggable={true} onDragStart={this.dragPointStart} onDragEnd={this.dragPointEnd} />}
         {point1 && point2 &&
           <Polyline
             key={"lat-lng-line"}

@@ -210,13 +210,6 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     const corner1 = L.latLng(topLeftLat, topLeftLng);
     const corner2 = L.latLng(bottomRightLat, bottomRightLng);
     const bounds = L.latLngBounds(corner1, corner2);
-    const currentLatLngMarker = (isSelectingLatlng && crossPoint1Lat !== 0 && crossPoint1Lng !== 0) ?
-      <Marker position={[crossPoint1Lat, crossPoint1Lng]} icon={getCachedCircleIcon("P1")} >
-        <Popup>
-          {`${crossPoint1Lat},${crossPoint1Lng}`}
-        </Popup>
-      </Marker> :
-      undefined;
     let viewportBounds = bounds;
     if (this.map.current) {
       viewportBounds = this.map.current.leafletElement.getBounds();
@@ -283,7 +276,6 @@ export class MapComponent extends BaseComponent<IProps, IState>{
             {pinItems}
             {riskItems}
             {sampleLocations}
-            {currentLatLngMarker}
             {isSelectingLatlng && <LatLngDrawLayer
               ref={this.latlngRef}
               map={this.state.mapLeafletRef}
@@ -292,7 +284,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
               p1Lng={latLngPoint1Lng}
               p2Lng={latLngPoint2Lng}
             /> }
-            { isSelectingCrossSection && <CrossSectionDrawLayer
+            {isSelectingCrossSection && <CrossSectionDrawLayer
               ref={this.crossRef}
               map={this.state.mapLeafletRef}
               p1Lat={crossPoint1Lat}
