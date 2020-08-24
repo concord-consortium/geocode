@@ -31,11 +31,11 @@ function getEnvVariablesStartingWith (prefix) {
 module.exports = (on, config) => {
     on('before:browser:launch', (browser, launchOptions) => {
         // Note that it needs to match or exceed viewportHeight and viewportWidth values specified in cypress.json.
-        launchOptions.args.width = 1400
-        launchOptions.args.height = 1000
+        launchOptions.args.width = 1000
+        launchOptions.args.height = 660
         // open issue for Cypress screenshot, fix sizes https://github.com/cypress-io/cypress/issues/587
-        launchOptions.preferences['width'] = 1400
-        launchOptions.preferences['height'] = 1000
+        launchOptions.preferences['width'] = 1000
+        launchOptions.preferences['height'] = 660
         launchOptions.preferences['resizable'] = false
         return launchOptions
       })
