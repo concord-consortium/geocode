@@ -2,7 +2,7 @@ import { types } from "mobx-state-tree";
 
 export const SeismicSimulationStore = types
   .model("seismicSimulation", {
-    gpsStations: types.array(types.number)
+    scenario: "Seismic CA",
   });
 export const seismicSimulation = SeismicSimulationStore.create({});
 

@@ -132,6 +132,8 @@ export class MapComponent extends BaseComponent<IProps, IState>{
   public render() {
     const { width, height, panelType } = this.props;
 
+    const { name: unitName } = this.stores.unit;
+
     const {
       cities,
       volcanoLat,
@@ -141,8 +143,14 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       colHeight,
       mass,
       hasErupted,
-      scenario,
+      scenario: tephraScenario,
     } = this.stores.tephraSimulation;
+
+    const {
+      scenario: seismicScenario
+    } = this.stores.seismicSimulation;
+
+    const scenario = unitName === "Tephra" ? tephraScenario : seismicScenario;
 
     const { showCrossSection } = this.stores.uiStore;
 
