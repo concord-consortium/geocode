@@ -111,8 +111,6 @@ export const TephraSimulationStore = types
     viewportCenterLat: 0,
     viewportCenterLng: 0,
     cities: types.array(City),
-    xmlCode: "",                // current blockly xml code
-    initialXmlCode: "",         // initial blockly xml code
     log: "",
     plotData: types.optional(PlotData, getSnapshot(plotData)),
     hasErupted: false,
@@ -127,8 +125,6 @@ export const TephraSimulationStore = types
     requireEruption: true,
     requirePainting: true,
     scenario: "Cerro Negro",
-    toolbox: "Everything",
-    initialCodeTitle: "Basic",
   })
   .views((self) => {
     const getVei = (mass: number, colHeight: number) => {
@@ -189,12 +185,6 @@ export const TephraSimulationStore = types
     }
   }))
   .actions((self) => ({
-    setBlocklyCode(code: string, workspace: any) {
-      self.xmlCode = Blockly.Xml.domToPrettyText(Blockly.Xml.workspaceToDom(workspace));
-    },
-    setInitialXmlCode(xmlCode: string) {
-      self.initialXmlCode = xmlCode;
-    },
     setViewportParameters(zoom: number, viewportCenterLat: number, viewportCenterLng: number) {
       self.viewportZoom = zoom;
       self.viewportCenterLat = viewportCenterLat;

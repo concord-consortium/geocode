@@ -26,9 +26,9 @@ const AuthoringMenu: React.SFC<IProps> = (props) => {
           <DatBoolean path="tephraSimulation.requirePainting" label="Require painting?" key="requirePainting" />,
           <DatSelect path="tephraSimulation.scenario" label="Map Scenario"
             options={Object.keys(Scenarios)} key="background" />,
-          <DatSelect path="tephraSimulation.toolbox" label="Code toolbox"
+          <DatSelect path="blocklyStore.toolbox" label="Code toolbox"
             options={Object.keys(BlocklyAuthoring.toolbox)} key="toolbox" />,
-          <DatSelect path="tephraSimulation.initialCodeTitle" label="Initial code"
+          <DatSelect path="blocklyStore.initialCodeTitle" label="Initial code"
             options={Object.keys(BlocklyAuthoring.code)} key="code" />,
 
           <DatFolder title="Left Tabs" key="leftTabsFolder" closed={false}>

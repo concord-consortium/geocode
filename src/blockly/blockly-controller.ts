@@ -33,7 +33,7 @@ export class BlocklyController {
     this.workspace = workspace;
     this.interpreterController = makeInterpreterController(code, this, this.stores, workspace);
 
-    this.stores.tephraSimulation.setBlocklyCode(code, workspace);
+    this.stores.blocklyStore.setBlocklyCode(code, workspace);
     this.parseVariables();
   }
 

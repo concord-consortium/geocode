@@ -3,19 +3,22 @@ import { tephraSimulation, TephraSimulationModelType } from "./tephra-simulation
 import { uiStore, UIModelType } from "./ui-store";
 import { chartsStore, ChartsModelType } from "./charts-store";
 import { samplesCollectionsStore, SamplesCollectionsModelType } from "./samples-collections-store";
+import { BlocklyStoreModelType, blocklyStore } from "./blockly-store";
 
 export interface IStore {
+  blocklyStore: BlocklyStoreModelType;
   tephraSimulation: TephraSimulationModelType;
   uiStore: UIModelType;
   chartsStore: ChartsModelType;
   samplesCollectionsStore: SamplesCollectionsModelType;
 }
 
-export interface IStoreish {tephraSimulation: any; uiStore: any; }
+export interface IStoreish {blocklyStore: any; tephraSimulation: any; uiStore: any; }
 
 export interface SerializedState {version: number; state: IStoreish; }
 
 export const stores: IStore = {
+  blocklyStore,
   tephraSimulation,
   uiStore,
   chartsStore,
@@ -31,18 +34,37 @@ const tephraSimulationAuthorSettingsProps = tuple(
   "requireEruption",
   "requirePainting",
   "scenario",
-  "toolbox",
-  "initialCodeTitle",
 );
 // additional props directly from current model that author will save
 const tephraSimulationAuthorStateProps = (tephraSimulationAuthorSettingsProps as string[]).concat(tuple(
-  "xmlCode",
-  "initialXmlCode",
   "stagingWindSpeed",
   "stagingWindDirection",
   "stagingMass",
   "stagingColHeight",
 ));
+
+export type TephraSimulationAuthorSettingsProps = typeof tephraSimulationAuthorSettingsProps[number];
+
+export type TephraSimulationAuthorSettings = {
+  [key in TephraSimulationAuthorSettingsProps]?: any;
+};
+
+// props settable from authoring menu
+const blocklyAuthorSettingsProps = tuple(
+  "toolbox",
+  "initialCodeTitle",
+);
+// additional props directly from current model that author will save
+const blocklyAuthorStateProps = (blocklyAuthorSettingsProps as string[]).concat(tuple(
+  "xmlCode",
+  "initialXmlCode",
+));
+
+export type BlocklyStoreAuthorSettingsProps = typeof blocklyAuthorSettingsProps[number];
+
+export type BlocklyStoreAuthorSettings = {
+  [key in BlocklyStoreAuthorSettingsProps]?: any;
+};
 
 const uiAuthorSettingsProps = tuple(
   "showBlocks",
@@ -63,12 +85,8 @@ const uiAuthorSettingsProps = tuple(
   "showDemoCharts",
 );
 
-export type TephraSimulationAuthorSettingsProps = typeof tephraSimulationAuthorSettingsProps[number];
 export type UIAuthorSettingsProps = typeof uiAuthorSettingsProps[number];
 
-export type TephraSimulationAuthorSettings = {
-  [key in TephraSimulationAuthorSettingsProps]?: any;
-};
 export type UIAuthorSettings = {
   [key in UIAuthorSettingsProps]?: any;
 };
@@ -77,30 +95,31 @@ export type UIAuthorSettings = {
 const pick = (keys: string[]) => (o: any) => keys.reduce((a, e) => ({ ...a, [e]: o[e] }), {});
 
 // returns a selection of the properties of the store
-function getStoreSubstate(simulationProps: string[], uiProps: string[]): () => IStoreish {
-  return () => {
-    const authoredTephraSimulation = pick(simulationProps)(tephraSimulation);
-    const authoredUi = pick(uiProps)(uiStore);
+function getStoreSubstate(blocklyStoreProps: string[], tephraSimulationProps: string[], uiProps: string[]) {
+  return (): IStoreish => {
     return {
-      tephraSimulation: authoredTephraSimulation,
-      uiStore: authoredUi
+      blocklyStore: pick(blocklyStoreProps)(blocklyStore),
+      tephraSimulation: pick(tephraSimulationProps)(tephraSimulation),
+      uiStore: pick(uiProps)(uiStore)
     };
   };
 }
 
 // gets the current stores state in a version appropriate for the authoring menu
-export const getAuthorableSettings = getStoreSubstate(tephraSimulationAuthorSettingsProps, uiAuthorSettingsProps);
+export const getAuthorableSettings =
+  getStoreSubstate(blocklyAuthorSettingsProps, tephraSimulationAuthorSettingsProps, uiAuthorSettingsProps);
 // gets the current store state to be saved by an author or student
-export const getSavableState = getStoreSubstate(tephraSimulationAuthorStateProps, uiAuthorSettingsProps);
+export const getSavableState =
+  getStoreSubstate(blocklyAuthorStateProps, tephraSimulationAuthorStateProps, uiAuthorSettingsProps);
 
 // makes state appropriate for saving to e.g. LARA. Changes keys or values as needed. Adds a version number
-export const serializeState = (state: any): SerializedState => {
+export const serializeState = (state: IStoreish): SerializedState => {
   const serializedState = {...state};
 
   // we copy simulation.xmlCode (the current blockly code) to simulation.initialXmlCode (how we want
   // to initialize blockly) when we save state
-  serializedState.tephraSimulation.initialXmlCode = serializedState.tephraSimulation.xmlCode;
-  delete serializedState.tephraSimulation.xmlCode;
+  serializedState.blocklyStore.initialXmlCode = serializedState.blocklyStore.xmlCode;
+  delete serializedState.blocklyStore.xmlCode;
 
   return {
     version: 1,
@@ -112,14 +131,17 @@ export const deserializeState = (serializedState: SerializedState): IStoreish =>
   if (serializedState.version === 1) {
     return serializedState.state;
   }
-  return {tephraSimulation: {}, uiStore: {}};
+  return {blocklyStore: {}, tephraSimulation: {}, uiStore: {}};
 };
 
 export function updateStores(state: IStoreish) {
+  const blocklyStoreSettings: BlocklyStoreAuthorSettings =
+    pick(blocklyAuthorStateProps)(state.blocklyStore);
   const tephraSimulationStoreSettings: TephraSimulationAuthorSettings =
     pick(tephraSimulationAuthorStateProps)(state.tephraSimulation);
   const uiStoreSettings: UIAuthorSettings = pick(uiAuthorSettingsProps)(state.uiStore);
 
+  blocklyStore.loadAuthorSettingsData(blocklyStoreSettings);
   tephraSimulation.loadAuthorSettingsData(tephraSimulationStoreSettings);
   uiStore.loadAuthorSettingsData(uiStoreSettings);
 }

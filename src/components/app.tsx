@@ -159,10 +159,12 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     const {
       tephraSimulation: {
         clearLog,
+        scenario
+      },
+      blocklyStore: {
         initialXmlCode,
         initialCodeTitle,
         toolbox,
-        scenario
       },
       uiStore: {
         showOptionsDialog,
@@ -557,7 +559,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
 
     // delete the initialXml code that was serialized, or we will never update the blocks when
     // the author changes the initial code
-    delete localState.tephraSimulation.initialXmlCode;
+    delete localState.blocklyStore.initialXmlCode;
 
     // the the authored state from the authoring menu overwrites local state
     const mergedState = deepmerge(localState, authorMenuState);
