@@ -36,8 +36,8 @@ export interface Scenario {
   topLeftLng: number;
   bottomRightLat: number;
   bottomRightLng: number;
-  volcanoLat: number;
-  volcanoLng: number;
+  volcanoLat?: number;
+  volcanoLng?: number;
   extraMarkers?: any[];
 }
 
@@ -134,6 +134,8 @@ export class MapComponent extends BaseComponent<IProps, IState>{
 
     const { name: unitName } = this.stores.unit;
 
+    const isTephraUnit = unitName === "Tephra";
+
     const {
       cities,
       volcanoLat,
@@ -150,7 +152,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       scenario: seismicScenario
     } = this.stores.seismicSimulation;
 
-    const scenario = unitName === "Tephra" ? tephraScenario : seismicScenario;
+    const scenario = isTephraUnit ? tephraScenario : seismicScenario;
 
     const { showCrossSection } = this.stores.uiStore;
 
@@ -176,7 +178,6 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     const cityItems = cities.map( (city: CityType) => {
       const {x, y, name} = city;
       if (x && y && name) {
-        const mapPos = LocalToLatLng({x, y}, L.latLng(volcanoLat, volcanoLng));
         const cityIcon = getCachedDivIcon(name);
         return (
           <Marker
@@ -211,6 +212,9 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     const sampleLocations = this.getSampleLocations();
     const riskItems = this.getRiskItems();
 
+    const center: L.LatLngTuple = isTephraUnit ? [volcanoLat, volcanoLng] :
+      [(bottomRightLat + topLeftLat) / 2, (bottomRightLng + topLeftLng) / 2];
+
     const { crossPoint1Lat, crossPoint1Lng, crossPoint2Lat, crossPoint2Lng,
             latLngPoint1Lat, latLngPoint1Lng, latLngPoint2Lat, latLngPoint2Lng } =
       this.stores.tephraSimulation;
@@ -234,7 +238,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           onclick={this.onMapClick}
           ondragend={this.reRenderMap}
           onzoomend={this.reRenderMap}
-          center={[volcanoLat, volcanoLng]}
+          center={center}
           zoom={initialZoom}
           maxBounds={bounds}
           maxBoundsViscosity={1}
@@ -271,6 +275,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
               hasErupted={hasErupted}
             />
           </Pane>
+          isTephraUnit &&
           <Pane
             style={{zIndex: 3}}>
             <Marker
