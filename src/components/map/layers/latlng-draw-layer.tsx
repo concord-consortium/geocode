@@ -18,7 +18,9 @@ interface IProps {
   p2Lng: number;
 }
 
-interface IState {}
+interface IState {
+  pointsSet: boolean;
+}
 
 @inject("stores")
 @observer
@@ -26,12 +28,17 @@ export class LatLngDrawLayer extends BaseComponent<IProps, IState> {
 
   constructor(props: IProps) {
     super(props);
+    const initialState: IState = {
+      pointsSet: false
+    };
+
     this.drawPoints = this.drawPoints.bind(this);
     this.endDraw = this.endDraw.bind(this);
     this.setPoint1 = this.setPoint1.bind(this);
     this.setPoint2 = this.setPoint2.bind(this);
     this.dragPointStart = this.dragPointStart.bind(this);
     this.dragPointEnd = this.dragPointEnd.bind(this);
+    this.state = initialState;
   }
 
   public componentDidMount() {
@@ -55,27 +62,34 @@ export class LatLngDrawLayer extends BaseComponent<IProps, IState> {
     const { latLngPoint1Lat } = this.stores.simulation;
     if (map !== null) {
       if (latLngPoint1Lat === 0) {
-        console.log("adding p1 and p2");
         map.dragging.disable();
         this.setPoint1(event);
         this.setPoint2(event);
         map.on(MOUSE_MOVE, this.setPoint2);
       }
       else {
-        console.log("setting p2");
         this.setPoint2(event);
         map.dragging.enable();
         map.off(MOUSE_MOVE, this.setPoint2);
         map.off(MOUSE_DOWN, this.drawPoints);
+        this.setState({ pointsSet: true });
       }
     }
   }
   public endDraw() {
     const { map } = this.props;
+    const { pointsSet } = this.state;
     if (map !== null) {
-      map.dragging.enable();
-      map.off(MOUSE_MOVE, this.setPoint1);
-      map.off(MOUSE_MOVE, this.setPoint2);
+      // has the user entered two points?
+      if (!pointsSet) {
+        // user has clicked / tapped once to select first point
+        map.off(MOUSE_MOVE, this.setPoint1);
+      } else {
+        // user click/dragged the points, assume we're finished
+        map.dragging.enable();
+        map.off(MOUSE_MOVE, this.setPoint1);
+        map.off(MOUSE_MOVE, this.setPoint2);
+      }
     }
   }
 
