@@ -168,6 +168,13 @@ export const SimulationStore = types
       self.isSelectingLatlng = !self.isSelectingLatlng;
       self.isSelectingRuler = false;
       self.isSelectingCrossSection = false;
+      if (!self.isSelectingLatlng) {
+        // clear original points
+        self.latLngPoint1Lat = 0;
+        self.latLngPoint1Lng = 0;
+        self.latLngPoint2Lat = 0;
+        self.latLngPoint2Lng = 0;
+      }
     },
     crossSectionClick() {
       self.isSelectingCrossSection = !self.isSelectingCrossSection;
