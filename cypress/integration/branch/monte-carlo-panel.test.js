@@ -10,7 +10,7 @@ const blocksTab = new BlocksTab;
 const monteCarloTab = new MonteCarloTab;
 const modelOptions = new ModelOptions;
 
-const runs=100;
+const runs=50;
 
 before(() => {
     cy.visit("");
@@ -25,7 +25,7 @@ before(() => {
   });
 beforeEach(()=>{
     cy.fixture('locations.json').as('locations');
-})  
+})
 context("Monte Carlo tab",()=>{
     describe('location tabs',()=>{
         it('verify tab for each location',()=>{
@@ -54,7 +54,7 @@ context("Monte Carlo tab",()=>{
                     monteCarloTab.getStatsContainer().should('be.visible');
                     monteCarloTab.getStatsContainer().should('contain',"Runs completed: "+runs);
                     monteCarloTab.getStatsContainer().should('contain',"Threshold = "+locations.locations[index].threshold+" mm");
-                    monteCarloTab.getStatsContainer().should('contain',"Count below threshold: "); //Can't test the actual values since it varies 
+                    monteCarloTab.getStatsContainer().should('contain',"Count below threshold: "); //Can't test the actual values since it varies
                     monteCarloTab.getStatsContainer().should('contain',"Count above threshold: ");
                     monteCarloTab.getStatsContainer().should('contain',"Risk:")
                     monteCarloTab.getStatsContainer().should('contain',locations.locations[index].risk) //The actual text is in a separate span
