@@ -24,3 +24,13 @@ export const kWidgetPanelInfo: WidgetPanelInfo = {
     highlightTextColor: "#FF9300",
   },
 };
+
+/**
+ * round(11, 2) -> 11
+ * round(11.456, 2) -> 11.46
+ */
+export const round = (num: number, maxPrecision: number) => {
+  const factor = Math.pow(10, maxPrecision);
+  const roundedTempNumber = Math.round(num * factor);
+  return roundedTempNumber / factor;
+};
