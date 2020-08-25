@@ -22,7 +22,8 @@ export class MapGPSStationsLayer extends BaseComponent<IProps, IState> {
     const { map, minLat, maxLat, minLng, maxLng } = this.props;
     if (!map) return;
 
-    const stationData = parseOfflineUNAVCOData(minLat, maxLat, minLng, maxLng);
+    const stationData = this.stores.seismicSimulation.visibleGPSStations();
+
     const markers = stationData.map(stat => {
       return (
         <Marker key={stat.id}
