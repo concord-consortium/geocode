@@ -1,6 +1,6 @@
 import * as React from "react";
 import { inject, observer } from "mobx-react";
-import { Map as LeafletMap, LayerGroup, Marker, Popup } from "react-leaflet";
+import { Map as LeafletMap, LayerGroup, Marker, Popup, MarkerProps } from "react-leaflet";
 import { BaseComponent } from "../base";
 import { StationData } from "../../strain";
 import { parseOfflineUNAVCOData } from "../../utilities/unavco-data";
@@ -22,7 +22,7 @@ export class MapGPSStationsLayer extends BaseComponent<IProps, IState> {
     const { map, minLat, maxLat, minLng, maxLng } = this.props;
     if (!map) return;
 
-    const stationData = this.stores.seismicSimulation.visibleGPSStations();
+    const stationData = this.stores.seismicSimulation.visibleGPSStations;
 
     const markers = stationData.map(stat => {
       return (
@@ -30,11 +30,9 @@ export class MapGPSStationsLayer extends BaseComponent<IProps, IState> {
           title={stat.id}
           position={[stat.latitude, stat.longitude]}
           icon={iconStation}
-        >
-          <Popup>
-            {stat.name}
-          </Popup>
-        </Marker>
+          // @ts-ignore
+          onclick={this.handleMarkerClicked}
+        />
       );
     });
 
@@ -43,5 +41,9 @@ export class MapGPSStationsLayer extends BaseComponent<IProps, IState> {
         { markers }
       </LayerGroup>
     );
+  }
+
+  private handleMarkerClicked = (props: Readonly<MarkerProps>) => {
+    this.stores.seismicSimulation.selectGPSStation((props as any).sourceTarget.options.title);
   }
 }

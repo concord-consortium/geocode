@@ -28,6 +28,8 @@ import { ChartPanel } from "./charts/chart-panel";
 import { BlocklyController } from "../blockly/blockly-controller";
 import { HistogramPanel } from "./montecarlo/histogram-panel";
 import { uiStore } from "../stores/ui-store";
+import { round } from "mathjs";
+import { GPSStationTable } from "./gps-station-table";
 
 interface IProps extends IBaseProps {}
 
@@ -163,6 +165,9 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       tephraSimulation: {
         clearLog,
         scenario
+      },
+      seismicSimulation: {
+        selectedGPSStation,
       },
       blocklyStore: {
         initialXmlCode,
@@ -385,6 +390,15 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                   {
                     isTephra &&
                     <WidgetPanel />
+                  }
+                  {
+                    !isTephra &&
+                    <div>
+                      {
+                        selectedGPSStation &&
+                        <GPSStationTable />
+                      }
+                    </div>
                   }
                 </Simulation>
               </TabPanel>
