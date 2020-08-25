@@ -1,10 +1,6 @@
 import * as Leaflet from "leaflet";
 
 import "leaflet-kmz";
-import * as KMZFile from "../../assets/data/qfaults.kmz";
-
-// @ts-ignore
-import * as RawVelocityDataSet from "../../assets/data/cwu.final_nam14.vel";
 
 import { inject, observer } from "mobx-react";
 import { BaseComponent } from "../base";
@@ -14,6 +10,7 @@ import strainCalc from "../../strain";
 import { StationData, StrainOutput } from "../../strain";
 import "../../css/custom-leaflet-icons.css";
 import * as tinygradient from "tinygradient";
+import { parseOfflineUNAVCOData } from "../../utilities/unavco-data";
 
 interface IProps {
     map: Leaflet.Map | null;
@@ -69,7 +66,11 @@ export class MapTriangulatedStrainLayer extends BaseComponent<IProps, IState> {
     }
 
     public componentDidMount() {
-        this.parseOfflineUNAVCOData();
+        const { minLat, maxLat, minLng, maxLng } = this.props;
+        const stationData = parseOfflineUNAVCOData(minLat, maxLat, minLng, maxLng);
+        console.log(stationData);
+        this.setState({data: stationData});
+        this.buildMesh(stationData);
     }
 
     // Polygon data is added to the map directly, so there is no react render
@@ -147,42 +148,6 @@ export class MapTriangulatedStrainLayer extends BaseComponent<IProps, IState> {
         ).catch(err => {
             console.log(err);
         });
-    }
-
-    // This method parses the offline UNAVCO velocity data found within "../../assets/data/cwu.snaps_nam14.vel"
-    // It converts the file into a parsable format and extracts
-    // the necessary data to be passed onto the buildMesh() method
-    private parseOfflineUNAVCOData() {
-        const { minLat, maxLat, minLng, maxLng } = this.props;
-
-        const parsedData: string[][] = [];
-        // Convert UNAVCO's ASCII file into a computer readable data set
-        (RawVelocityDataSet as string).split("\n").forEach((value) => {parsedData.push(value.split(/\ +/g)); });
-        const outputData: StationData[] = [];
-        const filteredSet: Set<any> = new Set<any>();
-
-        for (let i = 36; i < parsedData.length - 1; i++) {
-            if (!filteredSet.has(parsedData[i][1])) {
-                filteredSet.add(parsedData[i][1]);
-                const station: StationData = {
-                    id: parsedData[i][1],
-                    longitude: parseFloat(parsedData[i][9]) - 360,
-                    latitude: parseFloat(parsedData[i][8]),
-                    eastVelocity: parseFloat(parsedData[i][21]),
-                    eastVelocityUncertainty: 0.01,
-                    northVelocity: parseFloat(parsedData[i][20]),
-                    northVelocityUncertainty: 0.01
-                };
-
-                if ((station.longitude < maxLng && station.longitude > minLng) &&
-                    (station.latitude < maxLat && station.latitude > minLat)) {
-                        outputData.push(station);
-                }
-            }
-        }
-
-        this.setState({data: outputData});
-        this.buildMesh(outputData);
     }
 
     // This method creates and displays a mesh based on the GPS stations acquired from getUNAVCOData()
