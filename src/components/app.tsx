@@ -157,6 +157,9 @@ export class AppComponent extends BaseComponent<IProps, IState> {
 
   public render() {
     const {
+      unit: {
+        name: unitName,
+      },
       tephraSimulation: {
         clearLog,
         scenario
@@ -199,6 +202,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       rightTabIndex,
       expandOptionsDialog
     } = this.state;
+
+    const isTephra = unitName === "Tephra";
 
     const toolboxPath = (BlocklyAuthoring.toolbox as {[key: string]: string})[toolbox];
     const codePath = (BlocklyAuthoring.code as {[key: string]: string})[initialCodeTitle];
@@ -377,7 +382,10 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                     height={ height - 190 }
                     panelType={RightSectionTypes.CONDITIONS}
                   />
-                  <WidgetPanel />
+                  {
+                    isTephra &&
+                    <WidgetPanel />
+                  }
                 </Simulation>
               </TabPanel>
             }
