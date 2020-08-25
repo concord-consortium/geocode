@@ -58,4 +58,12 @@ export function getCachedSampleLocationIcon(label: string) {
     return iconsCache.get(iconKey);
 }
 
+export function latLngIcon(label: string, anchorCorner: string = "top-left"): DivIcon {
+  const html = `<div class='latlng-icon-content ${anchorCorner}'>
+    <div class='content'>${label}</div>
+    <div class='handle'></div>
+  </div>`;
+  return new DivIcon({ className: "div-icon", html });
+}
+
 export { iconVolcano, iconMarker };

@@ -3,7 +3,7 @@ import Leaflet from "leaflet";
 import * as L from "leaflet";
 import * as React from "react";
 import { BaseComponent } from "../../base";
-import { divIcon } from "../../icons";
+import { latLngIcon } from "../../icons";
 import { LayerGroup, Marker, Polyline } from "react-leaflet";
 
 const MOUSE_DOWN = "mousedown touchstart";
@@ -150,8 +150,16 @@ export class LatLngDrawLayer extends BaseComponent<IProps, IState> {
     const point2 = L.latLng(p2Lat, p2Lng);
     const point1a = L.latLng(p1Lat, p2Lng);
     const point2a = L.latLng(p2Lat, p1Lng);
-    const p1Icon = divIcon(`${p1Lat.toFixed(4)}, ${p1Lng.toFixed(4)}`);
-    const p2Icon = divIcon(`${p2Lat.toFixed(4)}, ${p2Lng.toFixed(4)}`);
+    // figure out which corner is in which location
+    const bounds = L.latLngBounds(point1, point2);
+    let flipped = false;
+    if (point1.lat === bounds.getNorthWest().lat && point1.lng === bounds.getNorthWest().lng) {
+      flipped = false;
+    } else {
+      flipped = true;
+    }
+    const p1Icon = latLngIcon(`Latitude: ${p1Lat.toFixed(2)}<br/>Longitude: ${p1Lng.toFixed(2)}`, flipped ? "top-left" : "bottom-right");
+    const p2Icon = latLngIcon(`Latitude: ${p2Lat.toFixed(2)}<br/>Longitude: ${p2Lng.toFixed(2)}`, flipped ? "bottom-right" : "top-left");
 
     return (
       <LayerGroup map={map}>
