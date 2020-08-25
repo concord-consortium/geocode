@@ -24,6 +24,7 @@ export interface StrainInput {
 
 export interface StationData {
     id: string;
+    name: string;
     longitude: number;
     latitude: number;
     eastVelocity: number;

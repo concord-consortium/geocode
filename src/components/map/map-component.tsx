@@ -24,6 +24,7 @@ import { LegendComponent } from "./map-legend";
 import { SamplesCollectionModelType, SamplesLocationModelType } from "../../stores/samples-collections-store";
 import { RiskLevels } from "../montecarlo/monte-carlo";
 import { LatLngDrawLayer } from "./layers/latlng-draw-layer";
+import { MapGPSStationsLayer } from "./map-gps-stations-layer";
 
 interface WorkspaceProps {
   width: number;
@@ -320,24 +321,28 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           {
             !isTephraUnit &&
             [
-              <Pane key="strain-layer"
-                style={{zIndex: 2}}>
-                <MapTriangulatedStrainLayer
-                  map={this.state.mapLeafletRef}
-                  minLat={35}
-                  maxLat={37}
-                  minLng={-124}
-                  maxLng={-119}
-                />
-                {isSelectingLatlng && <LatLngDrawLayer
-                  ref={this.latlngRef}
-                  map={this.state.mapLeafletRef}
-                  p1Lat={latLngPoint1Lat}
-                  p2Lat={latLngPoint2Lat}
-                  p1Lng={latLngPoint1Lng}
-                  p2Lng={latLngPoint2Lng}
-                /> }
-              </Pane>
+              // <Pane key="strain-layer"
+              //   style={{zIndex: 2}}>
+              //   <MapTriangulatedStrainLayer
+              //     map={this.state.mapLeafletRef}
+              //     minLat={35}
+              //     maxLat={37}
+              //     minLng={-124}
+              //     maxLng={-119}
+              //   />
+              // </Pane>,
+              <MapGPSStationsLayer
+                key="gps-layer"
+                map={this.state.mapLeafletRef}
+              />,
+              (isSelectingLatlng && <LatLngDrawLayer
+                ref={this.latlngRef}
+                map={this.state.mapLeafletRef}
+                p1Lat={latLngPoint1Lat}
+                p2Lat={latLngPoint2Lat}
+                p1Lng={latLngPoint1Lng}
+                p2Lng={latLngPoint2Lng}
+              />)
             ]
           }
         </LeafletMap>

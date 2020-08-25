@@ -68,7 +68,6 @@ export class MapTriangulatedStrainLayer extends BaseComponent<IProps, IState> {
     public componentDidMount() {
         const { minLat, maxLat, minLng, maxLng } = this.props;
         const stationData = parseOfflineUNAVCOData(minLat, maxLat, minLng, maxLng);
-        console.log(stationData);
         this.setState({data: stationData});
         this.buildMesh(stationData);
     }
@@ -123,6 +122,7 @@ export class MapTriangulatedStrainLayer extends BaseComponent<IProps, IState> {
                                 const splitResponseData = responseData[8].split(",");
                                 const station: StationData = {
                                     id: splitResponseData[0],
+                                    name: splitResponseData[1],
                                     longitude: parseFloat(splitResponseData[3]) - 360,
                                     latitude: parseFloat(splitResponseData[2]),
                                     eastVelocity: parseFloat(splitResponseData[6]),

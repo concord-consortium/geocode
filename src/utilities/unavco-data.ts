@@ -19,6 +19,7 @@ export function parseOfflineUNAVCOData(minLat: number, maxLat: number, minLng: n
           filteredSet.add(parsedData[i][1]);
           const station: StationData = {
               id: parsedData[i][1],
+              name: parsedData[i][2],
               longitude: parseFloat(parsedData[i][9]) - 360,
               latitude: parseFloat(parsedData[i][8]),
               eastVelocity: parseFloat(parsedData[i][21]),
