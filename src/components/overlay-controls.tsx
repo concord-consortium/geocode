@@ -9,7 +9,9 @@ import { BaseComponent } from "./base";
 interface IProps {
     showRuler: boolean;
     onRulerClick: () => void;
+    onLatLngClick: () => void;
     isSelectingCrossSection: boolean;
+    isSelectingLatLng: boolean;
     showCrossSection: boolean;
     onCrossSectionClick: () => void;
     onReCenterClick: () => void;
@@ -23,13 +25,18 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
     public render() {
         const { showRuler,
             onRulerClick,
+            onLatLngClick,
             isSelectingCrossSection,
+            isSelectingLatLng,
             showCrossSection,
             onCrossSectionClick,
             onReCenterClick} = this.props;
         const { hasErupted } = this.stores.simulation;
 
         const rulerColor = showRuler ? kRightTabInfo[RightSectionTypes.CONDITIONS].hoverBackgroundColor : "white";
+        const selectingLatLngColor = isSelectingLatLng
+                               ? kRightTabInfo[RightSectionTypes.CROSS_SECTION].hoverBackgroundColor
+                               : "white";
         const selectingColor = isSelectingCrossSection
                                ? kRightTabInfo[RightSectionTypes.CROSS_SECTION].hoverBackgroundColor
                                : "white";
@@ -59,6 +66,18 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
                         width={26}
                         height={26}
                         dataTest={"Ruler-button"}
+                    />
+                    <IconButton
+                        onClick={onLatLngClick}
+                        disabled={false}
+                        label={"Lat-Long"}
+                        backgroundColor={selectingLatLngColor}
+                        hoverColor={kRightTabInfo[RightSectionTypes.CONDITIONS].hoverBackgroundColor}
+                        activeColor={kRightTabInfo[RightSectionTypes.CONDITIONS].backgroundColor}
+                        fill={"black"}
+                        width={26}
+                        height={26}
+                        dataTest={"Latlng-button"}
                     />
                 </div>
                 <div className="controls bottom right">

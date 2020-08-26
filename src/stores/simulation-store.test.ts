@@ -61,4 +61,22 @@ describe("simulation-store", () => {
       expect(simulation.stagingVei).toBe(5);
     });
   });
+  describe("overlay controls", () => {
+    it("can switch between standard, ruler, cross-section and lat/long tools", () => {
+      simulation.rulerClick();
+      expect(simulation.isSelectingRuler).toBe(true);
+      expect(simulation.isSelectingCrossSection).toBe(false);
+      expect(simulation.isSelectingLatlng).toBe(false);
+
+      simulation.crossSectionClick();
+      expect(simulation.isSelectingRuler).toBe(false);
+      expect(simulation.isSelectingCrossSection).toBe(true);
+      expect(simulation.isSelectingLatlng).toBe(false);
+
+      simulation.latlngClick();
+      expect(simulation.isSelectingRuler).toBe(false);
+      expect(simulation.isSelectingCrossSection).toBe(false);
+      expect(simulation.isSelectingLatlng).toBe(true);
+    });
+  });
 });
