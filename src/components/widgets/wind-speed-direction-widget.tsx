@@ -7,7 +7,7 @@ import WindWSDOrangeIcon from "../../assets/widget-icons/wind-speed-and-directio
 import WindSymbolOrangeIcon from "../../assets/widget-icons/wind-symbol-orange.svg";
 import WindSymbolBlueIcon from "../../assets/widget-icons/wind-symbol-blue.svg";
 import { HorizontalContainer, ValueContainer, ValueOutput, IconContainer } from "../styled-containers";
-import { WidgetPanelTypes, kWidgetPanelInfo } from "../../utilities/widget";
+import { WidgetPanelTypes, kWidgetPanelInfo, round } from "../../utilities/widget";
 
 const ValueDivider = styled.div`
   width: 1px;
@@ -123,9 +123,9 @@ export default class WindSpeedDirectionWidget extends PureComponent<IProps, ISta
         </RelativeIconContainer>
         <ValueOutput data-test="info">
           <HorizontalContainer alignItems="center" justifyContent="center">
-          {showWindSpeed && <div>{windSpeed} m/s</div>}
+          {showWindSpeed && <div>{round(windSpeed, 1)} m/s</div>}
           {(showWindSpeed && showWindDirection) && <ValueDivider/ >}
-          {showWindDirection && <div>{windDirection % 360} °</div>}
+          {showWindDirection && <div>{round(windDirection % 360, 1)} °</div>}
           </HorizontalContainer>
         </ValueOutput>
       </ValueContainer>
