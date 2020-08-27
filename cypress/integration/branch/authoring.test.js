@@ -31,6 +31,11 @@ beforeEach(()=>{
 context ('Authoring Options',()=>{
     before(() => {
         cy.visit("");
+        // show controls and code tabs
+        modelOptions.getModelOptionsMenu().click();
+        modelOptions.getShowControlsOption().click();
+        modelOptions.getShowCodeOption().click();
+        modelOptions.getModelOptionsMenu().click();
       });
     describe('Model Option panel visibility',()=>{
         it('verify Options Menu panel shows',()=>{
@@ -660,7 +665,7 @@ context ('Authoring Options',()=>{
                 controlsTab.getWindSpeedDirectionContainer().find('[data-test="info"]>div>div').should('have.length',3)
                 conditionsTab.getWindSpeedDirectionWidget().should('be.visible')
             })
-            it('verify ejected volume slider shows again',()=>{    
+            it('verify ejected volume slider shows again',()=>{
                 modelOptions.getShowEjectedVolumeOption().click();
                 modelOptions.getShowEjectedVolumeOption().should('be.checked')
                 controlsTab.getEjectedVolumeSlider().should('be.visible')
@@ -676,7 +681,7 @@ context ('Authoring Options',()=>{
                 controlsTab.getVEIContainer().find('[data-test="info"]').should('be.visible')
                 conditionsTab.getVEIWidget().should('be.visible')
             })
-            it('verify column height slider shows again',()=>{    
+            it('verify column height slider shows again',()=>{
                 modelOptions.getShowColumnHeightOption().click();
                 modelOptions.getShowColumnHeightOption().should('be.checked')
                 controlsTab.getColumnHeightSlider().should('be.visible')
