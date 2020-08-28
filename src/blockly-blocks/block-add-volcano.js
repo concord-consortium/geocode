@@ -1,3 +1,5 @@
+import * as Blockly from "blockly";
+
 Blockly.Blocks['addVolcano'] = {
     init: function() {
       this.appendDummyInput()
@@ -18,7 +20,7 @@ Blockly.Blocks['addVolcano'] = {
    this.setHelpUrl("");
     }
   };
-  
+
   Blockly.JavaScript['addVolcano'] = function(block) {
     var value_x = Blockly.JavaScript.valueToCode(block, 'x', Blockly.JavaScript.ORDER_ATOMIC);
     var value_y = Blockly.JavaScript.valueToCode(block, 'y', Blockly.JavaScript.ORDER_ATOMIC);
@@ -31,4 +33,3 @@ Blockly.Blocks['addVolcano'] = {
     console.log(code);
     return code;
   }
-  

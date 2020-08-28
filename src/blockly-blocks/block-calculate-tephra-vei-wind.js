@@ -1,3 +1,5 @@
+import * as Blockly from "blockly";
+
 Blockly.Blocks['calculate_tephra_vei_wind'] = {
   init: function() {
     this.appendDummyInput()

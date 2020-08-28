@@ -1,3 +1,5 @@
+import * as Blockly from "blockly";
+
 Blockly.Blocks['setWindSpeed'] = {
     init: function() {
       this.appendValueInput("windSpeed")
@@ -14,14 +16,13 @@ Blockly.Blocks['setWindSpeed'] = {
    this.setHelpUrl("wind speed, meters per second");
     }
   };
-  
+
   Blockly.JavaScript['setWindSpeed'] = function(block) {
     var value_wind_speed = Blockly.JavaScript.valueToCode(block, 'windSpeed', Blockly.JavaScript.ORDER_ATOMIC);
     // TODO: Assemble JavaScript into code variable.
     var code = `
       setWindspeed(${value_wind_speed});
-  
+
     `;
     return code;
   }
-  

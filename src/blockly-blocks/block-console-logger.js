@@ -1,3 +1,5 @@
+import * as Blockly from "blockly";
+
 Blockly.Blocks['console_logger'] = {
     init: function() {
       this.appendValueInput("logString")
@@ -9,11 +11,10 @@ Blockly.Blocks['console_logger'] = {
    this.setHelpUrl("");
     }
   };
-  
+
   Blockly.JavaScript['console_logger'] = function(block) {
     const value_logstring = Blockly.JavaScript.valueToCode(block, 'logString', Blockly.JavaScript.ORDER_ATOMIC);
     // TODO: Assemble JavaScript into code variable.
     const code = `console.log(${value_logstring});`;
     return code;
   }
-  

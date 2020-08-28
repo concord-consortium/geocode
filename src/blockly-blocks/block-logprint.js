@@ -1,3 +1,5 @@
+import * as Blockly from "blockly";
+
 Blockly.Blocks['logprint'] = {
     init: function() {
       this.appendDummyInput()
@@ -14,10 +16,9 @@ Blockly.Blocks['logprint'] = {
    this.setHelpUrl("");
     }
   };
-  
+
   Blockly.JavaScript['logprint'] = function(block) {
     var value_data = Blockly.JavaScript.valueToCode(block, 'data', Blockly.JavaScript.ORDER_ATOMIC);
     var code = `logInfo(${value_data});`;
     return code;
   };
-  

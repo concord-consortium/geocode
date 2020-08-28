@@ -1,4 +1,6 @@
 // frst one was misnamed (it doesn't take vei as an input) but is already in authors' data
+import * as Blockly from "blockly";
+
 Blockly.Blocks['simulate_wind_sample_vei'] = {
   init: function() {
     this.appendDummyInput()

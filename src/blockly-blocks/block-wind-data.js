@@ -1,3 +1,5 @@
+import * as Blockly from "blockly";
+
 Blockly.Blocks['all_wind_data'] = {
   init: function () {
     this.appendDummyInput()

@@ -1,3 +1,5 @@
+import * as Blockly from "blockly";
+
 Blockly.Blocks['simulate_wind_vei'] = {
   init: function() {
     this.appendDummyInput()

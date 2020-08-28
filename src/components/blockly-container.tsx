@@ -1,5 +1,6 @@
 import * as React from "react";
 import styled from "styled-components";
+import * as Blockly from "blockly";
 import "../blockly-blocks/blocks.js";
 
 let loadingUID: number;
@@ -82,15 +83,29 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
   private initializeBlockly = () => {
     const {setBlocklyCode, hideToolbox} = this.props;
 
-    Blockly.JavaScript.STATEMENT_PREFIX = "startStep(%1);\n";
-    Blockly.JavaScript.STATEMENT_SUFFIX = "endStep();\n";
-    Blockly.JavaScript.addReservedWords("highlightBlock");
+    // Latest Blockly is a bit picky with Typescript and doesn't seem to recognize Blockly.Javascript
+    // This is a workaround for open issue https://github.com/google/blockly/issues/2995
+    (Blockly as any).JavaScript.STATEMENT_PREFIX = "startStep(%1);\n";
+    (Blockly as any).JavaScript.STATEMENT_SUFFIX = "endStep();\n";
+    (Blockly as any).JavaScript.addReservedWords("highlightBlock");
 
+    const geocodeFonts = {
+      family: "Helvetica, Arial, sans-serif",
+      weight: "bold",
+      size: 10
+    };
+
+    const geocodeTheme = Blockly.Theme.defineTheme("geocode", {
+      base: (Blockly as any).Themes.Classic,
+      fontStyle: geocodeFonts
+    });
     // initialize blockly with options.
     // note: we need to pass in a toolbox, and it has to have categories, otherwise blockly
     // won't let us update the toolbox later with another def that includes categories
     const blockOpts = {
       media: "blockly/media/",
+      // WIP: if we want to change fonts, or other theme options, here is where we assign the new theme
+      // theme: geocodeTheme,
       toolbox: `
       <xml id="toolbox" style="display: none">
         <category name="Loading...">
@@ -107,11 +122,11 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
     if (hideToolbox) {
       delete blockOpts.toolbox;
     }
-
-    this.workSpace = Blockly.inject(this.workSpaceRef.current, blockOpts);
-
+    if (this.workSpaceRef.current) {
+      this.workSpace = Blockly.inject(this.workSpaceRef.current, blockOpts);
+    }
     const myUpdateFunction = (event: any) => {
-      const code = Blockly.JavaScript.workspaceToCode(this.workSpace);
+      const code = (Blockly as any).JavaScript.workspaceToCode(this.workSpace);
       setBlocklyCode(code, this.workSpace);
     };
 
@@ -149,7 +164,7 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
     } else {
       this.workSpace.updateToolbox(toolbox);
     }
-
+    if (!codeString) codeString = "";
     const xml = Blockly.Xml.textToDom(codeString);
     Blockly.Xml.domToWorkspace(xml, this.workSpace);
   }

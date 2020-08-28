@@ -1,4 +1,6 @@
-Blockly.HSV_SATURATION=0.7;
+import * as Blockly from "blockly";
+
+Blockly.HSV_SATURATION = 0.7;
 Blockly.HSV_VALUE=.9;
 Blockly.Msg.LOOPS_HUE=195;
 Blockly.Msg.TEXTS_HUE=130;

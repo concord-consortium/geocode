@@ -1,3 +1,5 @@
+import * as Blockly from "blockly";
+
 Blockly.Blocks['addTown'] = {
     init: function() {
       this.appendValueInput("name")
@@ -22,7 +24,7 @@ Blockly.Blocks['addTown'] = {
    this.setHelpUrl("");
     }
   };
-  
+
   Blockly.JavaScript['addTown'] = function(block) {
     var value_name = Blockly.JavaScript.valueToCode(block, 'name', Blockly.JavaScript.ORDER_ATOMIC);
     var value_x = Blockly.JavaScript.valueToCode(block, 'x', Blockly.JavaScript.ORDER_ATOMIC);
@@ -36,4 +38,3 @@ Blockly.Blocks['addTown'] = {
     `
     return code;
   }
-  

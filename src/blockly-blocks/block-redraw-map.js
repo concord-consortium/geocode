@@ -1,3 +1,5 @@
+import * as Blockly from "blockly";
+
 Blockly.Blocks['redrawMap'] = {
     init: function() {
       this.appendDummyInput()
@@ -10,7 +12,7 @@ Blockly.Blocks['redrawMap'] = {
    this.setHelpUrl("have the volcano erupt");
     }
   };
-  
+
   Blockly.JavaScript['redrawMap'] = function(block) {
     // TODO: Assemble JavaScript into code variable.
     var code = '//...;\n';

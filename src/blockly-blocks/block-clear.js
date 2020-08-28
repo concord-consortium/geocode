@@ -1,3 +1,5 @@
+import * as Blockly from "blockly";
+
 Blockly.Blocks['clear'] = {
     init: function() {
       this.appendValueInput("logString")
@@ -11,7 +13,7 @@ Blockly.Blocks['clear'] = {
    this.setHelpUrl("");
     }
   };
-  
+
   Blockly.JavaScript['clear'] = function(block) {
     const code ='clearCanvas();\n';
     return code;

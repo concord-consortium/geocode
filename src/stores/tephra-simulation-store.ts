@@ -2,6 +2,7 @@ import { types, getSnapshot } from "mobx-state-tree";
 import { kVEIIndexInfo } from "../utilities/vei";
 import { TephraSimulationAuthorSettings, TephraSimulationAuthorSettingsProps } from "./stores";
 import gridTephraCalc from "../tephra2";
+import * as Blockly from "blockly";
 
 let _cityCounter = 0;
 const genCityId = () => `city_${_cityCounter++}`;

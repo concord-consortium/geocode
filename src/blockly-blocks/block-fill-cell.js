@@ -1,3 +1,5 @@
+import * as Blockly from "blockly";
+
 Blockly.Blocks['fill_cell'] = {
     init: function() {
       this.appendValueInput("hue")
@@ -23,7 +25,7 @@ Blockly.Blocks['fill_cell'] = {
    this.setHelpUrl("");
     }
   };
-  
+
   Blockly.JavaScript['fill_cell'] = function(block) {
     var hue = Blockly.JavaScript.valueToCode(block, 'hue', Blockly.JavaScript.ORDER_ATOMIC);
     var sat = Blockly.JavaScript.valueToCode(block, 'sat', Blockly.JavaScript.ORDER_ATOMIC);
@@ -35,4 +37,3 @@ Blockly.Blocks['fill_cell'] = {
     `;
     return code;
   }
-  

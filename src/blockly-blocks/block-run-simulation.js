@@ -1,3 +1,5 @@
+import * as Blockly from "blockly";
+
 Blockly.Blocks['run_simulation'] = {
     init: function() {
       this.appendDummyInput()

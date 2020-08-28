@@ -1,3 +1,5 @@
+import * as Blockly from "blockly";
+
 Blockly.Blocks['setEruptionMass'] = {
     init: function() {
       this.appendValueInput("eruptionMass")
@@ -14,7 +16,7 @@ Blockly.Blocks['setEruptionMass'] = {
    this.setHelpUrl("");
     }
   };
-  
+
   Blockly.JavaScript['setEruptionMass'] = function(block) {
     var value_mass = Blockly.JavaScript.valueToCode(block, 'eruptionMass', Blockly.JavaScript.ORDER_ATOMIC);
     // TODO: Assemble JavaScript into code variable.
@@ -23,4 +25,3 @@ Blockly.Blocks['setEruptionMass'] = {
     `;
     return code;
   }
-  

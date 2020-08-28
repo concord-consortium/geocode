@@ -1,3 +1,5 @@
+import * as Blockly from "blockly";
+
 Blockly.Blocks['outputPaintMap'] = {
     init: function() {
       this.appendDummyInput()
@@ -9,7 +11,7 @@ Blockly.Blocks['outputPaintMap'] = {
    this.setHelpUrl("");
     }
   };
-  
+
   Blockly.JavaScript['outputPaintMap'] = function(block) {
     // TODO: Assemble JavaScript into code variable.
     var code = `
@@ -17,4 +19,3 @@ Blockly.Blocks['outputPaintMap'] = {
     `;
     return code;
   }
-  

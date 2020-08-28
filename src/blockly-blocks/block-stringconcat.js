@@ -1,3 +1,5 @@
+import * as Blockly from "blockly";
+
 Blockly.Blocks['stringconcat'] = {
   init: function() {
     this.appendValueInput("lv")

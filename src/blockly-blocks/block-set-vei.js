@@ -1,3 +1,5 @@
+import * as Blockly from "blockly";
+
 Blockly.Blocks['setVEI'] = {
     init: function() {
       this.appendValueInput("vei")

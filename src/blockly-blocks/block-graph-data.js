@@ -1,3 +1,5 @@
+import * as Blockly from "blockly";
+
 Blockly.Blocks['graph_speed_date_wind_data'] = {
   init: function () {
     this.appendValueInput('wind data')

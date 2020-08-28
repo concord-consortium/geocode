@@ -1,3 +1,5 @@
+import * as Blockly from "blockly";
+
 Blockly.Blocks['create_sample_location'] = {
   init: function() {
     this.appendDummyInput()

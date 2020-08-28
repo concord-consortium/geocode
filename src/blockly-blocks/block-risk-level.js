@@ -1,3 +1,5 @@
+import * as Blockly from "blockly";
+
 Blockly.Blocks['show_risk'] = {
   init: function() {
     this.appendDummyInput()

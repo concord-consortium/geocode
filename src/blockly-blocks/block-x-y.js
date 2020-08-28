@@ -1,3 +1,5 @@
+import * as Blockly from "blockly";
+
 Blockly.Blocks['x'] = {
     init: function() {
       this.appendDummyInput()
@@ -8,14 +10,14 @@ Blockly.Blocks['x'] = {
    this.setHelpUrl("");
     }
   };
-  
+
   Blockly.JavaScript['x'] = function(block) {
     // TODO: Assemble JavaScript into code variable.
     var code = `(this.x)`;
     // TODO: Change ORDER_NONE to the correct strength.
     return [code, Blockly.JavaScript.ORDER_NONE];
   }
-  
+
   Blockly.Blocks['y'] = {
     init: function() {
       this.appendDummyInput()
@@ -26,12 +28,11 @@ Blockly.Blocks['x'] = {
    this.setHelpUrl("");
     }
   };
-  
+
   Blockly.JavaScript['y'] = function(block) {
     // TODO: Assemble JavaScript into code variable.
     var code = `(this.y)`;
     // TODO: Change ORDER_NONE to the correct strength.
     return [code, Blockly.JavaScript.ORDER_NONE];
   }
-  
-  
+
