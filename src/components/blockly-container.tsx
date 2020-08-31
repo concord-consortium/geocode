@@ -89,23 +89,20 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
     (Blockly as any).JavaScript.STATEMENT_SUFFIX = "endStep();\n";
     (Blockly as any).JavaScript.addReservedWords("highlightBlock");
 
-    const geocodeFonts = {
-      family: "Helvetica, Arial, sans-serif",
-      weight: "bold",
-      size: 10
-    };
-
-    const geocodeTheme = Blockly.Theme.defineTheme("geocode", {
-      base: (Blockly as any).Themes.Classic,
-      fontStyle: geocodeFonts
-    });
     // initialize blockly with options.
     // note: we need to pass in a toolbox, and it has to have categories, otherwise blockly
     // won't let us update the toolbox later with another def that includes categories
     const blockOpts = {
       media: "blockly/media/",
-      // WIP: if we want to change fonts, or other theme options, here is where we assign the new theme
-      // theme: geocodeTheme,
+      // If we want to change fonts, or other theme options, here is where we assign the new theme
+      // theme: {
+      //   base: (Blockly as any).Themes.Classic,
+      //   fontStyle: {
+      //     family: "Helvetica, Arial, sans-serif",
+      //     weight: "bold",
+      //     size: 10
+      //   }
+      // },
       toolbox: `
       <xml id="toolbox" style="display: none">
         <category name="Loading...">
