@@ -1,35 +1,41 @@
 import * as React from "react";
 import { inject, observer } from "mobx-react";
-import { Map as LeafletMap, LayerGroup, Marker, Popup, MarkerProps } from "react-leaflet";
+import { Map as LeafletMap, LayerGroup, Marker, CircleMarker, Popup, MarkerProps } from "react-leaflet";
 import { BaseComponent } from "../base";
 import { StationData } from "../../strain";
-import { parseOfflineUNAVCOData } from "../../utilities/unavco-data";
-import { iconStation } from "../icons";
 
 interface IProps {
   map: LeafletMap | null;
 }
 
-interface IState {
-  data: StationData[];
-}
+interface IState {}
 
 @inject("stores")
 @observer
 export class MapGPSStationsLayer extends BaseComponent<IProps, IState> {
 
   public render() {
-    const { map, minLat, maxLat, minLng, maxLng } = this.props;
+    const { map  } = this.props;
     if (!map) return;
 
-    const stationData = this.stores.seismicSimulation.visibleGPSStations;
+    const { visibleGPSStations, selectedGPSStationId } = this.stores.seismicSimulation;
 
-    const markers = stationData.map(stat => {
+    const stroke = "#9c9c9c";
+    const selectedStroke = "#777";
+    const fill = "#98e643";
+    const selectedFill = "#43e6d8";
+
+    const markers = visibleGPSStations.map(stat => {
+      const selected = stat.id! === selectedGPSStationId;
       return (
-        <Marker key={stat.id}
+        <CircleMarker key={stat.id}
           title={stat.id}
-          position={[stat.latitude, stat.longitude]}
-          icon={iconStation}
+          center={[stat.latitude, stat.longitude]}
+          radius={7}
+          weight={selected ? 3 : 2}
+          color={selected ? selectedStroke : stroke}
+          fillColor={selected ? selectedFill : fill}
+          fillOpacity={1}
           // @ts-ignore
           onclick={this.handleMarkerClicked}
         />

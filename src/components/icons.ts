@@ -16,12 +16,6 @@ const iconMarker = new L.Icon({
     iconSize: new L.Point(20, 30),
 });
 
-const iconStation = new L.Icon({
-    iconUrl: "./assets/marker-station.png",
-    iconRetinaUrl: "./assets/marker-station.png",
-    iconSize: new L.Point(20, 20),
-});
-
 // Cache icons. First, it's just faster. Second, it prevents us from unnecessary re-rendering and buttons blinking.
 const iconsCache: Map<string, DivIcon> = new Map<string, DivIcon>();
 
@@ -72,4 +66,4 @@ export function latLngIcon(label: string, anchorCorner: string = "top-left"): Di
   return new DivIcon({ className: "div-icon", html });
 }
 
-export { iconVolcano, iconMarker, iconStation };
+export { iconVolcano, iconMarker };
