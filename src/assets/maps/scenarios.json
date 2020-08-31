@@ -48,7 +48,7 @@
         "topLeftLng": 130,
         "bottomRightLat": 5,
         "bottomRightLng": 110,
-        "volcanoLat": 15.1429, 
+        "volcanoLat": 15.1429,
         "volcanoLng": 120.3496,
         "minZoom": 6,
         "maxZoom": 10,
@@ -59,7 +59,7 @@
         "topLeftLng": -100,
         "bottomRightLat": 25,
         "bottomRightLng": -80,
-        "volcanoLat": 14.4747, 
+        "volcanoLat": 14.4747,
         "volcanoLng": -90.8806,
         "minZoom": 6,
         "maxZoom": 10,
@@ -70,7 +70,7 @@
         "topLeftLng": 165,
         "bottomRightLat": -29,
         "bottomRightLng": 185,
-        "volcanoLat": -39.2817, 
+        "volcanoLat": -39.2817,
         "volcanoLng": 175.5685,
         "minZoom": 6,
         "maxZoom": 10,
@@ -97,5 +97,14 @@
         "minZoom": 6,
         "maxZoom": 10,
         "initialZoom": 8
+    },
+    "Seismic CA": {
+        "topLeftLat": 41.993157,
+        "topLeftLng": -124.542844,
+        "bottomRightLat": 32.735104,
+        "bottomRightLng": -114.470318,
+        "minZoom": 6,
+        "maxZoom": 12,
+        "initialZoom": 6
     }
 }
