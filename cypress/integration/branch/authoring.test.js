@@ -201,34 +201,37 @@ context ('Authoring Options',()=>{
             //Wind data
             blocksTab.getTag('Wind data').click();
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 6)
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length',18)
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length',19)
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(0).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("Graph Wind Data")
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(1).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Graph Wind Speed and Direction")
+                expect(removeNBSP(text)).to.contain("Graph Wind Speed")
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(2).text().then((text)=>{
+              expect(removeNBSP(text)).to.contain("and Direction")
+          })
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(3).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("Graph Wind Data")
             })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(4).should('contain','against')
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(6).text().then((text)=>{
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(5).should('contain','against')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(7).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("All Wind Data")
             })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(7).should('contain','sample')
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(9).should('contain','items')
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(10).should('contain','from')
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(11).should('contain','Filter')
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(12).text().then((text)=>{
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(8).should('contain','sample')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(10).should('contain','items')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(11).should('contain','from')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(12).should('contain','Filter')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(13).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("Select from")
             })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(13).should('contain','Day')
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(14).should('contain','Month')
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(15).should('contain','Year')
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(16).text().then((text)=>{
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(14).should('contain','Day')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(15).should('contain','Month')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(16).should('contain','Year')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(17).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("Direction (º from North)")
             })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(17).text().then((text)=>{
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(18).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("Speed (m/s)")
             })
             //Data Collections

@@ -19,9 +19,12 @@ Blockly.JavaScript['graph_speed_date_wind_data'] = function (block) {
 
 Blockly.Blocks['graph_speed_direction_wind_data'] = {
   init: function () {
+    this.appendDummyInput()
+      .appendField('Graph Wind Speed ')
+    this.appendDummyInput()
+      .appendField('and Direction')
     this.appendValueInput('wind data')
       .setCheck('Dataset')
-      .appendField('Graph Wind Speed and Direction')
     this.setPreviousStatement(true, null)
     this.setNextStatement(true, null)
     this.setColour(230)
@@ -38,9 +41,10 @@ Blockly.JavaScript['graph_speed_direction_wind_data'] = function (block) {
 
 Blockly.Blocks['graph_any_wind_data'] = {
   init: function () {
+    this.appendDummyInput()
+      .appendField('Graph Wind Data')
     this.appendValueInput('wind data')
       .setCheck('Dataset')
-      .appendField('Graph Wind Data')
       .appendField(new Blockly.FieldDropdown([
           ['speed', 'speed'],
           ['direction', 'direction'],
@@ -76,6 +80,7 @@ Blockly.Blocks['graph_exceedance'] = {
   init: function() {
     this.appendDummyInput()
         .appendField("Graph data collection")
+    this.appendDummyInput()
         .appendField(new Blockly.FieldDropdown(this.generateOptions), "collections");
     this.appendDummyInput()
         .setAlign(Blockly.ALIGN_RIGHT)
