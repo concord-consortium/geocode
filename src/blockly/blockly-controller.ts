@@ -1,4 +1,5 @@
 import { observable } from "mobx";
+import * as Blockly from "blockly";
 import { IInterpreterController, makeInterpreterController } from "./interpreter";
 import { IStore } from "../stores/stores";
 

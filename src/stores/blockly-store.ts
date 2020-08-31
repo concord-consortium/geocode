@@ -1,4 +1,5 @@
 import { types, getSnapshot } from "mobx-state-tree";
+import * as Blockly from "blockly";
 import { BlocklyStoreAuthorSettings, BlocklyStoreAuthorSettingsProps } from "./stores";
 
 export const BlocklyStore = types
