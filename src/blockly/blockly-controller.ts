@@ -33,7 +33,7 @@ export class BlocklyController {
     this.workspace = workspace;
     this.interpreterController = makeInterpreterController(code, this, this.stores, workspace);
 
-    this.stores.simulation.setBlocklyCode(code, workspace);
+    this.stores.blocklyStore.setBlocklyCode(code, workspace);
     this.parseVariables();
   }
 
@@ -51,7 +51,7 @@ export class BlocklyController {
 
   public reset = () => {
     this.setCode(this.code, this.workspace);
-    this.stores.simulation.reset();
+    this.stores.tephraSimulation.reset();
     this.stores.chartsStore.reset();
     this.stores.samplesCollectionsStore.reset();
   }

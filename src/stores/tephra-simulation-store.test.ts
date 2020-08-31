@@ -1,10 +1,10 @@
-import { SimulationStore, SimulationModelType } from "./simulation-store";
+import { TephraSimulationStore, TephraSimulationModelType } from "./tephra-simulation-store";
 
 describe("simulation-store", () => {
-  let simulation: SimulationModelType;
+  let simulation: TephraSimulationModelType;
 
   beforeEach(() => {
-    simulation = SimulationStore.create({});
+    simulation = TephraSimulationStore.create({});
   });
 
   describe("vei", () => {

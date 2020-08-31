@@ -48,7 +48,7 @@ export class LogComponent extends BaseComponent<IProps, IState> {
 
     public render() {
         const { height, width, clear } = this.props;
-        const { log } = this.stores.simulation;
+        const { log } = this.stores.tephraSimulation;
 
         return(
             <CanvDiv ref={this.ref} height={height} width={width}>

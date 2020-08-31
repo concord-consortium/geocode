@@ -1,12 +1,12 @@
 import { types, getSnapshot } from "mobx-state-tree";
 import { kVEIIndexInfo } from "../utilities/vei";
-import { SimulationAuthorSettings, SimulationAuthorSettingsProps } from "./stores";
+import { TephraSimulationAuthorSettings, TephraSimulationAuthorSettingsProps } from "./stores";
 import gridTephraCalc from "../tephra2";
 
 let _cityCounter = 0;
 const genCityId = () => `city_${_cityCounter++}`;
 
-export interface IModelParams {
+export interface ITephraModelParams {
   mass: number;
   windSpeed: number;
   colHeight: number;
@@ -83,8 +83,8 @@ export function getGridIndexForLocation(x: number, y: number, numRows: number) {
   return y + x * numRows;
 }
 
-export const SimulationStore = types
-  .model("simulation", {
+export const TephraSimulationStore = types
+  .model("tephraSimulation", {
     windSpeed: 6,
     windDirection: 0,    // from north
     mass: 10000000000000,
@@ -111,8 +111,6 @@ export const SimulationStore = types
     viewportCenterLat: 0,
     viewportCenterLng: 0,
     cities: types.array(City),
-    xmlCode: "",                // current blockly xml code
-    initialXmlCode: "",         // initial blockly xml code
     log: "",
     plotData: types.optional(PlotData, getSnapshot(plotData)),
     hasErupted: false,
@@ -127,8 +125,6 @@ export const SimulationStore = types
     requireEruption: true,
     requirePainting: true,
     scenario: "Cerro Negro",
-    toolbox: "Everything",
-    initialCodeTitle: "Basic",
   })
   .views((self) => {
     const getVei = (mass: number, colHeight: number) => {
@@ -189,12 +185,6 @@ export const SimulationStore = types
     }
   }))
   .actions((self) => ({
-    setBlocklyCode(code: string, workspace: any) {
-      self.xmlCode = Blockly.Xml.domToPrettyText(Blockly.Xml.workspaceToDom(workspace));
-    },
-    setInitialXmlCode(xmlCode: string) {
-      self.initialXmlCode = xmlCode;
-    },
     setViewportParameters(zoom: number, viewportCenterLat: number, viewportCenterLng: number) {
       self.viewportZoom = zoom;
       self.viewportCenterLat = viewportCenterLat;
@@ -340,7 +330,7 @@ export const SimulationStore = types
           self.erupt();
         }
       },
-      setModelParams(params: IModelParams) {
+      setModelParams(params: ITephraModelParams) {
         self.stagingWindSpeed = params.windSpeed;
         self.stagingColHeight = params.colHeight;
         self.stagingMass = params.mass;
@@ -385,8 +375,8 @@ export const SimulationStore = types
   })
   .actions((self) => {
     return {
-      loadAuthorSettingsData: (data: SimulationAuthorSettings) => {
-        Object.keys(data).forEach((key: SimulationAuthorSettingsProps) => {
+      loadAuthorSettingsData: (data: TephraSimulationAuthorSettings) => {
+        Object.keys(data).forEach((key: TephraSimulationAuthorSettingsProps) => {
           // annoying `as any ... as any` is needed because we're mixing bool and non-bool props, which combine to never
           // see https://github.com/microsoft/TypeScript/issues/31663
           (self[key] as any) = data[key] as any;
@@ -401,7 +391,7 @@ export const SimulationStore = types
       },
     };
   });
-export const simulation = SimulationStore.create({});
+export const tephraSimulation = TephraSimulationStore.create({});
 
-export type SimulationModelType = typeof SimulationStore.Type;
+export type TephraSimulationModelType = typeof TephraSimulationStore.Type;
 export type CityType = typeof City.Type;

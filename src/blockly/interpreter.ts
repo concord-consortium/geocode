@@ -1,6 +1,6 @@
-import { IModelParams, SimOutput, SimulationVariable, SimulationStore } from "../stores/simulation-store";
+import { ITephraModelParams, SimOutput, SimulationVariable, TephraSimulationStore } from "../stores/tephra-simulation-store";
 import { BlocklyController } from "./blockly-controller";
-import { SimulationModelType } from "../stores/simulation-store";
+import { TephraSimulationModelType } from "../stores/tephra-simulation-store";
 import { IBlocklyWorkspace } from "../interfaces";
 import { IStore } from "../stores/stores";
 import { Datasets, Dataset, Filter } from "../stores/data-sets";
@@ -9,7 +9,7 @@ const Interpreter = require("js-interpreter");
 const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore,
                              workspace: IBlocklyWorkspace) => {
 
-  const { simulation, chartsStore, samplesCollectionsStore } = store;
+  const { tephraSimulation, chartsStore, samplesCollectionsStore } = store;
 
   return (interpreter: any, scope: any) => {
     const addVar = (name: string, value: any) => {
@@ -48,15 +48,15 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
 
     /** ==== Tephra simulation model setters ==== */
 
-    addFunc("setModelParams", (params: IModelParams) => {
-      simulation.setModelParams(params);
+    addFunc("setModelParams", (params: ITephraModelParams) => {
+      tephraSimulation.setModelParams(params);
     });
     addFunc("setWindDirection", (direction: number) => {
       if (direction === undefined) {
         blocklyController.throwError("You must set a value for the wind direction.");
         return;
       }
-      simulation.setWindDirection(direction);
+      tephraSimulation.setWindDirection(direction);
     });
 
     addFunc("setWindspeed", (speed: number) => {
@@ -64,13 +64,13 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
         blocklyController.throwError("You must set a value for the wind speed.");
         return;
       }
-      simulation.setWindSpeed(speed);
+      tephraSimulation.setWindSpeed(speed);
     });
 
     addFunc("setWindspeedAndDirection", (windSample?: any) => {
       if (windSample) {
-        simulation.setWindSpeed(windSample.speed);
-        simulation.setWindDirection(windSample.direction);
+        tephraSimulation.setWindSpeed(windSample.speed);
+        tephraSimulation.setWindDirection(windSample.direction);
       } else {
         blocklyController.throwError("You must add a dataset for the wind sample.");
         return;
@@ -82,7 +82,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
         blocklyController.throwError("You must set a value for the eruption mass.");
         return;
       }
-      simulation.setMass(mass);
+      tephraSimulation.setMass(mass);
     });
 
     addFunc("setVolume", (volume: number) => {
@@ -92,7 +92,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       }
       // +9 km^3 to m^3, +3 m^3 to kg
       const massInKilograms = volume * Math.pow(10, 9 + 3);
-      simulation.setMass(massInKilograms);
+      tephraSimulation.setMass(massInKilograms);
     });
 
     addFunc("setVEI", (vei: number) => {
@@ -100,7 +100,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
         blocklyController.throwError("You must set a value for the eruption VEI.");
         return;
       }
-      simulation.setVEI(vei);
+      tephraSimulation.setVEI(vei);
     });
 
     addFunc("setColumnHeight", (height: number) => {
@@ -108,17 +108,17 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
         blocklyController.throwError("You must set a value for the eruption column height.");
         return;
       }
-      simulation.setColumnHeight(height);
+      tephraSimulation.setColumnHeight(height);
     });
 
     addFunc("setVolcano", (params: {x: number, y: number}) => {
-      simulation.setVolcano(params.x, params.y);
+      tephraSimulation.setVolcano(params.x, params.y);
     });
 
     /** ==== Run tephra simulation model ==== */
 
     addFunc("erupt", () => {
-      simulation.erupt();
+      tephraSimulation.erupt();
     });
 
     // Returns tephra thickness at a specific location, given by a samples collection, with various inputs
@@ -149,11 +149,11 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
         // Wind data is stored using direction to, but we use direction from. Need to convert.
         windDirection = windSample.direction < 180 ? windSample.direction + 180 : windSample.direction - 180;
       }
-      simulation.setWindSpeed(windSpeed);
-      simulation.setWindDirection(windDirection);
-      simulation.setVEI(VEI);
+      tephraSimulation.setWindSpeed(windSpeed);
+      tephraSimulation.setWindDirection(windDirection);
+      tephraSimulation.setVEI(VEI);
 
-      const thickness = simulation.calculateTephraAtLocation(samplesLocation.x, samplesLocation.y);
+      const thickness = tephraSimulation.calculateTephraAtLocation(samplesLocation.x, samplesLocation.y);
 
       return {
         data: thickness
@@ -163,11 +163,11 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     /** ==== Draw on tephra map ==== */
 
     addFunc("paintMap", () => {
-      simulation.paintMap();
+      tephraSimulation.paintMap();
     });
 
     addFunc("addCity", (params: {x: number, y: number, name: string}) => {
-      simulation.addCity(params.x, params.y, params.name);
+      tephraSimulation.addCity(params.x, params.y, params.name);
     });
 
     /** ==== Data and graphing ==== */
@@ -284,12 +284,12 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
 
     addFunc("logInfo", (params: any) => {
       if (params) {
-        simulation.logInfo(params);
+        tephraSimulation.logInfo(params);
       }
     });
 
     addFunc("stringConcat", (params: {lv: any, rv: any}) => {
-      return simulation.stringConcat(params.lv, params.rv);
+      return tephraSimulation.stringConcat(params.lv, params.rv);
     });
 
     /** ==== Used under the hood to control highlighting and stepping ==== */

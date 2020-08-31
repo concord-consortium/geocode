@@ -6,7 +6,7 @@ import "leaflet/dist/leaflet.css";
 import "../../css/map-component.css";
 import { iconVolcano, iconMarker, getCachedDivIcon, getCachedCircleIcon, riskIcon, getCachedSampleLocationIcon } from "../icons";
 
-import { CityType  } from "../../stores/simulation-store";
+import { CityType  } from "../../stores/tephra-simulation-store";
 import * as Scenarios from "../../assets/maps/scenarios.json";
 import styled from "styled-components";
 import { observer, inject } from "mobx-react";
@@ -91,20 +91,20 @@ export class MapComponent extends BaseComponent<IProps, IState>{
   }
 
   public handleDragEnter(e: React.MouseEvent<HTMLDivElement>) {
-    this.stores.simulation.setPoint1Pos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
-    this.stores.simulation.setPoint2Pos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    this.stores.tephraSimulation.setPoint1Pos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    this.stores.tephraSimulation.setPoint2Pos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
     this.setState({moveMouse: true});
   }
 
   public handleDragMove(e: React.MouseEvent<HTMLDivElement>) {
     const { moveMouse } = this.state;
     if (moveMouse) {
-      this.stores.simulation.setPoint2Pos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+      this.stores.tephraSimulation.setPoint2Pos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
     }
   }
 
   public handleDragExit(e: React.MouseEvent<HTMLDivElement>) {
-    this.stores.simulation.setPoint2Pos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    this.stores.tephraSimulation.setPoint2Pos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
     this.setState({moveMouse: false});
   }
 
@@ -142,7 +142,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       mass,
       hasErupted,
       scenario,
-    } = this.stores.simulation;
+    } = this.stores.tephraSimulation;
 
     const { showCrossSection } = this.stores.uiStore;
 
@@ -162,8 +162,8 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     const {
       isSelectingCrossSection,
       isSelectingRuler,
-      isSelectingLatlng
-    } = this.stores.simulation;
+      isSelectingLatlng,
+    } = this.stores.tephraSimulation;
 
     const cityItems = cities.map( (city: CityType) => {
       const {x, y, name} = city;
@@ -205,7 +205,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
 
     const { crossPoint1Lat, crossPoint1Lng, crossPoint2Lat, crossPoint2Lng,
             latLngPoint1Lat, latLngPoint1Lng, latLngPoint2Lat, latLngPoint2Lng } =
-      this.stores.simulation;
+      this.stores.tephraSimulation;
     const volcanoPos = L.latLng(volcanoLat, volcanoLng);
     const corner1 = L.latLng(topLeftLat, topLeftLng);
     const corner2 = L.latLng(bottomRightLat, bottomRightLng);
@@ -299,12 +299,12 @@ export class MapComponent extends BaseComponent<IProps, IState>{
         </LeafletMap>
         <OverlayControls
           showRuler={isSelectingRuler}
-          onRulerClick={this.stores.simulation.rulerClick}
-          onLatLngClick={this.stores.simulation.latlngClick}
+          onRulerClick={this.stores.tephraSimulation.rulerClick}
+          onLatLngClick={this.stores.tephraSimulation.latlngClick}
           isSelectingCrossSection={isSelectingCrossSection}
           isSelectingLatLng={isSelectingLatlng}
           showCrossSection={hasErupted && showCrossSection && panelType === RightSectionTypes.CROSS_SECTION}
-          onCrossSectionClick={this.stores.simulation.crossSectionClick}
+          onCrossSectionClick={this.stores.tephraSimulation.crossSectionClick}
           onReCenterClick={this.onRecenterClick}
         />
         { this.state.showKey
@@ -328,7 +328,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
 
   private onRecenterClick = () => {
     if (this.map.current) {
-      const { volcanoLat, volcanoLng, scenario } = this.stores.simulation;
+      const { volcanoLat, volcanoLng, scenario } = this.stores.tephraSimulation;
       const scenarioData = (Scenarios as {[key: string]: Scenario})[scenario];
       const { initialZoom } = scenarioData;
 
@@ -336,9 +336,9 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     }
   }
   private onMapClick = (e: any) => {
-    const { simulation } = this.stores;
-    if (this.stores.simulation.isSelectingLatlng) {
-      simulation.setPoint1Pos(e.latlng.lat, e.latlng.lng);
+    const { tephraSimulation } = this.stores;
+    if (tephraSimulation.isSelectingLatlng) {
+      tephraSimulation.setPoint1Pos(e.latlng.lat, e.latlng.lng);
     } else return;
   }
 
@@ -349,14 +349,14 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       if (this.map.current) {
         const center = this.map.current.leafletElement.getCenter();
         const zoom = this.map.current.leafletElement.getZoom();
-        this.stores.simulation.setViewportParameters(zoom, center.lat, center.lng);
+        this.stores.tephraSimulation.setViewportParameters(zoom, center.lat, center.lng);
       }
     }
   }
 
   private getSampleLocations = () => {
     const { samplesCollectionsStore } = this.stores;
-    const { volcanoLat, volcanoLng } = this.stores.simulation;
+    const { volcanoLat, volcanoLng } = this.stores.tephraSimulation;
     const locations: React.ReactElement[] = [];
     samplesCollectionsStore.samplesLocations.forEach( (samplesLocation: SamplesLocationModelType, i) => {
       const pos = LocalToLatLng({x: samplesLocation.x, y: samplesLocation.y}, L.latLng(volcanoLat, volcanoLng));
@@ -373,7 +373,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
 
   private getRiskItems = () => {
     const { samplesCollectionsStore } = this.stores;
-    const { volcanoLat, volcanoLng } = this.stores.simulation;
+    const { volcanoLat, volcanoLng } = this.stores.tephraSimulation;
     const riskItems: React.ReactElement[] = [];
     const tabIndex = this.stores.uiStore.currentHistogramTab;
     const histogramCharts = this.stores.chartsStore.charts.filter(chart => chart.type === "histogram");

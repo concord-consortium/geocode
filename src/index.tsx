@@ -79,7 +79,7 @@ phone.addListener("initInteractive", (data: {
   }
   updateStores(initialState);
 
-  onSnapshot(stores.simulation, saveUserData);       // MobX function called on every store change
+  onSnapshot(stores.tephraSimulation, saveUserData);       // MobX function called on every store change
   onSnapshot(stores.uiStore, saveUserData);
 });
 

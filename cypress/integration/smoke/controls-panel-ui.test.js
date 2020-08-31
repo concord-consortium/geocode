@@ -1,15 +1,21 @@
+import ModelOptions from "../../support/elements/ModelOptionPanel";
 import LeftPanel from "../../support/elements/LeftPanel"
 import ControlsTab from "../../support/elements/ControlsTab"
 
+const modelOptions = new ModelOptions;
 const leftPanel = new LeftPanel;
 const controlsTab = new ControlsTab;
 
 context("Controls panel", () => {
     before(() => {
       cy.visit("");
+      modelOptions.getModelOptionsMenu().click();
+      modelOptions.getShowControlsOption().click();
+      modelOptions.getModelOptionsMenu().click();
+
       leftPanel.getControlsTab().should('be.visible').click();
     });
-  
+
     describe("Controls panel ui", () => {
       it('verify Controls tab shows correct elements',()=>{
         controlsTab.getControlsPanel().should('be.visible');

@@ -79,7 +79,7 @@ export class Controls extends BaseComponent<IProps, IState> {
       stagingWindSpeed,
       stagingVei,
       reset
-    } = this.stores.simulation;
+    } = this.stores.tephraSimulation;
 
     const {
       showWindSpeed,
@@ -252,34 +252,34 @@ export class Controls extends BaseComponent<IProps, IState> {
   }
 
   private changeWindDirection = (direction: number) => {
-    this.stores.simulation.setWindDirection(direction);
+    this.stores.tephraSimulation.setWindDirection(direction);
   }
 
   private changeWindSpeed = (speed: number) => {
-    this.stores.simulation.setWindSpeed(speed);
+    this.stores.tephraSimulation.setWindSpeed(speed);
   }
 
   private changeColumnHeight = (heightInKilometers: number) => {
-    this.stores.simulation.setColumnHeight(heightInKilometers);
+    this.stores.tephraSimulation.setColumnHeight(heightInKilometers);
   }
 
   private changeMass = (zeroBasedPower: number) => {
     // -4 index conversion, +9 km^3 to m^3, +3 m^3 to kg
     const massInKilograms = Math.pow(10, zeroBasedPower - 4 + 9 + 3);
-    this.stores.simulation.setMass(massInKilograms);
+    this.stores.tephraSimulation.setMass(massInKilograms);
   }
 
   private changeSize = (size: number) => {
-    this.stores.simulation.setParticleSize(size);
+    this.stores.tephraSimulation.setParticleSize(size);
   }
 
   private changeVEI = (vei: number) => {
-    this.stores.simulation.setVEI(vei);
+    this.stores.tephraSimulation.setVEI(vei);
   }
 
   private erupt = () => {
-    this.stores.simulation.erupt();
-    this.stores.simulation.paintMap();
+    this.stores.tephraSimulation.erupt();
+    this.stores.tephraSimulation.paintMap();
 
     // This code is used for waiting for the animation to complete and then painting
     // if (this.state.animate) {

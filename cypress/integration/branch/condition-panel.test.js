@@ -1,9 +1,11 @@
+import ModelOptions from "../../support/elements/ModelOptionPanel";
 import LeftPanel from "../../support/elements/LeftPanel"
 import ControlsTab from "../../support/elements/ControlsTab"
 import RightPanel from "../../support/elements/RightPanel";
 import ConditionsTab from "../../support/elements/ConditionsTab"
 import Map from "../../support/elements/Map"
 
+const modelOptions = new ModelOptions;
 const leftPanel = new LeftPanel;
 const controlsTab = new ControlsTab;
 const rightPanel = new RightPanel;
@@ -19,9 +21,14 @@ context("Controls panel", () => {
     var evSlider="ejected-volume", volume = '2', evHeight='17.5';
     var chSlider="column-height", cHeight = '15', visualHeight='28.8';
 
-
     before(() => {
       cy.visit("");
+
+      // show controls tab
+      modelOptions.getModelOptionsMenu().click();
+      modelOptions.getShowControlsOption().click();
+      modelOptions.getModelOptionsMenu().click();
+
       leftPanel.getControlsTab().should('be.visible').click();
       controlsTab.setSliderValue(wsSlider,windSpeed);
       controlsTab.setSliderValue(wdSlider,windDirection);
