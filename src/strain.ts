@@ -183,8 +183,12 @@ function calculateStrainOutputData(inputData: StrainInput, calculatedData: Stati
     const gpsLats: number[] = [];
     const gpsLngs: number[] = [];
     for (let i = 0; i < inputData.data.length; i++) {
-        northingCoords.push(calculatedData[i].utmZone === S1WesternmostZone ? calculatedData[i].trueNorthing : calculatedData[i].pseudoNorthing);
-        eastingCoords.push(calculatedData[i].utmZone === S1WesternmostZone ? calculatedData[i].trueEasting : calculatedData[i].pseudoEasting);
+        northingCoords.push(calculatedData[i].utmZone === S1WesternmostZone
+            ? calculatedData[i].trueNorthing
+            : calculatedData[i].pseudoNorthing);
+        eastingCoords.push(calculatedData[i].utmZone === S1WesternmostZone
+            ? calculatedData[i].trueEasting
+            : calculatedData[i].pseudoEasting);
         gpsLats.push(inputData.data[i].latitude);
         gpsLngs.push(inputData.data[i].longitude);
     }
@@ -247,6 +251,7 @@ function calculateStrainOutputData(inputData: StrainInput, calculatedData: Stati
                 [m5.get([4]), m5.get([5])]];
 
     // Eigenvalue A is in [1] and B is in [0]
+    // @ts-ignore
     const eigenValues = (math.eigs(math.matrix(m6)) as {values: math.Matrix, vectors: math.Matrix}).values;
     const correctedValues = eigenValues.get([1]) > eigenValues.get([0]) ?
                                 [eigenValues.get([0]), eigenValues.get([1])] :
