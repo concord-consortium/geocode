@@ -92,7 +92,7 @@
     <block type="input_range"></block>
   </category>
   <category name="Variables" colour="130" custom="VARIABLE"></category>
-  <category name="Functions" custom="PROCEDURE"></category>
+  <category name="Functions" colour="290" custom="PROCEDURE"></category>
   <!-- <category name="Logging" colour="260">
     <block type="logprint"></block>
     <block type="stringconcat"></block>

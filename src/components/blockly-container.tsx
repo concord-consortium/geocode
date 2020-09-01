@@ -163,6 +163,19 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
     }
     if (!codeString) codeString = "";
     const xml = Blockly.Xml.textToDom(codeString);
+
+    // There is a validation error when loading XML to the workspace
+    // https://github.com/google/blockly/issues/3638
+    // so we need to disable validation until after the XML is loaded
+
+    // Save the existing doClassValidation_
+    const fieldDropdownDoClassValidation = Blockly.FieldDropdown.prototype.doClassValidation_;
+    // Create a "no validation one"
+    Blockly.FieldDropdown.prototype.doClassValidation_ = (newValue) => {
+      return newValue;
+    };
     Blockly.Xml.domToWorkspace(xml, this.workSpace);
+    // restore the saved doClassValidation_
+    Blockly.FieldDropdown.prototype.doClassValidation_ = fieldDropdownDoClassValidation;
   }
 }
