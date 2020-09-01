@@ -196,7 +196,7 @@ export class MapTriangulatedStrainLayer extends BaseComponent<IProps, IState> {
         }
 
         // Delaunator takes in a 1D array of coordinates organized [x1, y1, x2, y2, ...]
-        // It outputs a 2D array containing sets of vertecies
+        // It outputs a 2D array containing sets of vertices
         // Each vertex is returned as an index to an array of coordinates
         const mesh = new Delaunator(coords);
         const strainOutputs: StrainOutput[] = [];
