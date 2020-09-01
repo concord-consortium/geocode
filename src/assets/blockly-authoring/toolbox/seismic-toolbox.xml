@@ -2,6 +2,8 @@
   <category name="Seismic" colour="0">
     <block type="seismic_show_gps_stations"></block>
     <block type="seismic_all_gps_stations"></block>
+    <block type="seismic_sample_data"></block>
+    <block type="seismic_filter_data"></block>
   </category>
 
   <category name="Logic" colour="%{BKY_LOGIC_HUE}">
