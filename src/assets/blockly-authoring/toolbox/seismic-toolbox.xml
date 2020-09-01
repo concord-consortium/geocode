@@ -1,6 +1,7 @@
 <xml id="toolbox" style="display: none">
   <category name="Seismic" colour="0">
-    <block type="seismic_show_all_stations"></block>
+    <block type="seismic_show_gps_stations"></block>
+    <block type="seismic_all_gps_stations"></block>
   </category>
 
   <category name="Logic" colour="%{BKY_LOGIC_HUE}">

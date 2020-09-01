@@ -1,5 +1,6 @@
 import { types } from "mobx-state-tree";
 import { parseOfflineUNAVCOData } from "../utilities/unavco-data";
+import { StationData } from "../strain";
 
 const minLat = 31;
 const maxLat = 40;
@@ -14,16 +15,18 @@ export const SeismicSimulationStore = types
     selectedGPSStationId: types.maybe(types.string),
   })
   .actions((self) => ({
-    showAllGPSStations() {
-      const allIds = stationData.map(stat => stat.id);
+    showGPSStations(stations: StationData[]) {
       self.visibleGPSStationIds.clear();
-      allIds.forEach( id => self.visibleGPSStationIds.push(id) );
+      stations.forEach( stat => self.visibleGPSStationIds.push(stat.id) );
     },
     selectGPSStation(id: string) {
       self.selectedGPSStationId = id;
     }
   }))
   .views((self) => ({
+    get allGPSStations() {
+      return stationData;
+    },
     get visibleGPSStations() {
       return stationData.filter(stat => self.visibleGPSStationIds.includes(stat.id));
     },

@@ -28,4 +28,4 @@ import "../blockly-blocks/block-range";
 import "./block-create-add-to-sample-collection";
 import "./block-calculate-tephra-vei-wind";
 import "./block-risk-level";
-import "./block-seismic-show-all-stations";
+import "./block-seismic-gps-stations";
