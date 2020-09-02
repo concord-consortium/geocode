@@ -32,8 +32,8 @@ Rnu         Correlation of North and vertical velocity
 Reu         Correlation of East and vertical velocity
 first_epoch Epoch of first data used to derive the station velocity, in the same format as ref_epoch.
 last_epoch  Epoch of last data used to derive the station velocity, in the same format as ref_epoch.
-End Field Description
-*Dot#     Name           Ref_epoch      Ref_jday      Ref_X          Ref_Y           Ref_Z         Ref_Nlat        Ref_Elong     Ref_Up...     dX/dt    dY/dt   dZ/dt    SXd     SYd     SZd    Rxy     Rxz    Rzy      dN/dt     dE/dt    dU/dt   SNd     SEd     SUd     Rne    Rnu    Reu   first_epoch     last_epoch
+End Field Description 
+*Dot#     Name           Ref_epoch      Ref_jday      Ref_X          Ref_Y           Ref_Z         Ref_Nlat        Ref_Elong     Ref_Up...     dX/dt    dY/dt   dZ/dt    SXd     SYd     SZd    Rxy     Rxz    Rzy      dN/dt     dE/dt    dU/dt   SNd     SEd     SUd     Rne    Rnu    Reu   first_epoch     last_epoch 
  1LSU Louisiana_St     20180912120000 58373.5000   -113402.89531 -5504361.31282  3209404.18966   30.4074246977  268.8197380504   -6.57838   -0.00014  0.00353 -0.00132 0.00048 0.00052 0.00035  0.027 -0.026 -0.750    0.00063 -0.00022 -0.00371 0.00020 0.00048 0.00059  0.017  0.027 -0.021 20030423000000 20080620000000
  1NSU Northwestern     20180912120000 58373.5000   -293349.53925 -5420742.32110  3336980.83895   31.7508006816  266.9023962246   28.04340   -0.00002  0.00223  0.00053 0.00011 0.00052 0.00038  0.067 -0.062 -0.713    0.00161 -0.00014 -0.00162 0.00023 0.00011 0.00060 -0.038  0.053  0.162 20040120000000 20100729000000
  1ULM U_Of_La_At_M     20180912120000 58373.5000   -194982.10197 -5379221.90925  3410046.81553   32.5290339428  267.9240933193   15.95756    0.00019  0.00294 -0.00127 0.00010 0.00041 0.00028  0.006 -0.030 -0.895    0.00051  0.00008 -0.00317 0.00011 0.00010 0.00049 -0.047  0.067  0.133 20030614000000 20100729000000

@@ -3,7 +3,7 @@ const fs = require('fs');
 
 const host = "data-out.unavco.org";
 const dataPath = "/pub/products/velocity/cwu.final_nam14.vel";
-const writeFile = "src/assets/data/cwu.final_nam14.vel";
+const writeFile = "src/assets/data/seismic/cwu.final_nam14.vel";
 
 var client = new Client();
 client.on('ready', function() {

@@ -2,7 +2,7 @@
 
 ## Current position and velocity data
 
-The velocity file, which includes the location for every GPS station, can be found at data/cwu.final_nam14.vel
+The velocity file, which includes the location for every GPS station, can be found at data/seismic/cwu.final_nam14.vel
 
 This data is from ftp://data-out.unavco.org/pub/products/velocity/cwu.final_nam14.vel, and fetched and cleaned
 using the `fetch-velocity-data.js` script.
