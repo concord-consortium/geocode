@@ -4,6 +4,7 @@ import { TephraSimulationModelType } from "../stores/tephra-simulation-store";
 import { IBlocklyWorkspace } from "../interfaces";
 import { IStore } from "../stores/stores";
 import { Datasets, Dataset, Filter } from "../stores/data-sets";
+import { StationData } from "../strain";
 const Interpreter = require("js-interpreter");
 
 const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore,
@@ -278,8 +279,14 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
 
     /** ==== Seismic methods ==== */
 
-    addFunc("showAllStations", () => {
-      seismicSimulation.showAllGPSStations();
+    addFunc("getAllGPSStations", () => {
+      return {
+        data: seismicSimulation.allGPSStations
+      };
+    });
+
+    addFunc("showGPSStations", (stations: StationData[]) => {
+      seismicSimulation.showGPSStations(stations);
     });
 
     /** ==== Utility methods ==== */
