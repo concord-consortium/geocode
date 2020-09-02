@@ -45,6 +45,7 @@
     "lint:unused": "tsc --noUnusedLocals --project .",
 
     "fetch-data:velocity": "node src/assets/data/seismic/scripts/fetch-velocity-data.js",
+    "fetch-data:position": "node src/assets/data/seismic/scripts/fetch-position-data.js",
 
     "test": "jest",
     "test:all": "npm-run-all build test start",

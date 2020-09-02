@@ -38,10 +38,21 @@ cleaned to remove all the additional rows for any given station.
 
 ## Position over time data
 
-See https://www.unavco.org/data/web-services/documentation/documentation.html#!/GNSS47GPS/getPositionByStationId
+The position files, which includes the east and west delta position by date for a set of 25 GPS Stations, can
+be found at data/seismic/position.[station-id].cwu.nam14.csv.
+
+We get the data from ftp://data-out.unavco.org/pub/products/position/[station-id]/[station-id].cwu.nam14.csv
+
+This is fetched and cleaned using the `fetch-position-data.js` script.
+
+See also: https://www.unavco.org/data/web-services/documentation/documentation.html#!/GNSS47GPS/getPositionByStationId
 
 ## Useful links
 
 Here's UNAVCO's own site for visualizing velocity:
 
 https://www.unavco.org/software/visualization/GPS-Velocity-Viewer/GPS-Velocity-Viewer.html
+
+Google Doc with some explanations of data:
+
+https://docs.google.com/document/d/1LTuxVDAXEx4S1w12yP9REQ4nbP-mowQ1ljmvrEFrRok/edit
