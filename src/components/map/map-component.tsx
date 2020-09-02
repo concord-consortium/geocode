@@ -14,6 +14,7 @@ import { BaseComponent, IBaseProps } from "../base";
 import { CrossSectionDrawLayer } from "./layers/cross-section-draw-layer";
 import { LocalToLatLng } from "../../utilities/coordinateSpaceConversion";
 import { MapTephraThicknessLayer } from "./map-tephra-thickness-layer";
+import { MapTriangulatedStrainLayer } from "./map-triangulated-strain-layer";
 import { OverlayControls } from "../overlay-controls";
 import { RulerDrawLayer } from "./layers/ruler-draw-layer";
 import { RightSectionTypes } from "../tabs";
@@ -23,6 +24,7 @@ import { LegendComponent } from "./map-legend";
 import { SamplesCollectionModelType, SamplesLocationModelType } from "../../stores/samples-collections-store";
 import { RiskLevels } from "../montecarlo/monte-carlo";
 import { LatLngDrawLayer } from "./layers/latlng-draw-layer";
+import { MapGPSStationsLayer } from "./map-gps-stations-layer";
 
 interface WorkspaceProps {
   width: number;
@@ -260,55 +262,89 @@ export class MapComponent extends BaseComponent<IProps, IState>{
             <TileLayer
                 url="https://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
             />
-            <MapTephraThicknessLayer
-              ref={this.tephraRef}
-              corner1Bound={corner1}
-              corner2Bound={corner2}
-              viewportBounds={viewportBounds}
-              volcanoPos={volcanoPos}
-              gridSize={1}
-              map={this.state.mapLeafletRef}
-              windSpeed={windSpeed}
-              windDirection={windDirection}
-              colHeight={colHeight}
-              mass={mass}
-              hasErupted={hasErupted}
-            />
           </Pane>
-          isTephraUnit &&
-          <Pane
-            style={{zIndex: 3}}>
-            <Marker
-              position={[volcanoLat, volcanoLng]}
-              icon={iconVolcano}>
-              <Popup>
-                Popup for any custom information.
-              </Popup>
-            </Marker>
-            {cityItems}
-            {pinItems}
-            {riskItems}
-            {sampleLocations}
-            {isSelectingLatlng && <LatLngDrawLayer
-              ref={this.latlngRef}
-              map={this.state.mapLeafletRef}
-              p1Lat={latLngPoint1Lat}
-              p2Lat={latLngPoint2Lat}
-              p1Lng={latLngPoint1Lng}
-              p2Lng={latLngPoint2Lng}
-            /> }
-            {isSelectingCrossSection && <CrossSectionDrawLayer
-              ref={this.crossRef}
-              map={this.state.mapLeafletRef}
-              p1Lat={crossPoint1Lat}
-              p2Lat={crossPoint2Lat}
-              p1Lng={crossPoint1Lng}
-              p2Lng={crossPoint2Lng}
-            /> }
-            {isSelectingRuler && <RulerDrawLayer
-              map={this.state.mapLeafletRef}
-            />}
-          </Pane>
+          {
+            isTephraUnit &&
+            [
+              <Pane key="tephra-layer"
+                style={{zIndex: 2}}>
+                <MapTephraThicknessLayer
+                  ref={this.tephraRef}
+                  corner1Bound={corner1}
+                  corner2Bound={corner2}
+                  viewportBounds={viewportBounds}
+                  volcanoPos={volcanoPos}
+                  gridSize={1}
+                  map={this.state.mapLeafletRef}
+                  windSpeed={windSpeed}
+                  windDirection={windDirection}
+                  colHeight={colHeight}
+                  mass={mass}
+                  hasErupted={hasErupted}
+                />
+              </Pane>,
+              <Pane key="tephra-marker-layer"
+                style={{zIndex: 3}}>
+                <Marker
+                  position={[volcanoLat, volcanoLng]}
+                  icon={iconVolcano}>
+                  <Popup>
+                    Popup for any custom information.
+                  </Popup>
+                </Marker>
+                {cityItems}
+                {pinItems}
+                {riskItems}
+                {sampleLocations}
+                {isSelectingLatlng && <LatLngDrawLayer
+                  ref={this.latlngRef}
+                  map={this.state.mapLeafletRef}
+                  p1Lat={latLngPoint1Lat}
+                  p2Lat={latLngPoint2Lat}
+                  p1Lng={latLngPoint1Lng}
+                  p2Lng={latLngPoint2Lng}
+                /> }
+                {isSelectingCrossSection && <CrossSectionDrawLayer
+                  ref={this.crossRef}
+                  map={this.state.mapLeafletRef}
+                  p1Lat={crossPoint1Lat}
+                  p2Lat={crossPoint2Lat}
+                  p1Lng={crossPoint1Lng}
+                  p2Lng={crossPoint2Lng}
+                /> }
+                {isSelectingRuler && <RulerDrawLayer
+                  map={this.state.mapLeafletRef}
+                />}
+              </Pane>
+            ]
+          }
+          {
+            !isTephraUnit &&
+            [
+              // <Pane key="strain-layer"
+              //   style={{zIndex: 2}}>
+              //   <MapTriangulatedStrainLayer
+              //     map={this.state.mapLeafletRef}
+              //     minLat={35}
+              //     maxLat={37}
+              //     minLng={-124}
+              //     maxLng={-119}
+              //   />
+              // </Pane>,
+              <MapGPSStationsLayer
+                key="gps-layer"
+                map={this.state.mapLeafletRef}
+              />,
+              (isSelectingLatlng && <LatLngDrawLayer
+                ref={this.latlngRef}
+                map={this.state.mapLeafletRef}
+                p1Lat={latLngPoint1Lat}
+                p2Lat={latLngPoint2Lat}
+                p1Lng={latLngPoint1Lng}
+                p2Lng={latLngPoint2Lng}
+              />)
+            ]
+          }
         </LeafletMap>
         <OverlayControls
           showRuler={isSelectingRuler}

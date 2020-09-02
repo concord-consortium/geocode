@@ -76,6 +76,25 @@ module.exports = (env, argv) => {
           use: [
             'dsv-loader'
           ]
+        },
+        {
+          test: /\.(txt|vel)$/i,
+          use: [
+            {
+              loader: 'raw-loader',
+              options: {
+                esModule: false,
+              },
+            },
+          ],
+        },
+        {
+          test: /\.(kmz)$/i,
+          use: [
+            {
+              loader: 'file-loader'
+            },
+          ],
         }
       ]
     },

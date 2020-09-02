@@ -9,7 +9,7 @@ const Interpreter = require("js-interpreter");
 const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore,
                              workspace: IBlocklyWorkspace) => {
 
-  const { tephraSimulation, chartsStore, samplesCollectionsStore } = store;
+  const { tephraSimulation, seismicSimulation, chartsStore, samplesCollectionsStore } = store;
 
   return (interpreter: any, scope: any) => {
     const addVar = (name: string, value: any) => {
@@ -274,6 +274,12 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
         return;
       }
       samplesCollection.addSample(params.sample);
+    });
+
+    /** ==== Seismic methods ==== */
+
+    addFunc("showAllStations", () => {
+      seismicSimulation.showAllGPSStations();
     });
 
     /** ==== Utility methods ==== */

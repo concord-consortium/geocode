@@ -6,7 +6,8 @@
     "Wind and Height": "./assets/blockly-authoring/toolbox/wind-height-toolbox.xml",
     "Wind + 2": "./assets/blockly-authoring/toolbox/wind-2-toolbox.xml",
     "A4 + 5": "./assets/blockly-authoring/toolbox/a4-5-toolbox.xml",
-    "Monte Carlo": "./assets/blockly-authoring/toolbox/monte-carlo-toolbox.xml"
+    "Monte Carlo": "./assets/blockly-authoring/toolbox/monte-carlo-toolbox.xml",
+    "Seismic": "./assets/blockly-authoring/toolbox/seismic-toolbox.xml"
   },
   "code": {
     "Basic": "./assets/blockly-authoring/code/basic-setup.xml",
