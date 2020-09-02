@@ -3,14 +3,21 @@
 }
 .blocklyTreeRow{
   height: auto;
-  min-height: 22px;
+  min-height: 24px;
   white-space: pre-wrap;
-  text-indent: -6px;
-  padding-left: 8px !important;
+  text-indent: -10px;
+  padding-left: 10px !important;
+  padding-top: 2px;
+  padding-bottom: 4px;
+  line-height: 10px;
 }
-
+/* Ensure each line item has sufficient height, but wrapped text can use a different line-height */
+.blocklyTreeRow:first-line{
+  line-height: 22px;
+}
 .blocklyTreeLabel{
   font-size: 14px;
+  line-height: 12px;
 }
 .blocklyTreeIconNone{
   width: 4px;

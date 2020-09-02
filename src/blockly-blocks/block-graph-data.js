@@ -22,7 +22,7 @@ Blockly.Blocks['graph_speed_direction_wind_data'] = {
     this.appendDummyInput()
       .appendField('Graph Wind Speed ')
     this.appendDummyInput()
-      .appendField('and Direction')
+      .appendField(' and Direction')
     this.appendValueInput('wind data')
       .setCheck('Dataset')
     this.setPreviousStatement(true, null)
