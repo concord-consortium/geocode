@@ -1,0 +1,17 @@
+.blocklyToolboxDiv{
+  width: 100px;
+}
+.blocklyTreeRow{
+  height: auto;
+  min-height: 22px;
+  white-space: pre-wrap;
+  text-indent: -6px;
+  padding-left: 8px !important;
+}
+
+.blocklyTreeLabel{
+  font-size: 14px;
+}
+.blocklyTreeIconNone{
+  width: 4px;
+}
