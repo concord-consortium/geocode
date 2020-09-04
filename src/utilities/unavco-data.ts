@@ -1,5 +1,5 @@
 // @ts-ignore
-import * as RawVelocityDataSet from "../assets/data/cwu.final_nam14.vel";
+import * as RawVelocityDataSet from "../assets/data/seismic/cwu.final_nam14.vel";
 import { StationData } from "../strain";
 
 /**

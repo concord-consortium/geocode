@@ -132,6 +132,10 @@ You can also create a program in the Blocks panel (from eg http://localhost:8080
    To ensure that you are open a TypeScript file in VSC and then click on the version number next to
    `TypeScript React` in the status bar and select 'Use Workspace Version' in the popup menu.
 
+## Seismic data
+
+See the [seismic data readme](docs/seismic-data/readme.md), and the `fetch-data` scripts in package.json.
+
 ## Deployment
 
 Production releases to S3 are based on the contents of the /dist folder and are built automatically by Travis
