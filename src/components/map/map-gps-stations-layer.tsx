@@ -1,8 +1,9 @@
 import * as React from "react";
 import { inject, observer } from "mobx-react";
-import { Map as LeafletMap, LayerGroup, Marker, CircleMarker, Popup, MarkerProps } from "react-leaflet";
+import { Map as LeafletMap, LayerGroup, Marker, CircleMarker, Popup, MarkerProps, Polyline } from "react-leaflet";
 import { BaseComponent } from "../base";
 import { StationData } from "../../strain";
+import { LatLng } from "leaflet";
 
 interface IProps {
   map: LeafletMap | null;
@@ -42,9 +43,20 @@ export class MapGPSStationsLayer extends BaseComponent<IProps, IState> {
       );
     });
 
+    const coords = visibleGPSStations.map(stat => {
+      const startLatLng = new LatLng(stat.latitude, stat.longitude);
+      const magnitude = Math.sqrt((stat.eastVelocity * stat.eastVelocity) + (stat.northVelocity * stat.northVelocity));
+      const dir = Math.atan(stat.northVelocity / stat.eastVelocity);
+      const endLat = startLatLng.lat + (magnitude * Math.cos(dir));
+      const endLng = startLatLng.lng + (magnitude * Math.sin(dir));
+      const endLatLng = new LatLng(endLat, endLng);
+      return <Polyline positions={[startLatLng, endLatLng]} key={stat.id} />;
+    });
+
     return (
       <LayerGroup map={map}>
-        { markers }
+        {markers}
+        {coords}
       </LayerGroup>
     );
   }
