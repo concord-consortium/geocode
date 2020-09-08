@@ -334,6 +334,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
               <MapGPSStationsLayer
                 key="gps-layer"
                 map={this.state.mapLeafletRef}
+                mapScale={this.state.mapLeafletRef.getZoom()}
               />,
               (isSelectingLatlng && <LatLngDrawLayer
                 ref={this.latlngRef}
