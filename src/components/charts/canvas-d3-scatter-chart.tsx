@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as d3 from "d3";
 import { ChartType } from "../../stores/charts-store";
+import { addFadeLegend } from "./svg-d3-scatter-chart";
 
 type Scale = d3.ScaleLinear<number, number> | d3.ScaleTime<number, number>;
 
@@ -136,6 +137,16 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
       ctx.arc(px, py, 1.5, 0, 2 * Math.PI, true);
       ctx.fill();
     });
+
+    if (fadeIn) {
+      const svg = d3.select(this.svgRef.current).append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      addFadeLegend(svg, data, chartWidth, margin);
+    }
   }
 
 }
