@@ -113,8 +113,10 @@ interface DataSetInfo {
 }
 export const WindData: DataSetInfo = {
   extents: {
-    elevation: [1450, 1600],
-    speed: [0, 23]
+    "elevation": [1450, 1600],
+    "speed": [0, 23],
+    "East (mm)": [-800, 10],
+    "North (mm)": [-10, 650],
   },
   timeParsers: {
     date: {
@@ -144,8 +146,10 @@ export const WindData: DataSetInfo = {
     }
   },
   axisLabel: {
-    speed: "Wind Speed (m/s)",
-    timeOfYear: "Time of year",
-    direction: "Direction (degrees)"
+    "speed": "Wind Speed (m/s)",
+    "timeOfYear": "Time of year",
+    "direction": "Direction (degrees)",
+    "East (mm)": "East displacement (mm)",
+    "North (mm)": "North displacement (mm)",
   }
 };

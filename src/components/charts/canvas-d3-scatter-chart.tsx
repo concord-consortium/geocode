@@ -52,7 +52,7 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
     if (!this.canvasRef.current || !this.svgRef.current) return;
 
     const { width, height, chart } = this.props;
-    const { data, xAxisLabel, yAxisLabel } = chart;
+    const { data, xAxisLabel, yAxisLabel, fadeIn } = chart;
 
     const margin = {top: 15, right: 20, bottom: 43, left: 50};
     const canvasPadding = 3;      // extend canvas slightly beyond axes
@@ -118,9 +118,18 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
 
     const ctx = this.canvasRef.current.getContext("2d")!;
 
-    data.forEach((d: number[] | Date[]) => {
+    const colorLerp = (d3.scaleLinear().domain([0, data.length]) as any).range(["white", "#448878"]);
+
+    data.forEach((d: number[] | Date[], i) => {
       ctx.beginPath();
       ctx.fillStyle = "#448878";
+
+      if (!fadeIn) {
+        ctx.fillStyle = "#448878";
+      } else {
+        ctx.fillStyle = colorLerp(i);
+      }
+
       const px = xScale(d[0]) + canvasPadding;
       const py = yScale(d[1]) + canvasPadding;
 

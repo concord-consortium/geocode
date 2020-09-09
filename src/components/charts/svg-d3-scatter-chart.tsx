@@ -12,7 +12,7 @@ interface IProps {
 
 export const SvgD3ScatterChart = (props: IProps) => {
   const { width, height, chart } = props;
-  const { data, xAxisLabel, yAxisLabel } = chart;
+  const { data, xAxisLabel, yAxisLabel, fadeIn } = chart;
 
   const margin = {top: 15, right: 20, bottom: 43, left: 50};
   const chartWidth = width - margin.left - margin.right;
@@ -67,6 +67,11 @@ export const SvgD3ScatterChart = (props: IProps) => {
       .text(yAxisLabel);
   }
 
+  const colorLerp = (d3.scaleLinear().domain([0, data.length]) as any).range(["white", "#448878"]);
+  const color = fadeIn ?
+    (d: number, i: number) => colorLerp(i) :
+    "#448878";
+
   svg.append("g")
     .selectAll("dot")
     .data(data)
@@ -75,7 +80,7 @@ export const SvgD3ScatterChart = (props: IProps) => {
       .attr("cx", d => xScale((d as number[] | Date[])[0]) )
       .attr("cy", d => yScale((d as number[] | Date[])[1]) )
       .attr("r", 1.5)
-      .style("fill", "#448878");
+      .style("fill", (color as any));
 
   return div.toReact();
 };
