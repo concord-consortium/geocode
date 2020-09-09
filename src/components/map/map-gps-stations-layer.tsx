@@ -7,7 +7,7 @@ import { LatLng } from "leaflet";
 
 interface IProps {
   map: LeafletMap | null;
-  mapScale: number | null;
+  mapScale: number;
 }
 
 interface IState {}
@@ -17,7 +17,7 @@ interface IState {}
 export class MapGPSStationsLayer extends BaseComponent<IProps, IState> {
 
   public render() {
-    const { map, mapScale  } = this.props;
+    const { map, mapScale } = this.props;
     if (!map) return;
 
     const { visibleGPSStations, selectedGPSStationId } = this.stores.seismicSimulation;
@@ -45,7 +45,9 @@ export class MapGPSStationsLayer extends BaseComponent<IProps, IState> {
     });
 
     const velocityArrows = visibleGPSStations.map(stat => {
-      const arrowScale = mapScale ? (20 - mapScale) : 5;
+      // map scale is in meters per pixel, so use this as the basis for consistent length arrows at different zooms
+      const arrowScale = mapScale ? mapScale / 50 : 10;
+
       const startLatLng = new LatLng(stat.latitude, stat.longitude);
       const magnitude = Math.sqrt((stat.eastVelocity * stat.eastVelocity) + (stat.northVelocity * stat.northVelocity))
         * arrowScale;
