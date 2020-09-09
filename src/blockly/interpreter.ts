@@ -3,7 +3,7 @@ import { BlocklyController } from "./blockly-controller";
 import { TephraSimulationModelType } from "../stores/tephra-simulation-store";
 import { IBlocklyWorkspace } from "../interfaces";
 import { IStore } from "../stores/stores";
-import { Datasets, Dataset, Filter } from "../stores/data-sets";
+import { Datasets, Dataset, Filter, ProtoTimeRange, TimeRange } from "../stores/data-sets";
 import { StationData } from "../strain";
 const Interpreter = require("js-interpreter");
 
@@ -289,6 +289,33 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
 
     addFunc("showGPSStations", (stations: StationData[]) => {
       seismicSimulation.showGPSStations(stations);
+    });
+
+    addFunc("graphGPSPositions", (params: {station: string, timeRange: ProtoTimeRange}) => {
+      const { station, timeRange } = params;
+      const fromDate = timeRange.from ? new Date(timeRange.from) : undefined;
+      const toDate = timeRange.to ? new Date(timeRange.to) : undefined;
+
+      if (timeRange.from && isNaN(fromDate as any)) {
+        blocklyController.throwError("The date in the 'Start' field could not be parsed.\nPlease enter a valid date or a year.");
+        return;
+      }
+      if (timeRange.to && isNaN(toDate as any)) {
+        blocklyController.throwError("The date in the 'End' field could not be parsed.\nPlease enter a valid date or a year.");
+        return;
+      }
+      if (toDate && timeRange.duration && timeRange.duration > 0) {
+        blocklyController.throwError("You can't include both an End date and a Duration. Please pick only one.");
+        return;
+      }
+
+      const validTimeRange: TimeRange = {
+        from: fromDate,
+        to: toDate,
+        duration: timeRange.duration ? timeRange.duration : undefined,
+      };
+      const dataset = Datasets.getGPSPositionTimeData(station, validTimeRange);
+      chartsStore.addArbitraryChart(dataset, "East (mm)", "North (mm)");
     });
 
     /** ==== Utility methods ==== */
