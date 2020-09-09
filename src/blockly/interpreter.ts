@@ -122,6 +122,8 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       tephraSimulation.erupt();
     });
 
+    interface WindDataCase {speed: number; direction: number; }
+
     // Returns tephra thickness at a specific location, given by a samples collection, with various inputs
     addFunc("computeTephra", (params: {location: string, windSamples?: Dataset, vei?: number}) => {
 
@@ -145,7 +147,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       let windSpeed = 0;
       let windDirection = 0;
       if (windSamples && windSamples.length > 0) {
-        const windSample = Datasets.getRandomSampleWithReplacement(windSamples, 1)[0];
+        const windSample = (Datasets.getRandomSampleWithReplacement(windSamples, 1)[0] as any) as WindDataCase;
         windSpeed = windSample.speed;
         // Wind data is stored using direction to, but we use direction from. Need to convert.
         windDirection = windSample.direction < 180 ? windSample.direction + 180 : windSample.direction - 180;
@@ -196,7 +198,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
         return;
       }
       // Wind data is stored using direction to, but we use direction from. Need to convert.
-      const sampleData = Datasets.getRandomSampleWithReplacement(dataset, 1)[0];
+      const sampleData = (Datasets.getRandomSampleWithReplacement(dataset, 1)[0] as any) as WindDataCase;
       sampleData.direction = sampleData.direction < 180 ? sampleData.direction + 180 : sampleData.direction - 180;
       return {
         data: sampleData
