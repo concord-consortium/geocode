@@ -335,6 +335,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
                 key="gps-layer"
                 map={this.state.mapLeafletRef}
                 mapScale={this.getMapScale()}
+                getPointFromLatLng={this.getScreenPointFromLatLng}
               />,
               (isSelectingLatlng && <LatLngDrawLayer
                 ref={this.latlngRef}
@@ -455,5 +456,12 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       const meterPerPixel = maxMeters / x;
       return meterPerPixel;
     } else return 100;
+  }
+
+  private getScreenPointFromLatLng = (latLng: L.LatLngExpression) => {
+    if (this.map.current) {
+      const map = this.map.current.leafletElement;
+      return map.latLngToLayerPoint(latLng);
+    }
   }
 }
