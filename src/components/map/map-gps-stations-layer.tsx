@@ -85,9 +85,9 @@ export class MapGPSStationsLayer extends BaseComponent<IProps, IState> {
       // apply the same scale constant as used to draw arrows
       const adjustedScale = mapScale / mapScaleAdjust;
       // our stations move in a rough range of 0 to 50 mm/year
-      // let's do the calculation for an arrow for one selected station
-      // using CRU1 (it's an easy-to-see station on an island)
-      const stat = allGPSStations.find(s => s.id === "CRU1")!;
+      // let's do the calculation for an arrow for one selected station.
+      // QHTP moves at 25mm/year, a reasonable number for scale
+      const stat = allGPSStations.find(s => s.id === "QHTP")!;
       const velMag = Math.sqrt((stat.eastVelocity * stat.eastVelocity) +
         (stat.northVelocity * stat.northVelocity));
 
@@ -99,7 +99,7 @@ export class MapGPSStationsLayer extends BaseComponent<IProps, IState> {
       const endLng = stat.longitude + (magnitude * Math.sin(dir));
       const endLatLng = new LatLng(endLat, endLng);
 
-      // Need to call back to the container component to get screen point information
+      // Need to call back to the containing component to get screen point information
       const p1 = getPointFromLatLng(startLatLng);
       const p2 = getPointFromLatLng(endLatLng);
       const pixelDistance = p1.distanceTo(p2);
@@ -107,7 +107,7 @@ export class MapGPSStationsLayer extends BaseComponent<IProps, IState> {
       const arrowStyle = {
         width: pixelDistance
       };
-      return <div className="arrow-scale" style={arrowStyle}>{Math.trunc(velMag * 1000)} mm / year</div>;
+      return <div className="arrow-scale" style={arrowStyle}>{Math.round(velMag * 1000)}mm/year</div>;
     };
 
     return (
