@@ -110,9 +110,9 @@
         "initialZoom": 8
     },
     "Seismic CA": {
-        "topLeftLat": 41.993157,
+        "topLeftLat": 42.5,
         "topLeftLng": -124.542844,
-        "bottomRightLat": 32.735104,
+        "bottomRightLat": 31.5,
         "bottomRightLng": -114.470318,
         "minZoom": 6,
         "maxZoom": 12,
