@@ -13,6 +13,7 @@ export const SeismicSimulationStore = types
     scenario: "Seismic CA",
     visibleGPSStationIds: types.array(types.string),      // by id
     selectedGPSStationId: types.maybe(types.string),
+    showVelocityArrows: false
   })
   .actions((self) => ({
     showGPSStations(stations: StationData[]) {
@@ -21,6 +22,9 @@ export const SeismicSimulationStore = types
     },
     selectGPSStation(id: string) {
       self.selectedGPSStationId = id;
+    },
+    setShowVelocityArrows(show: boolean) {
+      self.showVelocityArrows = show;
     }
   }))
   .views((self) => ({

@@ -289,6 +289,10 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       seismicSimulation.showGPSStations(stations);
     });
 
+    addFunc("showGPSStationVelocities", (show: boolean) => {
+      seismicSimulation.setShowVelocityArrows(show);
+    });
+
     /** ==== Utility methods ==== */
 
     addFunc("log", (params) => {

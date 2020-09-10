@@ -20,7 +20,7 @@ export class MapGPSStationsLayer extends BaseComponent<IProps, IState> {
     const { map, mapScale } = this.props;
     if (!map) return;
 
-    const { visibleGPSStations, selectedGPSStationId } = this.stores.seismicSimulation;
+    const { visibleGPSStations, selectedGPSStationId, showVelocityArrows } = this.stores.seismicSimulation;
 
     const stroke = "#9c9c9c";
     const selectedStroke = "#777";
@@ -69,11 +69,11 @@ export class MapGPSStationsLayer extends BaseComponent<IProps, IState> {
       return <Polyline positions={[startLatLng, endLatLng, a1LatLng, endLatLng, a2LatLng]} key={stat.id}
         weight={1} />;
     });
-    console.log(mapScale);
+
     return (
       <LayerGroup map={map}>
         {markers}
-        {velocityArrows}
+        {showVelocityArrows && velocityArrows}
       </LayerGroup>
     );
   }
