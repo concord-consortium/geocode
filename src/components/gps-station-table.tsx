@@ -5,7 +5,8 @@ import { BaseComponent, IBaseProps } from "./base";
 import { round } from "../utilities/widget";
 
 const StyledTable = styled.table`
-  background-color: cyan;
+  background-color: #DDEDFF;
+  color: #434343;
   margin-top: 5px;
   margin-left: 28px;
   border-spacing: 0;

@@ -21,9 +21,9 @@ export class MapGPSStationsLayer extends BaseComponent<IProps, IState> {
     const { visibleGPSStations, selectedGPSStationId } = this.stores.seismicSimulation;
 
     const stroke = "#9c9c9c";
-    const selectedStroke = "#777";
+    const selectedStroke = "#434343";
     const fill = "#98e643";
-    const selectedFill = "#43e6d8";
+    const selectedFill = "#DDEDFF";
 
     const markers = visibleGPSStations.map(stat => {
       const selected = stat.id! === selectedGPSStationId;
@@ -31,7 +31,7 @@ export class MapGPSStationsLayer extends BaseComponent<IProps, IState> {
         <CircleMarker key={stat.id}
           title={stat.id}
           center={[stat.latitude, stat.longitude]}
-          radius={7}
+          radius={selected ? 9 : 7}
           weight={selected ? 3 : 2}
           color={selected ? selectedStroke : stroke}
           fillColor={selected ? selectedFill : fill}
