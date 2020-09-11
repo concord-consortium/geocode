@@ -33,11 +33,11 @@ Blockly.Blocks['graph_gps_position'] = {
           ["CRAM", "CRAM"],
       ]), 'station');
     this.appendValueInput('from')
-      .setCheck(['String'])
+      .setCheck(['String', 'Number'])
       .setAlign(Blockly.ALIGN_RIGHT)
       .appendField('Start')
     this.appendValueInput('to')
-      .setCheck(['String'])
+      .setCheck(['String', 'Number'])
       .setAlign(Blockly.ALIGN_RIGHT)
       .appendField('End')
     this.appendValueInput('duration')
@@ -54,9 +54,16 @@ Blockly.Blocks['graph_gps_position'] = {
 }
 Blockly.JavaScript['graph_gps_position'] = function (block) {
   var value_station = block.getFieldValue('station');
-  var value_from = Blockly.JavaScript.valueToCode(block, 'from', Blockly.JavaScript.ORDER_ATOMIC).replace(/\'/g, "") || "";
-  var value_to = Blockly.JavaScript.valueToCode(block, 'to', Blockly.JavaScript.ORDER_ATOMIC).replace(/\'/g, "") || "";
+  var value_from = Blockly.JavaScript.valueToCode(block, 'from', Blockly.JavaScript.ORDER_ATOMIC) || "";
+  var value_to = Blockly.JavaScript.valueToCode(block, 'to', Blockly.JavaScript.ORDER_ATOMIC) || "";
   var raw_duration = Blockly.JavaScript.valueToCode(block, 'duration', Blockly.JavaScript.ORDER_ATOMIC);
+
+  if (typeof value_from === "number") {
+    value_from = "" + value_from;
+  }
+  if (typeof value_to === "number") {
+    value_to = "" + value_to;
+  }
   if (typeof raw_duration === "string") {
     raw_duration = parseInt(raw_duration.replace(/\'/g, ""));
   }
