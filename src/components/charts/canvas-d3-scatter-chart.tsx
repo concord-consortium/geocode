@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as d3 from "d3";
 import { ChartType } from "../../stores/charts-store";
+import { addFadeLegend } from "./svg-d3-scatter-chart";
 
 type Scale = d3.ScaleLinear<number, number> | d3.ScaleTime<number, number>;
 
@@ -52,7 +53,7 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
     if (!this.canvasRef.current || !this.svgRef.current) return;
 
     const { width, height, chart } = this.props;
-    const { data, xAxisLabel, yAxisLabel } = chart;
+    const { data, xAxisLabel, yAxisLabel, fadeIn } = chart;
 
     const margin = {top: 15, right: 20, bottom: 43, left: 50};
     const canvasPadding = 3;      // extend canvas slightly beyond axes
@@ -118,15 +119,34 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
 
     const ctx = this.canvasRef.current.getContext("2d")!;
 
-    data.forEach((d: number[] | Date[]) => {
+    const colorLerp = (d3.scaleLinear().domain([0, data.length]) as any).range(["white", "#448878"]);
+
+    data.forEach((d: number[] | Date[], i) => {
       ctx.beginPath();
       ctx.fillStyle = "#448878";
+
+      if (!fadeIn) {
+        ctx.fillStyle = "#448878";
+      } else {
+        ctx.fillStyle = colorLerp(i);
+      }
+
       const px = xScale(d[0]) + canvasPadding;
       const py = yScale(d[1]) + canvasPadding;
 
       ctx.arc(px, py, 1.5, 0, 2 * Math.PI, true);
       ctx.fill();
     });
+
+    if (fadeIn) {
+      const svg = d3.select(this.svgRef.current).append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      addFadeLegend(svg, data, chartWidth, margin);
+    }
   }
 
 }

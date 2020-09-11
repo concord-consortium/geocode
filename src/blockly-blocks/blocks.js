@@ -29,3 +29,4 @@ import "./tephra/block-create-add-to-sample-collection";
 import "./tephra/block-calculate-tephra-vei-wind";
 import "./tephra/block-risk-level";
 import "./seismic/block-seismic-gps-stations";
+import "./seismic/block-seismic-graph-gps-position";
