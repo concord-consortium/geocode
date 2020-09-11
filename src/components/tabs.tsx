@@ -44,7 +44,8 @@ enum RightSectionTypes {
   CONDITIONS = "conditions",
   CROSS_SECTION = "crossSection",
   MONTE_CARLO = "monteCarlo",
-  DATA = "data"
+  DATA = "data",
+  DEFORMATION = "deformation"
 }
 type RightTabInfo = {
   [tab in RightSectionTypes]: {
@@ -79,6 +80,12 @@ const kRightTabInfo: RightTabInfo = {
     backgroundColor: "#e6f2e4",
     hoverBackgroundColor: "#dae6d7",
   },
+  deformation: {
+    name: "Deformation",
+    index: -1,
+    backgroundColor: "#cee6c9",
+    hoverBackgroundColor: "#c3dabd"
+  }
 };
 
 interface TabBackProps {

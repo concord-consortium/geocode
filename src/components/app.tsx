@@ -187,6 +187,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         showCrossSection,
         showData,
         showMonteCarlo,
+        showDeformation,
         showSpeedControls,
         speed,
         hideBlocklyToolbox,
@@ -247,12 +248,14 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     ? (showMonteCarlo
         ? kRightTabInfo.monteCarlo.index + 1 :
         (showCrossSection ? kRightTabInfo.crossSection.index + 1 : kRightTabInfo.conditions.index + 1))
-    : -1;
+      : -1;
+    kRightTabInfo.deformation.index = showDeformation ? kRightTabInfo.data.index + 1 : -1;
     const enabledRightTabTypes = [];
     if (showConditions)   { enabledRightTabTypes.push(RightSectionTypes.CONDITIONS); }
     if (showCrossSection) { enabledRightTabTypes.push(RightSectionTypes.CROSS_SECTION); }
     if (showMonteCarlo)   { enabledRightTabTypes.push(RightSectionTypes.MONTE_CARLO); }
     if (showData)         { enabledRightTabTypes.push(RightSectionTypes.DATA); }
+    if (showDeformation)  { enabledRightTabTypes.push(RightSectionTypes.DEFORMATION); }
 
     const currentTabType = enabledTabTypes[tabIndex || 0];
     const currentRightTabType = enabledRightTabTypes[rightTabIndex || 0];
@@ -458,6 +461,18 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 </div>
               </TabPanel>
             }
+            {
+              showDeformation &&
+              <TabPanel
+                width={`${tabWidth}px`}
+                tabcolor={this.getRightTabColor(RightSectionTypes.DEFORMATION)}
+                rightpanel={"true"}
+                data-test={this.getRightTabName(RightSectionTypes.DEFORMATION) + "-panel"}
+              >
+                <div>Placeholder
+                </div>
+              </TabPanel>
+            }
             <RightTabBack
               width={tabWidth}
               backgroundcolor={this.getRightTabColor(currentRightTabType)}
@@ -511,6 +526,18 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                       data-test={this.getRightTabName(RightSectionTypes.DATA) + "-tab"}
                     >
                       {this.getRightTabName(RightSectionTypes.DATA)}
+                    </BottomTab>
+                  }
+                  { showDeformation &&
+                    <BottomTab
+                      selected={rightTabIndex === kRightTabInfo.deformation.index}
+                      leftofselected={rightTabIndex === (kRightTabInfo.deformation.index + 1) ? "true" : undefined}
+                      rightofselected={rightTabIndex === (kRightTabInfo.deformation.index - 1) ? "true" : undefined}
+                      backgroundcolor={this.getRightTabColor(RightSectionTypes.DEFORMATION)}
+                      backgroundhovercolor={this.getRightTabHoverColor(RightSectionTypes.DEFORMATION)}
+                      data-test={this.getRightTabName(RightSectionTypes.DEFORMATION) + "-tab"}
+                    >
+                      {this.getRightTabName(RightSectionTypes.DEFORMATION)}
                     </BottomTab>
                   }
                 </TabList>

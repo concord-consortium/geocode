@@ -12,6 +12,7 @@ const UIStore = types.model("UI", {
   showCrossSection: false,
   showMonteCarlo: true,
   showData: true,
+  showDeformation: false,
   // other ui
   showSpeedControls: false,
   showBarHistogram: false,
