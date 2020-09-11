@@ -67,7 +67,7 @@ export class MapGPSStationsLayer extends BaseComponent<IProps, IState> {
       // Stations move at a rate of meters per year, which is a small number.
       // so we multiply by the map scale
       const magnitude = velMag * arrowScale;
-      const dir = Math.atan(stat.northVelocity / stat.eastVelocity);
+      const dir = Math.atan2(stat.eastVelocity, stat.northVelocity);
 
       // we're working over a small area, so ignoring curvature of the Earth
       const endLat = startLatLng.lat + (magnitude * Math.cos(dir));
@@ -75,13 +75,14 @@ export class MapGPSStationsLayer extends BaseComponent<IProps, IState> {
       const endLatLng = new LatLng(endLat, endLng);
 
       // arrowhead
-      const arrowBaseMag = magnitude * 0.8;
-      const a1Lat = startLatLng.lat + (arrowBaseMag * Math.cos(dir * 0.9));
-      const a1Lng = startLatLng.lng + (arrowBaseMag * Math.sin(dir * 0.9));
+      const arrowBaseMag = Math.min(0.2, magnitude * 0.4);
+
+      const a1Lat = endLatLng.lat + (arrowBaseMag * -Math.cos(dir - 0.3));
+      const a1Lng = endLatLng.lng + (arrowBaseMag * -Math.sin(dir - 0.3));
       const a1LatLng = new LatLng(a1Lat, a1Lng);
 
-      const a2Lat = startLatLng.lat + (arrowBaseMag * Math.cos(dir * 1.1));
-      const a2Lng = startLatLng.lng + (arrowBaseMag * Math.sin(dir * 1.1));
+      const a2Lat = endLatLng.lat + (arrowBaseMag * -Math.cos(dir + 0.3));
+      const a2Lng = endLatLng.lng + (arrowBaseMag * -Math.sin(dir + 0.3));
       const a2LatLng = new LatLng(a2Lat, a2Lng);
 
       return <Polyline positions={[startLatLng, endLatLng, a1LatLng, endLatLng, a2LatLng]} key={stat.id}
@@ -93,18 +94,10 @@ export class MapGPSStationsLayer extends BaseComponent<IProps, IState> {
       // apply the same scale constant as used to draw arrows
       const adjustedScale = mapScale / mapScaleAdjust;
       // our stations move in a rough range of 0 to 50 mm/year
-      // let's do the calculation for an arrow for one selected station.
-      // QHTP moves at 25mm/year, a reasonable number for scale
-      const stat = allGPSStations.find(s => s.id === "QHTP")!;
-      const velMag = Math.sqrt((stat.eastVelocity  ** 2) + (stat.northVelocity ** 2));
-
+      const velMag = 0.025; // 25m mm/year
       const magnitude = velMag * adjustedScale;
-      const dir = Math.atan(stat.northVelocity / stat.eastVelocity);
-      const startLatLng = new LatLng(stat.latitude, stat.longitude);
-      // get the end point for the arrow we use for this station
-      const endLat = stat.latitude + (magnitude * Math.cos(dir));
-      const endLng = stat.longitude + (magnitude * Math.sin(dir));
-      const endLatLng = new LatLng(endLat, endLng);
+      const startLatLng = new LatLng(0, 0);
+      const endLatLng = new LatLng(0, magnitude);
 
       // Need to call back to the containing component to get screen point information
       const p1 = getPointFromLatLng(startLatLng);
