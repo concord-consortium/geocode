@@ -4,6 +4,7 @@
     <block type="seismic_all_gps_stations"></block>
     <block type="seismic_sample_data"></block>
     <block type="seismic_filter_data"></block>
+    <block type="graph_gps_position"></block>
   </category>
 
   <category name="Logic" colour="%{BKY_LOGIC_HUE}">

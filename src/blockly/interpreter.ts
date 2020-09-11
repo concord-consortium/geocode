@@ -3,7 +3,7 @@ import { BlocklyController } from "./blockly-controller";
 import { TephraSimulationModelType } from "../stores/tephra-simulation-store";
 import { IBlocklyWorkspace } from "../interfaces";
 import { IStore } from "../stores/stores";
-import { Datasets, Dataset, Filter } from "../stores/data-sets";
+import { Datasets, Dataset, Filter, ProtoTimeRange, TimeRange } from "../stores/data-sets";
 import { StationData } from "../strain";
 const Interpreter = require("js-interpreter");
 
@@ -122,6 +122,8 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       tephraSimulation.erupt();
     });
 
+    interface WindDataCase {speed: number; direction: number; }
+
     // Returns tephra thickness at a specific location, given by a samples collection, with various inputs
     addFunc("computeTephra", (params: {location: string, windSamples?: Dataset, vei?: number}) => {
 
@@ -145,7 +147,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       let windSpeed = 0;
       let windDirection = 0;
       if (windSamples && windSamples.length > 0) {
-        const windSample = Datasets.getRandomSampleWithReplacement(windSamples, 1)[0];
+        const windSample = (Datasets.getRandomSampleWithReplacement(windSamples, 1)[0] as any) as WindDataCase;
         windSpeed = windSample.speed;
         // Wind data is stored using direction to, but we use direction from. Need to convert.
         windDirection = windSample.direction < 180 ? windSample.direction + 180 : windSample.direction - 180;
@@ -196,7 +198,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
         return;
       }
       // Wind data is stored using direction to, but we use direction from. Need to convert.
-      const sampleData = Datasets.getRandomSampleWithReplacement(dataset, 1)[0];
+      const sampleData = (Datasets.getRandomSampleWithReplacement(dataset, 1)[0] as any) as WindDataCase;
       sampleData.direction = sampleData.direction < 180 ? sampleData.direction + 180 : sampleData.direction - 180;
       return {
         data: sampleData
@@ -291,6 +293,33 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
 
     addFunc("showGPSStationVelocities", (show: boolean) => {
       seismicSimulation.setShowVelocityArrows(show);
+    });
+
+    addFunc("graphGPSPositions", (params: {station: string, timeRange: ProtoTimeRange}) => {
+      const { station, timeRange } = params;
+      const fromDate = timeRange.from ? new Date(timeRange.from) : undefined;
+      const toDate = timeRange.to ? new Date(timeRange.to) : undefined;
+
+      if (timeRange.from && isNaN(fromDate as any)) {
+        blocklyController.throwError("The date in the 'Start' field could not be parsed.\nPlease enter a valid date or a year.");
+        return;
+      }
+      if (timeRange.to && isNaN(toDate as any)) {
+        blocklyController.throwError("The date in the 'End' field could not be parsed.\nPlease enter a valid date or a year.");
+        return;
+      }
+      if (fromDate && toDate && timeRange.duration && timeRange.duration > 0) {
+        blocklyController.throwError(`You can't include Start and End dates as well as a Duration.\nPlease use at most two fields.`);
+        return;
+      }
+
+      const validTimeRange: TimeRange = {
+        from: fromDate,
+        to: toDate,
+        duration: timeRange.duration ? timeRange.duration : undefined,
+      };
+      const dataset = Datasets.getGPSPositionTimeData(station, validTimeRange);
+      chartsStore.addArbitraryChart(dataset, "East (mm)", "North (mm)", `${params.station} Position over Time`, true);
     });
 
     /** ==== Utility methods ==== */

@@ -4,6 +4,7 @@ import { Map as LeafletMap, LayerGroup, Marker, CircleMarker, Popup, MarkerProps
 import { BaseComponent } from "../base";
 import { StationData } from "../../strain";
 import { LatLng } from "leaflet";
+import RawPositionTimeData from "../../assets/data/seismic/position-time-data";
 
 interface IProps {
   map: LeafletMap | null;
@@ -24,21 +25,28 @@ export class MapGPSStationsLayer extends BaseComponent<IProps, IState> {
     const { visibleGPSStations, selectedGPSStationId, showVelocityArrows, allGPSStations }
       = this.stores.seismicSimulation;
 
-    const stroke = "#9c9c9c";
-    const selectedStroke = "#777";
-    const fill = "#98e643";
-    const selectedFill = "#43e6d8";
+    // stations for which we have position history
+    const positionStations = Object.keys(RawPositionTimeData);
 
-    const markers = visibleGPSStations.map(stat => {
-      const selected = stat.id! === selectedGPSStationId;
+    const stroke = "#9c9c9c";
+    const selectedStroke = "#434343";
+    const color = (selected: boolean, isPosition: boolean) =>
+      selected ?
+        isPosition ? "#95c9ff" : "#DDEDFF" :
+        isPosition ? "#37cfff" : "#98E643";
+
+    const stationMarker = ((stat: StationData) => {
+      const selected = stat.id === selectedGPSStationId;
+      const isPosition = positionStations.includes(stat.id);
+      const fill = color(selected, isPosition);
       return (
         <CircleMarker key={stat.id}
           title={stat.id}
           center={[stat.latitude, stat.longitude]}
-          radius={7}
+          radius={selected ? 9 : 7}
           weight={selected ? 3 : 2}
           color={selected ? selectedStroke : stroke}
-          fillColor={selected ? selectedFill : fill}
+          fillColor={fill}
           fillOpacity={1}
           // @ts-ignore
           onclick={this.handleMarkerClicked}
@@ -109,9 +117,14 @@ export class MapGPSStationsLayer extends BaseComponent<IProps, IState> {
       return <div className="arrow-scale" style={arrowStyle}>{Math.round(velMag * 1000)}mm/year</div>;
     };
 
+    // need to manually set z-index via different groups, as CircleMarker doesn't support zIndexOffet
+    const markers = visibleGPSStations.filter(stat => stat.id! !== selectedGPSStationId).map(stationMarker);
+    const selectedMarker = visibleGPSStations.filter(stat => stat.id! === selectedGPSStationId).map(stationMarker);
+
     return (
       <LayerGroup map={map}>
         {markers}
+        {selectedMarker}
         {showVelocityArrows && velocityArrows}
         {showVelocityArrows && velocityArrowScale()}
       </LayerGroup>
