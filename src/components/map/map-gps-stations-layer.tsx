@@ -25,7 +25,7 @@ export class MapGPSStationsLayer extends BaseComponent<IProps, IState> {
     const fill = "#98e643";
     const selectedFill = "#DDEDFF";
 
-    const markers = visibleGPSStations.map(stat => {
+    const stationMarker = ((stat: StationData) => {
       const selected = stat.id! === selectedGPSStationId;
       return (
         <CircleMarker key={stat.id}
@@ -42,9 +42,14 @@ export class MapGPSStationsLayer extends BaseComponent<IProps, IState> {
       );
     });
 
+    // need to manually set z-index via different groups, as CircleMarker doesn't support zIndexOffet
+    const markers = visibleGPSStations.filter(stat => stat.id! !== selectedGPSStationId).map(stationMarker);
+    const selectedMarker = visibleGPSStations.filter(stat => stat.id! === selectedGPSStationId).map(stationMarker);
+
     return (
       <LayerGroup map={map}>
         { markers }
+        { selectedMarker }
       </LayerGroup>
     );
   }
