@@ -2,8 +2,8 @@ import { types } from "mobx-state-tree";
 import { parseOfflineUNAVCOData } from "../utilities/unavco-data";
 import { StationData } from "../strain";
 
-const minLat = 31;
-const maxLat = 40;
+const minLat = 32;
+const maxLat = 42;
 const minLng = -127;
 const maxLng = -115;
 const stationData = parseOfflineUNAVCOData(minLat, maxLat, minLng, maxLng);

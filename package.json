@@ -43,10 +43,8 @@
     "lint:build": "tslint -c tslint-build.json 'src/**/*.{ts,tsx}'",
     "lint:fix": "tslint -c tslint-build.json --fix 'src/**/*.{ts,tsx}'",
     "lint:unused": "tsc --noUnusedLocals --project .",
-
     "fetch-data:velocity": "node src/assets/data/seismic/scripts/fetch-velocity-data.js",
     "fetch-data:position": "node src/assets/data/seismic/scripts/fetch-position-data.js",
-
     "test": "jest",
     "test:all": "npm-run-all build test start",
     "test:coverage": "jest --coverage",
@@ -148,7 +146,7 @@
     "immutable": "^3.8.2",
     "js-beautify": "^1.9.1",
     "js-interpreter": "^1.4.6",
-    "leaflet": "^1.5.1",
+    "leaflet": "^1.7.1",
     "leaflet-kmz": "^0.3.8",
     "less-loader": "^5.0.0",
     "lodash": "^4.17.20",

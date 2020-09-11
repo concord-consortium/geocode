@@ -61,6 +61,10 @@ const Row = styled.div`
   flex-direction: row;
 `;
 
+const CenteredRow = styled(Row)`
+  justify-content: center;
+`;
+
 const BottomBar = styled.div`
   display: flex;
   width: 100%;
@@ -392,12 +396,12 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                   }
                   {
                     !isTephra &&
-                    <div>
+                    <CenteredRow>
                       {
                         selectedGPSStation &&
                         <GPSStationTable />
                       }
-                    </div>
+                    </CenteredRow>
                   }
                 </Simulation>
               </TabPanel>

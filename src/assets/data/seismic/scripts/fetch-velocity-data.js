@@ -5,6 +5,11 @@ const host = "data-out.unavco.org";
 const dataPath = "/pub/products/velocity/cwu.final_nam14.vel";
 const writeFile = "src/assets/data/seismic/cwu.final_nam14.vel";
 
+const minLat = 32;
+const maxLat = 42;
+const minLng = -127;
+const maxLng = -115;
+
 var client = new Client();
 client.on('ready', function() {
   console.log(" connected to data source");
@@ -43,6 +48,11 @@ function cleanRawData() {
         const stationId = row.substr(0, 7);
         if (foundStations.includes(stationId)) return;
         foundStations.push(stationId);
+
+        const data = row.trim().split(/\s+/);
+        const lat = data[7];
+        const long = data[8] - 360;
+        if (lat < minLat || lat > maxLat || long < minLng || long > maxLng) return;
       }
       cleanedData.push(row);
     });
