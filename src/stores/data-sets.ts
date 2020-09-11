@@ -96,7 +96,11 @@ export const Datasets = {
         dataSet = dataSet.filter(d => (d.Date as Date) <= timeRange.to!);
       }
       if (timeRange.duration) {
-        dataSet = dataSet.splice(0, timeRange.duration);
+        if (timeRange.to) {
+          dataSet = dataSet.splice(dataSet.length - timeRange.duration, timeRange.duration);
+        } else {
+          dataSet = dataSet.splice(0, timeRange.duration);
+        }
       }
     }
     return dataSet;

@@ -304,8 +304,8 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
         blocklyController.throwError("The date in the 'End' field could not be parsed.\nPlease enter a valid date or a year.");
         return;
       }
-      if (toDate && timeRange.duration && timeRange.duration > 0) {
-        blocklyController.throwError("You can't include both an End date and a Duration. Please pick only one.");
+      if (fromDate && toDate && timeRange.duration && timeRange.duration > 0) {
+        blocklyController.throwError(`You can't include Start and End dates as well as a Duration.\nPlease use at most two fields.`);
         return;
       }
 
