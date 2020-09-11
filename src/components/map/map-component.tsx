@@ -450,7 +450,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       // Get the y,x dimensions of the map
       const y = map.getSize().y;
       const x = map.getSize().x;
-      // calculate the distance the one side of the map to the other using the haversine formula
+      // calculate the distance from one side of the map to the other using the haversine formula
       const maxMeters = map.containerPointToLatLng([0, y]).distanceTo(map.containerPointToLatLng([x, y]));
       // calculate how many meters each pixel represents
       const meterPerPixel = maxMeters / x;
