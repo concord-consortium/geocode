@@ -3,6 +3,7 @@ import { inject, observer } from "mobx-react";
 import { Map as LeafletMap, LayerGroup, Marker, CircleMarker, Popup, MarkerProps } from "react-leaflet";
 import { BaseComponent } from "../base";
 import { StationData } from "../../strain";
+import RawPositionTimeData from "../../assets/data/seismic/position-time-data";
 
 interface IProps {
   map: LeafletMap | null;
@@ -20,13 +21,20 @@ export class MapGPSStationsLayer extends BaseComponent<IProps, IState> {
 
     const { visibleGPSStations, selectedGPSStationId } = this.stores.seismicSimulation;
 
+    // stations for which we have position history
+    const positionStations = Object.keys(RawPositionTimeData);
+
     const stroke = "#9c9c9c";
     const selectedStroke = "#434343";
-    const fill = "#98e643";
-    const selectedFill = "#DDEDFF";
+    const color = (selected: boolean, isPosition: boolean) =>
+      selected ?
+        isPosition ? "#95c9ff" : "#DDEDFF" :
+        isPosition ? "#37cfff" : "#98E643";
 
     const stationMarker = ((stat: StationData) => {
-      const selected = stat.id! === selectedGPSStationId;
+      const selected = stat.id === selectedGPSStationId;
+      const isPosition = positionStations.includes(stat.id);
+      const fill = color(selected, isPosition);
       return (
         <CircleMarker key={stat.id}
           title={stat.id}
@@ -34,7 +42,7 @@ export class MapGPSStationsLayer extends BaseComponent<IProps, IState> {
           radius={selected ? 9 : 7}
           weight={selected ? 3 : 2}
           color={selected ? selectedStroke : stroke}
-          fillColor={selected ? selectedFill : fill}
+          fillColor={fill}
           fillOpacity={1}
           // @ts-ignore
           onclick={this.handleMarkerClicked}
