@@ -54,7 +54,7 @@ export class MapGPSStationsLayer extends BaseComponent<IProps, IState> {
 
       const startLatLng = new LatLng(stat.latitude, stat.longitude);
       // calculate the magnitude of the two component velocity values
-      const velMag = Math.sqrt((stat.eastVelocity * stat.eastVelocity) + (stat.northVelocity * stat.northVelocity));
+      const velMag = Math.sqrt((stat.eastVelocity ** 2) + (stat.northVelocity ** 2));
       // Adjust the scale of the magnitude to improve visibility
       // Stations move at a rate of meters per year, which is a small number.
       // so we multiply by the map scale
@@ -88,8 +88,7 @@ export class MapGPSStationsLayer extends BaseComponent<IProps, IState> {
       // let's do the calculation for an arrow for one selected station.
       // QHTP moves at 25mm/year, a reasonable number for scale
       const stat = allGPSStations.find(s => s.id === "QHTP")!;
-      const velMag = Math.sqrt((stat.eastVelocity * stat.eastVelocity) +
-        (stat.northVelocity * stat.northVelocity));
+      const velMag = Math.sqrt((stat.eastVelocity  ** 2) + (stat.northVelocity ** 2));
 
       const magnitude = velMag * adjustedScale;
       const dir = Math.atan(stat.northVelocity / stat.eastVelocity);
