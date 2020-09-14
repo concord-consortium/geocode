@@ -22,7 +22,7 @@ const AuthoringMenu: React.SFC<IProps> = (props) => {
       <DatButton label="Model options" onClick={props.toggleShowOptions}/>
       { props.expandOptionsDialog &&
         <DatSelect path="unit.name" label="Unit"
-          options={["Tephra", "Seismic", "Deformation"]} key="unit" />
+          options={["Tephra", "Seismic"]} key="unit" />
       }
       { (props.expandOptionsDialog && props.options.unit.name === "Tephra") &&
         [
@@ -75,25 +75,7 @@ const AuthoringMenu: React.SFC<IProps> = (props) => {
             <DatBoolean path="uiStore.showConditions" label="Show conditions?" key="showConditions" />
             <DatBoolean path="uiStore.showMonteCarlo" label="Show monte carlo?" key="showMonteCarlo" />
             <DatBoolean path="uiStore.showData" label="Show data?" key="showData" />
-          </DatFolder>
-        ]
-      }
-      { (props.expandOptionsDialog && props.options.unit.name === "Deformation") &&
-        [
-          <DatSelect path="blocklyStore.toolbox" label="Code toolbox"
-            options={Object.keys(BlocklyAuthoring.toolbox)} key="toolbox" />,
-          <DatSelect path="blocklyStore.initialCodeTitle" label="Initial code"
-            options={Object.keys(BlocklyAuthoring.code)} key="code" />,
-
-          <DatFolder title="Left Tabs" key="leftTabsFolder" closed={false}>
-            <DatBoolean path="uiStore.showBlocks" label="Show blocks?" key="showBlocks" />
-            <DatBoolean path="uiStore.showCode" label="Show code?" key="showCode" />
-            <DatBoolean path="uiStore.showControls" label="Show controls?" key="showControls" />
-          </DatFolder>,
-
-        <DatFolder title="Right Tabs" key="rightTabsFolder" closed={false}>
             <DatBoolean path="uiStore.showDeformation" label="Show deformation?" key="showDeformation" />
-            <DatBoolean path="uiStore.showData" label="Show data?" key="showData" />
           </DatFolder>
         ]
       }

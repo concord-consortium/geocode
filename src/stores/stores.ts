@@ -20,7 +20,7 @@ export interface IStore {
 }
 
 export interface IStoreish {
-  unit: {name: "Tephra" | "Seismic" | "Deformation"};
+  unit: {name: "Tephra" | "Seismic" };
   blocklyStore: any;
   tephraSimulation: any;
   seismicSimulation: any;
