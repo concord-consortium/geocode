@@ -291,6 +291,10 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       seismicSimulation.showGPSStations(stations);
     });
 
+    addFunc("showGPSStationVelocities", (show: boolean) => {
+      seismicSimulation.setShowVelocityArrows(show);
+    });
+
     addFunc("graphGPSPositions", (params: {station: string, timeRange: ProtoTimeRange}) => {
       const { station, timeRange } = params;
       const fromDate = timeRange.from ? new Date(timeRange.from) : undefined;

@@ -20,6 +20,11 @@ Blockly.Blocks['seismic_show_gps_stations'] = {
     this.appendValueInput('stations')
       .setCheck('GPS_Station')
       .appendField('Show GPS Stations')
+    this.appendDummyInput()
+      .setAlign(Blockly.ALIGN_RIGHT)
+      .appendField('Show station velocities')
+      .appendField(new Blockly.FieldCheckbox(true), 'velocities')
+    this.setInputsInline(false)
     this.setPreviousStatement(true, null)
     this.setNextStatement(true, null)
     this.setColour(230)
@@ -29,8 +34,9 @@ Blockly.Blocks['seismic_show_gps_stations'] = {
 }
 Blockly.JavaScript['seismic_show_gps_stations'] = function (block) {
   var value_stations = Blockly.JavaScript.valueToCode(block, 'stations', Blockly.JavaScript.ORDER_ATOMIC)
+  var value_velocities = block.getFieldValue('velocities') === "TRUE";
 
-  var code = `showGPSStations(${value_stations});\n`
+  var code = `showGPSStations(${value_stations});\nshowGPSStationVelocities(${value_velocities});\n`
   return code
 }
 
