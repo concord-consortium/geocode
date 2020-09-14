@@ -1,4 +1,7 @@
 import * as React from "react";
+import { inject, observer } from "mobx-react";
+import { BaseComponent } from "../base";
+import { IDisposer, onAction, onPatch } from "mobx-state-tree";
 
 interface IProps {
   width: number;
@@ -19,25 +22,25 @@ const backgroundColor = "#EEE";
 
 const lineSpacing = 35;
 
-export class DeformationModel extends React.Component<IProps> {
+@inject("stores")
+@observer
+export class DeformationModel extends BaseComponent<IProps, {}> {
 
   private canvasRef = React.createRef<HTMLCanvasElement>();
+  private disposer: IDisposer;
 
   public componentDidMount() {
     this.drawModel();
+    this.disposer = onAction(this.stores.seismicSimulation, this.drawModel);
   }
 
   public componentDidUpdate() {
-    if (this.canvasRef.current) {
-      // clear everything
-      const ctx = this.canvasRef.current.getContext("2d")!;
-      ctx.clearRect(0, 0, this.props.width, this.props.height);
-    }
-    this.drawModel();
+    this.redraw();
   }
 
   public render() {
     const { width, height } = this.props;
+
     canvasWidth = width - (canvasMargin.left * 2);
     canvasHeight = height - (canvasMargin.top * 2);
     const relativeStyle: React.CSSProperties = {position: "relative", width, height};
@@ -51,7 +54,16 @@ export class DeformationModel extends React.Component<IProps> {
     );
   }
 
-  private drawModel() {
+  private redraw() {
+    if (this.canvasRef.current) {
+      // clear everything
+      const ctx = this.canvasRef.current.getContext("2d")!;
+      ctx.clearRect(0, 0, this.props.width, this.props.height);
+    }
+    this.drawModel();
+  }
+
+  private drawModel = () => {
     if (!this.canvasRef.current) return;
 
     this.canvasRef.current.width = canvasWidth;
@@ -82,7 +94,7 @@ export class DeformationModel extends React.Component<IProps> {
     // start below model and go beyond in case lines curve into model
     const yBounds = [modelMargin.top - 10, modelMargin.top + this.modelWidth + 20];
     const xBounds = [modelMargin.left - 10, modelMargin.left + this.modelWidth + 20];
-    // horizontal lines
+    // horizontal point arrays
     for (let y = yBounds[0]; y < yBounds[1]; y += lineSpacing) {
       lines.push(this.generateYDisplacementLine(y, modelMargin.left));
     }
@@ -101,24 +113,30 @@ export class DeformationModel extends React.Component<IProps> {
   }
 
   private generateYDisplacementLine(yOrigin: number, xOffset: number) {
-    // simple sine wave for now
+
+    const { deformationModelStep: step } = this.stores.seismicSimulation;
+
+    // simple sine waves for now
     const steps = 300;
     const stepSize = this.modelWidth / steps;
     const points: Point[] = [];
     for (let x = 0; x < this.modelWidth; x += stepSize) {
-      const y = yOrigin + Math.sin(x / 10) * 10;
+      const y = yOrigin + Math.sin(x / ((step + 200) / 100)) * 10;
       points.push({x: x + xOffset, y});
     }
     return points;
   }
 
   private generateXDisplacementLine(xOrigin: number, yOffset: number) {
-    // simple sine wave for now
+
+    const { deformationModelStep: step } = this.stores.seismicSimulation;
+
+    // simple sine waves for now
     const steps = 300;
     const stepSize = this.modelWidth / steps;
     const points: Point[] = [];
     for (let y = 0; y < this.modelWidth; y += stepSize) {
-      const x = xOrigin + Math.sin(y / 25) * 10;
+      const x = xOrigin + Math.sin((y + step) / 25) * 10;
       points.push({x, y: y + yOffset});
     }
     return points;

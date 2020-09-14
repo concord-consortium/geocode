@@ -13,6 +13,10 @@ export const SeismicSimulationStore = types
     scenario: "Seismic CA",
     visibleGPSStationIds: types.array(types.string),      // by id
     selectedGPSStationId: types.maybe(types.string),
+
+    deformationModelStep: 0,
+    deformationModelSpeed: 100,      // steps / second
+    deformationModelEndStep: 500,
   })
   .actions((self) => ({
     showGPSStations(stations: StationData[]) {
@@ -21,7 +25,32 @@ export const SeismicSimulationStore = types
     },
     selectGPSStation(id: string) {
       self.selectedGPSStationId = id;
-    }
+    },
+    setDeformationStep(step: number) {
+      self.deformationModelStep = step;
+    },
+    resetDeformationModel() {
+      self.deformationModelStep = 0;
+    },
+  }))
+  .actions((self) => ({
+    startDeformationModel() {
+      self.deformationModelStep = 0;
+
+      const startTime = window.performance.now();
+
+      const updateStep = () => {
+        const dt = (window.performance.now() - startTime) / 1000;   // seconds since start
+        const step = Math.floor(dt * self.deformationModelSpeed);
+        console.log(startTime, dt, step);
+        self.setDeformationStep(step);
+        if (step < self.deformationModelEndStep) {
+          window.requestAnimationFrame(updateStep);
+        }
+      };
+
+      window.requestAnimationFrame(updateStep);
+    },
   }))
   .views((self) => ({
     get allGPSStations() {
