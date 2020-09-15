@@ -17,6 +17,7 @@ export const SeismicSimulationStore = types
     deformationModelStep: 0,
     deformationModelSpeed: 100,      // steps / second
     deformationModelEndStep: 500,
+    showVelocityArrows: false
   })
   .actions((self) => ({
     showGPSStations(stations: StationData[]) {
@@ -32,6 +33,9 @@ export const SeismicSimulationStore = types
     resetDeformationModel() {
       self.deformationModelStep = 0;
     },
+    setShowVelocityArrows(show: boolean) {
+      self.showVelocityArrows = show;
+    }
   }))
   .actions((self) => ({
     startDeformationModel() {

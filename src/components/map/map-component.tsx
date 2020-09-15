@@ -334,6 +334,8 @@ export class MapComponent extends BaseComponent<IProps, IState>{
               <MapGPSStationsLayer
                 key="gps-layer"
                 map={this.state.mapLeafletRef}
+                mapScale={this.getMapScale()}
+                getPointFromLatLng={this.getScreenPointFromLatLng}
               />,
               (isSelectingLatlng && <LatLngDrawLayer
                 ref={this.latlngRef}
@@ -440,5 +442,26 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       );
     });
     return riskItems;
+  }
+
+  private getMapScale = () => {
+    if (this.map.current) {
+      const map = this.map.current.leafletElement;
+      // Get the y,x dimensions of the map
+      const y = map.getSize().y;
+      const x = map.getSize().x;
+      // calculate the distance from one side of the map to the other using the haversine formula
+      const maxMeters = map.containerPointToLatLng([0, y]).distanceTo(map.containerPointToLatLng([x, y]));
+      // calculate how many meters each pixel represents
+      const meterPerPixel = maxMeters / x;
+      return meterPerPixel;
+    } else return 100;
+  }
+
+  private getScreenPointFromLatLng = (latLng: L.LatLngExpression) => {
+    if (this.map.current) {
+      const map = this.map.current.leafletElement;
+      return map.latLngToLayerPoint(latLng);
+    }
   }
 }
