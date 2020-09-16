@@ -1,7 +1,6 @@
 
 import { tephraSimulation, TephraSimulationModelType } from "./tephra-simulation-store";
 import { seismicSimulation, SeismicSimulationModelType } from "./seismic-simulation-store";
-import { deformationSimulation, DeformationSimulationModelType } from "./deformation-simulation-store";
 import { uiStore, UIModelType } from "./ui-store";
 import { chartsStore, ChartsModelType } from "./charts-store";
 import { samplesCollectionsStore, SamplesCollectionsModelType } from "./samples-collections-store";
@@ -13,7 +12,6 @@ export interface IStore {
   blocklyStore: BlocklyStoreModelType;
   tephraSimulation: TephraSimulationModelType;
   seismicSimulation: SeismicSimulationModelType;
-  deformationSimulation: DeformationSimulationModelType;
   uiStore: UIModelType;
   chartsStore: ChartsModelType;
   samplesCollectionsStore: SamplesCollectionsModelType;
@@ -35,7 +33,6 @@ export const stores: IStore = {
   blocklyStore,
   tephraSimulation,
   seismicSimulation,
-  deformationSimulation,
   uiStore,
   chartsStore,
   samplesCollectionsStore,
