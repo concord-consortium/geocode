@@ -90,6 +90,16 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.rect(modelMargin.left, modelMargin.top, this.modelWidth, this.modelWidth);
     ctx.clip();
 
+    // clip to form a triangle
+    ctx.beginPath();
+    ctx.moveTo(modelMargin.left, modelMargin.top + 80);
+    ctx.lineTo(this.modelWidth - 80, modelMargin.top);
+    ctx.lineTo(this.modelWidth, this.modelWidth * 1.5);
+    ctx.lineTo(modelMargin.left, modelMargin.top + 80);
+    ctx.stroke();
+    ctx.closePath();
+    ctx.clip();
+
     const lines: Point[][] = [];
     // start below model and go beyond in case lines curve into model
     const yBounds = [modelMargin.top - 10, modelMargin.top + this.modelWidth + 20];

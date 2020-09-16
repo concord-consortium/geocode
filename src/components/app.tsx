@@ -465,7 +465,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               </TabPanel>
             }
             {
-              showDeformation &&
+              showDeformation && !isTephra &&
               <TabPanel
                 width={`${tabWidth}px`}
                 tabcolor={this.getRightTabColor(RightSectionTypes.DEFORMATION)}
@@ -533,7 +533,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                       {this.getRightTabName(RightSectionTypes.DATA)}
                     </BottomTab>
                   }
-                  { showDeformation &&
+                  { showDeformation && !isTephra &&
                     <BottomTab
                       selected={rightTabIndex === kRightTabInfo.deformation.index}
                       leftofselected={rightTabIndex === (kRightTabInfo.deformation.index + 1) ? "true" : undefined}
