@@ -330,7 +330,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                     setBlocklyCode={setCode}
                     hideToolbox={hideBlocklyToolbox}/>
                   <RunButtons
-                    run={startDeformationModel}
+                    run={run}
                     stop={stop}
                     pause={pause}
                     unpause={unpause}
@@ -388,11 +388,28 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 tabcolor={this.getRightTabColor(RightSectionTypes.CONDITIONS)}
                 rightpanel={"true"}
                 data-test={this.getRightTabName(RightSectionTypes.CONDITIONS) + "-panel"}
-              >
-                <DeformationModel
-                  width={mapWidth}
-                  height={height - 30}
-                />
+            >
+              <Simulation width={mapWidth} backgroundColor={this.getRightTabColor(RightSectionTypes.CONDITIONS)}>
+                  <MapComponent
+                    width={ mapWidth }
+                    height={ height - 190 }
+                    panelType={RightSectionTypes.CONDITIONS}
+                  />
+                  {
+                    isTephra &&
+                    <WidgetPanel />
+                  }
+                  {
+                    !isTephra &&
+                    <CenteredRow>
+                      {
+                        selectedGPSStation &&
+                        <GPSStationTable />
+                      }
+                    </CenteredRow>
+                  }
+                </Simulation>
+
               </TabPanel>
             }
             { showCrossSection &&
@@ -455,8 +472,10 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 rightpanel={"true"}
                 data-test={this.getRightTabName(RightSectionTypes.DEFORMATION) + "-panel"}
               >
-                <div>Placeholder
-                </div>
+                <DeformationModel
+                  width={mapWidth}
+                  height={height - 30}
+                />
               </TabPanel>
             }
             <RightTabBack
