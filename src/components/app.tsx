@@ -29,6 +29,7 @@ import { BlocklyController } from "../blockly/blockly-controller";
 import { HistogramPanel } from "./montecarlo/histogram-panel";
 import { uiStore } from "../stores/ui-store";
 import { GPSStationTable } from "./gps-station-table";
+import { DeformationModel } from "./deformation/deformation-model";
 
 interface IProps extends IBaseProps {}
 
@@ -171,6 +172,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       },
       seismicSimulation: {
         selectedGPSStation,
+        startDeformationModel
       },
       blocklyStore: {
         initialXmlCode,
@@ -328,7 +330,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                     setBlocklyCode={setCode}
                     hideToolbox={hideBlocklyToolbox}/>
                   <RunButtons
-                    run={run}
+                    run={startDeformationModel}
                     stop={stop}
                     pause={pause}
                     unpause={unpause}
@@ -387,26 +389,10 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 rightpanel={"true"}
                 data-test={this.getRightTabName(RightSectionTypes.CONDITIONS) + "-panel"}
               >
-                <Simulation width={mapWidth} backgroundColor={this.getRightTabColor(RightSectionTypes.CONDITIONS)}>
-                  <MapComponent
-                    width={ mapWidth }
-                    height={ height - 190 }
-                    panelType={RightSectionTypes.CONDITIONS}
-                  />
-                  {
-                    isTephra &&
-                    <WidgetPanel />
-                  }
-                  {
-                    !isTephra &&
-                    <CenteredRow>
-                      {
-                        selectedGPSStation &&
-                        <GPSStationTable />
-                      }
-                    </CenteredRow>
-                  }
-                </Simulation>
+                <DeformationModel
+                  width={mapWidth}
+                  height={height - 30}
+                />
               </TabPanel>
             }
             { showCrossSection &&
