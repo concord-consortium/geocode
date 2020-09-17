@@ -20,9 +20,11 @@ Blockly.Blocks['deformation-create-sim'] = {
       this.appendValueInput('speed')
         .setAlign(Blockly.ALIGN_RIGHT)
         .appendField("speed (mm/yr)")
+        .setCheck(['Number'])
       this.appendValueInput('direction')
         .setAlign(Blockly.ALIGN_RIGHT)
         .appendField("direction (degrees)")
+        .setCheck(['Number'])
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
       this.setColour(240);
@@ -32,8 +34,8 @@ Blockly.Blocks['deformation-create-sim'] = {
   };
 
   Blockly.JavaScript['set_velocity_block_1'] = function (block) {
-    var value_speed = block.getFieldValue('speed');
-    var value_direction = block.getFieldValue('direction');
+    var value_speed = Blockly.JavaScript.valueToCode(block, 'speed', Blockly.JavaScript.ORDER_ATOMIC) || 0;
+    var value_direction = Blockly.JavaScript.valueToCode(block, 'direction', Blockly.JavaScript.ORDER_ATOMIC) || 0;
 
     var code = `setBlockVelocity({block: 1, speed: ${value_speed}, direction: ${value_direction}});\n`;
     return code;
@@ -58,10 +60,9 @@ Blockly.Blocks['deformation-create-sim'] = {
   };
 
   Blockly.JavaScript['set_velocity_block_2'] = function (block) {
-    var value_speed = block.getFieldValue('speed');
-    var value_direction = block.getFieldValue('direction');
+    var value_speed = Blockly.JavaScript.valueToCode(block, 'speed', Blockly.JavaScript.ORDER_ATOMIC) || 0;
+    var value_direction = Blockly.JavaScript.valueToCode(block, 'direction', Blockly.JavaScript.ORDER_ATOMIC) || 0;
 
     var code = `setBlockVelocity({block: 2, speed: ${value_speed}, direction: ${value_direction}});\n`;
-
     return code;
   }
