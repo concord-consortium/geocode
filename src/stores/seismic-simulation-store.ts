@@ -8,6 +8,12 @@ const minLng = -127;
 const maxLng = -115;
 const stationData = parseOfflineUNAVCOData(minLat, maxLat, minLng, maxLng);
 
+// Percentage within the drawn square from left-to-right for x and from top-to-bottom for y
+// so [0.1,0.9] is close to the left edge, close to the top.
+const deformationSite1 = [0.75, 0.1];
+const deformationSite2 = [0.6, 0.85];
+const deformationSite3 = [0.2, 0.5];
+
 export const SeismicSimulationStore = types
   .model("seismicSimulation", {
     scenario: "Seismic CA",
@@ -17,7 +23,8 @@ export const SeismicSimulationStore = types
     deformationModelStep: 0,
     deformationModelSpeed: 100,      // steps / second
     deformationModelEndStep: 500,
-    showVelocityArrows: false
+    showVelocityArrows: false,
+
   })
   .actions((self) => ({
     showGPSStations(stations: StationData[]) {
@@ -66,6 +73,9 @@ export const SeismicSimulationStore = types
     get selectedGPSStation() {
       if (!self.selectedGPSStationId) return;
       return stationData.find(stat => stat.id === self.selectedGPSStationId!);
+    },
+    get deformationSites() {
+      return [deformationSite1, deformationSite2, deformationSite3];
     }
   }));
 

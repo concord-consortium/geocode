@@ -1,7 +1,7 @@
 import * as React from "react";
 import { inject, observer } from "mobx-react";
 import { BaseComponent } from "../base";
-import { IDisposer, onAction, onPatch } from "mobx-state-tree";
+import { IDisposer, onAction } from "mobx-state-tree";
 
 interface IProps {
   width: number;
@@ -18,7 +18,9 @@ let canvasWidth = 0;
 let canvasHeight = 0;
 const minModelMargin = 20;
 
-const backgroundColor = "#EEE";
+const backgroundColor = "#eee";
+const drawAreaColor = "#fff";
+const textColor = "#333";
 
 const lineSpacing = 35;
 
@@ -84,22 +86,46 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.beginPath();
     ctx.rect(modelMargin.left, modelMargin.top, this.modelWidth, this.modelWidth);
     ctx.stroke();
+    ctx.fillStyle = drawAreaColor;
+    ctx.fill();
 
-    // clip all subsquent drawing (this can be re-used when we generate the triangle)
-    ctx.beginPath();
-    ctx.rect(modelMargin.left, modelMargin.top, this.modelWidth, this.modelWidth);
-    ctx.clip();
+    // set up the GPS site positions
+    const stationPoints = this.generateGPSStationPoints(modelMargin.left, modelMargin.top);
+    const startPoint = stationPoints[0];
 
-    // clip to form a triangle
+    // Draw lines between stations to form a triangle
     ctx.beginPath();
-    ctx.moveTo(modelMargin.left, modelMargin.top + 80);
-    ctx.lineTo(this.modelWidth - 80, modelMargin.top);
-    ctx.lineTo(this.modelWidth, this.modelWidth * 1.5);
-    ctx.lineTo(modelMargin.left, modelMargin.top + 80);
+    ctx.moveTo(startPoint.x, startPoint.y);
+    for (let i = 1; i < stationPoints.length; i++){
+      ctx.lineTo(stationPoints[i].x, stationPoints[i].y);
+    }
+
+    // back to start to complete the shape
+    ctx.lineTo(startPoint.x, startPoint.y);
     ctx.stroke();
     ctx.closePath();
+
+    // labels must be drawn before we clip the canvas
+    ctx.font = "20px Arial";
+    ctx.fillStyle = textColor;
+
+    for (let i = 0; i < stationPoints.length; i++){
+      ctx.textAlign = stationPoints[i].x < this.modelWidth / 2 ? "right" : "left";
+      const textPositionAdjust = stationPoints[i].x < this.modelWidth / 2 ? -10 : 10;
+      ctx.fillText(`Station ${i}`, stationPoints[i].x + textPositionAdjust, stationPoints[i].y);
+    }
+
+    // show fault line
+    ctx.setLineDash([20, 5]);
+    ctx.moveTo(modelMargin.left + (this.modelWidth / 2), modelMargin.top);
+    ctx.lineTo(modelMargin.left + (this.modelWidth / 2), this.modelWidth + modelMargin.top);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // now we stop the deformation lines appearing outside of the area
     ctx.clip();
 
+    // Start deformation lines
     const lines: Point[][] = [];
     // start below model and go beyond in case lines curve into model
     const yBounds = [modelMargin.top - 10, modelMargin.top + this.modelWidth + 20];
@@ -115,6 +141,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
     const drawBzCurve = this.bzCurve(ctx);
     lines.forEach(drawBzCurve);
+
   }
 
   private get modelWidth() {
@@ -152,6 +179,16 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     return points;
   }
 
+  private generateGPSStationPoints( modelMarginLeft: number, modelMarginTop: number) {
+    const { deformationSites } = this.stores.seismicSimulation;
+    const stationPoints: Point[] = [];
+    for (const site of deformationSites){
+      const x = canvasWidth * site[0] + modelMarginLeft;
+      const y = canvasWidth * site[1] + modelMarginTop;
+      stationPoints.push({ x, y });
+    }
+    return stationPoints;
+  }
   private gradient(a: Point, b: Point) {
     return (b.y - a.y) / (b.x - a.x);
   }
