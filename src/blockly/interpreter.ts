@@ -325,7 +325,11 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     addFunc("createDeformationModel", () => {
       seismicSimulation.startDeformationModel();
     });
-
+    addFunc("setBlockVelocity", (params: { block: number, speed: number, direction: number }) => {
+      // TODO: fix!
+      // seismicSimulation.setBlockVelocity(params.block, params.speed, params.direction);
+      seismicSimulation.setBlockVelocity(1, 4, 25);
+    });
     /** ==== Utility methods ==== */
 
     addFunc("log", (params) => {
