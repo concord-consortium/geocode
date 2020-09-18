@@ -9,8 +9,6 @@
 
   <category name="Deformation Model" colour="15">
     <block type="deformation-create-sim"></block>
-    <block type="set_velocity_block_1"></block>
-    <block type="set_velocity_block_2"></block>
   </category>
 
   <category name="Logic" colour="%{BKY_LOGIC_HUE}">
