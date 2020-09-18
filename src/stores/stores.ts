@@ -22,7 +22,6 @@ export interface IStoreish {
   blocklyStore: any;
   tephraSimulation: any;
   seismicSimulation: any;
-  deformationSimulation: any;
   uiStore: any;
 }
 
@@ -116,7 +115,6 @@ function getStoreSubstate(blocklyStoreProps: string[], tephraSimulationProps: st
       blocklyStore: pick(blocklyStoreProps)(blocklyStore),
       tephraSimulation: pick(tephraSimulationProps)(tephraSimulation),
       seismicSimulation: {},      // nothing to save yet
-      deformationSimulation: {},
       uiStore: pick(uiProps)(uiStore)
     };
   };
@@ -150,7 +148,7 @@ export const deserializeState = (serializedState: SerializedState): IStoreish =>
   }
   return {
     unit: { name: "Tephra" },
-    blocklyStore: {}, tephraSimulation: {}, seismicSimulation: {}, deformationSimulation: {}, uiStore: {}
+    blocklyStore: {}, tephraSimulation: {}, seismicSimulation: {}, uiStore: {}
   };
 };
 
