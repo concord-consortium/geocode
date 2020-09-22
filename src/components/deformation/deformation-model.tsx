@@ -113,17 +113,6 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     }
     ctx.stroke();
 
-    // site markers
-    ctx.fillStyle = "#cc7755";
-    ctx.strokeStyle = textColor;
-    ctx.beginPath();
-    for (const station of stationPoints){
-      ctx.moveTo(station.x, station.y);
-      ctx.arc(station.x, station.y, 5, 0, 2 * Math.PI);
-    }
-    ctx.stroke();
-    ctx.fill();
-
     // Draw lines between stations to form a triangle
     ctx.beginPath();
     ctx.moveTo(startPoint.x, startPoint.y);
@@ -132,6 +121,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     }
     ctx.closePath();
     ctx.stroke();
+    ctx.save();
     // now we stop the deformation lines appearing outside of the area
     ctx.clip();
 
@@ -151,6 +141,18 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
     const drawBzCurve = this.bzCurve(ctx);
     lines.forEach(drawBzCurve);
+
+    ctx.restore();
+    // site markers
+    ctx.fillStyle = "#cc7755";
+    ctx.strokeStyle = textColor;
+    ctx.beginPath();
+    for (const station of stationPoints){
+      ctx.moveTo(station.x, station.y);
+      ctx.arc(station.x, station.y, 5, 0, 2 * Math.PI);
+    }
+    ctx.stroke();
+    ctx.fill();
   }
 
   private get modelWidth() {
