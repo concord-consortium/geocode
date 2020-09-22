@@ -21,6 +21,7 @@ const minModelMargin = 20;
 const backgroundColor = "#eee";
 const drawAreaColor = "#fff";
 const textColor = "#333";
+const stationColor = "#e56d44";
 
 const lineSpacing = 35;
 
@@ -142,9 +143,9 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     const drawBzCurve = this.bzCurve(ctx);
     lines.forEach(drawBzCurve);
 
+    // site markers - draw slightly overlaid on the clipped triangle, so need to restore (unclip) canvas
     ctx.restore();
-    // site markers
-    ctx.fillStyle = "#cc7755";
+    ctx.fillStyle = stationColor;
     ctx.strokeStyle = textColor;
     ctx.beginPath();
     for (const station of stationPoints){
@@ -153,6 +154,34 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     }
     ctx.stroke();
     ctx.fill();
+
+    // show velocity vector arrows for each plate
+    // start circle
+    ctx.beginPath();
+    const points = this.generateVelocityVectorArrows(modelMargin, this.modelWidth);
+    ctx.moveTo(points.p1.x, points.p1.y);
+    ctx.arc(points.p1.x, points.p1.y, 10, 0, 2 * Math.PI);
+    ctx.stroke();
+    ctx.fill();
+
+    // vector line
+    ctx.beginPath();
+    ctx.moveTo(points.p1.x, points.p1.y);
+    ctx.lineTo(points.p1v.x, points.p1v.y);
+    ctx.stroke();
+
+    // plate 2 circle
+    ctx.beginPath();
+    ctx.moveTo(points.p2.x, points.p2.y);
+    ctx.arc(points.p2.x, points.p2.y, 10, 0, 2 * Math.PI);
+    ctx.stroke();
+    ctx.fill();
+
+    // plate 2 vector line
+    ctx.beginPath();
+    ctx.moveTo(points.p2.x, points.p2.y);
+    ctx.lineTo(points.p2v.x, points.p2v.y);
+    ctx.stroke();
   }
 
   private get modelWidth() {
@@ -163,7 +192,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
   private generateYDisplacementLine(yOrigin: number, xOffset: number) {
 
     const { deformationModelStep: step, deformationSimulationProgress: progress,
-      deformationBlock1Speed, deformationBlock1Direction, deformationBlock2Speed, deformationBlock2Direction } =
+      deformSpeedPlate1, deformDirPlate1, deformSpeedPlate2, deformDirPlate2 } =
       this.stores.seismicSimulation;
 
     const steps = 300;
@@ -173,10 +202,10 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     // generate horizontal lines
     for (let x = 0; x < this.modelWidth; x += stepSize) {
       if (x < this.modelWidth / 2) {
-        const y = yOrigin + (deformationBlock1Speed * Math.cos(deformationBlock1Direction * Math.PI / 180) * progress);
+        const y = yOrigin + (deformSpeedPlate1 * Math.cos(deformDirPlate1 * Math.PI / 180) * progress);
         points.push({ x: x + xOffset, y });
       } else {
-        const y = yOrigin + (deformationBlock2Speed * Math.cos(deformationBlock2Direction * Math.PI / 180) * progress);
+        const y = yOrigin + (deformSpeedPlate2 * Math.cos(deformDirPlate2 * Math.PI / 180) * progress);
         points.push({ x: x + xOffset, y });
       }
     }
@@ -186,7 +215,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
   private generateXDisplacementLine(xOrigin: number, yOffset: number) {
 
     const { deformationModelStep: step, deformationSimulationProgress: progress,
-      deformationBlock1Speed, deformationBlock1Direction, deformationBlock2Speed, deformationBlock2Direction } =
+      deformSpeedPlate1, deformDirPlate1, deformSpeedPlate2, deformDirPlate2 } =
       this.stores.seismicSimulation;
 
     const steps = 300;
@@ -199,8 +228,8 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       const lineFudge = y / 1000;
 
       // add the x shear over time as the simulation runs
-      const block1Sheer = (deformationBlock1Speed * Math.sin(deformationBlock1Direction * Math.PI / 180) * progress);
-      const block2Sheer = (deformationBlock2Speed * Math.sin(deformationBlock2Direction * Math.PI / 180) * progress);
+      const block1Sheer = (deformSpeedPlate1 * Math.sin(deformDirPlate1 * Math.PI / 180) * progress);
+      const block2Sheer = (deformSpeedPlate2 * Math.sin(deformDirPlate2 * Math.PI / 180) * progress);
 
       if (xOrigin < this.modelWidth / 2) {
         const x = xOrigin + block1Sheer + lineFudge;
@@ -216,15 +245,15 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
   private generateGPSStationPoints(modelMarginLeft: number, modelMarginTop: number) {
     const { deformationModelStep: step, deformationSimulationProgress: progress, deformationSites,
-      deformationBlock1Speed, deformationBlock1Direction, deformationBlock2Speed, deformationBlock2Direction } =
+      deformSpeedPlate1, deformDirPlate1, deformSpeedPlate2, deformDirPlate2 } =
       this.stores.seismicSimulation;
 
     // stations will move with the land
     const stationPoints: Point[] = [];
     for (const site of deformationSites) {
       const isBlock1 = site[0] < 0.5;
-      const blockSpeed = isBlock1 ? deformationBlock1Speed : deformationBlock2Speed;
-      const blockDirection = isBlock1 ? deformationBlock1Direction : deformationBlock2Direction;
+      const blockSpeed = isBlock1 ? deformSpeedPlate1 : deformSpeedPlate2;
+      const blockDirection = isBlock1 ? deformDirPlate1 : deformDirPlate2;
 
       const siteDisplacementX = blockSpeed * Math.sin(blockDirection * Math.PI / 180) * progress;
       const siteDisplacementY = blockSpeed * Math.cos(blockDirection * Math.PI / 180) * progress;
@@ -235,6 +264,29 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     }
     return stationPoints;
   }
+
+  private generateVelocityVectorArrows(modelMargin: any, modelWidth: number) {
+    const {
+      deformSpeedPlate1, deformDirPlate1, deformSpeedPlate2, deformDirPlate2 } =
+      this.stores.seismicSimulation;
+
+    const p1 = { x: modelMargin.left + 30, y: modelMargin.top - 50 };
+    const p1vx = p1.x + deformSpeedPlate1 * Math.sin(deformDirPlate1 * Math.PI / 180);
+    const p1vy = p1.y + deformSpeedPlate1 * Math.cos(deformDirPlate1 * Math.PI / 180);
+
+    const p2 = { x: modelMargin.left + modelWidth - 30, y: modelMargin.top - 50 };
+    const p2vx = p2.x + deformSpeedPlate2 * Math.sin(deformDirPlate2 * Math.PI / 180);
+    const p2vy = p2.y + deformSpeedPlate2 * Math.cos(deformDirPlate2 * Math.PI / 180);
+
+    const points = {
+      p1,
+      p1v: {x: p1vx, y: p1vy},
+      p2,
+      p2v: {x: p2vx, y: p2vy}
+    };
+    return points;
+  }
+
   private gradient(a: Point, b: Point) {
     return (b.y - a.y) / (b.x - a.x);
   }

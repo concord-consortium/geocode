@@ -25,10 +25,10 @@ export const SeismicSimulationStore = types
     deformationModelEndStep: 500,
     showVelocityArrows: false,
 
-    deformationBlock1Speed: 0,
-    deformationBlock1Direction: 0,
-    deformationBlock2Speed: 0,
-    deformationBlock2Direction: 0
+    deformSpeedPlate1: 0,
+    deformDirPlate1: 0,
+    deformSpeedPlate2: 0,
+    deformDirPlate2: 0
 
   })
   .actions((self) => ({
@@ -69,11 +69,11 @@ export const SeismicSimulationStore = types
     },
     setBlockVelocity(block: number, speed: number, direction: number) {
       if (block === 1) {
-        self.deformationBlock1Speed = speed;
-        self.deformationBlock1Direction = direction;
+        self.deformSpeedPlate1 = speed;
+        self.deformDirPlate1 = 180 - direction;
       } else {
-        self.deformationBlock2Speed = speed;
-        self.deformationBlock2Direction = direction;
+        self.deformSpeedPlate2 = speed;
+        self.deformDirPlate2 = 180 - direction;
       }
     }
   }))
