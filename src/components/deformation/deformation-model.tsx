@@ -151,14 +151,12 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
   private generateYDisplacementLine(yOrigin: number, xOffset: number) {
 
-    const { deformationModelStep: step,
+    const { deformationModelStep: step, deformationSimulationProgress: progress,
       deformationBlock1Speed, deformationBlock1Direction, deformationBlock2Speed, deformationBlock2Direction } =
       this.stores.seismicSimulation;
 
     const steps = 300;
     const stepSize = this.modelWidth / steps;
-    // percentage complete
-    const progress = step / steps;
 
     const points: Point[] = [];
     // generate horizontal lines
@@ -176,13 +174,12 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
   private generateXDisplacementLine(xOrigin: number, yOffset: number) {
 
-    const { deformationModelStep: step,
+    const { deformationModelStep: step, deformationSimulationProgress: progress,
       deformationBlock1Speed, deformationBlock1Direction, deformationBlock2Speed, deformationBlock2Direction } =
       this.stores.seismicSimulation;
 
     const steps = 300;
     const stepSize = this.modelWidth / steps;
-    const progress = step / steps;
 
     const points: Point[] = [];
     // generate vertical lines
@@ -206,12 +203,23 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     return points;
   }
 
-  private generateGPSStationPoints( modelMarginLeft: number, modelMarginTop: number) {
-    const { deformationSites } = this.stores.seismicSimulation;
+  private generateGPSStationPoints(modelMarginLeft: number, modelMarginTop: number) {
+    const { deformationModelStep: step, deformationSimulationProgress: progress, deformationSites,
+      deformationBlock1Speed, deformationBlock1Direction, deformationBlock2Speed, deformationBlock2Direction } =
+      this.stores.seismicSimulation;
+
+    // stations will move with the land
     const stationPoints: Point[] = [];
-    for (const site of deformationSites){
-      const x = canvasWidth * site[0] + modelMarginLeft;
-      const y = canvasWidth * site[1] + modelMarginTop;
+    for (const site of deformationSites) {
+      const isBlock1 = site[0] < (canvasWidth + modelMarginLeft / 2);
+      const blockSpeed = isBlock1 ? deformationBlock1Speed : deformationBlock2Speed;
+      const blockDirection = isBlock1 ? deformationBlock1Direction : deformationBlock2Direction;
+
+      const siteDisplacementX = blockSpeed * Math.sin(blockDirection * Math.PI / 180) * progress;
+      const siteDisplacementY = blockSpeed * Math.cos(blockDirection * Math.PI / 180) * progress;
+
+      const x = canvasWidth * site[0] + modelMarginLeft + siteDisplacementX;
+      const y = canvasWidth * site[1] + modelMarginTop + siteDisplacementY;
       stationPoints.push({ x, y });
     }
     return stationPoints;

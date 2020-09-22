@@ -90,6 +90,9 @@ export const SeismicSimulationStore = types
     },
     get deformationSites() {
       return [deformationSite1, deformationSite2, deformationSite3];
+    },
+    get deformationSimulationProgress() {
+      return self.deformationModelStep / self.deformationModelEndStep;
     }
   }));
 
