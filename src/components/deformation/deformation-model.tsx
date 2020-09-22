@@ -89,39 +89,49 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.fillStyle = drawAreaColor;
     ctx.fill();
 
-    // set up the GPS site positions
-    const stationPoints = this.generateGPSStationPoints(modelMargin.left, modelMargin.top);
-    const startPoint = stationPoints[0];
-
-    // Draw lines between stations to form a triangle
-    ctx.beginPath();
-    ctx.moveTo(startPoint.x, startPoint.y);
-    for (let i = 1; i < stationPoints.length; i++){
-      ctx.lineTo(stationPoints[i].x, stationPoints[i].y);
-    }
-
-    // back to start to complete the shape
-    ctx.lineTo(startPoint.x, startPoint.y);
-    ctx.stroke();
-    ctx.closePath();
-
-    // labels must be drawn before we clip the canvas
-    ctx.font = "20px Arial";
-    ctx.fillStyle = textColor;
-
-    for (let i = 0; i < stationPoints.length; i++){
-      ctx.textAlign = stationPoints[i].x < this.modelWidth / 2 ? "right" : "left";
-      const textPositionAdjust = stationPoints[i].x < this.modelWidth / 2 ? -10 : 10;
-      ctx.fillText(`Station ${i}`, stationPoints[i].x + textPositionAdjust, stationPoints[i].y);
-    }
-
     // show fault line
+    ctx.beginPath();
     ctx.setLineDash([20, 5]);
     ctx.moveTo(modelMargin.left + (this.modelWidth / 2), modelMargin.top);
     ctx.lineTo(modelMargin.left + (this.modelWidth / 2), this.modelWidth + modelMargin.top);
     ctx.stroke();
     ctx.setLineDash([]);
 
+    // set up the GPS site positions
+    const stationPoints = this.generateGPSStationPoints(modelMargin.left, modelMargin.top);
+    const startPoint = stationPoints[0];
+
+    // text labels
+    // labels must be drawn before we clip the canvas
+    ctx.font = "20px Arial";
+    ctx.fillStyle = textColor;
+    ctx.beginPath();
+    for (let i = 0; i < stationPoints.length; i++){
+      ctx.textAlign = stationPoints[i].x < this.modelWidth / 2 ? "right" : "left";
+      const textPositionAdjust = stationPoints[i].x < this.modelWidth / 2 ? -10 : 10;
+      ctx.fillText(`Station ${i}`, stationPoints[i].x + textPositionAdjust, stationPoints[i].y);
+    }
+    ctx.stroke();
+
+    // site markers
+    ctx.fillStyle = "#cc7755";
+    ctx.strokeStyle = textColor;
+    ctx.beginPath();
+    for (const station of stationPoints){
+      ctx.moveTo(station.x, station.y);
+      ctx.arc(station.x, station.y, 5, 0, 2 * Math.PI);
+    }
+    ctx.stroke();
+    ctx.fill();
+
+    // Draw lines between stations to form a triangle
+    ctx.beginPath();
+    ctx.moveTo(startPoint.x, startPoint.y);
+    for (const station of stationPoints){
+      ctx.lineTo(station.x, station.y);
+    }
+    ctx.closePath();
+    ctx.stroke();
     // now we stop the deformation lines appearing outside of the area
     ctx.clip();
 
@@ -141,7 +151,6 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
     const drawBzCurve = this.bzCurve(ctx);
     lines.forEach(drawBzCurve);
-
   }
 
   private get modelWidth() {
@@ -211,7 +220,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     // stations will move with the land
     const stationPoints: Point[] = [];
     for (const site of deformationSites) {
-      const isBlock1 = site[0] < (canvasWidth + modelMarginLeft / 2);
+      const isBlock1 = site[0] < 0.5;
       const blockSpeed = isBlock1 ? deformationBlock1Speed : deformationBlock2Speed;
       const blockDirection = isBlock1 ? deformationBlock1Direction : deformationBlock2Direction;
 
