@@ -151,30 +151,57 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
   private generateYDisplacementLine(yOrigin: number, xOffset: number) {
 
-    const { deformationModelStep: step } = this.stores.seismicSimulation;
+    const { deformationModelStep: step,
+      deformationBlock1Speed, deformationBlock1Direction, deformationBlock2Speed, deformationBlock2Direction } =
+      this.stores.seismicSimulation;
 
-    // simple sine waves for now
     const steps = 300;
     const stepSize = this.modelWidth / steps;
+    // percentage complete
+    const progress = step / steps;
+
     const points: Point[] = [];
+    // generate horizontal lines
     for (let x = 0; x < this.modelWidth; x += stepSize) {
-      const y = yOrigin + Math.sin(x / ((step + 200) / 100)) * 10;
-      points.push({x: x + xOffset, y});
+      if (x < this.modelWidth / 2) {
+        const y = yOrigin + (deformationBlock1Speed * Math.cos(deformationBlock1Direction * Math.PI / 180) * progress);
+        points.push({ x: x + xOffset, y });
+      } else {
+        const y = yOrigin + (deformationBlock2Speed * Math.cos(deformationBlock2Direction * Math.PI / 180) * progress);
+        points.push({ x: x + xOffset, y });
+      }
     }
     return points;
   }
 
   private generateXDisplacementLine(xOrigin: number, yOffset: number) {
 
-    const { deformationModelStep: step } = this.stores.seismicSimulation;
+    const { deformationModelStep: step,
+      deformationBlock1Speed, deformationBlock1Direction, deformationBlock2Speed, deformationBlock2Direction } =
+      this.stores.seismicSimulation;
 
-    // simple sine waves for now
     const steps = 300;
     const stepSize = this.modelWidth / steps;
+    const progress = step / steps;
+
     const points: Point[] = [];
+    // generate vertical lines
     for (let y = 0; y < this.modelWidth; y += stepSize) {
-      const x = xOrigin + Math.sin((y + step) / 25) * 10;
-      points.push({x, y: y + yOffset});
+      // having a perfectly straight vertical line makes the line disappear
+      const lineFudge = y / 1000;
+
+      // add the x shear over time as the simulation runs
+      const block1Sheer = (deformationBlock1Speed * Math.sin(deformationBlock1Direction * Math.PI / 180) * progress);
+      const block2Sheer = (deformationBlock2Speed * Math.sin(deformationBlock2Direction * Math.PI / 180) * progress);
+
+      if (xOrigin < this.modelWidth / 2) {
+        const x = xOrigin + block1Sheer + lineFudge;
+        points.push({ x, y: y + yOffset });
+      } else {
+        const x = xOrigin + block2Sheer + lineFudge;
+        points.push({ x, y: y + yOffset });
+      }
+
     }
     return points;
   }
@@ -205,7 +232,6 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     let dy2 = 0;
 
     let preP = points[0];
-
     for (let i = 1; i < points.length; i++) {
       const curP = points[i];
       const nexP = points[i + 1];
