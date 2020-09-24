@@ -2,6 +2,7 @@ import * as React from "react";
 import { inject, observer } from "mobx-react";
 import { BaseComponent } from "../base";
 import { IDisposer, onAction } from "mobx-state-tree";
+import { capitalize } from "lodash";
 
 interface IProps {
   width: number;
@@ -24,6 +25,9 @@ const textColor = "#333";
 const stationColor = "#e56d44";
 
 const lineSpacing = 35;
+// should be in km
+const lockingDepth = 2;
+const distanceScale = 1;
 
 @inject("stores")
 @observer
@@ -46,7 +50,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
     canvasWidth = width - (canvasMargin.left * 2);
     canvasHeight = height - (canvasMargin.top * 2);
-    const relativeStyle: React.CSSProperties = {position: "relative", width, height};
+    const relativeStyle: React.CSSProperties = { position: "relative", width, height };
     const absoluteStyle: React.CSSProperties = {
       position: "absolute", top: canvasMargin.top, left: canvasMargin.left, width: canvasWidth, height: canvasHeight
     };
@@ -92,11 +96,15 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
     // show fault line
     ctx.beginPath();
+    ctx.strokeStyle = stationColor;
+    ctx.lineWidth = 3;
     ctx.setLineDash([20, 5]);
     ctx.moveTo(modelMargin.left + (this.modelWidth / 2), modelMargin.top);
     ctx.lineTo(modelMargin.left + (this.modelWidth / 2), this.modelWidth + modelMargin.top);
     ctx.stroke();
     ctx.setLineDash([]);
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = textColor;
 
     // set up the GPS site positions
     const stationPoints = this.generateGPSStationPoints(modelMargin.left, modelMargin.top);
@@ -107,7 +115,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.font = "20px Arial";
     ctx.fillStyle = textColor;
     ctx.beginPath();
-    for (let i = 0; i < stationPoints.length; i++){
+    for (let i = 0; i < stationPoints.length; i++) {
       ctx.textAlign = stationPoints[i].x < this.modelWidth / 2 ? "right" : "left";
       const textPositionAdjust = stationPoints[i].x < this.modelWidth / 2 ? -10 : 10;
       ctx.fillText(`Station ${i}`, stationPoints[i].x + textPositionAdjust, stationPoints[i].y);
@@ -117,13 +125,14 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     // Draw lines between stations to form a triangle
     ctx.beginPath();
     ctx.moveTo(startPoint.x, startPoint.y);
-    for (const station of stationPoints){
+    for (const station of stationPoints) {
       ctx.lineTo(station.x, station.y);
     }
     ctx.closePath();
     ctx.stroke();
     ctx.save();
     // now we stop the deformation lines appearing outside of the area
+    // useful to disable this while debugging!
     ctx.clip();
 
     // Start deformation lines
@@ -148,7 +157,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.fillStyle = stationColor;
     ctx.strokeStyle = textColor;
     ctx.beginPath();
-    for (const station of stationPoints){
+    for (const station of stationPoints) {
       ctx.moveTo(station.x, station.y);
       ctx.arc(station.x, station.y, 5, 0, 2 * Math.PI);
     }
@@ -188,81 +197,129 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     const smallestDimension = Math.min(canvasWidth, canvasHeight);
     return smallestDimension - (minModelMargin * 2);
   }
+  private get stepSize() {
+    const steps = 300;
+    return this.modelWidth / steps;
+  }
 
   private generateYDisplacementLine(yOrigin: number, xOffset: number) {
-
-    const { deformationModelStep: step, deformationSimulationProgress: progress,
+    const { deformationSimulationProgress: progress,
       deformSpeedPlate1, deformDirPlate1, deformSpeedPlate2, deformDirPlate2 } =
       this.stores.seismicSimulation;
 
-    const steps = 300;
-    const stepSize = this.modelWidth / steps;
-
+    const center = this.modelWidth / 2;
     const points: Point[] = [];
+
     // generate horizontal lines
-    for (let x = 0; x < this.modelWidth; x += stepSize) {
-      if (x < this.modelWidth / 2) {
-        const y = yOrigin + (deformSpeedPlate1 * Math.cos(deformDirPlate1 * Math.PI / 180) * progress);
-        points.push({ x: x + xOffset, y });
-      } else {
-        const y = yOrigin + (deformSpeedPlate2 * Math.cos(deformDirPlate2 * Math.PI / 180) * progress);
-        points.push({ x: x + xOffset, y });
-      }
+    for (let x = 0; x < this.modelWidth; x += this.stepSize) {
+
+      const xDist = this.percentToWorldX((x + xOffset) / this.modelWidth);
+
+      const plateSpeed = (x < center) ? deformSpeedPlate1 : deformSpeedPlate2;
+      const plateDir = (x < center) ? deformDirPlate1 : deformDirPlate2;
+
+      // convert to radians
+      const dir = plateDir * Math.PI / 180;
+
+      // distance is measured from the center fault
+      const verticalSheer =
+        this.calculateVerticalSheer(xDist, plateSpeed, dir);
+      const y = yOrigin + this.worldToCanvas(verticalSheer) * progress;
+
+      points.push({ x: x + xOffset, y });
     }
     return points;
   }
 
   private generateXDisplacementLine(xOrigin: number, yOffset: number) {
-
-    const { deformationModelStep: step, deformationSimulationProgress: progress,
+    const { deformationSimulationProgress: progress,
       deformSpeedPlate1, deformDirPlate1, deformSpeedPlate2, deformDirPlate2 } =
       this.stores.seismicSimulation;
 
-    const steps = 300;
-    const stepSize = this.modelWidth / steps;
-
+    const center = this.modelWidth / 2;
     const points: Point[] = [];
+
     // generate vertical lines
-    for (let y = 0; y < this.modelWidth; y += stepSize) {
+    for (let y = 0; y < this.modelWidth; y += this.stepSize) {
+
+      const xDist = this.percentToWorldX(xOrigin / this.modelWidth);
+
+      const plateSpeed = (xOrigin < center) ? deformSpeedPlate1 : deformSpeedPlate2;
+      const plateDir = (xOrigin < center) ? deformDirPlate1 : deformDirPlate2;
+
+      // convert to radians
+      const dir = plateDir * Math.PI / 180;
+
+      // add the x shear over time as the simulation runs
+      // our distance is measured from the center fault
+      const horizontalSheer = this.calculateHorizontalSheer(xDist, plateSpeed, dir);
+
       // having a perfectly straight vertical line makes the line disappear
       const lineFudge = y / 1000;
 
-      // add the x shear over time as the simulation runs
-      const block1Sheer = (deformSpeedPlate1 * Math.sin(deformDirPlate1 * Math.PI / 180) * progress);
-      const block2Sheer = (deformSpeedPlate2 * Math.sin(deformDirPlate2 * Math.PI / 180) * progress);
-
-      if (xOrigin < this.modelWidth / 2) {
-        const x = xOrigin + block1Sheer + lineFudge;
-        points.push({ x, y: y + yOffset });
-      } else {
-        const x = xOrigin + block2Sheer + lineFudge;
-        points.push({ x, y: y + yOffset });
+      let newX = xOrigin + (this.worldToCanvas(horizontalSheer) * progress) + lineFudge;
+      // clamp so the lines don't cross the fault
+      if (xOrigin < center && newX > center) {
+        newX = center;
+      } else if (xOrigin > center && newX < center) {
+        newX = center;
       }
-
+      points.push({ x: newX, y:  y + yOffset });
     }
     return points;
   }
 
   private generateGPSStationPoints(modelMarginLeft: number, modelMarginTop: number) {
-    const { deformationModelStep: step, deformationSimulationProgress: progress, deformationSites,
+    const { deformationSimulationProgress: progress, deformationSites,
       deformSpeedPlate1, deformDirPlate1, deformSpeedPlate2, deformDirPlate2 } =
       this.stores.seismicSimulation;
 
     // stations will move with the land
     const stationPoints: Point[] = [];
     for (const site of deformationSites) {
-      const isBlock1 = site[0] < 0.5;
-      const blockSpeed = isBlock1 ? deformSpeedPlate1 : deformSpeedPlate2;
-      const blockDirection = isBlock1 ? deformDirPlate1 : deformDirPlate2;
+      // get speed and direction by determining which side of fault
+      // station x and y are stored in the array as 0-1 percentage across the canvas
+      const blockSpeed = site[0] < 0.5 ? deformSpeedPlate1 : deformSpeedPlate2;
+      const blockDirection = site[0] < 0.5 ? deformDirPlate1 : deformDirPlate2;
 
-      const siteDisplacementX = blockSpeed * Math.sin(blockDirection * Math.PI / 180) * progress;
-      const siteDisplacementY = blockSpeed * Math.cos(blockDirection * Math.PI / 180) * progress;
+      // convert to radians
+      const dir = blockDirection * Math.PI / 180;
 
-      const x = canvasWidth * site[0] + modelMarginLeft + siteDisplacementX;
-      const y = canvasWidth * site[1] + modelMarginTop + siteDisplacementY;
+      const siteDisplacementX =
+        this.calculateHorizontalSheer(this.percentToWorldX(site[0]), blockSpeed, dir) * progress;
+      const siteDisplacementY =
+        this.calculateVerticalSheer(this.percentToWorldX(site[0]), blockSpeed, dir) * progress;
+
+      const x = this.modelWidth * site[0] + modelMarginLeft + this.worldToCanvas(siteDisplacementX);
+      const y = this.modelWidth * site[1] + modelMarginTop + this.worldToCanvas(siteDisplacementY);
       stationPoints.push({ x, y });
     }
     return stationPoints;
+  }
+
+  // Calculations taken from PowerPoint linked here: https://www.pivotaltracker.com/story/show/174401018
+  private calculateHorizontalSheer(px: number, speed: number, dir: number) {
+    const horizontalSheer = -speed / Math.PI *
+      (Math.sin(dir) * Math.atan(px / lockingDepth) - dir + Math.PI / 2) +
+      lockingDepth * (lockingDepth * Math.cos(dir) + px * Math.sin(dir))
+      / (Math.pow(px, 2) + Math.pow(lockingDepth, 2));
+    return horizontalSheer;
+  }
+
+  private calculateVerticalSheer(px: number, speed: number, dir: number) {
+    const verticalSheer = speed / Math.PI *
+      (Math.cos(dir) * Math.atan(px / lockingDepth) - dir + Math.PI / 2) -
+      px * (lockingDepth * Math.cos(dir) + px * (Math.sin(dir)))
+      / (Math.pow(px, 2) + Math.pow(lockingDepth, 2));
+    return verticalSheer;
+  }
+
+  private percentToWorldX(distancePercentage: number) {
+    const percentageFromCenter = Math.abs(0.5 - distancePercentage);
+    return percentageFromCenter * this.modelWidth / distanceScale;
+  }
+  private worldToCanvas(distanceInRealUnits: number) {
+    return distanceInRealUnits * distanceScale;
   }
 
   private generateVelocityVectorArrows(modelMargin: any, modelWidth: number) {
@@ -280,9 +337,9 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
     const points = {
       p1,
-      p1v: {x: p1vx, y: p1vy},
+      p1v: { x: p1vx, y: p1vy },
       p2,
-      p2v: {x: p2vx, y: p2vy}
+      p2v: { x: p2vx, y: p2vy }
     };
     return points;
   }
@@ -326,6 +383,6 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       preP = curP;
     }
     ctx.stroke();
-}
+  }
 
 }
