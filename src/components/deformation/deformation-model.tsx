@@ -17,6 +17,10 @@ const canvasMargin = {
 };
 let canvasWidth = 0;
 let canvasHeight = 0;
+const modelMargin = {
+  left: 0,
+  top: 0
+};
 const minModelMargin = 20;
 
 const backgroundColor = "#eee";
@@ -26,8 +30,8 @@ const stationColor = "#e56d44";
 
 const lineSpacing = 35;
 // should be in km
-const lockingDepth = 2;
-const distanceScale = 1;
+const lockingDepth = 1;
+const distanceScale = 2;
 
 @inject("stores")
 @observer
@@ -76,10 +80,8 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     this.canvasRef.current.width = canvasWidth;
     this.canvasRef.current.height = canvasHeight;
 
-    const modelMargin = {
-      left: (canvasWidth - this.modelWidth) / 2,
-      top: (canvasHeight - this.modelWidth) / 2
-    };
+    modelMargin.left = (canvasWidth - this.modelWidth) / 2;
+    modelMargin.top = (canvasHeight - this.modelWidth) / 2;
 
     const ctx = this.canvasRef.current.getContext("2d")!;
 
@@ -107,7 +109,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.strokeStyle = textColor;
 
     // set up the GPS site positions
-    const stationPoints = this.generateGPSStationPoints(modelMargin.left, modelMargin.top);
+    const stationPoints = this.generateGPSStationPoints();
     const startPoint = stationPoints[0];
 
     // text labels
@@ -213,7 +215,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     // generate horizontal lines
     for (let x = 0; x < this.modelWidth; x += this.stepSize) {
 
-      const xDist = this.percentToWorldX((x + xOffset) / this.modelWidth);
+      const xDist = this.percentToWorldX((x + xOffset - modelMargin.left) / this.modelWidth);
 
       const plateSpeed = (x < center) ? deformSpeedPlate1 : deformSpeedPlate2;
       const plateDir = (x < center) ? deformDirPlate1 : deformDirPlate2;
@@ -242,7 +244,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     // generate vertical lines
     for (let y = 0; y < this.modelWidth; y += this.stepSize) {
 
-      const xDist = this.percentToWorldX(xOrigin / this.modelWidth);
+      const xDist = this.percentToWorldX(xOrigin - modelMargin.left / this.modelWidth);
 
       const plateSpeed = (xOrigin < center) ? deformSpeedPlate1 : deformSpeedPlate2;
       const plateDir = (xOrigin < center) ? deformDirPlate1 : deformDirPlate2;
@@ -269,7 +271,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     return points;
   }
 
-  private generateGPSStationPoints(modelMarginLeft: number, modelMarginTop: number) {
+  private generateGPSStationPoints() {
     const { deformationSimulationProgress: progress, deformationSites,
       deformSpeedPlate1, deformDirPlate1, deformSpeedPlate2, deformDirPlate2 } =
       this.stores.seismicSimulation;
@@ -290,8 +292,8 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       const siteDisplacementY =
         this.calculateVerticalSheer(this.percentToWorldX(site[0]), blockSpeed, dir) * progress;
 
-      const x = this.modelWidth * site[0] + modelMarginLeft + this.worldToCanvas(siteDisplacementX);
-      const y = this.modelWidth * site[1] + modelMarginTop + this.worldToCanvas(siteDisplacementY);
+      const x = this.modelWidth * site[0] + modelMargin.left + this.worldToCanvas(siteDisplacementX);
+      const y = this.modelWidth * site[1] + modelMargin.top + this.worldToCanvas(siteDisplacementY);
       stationPoints.push({ x, y });
     }
     return stationPoints;
@@ -322,7 +324,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     return distanceInRealUnits * distanceScale;
   }
 
-  private generateVelocityVectorArrows(modelMargin: any, modelWidth: number) {
+  private generateVelocityVectorArrows(modelWidth: number) {
     const {
       deformSpeedPlate1, deformDirPlate1, deformSpeedPlate2, deformDirPlate2 } =
       this.stores.seismicSimulation;
