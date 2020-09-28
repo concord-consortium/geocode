@@ -34,7 +34,7 @@ const distanceScale = 5;
 
 const deg2Rad = (degreeAngle: number) => {
   return degreeAngle * Math.PI / 180;
-}
+};
 
 @inject("stores")
 @observer
