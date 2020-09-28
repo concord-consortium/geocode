@@ -10,9 +10,9 @@ const stationData = parseOfflineUNAVCOData(minLat, maxLat, minLng, maxLng);
 
 // Percentage within the drawn square from left-to-right for x and from top-to-bottom for y
 // so [0.1,0.9] is close to the left edge, close to the top.
-const deformationSite1 = [0.75, 0.1];
+const deformationSite1 = [0.75, 0.2];
 const deformationSite2 = [0.6, 0.85];
-const deformationSite3 = [0.2, 0.5];
+const deformationSite3 = [0.2, 0.6];
 
 export const SeismicSimulationStore = types
   .model("seismicSimulation", {

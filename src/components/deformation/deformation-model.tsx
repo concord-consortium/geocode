@@ -2,7 +2,6 @@ import * as React from "react";
 import { inject, observer } from "mobx-react";
 import { BaseComponent } from "../base";
 import { IDisposer, onAction } from "mobx-state-tree";
-import { capitalize } from "lodash";
 
 interface IProps {
   width: number;
@@ -31,7 +30,11 @@ const stationColor = "#e56d44";
 const lineSpacing = 35;
 // should be in km
 const lockingDepth = 1;
-const distanceScale = 2;
+const distanceScale = 5;
+
+const deg2Rad = (degreeAngle: number) => {
+  return degreeAngle * Math.PI / 180;
+}
 
 @inject("stores")
 @observer
@@ -39,6 +42,15 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
   private canvasRef = React.createRef<HTMLCanvasElement>();
   private disposer: IDisposer;
+
+  private get modelWidth() {
+    const smallestDimension = Math.min(canvasWidth, canvasHeight);
+    return smallestDimension - (minModelMargin * 2);
+  }
+  private get stepSize() {
+    const steps = 300;
+    return this.modelWidth / steps;
+  }
 
   public componentDidMount() {
     this.drawModel();
@@ -135,7 +147,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.save();
     // now we stop the deformation lines appearing outside of the area
     // useful to disable this while debugging!
-    ctx.clip();
+    // ctx.clip();
 
     // Start deformation lines
     const lines: Point[][] = [];
@@ -167,9 +179,9 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.fill();
 
     // show velocity vector arrows for each plate
-    // start circle
+    // start with a circle - no design spec for this yet
     ctx.beginPath();
-    const points = this.generateVelocityVectorArrows(modelMargin, this.modelWidth);
+    const points = this.generateVelocityVectorArrows(this.modelWidth);
     ctx.moveTo(points.p1.x, points.p1.y);
     ctx.arc(points.p1.x, points.p1.y, 10, 0, 2 * Math.PI);
     ctx.stroke();
@@ -195,15 +207,6 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.stroke();
   }
 
-  private get modelWidth() {
-    const smallestDimension = Math.min(canvasWidth, canvasHeight);
-    return smallestDimension - (minModelMargin * 2);
-  }
-  private get stepSize() {
-    const steps = 300;
-    return this.modelWidth / steps;
-  }
-
   private generateYDisplacementLine(yOrigin: number, xOffset: number) {
     const { deformationSimulationProgress: progress,
       deformSpeedPlate1, deformDirPlate1, deformSpeedPlate2, deformDirPlate2 } =
@@ -214,18 +217,18 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
     // generate horizontal lines
     for (let x = 0; x < this.modelWidth; x += this.stepSize) {
-
-      const xDist = this.percentToWorldX((x + xOffset - modelMargin.left) / this.modelWidth);
+      // xDist is always distance FROM the center fault line. xOffset is the left margin
+      const xDist = this.canvasToWorld(Math.abs(center - x));
 
       const plateSpeed = (x < center) ? deformSpeedPlate1 : deformSpeedPlate2;
       const plateDir = (x < center) ? deformDirPlate1 : deformDirPlate2;
 
       // convert to radians
-      const dir = plateDir * Math.PI / 180;
+      const dir = deg2Rad(plateDir - 90);
 
       // distance is measured from the center fault
       const verticalSheer =
-        this.calculateVerticalSheer(xDist, plateSpeed, dir);
+        this.calculateVerticalSheer (xDist, plateSpeed, dir);
       const y = yOrigin + this.worldToCanvas(verticalSheer) * progress;
 
       points.push({ x: x + xOffset, y });
@@ -243,14 +246,14 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
     // generate vertical lines
     for (let y = 0; y < this.modelWidth; y += this.stepSize) {
-
-      const xDist = this.percentToWorldX(xOrigin - modelMargin.left / this.modelWidth);
+      // xDist is always distance FROM the fault line - should not be negative
+      const xDist = this.canvasToWorld(Math.abs(center - xOrigin));
 
       const plateSpeed = (xOrigin < center) ? deformSpeedPlate1 : deformSpeedPlate2;
       const plateDir = (xOrigin < center) ? deformDirPlate1 : deformDirPlate2;
 
       // convert to radians
-      const dir = plateDir * Math.PI / 180;
+      const dir = deg2Rad(plateDir - 90);
 
       // add the x shear over time as the simulation runs
       // our distance is measured from the center fault
@@ -281,16 +284,16 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     for (const site of deformationSites) {
       // get speed and direction by determining which side of fault
       // station x and y are stored in the array as 0-1 percentage across the canvas
-      const blockSpeed = site[0] < 0.5 ? deformSpeedPlate1 : deformSpeedPlate2;
-      const blockDirection = site[0] < 0.5 ? deformDirPlate1 : deformDirPlate2;
+      const plateSpeed = site[0] < 0.5 ? deformSpeedPlate1 : deformSpeedPlate2;
+      const plateDirection = site[0] < 0.5 ? deformDirPlate1 : deformDirPlate2;
 
-      // convert to radians
-      const dir = blockDirection * Math.PI / 180;
+      // convert the plate movement angle (from North) to degrees from horitontal, then convert to radians
+      const dir = deg2Rad(plateDirection - 90);
 
-      const siteDisplacementX =
-        this.calculateHorizontalSheer(this.percentToWorldX(site[0]), blockSpeed, dir) * progress;
-      const siteDisplacementY =
-        this.calculateVerticalSheer(this.percentToWorldX(site[0]), blockSpeed, dir) * progress;
+      const siteDisplacementX = this.calculateHorizontalSheer(
+        this.percentToWorld(site[0]), plateSpeed, dir) * progress;
+      const siteDisplacementY = this.calculateVerticalSheer(
+        this.percentToWorld(site[0]), plateSpeed, dir) * progress;
 
       const x = this.modelWidth * site[0] + modelMargin.left + this.worldToCanvas(siteDisplacementX);
       const y = this.modelWidth * site[1] + modelMargin.top + this.worldToCanvas(siteDisplacementY);
@@ -316,20 +319,28 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     return verticalSheer;
   }
 
-  private percentToWorldX(distancePercentage: number) {
-    const percentageFromCenter = Math.abs(0.5 - distancePercentage);
-    return percentageFromCenter * this.modelWidth / distanceScale;
+  private canvasToWorld(canvasPosition: number) {
+    return canvasPosition / distanceScale;
+  }
+
+  // GPS stations are positioned as a percentage 0-1 across the model area
+  private percentToWorld(distancePercentage: number) {
+    // const percentageFromCenter = Math.abs(0.5 - distancePercentage);
+    return distancePercentage * this.modelWidth / distanceScale;
   }
   private worldToCanvas(distanceInRealUnits: number) {
     return distanceInRealUnits * distanceScale;
   }
 
+  // Visual representation of the plate velocities based on student values
   private generateVelocityVectorArrows(modelWidth: number) {
     const {
       deformSpeedPlate1, deformDirPlate1, deformSpeedPlate2, deformDirPlate2 } =
       this.stores.seismicSimulation;
 
+    // line starts at given point
     const p1 = { x: modelMargin.left + 30, y: modelMargin.top - 50 };
+    // calculate end canvas position of line to represent the magnitude and direction of movement
     const p1vx = p1.x + deformSpeedPlate1 * Math.sin(deformDirPlate1 * Math.PI / 180);
     const p1vy = p1.y + deformSpeedPlate1 * Math.cos(deformDirPlate1 * Math.PI / 180);
 
@@ -337,6 +348,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     const p2vx = p2.x + deformSpeedPlate2 * Math.sin(deformDirPlate2 * Math.PI / 180);
     const p2vy = p2.y + deformSpeedPlate2 * Math.cos(deformDirPlate2 * Math.PI / 180);
 
+    // points returns the start and end point of the lines to be drawn for plate 1 and plate 2
     const points = {
       p1,
       p1v: { x: p1vx, y: p1vy },
