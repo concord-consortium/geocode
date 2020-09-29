@@ -2,6 +2,7 @@ import * as React from "react";
 import { inject, observer } from "mobx-react";
 import { BaseComponent } from "../base";
 import { IDisposer, onAction } from "mobx-state-tree";
+import { deg2rad } from "../../utilities/coordinateSpaceConversion";
 
 interface IProps {
   width: number;
@@ -213,7 +214,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
   private generateYDisplacementLine(yOrigin: number, xOffset: number) {
     const { deformationSimulationProgress: progress,
-      deformSpeedPlate1, deformSpeedPlate2 } =
+      deformSpeedPlate1, deformDirPlate1, deformSpeedPlate2, deformDirPlate2 } =
       this.stores.seismicSimulation;
 
     const center = this.modelWidth / 2;
@@ -225,21 +226,24 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       const xDist = this.canvasToWorld(Math.abs(center - x));
 
       const plateSpeed = (x < center) ? deformSpeedPlate1 : deformSpeedPlate2;
+      const plateDir = (x < center) ? deformDirPlate1 : deformDirPlate2;
       const dip = (x < center) ? plateDipAngle : plateDipAngle;
 
       // distance is measured from the center fault
       const verticalSheer =
-        this.calculateVerticalSheer (xDist, plateSpeed, dip);
-      const y = yOrigin + this.worldToCanvas(verticalSheer) * progress;
-
-      points.push({ x: x + xOffset, y });
+        this.calculateVerticalSheer(xDist, plateSpeed * Math.cos(deg2rad(plateDir)), dip);
+      const horizontalSheer =
+        this.calculateHorizontalSheer(xDist, plateSpeed * Math.sin(deg2rad(plateDir)), dip);
+      const newY = yOrigin + this.worldToCanvas(verticalSheer) * progress;
+      const newX = x + xOffset + this.worldToCanvas(horizontalSheer) * progress;
+      points.push({ x: newX, y: newY });
     }
     return points;
   }
 
   private generateXDisplacementLine(xOrigin: number, yOffset: number) {
     const { deformationSimulationProgress: progress,
-      deformSpeedPlate1, deformSpeedPlate2 } =
+      deformSpeedPlate1, deformDirPlate1, deformSpeedPlate2, deformDirPlate2 } =
       this.stores.seismicSimulation;
 
     const center = this.modelWidth / 2;
@@ -250,24 +254,30 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       // xDist is always distance FROM the fault line - should not be negative
       const xDist = this.canvasToWorld(Math.abs(center - xOrigin));
       const plateSpeed = (xOrigin < center) ? deformSpeedPlate1 : deformSpeedPlate2;
+      const plateDir = (xOrigin < center) ? deformDirPlate1 : deformDirPlate2;
       const dip = (xOrigin < center) ? plateDipAngle : plateDipAngle;
 
       // add the x shear over time as the simulation runs
       // our distance is measured from the center fault
-      const horizontalSheer = this.calculateHorizontalSheer(xDist, plateSpeed, dip);
-
+      const horizontalSheer =
+        this.calculateHorizontalSheer(xDist, plateSpeed * Math.cos(deg2rad(plateDir)), dip);
+      // add the y shear component
+      const verticalSheer =
+        this.calculateVerticalSheer(xDist, plateSpeed * Math.sin(deg2rad(plateDir)), dip);
+      if (y === 0) console.log(verticalSheer);
       // having a perfectly straight vertical line makes the line disappear
       const lineFudge = y / 1000;
       const newX = xOrigin + (this.worldToCanvas(horizontalSheer) * progress) + lineFudge;
+      const newY = y + yOffset + this.worldToCanvas(verticalSheer) * progress;
 
-      points.push({ x: newX, y:  y + yOffset });
+      points.push({ x: newX, y: newY });
     }
     return points;
   }
 
   private generateGPSStationPoints() {
     const { deformationSimulationProgress: progress, deformationSites,
-      deformSpeedPlate1, deformSpeedPlate2 } =
+      deformSpeedPlate1, deformDirPlate1, deformSpeedPlate2, deformDirPlate2 } =
       this.stores.seismicSimulation;
 
     // stations will move with the land
@@ -276,13 +286,14 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       // get speed by determining which side of fault
       // station x and y are stored in the array as 0-1 percentage across the canvas
       const plateSpeed = site[0] < 0.5 ? deformSpeedPlate1 : deformSpeedPlate2;
+      const plateDir = site[0] < 0.5 ? deformDirPlate1 : deformDirPlate2;
       // plate dip is a constant between the plates
       const dip = site[0] < 0.5 ? plateDipAngle : plateDipAngle;
 
       const siteDisplacementX = this.calculateHorizontalSheer(
-        this.percentToWorld(site[0]), plateSpeed, dip) * progress;
+        this.percentToWorld(site[0]), plateSpeed * Math.cos(deg2rad(plateDir)), dip) * progress;
       const siteDisplacementY = this.calculateVerticalSheer(
-        this.percentToWorld(site[0]), plateSpeed, dip) * progress;
+        this.percentToWorld(site[0]), plateSpeed * Math.cos(deg2rad(plateDir)), dip) * progress;
 
       const x = this.modelWidth * site[0] + modelMargin.left + this.worldToCanvas(siteDisplacementX);
       const y = this.modelWidth * site[1] + modelMargin.top + this.worldToCanvas(siteDisplacementY);
@@ -302,7 +313,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
   }
 
   private calculateVerticalSheer(px: number, speed: number, dip: number) {
-    const verticalSheer = -speed / Math.PI *
+    const verticalSheer = speed / Math.PI *
     (Math.sin(dip) * Math.atan(px / lockingDepth) - dip + Math.PI / 2) +
     lockingDepth * (lockingDepth * Math.cos(dip) + px * Math.sin(dip))
     / (Math.pow(px, 2) + Math.pow(lockingDepth, 2));
