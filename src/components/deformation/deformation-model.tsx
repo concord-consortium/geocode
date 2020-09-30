@@ -264,7 +264,6 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       // add the y shear component
       const verticalSheer =
         this.calculateVerticalSheer(xDist, plateSpeed * Math.sin(deg2rad(plateDir)), dip);
-      if (y === 0) console.log(verticalSheer);
       // having a perfectly straight vertical line makes the line disappear
       const lineFudge = y / 1000;
       const newX = xOrigin + (this.worldToCanvas(horizontalSheer) * progress) + lineFudge;
