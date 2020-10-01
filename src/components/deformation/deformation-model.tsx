@@ -210,6 +210,26 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.moveTo(points.p2.x, points.p2.y);
     ctx.lineTo(points.p2v.x, points.p2v.y);
     ctx.stroke();
+
+    // Scale
+    const s1 = { x: this.modelWidth / 2 - modelMargin.left, y: modelMargin.top - 50 };
+    const s2 = { x: s1.x + this.worldToCanvas(20), y: s1.y };
+    ctx.beginPath();
+    ctx.moveTo(s1.x, s1.y);
+    ctx.lineTo(s2.x, s2.y);
+    // end caps
+    ctx.moveTo(s1.x, s1.y - 5);
+    ctx.lineTo(s1.x, s1.y + 5);
+    ctx.moveTo(s2.x, s2.y - 5);
+    ctx.lineTo(s2.x, s2.y + 5);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.fillStyle = textColor;
+    ctx.font = "16px Arial";
+    ctx.fillText(`20km`, s1.x + modelMargin.left + 20, s1.y + 20);
+    ctx.stroke();
+
   }
 
   private generateYDisplacementLine(yOrigin: number, xOffset: number) {
@@ -234,6 +254,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
         this.calculateVerticalSheer(xDist, plateSpeed * Math.cos(deg2rad(plateDir)), dip) * progress;
       const horizontalSheer =
         this.calculateHorizontalSheer(xDist, plateSpeed * Math.sin(deg2rad(plateDir)), dip) * progress;
+
       const newY = yOrigin + this.worldToCanvas(verticalSheer);
       const newX = x + xOffset + this.worldToCanvas(horizontalSheer);
       points.push({ x: newX, y: newY });
@@ -264,6 +285,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       // add the y shear component
       const verticalSheer =
         this.calculateVerticalSheer(xDist, plateSpeed * Math.cos(deg2rad(plateDir)), dip) * progress;
+
       // having a perfectly straight vertical line makes the line disappear
       const lineFudge = y / 1000;
       const newX = xOrigin + this.worldToCanvas(horizontalSheer) + lineFudge;
