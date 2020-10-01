@@ -231,11 +231,11 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
       // distance is measured from the center fault
       const verticalSheer =
-        this.calculateVerticalSheer(xDist, plateSpeed * Math.cos(deg2rad(plateDir)), dip);
+        this.calculateVerticalSheer(xDist, plateSpeed * Math.cos(deg2rad(plateDir)), dip) * progress;
       const horizontalSheer =
-        this.calculateHorizontalSheer(xDist, plateSpeed * Math.sin(deg2rad(plateDir)), dip);
-      const newY = yOrigin + this.worldToCanvas(verticalSheer) * progress;
-      const newX = x + xOffset + this.worldToCanvas(horizontalSheer) * progress;
+        this.calculateHorizontalSheer(xDist, plateSpeed * Math.sin(deg2rad(plateDir)), dip) * progress;
+      const newY = yOrigin + this.worldToCanvas(verticalSheer);
+      const newX = x + xOffset + this.worldToCanvas(horizontalSheer);
       points.push({ x: newX, y: newY });
     }
     return points;
@@ -260,14 +260,14 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       // add the x shear over time as the simulation runs
       // our distance is measured from the center fault
       const horizontalSheer =
-        this.calculateHorizontalSheer(xDist, plateSpeed * Math.cos(deg2rad(plateDir)), dip);
+        this.calculateHorizontalSheer(xDist, plateSpeed * Math.sin(deg2rad(plateDir)), dip) * progress;
       // add the y shear component
       const verticalSheer =
-        this.calculateVerticalSheer(xDist, plateSpeed * Math.sin(deg2rad(plateDir)), dip);
+        this.calculateVerticalSheer(xDist, plateSpeed * Math.cos(deg2rad(plateDir)), dip) * progress;
       // having a perfectly straight vertical line makes the line disappear
       const lineFudge = y / 1000;
-      const newX = xOrigin + (this.worldToCanvas(horizontalSheer) * progress) + lineFudge;
-      const newY = y + yOffset + this.worldToCanvas(verticalSheer) * progress;
+      const newX = xOrigin + this.worldToCanvas(horizontalSheer) + lineFudge;
+      const newY = y + yOffset + this.worldToCanvas(verticalSheer);
 
       points.push({ x: newX, y: newY });
     }
@@ -290,7 +290,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       const dip = site[0] < 0.5 ? plateDipAngle : plateDipAngle;
 
       const siteDisplacementX = this.calculateHorizontalSheer(
-        this.percentToWorld(site[0]), plateSpeed * Math.cos(deg2rad(plateDir)), dip) * progress;
+        this.percentToWorld(site[0]), plateSpeed * Math.sin(deg2rad(plateDir)), dip) * progress;
       const siteDisplacementY = this.calculateVerticalSheer(
         this.percentToWorld(site[0]), plateSpeed * Math.cos(deg2rad(plateDir)), dip) * progress;
 
