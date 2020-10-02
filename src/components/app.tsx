@@ -30,6 +30,7 @@ import { HistogramPanel } from "./montecarlo/histogram-panel";
 import { uiStore } from "../stores/ui-store";
 import { GPSStationTable } from "./gps-station-table";
 import { DeformationModel } from "./deformation/deformation-model";
+import { UnitNameType } from "../stores/unit-store";
 
 interface IProps extends IBaseProps {}
 
@@ -494,7 +495,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                       backgroundhovercolor={this.getRightTabHoverColor(RightSectionTypes.CONDITIONS)}
                       data-test={this.getRightTabName(RightSectionTypes.CONDITIONS) + "-tab"}
                     >
-                      {this.getRightTabName(RightSectionTypes.CONDITIONS)}
+                      {this.getRightTabName(RightSectionTypes.CONDITIONS, unitName)}
                     </BottomTab>
                   }
                   { showCrossSection &&
@@ -586,8 +587,12 @@ export class AppComponent extends BaseComponent<IProps, IState> {
   private getRightTabHoverColor = (type: RightSectionTypes) => {
     return (type ? kRightTabInfo[type].hoverBackgroundColor : "white");
   }
-  private getRightTabName = (type: RightSectionTypes) => {
-    return (type ? kRightTabInfo[type].name : "");
+  private getRightTabName = (type: RightSectionTypes, unit?: UnitNameType) => {
+    if (!type) return "";
+    if (unit && kRightTabInfo[type].unitDisplayName && kRightTabInfo[type].unitDisplayName![unit]) {
+      return kRightTabInfo[type].unitDisplayName![unit];
+    }
+    return kRightTabInfo[type].name;
   }
 
   private resize = (rect: DOMRect) => {
