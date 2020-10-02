@@ -25,6 +25,11 @@ export const SeismicSimulationStore = types
     },
     setShowVelocityArrows(show: boolean) {
       self.showVelocityArrows = show;
+    },
+    reset() {
+      self.visibleGPSStationIds.clear();
+      self.selectedGPSStationId = undefined;
+      self.showVelocityArrows = false;
     }
   }))
   .views((self) => ({

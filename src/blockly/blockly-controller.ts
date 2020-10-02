@@ -52,6 +52,7 @@ export class BlocklyController {
   public reset = () => {
     this.setCode(this.code, this.workspace);
     this.stores.tephraSimulation.reset();
+    this.stores.seismicSimulation.reset();
     this.stores.chartsStore.reset();
     this.stores.samplesCollectionsStore.reset();
   }
