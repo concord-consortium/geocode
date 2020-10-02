@@ -18,7 +18,7 @@ Blockly.JavaScript['seismic_all_gps_stations'] = function (block) {
 Blockly.Blocks['seismic_show_gps_stations'] = {
   init: function () {
     this.appendValueInput('stations')
-      .setCheck('GPS_Station')
+      .setCheck(['GPS_Station', 'String'])
       .appendField('Show GPS Stations')
     this.appendDummyInput()
       .setAlign(Blockly.ALIGN_RIGHT)
