@@ -207,7 +207,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
 
     addFunc("filter", (params: {dataset: Dataset, filter: Filter}) => {
       if (!params.dataset) {
-        blocklyController.throwError("You must add a dataset for the wind sample.");
+        blocklyController.throwError("You must include a dataset to filter.");
         return;
       }
       return {
