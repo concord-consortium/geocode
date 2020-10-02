@@ -7,7 +7,7 @@
     <block type="graph_gps_position"></block>
   </category>
 
-  <category name="Deformation" colour="15">
+  <category name="Deformation Model" colour="15">
     <block type="deformation-create-sim"></block>
   </category>
 
