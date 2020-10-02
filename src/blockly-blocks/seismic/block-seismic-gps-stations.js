@@ -89,6 +89,22 @@ Blockly.Blocks['seismic_filter_data'] = {
       .setCheck(['Number'])
       .setAlign(Blockly.ALIGN_RIGHT)
       .appendField('Max Latitude')
+    this.appendValueInput('min_speed')
+      .setCheck(['Number'])
+      .setAlign(Blockly.ALIGN_RIGHT)
+      .appendField('Min Speed (mm/y)')
+    this.appendValueInput('max_speed')
+      .setCheck(['Number'])
+      .setAlign(Blockly.ALIGN_RIGHT)
+      .appendField('Max Speed (mm/y)')
+    this.appendValueInput('min_dir')
+      .setCheck(['Number'])
+      .setAlign(Blockly.ALIGN_RIGHT)
+      .appendField('Min Direction (º)')
+    this.appendValueInput('max_dir')
+      .setCheck(['Number'])
+      .setAlign(Blockly.ALIGN_RIGHT)
+      .appendField('Max Direction (º)')
     this.setInputsInline(false)
     this.setOutput(true, 'GPS_Station')
     this.setColour("%{BKY_LISTS_HUE}")
@@ -102,13 +118,27 @@ Blockly.JavaScript['seismic_filter_data'] = function (block) {
   var value_max_long = Blockly.JavaScript.valueToCode(block, 'max_long', Blockly.JavaScript.ORDER_ATOMIC)
   var value_min_lat = Blockly.JavaScript.valueToCode(block, 'min_lat', Blockly.JavaScript.ORDER_ATOMIC)
   var value_max_lat = Blockly.JavaScript.valueToCode(block, 'max_lat', Blockly.JavaScript.ORDER_ATOMIC)
+  var value_min_speed = Blockly.JavaScript.valueToCode(block, 'min_speed', Blockly.JavaScript.ORDER_ATOMIC)
+  var value_max_speed = Blockly.JavaScript.valueToCode(block, 'max_speed', Blockly.JavaScript.ORDER_ATOMIC)
+  var value_min_dir = Blockly.JavaScript.valueToCode(block, 'min_dir', Blockly.JavaScript.ORDER_ATOMIC)
+  var value_max_dir = Blockly.JavaScript.valueToCode(block, 'max_dir', Blockly.JavaScript.ORDER_ATOMIC)
 
   var filter = {
-    longitude: {min: value_min_long || "-180", max: value_max_long || "180"},
-    latitude: {min: value_min_lat || "-90", max: value_max_lat || "90"}
+    longitude: {min: value_min_long || -180, max: value_max_long || 180},
+    latitude: {min: value_min_lat || -90, max: value_max_lat || 90},
+    speed: {min: value_min_speed || 0, max: value_max_speed || 500},
+    direction: {min: value_min_dir || 0, max: value_max_dir || 360}
   };
+
+  // remove all defaults by hand if both min and max are defaults
+  if (filter.longitude.min === -180 && filter.longitude.max === 180) delete filter.longitude;
+  if (filter.latitude.min === -90 && filter.latitude.max === 90) delete filter.latitude;
+  if (filter.speed.min === 0 && filter.speed.max === 500) delete filter.speed;
+  if (filter.direction.min === 0 && filter.direction.max === 360) delete filter.direction;
+
   let filterObj = JSON.stringify(filter);
   filterObj = filterObj.replace(/\"/g, "");
+
   var code = `filter({dataset: ${dataset}, filter: ${filterObj}})`
   // TODO: Change ORDER_NONE to the correct strength.
   return [code, Blockly.JavaScript.ORDER_NONE]
