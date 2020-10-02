@@ -47,9 +47,6 @@ export class GPSStationTable extends BaseComponent<IProps, IState> {
     const { selectedGPSStation: station } = this.stores.seismicSimulation;
     if (!station) return;
 
-    const speedmm = Math.sqrt(station.eastVelocity ** 2 + station.northVelocity ** 2) * 1000;
-    const degsCWFomNorth = (360 + Math.atan2(station.eastVelocity, station.northVelocity) * (180 / Math.PI)) % 360;
-
     let installed = "N/A";
     let lastRecord = "N/A";
     let datesClass = "na";
@@ -74,13 +71,13 @@ export class GPSStationTable extends BaseComponent<IProps, IState> {
             <td className="label">Latitude</td>
             <td>{round(station.latitude, 5)}</td>
             <td className="label">Speed (mm/y)</td>
-            <td>{round(speedmm, 1)}</td>
+            <td>{round(station.speed, 1)}</td>
           </tr>
           <tr>
             <td className="label">Longitude</td>
             <td>{round(station.longitude, 5)}</td>
             <td rowSpan={2} className="label">Direction<br/>{"\u00A0\u00A0"}(º from 0)</td>
-            <td>{Math.round(degsCWFomNorth)}</td>
+            <td>{Math.round(station.direction)}</td>
           </tr>
           <tr>
             <td className="label">Installed</td>
