@@ -322,6 +322,10 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       chartsStore.addArbitraryChart(dataset, "East (mm)", "North (mm)", `${params.station} Position over Time`, true);
     });
 
+    addFunc("createDeformationModel", () => {
+      seismicSimulation.startDeformationModel();
+    });
+
     /** ==== Utility methods ==== */
 
     addFunc("log", (params) => {

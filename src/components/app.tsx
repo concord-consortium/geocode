@@ -29,6 +29,7 @@ import { BlocklyController } from "../blockly/blockly-controller";
 import { HistogramPanel } from "./montecarlo/histogram-panel";
 import { uiStore } from "../stores/ui-store";
 import { GPSStationTable } from "./gps-station-table";
+import { DeformationModel } from "./deformation/deformation-model";
 
 interface IProps extends IBaseProps {}
 
@@ -171,6 +172,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       },
       seismicSimulation: {
         selectedGPSStation,
+        startDeformationModel
       },
       blocklyStore: {
         initialXmlCode,
@@ -187,6 +189,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         showCrossSection,
         showData,
         showMonteCarlo,
+        showDeformation,
         showSpeedControls,
         speed,
         hideBlocklyToolbox,
@@ -247,12 +250,14 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     ? (showMonteCarlo
         ? kRightTabInfo.monteCarlo.index + 1 :
         (showCrossSection ? kRightTabInfo.crossSection.index + 1 : kRightTabInfo.conditions.index + 1))
-    : -1;
+      : -1;
+    kRightTabInfo.deformation.index = showDeformation ? kRightTabInfo.data.index + 1 : -1;
     const enabledRightTabTypes = [];
     if (showConditions)   { enabledRightTabTypes.push(RightSectionTypes.CONDITIONS); }
     if (showCrossSection) { enabledRightTabTypes.push(RightSectionTypes.CROSS_SECTION); }
     if (showMonteCarlo)   { enabledRightTabTypes.push(RightSectionTypes.MONTE_CARLO); }
     if (showData)         { enabledRightTabTypes.push(RightSectionTypes.DATA); }
+    if (showDeformation)  { enabledRightTabTypes.push(RightSectionTypes.DEFORMATION); }
 
     const currentTabType = enabledTabTypes[tabIndex || 0];
     const currentRightTabType = enabledRightTabTypes[rightTabIndex || 0];
@@ -383,8 +388,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 tabcolor={this.getRightTabColor(RightSectionTypes.CONDITIONS)}
                 rightpanel={"true"}
                 data-test={this.getRightTabName(RightSectionTypes.CONDITIONS) + "-panel"}
-              >
-                <Simulation width={mapWidth} backgroundColor={this.getRightTabColor(RightSectionTypes.CONDITIONS)}>
+            >
+              <Simulation width={mapWidth} backgroundColor={this.getRightTabColor(RightSectionTypes.CONDITIONS)}>
                   <MapComponent
                     width={ mapWidth }
                     height={ height - 190 }
@@ -404,6 +409,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                     </CenteredRow>
                   }
                 </Simulation>
+
               </TabPanel>
             }
             { showCrossSection &&
@@ -456,6 +462,20 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 <div>
                   <ChartPanel width={mapWidth} />
                 </div>
+              </TabPanel>
+            }
+            {
+              showDeformation && !isTephra &&
+              <TabPanel
+                width={`${tabWidth}px`}
+                tabcolor={this.getRightTabColor(RightSectionTypes.DEFORMATION)}
+                rightpanel={"true"}
+                data-test={this.getRightTabName(RightSectionTypes.DEFORMATION) + "-panel"}
+              >
+                <DeformationModel
+                  width={mapWidth}
+                  height={height - 30}
+                />
               </TabPanel>
             }
             <RightTabBack
@@ -511,6 +531,18 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                       data-test={this.getRightTabName(RightSectionTypes.DATA) + "-tab"}
                     >
                       {this.getRightTabName(RightSectionTypes.DATA)}
+                    </BottomTab>
+                  }
+                  { showDeformation && !isTephra &&
+                    <BottomTab
+                      selected={rightTabIndex === kRightTabInfo.deformation.index}
+                      leftofselected={rightTabIndex === (kRightTabInfo.deformation.index + 1) ? "true" : undefined}
+                      rightofselected={rightTabIndex === (kRightTabInfo.deformation.index - 1) ? "true" : undefined}
+                      backgroundcolor={this.getRightTabColor(RightSectionTypes.DEFORMATION)}
+                      backgroundhovercolor={this.getRightTabHoverColor(RightSectionTypes.DEFORMATION)}
+                      data-test={this.getRightTabName(RightSectionTypes.DEFORMATION) + "-tab"}
+                    >
+                      {this.getRightTabName(RightSectionTypes.DEFORMATION)}
                     </BottomTab>
                   }
                 </TabList>

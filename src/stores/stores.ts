@@ -18,7 +18,7 @@ export interface IStore {
 }
 
 export interface IStoreish {
-  unit: {name: "Tephra" | "Seismic"};
+  unit: {name: "Tephra" | "Seismic" };
   blocklyStore: any;
   tephraSimulation: any;
   seismicSimulation: any;
@@ -91,6 +91,7 @@ const uiAuthorSettingsProps = tuple(
   "showCrossSection",
   "showMonteCarlo",
   "showData",
+  "showDeformation",
   "showSpeedControls",
   "showBarHistogram",
   "showLog",
@@ -145,7 +146,10 @@ export const deserializeState = (serializedState: SerializedState): IStoreish =>
   if (serializedState.version === 1) {
     return serializedState.state;
   }
-  return {unit: {name: "Tephra"}, blocklyStore: {}, tephraSimulation: {}, seismicSimulation: {}, uiStore: {}};
+  return {
+    unit: { name: "Tephra" },
+    blocklyStore: {}, tephraSimulation: {}, seismicSimulation: {}, uiStore: {}
+  };
 };
 
 export function updateStores(state: IStoreish) {

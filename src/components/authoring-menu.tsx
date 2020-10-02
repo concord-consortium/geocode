@@ -75,10 +75,10 @@ const AuthoringMenu: React.SFC<IProps> = (props) => {
             <DatBoolean path="uiStore.showConditions" label="Show conditions?" key="showConditions" />
             <DatBoolean path="uiStore.showMonteCarlo" label="Show monte carlo?" key="showMonteCarlo" />
             <DatBoolean path="uiStore.showData" label="Show data?" key="showData" />
+            <DatBoolean path="uiStore.showDeformation" label="Show deformation?" key="showDeformation" />
           </DatFolder>
         ]
       }
-
       {
         props.expandOptionsDialog &&
         [
