@@ -5,6 +5,7 @@ import {
   Tabs as UnstyledTabs,
   TabPanel as UnstyledTabPanel
 } from "react-tabs";
+import { UnitNameType } from "../stores/unit-store";
 
 enum SectionTypes {
   BLOCKS = "blocks",
@@ -50,6 +51,7 @@ enum RightSectionTypes {
 type RightTabInfo = {
   [tab in RightSectionTypes]: {
     name: string;
+    unitDisplayName?: { [unit in UnitNameType ]: string };
     index: number;
     backgroundColor: string;
     hoverBackgroundColor: string;
@@ -58,6 +60,10 @@ type RightTabInfo = {
 const kRightTabInfo: RightTabInfo = {
   conditions: {
     name: "Conditions",
+    unitDisplayName: {
+      Tephra: "Conditions",
+      Seismic: "Map"
+    },
     index: -1,
     backgroundColor: "#b7dcad",
     hoverBackgroundColor: "#add1a2",
