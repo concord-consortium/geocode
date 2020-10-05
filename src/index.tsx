@@ -79,7 +79,9 @@ phone.addListener("initInteractive", (data: {
   }
   updateStores(initialState);
 
-  onSnapshot(stores.tephraSimulation, saveUserData);       // MobX function called on every store change
+  onSnapshot(stores.unit, saveUserData);                   // MobX function called on every store change
+  onSnapshot(stores.tephraSimulation, saveUserData);
+  onSnapshot(stores.blocklyStore, saveUserData);
   onSnapshot(stores.uiStore, saveUserData);
 });
 
