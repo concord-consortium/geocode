@@ -322,11 +322,17 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       chartsStore.addArbitraryChart(dataset, "East (mm)", "North (mm)", `${params.station} Position over Time`, true);
     });
 
-    addFunc("createDeformationModel", () => {
+    addFunc("runDeformationModel", () => {
       seismicSimulation.startDeformationModel();
     });
-    addFunc("setBlockVelocity", (params: { block: number, speed: number, direction: number }) => {
-      seismicSimulation.setBlockVelocity(params.block, params.speed, params.direction);
+
+    addFunc("setPlateVelocity", (params: { plate: number, speed: number, direction: number }) => {
+      if (Math.abs(params.speed) > Math.abs(seismicSimulation.deformMaxSpeed)) {
+        blocklyController.throwError(`Plate speed must be between ${-seismicSimulation.deformMaxSpeed} and ${seismicSimulation.deformMaxSpeed} mm/year`);
+        // tslint:disable-next-line:max-line-length
+        params.speed = Math.min(Math.max(params.speed, -seismicSimulation.deformMaxSpeed), seismicSimulation.deformMaxSpeed);
+      }
+      seismicSimulation.setPlateVelocity(params.plate, params.speed, params.direction);
     });
     /** ==== Utility methods ==== */
 

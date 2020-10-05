@@ -6,6 +6,7 @@ const minLat = 32;
 const maxLat = 42;
 const minLng = -127;
 const maxLng = -115;
+
 const stationData = parseOfflineUNAVCOData(minLat, maxLat, minLng, maxLng);
 
 // Percentage within the drawn square from left-to-right for x and from top-to-bottom for y
@@ -28,7 +29,8 @@ export const SeismicSimulationStore = types
     deformSpeedPlate1: 0,
     deformDirPlate1: 0,
     deformSpeedPlate2: 0,
-    deformDirPlate2: 0
+    deformDirPlate2: 0,
+    deformMaxSpeed: 30
 
   })
   .actions((self) => ({
@@ -67,7 +69,7 @@ export const SeismicSimulationStore = types
 
       window.requestAnimationFrame(updateStep);
     },
-    setBlockVelocity(block: number, speed: number, direction: number) {
+    setPlateVelocity(block: number, speed: number, direction: number) {
       if (block === 1) {
         self.deformSpeedPlate1 = speed;
         self.deformDirPlate1 = 180 - direction;
