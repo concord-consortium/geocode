@@ -33,6 +33,7 @@ const lineSpacing = 20;
 // should be in km
 const lockingDepth = 1;
 // for converting pixels to world distance
+// we want the area shown to be approx this size in each direction
 const distanceScale = 20;
 
 const deg2Rad = (degreeAngle: number) => {
@@ -213,7 +214,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
     // Scale
     const s1 = { x: modelMargin.left + 100, y: modelMargin.top - 50 };
-    const s2 = { x: s1.x + this.worldToCanvas(20), y: s1.y };
+    const s2 = { x: s1.x + this.worldToCanvas(5), y: s1.y };
     ctx.beginPath();
     ctx.moveTo(s1.x, s1.y);
     ctx.lineTo(s2.x, s2.y);
@@ -227,7 +228,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.beginPath();
     ctx.fillStyle = textColor;
     ctx.font = "16px Arial";
-    ctx.fillText(`20km`, s1.x + modelMargin.left + 20, s1.y + 20);
+    ctx.fillText(`5km`, s1.x + ((s2.x - s1.x) / 2), s1.y + 20);
     ctx.stroke();
 
   }
@@ -352,16 +353,17 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
   }
 
   private canvasToWorld(canvasPosition: number) {
-    return canvasPosition / distanceScale;
+    // screen size affects pixel scale
+    // distanceScale is how many real-world units we want to show across the pixel grid
+    return canvasPosition / this.modelWidth *  distanceScale;
   }
 
   // GPS stations are positioned as a percentage 0-1 across the model area
   private percentToWorld(distancePercentage: number) {
-    // const percentageFromCenter = Math.abs(0.5 - distancePercentage);
-    return distancePercentage * this.modelWidth / distanceScale;
+    return distancePercentage * distanceScale;
   }
   private worldToCanvas(distanceInRealUnits: number) {
-    return distanceInRealUnits * distanceScale;
+    return distanceInRealUnits / distanceScale * this.modelWidth;
   }
 
   // Visual representation of the plate velocities based on student values
