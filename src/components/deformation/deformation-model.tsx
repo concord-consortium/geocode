@@ -33,7 +33,7 @@ const lineSpacing = 20;
 // should be in km
 const lockingDepth = 1;
 // for converting pixels to world distance
-const distanceScale = 2;
+const distanceScale = 20;
 
 const deg2Rad = (degreeAngle: number) => {
   return degreeAngle * Math.PI / 180;
@@ -212,7 +212,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.stroke();
 
     // Scale
-    const s1 = { x: this.modelWidth / 2 - modelMargin.left, y: modelMargin.top - 50 };
+    const s1 = { x: modelMargin.left + 100, y: modelMargin.top - 50 };
     const s2 = { x: s1.x + this.worldToCanvas(20), y: s1.y };
     ctx.beginPath();
     ctx.moveTo(s1.x, s1.y);
@@ -232,28 +232,44 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
   }
 
-  private generateYDisplacementLine(yOrigin: number, xOffset: number) {
-    const { deformationSimulationProgress: progress,
-      deformSpeedPlate1, deformDirPlate1, deformSpeedPlate2, deformDirPlate2 } =
+  private getRelativeVerticalSpeed() {
+    const { deformSpeedPlate1, deformDirPlate1, deformSpeedPlate2, deformDirPlate2 } =
       this.stores.seismicSimulation;
+
+    const plate1VerticalSpeed = Math.cos(deg2Rad(deformDirPlate1)) * deformSpeedPlate1;
+    const plate2VerticalSpeed = Math.cos(deg2Rad(deformDirPlate2)) * deformSpeedPlate2;
+
+    const relativeSpeed = plate1VerticalSpeed - plate2VerticalSpeed;
+    return relativeSpeed;
+  }
+
+  private getRelativeHorizontalSpeed() {
+    const { deformSpeedPlate1, deformDirPlate1, deformSpeedPlate2, deformDirPlate2 } =
+      this.stores.seismicSimulation;
+
+    const plate1HorizontalSpeed = Math.sin(deg2Rad(deformDirPlate1)) * deformSpeedPlate1;
+    const plate2HorizontalSpeed = Math.sin(deg2Rad(deformDirPlate2)) * deformSpeedPlate2;
+
+    const relativeSpeed = plate1HorizontalSpeed - plate2HorizontalSpeed;
+    return relativeSpeed;
+  }
+
+  private generateYDisplacementLine(yOrigin: number, xOffset: number) {
+    const { deformationSimulationProgress: progress } = this.stores.seismicSimulation;
 
     const center = this.modelWidth / 2;
     const points: Point[] = [];
 
     // generate horizontal lines
     for (let x = 0; x < this.modelWidth; x += this.stepSize) {
-      // xDist is always distance FROM the center fault line. xOffset is the left margin
-      const xDist = this.canvasToWorld(Math.abs(center - x));
-
-      const plateSpeed = (x < center) ? deformSpeedPlate1 : deformSpeedPlate2;
-      const plateDir = (x < center) ? deformDirPlate1 : deformDirPlate2;
-      const dip = (x < center) ? plateDipAngle : plateDipAngle;
+      // xDist is always distance from the center fault line
+      const xDist = this.canvasToWorld(center - x);
 
       // distance is measured from the center fault
       const verticalSheer =
-        this.calculateVerticalSheer(xDist, plateSpeed * Math.cos(deg2rad(plateDir)), dip) * progress;
+        this.calculateVerticalSheer(xDist, this.getRelativeVerticalSpeed(), plateDipAngle) * progress;
       const horizontalSheer =
-        this.calculateHorizontalSheer(xDist, plateSpeed * Math.sin(deg2rad(plateDir)), dip) * progress;
+        this.calculateHorizontalSheer(xDist, this.getRelativeHorizontalSpeed(), plateDipAngle) * progress;
 
       const newY = yOrigin + this.worldToCanvas(verticalSheer);
       const newX = x + xOffset + this.worldToCanvas(horizontalSheer);
@@ -263,8 +279,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
   }
 
   private generateXDisplacementLine(xOrigin: number, yOffset: number) {
-    const { deformationSimulationProgress: progress,
-      deformSpeedPlate1, deformDirPlate1, deformSpeedPlate2, deformDirPlate2 } =
+    const { deformationSimulationProgress: progress } =
       this.stores.seismicSimulation;
 
     const center = this.modelWidth / 2;
@@ -272,19 +287,16 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
     // generate vertical lines
     for (let y = 0; y < this.modelWidth; y += this.stepSize) {
-      // xDist is always distance FROM the fault line - should not be negative
-      const xDist = this.canvasToWorld(Math.abs(center - xOrigin));
-      const plateSpeed = (xOrigin < center) ? deformSpeedPlate1 : deformSpeedPlate2;
-      const plateDir = (xOrigin < center) ? deformDirPlate1 : deformDirPlate2;
-      const dip = (xOrigin < center) ? plateDipAngle : plateDipAngle;
+      // xDist is always distance from the fault line
+      const xDist = this.canvasToWorld(center - xOrigin);
 
       // add the x shear over time as the simulation runs
       // our distance is measured from the center fault
       const horizontalSheer =
-        this.calculateHorizontalSheer(xDist, plateSpeed * Math.sin(deg2rad(plateDir)), dip) * progress;
+        this.calculateHorizontalSheer(xDist, this.getRelativeHorizontalSpeed(), plateDipAngle) * progress;
       // add the y shear component
       const verticalSheer =
-        this.calculateVerticalSheer(xDist, plateSpeed * Math.cos(deg2rad(plateDir)), dip) * progress;
+        this.calculateVerticalSheer(xDist, this.getRelativeVerticalSpeed(), plateDipAngle) * progress;
 
       // having a perfectly straight vertical line makes the line disappear
       const lineFudge = y / 1000;
@@ -310,11 +322,10 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       const plateDir = site[0] < 0.5 ? deformDirPlate1 : deformDirPlate2;
       // plate dip is a constant between the plates
       const dip = site[0] < 0.5 ? plateDipAngle : plateDipAngle;
-
       const siteDisplacementX = this.calculateHorizontalSheer(
-        this.percentToWorld(site[0]), plateSpeed * Math.sin(deg2rad(plateDir)), dip) * progress;
+        this.percentToWorld(site[0]), this.getRelativeHorizontalSpeed(), plateDipAngle) * progress;
       const siteDisplacementY = this.calculateVerticalSheer(
-        this.percentToWorld(site[0]), plateSpeed * Math.cos(deg2rad(plateDir)), dip) * progress;
+        this.percentToWorld(site[0]), this.getRelativeVerticalSpeed(), plateDipAngle) * progress;
 
       const x = this.modelWidth * site[0] + modelMargin.left + this.worldToCanvas(siteDisplacementX);
       const y = this.modelWidth * site[1] + modelMargin.top + this.worldToCanvas(siteDisplacementY);
@@ -324,21 +335,20 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
   }
 
   // Calculations taken from PowerPoint linked here: https://www.pivotaltracker.com/story/show/174401018
-  // Note: the calculations on that PPT assume displacement along a horizontal fault, so they have been switched
-  private calculateHorizontalSheer(px: number, speed: number, dip: number) {
-    const horizontalSheer = speed / Math.PI *
+  private calculateVerticalSheer(px: number, speed: number, dip: number) {
+    const sheer = speed / Math.PI *
       (Math.cos(dip) * Math.atan(px / lockingDepth) - dip + Math.PI / 2) -
       px * (lockingDepth * Math.cos(dip) + px * (Math.sin(dip)))
-      / (Math.pow(px, 2) + Math.pow(lockingDepth, 2));
-    return horizontalSheer;
+      / ((px ** 2) + (lockingDepth ** 2)) * (px < 0 ? -1 : 1);
+    return sheer;
   }
 
-  private calculateVerticalSheer(px: number, speed: number, dip: number) {
-    const verticalSheer = speed / Math.PI *
+  private calculateHorizontalSheer(px: number, speed: number, dip: number) {
+    const sheer = speed / Math.PI *
     (Math.sin(dip) * Math.atan(px / lockingDepth) - dip + Math.PI / 2) +
     lockingDepth * (lockingDepth * Math.cos(dip) + px * Math.sin(dip))
-    / (Math.pow(px, 2) + Math.pow(lockingDepth, 2));
-    return verticalSheer;
+    / ((px ** 2) + (lockingDepth ** 2));
+    return sheer;
   }
 
   private canvasToWorld(canvasPosition: number) {
