@@ -1,6 +1,7 @@
 import { types } from "mobx-state-tree";
 import { parseOfflineUNAVCOData } from "../utilities/unavco-data";
 import { StationData } from "../strain";
+import { Filter, Range } from "./data-sets";
 
 const minLat = 32;
 const maxLat = 42;
@@ -30,8 +31,13 @@ export const SeismicSimulationStore = types
     deformDirPlate1: 0,
     deformSpeedPlate2: 0,
     deformDirPlate2: 0,
-    deformMaxSpeed: 30
+    deformMaxSpeed: 30,
 
+    strainMapMinLat: -90,
+    strainMapMinLng: -180,
+    strainMapMaxLat: 90,
+    strainMapMaxLng: 180,
+    paintStrainMap: false,
   })
   .actions((self) => ({
     showGPSStations(stations: StationData[] | string) {
@@ -54,11 +60,32 @@ export const SeismicSimulationStore = types
     setShowVelocityArrows(show: boolean) {
       self.showVelocityArrows = show;
     },
+    setStrainMapBounds(bounds: Filter) {
+      if (bounds.latitude && (bounds.latitude as Range).min) {
+        self.strainMapMinLat = (bounds.latitude as Range).min as number;
+      }
+      if (bounds.longitude && (bounds.longitude as Range).min) {
+        self.strainMapMinLng = (bounds.longitude as Range).min as number;
+      }
+      if (bounds.latitude && (bounds.latitude as Range).max) {
+        self.strainMapMaxLat = (bounds.latitude as Range).max as number;
+      }
+      if (bounds.longitude && (bounds.longitude as Range).max) {
+        self.strainMapMaxLng = (bounds.longitude as Range).max as number;
+      }
+      // FIXME
+      self.paintStrainMap = true;
+    },
     reset() {
       self.visibleGPSStationIds.clear();
       self.selectedGPSStationId = undefined;
       self.showVelocityArrows = false;
       self.deformationModelStep = 0;
+      self.strainMapMinLat = -90;
+      self.strainMapMinLng = -180;
+      self.strainMapMaxLat = 90;
+      self.strainMapMaxLng = 180;
+      self.paintStrainMap = false;
     }
   }))
   .actions((self) => ({

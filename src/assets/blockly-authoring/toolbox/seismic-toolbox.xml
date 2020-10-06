@@ -5,6 +5,7 @@
     <block type="seismic_sample_data"></block>
     <block type="seismic_filter_data"></block>
     <block type="graph_gps_position"></block>
+    <block type="seismic_compute_strain"></block>
   </category>
 
   <category name="Deformation Model" colour="15">
