@@ -27,10 +27,12 @@ export interface StationData {
     name: string;
     longitude: number;
     latitude: number;
-    eastVelocity: number;
+    eastVelocity: number;                   // m/yr
     eastVelocityUncertainty: number;
-    northVelocity: number;
+    northVelocity: number;                  // m/yr
     northVelocityUncertainty: number;
+    speed: number;                          // mm/yr
+    direction: number;                      // º from N
 }
 
 // This is all of the outputs of the algorithm. Currently only maxShearStrain is returned

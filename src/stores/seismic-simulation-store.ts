@@ -32,9 +32,13 @@ export const SeismicSimulationStore = types
 
   })
   .actions((self) => ({
-    showGPSStations(stations: StationData[]) {
+    showGPSStations(stations: StationData[] | string) {
       self.visibleGPSStationIds.clear();
-      stations.forEach( stat => self.visibleGPSStationIds.push(stat.id) );
+      if (typeof stations === "string") {
+        self.visibleGPSStationIds.push(stations);
+      } else {
+        stations.forEach( stat => self.visibleGPSStationIds.push(stat.id) );
+      }
     },
     selectGPSStation(id: string) {
       self.selectedGPSStationId = id;
@@ -47,6 +51,11 @@ export const SeismicSimulationStore = types
     },
     setShowVelocityArrows(show: boolean) {
       self.showVelocityArrows = show;
+    },
+    reset() {
+      self.visibleGPSStationIds.clear();
+      self.selectedGPSStationId = undefined;
+      self.showVelocityArrows = false;
     }
   }))
   .actions((self) => ({
