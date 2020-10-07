@@ -227,7 +227,6 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.font = "16px Arial";
     ctx.fillText(`5km`, s1.x + ((s2.x - s1.x) / 2), s1.y + 20);
     ctx.stroke();
-
   }
 
   private getRelativeVerticalSpeed() {
@@ -270,7 +269,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
         this.calculateHorizontalSheer(xDist, this.getRelativeHorizontalSpeed(), plateDipAngle) * progress;
 
       const newY = yOrigin + this.worldToCanvas(verticalSheer);
-      const newX = x + xOffset + this.worldToCanvas(horizontalSheer);
+      const newX = x + xOffset; // + this.worldToCanvas(horizontalSheer);
       points.push({ x: newX, y: newY });
     }
     return points;
@@ -280,12 +279,12 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     const { deformationSimulationProgress: progress } =
       this.stores.seismicSimulation;
 
-    const center = this.modelWidth / 2;
+    const center = (this.modelWidth / 2) + modelMargin.left;
     const points: Point[] = [];
 
     // generate vertical lines
     for (let y = 0; y < this.modelWidth; y += this.stepSize) {
-      // xDist is always distance from the fault line
+      // xDist is always distance from the fault line.
       const xDist = this.canvasToWorld(center - xOrigin);
 
       // add the x shear over time as the simulation runs
@@ -298,7 +297,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
       // having a perfectly straight vertical line makes the line disappear
       const lineFudge = y / 1000;
-      const newX = xOrigin + this.worldToCanvas(horizontalSheer) + lineFudge;
+      const newX = xOrigin + lineFudge; // + this.worldToCanvas(horizontalSheer);
       const newY = y + yOffset + this.worldToCanvas(verticalSheer);
 
       points.push({ x: newX, y: newY });
@@ -307,8 +306,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
   }
 
   private generateGPSStationPoints() {
-    const { deformationSimulationProgress: progress, deformationSites,
-      deformSpeedPlate1, deformDirPlate1, deformSpeedPlate2, deformDirPlate2 } =
+    const { deformationSimulationProgress: progress, deformationSites } =
       this.stores.seismicSimulation;
 
     // stations will move with the land
@@ -316,16 +314,12 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     for (const site of deformationSites) {
       // get speed by determining which side of fault
       // station x and y are stored in the array as 0-1 percentage across the canvas
-      const plateSpeed = site[0] < 0.5 ? deformSpeedPlate1 : deformSpeedPlate2;
-      const plateDir = site[0] < 0.5 ? deformDirPlate1 : deformDirPlate2;
-      // plate dip is a constant between the plates
-      const dip = site[0] < 0.5 ? plateDipAngle : plateDipAngle;
       const siteDisplacementX = this.calculateHorizontalSheer(
-        this.percentToWorld(site[0]), this.getRelativeHorizontalSpeed(), plateDipAngle) * progress;
+        this.percentToWorld(0.5 - site[0]), this.getRelativeHorizontalSpeed(), plateDipAngle) * progress;
       const siteDisplacementY = this.calculateVerticalSheer(
-        this.percentToWorld(site[0]), this.getRelativeVerticalSpeed(), plateDipAngle) * progress;
+        this.percentToWorld(0.5 - site[0]), this.getRelativeVerticalSpeed(), plateDipAngle) * progress;
 
-      const x = this.modelWidth * site[0] + modelMargin.left + this.worldToCanvas(siteDisplacementX);
+      const x = this.modelWidth * site[0] + modelMargin.left; // + this.worldToCanvas(siteDisplacementX);
       const y = this.modelWidth * site[1] + modelMargin.top + this.worldToCanvas(siteDisplacementY);
       stationPoints.push({ x, y });
     }
@@ -337,10 +331,11 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     const sheer = speed / Math.PI *
       (Math.cos(dip) * Math.atan(px / lockingDepth) - dip + Math.PI / 2) -
       px * (lockingDepth * Math.cos(dip) + px * (Math.sin(dip)))
-      / ((px ** 2) + (lockingDepth ** 2)) * (px < 0 ? -1 : 1);
-    return sheer;
+      / ((px ** 2) + (lockingDepth ** 2));
+    return (px < 0 ? -sheer : sheer);
   }
 
+  // this will need more work
   private calculateHorizontalSheer(px: number, speed: number, dip: number) {
     const sheer = speed / Math.PI *
     (Math.sin(dip) * Math.atan(px / lockingDepth) - dip + Math.PI / 2) +
