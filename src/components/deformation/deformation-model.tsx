@@ -36,11 +36,8 @@ const lockingDepth = 1;
 // we want the area shown to be approx this size in each direction
 const distanceScale = 20;
 
-const deg2Rad = (degreeAngle: number) => {
-  return degreeAngle * Math.PI / 180;
-};
 // angle between the plates vertically (into the Earth)
-const plateDipAngle = deg2Rad(90);
+const plateDipAngle = deg2rad(90);
 
 @inject("stores")
 @observer
@@ -237,8 +234,8 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     const { deformSpeedPlate1, deformDirPlate1, deformSpeedPlate2, deformDirPlate2 } =
       this.stores.seismicSimulation;
 
-    const plate1VerticalSpeed = Math.cos(deg2Rad(deformDirPlate1)) * deformSpeedPlate1;
-    const plate2VerticalSpeed = Math.cos(deg2Rad(deformDirPlate2)) * deformSpeedPlate2;
+    const plate1VerticalSpeed = Math.cos(deg2rad(deformDirPlate1)) * deformSpeedPlate1;
+    const plate2VerticalSpeed = Math.cos(deg2rad(deformDirPlate2)) * deformSpeedPlate2;
 
     const relativeSpeed = plate1VerticalSpeed - plate2VerticalSpeed;
     return relativeSpeed;
@@ -248,8 +245,8 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     const { deformSpeedPlate1, deformDirPlate1, deformSpeedPlate2, deformDirPlate2 } =
       this.stores.seismicSimulation;
 
-    const plate1HorizontalSpeed = Math.sin(deg2Rad(deformDirPlate1)) * deformSpeedPlate1;
-    const plate2HorizontalSpeed = Math.sin(deg2Rad(deformDirPlate2)) * deformSpeedPlate2;
+    const plate1HorizontalSpeed = Math.sin(deg2rad(deformDirPlate1)) * deformSpeedPlate1;
+    const plate2HorizontalSpeed = Math.sin(deg2rad(deformDirPlate2)) * deformSpeedPlate2;
 
     const relativeSpeed = plate1HorizontalSpeed - plate2HorizontalSpeed;
     return relativeSpeed;
