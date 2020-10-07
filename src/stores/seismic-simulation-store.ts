@@ -56,6 +56,7 @@ export const SeismicSimulationStore = types
       self.visibleGPSStationIds.clear();
       self.selectedGPSStationId = undefined;
       self.showVelocityArrows = false;
+      self.deformationModelStep = 0;
     }
   }))
   .actions((self) => ({
@@ -67,7 +68,6 @@ export const SeismicSimulationStore = types
       const updateStep = () => {
         const dt = (window.performance.now() - startTime) / 1000;   // seconds since start
         const step = Math.floor(dt * self.deformationModelSpeed);
-        // console.log(startTime, dt, step);
         self.setDeformationStep(step);
         if (step < self.deformationModelEndStep) {
           window.requestAnimationFrame(updateStep);
