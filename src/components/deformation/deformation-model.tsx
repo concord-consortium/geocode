@@ -2,6 +2,7 @@ import * as React from "react";
 import { inject, observer } from "mobx-react";
 import { BaseComponent } from "../base";
 import { IDisposer, onAction } from "mobx-state-tree";
+import { deg2rad } from "../../utilities/coordinateSpaceConversion";
 
 interface IProps {
   width: number;
@@ -16,13 +17,27 @@ const canvasMargin = {
 };
 let canvasWidth = 0;
 let canvasHeight = 0;
+const modelMargin = {
+  left: 0,
+  top: 0
+};
 const minModelMargin = 20;
 
 const backgroundColor = "#eee";
+const lineColor = "#777";
 const drawAreaColor = "#fff";
 const textColor = "#333";
+const stationColor = "#e56d44";
 
-const lineSpacing = 35;
+const lineSpacing = 20;
+// should be in km
+const lockingDepth = 1;
+// for converting pixels to world distance
+// we want the area shown to be approx this size in each direction
+const distanceScale = 20;
+
+// angle between the plates vertically (into the Earth)
+const plateDipAngle = deg2rad(90);
 
 @inject("stores")
 @observer
@@ -30,6 +45,15 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
   private canvasRef = React.createRef<HTMLCanvasElement>();
   private disposer: IDisposer;
+
+  private get modelWidth() {
+    const smallestDimension = Math.min(canvasWidth, canvasHeight);
+    return smallestDimension - (minModelMargin * 2);
+  }
+  private get stepSize() {
+    const steps = 30;
+    return this.modelWidth / steps;
+  }
 
   public componentDidMount() {
     this.drawModel();
@@ -45,7 +69,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
     canvasWidth = width - (canvasMargin.left * 2);
     canvasHeight = height - (canvasMargin.top * 2);
-    const relativeStyle: React.CSSProperties = {position: "relative", width, height};
+    const relativeStyle: React.CSSProperties = { position: "relative", width, height };
     const absoluteStyle: React.CSSProperties = {
       position: "absolute", top: canvasMargin.top, left: canvasMargin.left, width: canvasWidth, height: canvasHeight
     };
@@ -71,10 +95,8 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     this.canvasRef.current.width = canvasWidth;
     this.canvasRef.current.height = canvasHeight;
 
-    const modelMargin = {
-      left: (canvasWidth - this.modelWidth) / 2,
-      top: (canvasHeight - this.modelWidth) / 2
-    };
+    modelMargin.left = (canvasWidth - this.modelWidth) / 2;
+    modelMargin.top = (canvasHeight - this.modelWidth) / 2;
 
     const ctx = this.canvasRef.current.getContext("2d")!;
 
@@ -89,40 +111,45 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.fillStyle = drawAreaColor;
     ctx.fill();
 
-    // set up the GPS site positions
-    const stationPoints = this.generateGPSStationPoints(modelMargin.left, modelMargin.top);
-    const startPoint = stationPoints[0];
-
-    // Draw lines between stations to form a triangle
-    ctx.beginPath();
-    ctx.moveTo(startPoint.x, startPoint.y);
-    for (let i = 1; i < stationPoints.length; i++){
-      ctx.lineTo(stationPoints[i].x, stationPoints[i].y);
-    }
-
-    // back to start to complete the shape
-    ctx.lineTo(startPoint.x, startPoint.y);
-    ctx.stroke();
-    ctx.closePath();
-
-    // labels must be drawn before we clip the canvas
-    ctx.font = "20px Arial";
-    ctx.fillStyle = textColor;
-
-    for (let i = 0; i < stationPoints.length; i++){
-      ctx.textAlign = stationPoints[i].x < this.modelWidth / 2 ? "right" : "left";
-      const textPositionAdjust = stationPoints[i].x < this.modelWidth / 2 ? -10 : 10;
-      ctx.fillText(`Station ${i}`, stationPoints[i].x + textPositionAdjust, stationPoints[i].y);
-    }
-
     // show fault line
+    ctx.beginPath();
+    ctx.strokeStyle = stationColor;
+    ctx.lineWidth = 3;
     ctx.setLineDash([20, 5]);
     ctx.moveTo(modelMargin.left + (this.modelWidth / 2), modelMargin.top);
     ctx.lineTo(modelMargin.left + (this.modelWidth / 2), this.modelWidth + modelMargin.top);
     ctx.stroke();
     ctx.setLineDash([]);
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = textColor;
 
+    // set up the GPS site positions
+    const stationPoints = this.generateGPSStationPoints();
+    const startPoint = stationPoints[0];
+
+    // text labels
+    // labels must be drawn before we clip the canvas
+    ctx.font = "20px Arial";
+    ctx.fillStyle = textColor;
+    ctx.beginPath();
+    for (let i = 0; i < stationPoints.length; i++) {
+      ctx.textAlign = stationPoints[i].x < this.modelWidth / 2 ? "right" : "left";
+      const textPositionAdjust = stationPoints[i].x < this.modelWidth / 2 ? -10 : 10;
+      ctx.fillText(`Station ${i}`, stationPoints[i].x + textPositionAdjust, stationPoints[i].y);
+    }
+    ctx.stroke();
+
+    // Draw lines between stations to form a triangle
+    ctx.beginPath();
+    ctx.moveTo(startPoint.x, startPoint.y);
+    for (const station of stationPoints) {
+      ctx.lineTo(station.x, station.y);
+    }
+    ctx.closePath();
+    ctx.stroke();
+    ctx.save();
     // now we stop the deformation lines appearing outside of the area
+    // useful to disable this while debugging!
     ctx.clip();
 
     // Start deformation lines
@@ -138,57 +165,225 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     for (let x = xBounds[0]; x < xBounds[1]; x += lineSpacing) {
       lines.push(this.generateXDisplacementLine(x, modelMargin.top));
     }
-
+    ctx.strokeStyle = lineColor;
     const drawBzCurve = this.bzCurve(ctx);
     lines.forEach(drawBzCurve);
 
+    // site markers - draw slightly overlaid on the clipped triangle, so need to restore (unclip) canvas
+    ctx.restore();
+    ctx.fillStyle = stationColor;
+    ctx.strokeStyle = textColor;
+    ctx.beginPath();
+    for (const station of stationPoints) {
+      ctx.moveTo(station.x, station.y);
+      ctx.arc(station.x, station.y, 5, 0, 2 * Math.PI);
+    }
+    ctx.stroke();
+    ctx.fill();
+
+    // show velocity vector arrows for each plate
+    // start with a circle - no design spec for this yet
+    ctx.beginPath();
+    const points = this.generateVelocityVectorArrows(this.modelWidth);
+    ctx.moveTo(points.p1.x, points.p1.y);
+    ctx.arc(points.p1.x, points.p1.y, 7, 0, 2 * Math.PI);
+    ctx.stroke();
+    ctx.fill();
+
+    // vector line
+    ctx.beginPath();
+    ctx.moveTo(points.p1.x, points.p1.y);
+    ctx.lineTo(points.p1v.x, points.p1v.y);
+    ctx.stroke();
+
+    // plate 2 circle
+    ctx.beginPath();
+    ctx.moveTo(points.p2.x, points.p2.y);
+    ctx.arc(points.p2.x, points.p2.y, 7, 0, 2 * Math.PI);
+    ctx.stroke();
+    ctx.fill();
+
+    // plate 2 vector line
+    ctx.beginPath();
+    ctx.moveTo(points.p2.x, points.p2.y);
+    ctx.lineTo(points.p2v.x, points.p2v.y);
+    ctx.stroke();
+
+    // Scale
+    const s1 = { x: modelMargin.left + 100, y: modelMargin.top - 50 };
+    const s2 = { x: s1.x + this.worldToCanvas(5), y: s1.y };
+    ctx.beginPath();
+    ctx.moveTo(s1.x, s1.y);
+    ctx.lineTo(s2.x, s2.y);
+    // end caps
+    ctx.moveTo(s1.x, s1.y - 5);
+    ctx.lineTo(s1.x, s1.y + 5);
+    ctx.moveTo(s2.x, s2.y - 5);
+    ctx.lineTo(s2.x, s2.y + 5);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.fillStyle = textColor;
+    ctx.font = "16px Arial";
+    ctx.fillText(`5km`, s1.x + ((s2.x - s1.x) / 2), s1.y + 20);
+    ctx.stroke();
   }
 
-  private get modelWidth() {
-    const smallestDimension = Math.min(canvasWidth, canvasHeight);
-    return smallestDimension - (minModelMargin * 2);
+  private getRelativeVerticalSpeed() {
+    const { deformSpeedPlate1, deformDirPlate1, deformSpeedPlate2, deformDirPlate2 } =
+      this.stores.seismicSimulation;
+
+    const plate1VerticalSpeed = Math.cos(deg2rad(deformDirPlate1)) * deformSpeedPlate1;
+    const plate2VerticalSpeed = Math.cos(deg2rad(deformDirPlate2)) * deformSpeedPlate2;
+
+    const relativeSpeed = plate1VerticalSpeed - plate2VerticalSpeed;
+    return relativeSpeed;
+  }
+
+  private getRelativeHorizontalSpeed() {
+    const { deformSpeedPlate1, deformDirPlate1, deformSpeedPlate2, deformDirPlate2 } =
+      this.stores.seismicSimulation;
+
+    const plate1HorizontalSpeed = Math.sin(deg2rad(deformDirPlate1)) * deformSpeedPlate1;
+    const plate2HorizontalSpeed = Math.sin(deg2rad(deformDirPlate2)) * deformSpeedPlate2;
+
+    const relativeSpeed = plate1HorizontalSpeed - plate2HorizontalSpeed;
+    return relativeSpeed;
   }
 
   private generateYDisplacementLine(yOrigin: number, xOffset: number) {
+    const { deformationSimulationProgress: progress } = this.stores.seismicSimulation;
 
-    const { deformationModelStep: step } = this.stores.seismicSimulation;
-
-    // simple sine waves for now
-    const steps = 300;
-    const stepSize = this.modelWidth / steps;
+    const center = this.modelWidth / 2;
     const points: Point[] = [];
-    for (let x = 0; x < this.modelWidth; x += stepSize) {
-      const y = yOrigin + Math.sin(x / ((step + 200) / 100)) * 10;
-      points.push({x: x + xOffset, y});
+
+    // generate horizontal lines
+    for (let x = 0; x < this.modelWidth; x += this.stepSize) {
+      // xDist is always distance from the center fault line
+      const xDist = this.canvasToWorld(center - x);
+
+      // distance is measured from the center fault
+      const verticalSheer =
+        this.calculateVerticalSheer(xDist, this.getRelativeVerticalSpeed(), plateDipAngle) * progress;
+      const horizontalSheer =
+        this.calculateHorizontalSheer(xDist, this.getRelativeHorizontalSpeed(), plateDipAngle) * progress;
+
+      const newY = yOrigin + this.worldToCanvas(verticalSheer);
+      const newX = x + xOffset; // + this.worldToCanvas(horizontalSheer);
+      points.push({ x: newX, y: newY });
     }
     return points;
   }
 
   private generateXDisplacementLine(xOrigin: number, yOffset: number) {
+    const { deformationSimulationProgress: progress } =
+      this.stores.seismicSimulation;
 
-    const { deformationModelStep: step } = this.stores.seismicSimulation;
-
-    // simple sine waves for now
-    const steps = 300;
-    const stepSize = this.modelWidth / steps;
+    const center = (this.modelWidth / 2) + modelMargin.left;
     const points: Point[] = [];
-    for (let y = 0; y < this.modelWidth; y += stepSize) {
-      const x = xOrigin + Math.sin((y + step) / 25) * 10;
-      points.push({x, y: y + yOffset});
+
+    // generate vertical lines
+    for (let y = 0; y < this.modelWidth; y += this.stepSize) {
+      // xDist is always distance from the fault line.
+      const xDist = this.canvasToWorld(center - xOrigin);
+
+      // add the x shear over time as the simulation runs
+      // our distance is measured from the center fault
+      const horizontalSheer =
+        this.calculateHorizontalSheer(xDist, this.getRelativeHorizontalSpeed(), plateDipAngle) * progress;
+      // add the y shear component
+      const verticalSheer =
+        this.calculateVerticalSheer(xDist, this.getRelativeVerticalSpeed(), plateDipAngle) * progress;
+
+      // having a perfectly straight vertical line makes the line disappear
+      const lineFudge = y / 1000;
+      const newX = xOrigin + lineFudge; // + this.worldToCanvas(horizontalSheer);
+      const newY = y + yOffset + this.worldToCanvas(verticalSheer);
+
+      points.push({ x: newX, y: newY });
     }
     return points;
   }
 
-  private generateGPSStationPoints( modelMarginLeft: number, modelMarginTop: number) {
-    const { deformationSites } = this.stores.seismicSimulation;
+  private generateGPSStationPoints() {
+    const { deformationSimulationProgress: progress, deformationSites } =
+      this.stores.seismicSimulation;
+
+    // stations will move with the land
     const stationPoints: Point[] = [];
-    for (const site of deformationSites){
-      const x = canvasWidth * site[0] + modelMarginLeft;
-      const y = canvasWidth * site[1] + modelMarginTop;
+    for (const site of deformationSites) {
+      // get speed by determining which side of fault
+      // station x and y are stored in the array as 0-1 percentage across the canvas
+      const siteDisplacementX = this.calculateHorizontalSheer(
+        this.percentToWorld(0.5 - site[0]), this.getRelativeHorizontalSpeed(), plateDipAngle) * progress;
+      const siteDisplacementY = this.calculateVerticalSheer(
+        this.percentToWorld(0.5 - site[0]), this.getRelativeVerticalSpeed(), plateDipAngle) * progress;
+
+      const x = this.modelWidth * site[0] + modelMargin.left; // + this.worldToCanvas(siteDisplacementX);
+      const y = this.modelWidth * site[1] + modelMargin.top + this.worldToCanvas(siteDisplacementY);
       stationPoints.push({ x, y });
     }
     return stationPoints;
   }
+
+  // Calculations taken from PowerPoint linked here: https://www.pivotaltracker.com/story/show/174401018
+  private calculateVerticalSheer(px: number, speed: number, dip: number) {
+    const sheer = speed / Math.PI *
+      (Math.cos(dip) * Math.atan(px / lockingDepth) - dip + Math.PI / 2) -
+      px * (lockingDepth * Math.cos(dip) + px * (Math.sin(dip)))
+      / ((px ** 2) + (lockingDepth ** 2));
+    return (px < 0 ? -sheer : sheer);
+  }
+
+  // this will need more work
+  private calculateHorizontalSheer(px: number, speed: number, dip: number) {
+    const sheer = speed / Math.PI *
+    (Math.sin(dip) * Math.atan(px / lockingDepth) - dip + Math.PI / 2) +
+    lockingDepth * (lockingDepth * Math.cos(dip) + px * Math.sin(dip))
+    / ((px ** 2) + (lockingDepth ** 2));
+    return sheer;
+  }
+
+  private canvasToWorld(canvasPosition: number) {
+    // screen size affects pixel scale
+    // distanceScale is how many real-world units we want to show across the pixel grid
+    return canvasPosition / this.modelWidth *  distanceScale;
+  }
+
+  // GPS stations are positioned as a percentage 0-1 across the model area
+  private percentToWorld(distancePercentage: number) {
+    return distancePercentage * distanceScale;
+  }
+  private worldToCanvas(distanceInRealUnits: number) {
+    return distanceInRealUnits / distanceScale * this.modelWidth;
+  }
+
+  // Visual representation of the plate velocities based on student values
+  private generateVelocityVectorArrows(modelWidth: number) {
+    const {
+      deformSpeedPlate1, deformDirPlate1, deformSpeedPlate2, deformDirPlate2 } =
+      this.stores.seismicSimulation;
+
+    // line starts at given point
+    const p1 = { x: modelMargin.left + 30, y: modelMargin.top - 50 };
+    // calculate end canvas position of line to represent the magnitude and direction of movement
+    const p1vx = p1.x + deformSpeedPlate1 * Math.sin(deformDirPlate1 * Math.PI / 180);
+    const p1vy = p1.y + deformSpeedPlate1 * Math.cos(deformDirPlate1 * Math.PI / 180);
+
+    const p2 = { x: modelMargin.left + modelWidth - 30, y: modelMargin.top - 50 };
+    const p2vx = p2.x + deformSpeedPlate2 * Math.sin(deformDirPlate2 * Math.PI / 180);
+    const p2vy = p2.y + deformSpeedPlate2 * Math.cos(deformDirPlate2 * Math.PI / 180);
+
+    // points returns the start and end point of the lines to be drawn for plate 1 and plate 2
+    const points = {
+      p1,
+      p1v: { x: p1vx, y: p1vy },
+      p2,
+      p2v: { x: p2vx, y: p2vy }
+    };
+    return points;
+  }
+
   private gradient(a: Point, b: Point) {
     return (b.y - a.y) / (b.x - a.x);
   }
@@ -205,7 +400,6 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     let dy2 = 0;
 
     let preP = points[0];
-
     for (let i = 1; i < points.length; i++) {
       const curP = points[i];
       const nexP = points[i + 1];
@@ -229,6 +423,6 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       preP = curP;
     }
     ctx.stroke();
-}
+  }
 
 }
