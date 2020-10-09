@@ -1,5 +1,5 @@
 Blockly.Blocks['deformation-create-sim'] = {
-    init: function() {
+    init: function () {
       this.appendDummyInput()
         .appendField("Create Strain Simulation");
       this.appendDummyInput()
@@ -26,14 +26,15 @@ Blockly.Blocks['deformation-create-sim'] = {
     }
   };
 
-  Blockly.JavaScript['deformation-create-sim'] = function(block) {
-    var value_speed_1 = Blockly.JavaScript.valueToCode(block, 'speed1', Blockly.JavaScript.ORDER_ATOMIC) || 0;
-    var value_direction_1 = Blockly.JavaScript.valueToCode(block, 'direction1', Blockly.JavaScript.ORDER_ATOMIC) || 0;
-    var value_speed_2 = Blockly.JavaScript.valueToCode(block, 'speed2', Blockly.JavaScript.ORDER_ATOMIC) || 0;
-    var value_direction_2 = Blockly.JavaScript.valueToCode(block, 'direction2', Blockly.JavaScript.ORDER_ATOMIC) || 0;
+  Blockly.JavaScript['deformation-create-sim'] = function(plate) {
+    var value_speed_1 = Blockly.JavaScript.valueToCode(plate, 'speed1', Blockly.JavaScript.ORDER_ATOMIC) || 0;
+    var value_direction_1 = Blockly.JavaScript.valueToCode(plate, 'direction1', Blockly.JavaScript.ORDER_ATOMIC) || 0;
+    var value_speed_2 = Blockly.JavaScript.valueToCode(plate, 'speed2', Blockly.JavaScript.ORDER_ATOMIC) || 0;
+    var value_direction_2 = Blockly.JavaScript.valueToCode(plate, 'direction2', Blockly.JavaScript.ORDER_ATOMIC) || 0;
 
-    var code ='createDeformationModel();\n';
-    code += `setBlockVelocity({block: 1, speed: ${value_speed_1}, direction: ${value_direction_1}});\n`;
-    code += `setBlockVelocity({block: 2, speed: ${value_speed_2}, direction: ${value_direction_2}});\n`;
+
+    var code = `setPlateVelocity({plate: 1, speed: ${value_speed_1}, direction: ${value_direction_1}});\n`;
+    code += `setPlateVelocity({plate: 2, speed: ${value_speed_2}, direction: ${value_direction_2}});\n`;
+    code +='runDeformationModel();\n';
     return code;
   }
