@@ -1,7 +1,8 @@
 import { types } from "mobx-state-tree";
 import { parseOfflineUNAVCOData } from "../utilities/unavco-data";
-import { StationData } from "../strain";
+import strainCalc, { StationData, StrainOutput } from "../strain";
 import { Filter, Range } from "./data-sets";
+import Delaunator from "delaunator";
 
 const minLat = 32;
 const maxLat = 42;
@@ -39,6 +40,10 @@ export const SeismicSimulationStore = types
     strainMapMaxLng: 180,
     paintStrainMap: false,
   })
+  .volatile(self => ({
+    delaunayTriangles: [] as number[][][],
+    delaunayTriangleStrains: [] as number[],
+  }))
   .actions((self) => ({
     showGPSStations(stations: StationData[] | string) {
       self.visibleGPSStationIds.clear();
@@ -61,6 +66,9 @@ export const SeismicSimulationStore = types
       self.showVelocityArrows = show;
     },
     setStrainMapBounds(bounds: Filter) {
+      self.delaunayTriangles = [];
+      self.delaunayTriangleStrains = [];
+
       if (bounds.latitude && (bounds.latitude as Range).min) {
         self.strainMapMinLat = (bounds.latitude as Range).min as number;
       }
@@ -73,6 +81,87 @@ export const SeismicSimulationStore = types
       if (bounds.longitude && (bounds.longitude as Range).max) {
         self.strainMapMaxLng = (bounds.longitude as Range).max as number;
       }
+
+      // const { minLat, maxLat, minLng, maxLng } = this.props;
+
+      const stationDataInBounds = stationData.filter(s =>
+        s.latitude >= self.strainMapMinLat && s.latitude <= self.strainMapMaxLat &&
+        s.longitude >= self.strainMapMinLng && s.longitude <= self.strainMapMaxLng);
+
+      // Proximity based point removal
+      // GPS points that are very close to each other will produce extremely high strain values
+      // By removing these points, it becomes easier to plot the data using an infinite scale
+      // Other methods of solving this problem would be by plotting the data in a bucketed gradient
+      // e.g. 0 - 5: Blue, 5 - 50: Green, 50 - 250: Yellow, 250+: Red
+      const removablePoints: Set<string> = new Set<string>();
+      for (let i = 0; i < stationDataInBounds.length; i++) {
+        for (let k = i + 1; k < stationDataInBounds.length; k++) {
+          const dist = Math.sqrt(Math.pow(stationDataInBounds[i].latitude - stationDataInBounds[k].latitude, 2) +
+                      Math.pow(stationDataInBounds[i].longitude - stationDataInBounds[k].longitude, 2));
+          if (dist < 0.1) {
+            removablePoints.add(stationDataInBounds[i].id);
+            break;
+          }
+        }
+      }
+
+      const filteredData: StationData[] = stationDataInBounds.filter(s => !removablePoints.has(s.id));
+
+      const points: number[][] = [];
+      const coords: number[] = [];
+      for (const station of filteredData) {
+        const lat = station.latitude;
+        const lng = station.longitude;
+
+        coords.push(lat);
+        coords.push(lng);
+        points.push([lat, lng]);
+
+      }
+
+      // Delaunator takes in a 1D array of coordinates organized [x1, y1, x2, y2, ...]
+      // It outputs a 2D array containing sets of vertices
+      // Each vertex is returned as an index to an array of coordinates
+      const mesh = new Delaunator(coords);
+      const strainOutputs: StrainOutput[] = [];
+      let strainMin: number = 0;
+      let strainMax: number = 0;
+
+      for (let i = 0; i < mesh.triangles.length; i += 3) {
+        const strainOutput: StrainOutput = strainCalc({data: [ filteredData[mesh.triangles[i]],
+          filteredData[mesh.triangles[i + 1]],
+          filteredData[mesh.triangles[i + 2]],
+        ]});
+
+        const strain = strainOutput.secondInvariant;
+        // const strain = Math.log10(strainOutput.maxShearStrain);
+        // strain = Math.sign(strain) * Math.log10(Math.abs(strain));
+        strainOutputs.push(strainOutput);
+        self.delaunayTriangleStrains.push(strain);
+        if (i === 0) {
+          strainMin = strain;
+          strainMax = strain;
+        } else {
+          strainMax = strain > strainMax ? strain : strainMax;
+          strainMin = strain < strainMin ? strain : strainMin;
+        }
+      }
+
+      for (let i = 0; i < strainOutputs.length; i++) {
+        const percent = ( self.delaunayTriangleStrains[i] - strainMin) / (strainMax - strainMin);
+        self.delaunayTriangleStrains[i] = percent * (1) + 0;
+        self.delaunayTriangleStrains[i] = Number.isNaN( self.delaunayTriangleStrains[i]) ?
+          strainMin :  self.delaunayTriangleStrains[i];
+      }
+
+      for (let i = 0; i < mesh.triangles.length; i += 3) {
+        const p1 = [points[mesh.triangles[i]][0], points[mesh.triangles[i]][1]];
+        const p2 = [points[mesh.triangles[i + 1]][0], points[mesh.triangles[i + 1]][1]];
+        const p3 = [points[mesh.triangles[i + 2]][0], points[mesh.triangles[i + 2]][1]];
+
+        self.delaunayTriangles.push([p1, p2, p3]);
+      }
+
       // FIXME
       self.paintStrainMap = true;
     },

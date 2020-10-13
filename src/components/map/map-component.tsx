@@ -152,11 +152,6 @@ export class MapComponent extends BaseComponent<IProps, IState>{
 
     const {
       scenario: seismicScenario,
-      strainMapMinLat,
-      strainMapMinLng,
-      strainMapMaxLat,
-      strainMapMaxLng,
-      paintStrainMap,
     } = this.stores.seismicSimulation;
 
     const scenario = isTephraUnit ? tephraScenario : seismicScenario;
@@ -329,11 +324,6 @@ export class MapComponent extends BaseComponent<IProps, IState>{
               <MapTriangulatedStrainLayer
                 key="strain-layer"
                 map={this.state.mapLeafletRef}
-                minLat={strainMapMinLat}
-                maxLat={strainMapMaxLat}
-                minLng={strainMapMinLng}
-                maxLng={strainMapMaxLng}
-                paintTriangles={paintStrainMap}
               />,
               <MapGPSStationsLayer
                 key="gps-layer"
