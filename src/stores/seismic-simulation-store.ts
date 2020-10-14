@@ -17,6 +17,8 @@ const deformationSite1 = [0.75, 0.2];
 const deformationSite2 = [0.6, 0.85];
 const deformationSite3 = [0.2, 0.6];
 
+export type ColorMethod = "logarithmic" | "equalInterval";
+
 export const SeismicSimulationStore = types
   .model("seismicSimulation", {
     scenario: "Seismic CA",
@@ -38,7 +40,8 @@ export const SeismicSimulationStore = types
     strainMapMinLng: -180,
     strainMapMaxLat: 90,
     strainMapMaxLng: 180,
-    paintStrainMap: false,
+    strainMapColorMethod: types.optional(types.string, "logarithmic"),
+    renderStrainMap: false,
   })
   .volatile(self => ({
     delaunayTriangles: [] as number[][][],
@@ -141,9 +144,10 @@ export const SeismicSimulationStore = types
 
         self.delaunayTriangles.push([p1, p2, p3]);
       }
-
-      // FIXME
-      self.paintStrainMap = true;
+    },
+    setRenderStrainMap(method: ColorMethod) {
+      self.strainMapColorMethod = method;
+      self.renderStrainMap = true;
     },
     reset() {
       self.visibleGPSStationIds.clear();
@@ -154,7 +158,7 @@ export const SeismicSimulationStore = types
       self.strainMapMinLng = -180;
       self.strainMapMaxLat = 90;
       self.strainMapMaxLng = 180;
-      self.paintStrainMap = false;
+      self.renderStrainMap = false;
     }
   }))
   .actions((self) => ({

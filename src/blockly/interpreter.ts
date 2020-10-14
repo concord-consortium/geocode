@@ -5,6 +5,7 @@ import { IBlocklyWorkspace } from "../interfaces";
 import { IStore } from "../stores/stores";
 import { Datasets, Dataset, Filter, ProtoTimeRange, TimeRange } from "../stores/data-sets";
 import { StationData } from "../strain";
+import { ColorMethod } from "../stores/seismic-simulation-store";
 const Interpreter = require("js-interpreter");
 
 const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore,
@@ -324,6 +325,14 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
 
     addFunc("computeStrainRate", (filter: Filter) => {
       seismicSimulation.setStrainMapBounds(filter);
+    });
+
+    addFunc("renderStrainRate", (method: ColorMethod) => {
+      if (!method) {
+        blocklyController.throwError(`You must include a method by which to color the strain map.`);
+        return;
+      }
+      seismicSimulation.setRenderStrainMap(method);
     });
 
     addFunc("runDeformationModel", () => {

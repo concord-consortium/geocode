@@ -6,6 +6,9 @@
     <block type="seismic_filter_data"></block>
     <block type="graph_gps_position"></block>
     <block type="seismic_compute_strain"></block>
+    <block type="seismic_render_strain_triangles"></block>
+    <block type="seismic_logarithmic"></block>
+    <block type="seismic_equal_interval"></block>
   </category>
 
   <category name="Deformation Model" colour="15">
