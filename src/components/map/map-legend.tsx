@@ -4,6 +4,8 @@ import styled from "styled-components";
 import IconButton from "../buttons/icon-button";
 import TephraLegendComponent from "./map-tephra-legend";
 import RiskLegendComponent from "./map-risk-legend";
+import StrainLegendComponent from "./map-strain-legend";
+import { ColorMethod } from "../../stores/seismic-simulation-store";
 
 const LegendContainer = styled.div`
   display: flex;
@@ -20,55 +22,62 @@ const LegendContainer = styled.div`
   padding-bottom: 5px;
 `;
 
+export type LegendType = "Tephra" | "Risk" | "Strain";
+
 interface IProps extends IBaseProps {
   onClick: any;
-  showTephra: boolean;
+  legendType: LegendType;
+  colorMethod: ColorMethod;
 }
 
 interface IState {
-  showTephra: boolean;
+  toggledToSecondary: boolean;
 }
 
 export class LegendComponent extends BaseComponent<IProps, IState> {
 
-  constructor(props: IProps) {
-    super(props);
-
-    const initialState: IState = {
-      showTephra: this.props.showTephra,
-    };
-
-    this.state = initialState;
-  }
+  public state = {
+    toggledToSecondary: false
+  };
 
   public render() {
-    const { onClick } = this.props;
+    const { onClick, legendType, colorMethod } = this.props;
+    const { toggledToSecondary } = this.state;
+    const currentLegendType = legendType === "Tephra" && toggledToSecondary ? "Risk" :
+                              legendType === "Risk" && toggledToSecondary ? "Tephra" :
+                              legendType;
+    const legend = currentLegendType === "Tephra" ? <TephraLegendComponent onClick={onClick} /> :
+                    currentLegendType === "Risk" ? <RiskLegendComponent onClick={onClick} /> :
+                    <StrainLegendComponent onClick={onClick} colorMethod={colorMethod} />;
+    const showToggle = legendType === "Tephra" || legendType === "Risk";
     return (
       <LegendContainer data-test="key-container">
-        { this.state.showTephra
-          ? <TephraLegendComponent onClick={onClick}/>
-          : <RiskLegendComponent onClick={onClick}/>
+        {
+          legend
         }
-        <IconButton
-          onClick={this.onLegendModeClick}
-          disabled={false}
-          label={this.state.showTephra ? "Show Risk" : "Show Tephra"}
-          borderColor={"#ADD1A2"}
-          hoverColor={"#ADD1A2"}
-          activeColor={"#B7DCAD"}
-          fontSize={"13px"}
-          fill={"black"}
-          width={26}
-          height={26}
-          dataTest={"map-key-toggle"}
-        />
+        {
+          showToggle &&
+          <IconButton
+            onClick={this.onLegendModeClick}
+            disabled={false}
+            label={`Show ${currentLegendType === "Tephra" ? "Risk" : "Tephra"}`}
+            borderColor={"#ADD1A2"}
+            hoverColor={"#ADD1A2"}
+            activeColor={"#B7DCAD"}
+            fontSize={"13px"}
+            fill={"black"}
+            width={26}
+            height={26}
+            dataTest={"map-key-toggle"}
+          />
+        }
       </LegendContainer>
     );
   }
 
   private onLegendModeClick = () => {
     this.setState(prevState => ({
-      showTephra: !prevState.showTephra
+      toggledToSecondary: !prevState.toggledToSecondary
     }));
   }
 

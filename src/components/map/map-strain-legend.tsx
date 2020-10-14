@@ -39,3 +39,49 @@ for (let i = 0; i < buckets; i++) {
     max: (i < buckets - 1) ? MIN_LOG_STRAIN + (logStepSize * (i + 1)) : undefined
   });
 }
+
+interface IProps {
+  onClick: any;
+  colorMethod: ColorMethod;
+}
+
+interface IState {}
+
+export default class StrainLegendComponent extends PureComponent<IProps, IState> {
+  public static defaultProps = {
+    onClick: undefined,
+  };
+
+  public render() {
+    const { onClick, colorMethod } = this.props;
+    const isLog = colorMethod === "logarithmic";
+    const ranges = isLog ? logarithmicStrainRanges : equalIntervalStrainRanges;
+    const round = (val: number) => isLog ? Math.pow(10, val).toFixed(2) : Math.round(val);
+    return (
+      <LegendContainer>
+        <LegendTitleText>Strain rate{isLog ? " (log)" : ""}</LegendTitleText>
+        <AbsoluteIcon
+          width={12}
+          height={12}
+          fill={"#b7dcad"}
+          onClick={onClick}
+        >
+          <CloseIcon />
+        </AbsoluteIcon>
+        {ranges.map((range, index) => {
+            return (
+              <TephraContainer key={index} data-test="tephra-key">
+                <TephraBox backgroundColor={range.color}/>
+                { range.max
+                  ? <TephraLabel>{` ${round(range.min)}—${round(range.max)}`}</TephraLabel>
+                  : <TephraLabel>{` >${round(range.min)}`}</TephraLabel>
+                }
+              </TephraContainer>
+            );
+        })}
+
+      </LegendContainer>
+    );
+  }
+
+}

@@ -47,7 +47,7 @@ export const TephraRanges: TephraRange[] = [
   },
 ];
 
-const LegendContainer = styled.div`
+export const LegendContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -56,7 +56,7 @@ const LegendContainer = styled.div`
   height: 227px;
 `;
 
-const LegendTitleText = styled.div`
+export const LegendTitleText = styled.div`
   margin: 5px 11px 2px 11px;
   color: #434343;
   font-size: 14px;
@@ -66,7 +66,7 @@ const LegendTitleText = styled.div`
   text-align: center;
 `;
 
-const AbsoluteIcon = styled(Icon)`
+export const AbsoluteIcon = styled(Icon)`
   position: absolute;
   top: 2px;
   right: 6px;
@@ -78,7 +78,7 @@ const AbsoluteIcon = styled(Icon)`
   }
 `;
 
-const TephraContainer = styled.div`
+export const TephraContainer = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
@@ -86,10 +86,10 @@ const TephraContainer = styled.div`
   margin-top: 5px;
 `;
 
-interface TephraBoxProps {
+export interface TephraBoxProps {
   backgroundColor?: string;
 }
-const TephraBox = styled.div`
+export const TephraBox = styled.div`
   width: 25px;
   height: 20px;
   box-sizing: border-box;
@@ -98,7 +98,7 @@ const TephraBox = styled.div`
   margin-right: 2px;
 `;
 
-const TephraLabel = styled.div`
+export const TephraLabel = styled.div`
   color: #434343;
   font-size: 12px;
 `;
