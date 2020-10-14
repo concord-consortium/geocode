@@ -5,11 +5,11 @@ import "leaflet-kmz";
 
 import { inject, observer } from "mobx-react";
 import { BaseComponent } from "../base";
-import axios from "axios";
 import { StationData } from "../../strain";
 import "../../css/custom-leaflet-icons.css";
-import * as tinygradient from "tinygradient";
 import { LayerGroup, Polygon } from "react-leaflet";
+import { equalIntervalStrainRanges, logarithmicStrainRanges } from "./map-strain-legend";
+import { ColorMethod } from "../../stores/seismic-simulation-store";
 
 interface IProps {
   map: Leaflet.Map | null;
@@ -19,34 +19,9 @@ interface IState {
   data: StationData[];
 }
 
-// UNAVCO servers often throw 500 errors. This catches and resolves them, allowing the code to continue
-axios.interceptors.response.use(
-  response => response,
-  error => {
-    console.log(error.message);
-    return Promise.resolve(error);
-  }
-);
-
 @inject("stores")
 @observer
 export class MapTriangulatedStrainLayer extends BaseComponent<IProps, IState> {
-
-  // Gradient used for strain triangle coloration
-  // Usually data has outliers which skew the data up towards the top
-  // Most of the gradient is also skewed towards the top (0.97 and above)
-  // This is not an ideal solution because changing the plotted boundaries yields extremely varying results
-  // depending on how extreme the outliers are
-  // Using standard deviation or some normalization method could fix this
-  private gradient: tinygradient.Instance = tinygradient([
-    {color: "rgb(238, 226, 112)", pos: 0},
-    {color: "rgb(255, 191, 78)", pos: 0.97},
-    {color: "rgb(255, 117, 75)", pos: 0.976},
-    {color: "rgb(233, 78, 131)", pos: 0.982},
-    {color: "rgb(174, 78, 211)", pos: 0.988},
-    {color: "rgb(123, 88, 174)", pos: 0.994},
-    {color: "rgb(81, 90, 148)", pos: 1}
-  ]);
 
   constructor(props: IProps) {
     super(props);
@@ -60,14 +35,27 @@ export class MapTriangulatedStrainLayer extends BaseComponent<IProps, IState> {
 
   public render() {
     const { map } = this.props;
-    const { delaunayTriangles, delaunayTriangleStrains, paintStrainMap } = this.stores.seismicSimulation;
+    const { delaunayTriangles, delaunayTriangleStrains, renderStrainMap,
+      strainMapColorMethod } = this.stores.seismicSimulation;
 
-    if (!map || !paintStrainMap) return null;
+    const isLog = (strainMapColorMethod as ColorMethod) === "logarithmic";
 
+    if (!map || !renderStrainMap) return null;
     const triangles = [];
     for (let i = 0; i < delaunayTriangles.length; i++) {
       const triangle = delaunayTriangles[i];
       const [p1, p2, p3] = triangle.map(p => Leaflet.latLng(p[0], p[1]));
+
+      const strain = isLog ? Math.log10(delaunayTriangleStrains[i]) : delaunayTriangleStrains[i];
+      const ranges = isLog ? logarithmicStrainRanges : equalIntervalStrainRanges;
+
+      const range = ranges.slice().reverse().find(r => strain > r.min);
+      let fillColor;
+      if (range) {
+        fillColor = range.color;
+      } else {
+        fillColor = "#000";
+      }
 
       triangles.push(<Polygon
         positions={[p1, p2, p3]} key={`triangle-${i}`}
@@ -75,7 +63,7 @@ export class MapTriangulatedStrainLayer extends BaseComponent<IProps, IState> {
         color="#FFF"
         weight={1}
         fillOpacity={0.8}
-        fillColor={this.gradient.rgbAt(delaunayTriangleStrains[i]).toRgbString()}
+        fillColor={fillColor}
       />);
 
       // triangles.push(Leaflet.polygon(
