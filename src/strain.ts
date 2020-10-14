@@ -264,7 +264,10 @@ function calculateStrainOutputData(inputData: StrainInput, calculatedData: Stati
                                             Math.pow(m6[1][1], 2));
     const areaStrain = correctedValues[0] + correctedValues[1];
 
-    const strainSecondInvariant = correctedValues[0] * correctedValues[1];
+    // This returns values such as -3e-20 and 8e-21
+    let strainSecondInvariant = correctedValues[0] * correctedValues[1];
+    // Ranges from 0.00005 to 127000
+    strainSecondInvariant = Math.abs(strainSecondInvariant) * Math.pow(10, 20);
 
     const output: StrainOutput = {
         triangleCenter: {
@@ -284,7 +287,7 @@ function calculateStrainOutputData(inputData: StrainInput, calculatedData: Stati
         minHorizontalExtension: correctedValues[1],
         maxShearStrain: maximumIninitesimalShearStrain * Math.pow(10, 9),
         areaStrain: areaStrain * Math.pow(10, 9),
-        secondInvariant: strainSecondInvariant * Math.pow(10, 9)
+        secondInvariant: strainSecondInvariant
     };
 
     return output;

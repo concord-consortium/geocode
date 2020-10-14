@@ -123,9 +123,6 @@ export const SeismicSimulationStore = types
       // It outputs a 2D array containing sets of vertices
       // Each vertex is returned as an index to an array of coordinates
       const mesh = new Delaunator(coords);
-      const strainOutputs: StrainOutput[] = [];
-      let strainMin: number = 0;
-      let strainMax: number = 0;
 
       for (let i = 0; i < mesh.triangles.length; i += 3) {
         const strainOutput: StrainOutput = strainCalc({data: [ filteredData[mesh.triangles[i]],
@@ -134,24 +131,7 @@ export const SeismicSimulationStore = types
         ]});
 
         const strain = strainOutput.secondInvariant;
-        // const strain = Math.log10(strainOutput.maxShearStrain);
-        // strain = Math.sign(strain) * Math.log10(Math.abs(strain));
-        strainOutputs.push(strainOutput);
         self.delaunayTriangleStrains.push(strain);
-        if (i === 0) {
-          strainMin = strain;
-          strainMax = strain;
-        } else {
-          strainMax = strain > strainMax ? strain : strainMax;
-          strainMin = strain < strainMin ? strain : strainMin;
-        }
-      }
-
-      for (let i = 0; i < strainOutputs.length; i++) {
-        const percent = ( self.delaunayTriangleStrains[i] - strainMin) / (strainMax - strainMin);
-        self.delaunayTriangleStrains[i] = percent * (1) + 0;
-        self.delaunayTriangleStrains[i] = Number.isNaN( self.delaunayTriangleStrains[i]) ?
-          strainMin :  self.delaunayTriangleStrains[i];
       }
 
       for (let i = 0; i < mesh.triangles.length; i += 3) {
