@@ -160,6 +160,8 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       const textPositionAdjust = stationPoints[i].x < this.modelWidth / 2 ? -10 : 10;
       ctx.fillText(`Station ${i}`, stationPoints[i].x + textPositionAdjust, stationPoints[i].y);
     }
+    ctx.fillText(`Year ${year.toLocaleString()}`,
+      canvasMargin.left + this.modelWidth, canvasMargin.top + modelMargin.top + this.modelWidth + 20);
     ctx.stroke();
 
     // Draw lines between stations to form a triangle
