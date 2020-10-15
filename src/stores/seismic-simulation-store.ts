@@ -60,7 +60,11 @@ export const SeismicSimulationStore = types
       self.selectedGPSStationId = id;
     },
     setDeformationStep(step: number) {
-      self.deformationModelStep = step;
+      if (step > self.deformationModelEndStep) {
+        self.deformationModelStep = self.deformationModelEndStep;
+      } else {
+        self.deformationModelStep = step;
+      }
     },
     resetDeformationModel() {
       self.deformationModelStep = 0;
