@@ -39,6 +39,19 @@ const distanceScale = 50;
 // angle between the plates vertically (into the Earth)
 const dip = deg2rad(90);
 
+// to calculate the total horizontal displacement from an originX at year Y, we have to sum all the displacements
+// from year 0 to year Y. When Y > 100,000, this starts getting slow. Therefore we cache previous calculations
+// and add to them as necessary, as year/displacement tuples for any origin,
+// {originX: [[yearI, displacementI], [yearJ, displacementJ]]}
+// As the year increases, we can look up our latest value and calculate from there. If we run again with the same
+// horizontal speed, we will re-use this ame cache (though will not cache any more values). Since the timings of
+// a second run will be different, we will still need to find the cache with the previous year and step from there,
+// but this is significantly faster.
+// A typical cache for any xOrigin tends to be about 300 year/displacement tuples.
+interface DisplacementCache { [origin: number]: number[][]; }
+let cachedHorizontalSpeed = 0;
+let cachedHorizontalDisplacements: DisplacementCache = {};
+
 @inject("stores")
 @observer
 export class DeformationModel extends BaseComponent<IProps, {}> {
@@ -126,6 +139,12 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     const { deformationModelStep: year } = this.stores.seismicSimulation;
     const vSpeed = this.getRelativeVerticalSpeed();     // mm/yr
     const hSpeed = this.getRelativeHorizontalSpeed();
+
+    if (cachedHorizontalSpeed !== hSpeed) {
+      // reset horizontal displacement cache
+      cachedHorizontalSpeed = hSpeed;
+      cachedHorizontalDisplacements = {};
+    }
 
     // set up the GPS site positions
     const stationPoints = this.generateGPSStationPoints(vSpeed, hSpeed, year);
@@ -295,8 +314,8 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
     // xDist is always distance from the fault line.
     const xDist = this.canvasToWorld(center - xOrigin);
-    const horizontalDisplacement =
-        this.calculateHorizontalDisplacement(xDist, relativeHorizontalSpeed, year);
+    const horizontalDisplacement = this.calculateHorizontalDisplacement(xDist, relativeHorizontalSpeed, year);
+
     const newX = xOrigin - this.worldToCanvas(horizontalDisplacement);
 
     const points: Point[] = [{x: newX, y: yOffset}, {x: newX, y: yOffset + this.modelWidth}];
@@ -335,8 +354,26 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
   }
 
   private calculateHorizontalDisplacement(originalX: number, hSpeed: number, year: number) {
+    if (Math.abs(hSpeed) < 1e-10) {
+      return 0;
+    }
+    let earlierYear = 0;
     let totalDisplacement = 0;
-    for (let earlierYear = 0; earlierYear < year; earlierYear++) {
+    // check if we have already cached previous values
+    if (cachedHorizontalDisplacements[originalX] ) {
+      const exactCache = cachedHorizontalDisplacements[originalX].find(cache => cache[0] === year);
+      if (exactCache) return exactCache[1];
+      // if (cachedHorizontalDisplacements[originalX].length > 10) debugger;
+      const latestCache = cachedHorizontalDisplacements[originalX].slice().reverse().find(cache => cache[0] < year);
+      if (latestCache) {
+        earlierYear = latestCache[0];
+        totalDisplacement = latestCache[1];
+      }
+    } else {
+      cachedHorizontalDisplacements[originalX] = [];
+    }
+
+    for ( ; earlierYear < year; earlierYear++) {
       const px = originalX + totalDisplacement;
       const horizontalSlipRateKmYr = (-hSpeed / Math.PI *
         (Math.sin(dip) * (Math.atan(px / lockingDepth) - dip + Math.PI / 2) +
@@ -344,6 +381,12 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
         / (px * px + lockingDepth * lockingDepth))) / 1000000;
 
       totalDisplacement += horizontalSlipRateKmYr;
+    }
+
+    if (cachedHorizontalDisplacements[originalX].length === 0 ||
+        year > cachedHorizontalDisplacements[originalX][cachedHorizontalDisplacements[originalX].length - 1][0]) {
+      // don't insert any caches out of order
+      cachedHorizontalDisplacements[originalX].push([year, totalDisplacement]);
     }
 
     return totalDisplacement;
