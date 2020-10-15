@@ -24,17 +24,17 @@ export const SeismicSimulationStore = types
     scenario: "Seismic CA",
     visibleGPSStationIds: types.array(types.string),      // by id
     selectedGPSStationId: types.maybe(types.string),
-
-    deformationModelStep: 0,
-    deformationModelSpeed: 100,      // steps / second
-    deformationModelEndStep: 500,
     showVelocityArrows: false,
 
-    deformSpeedPlate1: 0,
-    deformDirPlate1: 0,
+    deformationModelStep: 0,            // year
+    deformationModelSpeed: 100000,      // years / second
+    deformationModelEndStep: 500000,
+
+    deformSpeedPlate1: 0,     // mm/yr
+    deformDirPlate1: 0,       // º from N
     deformSpeedPlate2: 0,
     deformDirPlate2: 0,
-    deformMaxSpeed: 30,
+    deformMaxSpeed: 50,
 
     strainMapMinLat: -90,
     strainMapMinLng: -180,
@@ -201,9 +201,6 @@ export const SeismicSimulationStore = types
     },
     get deformationSites() {
       return [deformationSite1, deformationSite2, deformationSite3];
-    },
-    get deformationSimulationProgress() {
-      return self.deformationModelStep / self.deformationModelEndStep;
     }
   }));
 
