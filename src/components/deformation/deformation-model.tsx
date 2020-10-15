@@ -70,7 +70,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
   public componentDidMount() {
     this.drawModel();
-    this.disposer = onAction(this.stores.seismicSimulation, this.drawModel);
+    this.disposer = onAction(this.stores.seismicSimulation, this.drawModel, true);
   }
 
   public componentDidUpdate() {
