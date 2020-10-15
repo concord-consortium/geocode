@@ -174,9 +174,18 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     for (let x = xBounds[0]; x < xBounds[1]; x += lineSpacing) {
       verticalLines.push(this.generateVerticalLine(x, modelMargin.top, hSpeed, year));
     }
+
     ctx.strokeStyle = lineColor;
     const drawBzCurve = this.bzCurve(ctx);
     horizontalLines.forEach(drawBzCurve);
+
+    verticalLines.forEach(line => {
+      ctx.beginPath();
+      ctx.moveTo(line[0].x, line[0].y);
+      ctx.lineTo(line[1].x, line[1].y);
+      ctx.closePath();
+      ctx.stroke();
+    });
 
     // site markers - draw slightly overlaid on the clipped triangle, so need to restore (unclip) canvas
     ctx.restore();
@@ -288,22 +297,10 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     const xDist = this.canvasToWorld(center - xOrigin);
     const horizontalDisplacement =
         this.calculateHorizontalDisplacement(xDist, relativeHorizontalSpeed, year);
+    const newX = xOrigin - this.worldToCanvas(horizontalDisplacement);
 
-    const points: Point[] = [];
+    const points: Point[] = [{x: newX, y: yOffset}, {x: newX, y: yOffset + this.modelWidth}];
 
-    // generate vertical lines
-    for (let y = 0; y < this.modelWidth; y += this.stepSize) {
-
-      // add the x shear over time as the simulation runs
-      // our distance is measured from the center fault
-
-      // having a perfectly straight vertical line makes the line disappear
-      const lineFudge = y / 1000;
-      const newX = xOrigin + lineFudge; // + this.worldToCanvas(horizontalSheer);
-      const newY = y + yOffset + this.worldToCanvas(horizontalDisplacement);
-
-      points.push({ x: newX, y: newY });
-    }
     return points;
   }
 
@@ -315,12 +312,12 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       // get speed by determining which side of fault
       // station x and y are stored in the array as 0-1 percentage across the canvas
       const siteDisplacementX = this.calculateHorizontalDisplacement(
-        this.percentToWorld(0.5 - site[0]), relativeHorizontalSpeed, year);
+        this.percentToWorld(site[0] - 0.5), relativeHorizontalSpeed, year);
       const siteDisplacementY = this.calculateVerticalDisplacement(
-        this.percentToWorld(0.5 - site[0]), relativeVerticalSpeed, year);
+        this.percentToWorld(site[0] - 0.5), relativeVerticalSpeed, year);
 
-      const x = this.modelWidth * site[0] + modelMargin.left; // + this.worldToCanvas(siteDisplacementX);
-      const y = this.modelWidth * site[1] + modelMargin.top + this.worldToCanvas(siteDisplacementY);
+      const x = this.modelWidth * site[0] + modelMargin.left + this.worldToCanvas(siteDisplacementX);
+      const y = this.modelWidth * site[1] + modelMargin.top - this.worldToCanvas(siteDisplacementY);
       stationPoints.push({ x, y });
     }
     return stationPoints;
@@ -337,14 +334,19 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     return (px > 0 ? -verticalDisplacement : verticalDisplacement);
   }
 
-  // this will need more work
-  private calculateHorizontalDisplacement(px: number, speed: number, year: number) {
-    // const displacementRate = speed / Math.PI *
-    // (Math.sin(dip) * Math.atan(px / lockingDepth) - dip + Math.PI / 2) +
-    // lockingDepth * (lockingDepth * Math.cos(dip) + px * Math.sin(dip))
-    // / ((px ** 2) + (lockingDepth ** 2));
-    // return sheer;
-    return 0;
+  private calculateHorizontalDisplacement(originalX: number, hSpeed: number, year: number) {
+    let totalDisplacement = 0;
+    for (let earlierYear = 0; earlierYear < year; earlierYear++) {
+      const px = originalX + totalDisplacement;
+      const horizontalSlipRateKmYr = (-hSpeed / Math.PI *
+        (Math.sin(dip) * (Math.atan(px / lockingDepth) - dip + Math.PI / 2) +
+        (lockingDepth * (lockingDepth * Math.cos(dip) + px * Math.sin(dip)))
+        / (px * px + lockingDepth * lockingDepth))) / 1000000;
+
+      totalDisplacement += horizontalSlipRateKmYr;
+    }
+
+    return totalDisplacement;
   }
 
   private canvasToWorld(canvasPosition: number) {
