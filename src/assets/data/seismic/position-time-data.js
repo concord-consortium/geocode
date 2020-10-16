@@ -55,3 +55,35 @@ const RawPositionTimeData = {
 };
 
 export default RawPositionTimeData;
+
+const positionStationNames = [
+	"HARV",
+	"P513",
+	"FGST",
+	"P519",
+	"P518",
+	"P521",
+	"P535",
+	"P537",
+	"CRGG",
+	"P522",
+	"P541",
+	"P543",
+	"BVPP",
+	"P544",
+	"P563",
+	"P558",
+	"P565",
+	"P567",
+	"P570",
+	"P571",
+	"P573",
+	"P093",
+	"P094",
+	"P092",
+	"CRAM",
+];
+
+export const filterStationByPositionData = (station) => {
+	return positionStationNames.indexOf(station.id) > -1;
+}

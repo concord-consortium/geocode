@@ -105,6 +105,10 @@ Blockly.Blocks['seismic_filter_data'] = {
       .setCheck(['Number'])
       .setAlign(Blockly.ALIGN_RIGHT)
       .appendField('Max Direction (º)')
+    this.appendDummyInput()
+      .setAlign(Blockly.ALIGN_RIGHT)
+      .appendField('Stations with Position data')
+      .appendField(new Blockly.FieldCheckbox(false), 'position_history')
     this.setInputsInline(false)
     this.setOutput(true, 'GPS_Station')
     this.setColour("%{BKY_LISTS_HUE}")
@@ -127,6 +131,7 @@ Blockly.JavaScript['seismic_filter_data'] = function (block) {
   var value_max_speed = num(Blockly.JavaScript.valueToCode(block, 'max_speed', Blockly.JavaScript.ORDER_ATOMIC))
   var value_min_dir = num(Blockly.JavaScript.valueToCode(block, 'min_dir', Blockly.JavaScript.ORDER_ATOMIC))
   var value_max_dir = num(Blockly.JavaScript.valueToCode(block, 'max_dir', Blockly.JavaScript.ORDER_ATOMIC))
+  var value_position_history = block.getFieldValue('position_history') === "TRUE";
 
   var filter = {
     latitude: {
@@ -138,7 +143,8 @@ Blockly.JavaScript['seismic_filter_data'] = function (block) {
       max: Math.max(value_lng_1, value_lng_2) || "DEFAULT"
     },
     speed: {min: value_min_speed || 0, max: value_max_speed || 100},
-    direction: {min: value_min_dir || 0, max: value_max_dir || 360}
+    direction: {min: value_min_dir || 0, max: value_max_dir || 360},
+    only_stations_with_position_history: value_position_history,
   };
 
   // remove all defaults by hand if both min and max are defaults. For lat and lng we won't ever have just one value
@@ -146,6 +152,7 @@ Blockly.JavaScript['seismic_filter_data'] = function (block) {
   if (filter.longitude.min === "DEFAULT" && filter.longitude.max === "DEFAULT") delete filter.longitude;
   if (filter.speed.min === 0 && filter.speed.max === 100) delete filter.speed;
   if (filter.direction.min === 0 && filter.direction.max === 360) delete filter.direction;
+  if (!filter.only_stations_with_position_history) delete filter.only_stations_with_position_history;
 
   // if use only enters only one corner for either lat or lng, insert "ERROR" so interpreter will know to throw error
   if ((isNaN(value_lat_1) && !isNaN(value_lat_2)) || (!isNaN(value_lat_1) && isNaN(value_lat_2))) {
