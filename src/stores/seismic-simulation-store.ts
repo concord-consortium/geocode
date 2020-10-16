@@ -76,6 +76,12 @@ export const SeismicSimulationStore = types
       self.delaunayTriangles = [];
       self.delaunayTriangleStrains = [];
 
+      // reset values first
+      self.strainMapMinLat = -90;
+      self.strainMapMinLng = -180;
+      self.strainMapMaxLat = 90;
+      self.strainMapMaxLng = 180;
+
       if (bounds.latitude && (bounds.latitude as Range).min) {
         self.strainMapMinLat = (bounds.latitude as Range).min as number;
       }
