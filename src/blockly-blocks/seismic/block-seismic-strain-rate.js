@@ -2,22 +2,22 @@ Blockly.Blocks['seismic_compute_strain'] = {
   init: function () {
     this.appendDummyInput()
       .appendField('Compute strain rate')
-    this.appendValueInput('min_lat')
+    this.appendValueInput('lat_1')
       .setCheck(['Number'])
       .setAlign(Blockly.ALIGN_RIGHT)
-      .appendField('Min Latitude')
-    this.appendValueInput('max_lat')
+      .appendField('Corner 1 Lat')
+    this.appendValueInput('lng_1')
       .setCheck(['Number'])
       .setAlign(Blockly.ALIGN_RIGHT)
-      .appendField('Max Latitude')
-    this.appendValueInput('min_long')
+      .appendField('Corner 1 Long')
+    this.appendValueInput('lat_2')
       .setCheck(['Number'])
       .setAlign(Blockly.ALIGN_RIGHT)
-      .appendField('Min Longitude')
-    this.appendValueInput('max_long')
+      .appendField('Corner 2 Lat')
+    this.appendValueInput('lng_2')
       .setCheck(['Number'])
       .setAlign(Blockly.ALIGN_RIGHT)
-      .appendField('Max Longitude')
+      .appendField('Corner 2 Long')
     this.setInputsInline(false)
 
     this.setPreviousStatement(true, null)
@@ -28,22 +28,40 @@ Blockly.Blocks['seismic_compute_strain'] = {
   }
 }
 Blockly.JavaScript['seismic_compute_strain'] = function (block) {
-  var value_min_long = Blockly.JavaScript.valueToCode(block, 'min_long', Blockly.JavaScript.ORDER_ATOMIC)
-  var value_max_long = Blockly.JavaScript.valueToCode(block, 'max_long', Blockly.JavaScript.ORDER_ATOMIC)
-  var value_min_lat = Blockly.JavaScript.valueToCode(block, 'min_lat', Blockly.JavaScript.ORDER_ATOMIC)
-  var value_max_lat = Blockly.JavaScript.valueToCode(block, 'max_lat', Blockly.JavaScript.ORDER_ATOMIC)
+  function num(n) {
+    // Blockly adds parentheses around negatives, so we have to strip them first
+    return parseFloat(n.replace(/[\(\)]/g, ""));
+  }
+  var value_lat_1 = num(Blockly.JavaScript.valueToCode(block, 'lat_1', Blockly.JavaScript.ORDER_ATOMIC))
+  var value_lng_1 = num(Blockly.JavaScript.valueToCode(block, 'lng_1', Blockly.JavaScript.ORDER_ATOMIC))
+  var value_lat_2 = num(Blockly.JavaScript.valueToCode(block, 'lat_2', Blockly.JavaScript.ORDER_ATOMIC))
+  var value_lng_2 = num(Blockly.JavaScript.valueToCode(block, 'lng_2', Blockly.JavaScript.ORDER_ATOMIC))
 
   var filter = {
-    longitude: {min: value_min_long || -180, max: value_max_long || 180},
-    latitude: {min: value_min_lat || -90, max: value_max_lat || 90},
+    latitude: {
+      min: Math.min(value_lat_1, value_lat_2) || "DEFAULT",
+      max: Math.max(value_lat_1, value_lat_2) || "DEFAULT"
+    },
+    longitude: {
+      min: Math.min(value_lng_1, value_lng_2) || "DEFAULT",
+      max: Math.max(value_lng_1, value_lng_2) || "DEFAULT"
+    }
   };
 
-  // remove all defaults by hand if both min and max are defaults
-  if (filter.longitude.min === -180 && filter.longitude.max === 180) delete filter.longitude;
-  if (filter.latitude.min === -90 && filter.latitude.max === 90) delete filter.latitude;
+  // remove all defaults by hand if both min and max are defaults. For lat and lng we won't ever have just one value
+  if (filter.latitude.min === "DEFAULT" && filter.latitude.max === "DEFAULT") delete filter.latitude;
+  if (filter.longitude.min === "DEFAULT" && filter.longitude.max === "DEFAULT") delete filter.longitude;
+
+  // if use only enters only one corner for either lat or lng, insert "ERROR" so interpreter will know to throw error
+  if ((isNaN(value_lat_1) && !isNaN(value_lat_2)) || (!isNaN(value_lat_1) && isNaN(value_lat_2))) {
+    filter.latitude = "ERROR";
+  }
+  if ((isNaN(value_lng_1) && !isNaN(value_lng_2)) || (!isNaN(value_lng_1) && isNaN(value_lng_2))) {
+    filter.longitude = "ERROR";
+  }
 
   let filterObj = JSON.stringify(filter);
-  filterObj = filterObj.replace(/\"/g, "");
+  filterObj = filterObj.replace(/"([^"]+)":/g, '$1:');
 
   var code = `computeStrainRate(${filterObj});`
   // TODO: Change ORDER_NONE to the correct strength.

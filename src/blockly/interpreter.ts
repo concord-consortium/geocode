@@ -216,7 +216,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
           if ((params.filter[key] as any) === "ERROR") {
             // hard-code for seismic stations
             if (key === "longitude" || key === "latitude") {
-              blocklyController.throwError("You can't filter on only one corner for latitude or longitude.\nPlease provide both corners, or leave it empty.");
+              blocklyController.throwError("You can't filter on only one corner for latitude or longitude.\nPlease provide both corners, or leave them empty.");
             } else {
               blocklyController.throwError(`There is an error on the filter key "${key}"`);
             }
@@ -337,6 +337,14 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     });
 
     addFunc("computeStrainRate", (filter: Filter) => {
+      if (filter) {
+        for (const key in filter) {
+          if ((filter[key] as any) === "ERROR") {
+            blocklyController.throwError("You can't filter on only one corner for latitude or longitude.\nPlease provide both corners, or leave them empty.");
+            return;
+          }
+        }
+      }
       seismicSimulation.setStrainMapBounds(filter);
     });
 
