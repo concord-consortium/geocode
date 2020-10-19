@@ -151,27 +151,6 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     const stationPoints = this.generateGPSStationPoints(vSpeed, hSpeed, year);
     const startPoint = stationPoints[0];
 
-    // text labels
-    // labels must be drawn before we clip the canvas
-    ctx.font = "20px Lato";
-    ctx.fillStyle = textColor;
-    ctx.beginPath();
-
-    ctx.fillText("Plate 1",
-      canvasMargin.left + 5, canvasMargin.top + modelMargin.top + 20);
-    ctx.fillText("Plate 2",
-    canvasMargin.left + this.modelWidth - 65, canvasMargin.top + modelMargin.top + 20);
-
-    ctx.font = "18px Lato";
-    for (let i = 0; i < stationPoints.length; i++) {
-      ctx.textAlign = stationPoints[i].x < this.modelWidth / 2 ? "right" : "left";
-      const textPositionAdjust = stationPoints[i].x < this.modelWidth / 2 ? -10 : 10;
-      ctx.fillText(`Station ${i}`, stationPoints[i].x + textPositionAdjust, stationPoints[i].y);
-    }
-    ctx.fillText(`Year ${year.toLocaleString()}`,
-      canvasMargin.left + this.modelWidth - 10, canvasMargin.top + modelMargin.top + this.modelWidth - 20);
-    ctx.stroke();
-
     // Draw lines between stations to form a triangle
     ctx.beginPath();
     ctx.moveTo(startPoint.x, startPoint.y);
@@ -216,8 +195,48 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       ctx.stroke();
     });
 
-    // site markers - draw slightly overlaid on the clipped triangle, so need to restore (unclip) canvas
+    // unclip from triangle
     ctx.restore();
+
+    // draw the fainter lines behind triangle that will fade
+    if (year < 50000) {
+      ctx.save();
+      const alpha = 0.5 - (year / 50000) * 0.5;
+      ctx.lineWidth = 0.5;
+      ctx.strokeStyle = `rgba(0,0,0,${alpha})`;
+      horizontalLines.forEach(drawBzCurve);
+
+      verticalLines.forEach(line => {
+        ctx.beginPath();
+        ctx.moveTo(line[0].x, line[0].y);
+        ctx.lineTo(line[1].x, line[1].y);
+        ctx.closePath();
+        ctx.stroke();
+      });
+      ctx.restore();
+    }
+
+    // text labels
+    ctx.font = "20px Lato";
+    ctx.fillStyle = textColor;
+    ctx.beginPath();
+
+    ctx.fillText("Plate 1",
+      canvasMargin.left + 5, canvasMargin.top + modelMargin.top + 20);
+    ctx.fillText("Plate 2",
+    canvasMargin.left + this.modelWidth - 65, canvasMargin.top + modelMargin.top + 20);
+
+    ctx.font = "18px Lato";
+    for (let i = 0; i < stationPoints.length; i++) {
+      ctx.textAlign = stationPoints[i].x < this.modelWidth / 2 ? "right" : "left";
+      const textPositionAdjust = stationPoints[i].x < this.modelWidth / 2 ? -10 : 10;
+      ctx.fillText(`Station ${i}`, stationPoints[i].x + textPositionAdjust, stationPoints[i].y);
+    }
+    ctx.fillText(`Year ${year.toLocaleString()}`,
+      canvasMargin.left + this.modelWidth - 10, canvasMargin.top + modelMargin.top + this.modelWidth - 20);
+    ctx.stroke();
+
+    // station dots
     ctx.fillStyle = stationColor;
     ctx.strokeStyle = textColor;
     ctx.beginPath();
@@ -271,7 +290,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
     ctx.beginPath();
     ctx.fillStyle = textColor;
-    ctx.font = "16px Arial";
+    ctx.font = "16px Lato";
     ctx.fillText(`5km`, s1.x + ((s2.x - s1.x) / 2), s1.y + 20);
     ctx.stroke();
   }
