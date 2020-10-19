@@ -256,7 +256,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.stroke();
 
     // Scale
-    const s1 = { x: modelMargin.left + 100, y: modelMargin.top - 50 };
+    const s1 = { x: modelMargin.left + this.modelWidth / 2 - this.worldToCanvas(5) - 10, y: modelMargin.top + 20 };
     const s2 = { x: s1.x + this.worldToCanvas(5), y: s1.y };
     ctx.beginPath();
     ctx.moveTo(s1.x, s1.y);
@@ -422,12 +422,12 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       this.stores.seismicSimulation;
 
     // line starts at given point
-    const p1 = { x: modelMargin.left + 30, y: modelMargin.top - 50 };
+    const p1 = { x: modelMargin.left + 30, y: modelMargin.top + 50 };
     // calculate end canvas position of line to represent the magnitude and direction of movement
     const p1vx = p1.x + deformSpeedPlate1 * Math.sin(deformDirPlate1 * Math.PI / 180);
     const p1vy = p1.y + deformSpeedPlate1 * Math.cos(deformDirPlate1 * Math.PI / 180);
 
-    const p2 = { x: modelMargin.left + modelWidth - 30, y: modelMargin.top - 50 };
+    const p2 = { x: modelMargin.left + modelWidth - 30, y: modelMargin.top + 50 };
     const p2vx = p2.x + deformSpeedPlate2 * Math.sin(deformDirPlate2 * Math.PI / 180);
     const p2vy = p2.y + deformSpeedPlate2 * Math.cos(deformDirPlate2 * Math.PI / 180);
 
