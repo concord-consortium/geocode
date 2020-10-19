@@ -158,8 +158,10 @@ export class LatLngDrawLayer extends BaseComponent<IProps, IState> {
     } else {
       flipped = true;
     }
-    const p1Icon = latLngIcon(`Latitude: ${p1Lat.toFixed(2)}<br/>Longitude: ${p1Lng.toFixed(2)}`, flipped ? "top-left" : "bottom-right");
-    const p2Icon = latLngIcon(`Latitude: ${p2Lat.toFixed(2)}<br/>Longitude: ${p2Lng.toFixed(2)}`, flipped ? "bottom-right" : "top-left");
+    const p1Icon = latLngIcon(`<b>Corner 1</b><br/>Latitude: ${p1Lat.toFixed(2)}<br/>Longitude: ${p1Lng.toFixed(2)}`,
+      flipped ? "top-left" : "bottom-right");
+    const p2Icon = latLngIcon(`<b>Corner 2</b><br/>Latitude: ${p2Lat.toFixed(2)}<br/>Longitude: ${p2Lng.toFixed(2)}`,
+    flipped ? "bottom-right" : "top-left");
 
     return (
       <LayerGroup map={map}>

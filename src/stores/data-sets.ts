@@ -1,6 +1,6 @@
 // @ts-ignore
 import * as RawWindDataSet from "../assets/data/winds_Cerro_Negro.csv";
-import RawPositionTimeData from "../assets/data/seismic/position-time-data";
+import RawPositionTimeData, { filterStationByPositionData } from "../assets/data/seismic/position-time-data";
 
 interface DatasetCase {[key: string]: number | Date; }
 export type Dataset = DatasetCase[];
@@ -77,6 +77,12 @@ export const Datasets = {
       return Object.keys(filter).every(key => {
         const itemValue = item[key];
         const filterValue = filter[key];
+
+        if (key === "only_stations_with_position_history" && filterValue) {
+          // special-case
+          return filterStationByPositionData(item);
+        }
+
         if (typeof filterValue === "number") {
           return itemValue === filterValue;
         } else {
