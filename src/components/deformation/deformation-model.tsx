@@ -123,6 +123,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.stroke();
     ctx.fillStyle = drawAreaColor;
     ctx.fill();
+    ctx.clip();
 
     // show fault line
     ctx.beginPath();
