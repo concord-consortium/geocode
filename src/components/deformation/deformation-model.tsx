@@ -152,16 +152,23 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
     // text labels
     // labels must be drawn before we clip the canvas
-    ctx.font = "20px Arial";
+    ctx.font = "20px Lato";
     ctx.fillStyle = textColor;
     ctx.beginPath();
+
+    ctx.fillText("Plate 1",
+      canvasMargin.left + 5, canvasMargin.top + modelMargin.top + 20);
+    ctx.fillText("Plate 2",
+    canvasMargin.left + this.modelWidth - 65, canvasMargin.top + modelMargin.top + 20);
+
+    ctx.font = "18px Lato";
     for (let i = 0; i < stationPoints.length; i++) {
       ctx.textAlign = stationPoints[i].x < this.modelWidth / 2 ? "right" : "left";
       const textPositionAdjust = stationPoints[i].x < this.modelWidth / 2 ? -10 : 10;
       ctx.fillText(`Station ${i}`, stationPoints[i].x + textPositionAdjust, stationPoints[i].y);
     }
     ctx.fillText(`Year ${year.toLocaleString()}`,
-      canvasMargin.left + this.modelWidth, canvasMargin.top + modelMargin.top + this.modelWidth + 20);
+      canvasMargin.left + this.modelWidth - 10, canvasMargin.top + modelMargin.top + this.modelWidth - 20);
     ctx.stroke();
 
     // Draw lines between stations to form a triangle
