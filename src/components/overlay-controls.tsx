@@ -23,6 +23,10 @@ interface IState {}
 @observer
 export class OverlayControls extends BaseComponent<IProps, IState> {
     public render() {
+        const { name: unitName } = this.stores.unit;
+
+        const isTephraUnit = unitName === "Tephra";
+
         const { showRuler,
             onRulerClick,
             onLatLngClick,
@@ -55,7 +59,7 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
                         height={26}
                         dataTest={"Re-center-button"}
                     />
-                    <IconButton
+                    {isTephraUnit && <IconButton
                         onClick={onRulerClick}
                         disabled={false}
                         label={"Ruler"}
@@ -66,7 +70,7 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
                         width={26}
                         height={26}
                         dataTest={"Ruler-button"}
-                    />
+                    />}
                     <IconButton
                         onClick={onLatLngClick}
                         disabled={false}
