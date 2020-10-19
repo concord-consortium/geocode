@@ -34,10 +34,23 @@ const lineSpacing = 20;
 const lockingDepth = 1;
 // for converting pixels to world distance
 // we want the area shown to be approx this size in each direction
-const distanceScale = 20;
+const distanceScale = 50;
 
 // angle between the plates vertically (into the Earth)
-const plateDipAngle = deg2rad(90);
+const dip = deg2rad(90);
+
+// to calculate the total horizontal displacement from an originX at year Y, we have to sum all the displacements
+// from year 0 to year Y. When Y > 100,000, this starts getting slow. Therefore we cache previous calculations
+// and add to them as necessary, as year/displacement tuples for any origin,
+// {originX: [[yearI, displacementI], [yearJ, displacementJ]]}
+// As the year increases, we can look up our latest value and calculate from there. If we run again with the same
+// horizontal speed, we will re-use this ame cache (though will not cache any more values). Since the timings of
+// a second run will be different, we will still need to find the cache with the previous year and step from there,
+// but this is significantly faster.
+// A typical cache for any xOrigin tends to be about 300 year/displacement tuples.
+interface DisplacementCache { [origin: number]: number[][]; }
+let cachedHorizontalSpeed = 0;
+let cachedHorizontalDisplacements: DisplacementCache = {};
 
 @inject("stores")
 @observer
@@ -51,13 +64,13 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     return smallestDimension - (minModelMargin * 2);
   }
   private get stepSize() {
-    const steps = 30;
+    const steps = 100;
     return this.modelWidth / steps;
   }
 
   public componentDidMount() {
     this.drawModel();
-    this.disposer = onAction(this.stores.seismicSimulation, this.drawModel);
+    this.disposer = onAction(this.stores.seismicSimulation, this.drawModel, true);
   }
 
   public componentDidUpdate() {
@@ -123,8 +136,18 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.lineWidth = 1;
     ctx.strokeStyle = textColor;
 
+    const { deformationModelStep: year } = this.stores.seismicSimulation;
+    const vSpeed = this.getRelativeVerticalSpeed();     // mm/yr
+    const hSpeed = this.getRelativeHorizontalSpeed();
+
+    if (cachedHorizontalSpeed !== hSpeed) {
+      // reset horizontal displacement cache
+      cachedHorizontalSpeed = hSpeed;
+      cachedHorizontalDisplacements = {};
+    }
+
     // set up the GPS site positions
-    const stationPoints = this.generateGPSStationPoints();
+    const stationPoints = this.generateGPSStationPoints(vSpeed, hSpeed, year);
     const startPoint = stationPoints[0];
 
     // text labels
@@ -137,6 +160,8 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       const textPositionAdjust = stationPoints[i].x < this.modelWidth / 2 ? -10 : 10;
       ctx.fillText(`Station ${i}`, stationPoints[i].x + textPositionAdjust, stationPoints[i].y);
     }
+    ctx.fillText(`Year ${year.toLocaleString()}`,
+      canvasMargin.left + this.modelWidth, canvasMargin.top + modelMargin.top + this.modelWidth + 20);
     ctx.stroke();
 
     // Draw lines between stations to form a triangle
@@ -152,22 +177,36 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     // useful to disable this while debugging!
     ctx.clip();
 
-    // Start deformation lines
-    const lines: Point[][] = [];
-    // start below model and go beyond in case lines curve into model
+    // Deformation lines
+    const horizontalLines: Point[][] = [];
+    const verticalLines: Point[][] = [];
+
+    // horizontal lines start below model and go beyond in case lines curve into model
     const yBounds = [modelMargin.top - 10, modelMargin.top + this.modelWidth + 20];
+    // vertical lines remain vertical and can be clipped to frame
     const xBounds = [modelMargin.left - 10, modelMargin.left + this.modelWidth + 20];
-    // horizontal point arrays
+
+    // form "horizontal" lines, one for each step vertically
+    // (this is slightly inefficient, because they all have the same shape, but the calc is fast)
     for (let y = yBounds[0]; y < yBounds[1]; y += lineSpacing) {
-      lines.push(this.generateYDisplacementLine(y, modelMargin.left));
+      horizontalLines.push(this.generateHorizontalLine(y, modelMargin.left, vSpeed, year));
     }
-    // vertical lines
+    // form vertical lines, one for each step horizontally
     for (let x = xBounds[0]; x < xBounds[1]; x += lineSpacing) {
-      lines.push(this.generateXDisplacementLine(x, modelMargin.top));
+      verticalLines.push(this.generateVerticalLine(x, modelMargin.top, hSpeed, year));
     }
+
     ctx.strokeStyle = lineColor;
     const drawBzCurve = this.bzCurve(ctx);
-    lines.forEach(drawBzCurve);
+    horizontalLines.forEach(drawBzCurve);
+
+    verticalLines.forEach(line => {
+      ctx.beginPath();
+      ctx.moveTo(line[0].x, line[0].y);
+      ctx.lineTo(line[1].x, line[1].y);
+      ctx.closePath();
+      ctx.stroke();
+    });
 
     // site markers - draw slightly overlaid on the clipped triangle, so need to restore (unclip) canvas
     ctx.restore();
@@ -251,97 +290,108 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     return relativeSpeed;
   }
 
-  private generateYDisplacementLine(yOrigin: number, xOffset: number) {
-    const { deformationSimulationProgress: progress } = this.stores.seismicSimulation;
-
+  private generateHorizontalLine(yOrigin: number, xOffset: number, relativeVerticalSpeed: number, year: number) {
     const center = this.modelWidth / 2;
     const points: Point[] = [];
 
-    // generate horizontal lines
+    // generate vertical displacements along a horizontal line
     for (let x = 0; x < this.modelWidth; x += this.stepSize) {
       // xDist is always distance from the center fault line
       const xDist = this.canvasToWorld(center - x);
 
       // distance is measured from the center fault
-      const verticalSheer =
-        this.calculateVerticalSheer(xDist, this.getRelativeVerticalSpeed(), plateDipAngle) * progress;
-      const horizontalSheer =
-        this.calculateHorizontalSheer(xDist, this.getRelativeHorizontalSpeed(), plateDipAngle) * progress;
+      const verticalDisplacement =
+        this.calculateVerticalDisplacement(xDist, relativeVerticalSpeed, year);
 
-      const newY = yOrigin + this.worldToCanvas(verticalSheer);
+      const newY = yOrigin + this.worldToCanvas(verticalDisplacement);
       const newX = x + xOffset; // + this.worldToCanvas(horizontalSheer);
       points.push({ x: newX, y: newY });
     }
     return points;
   }
 
-  private generateXDisplacementLine(xOrigin: number, yOffset: number) {
-    const { deformationSimulationProgress: progress } =
-      this.stores.seismicSimulation;
-
+  // vertical lines are always precisely straight, so just require two points
+  private generateVerticalLine(xOrigin: number, yOffset: number, relativeHorizontalSpeed: number, year: number) {
     const center = (this.modelWidth / 2) + modelMargin.left;
-    const points: Point[] = [];
 
-    // generate vertical lines
-    for (let y = 0; y < this.modelWidth; y += this.stepSize) {
-      // xDist is always distance from the fault line.
-      const xDist = this.canvasToWorld(center - xOrigin);
+    // xDist is always distance from the fault line.
+    const xDist = this.canvasToWorld(center - xOrigin);
+    const horizontalDisplacement = this.calculateHorizontalDisplacement(xDist, relativeHorizontalSpeed, year);
 
-      // add the x shear over time as the simulation runs
-      // our distance is measured from the center fault
-      const horizontalSheer =
-        this.calculateHorizontalSheer(xDist, this.getRelativeHorizontalSpeed(), plateDipAngle) * progress;
-      // add the y shear component
-      const verticalSheer =
-        this.calculateVerticalSheer(xDist, this.getRelativeVerticalSpeed(), plateDipAngle) * progress;
+    const newX = xOrigin - this.worldToCanvas(horizontalDisplacement);
 
-      // having a perfectly straight vertical line makes the line disappear
-      const lineFudge = y / 1000;
-      const newX = xOrigin + lineFudge; // + this.worldToCanvas(horizontalSheer);
-      const newY = y + yOffset + this.worldToCanvas(verticalSheer);
+    const points: Point[] = [{x: newX, y: yOffset}, {x: newX, y: yOffset + this.modelWidth}];
 
-      points.push({ x: newX, y: newY });
-    }
     return points;
   }
 
-  private generateGPSStationPoints() {
-    const { deformationSimulationProgress: progress, deformationSites } =
-      this.stores.seismicSimulation;
-
+  private generateGPSStationPoints(relativeVerticalSpeed: number, relativeHorizontalSpeed: number, year: number) {
+    const { deformationSites } = this.stores.seismicSimulation;
     // stations will move with the land
     const stationPoints: Point[] = [];
     for (const site of deformationSites) {
       // get speed by determining which side of fault
       // station x and y are stored in the array as 0-1 percentage across the canvas
-      const siteDisplacementX = this.calculateHorizontalSheer(
-        this.percentToWorld(0.5 - site[0]), this.getRelativeHorizontalSpeed(), plateDipAngle) * progress;
-      const siteDisplacementY = this.calculateVerticalSheer(
-        this.percentToWorld(0.5 - site[0]), this.getRelativeVerticalSpeed(), plateDipAngle) * progress;
+      const siteDisplacementX = this.calculateHorizontalDisplacement(
+        this.percentToWorld(site[0] - 0.5), relativeHorizontalSpeed, year);
+      const siteDisplacementY = this.calculateVerticalDisplacement(
+        this.percentToWorld(site[0] - 0.5), relativeVerticalSpeed, year);
 
-      const x = this.modelWidth * site[0] + modelMargin.left; // + this.worldToCanvas(siteDisplacementX);
-      const y = this.modelWidth * site[1] + modelMargin.top + this.worldToCanvas(siteDisplacementY);
+      const x = this.modelWidth * site[0] + modelMargin.left + this.worldToCanvas(siteDisplacementX);
+      const y = this.modelWidth * site[1] + modelMargin.top - this.worldToCanvas(siteDisplacementY);
       stationPoints.push({ x, y });
     }
     return stationPoints;
   }
 
   // Calculations taken from PowerPoint linked here: https://www.pivotaltracker.com/story/show/174401018
-  private calculateVerticalSheer(px: number, speed: number, dip: number) {
-    const sheer = speed / Math.PI *
-      (Math.cos(dip) * Math.atan(px / lockingDepth) - dip + Math.PI / 2) -
-      px * (lockingDepth * Math.cos(dip) + px * (Math.sin(dip)))
-      / ((px ** 2) + (lockingDepth ** 2));
-    return (px < 0 ? -sheer : sheer);
+  private calculateVerticalDisplacement(px: number, vSpeed: number, year: number) {
+    const verticalSlipRatemmYr = vSpeed / Math.PI *
+      (Math.cos(dip) * (Math.atan(px / lockingDepth) - dip + Math.PI / 2) -
+      (px * (lockingDepth * Math.cos(dip) + px * Math.sin(dip)))
+      / (px * px + lockingDepth * lockingDepth));                   // mm/yr
+    const verticalSlipRateKmYr = verticalSlipRatemmYr / 1000000;
+    const verticalDisplacement = verticalSlipRateKmYr * year;       // km
+    return (px > 0 ? -verticalDisplacement : verticalDisplacement);
   }
 
-  // this will need more work
-  private calculateHorizontalSheer(px: number, speed: number, dip: number) {
-    const sheer = speed / Math.PI *
-    (Math.sin(dip) * Math.atan(px / lockingDepth) - dip + Math.PI / 2) +
-    lockingDepth * (lockingDepth * Math.cos(dip) + px * Math.sin(dip))
-    / ((px ** 2) + (lockingDepth ** 2));
-    return sheer;
+  private calculateHorizontalDisplacement(originalX: number, hSpeed: number, year: number) {
+    if (Math.abs(hSpeed) < 1e-10) {
+      return 0;
+    }
+    let earlierYear = 0;
+    let totalDisplacement = 0;
+    // check if we have already cached previous values
+    if (cachedHorizontalDisplacements[originalX] ) {
+      const exactCache = cachedHorizontalDisplacements[originalX].find(cache => cache[0] === year);
+      if (exactCache) return exactCache[1];
+      // if (cachedHorizontalDisplacements[originalX].length > 10) debugger;
+      const latestCache = cachedHorizontalDisplacements[originalX].slice().reverse().find(cache => cache[0] < year);
+      if (latestCache) {
+        earlierYear = latestCache[0];
+        totalDisplacement = latestCache[1];
+      }
+    } else {
+      cachedHorizontalDisplacements[originalX] = [];
+    }
+
+    for ( ; earlierYear < year; earlierYear++) {
+      const px = originalX + totalDisplacement;
+      const horizontalSlipRateKmYr = (-hSpeed / Math.PI *
+        (Math.sin(dip) * (Math.atan(px / lockingDepth) - dip + Math.PI / 2) +
+        (lockingDepth * (lockingDepth * Math.cos(dip) + px * Math.sin(dip)))
+        / (px * px + lockingDepth * lockingDepth))) / 1000000;
+
+      totalDisplacement += horizontalSlipRateKmYr;
+    }
+
+    if (cachedHorizontalDisplacements[originalX].length === 0 ||
+        year > cachedHorizontalDisplacements[originalX][cachedHorizontalDisplacements[originalX].length - 1][0]) {
+      // don't insert any caches out of order
+      cachedHorizontalDisplacements[originalX].push([year, totalDisplacement]);
+    }
+
+    return totalDisplacement;
   }
 
   private canvasToWorld(canvasPosition: number) {
