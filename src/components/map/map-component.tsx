@@ -39,8 +39,8 @@ export interface Scenario {
   topLeftLng: number;
   bottomRightLat: number;
   bottomRightLng: number;
-  volcanoLat?: number;
-  volcanoLng?: number;
+  centerLat: number;
+  centerLng: number;
   extraMarkers?: any[];
 }
 
@@ -141,8 +141,8 @@ export class MapComponent extends BaseComponent<IProps, IState>{
 
     const {
       cities,
-      volcanoLat,
-      volcanoLng,
+      volcanoLat: centerLat,
+      volcanoLng: centerLng,
       windDirection,
       windSpeed,
       colHeight,
@@ -220,13 +220,12 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     const sampleLocations = this.getSampleLocations();
     const riskItems = this.getRiskItems();
 
-    const center: L.LatLngTuple = isTephraUnit ? [volcanoLat, volcanoLng] :
-      [(bottomRightLat + topLeftLat) / 2, (bottomRightLng + topLeftLng) / 2];
+    const center: L.LatLngTuple = [centerLat, centerLng];
 
     const { crossPoint1Lat, crossPoint1Lng, crossPoint2Lat, crossPoint2Lng,
             latLngPoint1Lat, latLngPoint1Lng, latLngPoint2Lat, latLngPoint2Lng } =
       this.stores.tephraSimulation;
-    const volcanoPos = L.latLng(volcanoLat, volcanoLng);
+    const volcanoPos = L.latLng(centerLat, centerLng);
     const corner1 = L.latLng(topLeftLat, topLeftLng);
     const corner2 = L.latLng(bottomRightLat, bottomRightLng);
     const bounds = L.latLngBounds(corner1, corner2);
@@ -292,7 +291,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
               <Pane key="tephra-marker-layer"
                 style={{zIndex: 3}}>
                 <Marker
-                  position={[volcanoLat, volcanoLng]}
+                  position={[centerLat, centerLng]}
                   icon={iconVolcano}>
                   <Popup>
                     Popup for any custom information.
@@ -380,11 +379,25 @@ export class MapComponent extends BaseComponent<IProps, IState>{
 
   private onRecenterClick = () => {
     if (this.map.current) {
-      const { volcanoLat, volcanoLng, scenario } = this.stores.tephraSimulation;
-      const scenarioData = (Scenarios as {[key: string]: Scenario})[scenario];
-      const { initialZoom } = scenarioData;
+      const { name: unitName } = this.stores.unit;
 
-      this.map.current.leafletElement.flyTo(L.latLng(volcanoLat, volcanoLng), initialZoom);
+      const isTephraUnit = unitName === "Tephra";
+
+      const {
+        scenario: tephraScenario,
+      } = this.stores.tephraSimulation;
+
+      const {
+        scenario: seismicScenario
+      } = this.stores.seismicSimulation;
+
+      const scenario = isTephraUnit ? tephraScenario : seismicScenario;
+
+      const scenarioData = (Scenarios as {[key: string]: Scenario})[scenario];
+
+      const { initialZoom, centerLat, centerLng } = scenarioData;
+
+      this.map.current.leafletElement.flyTo(L.latLng(centerLat, centerLng), initialZoom);
     }
   }
   private onMapClick = (e: any) => {
