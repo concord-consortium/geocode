@@ -20,11 +20,12 @@ import { RulerDrawLayer } from "./layers/ruler-draw-layer";
 import { RightSectionTypes } from "../tabs";
 import KeyButton from "./map-key-button";
 import CompassComponent from "./map-compass";
-import { LegendComponent } from "./map-legend";
+import { LegendComponent, LegendType } from "./map-legend";
 import { SamplesCollectionModelType, SamplesLocationModelType } from "../../stores/samples-collections-store";
 import { RiskLevels } from "../montecarlo/monte-carlo";
 import { LatLngDrawLayer } from "./layers/latlng-draw-layer";
 import { MapGPSStationsLayer } from "./map-gps-stations-layer";
+import { ColorMethod } from "../../stores/seismic-simulation-store";
 
 interface WorkspaceProps {
   width: number;
@@ -151,7 +152,8 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     } = this.stores.tephraSimulation;
 
     const {
-      scenario: seismicScenario
+      scenario: seismicScenario,
+      strainMapColorMethod,
     } = this.stores.seismicSimulation;
 
     const scenario = isTephraUnit ? tephraScenario : seismicScenario;
@@ -159,6 +161,10 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     const { showCrossSection } = this.stores.uiStore;
 
     const scenarioData = (Scenarios as {[key: string]: Scenario})[scenario];
+
+    const legendType: LegendType = isTephraUnit ?
+                        panelType !== RightSectionTypes.MONTE_CARLO ? "Tephra" : "Risk" :
+                        "Strain";
 
     const {
       initialZoom,
@@ -321,16 +327,10 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           {
             !isTephraUnit &&
             [
-              // <Pane key="strain-layer"
-              //   style={{zIndex: 2}}>
-              //   <MapTriangulatedStrainLayer
-              //     map={this.state.mapLeafletRef}
-              //     minLat={35}
-              //     maxLat={37}
-              //     minLng={-124}
-              //     maxLng={-119}
-              //   />
-              // </Pane>,
+              <MapTriangulatedStrainLayer
+                key="strain-layer"
+                map={this.state.mapLeafletRef}
+              />,
               <MapGPSStationsLayer
                 key="gps-layer"
                 map={this.state.mapLeafletRef}
@@ -362,7 +362,8 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           ? <KeyButton onClick={this.onKeyClick}/>
           : <LegendComponent
               onClick={this.onKeyButtonClick}
-              showTephra={panelType !== RightSectionTypes.MONTE_CARLO}
+              legendType={legendType}
+              colorMethod={strainMapColorMethod as ColorMethod}
             />
         }
         <CompassComponent/>
