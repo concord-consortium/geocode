@@ -189,6 +189,7 @@ export const SeismicSimulationStore = types
       window.requestAnimationFrame(updateStep);
     },
     setPlateVelocity(block: number, speed: number, direction: number) {
+      self.deformationModelStep = 0;
       if (block === 1) {
         self.deformSpeedPlate1 = speed;
         self.deformDirPlate1 = 180 - direction;
