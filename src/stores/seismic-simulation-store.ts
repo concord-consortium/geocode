@@ -42,6 +42,7 @@ export const SeismicSimulationStore = types
     strainMapMaxLng: 180,
     strainMapColorMethod: types.optional(types.string, "logarithmic"),
     renderStrainMap: false,
+    renderStrainLabels: false,
   })
   .volatile(self => ({
     delaunayTriangles: [] as number[][][],
@@ -159,6 +160,9 @@ export const SeismicSimulationStore = types
       self.strainMapColorMethod = method;
       self.renderStrainMap = true;
     },
+    renderStrainRateLabels() {
+      self.renderStrainLabels = true;
+    },
     reset() {
       self.visibleGPSStationIds.clear();
       self.selectedGPSStationId = undefined;
@@ -169,6 +173,7 @@ export const SeismicSimulationStore = types
       self.strainMapMaxLat = 90;
       self.strainMapMaxLng = 180;
       self.renderStrainMap = false;
+      self.renderStrainLabels = false;
     }
   }))
   .actions((self) => ({

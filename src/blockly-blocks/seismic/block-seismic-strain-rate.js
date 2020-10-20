@@ -124,3 +124,20 @@ Blockly.JavaScript['seismic_render_strain_triangles'] = function (block) {
   var code = value_color_method ? `renderStrainRate${value_color_method};` : "renderStrainRate();";
   return code;
 }
+
+Blockly.Blocks['seismic_render_strain_labels'] = {
+  init: function () {
+    this.appendDummyInput()
+      .appendField('Show strain rate value')
+    this.setInputsInline(false)
+    this.setPreviousStatement(true, null)
+    this.setNextStatement(true, null)
+    this.setColour(230)
+    this.setTooltip('Show strain rate value')
+    this.setHelpUrl('')
+  }
+}
+Blockly.JavaScript['seismic_render_strain_labels'] = function (block) {
+  var code = "renderStrainRateLabels();";
+  return code;
+}
