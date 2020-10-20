@@ -103,8 +103,9 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
     }
     if (yAxisLabel) {
       svgAxes.append("text")
-        .attr("x", `-${height / 2}`)
+        .attr("x", `-${(height / 2) - 20}`)
         .attr("dy", "-30px")
+        .style("text-anchor", "middle")
         .attr("transform", "rotate(-90)")
         .style("font-size", "0.9em")
         .style("fill", "#555")
