@@ -145,29 +145,52 @@ export class LatLngDrawLayer extends BaseComponent<IProps, IState> {
 
   public render() {
     const { map } = this.props;
+    if (!map) return null;
+
     const { p1Lat, p1Lng, p2Lat, p2Lng } = this.props;
     const point1 = L.latLng(p1Lat, p1Lng);
     const point2 = L.latLng(p2Lat, p2Lng);
     const point1a = L.latLng(p1Lat, p2Lng);
     const point2a = L.latLng(p2Lat, p1Lng);
-    // figure out which corner is in which location
-    const bounds = L.latLngBounds(point1, point2);
-    let flipped = false;
-    if (point1.lat === bounds.getNorthWest().lat && point1.lng === bounds.getNorthWest().lng) {
-      flipped = false;
-    } else {
-      flipped = true;
-    }
+
+    const mapBounds = map.getBounds();
+    const labelWidth = 97;
+    const labelHeight = 56;
+
+    const getCorner = (point: L.LatLng, otherPoint: L.LatLng, isPt1 = true) => {
+      let cornerString;
+
+      const containerPoint = map.latLngToContainerPoint(point);
+      const mapSouthContainerPoint = map.latLngToContainerPoint(L.latLng(mapBounds.getSouth(), point.lng));
+      const mapEastContainerPoint =  map.latLngToContainerPoint(L.latLng(point.lat, mapBounds.getEast()));
+      const willOverlapNorth = containerPoint.y < labelHeight;
+      const willOverlapSouth = containerPoint.y > mapSouthContainerPoint.y - labelHeight;
+      const willOverlapWest = containerPoint.x < labelWidth;
+      const willOverlapEast = containerPoint.x > mapEastContainerPoint.x - labelWidth;
+
+      if ((point.lat > otherPoint.lat && !willOverlapNorth) || willOverlapSouth) {
+        cornerString = "bottom-";
+      } else {
+        cornerString = "top-";
+      }
+      if ((point.lng > otherPoint.lng && !willOverlapEast) || willOverlapWest) {
+        cornerString += "left";
+      } else {
+        cornerString += "right";
+      }
+      return cornerString;
+    };
+
     const p1Icon = latLngIcon(`<b>Corner 1</b><br/>Latitude: ${p1Lat.toFixed(2)}<br/>Longitude: ${p1Lng.toFixed(2)}`,
-      flipped ? "top-left" : "bottom-right");
+      getCorner(point1, point2));
     const p2Icon = latLngIcon(`<b>Corner 2</b><br/>Latitude: ${p2Lat.toFixed(2)}<br/>Longitude: ${p2Lng.toFixed(2)}`,
-    flipped ? "bottom-right" : "top-left");
+      getCorner(point2, point1, false));
 
     return (
       <LayerGroup map={map}>
-        {point1 && <Marker key={1} marker_index={1} position={point1} icon={p1Icon}
+        {point1 && <Marker key={"latlngp1"} marker_index={1} position={point1} icon={p1Icon}
           draggable={true} onDragStart={this.dragPointStart} onDragEnd={this.dragPointEnd} />}
-        {point2 && <Marker key={2} marker_index={2} position={point2} icon={p2Icon}
+        {point2 && <Marker key={"latlngp2"} marker_index={2} position={point2} icon={p2Icon}
           draggable={true} onDragStart={this.dragPointStart} onDragEnd={this.dragPointEnd} />}
         {point1 && point2 &&
           <Polyline
