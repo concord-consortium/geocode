@@ -74,6 +74,9 @@ export const SeismicSimulationStore = types
       self.showVelocityArrows = show;
     },
     setStrainMapBounds(bounds: Filter) {
+      self.renderStrainMap = false;
+      self.renderStrainLabels = false;
+
       self.delaunayTriangles = [];
       self.delaunayTriangleStrains = [];
 
