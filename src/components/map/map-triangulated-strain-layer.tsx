@@ -83,24 +83,25 @@ export class MapTriangulatedStrainLayer extends BaseComponent<IProps, IState> {
         fillColor={fillColor}
       />);
 
-      // calculate the incenter of the triangle
-      const perim1 = Math.sqrt(((p1.lat - p2.lat) ** 2) + ((p1.lng - p2.lng) ** 2));
-      const perim2 = Math.sqrt(((p2.lat - p3.lat) ** 2) + ((p2.lng - p3.lng) ** 2));
-      const perim3 = Math.sqrt(((p3.lat - p1.lat) ** 2) + ((p3.lng - p1.lng) ** 2));
-      const perimeter = perim1 + perim2 + perim3;
-      const centLat = ((p1.lat * perim2) + (p2.lat * perim3) + p3.lat * perim1) / perimeter;
-      const centLng = ((p1.lng * perim2) + (p2.lng * perim3) + p3.lng * perim1) / perimeter;
-      const incenter = Leaflet.latLng(centLat, centLng);
-      const minPerimSize = 1.5 - ((zoomLevel - 6) * 0.4);
-      const largeSide = zoomLevel > 7 ? perimeter * 0.48 : perimeter * 0.45;
-      const smallSide = zoomLevel > 7 ? perimeter * 0.1 : perimeter * 0.25;
-      console.log(minPerimSize);
+      if (renderStrainLabels) {
+        // calculate the incenter of the triangle
+        const perim1 = Math.sqrt(((p1.lat - p2.lat) ** 2) + ((p1.lng - p2.lng) ** 2));
+        const perim2 = Math.sqrt(((p2.lat - p3.lat) ** 2) + ((p2.lng - p3.lng) ** 2));
+        const perim3 = Math.sqrt(((p3.lat - p1.lat) ** 2) + ((p3.lng - p1.lng) ** 2));
+        const perimeter = perim1 + perim2 + perim3;
+        const centLat = ((p1.lat * perim2) + (p2.lat * perim3) + p3.lat * perim1) / perimeter;
+        const centLng = ((p1.lng * perim2) + (p2.lng * perim3) + p3.lng * perim1) / perimeter;
+        const incenter = Leaflet.latLng(centLat, centLng);
+        const minPerimSize = 1.5 - ((zoomLevel - 6) * 0.4);
+        const largeSide = zoomLevel > 7 ? perimeter * 0.48 : perimeter * 0.45;
+        const smallSide = zoomLevel > 7 ? perimeter * 0.1 : perimeter * 0.25;
 
-      if (perimeter > minPerimSize
-          && perim1 < largeSide && perim1 > smallSide && perim2 < largeSide
-          && perim2 > smallSide  && perim3 < largeSide && perim3 > smallSide ) {
-        const text = strainLabelIcon(delaunayTriangleStrains[i]);
-        labels.push(<Marker  key={`strain-label-${i}`}position={incenter} icon={text} />);
+        if (perimeter > minPerimSize
+            && perim1 < largeSide && perim1 > smallSide && perim2 < largeSide
+            && perim2 > smallSide  && perim3 < largeSide && perim3 > smallSide ) {
+          const text = strainLabelIcon(delaunayTriangleStrains[i]);
+          labels.push(<Marker  key={`strain-label-${i}`}position={incenter} icon={text} />);
+        }
       }
     }
     return (
