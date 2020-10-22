@@ -107,7 +107,7 @@ Blockly.Blocks['seismic_filter_data'] = {
       .appendField('Max Direction (º)')
     this.appendDummyInput()
       .setAlign(Blockly.ALIGN_RIGHT)
-      .appendField('Stations with Position data')
+      .appendField('Stations with Historical Data')
       .appendField(new Blockly.FieldCheckbox(false), 'position_history')
     this.setInputsInline(false)
     this.setOutput(true, 'GPS_Station')
