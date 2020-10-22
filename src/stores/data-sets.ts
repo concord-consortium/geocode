@@ -159,7 +159,7 @@ export const WindData: DataSetInfo = {
     "speed": "Wind Speed (m/s)",
     "timeOfYear": "Time of year",
     "direction": "Direction (degrees)",
-    "East (mm)": "East displacement (mm)",
-    "North (mm)": "North displacement (mm)",
+    "East (mm)": "East movement (mm)",
+    "North (mm)": "North movement (mm)",
   }
 };
