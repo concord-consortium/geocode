@@ -9,6 +9,7 @@
     <block type="seismic_render_strain_triangles"></block>
     <block type="seismic_logarithmic"></block>
     <block type="seismic_equal_interval"></block>
+    <block type="seismic_render_strain_labels"></block>
   </category>
 
   <category name="Deformation Model" colour="15">

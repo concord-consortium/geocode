@@ -66,4 +66,15 @@ export function latLngIcon(label: string, anchorCorner: string = "top-left"): Di
   return new DivIcon({ className: "div-icon", html });
 }
 
+export function strainLabelIcon(strain: number): DivIcon {
+    let strainText = `${Math.round(Math.abs(strain) * 100) / 100}`;
+    if (strainText.length < 4) {
+        strainText = `${Array(5 - strainText.length).join("&nbsp;")}${strainText}`;
+    }
+    const html = `<div class='strain-icon'>
+        ${strainText}
+    </div>`;
+    return new DivIcon({ className: "div-icon", html });
+}
+
 export { iconVolcano, iconMarker };
