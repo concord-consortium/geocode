@@ -3,7 +3,7 @@ Blockly.Blocks['deformation-create-sim'] = {
       this.appendDummyInput()
         .appendField("Create Strain Simulation");
       this.appendDummyInput()
-        .appendField("Set velocity of Block 1 with")
+        .appendField("Set velocity of Plate 1 with")
       this.appendValueInput('speed1')
         .setAlign(Blockly.ALIGN_RIGHT)
         .appendField("speed (mm/yr)")
@@ -13,7 +13,7 @@ Blockly.Blocks['deformation-create-sim'] = {
         .appendField("direction (degrees)")
         .setCheck(['Number'])
       this.appendDummyInput()
-        .appendField("Set velocity of Block 2 with")
+        .appendField("Set velocity of Plate 2 with")
       this.appendValueInput('speed2')
         .setAlign(Blockly.ALIGN_RIGHT)
         .appendField("speed (mm/yr)")
