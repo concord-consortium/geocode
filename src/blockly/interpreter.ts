@@ -356,6 +356,10 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       seismicSimulation.setRenderStrainMap(method);
     });
 
+    addFunc("renderStrainRateLabels", () => {
+      seismicSimulation.renderStrainRateLabels();
+    });
+
     addFunc("runDeformationModel", () => {
       seismicSimulation.startDeformationModel();
     });

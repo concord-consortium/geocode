@@ -302,6 +302,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
                 {riskItems}
                 {sampleLocations}
                 {isSelectingLatlng && <LatLngDrawLayer
+                  key="lat-lng-layer"
                   ref={this.latlngRef}
                   map={this.state.mapLeafletRef}
                   p1Lat={latLngPoint1Lat}
@@ -337,6 +338,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
                 getPointFromLatLng={this.getScreenPointFromLatLng}
               />,
               (isSelectingLatlng && <LatLngDrawLayer
+                key="lat-lng-layer"
                 ref={this.latlngRef}
                 map={this.state.mapLeafletRef}
                 p1Lat={latLngPoint1Lat}
