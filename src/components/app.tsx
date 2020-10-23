@@ -230,8 +230,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     const blocklyHeight = Math.floor(height - 90 - (showLog ? logHeight : 0));
     const scenarioData = (Scenarios as {[key: string]: Scenario})[scenario];
 
-    if (scenarioData.volcanoLat && scenarioData.volcanoLng) {
-      this.stores.tephraSimulation.setVolcano(scenarioData.volcanoLat, scenarioData.volcanoLng);
+    if (isTephra) {
+      this.stores.tephraSimulation.setVolcano(scenarioData.centerLat, scenarioData.centerLng);
     }
 
     kTabInfo.blocks.index = showBlocks ? 0 : -1;
