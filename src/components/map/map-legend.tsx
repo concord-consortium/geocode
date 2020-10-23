@@ -5,6 +5,7 @@ import IconButton from "../buttons/icon-button";
 import TephraLegendComponent from "./map-tephra-legend";
 import RiskLegendComponent from "./map-risk-legend";
 import StrainLegendComponent from "./map-strain-legend";
+import GPSLegendComponent from "./map-gps-legend";
 import { ColorMethod } from "../../stores/seismic-simulation-store";
 
 const LegendContainer = styled.div`
@@ -22,7 +23,7 @@ const LegendContainer = styled.div`
   padding-bottom: 5px;
 `;
 
-export type LegendType = "Tephra" | "Risk" | "Strain";
+export type LegendType = "Tephra" | "Risk" | "Strain" | "GPS";
 
 interface IProps extends IBaseProps {
   onClick: any;
@@ -45,22 +46,23 @@ export class LegendComponent extends BaseComponent<IProps, IState> {
     const { toggledToSecondary } = this.state;
     const currentLegendType = legendType === "Tephra" && toggledToSecondary ? "Risk" :
                               legendType === "Risk" && toggledToSecondary ? "Tephra" :
-                              legendType;
+                              legendType === "Strain" && toggledToSecondary ? "GPS" :
+                              legendType === "Tephra" ? "Tephra" : "Strain";
     const legend = currentLegendType === "Tephra" ? <TephraLegendComponent onClick={onClick} /> :
                     currentLegendType === "Risk" ? <RiskLegendComponent onClick={onClick} /> :
-                    <StrainLegendComponent onClick={onClick} colorMethod={colorMethod} />;
-    const showToggle = legendType === "Tephra" || legendType === "Risk";
+                    currentLegendType === "Strain" ?
+                    <StrainLegendComponent onClick={onClick} colorMethod={colorMethod} /> :
+                    <GPSLegendComponent onClick={onClick} />;
     return (
       <LegendContainer data-test="key-container">
         {
           legend
         }
         {
-          showToggle &&
           <IconButton
             onClick={this.onLegendModeClick}
             disabled={false}
-            label={`Show ${currentLegendType === "Tephra" ? "Risk" : "Tephra"}`}
+            label={`Show ${currentLegendType === "Tephra" ? "Risk" : currentLegendType === "Risk" ? "Tephra" : currentLegendType === "Strain" ? "GPS" : "Strain"}`}
             borderColor={"#ADD1A2"}
             hoverColor={"#ADD1A2"}
             activeColor={"#B7DCAD"}

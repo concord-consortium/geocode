@@ -163,7 +163,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     const scenarioData = (Scenarios as {[key: string]: Scenario})[scenario];
 
     const legendType: LegendType = isTephraUnit ?
-                        panelType !== RightSectionTypes.MONTE_CARLO ? "Tephra" : "Risk" :
+                        (panelType !== RightSectionTypes.MONTE_CARLO ? "Tephra" : "Risk") :
                         "Strain";
 
     const {
