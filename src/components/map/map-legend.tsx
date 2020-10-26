@@ -1,5 +1,6 @@
 import * as React from "react";
 import { BaseComponent, IBaseProps } from "../base";
+import { observer, inject } from "mobx-react";
 import styled from "styled-components";
 import IconButton from "../buttons/icon-button";
 import TephraLegendComponent from "./map-tephra-legend";
@@ -25,6 +26,13 @@ const LegendContainer = styled.div`
 
 export type LegendType = "Tephra" | "Risk" | "Strain" | "GPS";
 
+const secondaryPanel = {
+  Tephra: "Risk" as LegendType,
+  Risk: "Tephra" as LegendType,
+  Strain: "GPS" as LegendType,
+  GPS: "Strain" as LegendType
+};
+
 interface IProps extends IBaseProps {
   onClick: any;
   legendType: LegendType;
@@ -35,6 +43,8 @@ interface IState {
   toggledToSecondary: boolean;
 }
 
+@inject("stores")
+@observer
 export class LegendComponent extends BaseComponent<IProps, IState> {
 
   public state = {
@@ -44,10 +54,20 @@ export class LegendComponent extends BaseComponent<IProps, IState> {
   public render() {
     const { onClick, legendType, colorMethod } = this.props;
     const { toggledToSecondary } = this.state;
-    const currentLegendType = legendType === "Tephra" && toggledToSecondary ? "Risk" :
-                              legendType === "Risk" && toggledToSecondary ? "Tephra" :
-                              legendType === "Strain" && toggledToSecondary ? "GPS" :
-                              legendType === "Tephra" ? "Tephra" : "Strain";
+    const { name: unitName } = this.stores.unit;
+    const isTephraUnit = unitName === "Tephra";
+
+    let currentLegendType: LegendType = "Tephra";
+    if (isTephraUnit) {
+      currentLegendType = legendType === "Tephra" ? "Tephra" : "Risk";
+    } else {
+      currentLegendType = legendType === "Strain" ? "Strain" : "GPS";
+    }
+
+    if (toggledToSecondary) {
+      currentLegendType = secondaryPanel[currentLegendType];
+    }
+
     const legend = currentLegendType === "Tephra" ? <TephraLegendComponent onClick={onClick} /> :
                     currentLegendType === "Risk" ? <RiskLegendComponent onClick={onClick} /> :
                     currentLegendType === "Strain" ?
@@ -62,7 +82,7 @@ export class LegendComponent extends BaseComponent<IProps, IState> {
           <IconButton
             onClick={this.onLegendModeClick}
             disabled={false}
-            label={`Show ${currentLegendType === "Tephra" ? "Risk" : currentLegendType === "Risk" ? "Tephra" : currentLegendType === "Strain" ? "GPS" : "Strain"}`}
+            label={`Show ${secondaryPanel[currentLegendType]}`}
             borderColor={"#ADD1A2"}
             hoverColor={"#ADD1A2"}
             activeColor={"#B7DCAD"}
