@@ -189,7 +189,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         showConditions,
         showCrossSection,
         showData,
-        showMonteCarlo,
+        showMonteCarlo: _showMonteCarlo,
         showDeformation,
         showSpeedControls,
         speed,
@@ -216,6 +216,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     } = this.state;
 
     const isTephra = unitName === "Tephra";
+
+    const showMonteCarlo = _showMonteCarlo && isTephra;
 
     const toolboxPath = (BlocklyAuthoring.toolbox as {[key: string]: string})[toolbox];
     const codePath = (BlocklyAuthoring.code as {[key: string]: string})[initialCodeTitle];
@@ -433,7 +435,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 </Simulation>
               </TabPanel>
             }
-            { showMonteCarlo &&
+            { (showMonteCarlo) &&
               <TabPanel
                 width={`${tabWidth}px`}
                 tabcolor={this.getRightTabColor(RightSectionTypes.MONTE_CARLO)}
