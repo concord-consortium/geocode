@@ -625,6 +625,16 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     // the author changes the initial code
     delete localState.blocklyStore.initialXmlCode;
 
+    // make any tweaks to the authorMenuState
+    // here we check that the selected toolbox fits the selected unit
+    if (authorMenuState.unit.name === "Tephra"
+        && !BlocklyAuthoring.tephraToolboxes.includes(authorMenuState.blocklyStore.toolbox)) {
+      authorMenuState.blocklyStore.toolbox = BlocklyAuthoring.tephraToolboxes[0];
+    } else if (authorMenuState.unit.name === "Seismic"
+        && !BlocklyAuthoring.seismicToolboxes.includes(authorMenuState.blocklyStore.toolbox)) {
+      authorMenuState.blocklyStore.toolbox = BlocklyAuthoring.seismicToolboxes[0];
+    }
+
     // the the authored state from the authoring menu overwrites local state
     const mergedState = deepmerge(localState, authorMenuState);
     updateStores(mergedState);
