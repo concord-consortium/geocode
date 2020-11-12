@@ -31,7 +31,7 @@ const AuthoringMenu: React.SFC<IProps> = (props) => {
           <DatSelect path="tephraSimulation.scenario" label="Map Scenario"
             options={Object.keys(Scenarios)} key="background" />,
           <DatSelect path="blocklyStore.toolbox" label="Code toolbox"
-            options={Object.keys(BlocklyAuthoring.toolbox)} key="toolbox" />,
+            options={BlocklyAuthoring.tephraToolboxes} key="toolbox" />,
           <DatSelect path="blocklyStore.initialCodeTitle" label="Initial code"
             options={Object.keys(BlocklyAuthoring.code)} key="code" />,
 
@@ -61,7 +61,7 @@ const AuthoringMenu: React.SFC<IProps> = (props) => {
       { (props.expandOptionsDialog && props.options.unit.name === "Seismic") &&
         [
           <DatSelect path="blocklyStore.toolbox" label="Code toolbox"
-            options={Object.keys(BlocklyAuthoring.toolbox)} key="toolbox" />,
+            options={BlocklyAuthoring.seismicToolboxes} key="toolbox" />,
           <DatSelect path="blocklyStore.initialCodeTitle" label="Initial code"
             options={Object.keys(BlocklyAuthoring.code)} key="code" />,
 
