@@ -1,7 +1,7 @@
 Blockly.Blocks['deformation-create-sim'] = {
     init: function () {
       this.appendDummyInput()
-        .appendField("Create Strain Simulation");
+        .appendField("Create Deformation Simulation");
       this.appendDummyInput()
         .appendField("Set velocity of Plate 1 with")
       this.appendValueInput('speed1')
