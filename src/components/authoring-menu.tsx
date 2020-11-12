@@ -54,7 +54,11 @@ const AuthoringMenu: React.SFC<IProps> = (props) => {
             <DatBoolean path="uiStore.showEjectedVolume" label="Show Ejected Volume?" key="showEruptionMass" />
             <DatBoolean path="uiStore.showColumnHeight" label="Show Column Height?" key="showColumnHeight" />
             <DatBoolean path="uiStore.showVEI" label="Show VEI?" key="showVEI" />
-          </DatFolder>
+          </DatFolder>,
+
+          <DatBoolean path="uiStore.showSpeedControls" label="Show Speed Controls?" key="showSpeedControls" />,
+          <DatBoolean path="uiStore.showBarHistogram" label="Show Bar Histogram?" key="showBarHistogram" />,
+          <DatBoolean path="uiStore.showDemoCharts" label="Show Demo Charts?" key="showDemoCharts" />,
         ]
       }
 
@@ -72,23 +76,15 @@ const AuthoringMenu: React.SFC<IProps> = (props) => {
           </DatFolder>,
 
           <DatFolder title="Right Tabs" key="rightTabsFolder" closed={false}>
-            <DatBoolean path="uiStore.showConditions" label="Show conditions?" key="showConditions" />
-            <DatBoolean path="uiStore.showMonteCarlo" label="Show monte carlo?" key="showMonteCarlo" />
+            <DatBoolean path="uiStore.showConditions" label="Show map?" key="showConditions" />
             <DatBoolean path="uiStore.showData" label="Show data?" key="showData" />
             <DatBoolean path="uiStore.showDeformation" label="Show deformation?" key="showDeformation" />
-          </DatFolder>
+          </DatFolder>,
         ]
       }
       {
         props.expandOptionsDialog &&
         [
-          <DatBoolean path="uiStore.showSpeedControls" label="Show Speed Controls?" key="showSpeedControls" />,
-
-          <DatBoolean path="uiStore.showBarHistogram" label="Show Bar Histogram?" key="showBarHistogram" />,
-
-          <DatBoolean path="uiStore.showLog" label="Show Log?" key="showLog" />,
-
-          <DatBoolean path="uiStore.showDemoCharts" label="Show Demo Charts?" key="showDemoCharts" />,
 
           <DatButton label="Save current state to local storage"
             onClick={props.saveStateToLocalStorage}
