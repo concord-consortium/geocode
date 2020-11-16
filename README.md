@@ -8,6 +8,29 @@ code that runs a simple tephra distribution model.
 
 Students change eruption parameters using [Blockly](https://developers.google.com/blockly/).
 
+## Links and branches
+
+Production url: http://geocode-app.concord.org/branch/seismic/index.html
+
+The project bumped up a major version number with the development of the seismic module, as the learner-data changed
+shape. There has not yet been any work to make any old learner data saved by students in LARA compatible with the new
+unit. While this would not be difficult to do, it means that currently the `production` branch (which is used in all the
+Tephra LARA activities) is reserved for work that is backwards-compatible with 1.x. If any major work is done on the
+project, it would be nice to remedy that.
+
+As a result, here are the current main branches:
+
+* `master`: The latest work, may not have been fully-QA'd so should not be used in production.
+  http://geocode-app.concord.org/branch/master/index.html
+* `production`: The production branch for Tephra only. Until we add an in-code migration for learner data, any new merges
+  into production should be based on the latest work there, and not bring in the Seismic unit.
+  http://geocode-app.concord.org/
+* `seismic`: The production branch for the Seismic unit. Newly-tagged 2.x releases can be merged into this.
+  http://geocode-app.concord.org/branch/seismic/index.html
+* `[tag]` (e.g. 2.1.0): Versioned releases. http://geocode-app.concord.org/version/2.1.0/index.html
+* `[feature-branch]`: Feature branch. The built url will strip off any leading numbers in the branch (e.g.
+  "1234-feature" -> "feature"). http://geocode-app.concord.org/branch/[feature]/index.html
+
 ## Technology reference links:
 * [Blockly](https://developers.google.com/blockly/) Block programming tool developed by Google.
 * [JS-interpreter](https://github.com/NeilFraser/JS-Interpreter) An isolated javascript evaluation engine.
