@@ -189,7 +189,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         showConditions,
         showCrossSection,
         showData,
-        showMonteCarlo,
+        showMonteCarlo: _showMonteCarlo,
         showDeformation,
         showSpeedControls,
         speed,
@@ -216,6 +216,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     } = this.state;
 
     const isTephra = unitName === "Tephra";
+
+    const showMonteCarlo = _showMonteCarlo && isTephra;
 
     const toolboxPath = (BlocklyAuthoring.toolbox as {[key: string]: string})[toolbox];
     const codePath = (BlocklyAuthoring.code as {[key: string]: string})[initialCodeTitle];
@@ -433,7 +435,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 </Simulation>
               </TabPanel>
             }
-            { showMonteCarlo &&
+            { (showMonteCarlo) &&
               <TabPanel
                 width={`${tabWidth}px`}
                 tabcolor={this.getRightTabColor(RightSectionTypes.MONTE_CARLO)}
@@ -624,6 +626,16 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     // delete the initialXml code that was serialized, or we will never update the blocks when
     // the author changes the initial code
     delete localState.blocklyStore.initialXmlCode;
+
+    // make any tweaks to the authorMenuState
+    // here we check that the selected toolbox fits the selected unit
+    if (authorMenuState.unit.name === "Tephra"
+        && !BlocklyAuthoring.tephraToolboxes.includes(authorMenuState.blocklyStore.toolbox)) {
+      authorMenuState.blocklyStore.toolbox = BlocklyAuthoring.tephraToolboxes[0];
+    } else if (authorMenuState.unit.name === "Seismic"
+        && !BlocklyAuthoring.seismicToolboxes.includes(authorMenuState.blocklyStore.toolbox)) {
+      authorMenuState.blocklyStore.toolbox = BlocklyAuthoring.seismicToolboxes[0];
+    }
 
     // the the authored state from the authoring menu overwrites local state
     const mergedState = deepmerge(localState, authorMenuState);
