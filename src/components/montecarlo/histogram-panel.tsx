@@ -148,6 +148,7 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
     const riskLevelType = calculateRisk(thresholdData.greaterThanPercent);
     const riskLevel: RiskLevel | undefined = RiskLevels.find((risk) => risk.type === riskLevelType);
     const riskStyle = riskLevel && {color: riskLevel.iconColor};
+    const { showRiskDiamonds } = this.stores.uiStore;
     return (
       <TabPanel
         width={"100%"}
@@ -183,7 +184,8 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
             <PanelStat>
               {`Count above threshold: ${thresholdData.greaterThan} (${thresholdData.greaterThanPercent}%)`}
             </PanelStat>
-            <RiskContainer>
+            {showRiskDiamonds && 
+              <RiskContainer>
               <PanelStat marginRight={10}>
                 {"Risk:"}
                 {data && riskLevelType && (!percentComplete || percentComplete === 100)
@@ -199,6 +201,7 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
                 </RiskDiamond>
               }
             </RiskContainer>
+            }
           </VerticalContainer>
         </HorizontalContainer>
       </TabPanel>
