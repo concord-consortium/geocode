@@ -56,10 +56,11 @@ context("Monte Carlo tab",()=>{
                     monteCarloTab.getStatsContainer().should('contain',"Threshold = "+locations.locations[index].threshold+" mm");
                     monteCarloTab.getStatsContainer().should('contain',"Count below threshold: "); //Can't test the actual values since it varies
                     monteCarloTab.getStatsContainer().should('contain',"Count above threshold: ");
-                    // monteCarloTab.getStatsContainer().should('contain',"Risk:") // Disabled by default within authoring ui
-                    monteCarloTab.getStatsContainer().should('contain',locations.locations[index].risk) //The actual text is in a separate span
-                    monteCarloTab.getStatsContainer().find(monteCarloTab.riskDiamondEl()).should('be.visible')
-                    monteCarloTab.getStatsContainer().should('contain',locations.locations[index].danger)
+                    // Disabled by default within authoring ui
+                    // monteCarloTab.getStatsContainer().should('contain',"Risk:")
+                    // monteCarloTab.getStatsContainer().should('contain',locations.locations[index].risk) //The actual text is in a separate span
+                    // monteCarloTab.getStatsContainer().find(monteCarloTab.riskDiamondEl()).should('be.visible')
+                    // monteCarloTab.getStatsContainer().should('contain',locations.locations[index].danger)
                 })
             })
         })
