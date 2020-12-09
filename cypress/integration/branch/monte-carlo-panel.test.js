@@ -17,6 +17,7 @@ before(() => {
     modelOptions.getModelOptionsMenu().click();
     modelOptions.selectInitialCode('Monte Carlo (3 locs)');
     modelOptions.getShowSpeedControl().click();
+    modelOptions.getShowRiskDiamondsOption().click();
     modelOptions.getModelOptionsMenu().click();
     blocksTab.setSpeedControl("fast")
     blocksTab.runProgram();

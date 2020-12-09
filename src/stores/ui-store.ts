@@ -18,6 +18,7 @@ const UIStore = types.model("UI", {
   showBarHistogram: false,
   speed: 0,       // 0-3 (for now)
   showLog: false,
+  showRiskDiamonds: false,
   // slider controls
   showWindSpeed: true,
   showWindDirection: true,
