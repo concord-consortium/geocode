@@ -184,7 +184,7 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
             <PanelStat>
               {`Count above threshold: ${thresholdData.greaterThan} (${thresholdData.greaterThanPercent}%)`}
             </PanelStat>
-            {showRiskDiamonds && 
+            {showRiskDiamonds &&
               <RiskContainer>
               <PanelStat marginRight={10}>
                 {"Risk:"}

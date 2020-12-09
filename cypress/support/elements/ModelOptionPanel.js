@@ -68,6 +68,9 @@ class ModelOptions {
     getShowDemoChartsOption(){
         return cy.get('.label-text').contains('Show Demo Charts?').siblings('input')
     }
+    getShowRiskDiamondsOption(){
+        return cy.get('.label-text').contains('Show Risk Diamonds?').siblings('input')
+    }
     saveCurrentState(){
         return cy.get('.label-text').contains('Save current state to local storage')
     }
