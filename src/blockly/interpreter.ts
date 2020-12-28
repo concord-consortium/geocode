@@ -226,6 +226,9 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
               const rotate = (dir: number) => dir < 180 ? dir + 180 : dir - 180;
               if (typeof params.filter.direction === "number") {
                 params.filter.direction = rotate(params.filter.direction);
+              } else {
+                params.filter.direction.min = rotate(params.filter.direction.min as number);
+                params.filter.direction.max = rotate(params.filter.direction.max as number);
               }
           }
         }
