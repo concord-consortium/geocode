@@ -94,11 +94,6 @@ Blockly.JavaScript['filter_data'] = function (block) {
   allKeys.forEach((key) => {
     if (filter[key] === "") {
       delete filter[key];
-    } else if (!isNaN(parseFloat(filter[key]))) {
-      // Wind data is stored using direction to, but we use direction from. Need to convert.
-      filter[key] = key === "direction"
-        ? parseFloat(filter[key]) < 180 ? parseFloat(filter[key]) + 180 : parseFloat(filter[key]) - 180
-        : parseFloat(filter[key]);
     }
   });
   let filterObj = JSON.stringify(filter);

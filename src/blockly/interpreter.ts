@@ -221,6 +221,12 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
               blocklyController.throwError(`There is an error on the filter key "${key}"`);
             }
             return;
+          } else if (key === "direction") {
+            // Wind data is stored using direction to, but we use direction from. Need to convert.
+              const rotate = (dir: number) => dir < 180 ? dir + 180 : dir - 180;
+              if (typeof params.filter.direction === "number") {
+                params.filter.direction = rotate(params.filter.direction);
+              }
           }
         }
       }
