@@ -200,9 +200,10 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       }
       // Wind data is stored using direction to, but we use direction from. Need to convert.
       const sampleData = (Datasets.getRandomSampleWithReplacement(dataset, 1)[0] as any) as WindDataCase;
-      sampleData.direction = sampleData.direction < 180 ? sampleData.direction + 180 : sampleData.direction - 180;
+      const sampleDataClone = {...sampleData};
+      sampleDataClone.direction = sampleData.direction < 180 ? sampleData.direction + 180 : sampleData.direction - 180;
       return {
-        data: sampleData
+        data: sampleDataClone
       };
     });
 
