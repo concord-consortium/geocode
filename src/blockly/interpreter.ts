@@ -200,9 +200,10 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       }
       // Wind data is stored using direction to, but we use direction from. Need to convert.
       const sampleData = (Datasets.getRandomSampleWithReplacement(dataset, 1)[0] as any) as WindDataCase;
-      sampleData.direction = sampleData.direction < 180 ? sampleData.direction + 180 : sampleData.direction - 180;
+      const sampleDataClone = {...sampleData};
+      sampleDataClone.direction = sampleData.direction < 180 ? sampleData.direction + 180 : sampleData.direction - 180;
       return {
-        data: sampleData
+        data: sampleDataClone
       };
     });
 
@@ -221,6 +222,15 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
               blocklyController.throwError(`There is an error on the filter key "${key}"`);
             }
             return;
+          } else if (key === "direction") {
+            // Wind data is stored using direction to, but we use direction from. Need to convert.
+              const rotate = (dir: number) => dir < 180 ? dir + 180 : dir - 180;
+              if (typeof params.filter.direction === "number") {
+                params.filter.direction = rotate(params.filter.direction);
+              } else {
+                params.filter.direction.min = rotate(params.filter.direction.min as number);
+                params.filter.direction.max = rotate(params.filter.direction.max as number);
+              }
           }
         }
       }
