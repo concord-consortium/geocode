@@ -65,17 +65,17 @@ export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
         const latSegments = samplesPerScreenPerAxis;
         const longSegments = samplesPerScreenPerAxis;
 
+        const startingLat = viewportBounds.getNorthEast().lat < viewportBounds.getSouthWest().lat ?
+                viewportBounds.getNorthEast().lat :
+                viewportBounds.getSouthWest().lat;
+        const startingLong = viewportBounds.getNorthEast().lng < viewportBounds.getSouthWest().lng ?
+                viewportBounds.getNorthEast().lng :
+                viewportBounds.getSouthWest().lng;
+
         const data: number[] = [];
 
         for (let currentLat = 0; currentLat < latSegments; currentLat++) {
             for (let currentLong = 0; currentLong < longSegments; currentLong++) {
-                const startingLat = viewportBounds.getNorthEast().lat < viewportBounds.getSouthWest().lat ?
-                                    viewportBounds.getNorthEast().lat :
-                                    viewportBounds.getSouthWest().lat;
-                const startingLong = viewportBounds.getNorthEast().lng < viewportBounds.getSouthWest().lng ?
-                                    viewportBounds.getNorthEast().lng :
-                                    viewportBounds.getSouthWest().lng;
-
                 const lat = startingLat + currentLat * latSize;
                 const long = startingLong + currentLong * longSize;
 
@@ -105,8 +105,8 @@ export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
             multipolygon.coordinates.forEach(polygon => {
                 polygon.forEach(poly => {
                     poly.forEach(coord => {
-                        coord[0] = (coord[0] * longSize) + viewportBounds.getSouthWest().lng;
-                        coord[1] = (coord[1] * latSize) + viewportBounds.getSouthWest().lat;
+                        coord[0] = (coord[0] * longSize) + startingLong;
+                        coord[1] = (coord[1] * latSize) + startingLat;
                     });
                 });
             });

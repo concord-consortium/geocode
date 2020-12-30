@@ -127,7 +127,7 @@ describe("tephra3 calculations", () => {
           0,            // cone x, y
           0,
           -5,            // wind speed
-          0,            // wind direction
+          90,            // wind direction
           20000,        // column height
           1e11,         // eruption mass
           10000,        // disk radius
