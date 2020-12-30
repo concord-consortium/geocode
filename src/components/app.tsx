@@ -23,7 +23,7 @@ import screenfull from "screenfull";
 import ResizeObserver from "react-resize-observer";
 import AuthoringMenu from "./authoring-menu";
 import { getAuthorableSettings, updateStores, serializeState, getSavableState,
-         deserializeState, SerializedState, IStoreish } from "../stores/stores";
+         deserializeState, UnmigratedSerializedState, IStoreish } from "../stores/stores";
 import { ChartPanel } from "./charts/chart-panel";
 import { BlocklyController } from "../blockly/blockly-controller";
 import { HistogramPanel } from "./montecarlo/histogram-panel";
@@ -649,7 +649,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
   private loadStateFromLocalStorage = () => {
     const savedStateJSON = localStorage.getItem("geocode-state");
     if (savedStateJSON) {
-      const savedState = JSON.parse(savedStateJSON) as SerializedState;
+      const savedState = JSON.parse(savedStateJSON) as UnmigratedSerializedState;
       updateStores(deserializeState(savedState));
     }
   }
