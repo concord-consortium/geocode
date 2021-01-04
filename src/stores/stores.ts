@@ -6,6 +6,7 @@ import { chartsStore, ChartsModelType } from "./charts-store";
 import { samplesCollectionsStore, SamplesCollectionsModelType } from "./samples-collections-store";
 import { BlocklyStoreModelType, blocklyStore } from "./blockly-store";
 import { UnitStoreType, unitStore } from "./unit-store";
+import { CURRENT_SERIALIZATION_VERSION, migrate } from "../utilities/migrate-state";
 
 export interface IStore {
   unit: UnitStoreType;
@@ -26,6 +27,7 @@ export interface IStoreish {
 }
 
 export interface SerializedState {version: number; state: IStoreish; }
+export interface UnmigratedSerializedState {version: number; state: any; }
 
 export const stores: IStore = {
   unit: unitStore,
@@ -138,19 +140,14 @@ export const serializeState = (state: IStoreish): SerializedState => {
   delete serializedState.blocklyStore.xmlCode;
 
   return {
-    version: 1,
+    version: CURRENT_SERIALIZATION_VERSION,
     state: serializedState
   };
 };
 // deserializes saved state, migrating data if necessary
-export const deserializeState = (serializedState: SerializedState): IStoreish => {
-  if (serializedState.version === 1) {
-    return serializedState.state;
-  }
-  return {
-    unit: { name: "Tephra" },
-    blocklyStore: {}, tephraSimulation: {}, seismicSimulation: {}, uiStore: {}
-  };
+export const deserializeState = (serializedState: UnmigratedSerializedState): IStoreish => {
+  const migratedState = migrate(serializedState);
+  return migratedState.state;
 };
 
 export function updateStores(state: IStoreish) {

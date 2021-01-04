@@ -1,0 +1,84 @@
+{
+  "tests": [
+    {
+      "oldState": {
+        "version": 1,
+        "state": {
+          "simulation": {
+            "requireEruption": true,
+            "requirePainting": true,
+            "scenario": "Cerro Negro",
+            "toolbox": "Everything",
+            "initialCodeTitle": "Basic",
+            "initialXmlCode": "<xml xmlns=\"http://www.w3.org/1999/xhtml\">\n  <block type=\"simulate_wind\" id=\"[q=jJs5eVLi`hbMBNkUv\" x=\"198\" y=\"93\">\n    <value name=\"wspeed\">\n      <block type=\"math_number\" id=\"@u3Zdj+hJTZpwyn.Er]+\">\n        <field name=\"NUM\">4</field>\n      </block>\n    </value>\n    <value name=\"wdirection\">\n      <block type=\"math_number\" id=\"@v[VUG[q]$(wDU)ot1Uf\">\n        <field name=\"NUM\">4</field>\n      </block>\n    </value>\n  </block>\n</xml>",
+            "stagingWindSpeed": 6,
+            "stagingWindDirection": 0,
+            "stagingMass": 10000000000000,
+            "stagingColHeight": 20000
+          },
+          "uiStore": {
+            "showBlocks": true,
+            "showCode": false,
+            "showControls": true,
+            "showWindSpeed": true,
+            "showWindDirection": true,
+            "showEjectedVolume": true,
+            "showColumnHeight": true,
+            "showVEI": true,
+            "showConditions": true,
+            "showCrossSection": false,
+            "showMonteCarlo": true,
+            "showData": true,
+            "showSpeedControls": true,
+            "showBarHistogram": false,
+            "showLog": false,
+            "showDemoCharts": false
+          }
+        }
+      },
+      "expectedConvertedState": {
+        "version": 2,
+        "state": {
+          "unit": {
+            "name": "Tephra"
+          },
+          "blocklyStore": {
+            "toolbox": "Everything",
+            "initialCodeTitle": "Basic",
+            "initialXmlCode": "<xml xmlns=\"http://www.w3.org/1999/xhtml\">\n  <block type=\"simulate_wind\" id=\"[q=jJs5eVLi`hbMBNkUv\" x=\"198\" y=\"93\">\n    <value name=\"wspeed\">\n      <block type=\"math_number\" id=\"@u3Zdj+hJTZpwyn.Er]+\">\n        <field name=\"NUM\">4</field>\n      </block>\n    </value>\n    <value name=\"wdirection\">\n      <block type=\"math_number\" id=\"@v[VUG[q]$(wDU)ot1Uf\">\n        <field name=\"NUM\">4</field>\n      </block>\n    </value>\n  </block>\n</xml>"
+          },
+          "tephraSimulation": {
+            "requireEruption": true,
+            "requirePainting": true,
+            "scenario": "Cerro Negro",
+            "stagingWindSpeed": 6,
+            "stagingWindDirection": 0,
+            "stagingMass": 10000000000000,
+            "stagingColHeight": 20000
+          },
+          "seismicSimulation": {},
+          "uiStore": {
+            "showBlocks": true,
+            "showCode": false,
+            "showControls": true,
+            "showWindSpeed": true,
+            "showWindDirection": true,
+            "showEjectedVolume": true,
+            "showColumnHeight": true,
+            "showVEI": true,
+            "showConditions": true,
+            "showCrossSection": false,
+            "showMonteCarlo": true,
+            "showData": true,
+            "showDeformation": true,
+            "showSpeedControls": true,
+            "showBarHistogram": false,
+            "showLog": false,
+            "showDemoCharts": false,
+            "showRiskDiamonds": false
+          }
+        }
+      }
+    }
+  ]
+}
