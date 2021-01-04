@@ -7,26 +7,19 @@ type Migration = (oldState: UnmigratedSerializedState) => SerializedState;
 
 const migrate01to02: Migration = (oldState) => {
   if (oldState.version === 1 && !oldState.state.unit) {
-    // serailization with version = 1 and a unit specified is identical to version 2
+    // serialization with version = 1 and a unit specified is identical to version 2
     const {simulation, uiStore} = oldState.state;
+    const {toolbox, initialCodeTitle, initialXmlCode, ...tephraSimulation} = simulation;
     return {
       version: 2,
       state: {
         unit: { name: "Tephra" },
         blocklyStore: {
-          toolbox: simulation.toolbox,
-          initialCodeTitle: simulation. initialCodeTitle,
-          initialXmlCode: simulation.initialXmlCode
+          toolbox,
+          initialCodeTitle,
+          initialXmlCode
         },
-        tephraSimulation: {
-          requireEruption: simulation.requireEruption,
-          requirePainting: simulation.requirePainting,
-          scenario: simulation.scenario,
-          stagingWindSpeed: simulation.stagingWindSpeed,
-          stagingWindDirection: simulation.stagingWindDirection,
-          stagingMass: simulation.stagingMass,
-          stagingColHeight: simulation.stagingColHeight
-        },
+        tephraSimulation,
         seismicSimulation: {},
         uiStore: {
           ...uiStore,
