@@ -65,37 +65,3 @@ Blockly.JavaScript['create_sample_collection'] = function (block) {
 
   return code;
 }
-
-Blockly.Blocks['add_to_sample_collection'] = {
-  init: function () {
-    this.appendDummyInput()
-      .appendField("Add data to")
-    this.appendValueInput('tephra sample')
-      .setAlign(Blockly.ALIGN_RIGHT)
-      .setCheck('Sample')
-      .appendField(new Blockly.FieldDropdown(
-        this.generateOptions), "collections")
-    this.setPreviousStatement(true, null)
-    this.setNextStatement(true, null)
-    this.setColour(240)
-    this.setTooltip('')
-    this.setHelpUrl('')
-  },
-
-  generateOptions: function() {
-    if (Blockly.sampleCollections && Blockly.sampleCollections.length > 0) {
-      return Blockly.sampleCollections;
-    } else {
-      return [["<Create collection>",""]];
-    }
-  }
-}
-Blockly.JavaScript['add_to_sample_collection'] = function (block) {
-  // if tephra_sample is null, this ought to throw an error and alert the user,
-  // but we don't yet have a mechanism for that.
-  var tephra_sample = Blockly.JavaScript.valueToCode(block, 'tephra sample', Blockly.JavaScript.ORDER_ATOMIC) || 0
-  var collection = block.getFieldValue('collections')
-
-  var code = `addToSampleCollection({collection: "${collection}", sample: ${tephra_sample}});\n`
-  return code
-}

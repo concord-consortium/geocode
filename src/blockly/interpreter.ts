@@ -126,7 +126,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     interface WindDataCase {speed: number; direction: number; }
 
     // Returns tephra thickness at a specific location, given by a samples collection, with various inputs
-    addFunc("computeTephra", (params: {location: string, windSamples?: Dataset, vei?: number}) => {
+    addFunc("computeTephra", (params: {location: string, windSamples?: Dataset, vei?: number, collection: string}) => {
 
       const { location, windSamples, vei } = params;
       if (vei === undefined) {
@@ -141,6 +141,12 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       const samplesLocation = samplesCollectionsStore.samplesLocation(location);
       if (!samplesLocation) {
         blocklyController.throwError("The samples location selected is not valid. Make sure you create it first.");
+        return;
+      }
+
+      const samplesCollection = samplesCollectionsStore.samplesCollection(params.collection);
+      if (!samplesCollection) {
+        blocklyController.throwError("The data collection selected is not valid. Make sure you create it first.");
         return;
       }
 
@@ -159,9 +165,8 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
 
       const thickness = tephraSimulation.calculateTephraAtLocation(samplesLocation.x, samplesLocation.y);
 
-      return {
-        data: thickness
-      };
+      samplesCollection.addSample(thickness);
+      chartsStore.addHistogram(samplesCollection, samplesCollection.threshold, `Tephra Thickness for ${name} (mm)`);
     });
 
     /** ==== Draw on tephra map ==== */
@@ -286,16 +291,6 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
 
       const collection = samplesCollectionsStore.createSamplesCollection({name, threshold});
       chartsStore.addHistogram(collection, threshold, `Tephra Thickness for ${name} (mm)`);
-    });
-
-    addFunc("addToSampleCollection", (params: {collection: string, sample: number}) => {
-      const samplesCollection = samplesCollectionsStore.samplesCollection(params.collection);
-      if (!samplesCollection) {
-        blocklyController.throwError("The data collection selected is not valid. Make sure you create it first.");
-        return;
-      }
-      samplesCollection.addSample(params.sample);
-      chartsStore.addHistogram(samplesCollection, samplesCollection.threshold, `Tephra Thickness for ${name} (mm)`);
     });
 
     /** ==== Seismic methods ==== */

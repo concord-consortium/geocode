@@ -6,7 +6,7 @@
       <next>
          <block type="create_sample_collection" id="]c@!uM_F8Yw]Fa_LMS{9">
             <field name="name">City A</field>
-            <field name="threshold">50</field>
+            <field name="threshold">100</field>
             <next>
                <block type="create_sample_location" id="J1O+99A^f[4roxtt6Xw#">
                   <field name="x">-10</field>
@@ -24,60 +24,48 @@
                               <next>
                                  <block type="create_sample_collection" id="DJRU2{K^DrStv+@u.[CH">
                                     <field name="name">Midtown</field>
-                                    <field name="threshold">50</field>
+                                    <field name="threshold">200</field>
                                     <next>
                                        <block type="controls_repeat_ext" id="R?F$YDIm5Bb.1LUW`)+L">
                                           <value name="TIMES">
                                              <shadow type="math_number" id="W]yjMlTa3D`qB!GXlz`:">
-                                                <field name="NUM">50</field>
+                                                <field name="NUM">10</field>
                                              </shadow>
                                           </value>
                                           <statement name="DO">
-                                             <block type="add_to_sample_collection" id="YMU1B}QLdE?j8=-OE2sv">
-                                                <field name="collections">Close-by</field>
-                                                <value name="tephra sample">
-                                                   <block type="calculate_tephra_vei_wind" id="`8h~{fOeN1UCF~^k$15g">
-                                                      <field name="locations">Close-by</field>
-                                                      <value name="vei">
-                                                         <block type="math_number" id="tOhdDtSe|~T7nk!OPFir">
-                                                            <field name="NUM">6</field>
-                                                         </block>
-                                                      </value>
-                                                      <value name="wind samples">
-                                                         <block type="all_wind_data" id="k*`?E[@Rp2K[dc%z~Dc_" />
-                                                      </value>
+                                             <block type="calculate_tephra_vei_wind" id="?e=0E5,%[(^3(VWrEzGK">
+                                                <field name="locations">City A</field>
+                                                <field name="collections">City A</field>
+                                                <value name="wind samples">
+                                                   <block type="all_wind_data" id="Xj|*SDYA~1@Y(`F*-t*s" />
+                                                </value>
+                                                <value name="vei">
+                                                   <block type="math_number" id="r)j[e*,EZ]y$9WoCi+N3">
+                                                      <field name="NUM">6</field>
                                                    </block>
                                                 </value>
                                                 <next>
-                                                   <block type="add_to_sample_collection" id="=0fBSk4NcrWG[H}Zqf^O">
-                                                      <field name="collections">City A</field>
-                                                      <value name="tephra sample">
-                                                         <block type="calculate_tephra_vei_wind" id="W8L#ApwxsC(#VlK!4uqK">
-                                                            <field name="locations">City A</field>
-                                                            <value name="vei">
-                                                               <block type="math_number" id="jTbk1EE+K^K0vhKc(+)D">
-                                                                  <field name="NUM">6</field>
-                                                               </block>
-                                                            </value>
-                                                            <value name="wind samples">
-                                                               <block type="all_wind_data" id="e(|USH;SqCBX}o?d4sP8" />
-                                                            </value>
+                                                   <block type="calculate_tephra_vei_wind" id="!B~}lLfQ?y=rkt/bft6`">
+                                                      <field name="locations">Close-by</field>
+                                                      <field name="collections">Close-by</field>
+                                                      <value name="wind samples">
+                                                         <block type="all_wind_data" id="ZvU3Fi(@*xh.*6e7*?3q" />
+                                                      </value>
+                                                      <value name="vei">
+                                                         <block type="math_number" id="av.Jhp`q9{}4Y*#N749D">
+                                                            <field name="NUM">6</field>
                                                          </block>
                                                       </value>
                                                       <next>
-                                                         <block type="add_to_sample_collection" id="7gLG2W|qM^{pbU!p-rxN">
+                                                         <block type="calculate_tephra_vei_wind" id="zi97JAF0GN%VoRAECRp%">
+                                                            <field name="locations">Midtown</field>
                                                             <field name="collections">Midtown</field>
-                                                            <value name="tephra sample">
-                                                               <block type="calculate_tephra_vei_wind" id="J4I2+q(x@L6ZhU|wfl0?">
-                                                                  <field name="locations">Midtown</field>
-                                                                  <value name="vei">
-                                                                     <block type="math_number" id="sGej|b=e@0w0Q.eK`tuF">
-                                                                        <field name="NUM">6</field>
-                                                                     </block>
-                                                                  </value>
-                                                                  <value name="wind samples">
-                                                                     <block type="all_wind_data" id="(^ZPVt^K(41:LS@.{fTq" />
-                                                                  </value>
+                                                            <value name="wind samples">
+                                                               <block type="all_wind_data" id="Zg!X,3e+`#QOcEbUA{FB" />
+                                                            </value>
+                                                            <value name="vei">
+                                                               <block type="math_number" id="FFLnP|9S`:R:cpdW6g4G">
+                                                                  <field name="NUM">6</field>
                                                                </block>
                                                             </value>
                                                          </block>

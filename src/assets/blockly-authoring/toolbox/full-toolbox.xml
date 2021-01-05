@@ -40,7 +40,6 @@
   <category name="Data Collections" colour="240">
     <block type="create_sample_location"></block>
     <block type="create_sample_collection"></block>
-    <block type="add_to_sample_collection"></block>
   </category>
 
   <category name="Logic" colour="%{BKY_LOGIC_HUE}">

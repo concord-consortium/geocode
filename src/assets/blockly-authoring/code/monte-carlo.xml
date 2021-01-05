@@ -11,24 +11,20 @@
                <block type="controls_repeat_ext" id=".6|Dl=z^3)Qrq*8[i^7`">
                   <value name="TIMES">
                      <shadow type="math_number" id="XeP|O7C]TK|)w_AqjeJ]">
-                        <field name="NUM">200</field>
+                        <field name="NUM">10</field>
                      </shadow>
                   </value>
                   <statement name="DO">
-                     <block type="add_to_sample_collection" id="pXrVf~Ml-?/h1hy-,WQn">
-                        <field name="collections">Close-by Samples</field>
-                        <value name="tephra sample">
-                           <block type="calculate_tephra_vei_wind" id="s`UZWM?2-0:XEcnI$HnK">
-                              <field name="locations">Close By</field>
-                              <value name="vei">
-                                 <block type="math_number" id="KTuipEy:.w.zmas?IE4G">
-                                    <field name="NUM">6</field>
-                                 </block>
-                              </value>
-                              <value name="wind samples">
-                                 <block type="all_wind_data" id="GfkV8Q%5bCr)A}3^BmPw" />
-                              </value>
+                     <block type="calculate_tephra_vei_wind" id="s`UZWM?2-0:XEcnI$HnK">
+                        <field name="locations">Close By</field>
+                        <field name="collections">Close-by</field>
+                        <value name="vei">
+                           <block type="math_number" id="KTuipEy:.w.zmas?IE4G">
+                              <field name="NUM">6</field>
                            </block>
+                        </value>
+                        <value name="wind samples">
+                           <block type="all_wind_data" id="GfkV8Q%5bCr)A}3^BmPw" />
                         </value>
                      </block>
                   </statement>
