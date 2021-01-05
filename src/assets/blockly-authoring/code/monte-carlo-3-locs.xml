@@ -80,48 +80,12 @@
                                                                   </value>
                                                                </block>
                                                             </value>
-                                                            <next>
-                                                               <block type="graph_exceedance" id="yYniI4@KIx*fK6Kwx/|P">
-                                                                  <field name="collections">City A</field>
-                                                                  <field name="threshold">100</field>
-                                                                  <next>
-                                                                     <block type="graph_exceedance" id="L^Czl|N3ySTzU`FIWpPC">
-                                                                        <field name="collections">Close-by</field>
-                                                                        <field name="threshold">50</field>
-                                                                        <next>
-                                                                           <block type="graph_exceedance" id="wF[20H%MnV;6^7BrAV-X">
-                                                                              <field name="collections">Midtown</field>
-                                                                              <field name="threshold">200</field>
-                                                                           </block>
-                                                                        </next>
-                                                                     </block>
-                                                                  </next>
-                                                               </block>
-                                                            </next>
                                                          </block>
                                                       </next>
                                                    </block>
                                                 </next>
                                              </block>
                                           </statement>
-                                          <next>
-                                             <block type="show_risk" id="8MWNnp$D5#TtHOsvRVM(">
-                                                <field name="collections">City A</field>
-                                                <field name="threshold">100</field>
-                                                <next>
-                                                   <block type="show_risk" id="J-x,U-qj%P;[c?~98*;7">
-                                                      <field name="collections">Close-by</field>
-                                                      <field name="threshold">50</field>
-                                                      <next>
-                                                         <block type="show_risk" id="la*o8b#`#a#pACO:;-}2">
-                                                            <field name="collections">Midtown</field>
-                                                            <field name="threshold">200</field>
-                                                         </block>
-                                                      </next>
-                                                   </block>
-                                                </next>
-                                             </block>
-                                          </next>
                                        </block>
                                     </next>
                                  </block>

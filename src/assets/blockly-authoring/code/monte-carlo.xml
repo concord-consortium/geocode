@@ -30,18 +30,6 @@
                               </value>
                            </block>
                         </value>
-                        <next>
-                           <block type="graph_exceedance" id="L8I(o}@G+y_yZ?@!dbQ.">
-                              <field name="collections">Close-by Samples</field>
-                              <field name="threshold">200</field>
-                              <next>
-                                 <block type="show_risk" id="]~7PIu`)u!{@-$T_5[i2">
-                                    <field name="collections">Close-by Samples</field>
-                                    <field name="threshold">200</field>
-                                 </block>
-                              </next>
-                           </block>
-                        </next>
                      </block>
                   </statement>
                </block>

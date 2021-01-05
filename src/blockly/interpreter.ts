@@ -263,21 +263,11 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       chartsStore.addArbitraryChart(params.dataset, params.xAxis, params.yAxis);
     });
 
-    addFunc("graphExceedance", (params: {collection: string, threshold: number}) => {
-      const { collection, threshold } = params;
-      const samplesCollection = samplesCollectionsStore.samplesCollection(collection);
-      if (!samplesCollection) {
-        blocklyController.throwError("The samples collection selected is not valid. Make sure you create it first.");
-        return;
-      }
-      chartsStore.addHistogram(samplesCollection, threshold, `Tephra Thickness at ${samplesCollection.name} (mm)`);
-    });
-
     /** ==== Risk level ==== */
 
-    addFunc("showRisk", (params: {collection: string, threshold: number}) => {
-      samplesCollectionsStore.setSamplesCollectionRiskLevel(params.collection, params.threshold);
-    });
+    // addFunc("showRisk", (params: {collection: string, threshold: number}) => {
+    //   samplesCollectionsStore.setSamplesCollectionRiskLevel(params.collection, params.threshold);
+    // });
 
     /** ==== Sample Collections ==== */
 
