@@ -46,30 +46,22 @@ Blockly.Blocks['create_sample_collection'] = {
         .appendField(new Blockly.FieldTextInput("Name"), "name");
     this.appendDummyInput()
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("for location")
-        .appendField(new Blockly.FieldDropdown(
-            this.generateOptions), "locations");
+        .appendField("set threshold to")
+        .appendField(new Blockly.FieldNumber(200), "threshold")
+        .appendField("mm");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(240);
     this.setTooltip("");
     this.setHelpUrl("");
-  },
-
-  generateOptions: function() {
-    if (Blockly.sampleLocations && Blockly.sampleLocations.length > 0) {
-      return Blockly.sampleLocations;
-    } else {
-      return [["<Create location>",""]];
-    }
   }
 };
 
 Blockly.JavaScript['create_sample_collection'] = function (block) {
   var value_name = block.getFieldValue('name');
-  var value_location = block.getFieldValue('locations');
+  var value_threshold = block.getFieldValue('threshold');
 
-  var code = `createSampleCollection({name: "${value_name}", location: "${value_location}"});\n`;
+  var code = `createSampleCollection({name: "${value_name}", threshold: ${value_threshold}});\n`;
 
   return code;
 }

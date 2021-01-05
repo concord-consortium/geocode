@@ -16,34 +16,26 @@ const SamplesLocation = types.model("SamplesLocation", {
 });
 
 /**
- * A collection of samples, associated with a name and a location.
+ * A collection of samples, with a name and a threshold used when displaying risk.
  * For now each sample is a single number.
  * It is likely that we will want this to eventually be an entire data set row
  * (e.g. all the inputs (wind data, vei etc.) plus tephra thickness).
  */
 const SamplesCollection = types.model("SamplesCollection", {
   name: types.string,
-  location: types.reference(SamplesLocation),
+  threshold: types.number,
   samples: types.array(types.number),
-  risk: types.maybe(RiskLevel)
 })
 .views((self) => ({
-  get x() {
-    return self.location.x;
-  },
-
-  get y() {
-    return self.location.y;
+  get risk(): RiskLevelType {
+    const thresholdData: ThresholdData = calculateThresholdData(self.samples, self.threshold);
+    return calculateRisk(thresholdData.greaterThanPercent);
   },
 }))
 .actions((self) => ({
   addSample(sample: number) {
     self.samples.push(sample);
   },
-  setRiskLevel(threshold: number) {
-    const thresholdData: ThresholdData = calculateThresholdData(self.samples, threshold);
-    self.risk = calculateRisk(thresholdData.greaterThanPercent);
-  }
 }));
 
 const SamplesCollectionsStore = types.model("SamplesCollections", {
@@ -64,9 +56,11 @@ const SamplesCollectionsStore = types.model("SamplesCollections", {
     self.samplesLocations.push(SamplesLocation.create(location));
   },
 
-  createSamplesCollection(collection: {name: string, location: SamplesLocationModelType }) {
-    const { name, location } = collection;
-    self.samplesCollections.push(SamplesCollection.create({name, location: location.id}));
+  createSamplesCollection(collection: {name: string, threshold: number }) {
+    const {name, threshold} = collection;
+    const newCollection = SamplesCollection.create({name, threshold});
+    self.samplesCollections.push(newCollection);
+    return newCollection;
   },
 
   reset() {
@@ -80,13 +74,6 @@ const SamplesCollectionsStore = types.model("SamplesCollections", {
       collection.addSample(sample);
     }
   },
-
-  setSamplesCollectionRiskLevel(name: string, threshold: number) {
-    const collection = self.samplesCollection(name);
-    if (collection) {
-      collection.setRiskLevel(threshold);
-    }
-  }
 }));
 
 export type SamplesLocationModelType = typeof SamplesLocation.Type;

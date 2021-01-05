@@ -275,13 +275,16 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       samplesCollectionsStore.createSamplesLocation(params);
     });
 
-    addFunc("createSampleCollection", (params: {name: string, location: string}) => {
-      const samplesLocation = samplesCollectionsStore.samplesLocation(params.location);
-      if (!samplesLocation) {
-        blocklyController.throwError("The location selected is not valid. Make sure you create it first.");
+    addFunc("createSampleCollection", (params: {name: string, threshold: number}) => {
+      const {name, threshold} = params;
+
+      const oldCollection = samplesCollectionsStore.samplesCollection(name);
+      if (oldCollection) {
+        blocklyController.throwError("A data collection has already been created with this name.");
         return;
       }
-      samplesCollectionsStore.createSamplesCollection({name: params.name, location: samplesLocation});
+
+      const collection = samplesCollectionsStore.createSamplesCollection({name, threshold});
     });
 
     addFunc("addToSampleCollection", (params: {collection: string, sample: number}) => {

@@ -6,7 +6,7 @@
       <next>
          <block type="create_sample_collection" id="Q4cS2J{e0O#ch3_7;O!m">
             <field name="name">Close-by Samples</field>
-            <field name="locations">Close By</field>
+            <field name="threshold">50</field>
             <next>
                <block type="controls_repeat_ext" id=".6|Dl=z^3)Qrq*8[i^7`">
                   <value name="TIMES">
