@@ -1,4 +1,3 @@
-import { isNumber } from "util";
 import { RiskLevelType } from "../../stores/samples-collections-store";
 
 export interface ThresholdData {
@@ -11,15 +10,14 @@ export interface RiskLevel {
   type: RiskLevelType;
   iconColor: string;
   iconText: string;
-  min: number | undefined;
-  max: number | undefined;
+  min?: number;
+  max?: number;
 }
 export const RiskLevels: RiskLevel[] = [
   {
     type: "Low",
     iconColor: "#63CC19",
     iconText: "",
-    min: 0,
     max: 30
   },
   {
@@ -33,8 +31,7 @@ export const RiskLevels: RiskLevel[] = [
     type: "High",
     iconColor: "#FF1919",
     iconText: "!",
-    min: 80,
-    max: 100
+    min: 80
   },
 ];
 
@@ -59,8 +56,10 @@ export const calculateThresholdData = (data: any, threshold: number) => {
 
 export const calculateRisk = (percentAbove: number) => {
   const intVal = Math.floor(percentAbove);
-  const riskLevel: RiskLevel | undefined = RiskLevels.find((rl: RiskLevel) => {
-    return ((isNumber(rl.min) && (rl.min <= intVal)) && (isNumber(rl.max) && (rl.max >= intVal)));
+  const riskLevel = RiskLevels.find((rl: RiskLevel) => {
+    const min = rl.min || -Infinity;
+    const max = rl.max || Infinity;
+    return (intVal >= min) && (intVal <= max);
   });
-  return riskLevel && riskLevel.type;
+  return riskLevel ? riskLevel.type : "Undefined";
 };
