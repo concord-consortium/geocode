@@ -10,7 +10,7 @@ const blocksTab = new BlocksTab;
 const monteCarloTab = new MonteCarloTab;
 const modelOptions = new ModelOptions;
 
-const runs=50;
+const runs=10;
 
 before(() => {
     cy.visit("");
@@ -58,27 +58,8 @@ context("Monte Carlo tab",()=>{
                     monteCarloTab.getStatsContainer().should('contain',"Count below threshold: "); //Can't test the actual values since it varies
                     monteCarloTab.getStatsContainer().should('contain',"Count above threshold: ");
                     monteCarloTab.getStatsContainer().should('contain',"Risk:")
-                    monteCarloTab.getStatsContainer().should('contain',locations.locations[index].risk) //The actual text is in a separate span
-                    monteCarloTab.getStatsContainer().find(monteCarloTab.riskDiamondEl()).should('be.visible')
-                    monteCarloTab.getStatsContainer().should('contain',locations.locations[index].danger)
                 })
             })
-        })
-    })
-    describe('risks on map',()=>{
-        it('verify risk diamonds on map',()=>{
-            map.getDiamondMarker().should('be.visible').and('have.length',3)
-            map.getDiamondMarker().find('.diamond-text').contains('!').should('be.visible')
-        })
-    })
-    describe('verify risk diamonds persist when switching tabs',()=>{
-        it('verify risk diamonds on map',()=>{
-            rightPanel.getConditionsTab().click();
-            map.getDiamondMarker().should('be.visible').and('have.length',3)
-            map.getDiamondMarker().find('.diamond-text').contains('!').should('be.visible')
-            rightPanel.getMonteCarloTab().click();
-            map.getDiamondMarker().should('be.visible').and('have.length',3)
-            map.getDiamondMarker().find('.diamond-text').contains('!').should('be.visible')
         })
     })
 })
