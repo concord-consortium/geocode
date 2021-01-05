@@ -285,15 +285,17 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       }
 
       const collection = samplesCollectionsStore.createSamplesCollection({name, threshold});
+      chartsStore.addHistogram(collection, threshold, `Tephra Thickness for ${name} (mm)`);
     });
 
     addFunc("addToSampleCollection", (params: {collection: string, sample: number}) => {
       const samplesCollection = samplesCollectionsStore.samplesCollection(params.collection);
       if (!samplesCollection) {
-        blocklyController.throwError("The samples collection selected is not valid. Make sure you create it first.");
+        blocklyController.throwError("The data collection selected is not valid. Make sure you create it first.");
         return;
       }
       samplesCollection.addSample(params.sample);
+      chartsStore.addHistogram(samplesCollection, samplesCollection.threshold, `Tephra Thickness for ${name} (mm)`);
     });
 
     /** ==== Seismic methods ==== */
