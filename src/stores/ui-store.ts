@@ -5,18 +5,20 @@ const UIStore = types.model("UI", {
   showOptionsDialog: true,
   // left tabs
   showBlocks: true,
-  showCode: true,
-  showControls: true,
+  showCode: false,
+  showControls: false,
   // right tabs
   showConditions: true,
   showCrossSection: false,
   showMonteCarlo: true,
   showData: true,
+  showDeformation: true,
   // other ui
   showSpeedControls: false,
   showBarHistogram: false,
   speed: 0,       // 0-3 (for now)
   showLog: false,
+  showRiskDiamonds: false,
   // slider controls
   showWindSpeed: true,
   showWindDirection: true,

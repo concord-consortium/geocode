@@ -76,6 +76,25 @@ module.exports = (env, argv) => {
           use: [
             'dsv-loader'
           ]
+        },
+        {
+          test: /\.(txt|vel)$/i,
+          use: [
+            {
+              loader: 'raw-loader',
+              options: {
+                esModule: false,
+              },
+            },
+          ],
+        },
+        {
+          test: /\.(kmz)$/i,
+          use: [
+            {
+              loader: 'file-loader'
+            },
+          ],
         }
       ]
     },
@@ -95,13 +114,15 @@ module.exports = (env, argv) => {
         filename: 'index.html',
         template: 'src/index.html'
       }),
-      new CopyWebpackPlugin([
-        {from: 'src/public'}
-      ]),
-      new CopyWebpackPlugin([{
-        from: 'src/assets',
-        to: 'assets'
-      }])
+      new CopyWebpackPlugin({
+        patterns: [
+          {from: 'src/public'},
+          {
+            from: 'src/assets',
+            to: 'assets'
+          }
+        ],
+      })
     ]
   };
 };

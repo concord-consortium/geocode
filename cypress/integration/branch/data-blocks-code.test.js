@@ -1,7 +1,9 @@
+import ModelOptions from "../../support/elements/ModelOptionPanel";
 import BlocksTab from "../../support/elements/BlocksTab";
 import CodeTab from "../../support/elements/CodeTab";
 import LeftPanel from "../../support/elements/LeftPanel";
 
+const modelOptions = new ModelOptions;
 const leftPanel = new LeftPanel;
 const blocksTab = new BlocksTab;
 const codeTab = new CodeTab;
@@ -10,6 +12,11 @@ const DataRegEx = /Data$/gm;        // regex to ignore "Data Samples"
 
 before(() => {
     cy.visit("");
+    // show code tab
+    modelOptions.getModelOptionsMenu().click();
+    modelOptions.getShowCodeOption().click();
+    modelOptions.getModelOptionsMenu().click();
+
     leftPanel.getBlocksTab().should('be.visible').click();
   });
 

@@ -31,6 +31,11 @@ beforeEach(()=>{
 context ('Authoring Options',()=>{
     before(() => {
         cy.visit("");
+        // show controls and code tabs
+        modelOptions.getModelOptionsMenu().click();
+        modelOptions.getShowControlsOption().click();
+        modelOptions.getShowCodeOption().click();
+        modelOptions.getModelOptionsMenu().click();
       });
     describe('Model Option panel visibility',()=>{
         it('verify Options Menu panel shows',()=>{
@@ -53,13 +58,13 @@ context ('Authoring Options',()=>{
             leftPanel.getControlsTab().click();
             controlsTab.getEruptButton().click();
             //verify tephra is visible at a location south of volcano - brittle if the viewport size changes
-            map.getTephra().last().attribute('d').should('contain',"M237 242L249 254L249 336L243 342L243 354L237 361L237 367L234 370L228 370L222 376L201 354L201 336L195 329L195 254L210 239L234 239z")
+            map.getTephra().last().attribute('d').should('contain', "M237 242L249 254L249 267L255 273L249 279L249 336L243 342L243 354L237 361L237 367L234 370L228 370L222 376L201 354L201 329L195 323L201 317L201 311L195 304L195 254L210 239L234 239z")
 
             //change conditions to see tephra change without having to erupt again
             var slider="wind-direction", windDirection = 190;
             controlsTab.setSliderValue(slider,windDirection);
             //verify is in new location north of volcano
-            map.getTephra().last().attribute('d').should('contain', "M249 98L260 110L260 204L255 211L255 217L240 232L216 232L201 217L201 179L207 173L207 167L213 160L213 135L219 129L219 123L225 116L225 110L234 101L240 101L246 94z")
+            map.getTephra().last().attribute('d').should('contain', "M249 98L260 110L260 198L255 204L255 217L240 232L216 232L201 217L201 179L207 173L207 167L213 160L213 135L219 129L219 123L225 116L225 110L234 101L240 101L246 94z")
 
             //reset state for nexxt test
             controlsTab.resetModel();
@@ -74,13 +79,13 @@ context ('Authoring Options',()=>{
             leftPanel.getControlsTab().click();
             controlsTab.getEruptButton().click();
             //verify tephra is visible at a location south of volcano
-            map.getTephra().last().attribute('d').should('contain', "M249 98L260 110L260 204L255 211L255 217L240 232L216 232L201 217L201 179L207 173L207 167L213 160L213 135L219 129L219 123L225 116L225 110L234 101L240 101L246 94z")
+            map.getTephra().last().attribute('d').should('contain', "M249 98L260 110L260 198L255 204L255 217L240 232L216 232L201 217L201 179L207 173L207 167L213 160L213 135L219 129L219 123L225 116L225 110L234 101L240 101L246 94z")
 
             //change conditions to see tephra change without having to erupt again
             var slider="wind-direction", windDirection = 190;
             controlsTab.setSliderValue(slider,windDirection);
             //verify location has not changed north of volcano
-            map.getTephra().last().attribute('d').should('contain', "M249 98L260 110L260 204L255 211L255 217L240 232L216 232L201 217L201 179L207 173L207 167L213 160L213 135L219 129L219 123L225 116L225 110L234 101L240 101L246 94z")
+            map.getTephra().last().attribute('d').should('contain', "M249 98L260 110L260 198L255 204L255 217L240 232L216 232L201 217L201 179L207 173L207 167L213 160L213 135L219 129L219 123L225 116L225 110L234 101L240 101L246 94z")
 
             controlsTab.resetModel();//clean up
          })
@@ -123,7 +128,7 @@ context ('Authoring Options',()=>{
             blocksTab.getTag('Volcano').click();
             cy.wait(500)
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 8)
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length',29)
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length',32)
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(0).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("Create a town")
             })
@@ -187,49 +192,52 @@ context ('Authoring Options',()=>{
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(24).should('contain','VEI')
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(25).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Compute tephra depth at location")
+                expect(removeNBSP(text)).to.contain("Compute tephra thickness")
             })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(28).should('contain','VEI')
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(27).text().then((text)=>{
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(29).should('contain','VEI')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(28).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("a random wind sample from")
             })
             //Wind data
             blocksTab.getTag('Wind data').click();
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 6)
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length',18)
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length',19)
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(0).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("Graph Wind Data")
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(1).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Graph Wind Speed and Direction")
+                expect(removeNBSP(text)).to.contain("Graph Wind Speed")
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(2).text().then((text)=>{
+              expect(removeNBSP(text)).to.contain("and Direction")
+          })
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(3).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("Graph Wind Data")
             })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(4).should('contain','against')
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(6).text().then((text)=>{
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(5).should('contain','against')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(7).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("All Wind Data")
             })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(7).should('contain','sample')
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(9).should('contain','items')
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(10).should('contain','from')
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(11).should('contain','Filter')
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(12).text().then((text)=>{
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(8).should('contain','sample')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(10).should('contain','items')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(11).should('contain','from')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(12).should('contain','Filter')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(13).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("Select from")
             })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(13).should('contain','Day')
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(14).should('contain','Month')
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(15).should('contain','Year')
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(16).text().then((text)=>{
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(14).should('contain','Day')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(15).should('contain','Month')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(16).should('contain','Year')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(17).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("Direction (º from North)")
             })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(17).text().then((text)=>{
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(18).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("Speed (m/s)")
             })
             //Data Collections
             blocksTab.getTag('Data Collections').click();
-            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 5)
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length',28)
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length',16)
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(0).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("Create a location")
             })
@@ -241,27 +249,6 @@ context ('Authoring Options',()=>{
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(11).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("named")
-            })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(13).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("for location")
-            })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(15).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Add data to")
-            })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(17).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Graph data collection")
-            })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(19).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("and set threshold to")
-            })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(22).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Show risk on map for")
-            })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(23).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("data collection")
-            })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(25).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("above threshold")
             })
             //Logic
             blocksTab.getTag('Logic').click();
@@ -484,7 +471,7 @@ context ('Authoring Options',()=>{
 
             //Data Collections
             blocksTab.getTag('Data Collections').click();
-            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 5)
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
 
             blocksTab.getTag('Loops').click();
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
@@ -660,7 +647,7 @@ context ('Authoring Options',()=>{
                 controlsTab.getWindSpeedDirectionContainer().find('[data-test="info"]>div>div').should('have.length',3)
                 conditionsTab.getWindSpeedDirectionWidget().should('be.visible')
             })
-            it('verify ejected volume slider shows again',()=>{    
+            it('verify ejected volume slider shows again',()=>{
                 modelOptions.getShowEjectedVolumeOption().click();
                 modelOptions.getShowEjectedVolumeOption().should('be.checked')
                 controlsTab.getEjectedVolumeSlider().should('be.visible')
@@ -676,7 +663,7 @@ context ('Authoring Options',()=>{
                 controlsTab.getVEIContainer().find('[data-test="info"]').should('be.visible')
                 conditionsTab.getVEIWidget().should('be.visible')
             })
-            it('verify column height slider shows again',()=>{    
+            it('verify column height slider shows again',()=>{
                 modelOptions.getShowColumnHeightOption().click();
                 modelOptions.getShowColumnHeightOption().should('be.checked')
                 controlsTab.getColumnHeightSlider().should('be.visible')

@@ -23,6 +23,7 @@ const Chart = types.model("Chart", {
   yAxisLabel: types.maybe(types.string),
   dateLabelFormat: types.maybe(types.string),
   threshold: types.maybe(types.number),
+  fadeIn: types.optional(types.boolean, false),
 })
 .views((self) => {
   const isDate = (column: 0|1) => {
@@ -69,7 +70,7 @@ const ChartsStore = types.model("Charts", {
 })
 .actions((self) => ({
   addChart(chartProps: {type: ChartTypeType, chartStyle?: ChartStyleType, data: ChartData, customExtents?: number[][],
-          title?: string, xAxisLabel?: string, yAxisLabel?: string, dateLabelFormat?: string}) {
+          title?: string, xAxisLabel?: string, yAxisLabel?: string, dateLabelFormat?: string, fadeIn?: boolean}) {
     const chart = Chart.create(chartProps);
     self.charts.push(chart);
     return chart;     // returns in case anyone wants to use the new chart
@@ -114,9 +115,9 @@ const ChartsStore = types.model("Charts", {
   },
 
   /**
-   * Creates a curstom charts based on known properties of wind data.
+   * Creates a custom chart based on known properties of wind data.
    */
-  addArbitraryChart(dataset: Dataset, xAxis: string, yAxis: string) {
+  addArbitraryChart(dataset: Dataset, xAxis: string, yAxis: string, _title?: string, _fadeIn?: boolean) {
     let data;
 
     const timeParser = WindData.timeParsers[xAxis];
@@ -135,11 +136,12 @@ const ChartsStore = types.model("Charts", {
     const type = xAxis === "direction" ? "radial" : "scatter";
     const chartStyle = "arrow";
     const customExtents = [WindData.extents[xAxis] || [], WindData.extents[yAxis] || []];
-    const title = "Chart " + (self.charts.length + 1);
+    const title = _title || "Chart " + (self.charts.length + 1);
     const capFirst = (name: string) => name.charAt(0).toUpperCase() + name.slice(1);
     const xAxisLabel = WindData.axisLabel[xAxis] ?  WindData.axisLabel[xAxis] : capFirst(xAxis);
     const yAxisLabel = WindData.axisLabel[yAxis] ?  WindData.axisLabel[yAxis] : capFirst(yAxis);
-    self.addChart({type, data, customExtents, title, xAxisLabel, yAxisLabel, chartStyle, dateLabelFormat});
+    const fadeIn = _fadeIn || false;
+    self.addChart({type, data, customExtents, title, xAxisLabel, yAxisLabel, chartStyle, dateLabelFormat, fadeIn});
   },
 
   /**

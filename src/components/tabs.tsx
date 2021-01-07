@@ -5,6 +5,7 @@ import {
   Tabs as UnstyledTabs,
   TabPanel as UnstyledTabPanel
 } from "react-tabs";
+import { UnitNameType } from "../stores/unit-store";
 
 enum SectionTypes {
   BLOCKS = "blocks",
@@ -44,11 +45,13 @@ enum RightSectionTypes {
   CONDITIONS = "conditions",
   CROSS_SECTION = "crossSection",
   MONTE_CARLO = "monteCarlo",
-  DATA = "data"
+  DATA = "data",
+  DEFORMATION = "deformation"
 }
 type RightTabInfo = {
   [tab in RightSectionTypes]: {
     name: string;
+    unitDisplayName?: { [unit in UnitNameType ]: string };
     index: number;
     backgroundColor: string;
     hoverBackgroundColor: string;
@@ -57,6 +60,10 @@ type RightTabInfo = {
 const kRightTabInfo: RightTabInfo = {
   conditions: {
     name: "Conditions",
+    unitDisplayName: {
+      Tephra: "Conditions",
+      Seismic: "Map"
+    },
     index: -1,
     backgroundColor: "#b7dcad",
     hoverBackgroundColor: "#add1a2",
@@ -79,6 +86,12 @@ const kRightTabInfo: RightTabInfo = {
     backgroundColor: "#e6f2e4",
     hoverBackgroundColor: "#dae6d7",
   },
+  deformation: {
+    name: "Deformation",
+    index: -1,
+    backgroundColor: "#cee6c9",
+    hoverBackgroundColor: "#c3dabd"
+  }
 };
 
 interface TabBackProps {

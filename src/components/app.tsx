@@ -23,11 +23,14 @@ import screenfull from "screenfull";
 import ResizeObserver from "react-resize-observer";
 import AuthoringMenu from "./authoring-menu";
 import { getAuthorableSettings, updateStores, serializeState, getSavableState,
-         deserializeState, SerializedState, IStoreish } from "../stores/stores";
+         deserializeState, UnmigratedSerializedState, IStoreish } from "../stores/stores";
 import { ChartPanel } from "./charts/chart-panel";
 import { BlocklyController } from "../blockly/blockly-controller";
 import { HistogramPanel } from "./montecarlo/histogram-panel";
 import { uiStore } from "../stores/ui-store";
+import { GPSStationTable } from "./gps-station-table";
+import { DeformationModel } from "./deformation/deformation-model";
+import { UnitNameType } from "../stores/unit-store";
 
 interface IProps extends IBaseProps {}
 
@@ -58,6 +61,10 @@ const Row = styled.div`
   justify-content: space-between;
   align-items: center;
   flex-direction: row;
+`;
+
+const CenteredRow = styled(Row)`
+  justify-content: center;
 `;
 
 const BottomBar = styled.div`
@@ -157,12 +164,21 @@ export class AppComponent extends BaseComponent<IProps, IState> {
 
   public render() {
     const {
-      simulation: {
+      unit: {
+        name: unitName,
+      },
+      tephraSimulation: {
         clearLog,
+        scenario
+      },
+      seismicSimulation: {
+        selectedGPSStation,
+        startDeformationModel
+      },
+      blocklyStore: {
         initialXmlCode,
         initialCodeTitle,
         toolbox,
-        scenario
       },
       uiStore: {
         showOptionsDialog,
@@ -173,7 +189,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         showConditions,
         showCrossSection,
         showData,
-        showMonteCarlo,
+        showMonteCarlo: _showMonteCarlo,
+        showDeformation,
         showSpeedControls,
         speed,
         hideBlocklyToolbox,
@@ -198,6 +215,10 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       expandOptionsDialog
     } = this.state;
 
+    const isTephra = unitName === "Tephra";
+
+    const showMonteCarlo = _showMonteCarlo && isTephra;
+
     const toolboxPath = (BlocklyAuthoring.toolbox as {[key: string]: string})[toolbox];
     const codePath = (BlocklyAuthoring.code as {[key: string]: string})[initialCodeTitle];
 
@@ -211,7 +232,9 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     const blocklyHeight = Math.floor(height - 90 - (showLog ? logHeight : 0));
     const scenarioData = (Scenarios as {[key: string]: Scenario})[scenario];
 
-    this.stores.simulation.setVolcano(scenarioData.volcanoLat, scenarioData.volcanoLng);
+    if (isTephra) {
+      this.stores.tephraSimulation.setVolcano(scenarioData.centerLat, scenarioData.centerLng);
+    }
 
     kTabInfo.blocks.index = showBlocks ? 0 : -1;
     kTabInfo.code.index = showCode ? kTabInfo.blocks.index + 1 : -1;
@@ -230,12 +253,14 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     ? (showMonteCarlo
         ? kRightTabInfo.monteCarlo.index + 1 :
         (showCrossSection ? kRightTabInfo.crossSection.index + 1 : kRightTabInfo.conditions.index + 1))
-    : -1;
+      : -1;
+    kRightTabInfo.deformation.index = showDeformation ? kRightTabInfo.data.index + 1 : -1;
     const enabledRightTabTypes = [];
     if (showConditions)   { enabledRightTabTypes.push(RightSectionTypes.CONDITIONS); }
     if (showCrossSection) { enabledRightTabTypes.push(RightSectionTypes.CROSS_SECTION); }
     if (showMonteCarlo)   { enabledRightTabTypes.push(RightSectionTypes.MONTE_CARLO); }
     if (showData)         { enabledRightTabTypes.push(RightSectionTypes.DATA); }
+    if (showDeformation)  { enabledRightTabTypes.push(RightSectionTypes.DEFORMATION); }
 
     const currentTabType = enabledTabTypes[tabIndex || 0];
     const currentRightTabType = enabledRightTabTypes[rightTabIndex || 0];
@@ -366,15 +391,28 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 tabcolor={this.getRightTabColor(RightSectionTypes.CONDITIONS)}
                 rightpanel={"true"}
                 data-test={this.getRightTabName(RightSectionTypes.CONDITIONS) + "-panel"}
-              >
-                <Simulation width={mapWidth} backgroundColor={this.getRightTabColor(RightSectionTypes.CONDITIONS)}>
+            >
+              <Simulation width={mapWidth} backgroundColor={this.getRightTabColor(RightSectionTypes.CONDITIONS)}>
                   <MapComponent
                     width={ mapWidth }
                     height={ height - 190 }
                     panelType={RightSectionTypes.CONDITIONS}
                   />
-                  <WidgetPanel />
+                  {
+                    isTephra &&
+                    <WidgetPanel />
+                  }
+                  {
+                    !isTephra &&
+                    <CenteredRow>
+                      {
+                        selectedGPSStation &&
+                        <GPSStationTable />
+                      }
+                    </CenteredRow>
+                  }
                 </Simulation>
+
               </TabPanel>
             }
             { showCrossSection &&
@@ -397,7 +435,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 </Simulation>
               </TabPanel>
             }
-            { showMonteCarlo &&
+            { (showMonteCarlo) &&
               <TabPanel
                 width={`${tabWidth}px`}
                 tabcolor={this.getRightTabColor(RightSectionTypes.MONTE_CARLO)}
@@ -429,6 +467,20 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 </div>
               </TabPanel>
             }
+            {
+              showDeformation && !isTephra &&
+              <TabPanel
+                width={`${tabWidth}px`}
+                tabcolor={this.getRightTabColor(RightSectionTypes.DEFORMATION)}
+                rightpanel={"true"}
+                data-test={this.getRightTabName(RightSectionTypes.DEFORMATION) + "-panel"}
+              >
+                <DeformationModel
+                  width={mapWidth}
+                  height={height - 30}
+                />
+              </TabPanel>
+            }
             <RightTabBack
               width={tabWidth}
               backgroundcolor={this.getRightTabColor(currentRightTabType)}
@@ -445,7 +497,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                       backgroundhovercolor={this.getRightTabHoverColor(RightSectionTypes.CONDITIONS)}
                       data-test={this.getRightTabName(RightSectionTypes.CONDITIONS) + "-tab"}
                     >
-                      {this.getRightTabName(RightSectionTypes.CONDITIONS)}
+                      {this.getRightTabName(RightSectionTypes.CONDITIONS, unitName)}
                     </BottomTab>
                   }
                   { showCrossSection &&
@@ -482,6 +534,18 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                       data-test={this.getRightTabName(RightSectionTypes.DATA) + "-tab"}
                     >
                       {this.getRightTabName(RightSectionTypes.DATA)}
+                    </BottomTab>
+                  }
+                  { showDeformation && !isTephra &&
+                    <BottomTab
+                      selected={rightTabIndex === kRightTabInfo.deformation.index}
+                      leftofselected={rightTabIndex === (kRightTabInfo.deformation.index + 1) ? "true" : undefined}
+                      rightofselected={rightTabIndex === (kRightTabInfo.deformation.index - 1) ? "true" : undefined}
+                      backgroundcolor={this.getRightTabColor(RightSectionTypes.DEFORMATION)}
+                      backgroundhovercolor={this.getRightTabHoverColor(RightSectionTypes.DEFORMATION)}
+                      data-test={this.getRightTabName(RightSectionTypes.DEFORMATION) + "-tab"}
+                    >
+                      {this.getRightTabName(RightSectionTypes.DEFORMATION)}
                     </BottomTab>
                   }
                 </TabList>
@@ -525,8 +589,12 @@ export class AppComponent extends BaseComponent<IProps, IState> {
   private getRightTabHoverColor = (type: RightSectionTypes) => {
     return (type ? kRightTabInfo[type].hoverBackgroundColor : "white");
   }
-  private getRightTabName = (type: RightSectionTypes) => {
-    return (type ? kRightTabInfo[type].name : "");
+  private getRightTabName = (type: RightSectionTypes, unit?: UnitNameType) => {
+    if (!type) return "";
+    if (unit && kRightTabInfo[type].unitDisplayName && kRightTabInfo[type].unitDisplayName![unit]) {
+      return kRightTabInfo[type].unitDisplayName![unit];
+    }
+    return kRightTabInfo[type].name;
   }
 
   private resize = (rect: DOMRect) => {
@@ -557,7 +625,17 @@ export class AppComponent extends BaseComponent<IProps, IState> {
 
     // delete the initialXml code that was serialized, or we will never update the blocks when
     // the author changes the initial code
-    delete localState.simulation.initialXmlCode;
+    delete localState.blocklyStore.initialXmlCode;
+
+    // make any tweaks to the authorMenuState
+    // here we check that the selected toolbox fits the selected unit
+    if (authorMenuState.unit.name === "Tephra"
+        && !BlocklyAuthoring.tephraToolboxes.includes(authorMenuState.blocklyStore.toolbox)) {
+      authorMenuState.blocklyStore.toolbox = BlocklyAuthoring.tephraToolboxes[0];
+    } else if (authorMenuState.unit.name === "Seismic"
+        && !BlocklyAuthoring.seismicToolboxes.includes(authorMenuState.blocklyStore.toolbox)) {
+      authorMenuState.blocklyStore.toolbox = BlocklyAuthoring.seismicToolboxes[0];
+    }
 
     // the the authored state from the authoring menu overwrites local state
     const mergedState = deepmerge(localState, authorMenuState);
@@ -571,7 +649,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
   private loadStateFromLocalStorage = () => {
     const savedStateJSON = localStorage.getItem("geocode-state");
     if (savedStateJSON) {
-      const savedState = JSON.parse(savedStateJSON) as SerializedState;
+      const savedState = JSON.parse(savedStateJSON) as UnmigratedSerializedState;
       updateStores(deserializeState(savedState));
     }
   }

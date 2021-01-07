@@ -1,0 +1,18 @@
+<xml id="toolbox" style="display: none">
+  <category name="Seismic" colour="0">
+    <block type="seismic_show_gps_stations"></block>
+    <block type="seismic_all_gps_stations"></block>
+    <block type="seismic_filter_data"></block>
+    <block type="seismic_sample_data"></block>
+    <block type="graph_gps_position"></block>
+  </category>
+
+  <category name="Data" colour="130">
+    <block type="text">
+      <field name="TEXT">Name</field>
+    </block>
+    <block type="math_number">
+      <field name="NUM">4</field>
+    </block>
+  </category>
+</xml>

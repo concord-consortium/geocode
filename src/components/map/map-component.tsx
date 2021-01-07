@@ -4,9 +4,9 @@ import * as L from "leaflet";
 import { Map as LeafletMap, TileLayer, Marker, Popup, ScaleControl, Pane } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "../../css/map-component.css";
-import { iconVolcano, iconMarker, getCachedDivIcon, riskIcon, getCachedSampleLocationIcon } from "../icons";
+import { iconVolcano, iconMarker, getCachedDivIcon, getCachedCircleIcon, riskIcon, getCachedSampleLocationIcon } from "../icons";
 
-import { CityType  } from "../../stores/simulation-store";
+import { CityType  } from "../../stores/tephra-simulation-store";
 import * as Scenarios from "../../assets/maps/scenarios.json";
 import styled from "styled-components";
 import { observer, inject } from "mobx-react";
@@ -14,14 +14,18 @@ import { BaseComponent, IBaseProps } from "../base";
 import { CrossSectionDrawLayer } from "./layers/cross-section-draw-layer";
 import { LocalToLatLng } from "../../utilities/coordinateSpaceConversion";
 import { MapTephraThicknessLayer } from "./map-tephra-thickness-layer";
+import { MapTriangulatedStrainLayer } from "./map-triangulated-strain-layer";
 import { OverlayControls } from "../overlay-controls";
 import { RulerDrawLayer } from "./layers/ruler-draw-layer";
 import { RightSectionTypes } from "../tabs";
 import KeyButton from "./map-key-button";
 import CompassComponent from "./map-compass";
-import { LegendComponent } from "./map-legend";
+import { LegendComponent, LegendType } from "./map-legend";
 import { SamplesCollectionModelType, SamplesLocationModelType } from "../../stores/samples-collections-store";
 import { RiskLevels } from "../montecarlo/monte-carlo";
+import { LatLngDrawLayer } from "./layers/latlng-draw-layer";
+import { MapGPSStationsLayer } from "./map-gps-stations-layer";
+import { ColorMethod } from "../../stores/seismic-simulation-store";
 
 interface WorkspaceProps {
   width: number;
@@ -35,8 +39,8 @@ export interface Scenario {
   topLeftLng: number;
   bottomRightLat: number;
   bottomRightLng: number;
-  volcanoLat: number;
-  volcanoLng: number;
+  centerLat: number;
+  centerLng: number;
   extraMarkers?: any[];
 }
 
@@ -71,6 +75,8 @@ export class MapComponent extends BaseComponent<IProps, IState>{
   private map = React.createRef<LeafletMap>();
   private crossRef = React.createRef<CrossSectionDrawLayer>();
   private tephraRef = React.createRef<MapTephraThicknessLayer>();
+  private latlngRef = React.createRef<LatLngDrawLayer>();
+  private hoverCoords = React.createRef<L.LatLng>();
 
   constructor(props: IProps) {
     super(props);
@@ -81,29 +87,27 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       showKey: true,
       mapLeafletRef: null,
     };
-
     this.handleDragMove = this.handleDragMove.bind(this);
     this.handleDragEnter = this.handleDragEnter.bind(this);
     this.handleDragExit = this.handleDragExit.bind(this);
-
     this.state = initialState;
   }
 
   public handleDragEnter(e: React.MouseEvent<HTMLDivElement>) {
-    this.stores.simulation.setPoint1Pos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
-    this.stores.simulation.setPoint2Pos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    this.stores.tephraSimulation.setPoint1Pos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    this.stores.tephraSimulation.setPoint2Pos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
     this.setState({moveMouse: true});
   }
 
   public handleDragMove(e: React.MouseEvent<HTMLDivElement>) {
     const { moveMouse } = this.state;
     if (moveMouse) {
-      this.stores.simulation.setPoint2Pos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+      this.stores.tephraSimulation.setPoint2Pos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
     }
   }
 
   public handleDragExit(e: React.MouseEvent<HTMLDivElement>) {
-    this.stores.simulation.setPoint2Pos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    this.stores.tephraSimulation.setPoint2Pos(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
     this.setState({moveMouse: false});
   }
 
@@ -118,6 +122,10 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       this.map.current.leafletElement.on("moveend", function() {
         this.forceUpdate();
       }.bind(this));
+
+      this.map.current.leafletElement.on("mousemove", function(e: any) {
+        this.hoverCoords.current = e.latlng;
+      }.bind(this));
     }
     if (this.map.current) {
       this.setState({mapLeafletRef: this.map.current.leafletElement});
@@ -127,21 +135,36 @@ export class MapComponent extends BaseComponent<IProps, IState>{
   public render() {
     const { width, height, panelType } = this.props;
 
+    const { name: unitName } = this.stores.unit;
+
+    const isTephraUnit = unitName === "Tephra";
+
     const {
       cities,
-      volcanoLat,
-      volcanoLng,
+      volcanoLat: centerLat,
+      volcanoLng: centerLng,
       windDirection,
       windSpeed,
       colHeight,
       mass,
       hasErupted,
-      scenario,
-    } = this.stores.simulation;
+      scenario: tephraScenario,
+    } = this.stores.tephraSimulation;
+
+    const {
+      scenario: seismicScenario,
+      strainMapColorMethod,
+    } = this.stores.seismicSimulation;
+
+    const scenario = isTephraUnit ? tephraScenario : seismicScenario;
 
     const { showCrossSection } = this.stores.uiStore;
 
     const scenarioData = (Scenarios as {[key: string]: Scenario})[scenario];
+
+    const legendType: LegendType = isTephraUnit ?
+                        (panelType !== RightSectionTypes.MONTE_CARLO ? "Tephra" : "Risk") :
+                        "Strain";
 
     const {
       initialZoom,
@@ -156,13 +179,13 @@ export class MapComponent extends BaseComponent<IProps, IState>{
 
     const {
       isSelectingCrossSection,
-      isSelectingRuler
-    } = this.stores.simulation;
+      isSelectingRuler,
+      isSelectingLatlng,
+    } = this.stores.tephraSimulation;
 
     const cityItems = cities.map( (city: CityType) => {
       const {x, y, name} = city;
       if (x && y && name) {
-        const mapPos = LocalToLatLng({x, y}, L.latLng(volcanoLat, volcanoLng));
         const cityIcon = getCachedDivIcon(name);
         return (
           <Marker
@@ -195,10 +218,14 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     : null;
 
     const sampleLocations = this.getSampleLocations();
-    const riskItems = this.getRiskItems();
+    // const riskItems = this.getRiskItems();
 
-    const { crossPoint1Lat, crossPoint1Lng, crossPoint2Lat, crossPoint2Lng } = this.stores.simulation;
-    const volcanoPos = L.latLng(volcanoLat, volcanoLng);
+    const center: L.LatLngTuple = [centerLat, centerLng];
+
+    const { crossPoint1Lat, crossPoint1Lng, crossPoint2Lat, crossPoint2Lng,
+            latLngPoint1Lat, latLngPoint1Lng, latLngPoint2Lat, latLngPoint2Lng } =
+      this.stores.tephraSimulation;
+    const volcanoPos = L.latLng(centerLat, centerLng);
     const corner1 = L.latLng(topLeftLat, topLeftLng);
     const corner2 = L.latLng(bottomRightLat, bottomRightLng);
     const bounds = L.latLngBounds(corner1, corner2);
@@ -215,9 +242,10 @@ export class MapComponent extends BaseComponent<IProps, IState>{
         <LeafletMap
           className="map"
           ref={this.map}
+          onclick={this.onMapClick}
           ondragend={this.reRenderMap}
           onzoomend={this.reRenderMap}
-          center={[volcanoLat, volcanoLng]}
+          center={center}
           zoom={initialZoom}
           maxBounds={bounds}
           maxBoundsViscosity={1}
@@ -239,60 +267,104 @@ export class MapComponent extends BaseComponent<IProps, IState>{
             <TileLayer
                 url="https://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
             />
-            <MapTephraThicknessLayer
-              ref={this.tephraRef}
-              corner1Bound={corner1}
-              corner2Bound={corner2}
-              viewportBounds={viewportBounds}
-              volcanoPos={volcanoPos}
-              gridSize={1}
-              map={this.state.mapLeafletRef}
-              windSpeed={windSpeed}
-              windDirection={windDirection}
-              colHeight={colHeight}
-              mass={mass}
-              hasErupted={hasErupted}
-            />
           </Pane>
-          <Pane
-            style={{zIndex: 3}}>
-            <Marker
-              position={[volcanoLat, volcanoLng]}
-              icon={iconVolcano}>
-              <Popup>
-                Popup for any custom information.
-              </Popup>
-            </Marker>
-            {cityItems}
-            {pinItems}
-            {riskItems}
-            {sampleLocations}
-            { isSelectingCrossSection && <CrossSectionDrawLayer
-              ref={this.crossRef}
-              map={this.state.mapLeafletRef}
-              p1Lat={crossPoint1Lat}
-              p2Lat={crossPoint2Lat}
-              p1Lng={crossPoint1Lng}
-              p2Lng={crossPoint2Lng}
-            /> }
-            {isSelectingRuler && <RulerDrawLayer
-              map={this.state.mapLeafletRef}
-            />}
-          </Pane>
+          {
+            isTephraUnit &&
+            [
+              <Pane key="tephra-layer"
+                style={{zIndex: 2}}>
+                <MapTephraThicknessLayer
+                  ref={this.tephraRef}
+                  corner1Bound={corner1}
+                  corner2Bound={corner2}
+                  viewportBounds={viewportBounds}
+                  volcanoPos={volcanoPos}
+                  gridSize={1}
+                  map={this.state.mapLeafletRef}
+                  windSpeed={windSpeed}
+                  windDirection={windDirection}
+                  colHeight={colHeight}
+                  mass={mass}
+                  hasErupted={hasErupted}
+                />
+              </Pane>,
+              <Pane key="tephra-marker-layer"
+                style={{zIndex: 3}}>
+                <Marker
+                  position={[centerLat, centerLng]}
+                  icon={iconVolcano}>
+                  <Popup>
+                    Popup for any custom information.
+                  </Popup>
+                </Marker>
+                {cityItems}
+                {pinItems}
+                {/* {riskItems} */}
+                {sampleLocations}
+                {isSelectingLatlng && <LatLngDrawLayer
+                  key="lat-lng-layer"
+                  ref={this.latlngRef}
+                  map={this.state.mapLeafletRef}
+                  p1Lat={latLngPoint1Lat}
+                  p2Lat={latLngPoint2Lat}
+                  p1Lng={latLngPoint1Lng}
+                  p2Lng={latLngPoint2Lng}
+                /> }
+                {isSelectingCrossSection && <CrossSectionDrawLayer
+                  ref={this.crossRef}
+                  map={this.state.mapLeafletRef}
+                  p1Lat={crossPoint1Lat}
+                  p2Lat={crossPoint2Lat}
+                  p1Lng={crossPoint1Lng}
+                  p2Lng={crossPoint2Lng}
+                /> }
+                {isSelectingRuler && <RulerDrawLayer
+                  map={this.state.mapLeafletRef}
+                />}
+              </Pane>
+            ]
+          }
+          {
+            !isTephraUnit &&
+            [
+              <MapTriangulatedStrainLayer
+                key="strain-layer"
+                map={this.state.mapLeafletRef}
+              />,
+              <MapGPSStationsLayer
+                key="gps-layer"
+                map={this.state.mapLeafletRef}
+                mapScale={this.getMapScale()}
+                getPointFromLatLng={this.getScreenPointFromLatLng}
+              />,
+              (isSelectingLatlng && <LatLngDrawLayer
+                key="lat-lng-layer"
+                ref={this.latlngRef}
+                map={this.state.mapLeafletRef}
+                p1Lat={latLngPoint1Lat}
+                p2Lat={latLngPoint2Lat}
+                p1Lng={latLngPoint1Lng}
+                p2Lng={latLngPoint2Lng}
+              />)
+            ]
+          }
         </LeafletMap>
         <OverlayControls
           showRuler={isSelectingRuler}
-          onRulerClick={this.stores.simulation.rulerClick}
+          onRulerClick={this.stores.tephraSimulation.rulerClick}
+          onLatLngClick={this.stores.tephraSimulation.latlngClick}
           isSelectingCrossSection={isSelectingCrossSection}
+          isSelectingLatLng={isSelectingLatlng}
           showCrossSection={hasErupted && showCrossSection && panelType === RightSectionTypes.CROSS_SECTION}
-          onCrossSectionClick={this.stores.simulation.crossSectionClick}
+          onCrossSectionClick={this.stores.tephraSimulation.crossSectionClick}
           onReCenterClick={this.onRecenterClick}
         />
         { this.state.showKey
           ? <KeyButton onClick={this.onKeyClick}/>
           : <LegendComponent
               onClick={this.onKeyButtonClick}
-              showTephra={panelType !== RightSectionTypes.MONTE_CARLO}
+              legendType={legendType}
+              colorMethod={strainMapColorMethod as ColorMethod}
             />
         }
         <CompassComponent/>
@@ -309,12 +381,32 @@ export class MapComponent extends BaseComponent<IProps, IState>{
 
   private onRecenterClick = () => {
     if (this.map.current) {
-      const { volcanoLat, volcanoLng, scenario } = this.stores.simulation;
-      const scenarioData = (Scenarios as {[key: string]: Scenario})[scenario];
-      const { initialZoom } = scenarioData;
+      const { name: unitName } = this.stores.unit;
 
-      this.map.current.leafletElement.flyTo(L.latLng(volcanoLat, volcanoLng), initialZoom);
+      const isTephraUnit = unitName === "Tephra";
+
+      const {
+        scenario: tephraScenario,
+      } = this.stores.tephraSimulation;
+
+      const {
+        scenario: seismicScenario
+      } = this.stores.seismicSimulation;
+
+      const scenario = isTephraUnit ? tephraScenario : seismicScenario;
+
+      const scenarioData = (Scenarios as {[key: string]: Scenario})[scenario];
+
+      const { initialZoom, centerLat, centerLng } = scenarioData;
+
+      this.map.current.leafletElement.flyTo(L.latLng(centerLat, centerLng), initialZoom);
     }
+  }
+  private onMapClick = (e: any) => {
+    const { tephraSimulation } = this.stores;
+    if (tephraSimulation.isSelectingLatlng) {
+      tephraSimulation.setPoint1Pos(e.latlng.lat, e.latlng.lng);
+    } else return;
   }
 
   private reRenderMap = () => {
@@ -324,14 +416,14 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       if (this.map.current) {
         const center = this.map.current.leafletElement.getCenter();
         const zoom = this.map.current.leafletElement.getZoom();
-        this.stores.simulation.setViewportParameters(zoom, center.lat, center.lng);
+        this.stores.tephraSimulation.setViewportParameters(zoom, center.lat, center.lng);
       }
     }
   }
 
   private getSampleLocations = () => {
     const { samplesCollectionsStore } = this.stores;
-    const { volcanoLat, volcanoLng } = this.stores.simulation;
+    const { volcanoLat, volcanoLng } = this.stores.tephraSimulation;
     const locations: React.ReactElement[] = [];
     samplesCollectionsStore.samplesLocations.forEach( (samplesLocation: SamplesLocationModelType, i) => {
       const pos = LocalToLatLng({x: samplesLocation.x, y: samplesLocation.y}, L.latLng(volcanoLat, volcanoLng));
@@ -346,25 +438,48 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     return locations;
   }
 
-  private getRiskItems = () => {
-    const { samplesCollectionsStore } = this.stores;
-    const { volcanoLat, volcanoLng } = this.stores.simulation;
-    const riskItems: React.ReactElement[] = [];
-    const tabIndex = this.stores.uiStore.currentHistogramTab;
-    const histogramCharts = this.stores.chartsStore.charts.filter(chart => chart.type === "histogram");
-    const currentChart = histogramCharts && histogramCharts[tabIndex];
-    const chartName = currentChart && currentChart.title ? currentChart.title : undefined;
-    samplesCollectionsStore.samplesCollections.forEach( (samplesCollection: SamplesCollectionModelType, i) => {
-      const riskLevel = RiskLevels.find((risk) => risk.type === samplesCollection.risk);
-      const pos = LocalToLatLng({x: samplesCollection.x, y: samplesCollection.y}, L.latLng(volcanoLat, volcanoLng));
-      riskLevel && riskItems.push(
-        <Marker
-          position={[pos.lat, pos.lng]}
-          icon={riskIcon(riskLevel.iconColor, riskLevel.iconText, chartName === samplesCollection.name)}
-          key={"risk-" + i}
-        />
-      );
-    });
-    return riskItems;
+  // for now we are eliminating risk diamonds on the map. They will probably return later.
+
+  // private getRiskItems = () => {
+  //   const { samplesCollectionsStore } = this.stores;
+  //   const { volcanoLat, volcanoLng } = this.stores.tephraSimulation;
+  //   const riskItems: React.ReactElement[] = [];
+  //   const tabIndex = this.stores.uiStore.currentHistogramTab;
+  //   const histogramCharts = this.stores.chartsStore.charts.filter(chart => chart.type === "histogram");
+  //   const currentChart = histogramCharts && histogramCharts[tabIndex];
+  //   const chartName = currentChart && currentChart.title ? currentChart.title : undefined;
+  //   samplesCollectionsStore.samplesCollections.forEach( (samplesCollection: SamplesCollectionModelType, i) => {
+  //     const riskLevel = RiskLevels.find((risk) => risk.type === samplesCollection.risk);
+  //     const pos = LocalToLatLng({x: samplesCollection.x, y: samplesCollection.y}, L.latLng(volcanoLat, volcanoLng));
+  //     riskLevel && riskItems.push(
+  //       <Marker
+  //         position={[pos.lat, pos.lng]}
+  //         icon={riskIcon(riskLevel.iconColor, riskLevel.iconText, chartName === samplesCollection.name)}
+  //         key={"risk-" + i}
+  //       />
+  //     );
+  //   });
+  //   return riskItems;
+  // }
+
+  private getMapScale = () => {
+    if (this.map.current) {
+      const map = this.map.current.leafletElement;
+      // Get the y,x dimensions of the map
+      const y = map.getSize().y;
+      const x = map.getSize().x;
+      // calculate the distance from one side of the map to the other using the haversine formula
+      const maxMeters = map.containerPointToLatLng([0, y]).distanceTo(map.containerPointToLatLng([x, y]));
+      // calculate how many meters each pixel represents
+      const meterPerPixel = maxMeters / x;
+      return meterPerPixel;
+    } else return 100;
+  }
+
+  private getScreenPointFromLatLng = (latLng: L.LatLngExpression) => {
+    if (this.map.current) {
+      const map = this.map.current.leafletElement;
+      return map.latLngToLayerPoint(latLng);
+    }
   }
 }

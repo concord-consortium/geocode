@@ -82,6 +82,36 @@
     border: 1px solid #444;
   }
 
+  .latlng-icon-content {
+    background: #fff;
+    width: max-content !important;
+    height: max-content !important;
+    margin-top: 2px !important;
+    margin-left: 5px !important;
+    padding: 2px !important;
+    border-radius: 0px;
+    box-shadow: 0 0 7px rgba(0,0,0,0.55);
+    text-align: left;
+    line-height: 18px;
+    color: #666;
+    z-index: 200 !important;
+    position: relative;
+  }
+  .latlng-icon-content .content{
+    width: 100%;
+    height: 100%;
+    background-color: white;
+  }
+  .latlng-icon-content .handle{
+    width: 6px;
+    height: 6px;
+    position: absolute;
+    background-color: white;
+    border: 2px solid #999;
+    border-radius: 4px;
+  }
+
+
   .top-left {
     transform: translate(0%, 0%);
   }
@@ -116,4 +146,28 @@
 
   .center-center {
     transform: translate(-50%, -50%);
+  }
+
+  .top-left .handle{
+    top: -2px;
+    left: -4px;
+  }
+
+  .top-right .handle{
+    top: -2px;
+    right: -4px;
+  }
+
+  .bottom-left .handle{
+    bottom: -8px;
+    left: -6px;
+  }
+
+  .bottom-right .handle{
+    bottom: -8px;
+    right: -6px;
+  }
+
+  .strain-icon {
+    margin-left: -8px;
   }

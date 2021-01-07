@@ -12,7 +12,7 @@ interface IProps {
 
 export const SvgD3ScatterChart = (props: IProps) => {
   const { width, height, chart } = props;
-  const { data, xAxisLabel, yAxisLabel } = chart;
+  const { data, xAxisLabel, yAxisLabel, fadeIn } = chart;
 
   const margin = {top: 15, right: 20, bottom: 43, left: 50};
   const chartWidth = width - margin.left - margin.right;
@@ -67,6 +67,11 @@ export const SvgD3ScatterChart = (props: IProps) => {
       .text(yAxisLabel);
   }
 
+  const colorLerp = (d3.scaleLinear().domain([0, data.length]) as any).range(["white", "#448878"]);
+  const color = fadeIn ?
+    (d: number, i: number) => colorLerp(i) :
+    "#448878";
+
   svg.append("g")
     .selectAll("dot")
     .data(data)
@@ -75,7 +80,72 @@ export const SvgD3ScatterChart = (props: IProps) => {
       .attr("cx", d => xScale((d as number[] | Date[])[0]) )
       .attr("cy", d => yScale((d as number[] | Date[])[1]) )
       .attr("r", 1.5)
-      .style("fill", "#448878");
+      .style("fill", (color as any));
+
+  if (fadeIn) {
+    addFadeLegend(svg, data, chartWidth, margin);
+  }
 
   return div.toReact();
 };
+
+type SVG = d3.Selection<SVGElement, unknown, null, undefined>;
+interface Margin {left: number; top: number; right: number; bottom: number; }
+
+// This is hard-coded to the Day legend right now, but would be simple to generalize
+export function addFadeLegend(svg: SVG, data: any[], chartWidth: number, margin: Margin) {
+  const legendSteps = 100;
+  const legendWidth = 25;
+  const legendHeight = 80;
+  const legendRightPadding = 30;
+  const legendColorLerp = (d3.scaleLinear().domain([0, legendSteps]) as any).range(["#448878", "white"]);
+  const legend = svg.append("g")
+    .attr("transform", "translate(" + (chartWidth - legendWidth - legendRightPadding) + "," + margin.top + ")");
+
+  legend.append("text")
+    .attr("x", legendWidth / 2)
+    .attr("y", -5)
+    .style("text-anchor", "middle")
+    .style("font-size", "0.9em")
+    .style("fill", "#555")
+    .text("Day");
+
+  legend.append("rect")
+    .attr("x", 0)
+    .attr("y", 0)
+    .attr("width", legendWidth)
+    .attr("height", legendHeight)
+    .style("stroke", "black")
+    .style("fill", "none");
+
+  const bins = Array(legendSteps);
+  legend.selectAll("bin")
+    .data(bins)
+    .enter()
+    .append("rect")
+      .attr("x", 0)
+      .attr("y", (d, i) => (i / legendSteps) * legendHeight)
+      .attr("width", legendWidth)
+      .attr("height", (legendHeight / legendSteps))
+      .style("stroke", "none")
+      .style("fill", (d, i) => legendColorLerp(i));
+
+  legend.append("text")
+    .attr("x", legendWidth + 4)
+    .attr("y", 5)
+    .style("font-size", "0.6em")
+    .style("fill", "#555")
+    .text(data.length);
+  legend.append("text")
+    .attr("x", legendWidth + 4)
+    .attr("y", (legendHeight / 2) + 3)
+    .style("font-size", "0.6em")
+    .style("fill", "#555")
+    .text(Math.round(data.length / 2));
+  legend.append("text")
+    .attr("x", legendWidth + 4)
+    .attr("y", legendHeight + 3)
+    .style("font-size", "0.6em")
+    .style("fill", "#555")
+    .text("0");
+}

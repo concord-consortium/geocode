@@ -8,6 +8,15 @@ code that runs a simple tephra distribution model.
 
 Students change eruption parameters using [Blockly](https://developers.google.com/blockly/).
 
+## Links and branches
+
+* `master`: The latest work, may not have been fully-QA'd so should not be used in production.
+  http://geocode-app.concord.org/branch/master/index.html
+* `production`: http://geocode-app.concord.org/
+* `[tag]` (e.g. 2.1.0): Versioned releases. http://geocode-app.concord.org/version/2.1.0/index.html
+* `[feature-branch]`: Feature branch. The built url will strip off any leading numbers in the branch (e.g.
+  "1234-feature" -> "feature"). http://geocode-app.concord.org/branch/[feature]/index.html
+
 ## Technology reference links:
 * [Blockly](https://developers.google.com/blockly/) Block programming tool developed by Google.
 * [JS-interpreter](https://github.com/NeilFraser/JS-Interpreter) An isolated javascript evaluation engine.
@@ -131,6 +140,10 @@ You can also create a program in the Blocks panel (from eg http://localhost:8080
 1. Make sure if you are using Visual Studio Code that you use the workspace version of TypeScript.
    To ensure that you are open a TypeScript file in VSC and then click on the version number next to
    `TypeScript React` in the status bar and select 'Use Workspace Version' in the popup menu.
+
+## Seismic data
+
+See the [seismic data readme](docs/seismic-data/readme.md), and the `fetch-data` scripts in package.json.
 
 ## Deployment
 

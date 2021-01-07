@@ -21,14 +21,18 @@ const AuthoringMenu: React.SFC<IProps> = (props) => {
     <DatGui data={props.options} onUpdate={props.handleUpdate} data-test="Model-option-toggle">
       <DatButton label="Model options" onClick={props.toggleShowOptions}/>
       { props.expandOptionsDialog &&
+        <DatSelect path="unit.name" label="Unit"
+          options={["Tephra", "Seismic"]} key="unit" />
+      }
+      { (props.expandOptionsDialog && props.options.unit.name === "Tephra") &&
         [
-          <DatBoolean path="simulation.requireEruption" label="Require eruption?" key="requireEruption" />,
-          <DatBoolean path="simulation.requirePainting" label="Require painting?" key="requirePainting" />,
-          <DatSelect path="simulation.scenario" label="Map Scenario"
+          <DatBoolean path="tephraSimulation.requireEruption" label="Require eruption?" key="requireEruption" />,
+          <DatBoolean path="tephraSimulation.requirePainting" label="Require painting?" key="requirePainting" />,
+          <DatSelect path="tephraSimulation.scenario" label="Map Scenario"
             options={Object.keys(Scenarios)} key="background" />,
-          <DatSelect path="simulation.toolbox" label="Code toolbox"
-            options={Object.keys(BlocklyAuthoring.toolbox)} key="toolbox" />,
-          <DatSelect path="simulation.initialCodeTitle" label="Initial code"
+          <DatSelect path="blocklyStore.toolbox" label="Code toolbox"
+            options={BlocklyAuthoring.tephraToolboxes} key="toolbox" />,
+          <DatSelect path="blocklyStore.initialCodeTitle" label="Initial code"
             options={Object.keys(BlocklyAuthoring.code)} key="code" />,
 
           <DatFolder title="Left Tabs" key="leftTabsFolder" closed={false}>
@@ -53,19 +57,43 @@ const AuthoringMenu: React.SFC<IProps> = (props) => {
           </DatFolder>,
 
           <DatBoolean path="uiStore.showSpeedControls" label="Show Speed Controls?" key="showSpeedControls" />,
-
           <DatBoolean path="uiStore.showBarHistogram" label="Show Bar Histogram?" key="showBarHistogram" />,
-
-          <DatBoolean path="uiStore.showLog" label="Show Log?" key="showLog" />,
-
           <DatBoolean path="uiStore.showDemoCharts" label="Show Demo Charts?" key="showDemoCharts" />,
+          <DatBoolean path="uiStore.showRiskDiamonds" label="Show Risk Diamonds?" key="showRiskDiamonds" />,
+
+        ]
+      }
+
+      { (props.expandOptionsDialog && props.options.unit.name === "Seismic") &&
+        [
+          <DatSelect path="blocklyStore.toolbox" label="Code toolbox"
+            options={BlocklyAuthoring.seismicToolboxes} key="toolbox" />,
+          <DatSelect path="blocklyStore.initialCodeTitle" label="Initial code"
+            options={Object.keys(BlocklyAuthoring.code)} key="code" />,
+
+          <DatFolder title="Left Tabs" key="leftTabsFolder" closed={false}>
+            <DatBoolean path="uiStore.showBlocks" label="Show blocks?" key="showBlocks" />
+            <DatBoolean path="uiStore.showCode" label="Show code?" key="showCode" />
+            <DatBoolean path="uiStore.showControls" label="Show controls?" key="showControls" />
+          </DatFolder>,
+
+          <DatFolder title="Right Tabs" key="rightTabsFolder" closed={false}>
+            <DatBoolean path="uiStore.showConditions" label="Show map?" key="showConditions" />
+            <DatBoolean path="uiStore.showData" label="Show data?" key="showData" />
+            <DatBoolean path="uiStore.showDeformation" label="Show deformation?" key="showDeformation" />
+          </DatFolder>,
+        ]
+      }
+      {
+        props.expandOptionsDialog &&
+        [
 
           <DatButton label="Save current state to local storage"
             onClick={props.saveStateToLocalStorage}
             key="generate" />,
           <DatButton label="Load state from local storage"
             onClick={props.loadStateFromLocalStorage}
-            key="generate" />,
+            key="generate" />
         ]
       }
     </DatGui>

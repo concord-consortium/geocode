@@ -6,7 +6,8 @@ import * as iframePhone from "iframe-phone";
 
 import { AppComponent } from "./components/app";
 import { onSnapshot } from "mobx-state-tree";
-import { stores, serializeState, getSavableState, deserializeState, updateStores, SerializedState, IStoreish } from "./stores/stores";
+import { stores, serializeState, getSavableState, deserializeState, updateStores,
+        IStoreish, UnmigratedSerializedState } from "./stores/stores";
 
 ReactDOM.render(
   <Provider stores={stores}>
@@ -60,9 +61,9 @@ phone.addListener("initInteractive", (data: {
 
   parseJSON(data, ["authoredState", "interactiveState", "linkedState"]);
 
-  const authorState: SerializedState = data && data.authoredState || {};
+  const authorState: UnmigratedSerializedState = data && data.authoredState || {};
   // student data may be in either the current interactive's saved state, or a previous model's linked state
-  const studentState: SerializedState = data && (data.interactiveState || data.linkedState) || {};
+  const studentState: UnmigratedSerializedState = data && (data.interactiveState || data.linkedState) || {};
 
   if (data.mode === "authoring") {
     mode = "author";
@@ -79,7 +80,9 @@ phone.addListener("initInteractive", (data: {
   }
   updateStores(initialState);
 
-  onSnapshot(stores.simulation, saveUserData);       // MobX function called on every store change
+  onSnapshot(stores.unit, saveUserData);                   // MobX function called on every store change
+  onSnapshot(stores.tephraSimulation, saveUserData);
+  onSnapshot(stores.blocklyStore, saveUserData);
   onSnapshot(stores.uiStore, saveUserData);
 });
 

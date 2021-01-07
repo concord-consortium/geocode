@@ -1,15 +1,18 @@
 // @ts-ignore
 import * as RawWindDataSet from "../assets/data/winds_Cerro_Negro.csv";
-import { filters } from "pixi.js";
+import RawPositionTimeData, { filterStationByPositionData } from "../assets/data/seismic/position-time-data";
 
-interface DatasetCase {[key: string]: number; }
+interface DatasetCase {[key: string]: number | Date; }
 export type Dataset = DatasetCase[];
+interface DatasetLibrary {[name: string]: Dataset; }
 
 type DatasetName = "Wind Data";         // currently only one option
 export const WIND_DATA = "Wind Data";
 
-export interface Range {min: number; max: number; }
-export interface Filter{[key: string]: number | Range; }
+export interface Range {min: number | Date; max: number | Date; }
+export interface Filter {[key: string]: number | Range; }
+export interface TimeRange {from?: Date; to?: Date; duration?: number; }
+export interface ProtoTimeRange {from?: string; to?: string; duration?: number; }
 
 // dsv-loader loads in all data as strings. For now we know they are all numbers, so we can quick-convert
 const WindDataSet: Dataset = RawWindDataSet.map((item: any) => {
@@ -22,6 +25,22 @@ const WindDataSet: Dataset = RawWindDataSet.map((item: any) => {
 const datasets: {[key in DatasetName]: any} = {
   [WIND_DATA]: WindDataSet
 };
+
+// We're treating the position data sets separately, instead of trying to shoe-horn into the
+// `datasets` object, since we always know if we're trying to get one or the other
+const PositionTimeDataSets: DatasetLibrary = {};
+for (const name of Object.keys(RawPositionTimeData)) {
+  PositionTimeDataSets[name] = (RawPositionTimeData as any)[name].map((item: any) => {
+    for (const key of Object.keys(item)) {
+      if (key === "Date") {
+        item[key] = new Date(item[key]);
+      } else {
+        item[key] = parseFloat(item[key]);
+      }
+    }
+    return item;
+  });
+}
 
 export const Datasets = {
 
@@ -58,6 +77,12 @@ export const Datasets = {
       return Object.keys(filter).every(key => {
         const itemValue = item[key];
         const filterValue = filter[key];
+
+        if (key === "only_stations_with_position_history" && filterValue) {
+          // special-case
+          return filterStationByPositionData(item);
+        }
+
         if (typeof filterValue === "number") {
           return itemValue === filterValue;
         } else {
@@ -65,6 +90,26 @@ export const Datasets = {
         }
       });
     });
+  },
+
+  getGPSPositionTimeData(name: string, timeRange?: TimeRange) {
+    let dataSet = (PositionTimeDataSets as any)[name] as Dataset;
+    if (timeRange) {
+      if (timeRange.from) {
+        dataSet = dataSet.filter(d => (d.Date as Date) >= timeRange.from!);
+      }
+      if (timeRange.to) {
+        dataSet = dataSet.filter(d => (d.Date as Date) <= timeRange.to!);
+      }
+      if (timeRange.duration) {
+        if (timeRange.to) {
+          dataSet = dataSet.splice(dataSet.length - timeRange.duration, timeRange.duration);
+        } else {
+          dataSet = dataSet.splice(0, timeRange.duration);
+        }
+      }
+    }
+    return dataSet;
   },
 
 };
@@ -78,8 +123,10 @@ interface DataSetInfo {
 }
 export const WindData: DataSetInfo = {
   extents: {
-    elevation: [1450, 1600],
-    speed: [0, 23]
+    "elevation": [1450, 1600],
+    "speed": [0, 23],
+    "East (mm)": [-800, 300],
+    "North (mm)": [0, 650],
   },
   timeParsers: {
     date: {
@@ -109,8 +156,10 @@ export const WindData: DataSetInfo = {
     }
   },
   axisLabel: {
-    speed: "Wind Speed (m/s)",
-    timeOfYear: "Time of year",
-    direction: "Direction (degrees)"
+    "speed": "Wind Speed (m/s)",
+    "timeOfYear": "Time of year",
+    "direction": "Direction (degrees)",
+    "East (mm)": "East movement (mm)",
+    "North (mm)": "North movement (mm)",
   }
 };

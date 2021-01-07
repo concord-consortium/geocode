@@ -29,6 +29,18 @@ function getEnvVariablesStartingWith (prefix) {
 // Also, it lets users overwrite any config value using environment variable.
 // Cypress lets you do it by default, but only for its own, predefined configuration.
 module.exports = (on, config) => {
+    on('before:browser:launch', (browser, launchOptions) => {
+        // Note that it needs to match or exceed viewportHeight and viewportWidth values specified in cypress.json.
+        launchOptions.args.width = 1000
+        launchOptions.args.height = 660
+        // open issue for Cypress screenshot, fix sizes https://github.com/cypress-io/cypress/issues/587
+        launchOptions.preferences['width'] = 1000
+        launchOptions.preferences['height'] = 660
+        launchOptions.preferences['resizable'] = false
+        return launchOptions
+      })
+
+
     addMatchImageSnapshotPlugin(on, config)
 
     // Why do we need to read process.env again? Cypress preprocess environment variables. If it finds one with name
@@ -41,10 +53,10 @@ module.exports = (on, config) => {
 
     // const options = {
     //   webpackOptions: config(null, {mode: 'dev'}),
-  
+
     // }
     // on('file:preprocessor', wp(options))
-    
+
     // First, read environments.json.
     return getConfigFile('environments.json')
         .then(content => {

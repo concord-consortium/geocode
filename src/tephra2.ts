@@ -196,7 +196,7 @@ const tephraLoadFromDiskCell = (
 
 /**
  * Returns the tephra thickness (cm) at an x, y location, given an eruption centered on
- * xVent, yVent, with the other properties.
+ * xVent, yVent, with the other properties. Assumes a wind heading East.
  */
 const tephraCalc3 = (
   x: number,
@@ -244,7 +244,7 @@ const tephraCalc3 = (
  * This function takes grid coordinates, scales for the grid size, and rotates to adjust for the wind
  * direction.
  * It then calls `tephraCalc3`, which takes real distance in meters for the location, and assumes a
- * wind due South.
+ * wind heading East.
  * `tephraCalc3` then models the tephra as initially erupting as a large disk of various particle sizes,
  * and iteratively calls `tephraLoadFromDiskCell` for each cell in the eruption grid, for each phi class
  * (particle size).
@@ -286,8 +286,7 @@ const gridTephraCalc3 = (
   const modelY = gridY * dScale;
   const ventX = ventGridX * dScale;
   const ventY = ventGridY * dScale;
-  const windDirectionTowardsNorth = windDirectionFromNorth + 180;
-  const rotated = rotateGridPoint({x: modelX, y: modelY}, (360 - windDirectionTowardsNorth), {x: ventX, y: ventY});
+  const rotated = rotateGridPoint({x: modelX, y: modelY}, windDirectionFromNorth + 90, {x: ventX, y: ventY});
 
   return tephraCalc3(
     rotated.x, rotated.y,

@@ -6,7 +6,11 @@
     "Wind and Height": "./assets/blockly-authoring/toolbox/wind-height-toolbox.xml",
     "Wind + 2": "./assets/blockly-authoring/toolbox/wind-2-toolbox.xml",
     "A4 + 5": "./assets/blockly-authoring/toolbox/a4-5-toolbox.xml",
-    "Monte Carlo": "./assets/blockly-authoring/toolbox/monte-carlo-toolbox.xml"
+    "Monte Carlo": "./assets/blockly-authoring/toolbox/monte-carlo-toolbox.xml",
+    "All Seismic": "./assets/blockly-authoring/toolbox/seismic-toolbox.xml",
+    "Seismic: GPS": "./assets/blockly-authoring/toolbox/seismic-gps-toolbox.xml",
+    "Seismic: GPS & Graph": "./assets/blockly-authoring/toolbox/seismic-gps-graph-toolbox.xml",
+    "Seismic: GPS & Deformation": "./assets/blockly-authoring/toolbox/seismic-gps-deformation-toolbox.xml"
   },
   "code": {
     "Basic": "./assets/blockly-authoring/code/basic-setup.xml",
@@ -15,5 +19,20 @@
     "Monte Carlo (3 locs)": "./assets/blockly-authoring/code/monte-carlo-3-locs.xml",
     "Wind Data Collection": "./assets/blockly-authoring/code/wind-data-collection.xml",
     "Filtered Wind Data Collection": "./assets/blockly-authoring/code/filter-wind-data-collection.xml"
-  }
+  },
+  "tephraToolboxes": [
+    "Everything",
+    "Wind",
+    "Wind and VEI",
+    "Wind and Height",
+    "Wind + 2",
+    "A4 + 5",
+    "Monte Carlo"
+  ],
+  "seismicToolboxes": [
+    "All Seismic",
+    "Seismic: GPS",
+    "Seismic: GPS & Graph",
+    "Seismic: GPS & Deformation"
+  ]
 }

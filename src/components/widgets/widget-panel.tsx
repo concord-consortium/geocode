@@ -54,7 +54,7 @@ export default class WidgetPanel extends BaseComponent<IProps, IState> {
 
   public render() {
     const { showVEI, showEjectedVolume, showColumnHeight, showWindSpeed, showWindDirection } = this.stores.uiStore;
-    const { vei, mass, colHeight, windDirection, windSpeed } = this.stores.simulation;
+    const { vei, mass, colHeight, windDirection, windSpeed } = this.stores.tephraSimulation;
     return (
       <WidgetBar>
         { (showWindSpeed || showWindDirection) && <WidgetContainer data-test="wind-info-widget">
