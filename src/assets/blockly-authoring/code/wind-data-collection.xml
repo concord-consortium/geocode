@@ -5,7 +5,7 @@
     <next>
       <block type="create_sample_collection" id="O1R?1x~q1K5))jd2@bxg">
         <field name="name">win</field>
-        <field name="locations">bibi</field>
+        <field name="threshold">50</field>
         <next>
           <block type="graph_speed_date_wind_data" id="@@qF7-cF,{,Qx:EHt+RV">
             <value name="wind data">

@@ -75,37 +75,3 @@ Blockly.JavaScript['graph_any_wind_data'] = function (block) {
   var code = `graphArbitraryPlot({dataset: ${value_wind_data}, xAxis: "${value_x_axis}", yAxis: "${value_y_axis}"});\n`
   return code
 }
-
-Blockly.Blocks['graph_exceedance'] = {
-  init: function() {
-    this.appendDummyInput()
-        .appendField("Graph data collection")
-    this.appendDummyInput()
-        .appendField(new Blockly.FieldDropdown(this.generateOptions), "collections");
-    this.appendDummyInput()
-        .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("and set threshold to")
-        .appendField(new Blockly.FieldNumber(200), "threshold")
-        .appendField("mm");
-    this.setPreviousStatement(true, null);
-    this.setNextStatement(true, null);
-    this.setColour(230);
-    this.setTooltip("");
-    this.setHelpUrl("");
-  },
-
-  generateOptions: function() {
-    if (Blockly.sampleCollections && Blockly.sampleCollections.length > 0) {
-      return Blockly.sampleCollections;
-    } else {
-      return [["<Create collection>",""]];
-    }
-  }
-}
-Blockly.JavaScript['graph_exceedance'] = function (block) {
-  var collection = block.getFieldValue('collections')
-  var threshold = block.getFieldValue('threshold');
-
-  var code = `graphExceedance({collection: "${collection}", threshold: ${threshold}});\n`
-  return code
-}

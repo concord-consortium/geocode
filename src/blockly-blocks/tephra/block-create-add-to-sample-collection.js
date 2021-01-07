@@ -46,64 +46,22 @@ Blockly.Blocks['create_sample_collection'] = {
         .appendField(new Blockly.FieldTextInput("Name"), "name");
     this.appendDummyInput()
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("for location")
-        .appendField(new Blockly.FieldDropdown(
-            this.generateOptions), "locations");
+        .appendField("set threshold to")
+        .appendField(new Blockly.FieldNumber(200), "threshold")
+        .appendField("mm");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(240);
     this.setTooltip("");
     this.setHelpUrl("");
-  },
-
-  generateOptions: function() {
-    if (Blockly.sampleLocations && Blockly.sampleLocations.length > 0) {
-      return Blockly.sampleLocations;
-    } else {
-      return [["<Create location>",""]];
-    }
   }
 };
 
 Blockly.JavaScript['create_sample_collection'] = function (block) {
   var value_name = block.getFieldValue('name');
-  var value_location = block.getFieldValue('locations');
+  var value_threshold = block.getFieldValue('threshold');
 
-  var code = `createSampleCollection({name: "${value_name}", location: "${value_location}"});\n`;
+  var code = `createSampleCollection({name: "${value_name}", threshold: ${value_threshold}});\n`;
 
   return code;
-}
-
-Blockly.Blocks['add_to_sample_collection'] = {
-  init: function () {
-    this.appendDummyInput()
-      .appendField("Add data to")
-    this.appendValueInput('tephra sample')
-      .setAlign(Blockly.ALIGN_RIGHT)
-      .setCheck('Sample')
-      .appendField(new Blockly.FieldDropdown(
-        this.generateOptions), "collections")
-    this.setPreviousStatement(true, null)
-    this.setNextStatement(true, null)
-    this.setColour(240)
-    this.setTooltip('')
-    this.setHelpUrl('')
-  },
-
-  generateOptions: function() {
-    if (Blockly.sampleCollections && Blockly.sampleCollections.length > 0) {
-      return Blockly.sampleCollections;
-    } else {
-      return [["<Create collection>",""]];
-    }
-  }
-}
-Blockly.JavaScript['add_to_sample_collection'] = function (block) {
-  // if tephra_sample is null, this ought to throw an error and alert the user,
-  // but we don't yet have a mechanism for that.
-  var tephra_sample = Blockly.JavaScript.valueToCode(block, 'tephra sample', Blockly.JavaScript.ORDER_ATOMIC) || 0
-  var collection = block.getFieldValue('collections')
-
-  var code = `addToSampleCollection({collection: "${collection}", sample: ${tephra_sample}});\n`
-  return code
 }

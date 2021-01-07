@@ -218,7 +218,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     : null;
 
     const sampleLocations = this.getSampleLocations();
-    const riskItems = this.getRiskItems();
+    // const riskItems = this.getRiskItems();
 
     const center: L.LatLngTuple = [centerLat, centerLng];
 
@@ -299,7 +299,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
                 </Marker>
                 {cityItems}
                 {pinItems}
-                {riskItems}
+                {/* {riskItems} */}
                 {sampleLocations}
                 {isSelectingLatlng && <LatLngDrawLayer
                   key="lat-lng-layer"
@@ -438,27 +438,29 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     return locations;
   }
 
-  private getRiskItems = () => {
-    const { samplesCollectionsStore } = this.stores;
-    const { volcanoLat, volcanoLng } = this.stores.tephraSimulation;
-    const riskItems: React.ReactElement[] = [];
-    const tabIndex = this.stores.uiStore.currentHistogramTab;
-    const histogramCharts = this.stores.chartsStore.charts.filter(chart => chart.type === "histogram");
-    const currentChart = histogramCharts && histogramCharts[tabIndex];
-    const chartName = currentChart && currentChart.title ? currentChart.title : undefined;
-    samplesCollectionsStore.samplesCollections.forEach( (samplesCollection: SamplesCollectionModelType, i) => {
-      const riskLevel = RiskLevels.find((risk) => risk.type === samplesCollection.risk);
-      const pos = LocalToLatLng({x: samplesCollection.x, y: samplesCollection.y}, L.latLng(volcanoLat, volcanoLng));
-      riskLevel && riskItems.push(
-        <Marker
-          position={[pos.lat, pos.lng]}
-          icon={riskIcon(riskLevel.iconColor, riskLevel.iconText, chartName === samplesCollection.name)}
-          key={"risk-" + i}
-        />
-      );
-    });
-    return riskItems;
-  }
+  // for now we are eliminating risk diamonds on the map. They will probably return later.
+
+  // private getRiskItems = () => {
+  //   const { samplesCollectionsStore } = this.stores;
+  //   const { volcanoLat, volcanoLng } = this.stores.tephraSimulation;
+  //   const riskItems: React.ReactElement[] = [];
+  //   const tabIndex = this.stores.uiStore.currentHistogramTab;
+  //   const histogramCharts = this.stores.chartsStore.charts.filter(chart => chart.type === "histogram");
+  //   const currentChart = histogramCharts && histogramCharts[tabIndex];
+  //   const chartName = currentChart && currentChart.title ? currentChart.title : undefined;
+  //   samplesCollectionsStore.samplesCollections.forEach( (samplesCollection: SamplesCollectionModelType, i) => {
+  //     const riskLevel = RiskLevels.find((risk) => risk.type === samplesCollection.risk);
+  //     const pos = LocalToLatLng({x: samplesCollection.x, y: samplesCollection.y}, L.latLng(volcanoLat, volcanoLng));
+  //     riskLevel && riskItems.push(
+  //       <Marker
+  //         position={[pos.lat, pos.lng]}
+  //         icon={riskIcon(riskLevel.iconColor, riskLevel.iconText, chartName === samplesCollection.name)}
+  //         key={"risk-" + i}
+  //       />
+  //     );
+  //   });
+  //   return riskItems;
+  // }
 
   private getMapScale = () => {
     if (this.map.current) {
