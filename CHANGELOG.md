@@ -1,5 +1,24 @@
 # Changelog
 
+## Version 2.2.0 - released November 16, 2020
+
+- Unforked 1.0.0 and 2.0.0 data versions by adding migrations for data backward-compatibility
+- Update Monte Carlo blocks
+- Remove Monte Carlo risk diamonds
+- Fix mirrored tephra issue leading to incorrect Monte Carlo results
+
+## Version 2.1.0 - released November 16, 2020
+
+- First classroom release of Seismic
+
+## Version 2.0.0 - released September 23, 2020
+
+- Initial Seismic model, with hard-fork of user data
+
+## Version 1.0.0 - released September 23, 2020
+
+- First classroom release of Tephra
+
 ## Version 0.1.3 - released August 6, 2020
 
 - Fix incorrect wind direction in monte carlo simulation
