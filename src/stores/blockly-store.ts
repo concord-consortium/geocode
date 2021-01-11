@@ -7,6 +7,7 @@ export const BlocklyStore = types
     initialXmlCode: "",         // initial blockly xml code
     toolbox: "Everything",
     initialCodeTitle: "Basic",
+    hasRunOnce: false,
   })
   .actions((self) => ({
     setBlocklyCode(code: string, workspace: any) {
@@ -24,6 +25,10 @@ export const BlocklyStore = types
           // see https://github.com/microsoft/TypeScript/issues/31663
           (self[key] as any) = data[key] as any;
         });
+      },
+      runClicked: () => {
+        // this does nothing but set this flag, so that we save user data on first run
+        if (!self.hasRunOnce) self.hasRunOnce = true;
       },
     };
   });

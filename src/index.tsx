@@ -6,8 +6,8 @@ import * as iframePhone from "iframe-phone";
 
 import { AppComponent } from "./components/app";
 import { onSnapshot } from "mobx-state-tree";
-import { stores, serializeState, getSavableState, deserializeState, updateStores,
-        IStoreish, UnmigratedSerializedState } from "./stores/stores";
+import { stores, serializeState, getSavableStateAuthor, getSavableStateStudent, deserializeState, updateStores,
+        IStoreish, UnmigratedSerializedState, SerializedState } from "./stores/stores";
 
 ReactDOM.render(
   <Provider stores={stores}>
@@ -27,18 +27,23 @@ let unsaved = true;
 
 // Save data everytime stores change (after initInteractive is called)
 const saveUserData = () => {
-  if (unsaved && JSON.stringify(initialState) === JSON.stringify(serializeState(getSavableState()).state)) {
+  let serializedState: SerializedState;
+  let postMessage;
+
+  if (mode === "student") {
+    serializedState = serializeState(getSavableStateStudent());
+    postMessage = "interactiveState";
+  } else {
+    serializedState = serializeState(getSavableStateAuthor());
+    postMessage = "authoredState";
+  }
+
+  if (unsaved && JSON.stringify(initialState) === JSON.stringify(serializedState.state)) {
     // only save state if either we've made a real change to the store, or we've saved at least once
     return;
   }
 
-  if (mode === "student") {
-    // currently the student and author save the same data. Eventually we may want some things,
-    // like active tab state, to be saved only for one or the other
-    phone.post("interactiveState", serializeState(getSavableState()));
-  } else {
-    phone.post("authoredState", serializeState(getSavableState()));
-  }
+  phone.post(postMessage, serializedState);
   unsaved = false;
 };
 
