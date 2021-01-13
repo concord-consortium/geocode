@@ -1,6 +1,10 @@
 # Changelog
 
-## Version 2.2.0 - released November 16, 2020
+## Version 2.2.1 - release January 13, 2020
+
+- Fix bug athoring new models in LARA caused my migration code
+
+## Version 2.2.0 - released January 7, 2020
 
 - Unforked 1.0.0 and 2.0.0 data versions by adding migrations for data backward-compatibility
 - Update Monte Carlo blocks
