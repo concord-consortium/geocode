@@ -145,9 +145,16 @@ export const serializeState = (state: IStoreish): SerializedState => {
   };
 };
 // deserializes saved state, migrating data if necessary
-export const deserializeState = (serializedState: UnmigratedSerializedState): IStoreish => {
-  const migratedState = migrate(serializedState);
-  return migratedState.state;
+export const deserializeState = (serializedState: UnmigratedSerializedState | {}): IStoreish => {
+  if (serializedState && serializedState.hasOwnProperty("version")) {
+    const migratedState = migrate(serializedState as UnmigratedSerializedState);
+    return migratedState.state;
+  } else {
+    return {
+      unit: { name: "Tephra" },
+      blocklyStore: {}, tephraSimulation: {}, seismicSimulation: {}, uiStore: {}
+    };
+  }
 };
 
 export function updateStores(state: IStoreish) {

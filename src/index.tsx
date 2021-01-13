@@ -61,9 +61,9 @@ phone.addListener("initInteractive", (data: {
 
   parseJSON(data, ["authoredState", "interactiveState", "linkedState"]);
 
-  const authorState: UnmigratedSerializedState = data && data.authoredState || {};
+  const authorState: UnmigratedSerializedState | {} = data && data.authoredState || {};
   // student data may be in either the current interactive's saved state, or a previous model's linked state
-  const studentState: UnmigratedSerializedState = data && (data.interactiveState || data.linkedState) || {};
+  const studentState: UnmigratedSerializedState | {} = data && (data.interactiveState || data.linkedState) || {};
 
   if (data.mode === "authoring") {
     mode = "author";
