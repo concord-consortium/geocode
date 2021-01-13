@@ -85,6 +85,12 @@ phone.addListener("initInteractive", (data: {
   }
   updateStores(initialState);
 
+  if (mode === "student") {
+    // set the initial state to whatever the mobx stores actually create after loading the initial data.
+    // this way saveUserData will accurately know if a new state is dirty.
+    initialState = serializeState(getSavableStateStudent()).state;
+  }
+
   onSnapshot(stores.unit, saveUserData);                   // MobX function called on every store change
   onSnapshot(stores.tephraSimulation, saveUserData);
   onSnapshot(stores.blocklyStore, saveUserData);
