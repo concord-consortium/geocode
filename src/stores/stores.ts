@@ -133,7 +133,7 @@ export const getAuthorableSettings =
 // gets the current store state to be saved by an author
 export const getSavableStateAuthor =
   getStoreSubstate(blocklyAuthorStateProps, tephraSimulationAuthorStateProps, uiAuthorSettingsProps);
-  // gets the current store state to be saved by an student (the above, plus anything like run state or tab state)
+  // gets the current store state to be saved by a student (the above, plus anything like run state or tab state)
 export const getSavableStateStudent =
 getStoreSubstate(blocklyStudentStateProps, tephraSimulationAuthorStateProps, uiAuthorSettingsProps);
 

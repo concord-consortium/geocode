@@ -25,7 +25,7 @@ export const BlocklyStore = types
           // see https://github.com/microsoft/TypeScript/issues/31663
           (self[key] as any) = data[key] as any;
         });
-        // after we have loaded, set the current cml code to the initial. This will ensure that our
+        // after we have loaded, set the current xml code to the initial. This will ensure that our
         // first saveable state is the same as our initial state.
         self.xmlCode = self.initialXmlCode;
       },
