@@ -37,7 +37,7 @@
         }
       },
       "expectedConvertedState": {
-        "version": 2,
+        "version": 3,
         "state": {
           "unit": {
             "name": "Tephra"
@@ -45,7 +45,8 @@
           "blocklyStore": {
             "toolbox": "Everything",
             "initialCodeTitle": "Basic",
-            "initialXmlCode": "<xml xmlns=\"http://www.w3.org/1999/xhtml\">\n  <block type=\"simulate_wind\" id=\"[q=jJs5eVLi`hbMBNkUv\" x=\"198\" y=\"93\">\n    <value name=\"wspeed\">\n      <block type=\"math_number\" id=\"@u3Zdj+hJTZpwyn.Er]+\">\n        <field name=\"NUM\">4</field>\n      </block>\n    </value>\n    <value name=\"wdirection\">\n      <block type=\"math_number\" id=\"@v[VUG[q]$(wDU)ot1Uf\">\n        <field name=\"NUM\">4</field>\n      </block>\n    </value>\n  </block>\n</xml>"
+            "initialXmlCode": "<xml xmlns=\"http://www.w3.org/1999/xhtml\">\n  <block type=\"simulate_wind\" id=\"[q=jJs5eVLi`hbMBNkUv\" x=\"198\" y=\"93\">\n    <value name=\"wspeed\">\n      <block type=\"math_number\" id=\"@u3Zdj+hJTZpwyn.Er]+\">\n        <field name=\"NUM\">4</field>\n      </block>\n    </value>\n    <value name=\"wdirection\">\n      <block type=\"math_number\" id=\"@v[VUG[q]$(wDU)ot1Uf\">\n        <field name=\"NUM\">4</field>\n      </block>\n    </value>\n  </block>\n</xml>",
+            "hasRunOnce": false
           },
           "tephraSimulation": {
             "requireEruption": true,

@@ -47,6 +47,7 @@ export class BlocklyController {
     }
     this.stores.chartsStore.reset();
     this.stores.samplesCollectionsStore.reset();
+    this.stores.blocklyStore.runClicked();
   }
 
   public reset = () => {
