@@ -73,6 +73,10 @@ const blocklyAuthorStateProps = (blocklyAuthorSettingsProps as string[]).concat(
   "xmlCode",
   "initialXmlCode",
 ));
+// additional props directly from current model that student will save
+const blocklyStudentStateProps = (blocklyAuthorStateProps as string[]).concat(tuple(
+  "hasRunOnce",
+));
 
 export type BlocklyStoreAuthorSettingsProps = typeof blocklyAuthorSettingsProps[number];
 
@@ -126,9 +130,12 @@ function getStoreSubstate(blocklyStoreProps: string[], tephraSimulationProps: st
 // gets the current stores state in a version appropriate for the authoring menu
 export const getAuthorableSettings =
   getStoreSubstate(blocklyAuthorSettingsProps, tephraSimulationAuthorSettingsProps, uiAuthorSettingsProps);
-// gets the current store state to be saved by an author or student
-export const getSavableState =
+// gets the current store state to be saved by an author
+export const getSavableStateAuthor =
   getStoreSubstate(blocklyAuthorStateProps, tephraSimulationAuthorStateProps, uiAuthorSettingsProps);
+  // gets the current store state to be saved by a student (the above, plus anything like run state or tab state)
+export const getSavableStateStudent =
+getStoreSubstate(blocklyStudentStateProps, tephraSimulationAuthorStateProps, uiAuthorSettingsProps);
 
 // makes state appropriate for saving to e.g. LARA. Changes keys or values as needed. Adds a version number
 export const serializeState = (state: IStoreish): SerializedState => {

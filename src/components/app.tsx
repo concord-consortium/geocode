@@ -22,7 +22,7 @@ import WidgetPanel from "./widgets/widget-panel";
 import screenfull from "screenfull";
 import ResizeObserver from "react-resize-observer";
 import AuthoringMenu from "./authoring-menu";
-import { getAuthorableSettings, updateStores, serializeState, getSavableState,
+import { getAuthorableSettings, updateStores, serializeState, getSavableStateAuthor,
          deserializeState, UnmigratedSerializedState, IStoreish } from "../stores/stores";
 import { ChartPanel } from "./charts/chart-panel";
 import { BlocklyController } from "../blockly/blockly-controller";
@@ -621,7 +621,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
 
   private updateAuthoring = (authorMenuState: IStoreish) => {
     // first get the state from the entire app, including slider values etc
-    const localState = serializeState(getSavableState()).state;
+    const localState = serializeState(getSavableStateAuthor()).state;
 
     // delete the initialXml code that was serialized, or we will never update the blocks when
     // the author changes the initial code
@@ -643,7 +643,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
   }
 
   private saveStateToLocalStorage = () => {
-    localStorage.setItem("geocode-state", JSON.stringify(serializeState(getSavableState())));
+    localStorage.setItem("geocode-state", JSON.stringify(serializeState(getSavableStateAuthor())));
   }
 
   private loadStateFromLocalStorage = () => {
