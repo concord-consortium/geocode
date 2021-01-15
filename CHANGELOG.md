@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 2.2.2 - release January 15, 2020
+
+- Improve learner data saving, such that the app won't save to LARA simply when a model is
+  opened, but will save when a user clicks "Run" on a pre-authored model
+
 ## Version 2.2.1 - release January 13, 2020
 
 - Fix bug athoring new models in LARA caused my migration code
