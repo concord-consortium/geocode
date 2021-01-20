@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 2.2.3 - release January 20, 2020
+
+- Set Monte-Carlo chart max to be at least 10 mm
+
 ## Version 2.2.2 - release January 15, 2020
 
 - Improve learner data saving, such that the app won't save to LARA simply when a model is
