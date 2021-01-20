@@ -210,13 +210,14 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
 
   private renderHistogram = (chart: ChartType, threshold: number) => {
     const { width, height } = this.props;
+    const chartMax = Math.max(threshold * 2, 10);
     return (
       <SvgD3HistogramChart
         width={width - 200}
         height={height - 40}
         chart={chart}
         chartMin={0}
-        chartMax={threshold * 2}
+        chartMax={chartMax}
         threshold={threshold}
         showBarHistogram={this.stores.uiStore.showBarHistogram}
         data-test={"histogram-chart-container"}
