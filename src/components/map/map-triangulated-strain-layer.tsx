@@ -99,7 +99,7 @@ export class MapTriangulatedStrainLayer extends BaseComponent<IProps, IState> {
         if (perimeter > minPerimSize
             && perim1 < largeSide && perim1 > smallSide && perim2 < largeSide
             && perim2 > smallSide  && perim3 < largeSide && perim3 > smallSide ) {
-          const text = strainLabelIcon(delaunayTriangleStrains[i]);
+          const text = strainLabelIcon(parseFloat(delaunayTriangleStrains[i].toFixed(1)));
           labels.push(<Marker  key={`strain-label-${i}`}position={incenter} icon={text} />);
         }
       }
