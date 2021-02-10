@@ -190,10 +190,10 @@ function calculateStrainOutputData(inputData: StrainInput, calculatedData: Stati
         revisedData.push([
             eastingCoords[i] - meanEasting,
             northingCoords[i] - meanNorthing,
-            inputData.data[i].eastVelocity * 0.001,
-            inputData.data[i].eastVelocityUncertainty * 0.001,
-            inputData.data[i].northVelocity * 0.001,
-            inputData.data[i].northVelocityUncertainty * 0.001,
+            inputData.data[i].eastVelocity,
+            inputData.data[i].eastVelocityUncertainty,
+            inputData.data[i].northVelocity,
+            inputData.data[i].northVelocityUncertainty,
         ]);
     }
 
@@ -247,13 +247,11 @@ function calculateStrainOutputData(inputData: StrainInput, calculatedData: Stati
     //                                         Math.pow(m6[1][1], 2));
     // const areaStrain = correctedValues[0] + correctedValues[1];
 
-    // This returns values such as -3e-20 and 8e-21
-    let strainSecondInvariant = correctedValues[0] * correctedValues[1];
-    // Ranges from 0.00005 to 127000
-    strainSecondInvariant = Math.abs(strainSecondInvariant) * Math.pow(10, 20);
+    // This returns values from 0 - 2e-6. We scale by 1e9 below, resulting in values 0-2000.
+    const strainSecondInvariant = Math.sqrt(correctedValues[0] ** 2 +  correctedValues[1] ** 2);
 
     const output: StrainOutput = {
-        secondInvariant: strainSecondInvariant
+        secondInvariant: strainSecondInvariant * Math.pow(10, 9),
 
         // these were old calculations that were included but are not currently
         // being used.
