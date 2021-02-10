@@ -7,7 +7,7 @@ import { ColorMethod } from "../../stores/seismic-simulation-store";
 
 // actual data ranges from 0 to 127000, but with only 4 values above 160
 const MIN_STRAIN = 0;
-const MAX_STRAIN = 140;
+const MAX_STRAIN = 175;
 
 const MIN_LOG_STRAIN = Math.log10(0.00001);
 const MAX_LOG_STRAIN = Math.log10(1000);
