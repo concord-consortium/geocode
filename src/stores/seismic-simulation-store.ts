@@ -115,7 +115,7 @@ export const SeismicSimulationStore = types
         for (let k = i + 1; k < stationDataInBounds.length; k++) {
           const dist = Math.sqrt(Math.pow(stationDataInBounds[i].latitude - stationDataInBounds[k].latitude, 2) +
                       Math.pow(stationDataInBounds[i].longitude - stationDataInBounds[k].longitude, 2));
-          if (dist < 0.1) {
+          if (dist < 0.18) {
             removablePoints.add(stationDataInBounds[i].id);
             break;
           }
