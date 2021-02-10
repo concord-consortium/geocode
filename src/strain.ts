@@ -38,23 +38,6 @@ export interface StationData {
 // This is all of the outputs of the algorithm. Currently only maxShearStrain is returned
 // This interface is unused
 export interface StrainOutput {
-    triangleCenter: {
-        latitude: number;
-        longitude: number;
-    };
-    translationVector: {
-        eastComponent: number;
-        northComponent: number;
-        azimuth_degrees: number;
-        speed: number;
-    };
-    rotation_degrees: number;
-    rotation_nanoRad: number;
-    directionOfRotation: string;
-    maxHorizontalExtension: number;
-    minHorizontalExtension: number;
-    maxShearStrain: number;
-    areaStrain: number;
     secondInvariant: number;
 }
 
@@ -199,8 +182,8 @@ function calculateStrainOutputData(inputData: StrainInput, calculatedData: Stati
     const meanEasting = average(eastingCoords);
     const meanNorthing = average(northingCoords);
 
-    const meanLatitude = average(gpsLats);
-    const meanLongitude = average(gpsLngs);
+    // const meanLatitude = average(gpsLats);
+    // const meanLongitude = average(gpsLngs);
 
     const revisedData: number[][] = [];
     for (let i = 0; i < eastingCoords.length; i++) {
@@ -237,18 +220,18 @@ function calculateStrainOutputData(inputData: StrainInput, calculatedData: Stati
 
     const m5 = math.multiply(m3, math.matrix(m4));
 
-    const northUnitVector = [0, 1];
+    // const northUnitVector = [0, 1];
     const translationVector = [m5.get([0]), m5.get([1])];
     const magnitudeOfTranslationVector = Math.sqrt(Math.pow(translationVector[0], 2) +
                                          Math.pow(translationVector[1], 2));
     const unitTranslationVector = [translationVector[0] / magnitudeOfTranslationVector,
                                    translationVector[1] / magnitudeOfTranslationVector];
 
-    const angleBetweenNorthAndUnitVector = Math.acos((unitTranslationVector[0] * northUnitVector[0]) +
-                                                     (unitTranslationVector[1] * northUnitVector[1])) * (180 / PI);
-    const azimutOfTranslationVector = translationVector[0] < 0 ?
-                                            360 - angleBetweenNorthAndUnitVector :
-                                            angleBetweenNorthAndUnitVector;
+    // const angleBetweenNorthAndUnitVector = Math.acos((unitTranslationVector[0] * northUnitVector[0]) +
+    //                                                  (unitTranslationVector[1] * northUnitVector[1])) * (180 / PI);
+    // const azimutOfTranslationVector = translationVector[0] < 0 ?
+    //                                         360 - angleBetweenNorthAndUnitVector :
+    //                                         angleBetweenNorthAndUnitVector;
 
     const m6 = [[m5.get([3]), m5.get([4])],
                 [m5.get([4]), m5.get([5])]];
@@ -260,9 +243,9 @@ function calculateStrainOutputData(inputData: StrainInput, calculatedData: Stati
                                 [eigenValues.get([0]), eigenValues.get([1])] :
                                 [eigenValues.get([1]), eigenValues.get([0])];
 
-    const maximumIninitesimalShearStrain = 2 * Math.sqrt(Math.pow((m6[0][0] - m6[1][1]) / 2, 2) +
-                                            Math.pow(m6[1][1], 2));
-    const areaStrain = correctedValues[0] + correctedValues[1];
+    // const maximumIninitesimalShearStrain = 2 * Math.sqrt(Math.pow((m6[0][0] - m6[1][1]) / 2, 2) +
+    //                                         Math.pow(m6[1][1], 2));
+    // const areaStrain = correctedValues[0] + correctedValues[1];
 
     // This returns values such as -3e-20 and 8e-21
     let strainSecondInvariant = correctedValues[0] * correctedValues[1];
@@ -270,24 +253,28 @@ function calculateStrainOutputData(inputData: StrainInput, calculatedData: Stati
     strainSecondInvariant = Math.abs(strainSecondInvariant) * Math.pow(10, 20);
 
     const output: StrainOutput = {
-        triangleCenter: {
-            latitude: meanLatitude,
-            longitude: meanLongitude
-        },
-        translationVector: {
-            eastComponent: m5.get([0]),
-            northComponent: m5.get([1]),
-            azimuth_degrees: azimutOfTranslationVector,
-            speed: magnitudeOfTranslationVector
-        },
-        rotation_degrees: m5.get([2]) * (180 / PI),
-        rotation_nanoRad: m5.get([2]) * Math.pow(10, 9),
-        directionOfRotation: m5.get([2]) < 0 ? "clockwise" : "anit-clockwise",
-        maxHorizontalExtension: correctedValues[0],
-        minHorizontalExtension: correctedValues[1],
-        maxShearStrain: maximumIninitesimalShearStrain * Math.pow(10, 9),
-        areaStrain: areaStrain * Math.pow(10, 9),
         secondInvariant: strainSecondInvariant
+
+        // these were old calculations that were included but are not currently
+        // being used.
+
+        // triangleCenter: {
+        //     latitude: meanLatitude,
+        //     longitude: meanLongitude
+        // },
+        // translationVector: {
+        //     eastComponent: m5.get([0]),
+        //     northComponent: m5.get([1]),
+        //     azimuth_degrees: azimutOfTranslationVector,
+        //     speed: magnitudeOfTranslationVector
+        // },
+        // rotation_degrees: m5.get([2]) * (180 / PI),
+        // rotation_nanoRad: m5.get([2]) * Math.pow(10, 9),
+        // directionOfRotation: m5.get([2]) < 0 ? "clockwise" : "anit-clockwise",
+        // maxHorizontalExtension: correctedValues[0],
+        // minHorizontalExtension: correctedValues[1],
+        // maxShearStrain: maximumIninitesimalShearStrain * Math.pow(10, 9),
+        // areaStrain: areaStrain * Math.pow(10, 9),
     };
 
     return output;
