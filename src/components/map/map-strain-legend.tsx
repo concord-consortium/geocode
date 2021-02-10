@@ -25,7 +25,6 @@ const stepSize = (MAX_STRAIN - MIN_STRAIN) / buckets;
 const logStepSize = (MAX_LOG_STRAIN - MIN_LOG_STRAIN) / buckets;
 
 export const equalIntervalStrainRanges: StrainRange[] = [];
-export const logarithmicStrainRanges: StrainRange[] = [];
 
 for (let i = 0; i < buckets; i++) {
   equalIntervalStrainRanges.push({
@@ -33,12 +32,45 @@ for (let i = 0; i < buckets; i++) {
     min: MIN_STRAIN + (stepSize * i),
     max: (i < buckets - 1) ? MIN_STRAIN + (stepSize * (i + 1)) : undefined
   });
-  logarithmicStrainRanges.push({
-    color: colors[i],
-    min: MIN_LOG_STRAIN + (logStepSize * i),
-    max: (i < buckets - 1) ? MIN_LOG_STRAIN + (logStepSize * (i + 1)) : undefined
-  });
 }
+
+export const logarithmicStrainRanges: StrainRange[] = [
+  {
+    color: colors[0],
+    min: 0,
+    max: 4
+  },
+  {
+    color: colors[1],
+    min: 4,
+    max: 12
+  },
+  {
+    color: colors[2],
+    min: 12,
+    max: 28
+  },
+  {
+    color: colors[3],
+    min: 28,
+    max: 60
+  },
+  {
+    color: colors[4],
+    min: 60,
+    max: 124
+  },
+  {
+    color: colors[5],
+    min: 124,
+    max: 252
+  },
+  {
+    color: colors[6],
+    min: 252,
+    max: undefined
+  },
+];
 
 interface IProps {
   onClick: any;
@@ -56,7 +88,7 @@ export default class StrainLegendComponent extends PureComponent<IProps, IState>
     const { onClick, colorMethod } = this.props;
     const isLog = colorMethod === "logarithmic";
     const ranges = isLog ? logarithmicStrainRanges : equalIntervalStrainRanges;
-    const round = (val: number) => isLog ? Math.pow(10, val).toFixed(2) : Math.round(val);
+    const round = (val: number) => Math.round(val);
     return (
       <LegendContainer>
         <LegendTitleText>Strain rate{isLog ? " (log)" : ""}</LegendTitleText>

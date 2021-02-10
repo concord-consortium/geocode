@@ -59,7 +59,7 @@ export class MapTriangulatedStrainLayer extends BaseComponent<IProps, IState> {
       const triangle = delaunayTriangles[i];
       const [p1, p2, p3] = triangle.map(p => Leaflet.latLng(p[0], p[1]));
 
-      const strain = isLog ? Math.log10(delaunayTriangleStrains[i]) : delaunayTriangleStrains[i];
+      const strain = delaunayTriangleStrains[i];
       const ranges = isLog ? logarithmicStrainRanges : equalIntervalStrainRanges;
 
       const range = ranges.slice().reverse().find(r => strain > r.min);
