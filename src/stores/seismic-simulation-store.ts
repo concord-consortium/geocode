@@ -115,7 +115,7 @@ export const SeismicSimulationStore = types
         for (let k = i + 1; k < stationDataInBounds.length; k++) {
           const dist = Math.sqrt(Math.pow(stationDataInBounds[i].latitude - stationDataInBounds[k].latitude, 2) +
                       Math.pow(stationDataInBounds[i].longitude - stationDataInBounds[k].longitude, 2));
-          if (dist < 0.1) {
+          if (dist < 0.18) {
             removablePoints.add(stationDataInBounds[i].id);
             break;
           }
@@ -141,7 +141,35 @@ export const SeismicSimulationStore = types
       // Each vertex is returned as an index to an array of coordinates
       const mesh = new Delaunator(coords);
 
+      // filter trianges by removing those that have a vertex with an angle that is too small
+      const removeTriangles: number[] = [];
+      const minAngleDeg = 5;
+      const minAngleRad = minAngleDeg / 180 * Math.PI;
       for (let i = 0; i < mesh.triangles.length; i += 3) {
+        const triangle = [
+          points[mesh.triangles[i]],
+          points[mesh.triangles[i + 1]],
+          points[mesh.triangles[i + 2]],
+        ];
+
+        const len01 = Math.sqrt((triangle[0][0] - triangle[1][0]) ** 2 + (triangle[0][1] - triangle[1][1]) ** 2);
+        const len12 = Math.sqrt((triangle[1][0] - triangle[2][0]) ** 2 + (triangle[1][1] - triangle[2][1]) ** 2);
+        const len20 = Math.sqrt((triangle[2][0] - triangle[0][0]) ** 2 + (triangle[2][1] - triangle[0][1]) ** 2);
+
+        const a0 = Math.acos((len01 ** 2 + len20 ** 2 -  len12 ** 2) / (2 * len01 * len20));
+        const a1 = Math.acos((len01 ** 2 + len12 ** 2 -  len20 ** 2) / (2 * len01 * len12));
+        const a2 = Math.acos((len12 ** 2 + len20 ** 2 -  len01 ** 2) / (2 * len12 * len20));
+
+        if (a0 < minAngleRad || a1 < minAngleRad || a2 < minAngleRad) {
+          removeTriangles.push(i);
+        }
+      }
+
+      // const preDelaunayTriangleStrains = [];
+      // const preDelaunayTriangles = [];
+
+      for (let i = 0; i < mesh.triangles.length; i += 3) {
+        if (removeTriangles.indexOf(i) > -1) continue;
         const strainOutput: StrainOutput = strainCalc({data: [ filteredData[mesh.triangles[i]],
           filteredData[mesh.triangles[i + 1]],
           filteredData[mesh.triangles[i + 2]],
@@ -152,6 +180,7 @@ export const SeismicSimulationStore = types
       }
 
       for (let i = 0; i < mesh.triangles.length; i += 3) {
+        if (removeTriangles.indexOf(i) > -1) continue;
         const p1 = [points[mesh.triangles[i]][0], points[mesh.triangles[i]][1]];
         const p2 = [points[mesh.triangles[i + 1]][0], points[mesh.triangles[i + 1]][1]];
         const p3 = [points[mesh.triangles[i + 2]][0], points[mesh.triangles[i + 2]][1]];

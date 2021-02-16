@@ -59,7 +59,7 @@ export class MapTriangulatedStrainLayer extends BaseComponent<IProps, IState> {
       const triangle = delaunayTriangles[i];
       const [p1, p2, p3] = triangle.map(p => Leaflet.latLng(p[0], p[1]));
 
-      const strain = isLog ? Math.log10(delaunayTriangleStrains[i]) : delaunayTriangleStrains[i];
+      const strain = delaunayTriangleStrains[i];
       const ranges = isLog ? logarithmicStrainRanges : equalIntervalStrainRanges;
 
       const range = ranges.slice().reverse().find(r => strain > r.min);
@@ -99,7 +99,7 @@ export class MapTriangulatedStrainLayer extends BaseComponent<IProps, IState> {
         if (perimeter > minPerimSize
             && perim1 < largeSide && perim1 > smallSide && perim2 < largeSide
             && perim2 > smallSide  && perim3 < largeSide && perim3 > smallSide ) {
-          const text = strainLabelIcon(delaunayTriangleStrains[i]);
+          const text = strainLabelIcon(parseFloat(delaunayTriangleStrains[i].toFixed(1)));
           labels.push(<Marker  key={`strain-label-${i}`}position={incenter} icon={text} />);
         }
       }
