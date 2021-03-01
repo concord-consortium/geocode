@@ -126,7 +126,7 @@ export const WindData: DataSetInfo = {
     "elevation": [1450, 1600],
     "speed": [0, 23],
     "East (mm)": [-800, 300],
-    "North (mm)": [0, 650],
+    "North (mm)": [0, 700],
   },
   timeParsers: {
     date: {

@@ -333,7 +333,8 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
         duration: timeRange.duration ? timeRange.duration : undefined,
       };
       const dataset = Datasets.getGPSPositionTimeData(station, validTimeRange);
-      chartsStore.addArbitraryChart(dataset, "East (mm)", "North (mm)", `${params.station} Position over Time`, true);
+      chartsStore.addArbitraryChart(dataset, "East (mm)", "North (mm)", `${params.station} Position over Time`, true,
+                                    true);
     });
 
     addFunc("computeStrainRate", (filter: Filter) => {
