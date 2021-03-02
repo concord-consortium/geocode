@@ -11,23 +11,36 @@ interface IProps {
 }
 
 export const SvgD3ScatterChart = (props: IProps) => {
-  const { height, width, chart } = props;
-  const { data, xAxisLabel, yAxisLabel, fadeIn, uniformXYScale } = chart;
+
+  const calculateChartDimensions = (_xRange: number, _yRange: number) => {
+    const _chart = props.chart;
+    const _width = props.width;
+    const _height = props.height;
+    const { uniformXYScale } = _chart;
+    const chartUsedWidth = _width - margin.left - margin.right;
+    // adjust height if the x and y axes need to be scaled uniformly, base off of width
+    const chartUsedHeight = uniformXYScale
+      ? _yRange / _xRange * chartUsedWidth
+      : _height - margin.top - margin.bottom;
+    const usedHeight = uniformXYScale ? chartUsedHeight + margin.top + margin.bottom : _height;
+    return { width: _width, height: usedHeight, chartWidth: chartUsedWidth, chartHeight: chartUsedHeight};
+  };
+
+  const { chart } = props;
+  const { data, xAxisLabel, yAxisLabel, fadeIn } = chart;
   const xRange = Number(chart.extent(0)[1]) - Number(chart.extent(0)[0]);
   const yRange = Number(chart.extent(1)[1]) - Number(chart.extent(1)[0]);
   const xTicks = Math.floor(xRange / 100);
   const yTicks = Math.floor(yRange / 100);
   const margin = {top: 15, right: 20, bottom: 43, left: 50};
-  const chartWidth = width - margin.left - margin.right;
-  // adjust height if the x and y axes need to be scaled uniformly, base off of width
-  const chartHeight = uniformXYScale ? yRange / xRange * chartWidth : height - margin.top - margin.bottom;
-  const usedHeight = uniformXYScale ? chartHeight + margin.top + margin.bottom : height;
+  const chartDimensions = calculateChartDimensions(xRange, yRange);
+  const { width, height, chartWidth, chartHeight } = chartDimensions;
 
   const div = new ReactFauxDOM.Element("div");
 
   const svg = d3.select(div).append("svg")
     .attr("width", width)
-    .attr("height", usedHeight)
+    .attr("height", height)
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -56,7 +69,7 @@ export const SvgD3ScatterChart = (props: IProps) => {
   if (xAxisLabel) {
     svg.append("text")
       .attr("x", `${chartWidth / 2}`)
-      .attr("y", `${usedHeight - 20}`)
+      .attr("y", `${height - 20}`)
       .style("text-anchor", "middle")
       .style("font-size", "0.9em")
       .style("fill", "#555")
@@ -64,7 +77,7 @@ export const SvgD3ScatterChart = (props: IProps) => {
   }
   if (yAxisLabel) {
     svg.append("text")
-      .attr("x", `-${usedHeight / 2}`)
+      .attr("x", `-${height / 2}`)
       .attr("dy", "-30px")
       .attr("transform", "rotate(-90)")
       .style("font-size", "0.9em")

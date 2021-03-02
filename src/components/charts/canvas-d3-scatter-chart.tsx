@@ -58,6 +58,7 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
     const xRange = Number(chart.extent(0)[1]) - Number(chart.extent(0)[0]);
     const yRange = Number(chart.extent(1)[1]) - Number(chart.extent(1)[0]);
     const chartWidth = width - margin.left - margin.right + (canvasPadding * 2);
+    // adjust height if the x and y axes need to be scaled uniformly, base off of width
     const chartHeight = uniformXYScale
       ? yRange / xRange * chartWidth
       : height - margin.top - margin.bottom + (canvasPadding * 2);
