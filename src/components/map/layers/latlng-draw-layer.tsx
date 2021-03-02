@@ -154,7 +154,7 @@ export class LatLngDrawLayer extends BaseComponent<IProps, IState> {
     const point2a = L.latLng(p2Lat, p1Lng);
 
     const mapBounds = map.getBounds();
-    const labelWidth = 97;
+    const labelWidth = 116;
     const labelHeight = 56;
 
     const getCorner = (point: L.LatLng, otherPoint: L.LatLng, isPt1 = true) => {
@@ -181,9 +181,11 @@ export class LatLngDrawLayer extends BaseComponent<IProps, IState> {
       return cornerString;
     };
 
-    const p1Icon = latLngIcon(`<b>Corner 1</b><br/>Latitude: ${p1Lat.toFixed(2)}<br/>Longitude: ${p1Lng.toFixed(2)}`,
+    const p1Icon = latLngIcon(
+      `<b>Corner 1</b><br/>Latitude: ${p1Lat.toFixed(2)} <b>W</b><br/>Longitude: ${p1Lng.toFixed(2)} <b>N</b>`,
       getCorner(point1, point2));
-    const p2Icon = latLngIcon(`<b>Corner 2</b><br/>Latitude: ${p2Lat.toFixed(2)}<br/>Longitude: ${p2Lng.toFixed(2)}`,
+    const p2Icon = latLngIcon(
+      `<b>Corner 2</b><br/>Latitude: ${p2Lat.toFixed(2)} <b>W</b><br/>Longitude: ${p2Lng.toFixed(2)} <b>N</b>`,
       getCorner(point2, point1, false));
 
     return (
