@@ -181,9 +181,11 @@ export class LatLngDrawLayer extends BaseComponent<IProps, IState> {
       return cornerString;
     };
 
-    const p1Icon = latLngIcon(`<b>Corner 1</b><br/>Latitude: ${p1Lat.toFixed(2)} <b>W</b><br/>Longitude: ${p1Lng.toFixed(2)} <b>N</b>`,
+    const p1Icon = latLngIcon(
+      `<b>Corner 1</b><br/>Latitude: ${p1Lat.toFixed(2)} <b>W</b><br/>Longitude: ${p1Lng.toFixed(2)} <b>N</b>`,
       getCorner(point1, point2));
-    const p2Icon = latLngIcon(`<b>Corner 2</b><br/>Latitude: ${p2Lat.toFixed(2)} <b>W</b><br/>Longitude: ${p2Lng.toFixed(2)} <b>N</b>`,
+    const p2Icon = latLngIcon(
+      `<b>Corner 2</b><br/>Latitude: ${p2Lat.toFixed(2)} <b>W</b><br/>Longitude: ${p2Lng.toFixed(2)} <b>N</b>`,
       getCorner(point2, point1, false));
 
     return (
