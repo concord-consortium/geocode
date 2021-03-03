@@ -35,8 +35,6 @@ import { UnitNameType } from "../stores/unit-store";
 interface IProps extends IBaseProps {}
 
 interface IState {
-  tabIndex: number;
-  rightTabIndex: number;
   expandOptionsDialog: boolean;
   dimensions: {
     width: number;
@@ -144,12 +142,10 @@ export class AppComponent extends BaseComponent<IProps, IState> {
   public constructor(props: IProps) {
     super(props);
 
-    this.handleTabSelect = this.handleTabSelect.bind(this);
+    this.handleLeftTabSelect = this.handleLeftTabSelect.bind(this);
     this.handleRightTabSelect = this.handleRightTabSelect.bind(this);
 
     const initialState: IState = {
-      tabIndex: 0,
-      rightTabIndex: 0,
       expandOptionsDialog: false,
       dimensions: {
         width: window.innerWidth,
@@ -194,6 +190,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         showSpeedControls,
         speed,
         hideBlocklyToolbox,
+        leftTabIndex,
+        rightTabIndex
       }
     } = this.stores;
     const {
@@ -210,8 +208,6 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     } = this.blocklyController;
 
     const {
-      tabIndex,
-      rightTabIndex,
       expandOptionsDialog
     } = this.state;
 
@@ -262,7 +258,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     if (showData)         { enabledRightTabTypes.push(RightSectionTypes.DATA); }
     if (showDeformation)  { enabledRightTabTypes.push(RightSectionTypes.DEFORMATION); }
 
-    const currentTabType = enabledTabTypes[tabIndex || 0];
+    const currentTabType = enabledTabTypes[leftTabIndex || 0];
     const currentRightTabType = enabledRightTabTypes[rightTabIndex || 0];
 
     const setSpeed = (_speed: number) => uiStore.setSpeed(_speed);
@@ -273,7 +269,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
           onResize={this.resize}
         />
         <Row>
-          <Tabs selectedIndex={tabIndex} onSelect={this.handleTabSelect}>
+          <Tabs selectedIndex={leftTabIndex} onSelect={this.handleLeftTabSelect}>
             <TabBack
               width={tabWidth}
               backgroundcolor={this.getTabColor(currentTabType)}
@@ -281,9 +277,9 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             <TabList>
               { showBlocks &&
                 <Tab
-                  selected={tabIndex === kTabInfo.blocks.index}
-                  leftofselected={tabIndex === (kTabInfo.blocks.index + 1) ? "true" : undefined}
-                  rightofselected={tabIndex === (kTabInfo.blocks.index - 1) ? "true" : undefined}
+                  selected={leftTabIndex === kTabInfo.blocks.index}
+                  leftofselected={leftTabIndex === (kTabInfo.blocks.index + 1) ? "true" : undefined}
+                  rightofselected={leftTabIndex === (kTabInfo.blocks.index - 1) ? "true" : undefined}
                   backgroundcolor={this.getTabColor(SectionTypes.BLOCKS)}
                   backgroundhovercolor={this.getTabHoverColor(SectionTypes.BLOCKS)}
                   data-test={this.getTabName(SectionTypes.BLOCKS) + "-tab"}
@@ -293,9 +289,9 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               }
               { showCode &&
                 <Tab
-                  selected={tabIndex === kTabInfo.code.index}
-                  leftofselected={tabIndex === (kTabInfo.code.index + 1) ? "true" : undefined}
-                  rightofselected={tabIndex === (kTabInfo.code.index - 1) ? "true" : undefined}
+                  selected={leftTabIndex === kTabInfo.code.index}
+                  leftofselected={leftTabIndex === (kTabInfo.code.index + 1) ? "true" : undefined}
+                  rightofselected={leftTabIndex === (kTabInfo.code.index - 1) ? "true" : undefined}
                   backgroundcolor={this.getTabColor(SectionTypes.CODE)}
                   backgroundhovercolor={this.getTabHoverColor(SectionTypes.CODE)}
                   data-test={this.getTabName(SectionTypes.CODE) + "-tab"}
@@ -305,9 +301,9 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               }
               { showControls &&
                 <Tab
-                  selected={tabIndex === kTabInfo.controls.index}
-                  leftofselected={tabIndex === (kTabInfo.controls.index + 1) ? "true" : undefined}
-                  rightofselected={tabIndex === (kTabInfo.controls.index - 1) ? "true" : undefined}
+                  selected={leftTabIndex === kTabInfo.controls.index}
+                  leftofselected={leftTabIndex === (kTabInfo.controls.index + 1) ? "true" : undefined}
+                  rightofselected={leftTabIndex === (kTabInfo.controls.index - 1) ? "true" : undefined}
                   backgroundcolor={this.getTabColor(SectionTypes.CONTROLS)}
                   backgroundhovercolor={this.getTabHoverColor(SectionTypes.CONTROLS)}
                   data-test={this.getTabName(SectionTypes.CONTROLS) + "-tab"}
@@ -611,12 +607,12 @@ export class AppComponent extends BaseComponent<IProps, IState> {
 
   private toggleShowOptions = () => this.setState({expandOptionsDialog: !this.state.expandOptionsDialog});
 
-  private handleTabSelect(tabIndex: number) {
-    this.setState({tabIndex});
+  private handleLeftTabSelect(tabIndex: number) {
+    this.stores.uiStore.setLeftTabIndex(tabIndex);
   }
 
-  private handleRightTabSelect(rightTabIndex: number) {
-    this.setState({rightTabIndex});
+  private handleRightTabSelect(tabIndex: number) {
+    this.stores.uiStore.setRightTabIndex(tabIndex);
   }
 
   private updateAuthoring = (authorMenuState: IStoreish) => {

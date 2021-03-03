@@ -32,7 +32,9 @@
             "showSpeedControls": true,
             "showBarHistogram": false,
             "showLog": false,
-            "showDemoCharts": false
+            "showDemoCharts": false,
+            "leftTabIndex": 0,
+            "rightTabIndex": 0
           }
         }
       },
@@ -76,7 +78,9 @@
             "showBarHistogram": false,
             "showLog": false,
             "showDemoCharts": false,
-            "showRiskDiamonds": false
+            "showRiskDiamonds": false,
+            "leftTabIndex": 0,
+            "rightTabIndex": 0
           }
         }
       }

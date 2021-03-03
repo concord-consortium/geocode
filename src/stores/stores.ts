@@ -102,7 +102,9 @@ const uiAuthorSettingsProps = tuple(
   "showBarHistogram",
   "showLog",
   "showDemoCharts",
-  "showRiskDiamonds"
+  "showRiskDiamonds",
+  "leftTabIndex",
+  "rightTabIndex"
 );
 
 export type UIAuthorSettingsProps = typeof uiAuthorSettingsProps[number];
