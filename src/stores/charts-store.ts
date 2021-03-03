@@ -25,6 +25,7 @@ const Chart = types.model("Chart", {
   threshold: types.maybe(types.number),
   fadeIn: types.optional(types.boolean, false),
   uniformXYScale: types.optional(types.boolean, false),
+  gridlines: types.optional(types.boolean, false),
 })
 .views((self) => {
   const isDate = (column: 0|1) => {
@@ -72,7 +73,7 @@ const ChartsStore = types.model("Charts", {
 .actions((self) => ({
   addChart(chartProps: {type: ChartTypeType, chartStyle?: ChartStyleType, data: ChartData, customExtents?: number[][],
           title?: string, xAxisLabel?: string, yAxisLabel?: string, dateLabelFormat?: string, fadeIn?: boolean,
-          uniformXYScale?: boolean}) {
+          uniformXYScale?: boolean, gridlines?: boolean}) {
     const chart = Chart.create(chartProps);
     self.charts.push(chart);
     return chart;     // returns in case anyone wants to use the new chart
@@ -120,7 +121,7 @@ const ChartsStore = types.model("Charts", {
    * Creates a custom chart based on known properties of wind data.
    */
   addArbitraryChart(dataset: Dataset, xAxis: string, yAxis: string, _title?: string, _fadeIn?: boolean,
-                    _uniformXYScale?: boolean) {
+                    _uniformXYScale?: boolean, _gridlines?: boolean) {
     let data;
 
     const timeParser = WindData.timeParsers[xAxis];
@@ -145,8 +146,9 @@ const ChartsStore = types.model("Charts", {
     const yAxisLabel = WindData.axisLabel[yAxis] ?  WindData.axisLabel[yAxis] : capFirst(yAxis);
     const fadeIn = _fadeIn || false;
     const uniformXYScale = _uniformXYScale || false;
+    const gridlines = _gridlines || false;
     self.addChart({type, data, customExtents, title, xAxisLabel, yAxisLabel, chartStyle, dateLabelFormat, fadeIn,
-                   uniformXYScale});
+                   uniformXYScale, gridlines});
   },
 
   /**

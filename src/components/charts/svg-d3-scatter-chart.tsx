@@ -27,7 +27,7 @@ export const SvgD3ScatterChart = (props: IProps) => {
   };
 
   const { chart } = props;
-  const { data, xAxisLabel, yAxisLabel, fadeIn } = chart;
+  const { data, xAxisLabel, yAxisLabel, fadeIn, gridlines } = chart;
   const xRange = Number(chart.extent(0)[1]) - Number(chart.extent(0)[0]);
   const yRange = Number(chart.extent(1)[1]) - Number(chart.extent(1)[0]);
   const xTicks = Math.floor(xRange / 100);
@@ -50,6 +50,39 @@ export const SvgD3ScatterChart = (props: IProps) => {
 
   const yScale: Scale = chart.isDate(1) ? d3.scaleTime().nice() : d3.scaleLinear();
   yScale.rangeRound([chartHeight, 0]).domain(chart.extent(1));
+
+  function make_x_gridlines() {
+    return d3.axisBottom(xScale)
+        .ticks(xTicks);
+  }
+
+  function make_y_gridlines() {
+    return d3.axisLeft(yScale)
+        .ticks(yTicks);
+  }
+
+  if (gridlines) {
+    // add the X gridlines
+    svg.append("g")
+      .attr("class", "grid")
+      .attr("transform", "translate(0," + chartHeight + ")")
+      .style("stroke", "#C0C0C0")
+      .style("stroke-opacity", ".5")
+      .call(make_x_gridlines()
+          .tickSize(-chartHeight)
+          .tickFormat((d) => "")
+      );
+
+    // add the Y gridlines
+    svg.append("g")
+      .attr("class", "grid")
+      .style("stroke", "#C0C0C0")
+      .style("stroke-opacity", ".5")
+      .call(make_y_gridlines()
+          .tickSize(-chartWidth)
+          .tickFormat((d) => "")
+      );
+  }
 
   // add axes
   const axisBottom = chart.isDate(0) ?
