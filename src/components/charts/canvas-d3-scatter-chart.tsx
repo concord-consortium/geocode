@@ -11,13 +11,15 @@ interface IProps {
   height: number;
 }
 
+const margin = {top: 15, right: 20, bottom: 43, left: 50};
+const canvasPadding = 3;      // extend canvas slightly beyond axes
+
 /**
  * A D3-based canvas scatter chart, made for render large amounts of data quickly.
  *
  * Chart data may be numeric or Date on either axis (when needed we could support strings as well)
  */
 export class CanvasD3ScatterChart extends React.Component<IProps> {
-
   private canvasRef = React.createRef<HTMLCanvasElement>();
   private svgRef = React.createRef<SVGSVGElement>();
 
@@ -38,7 +40,8 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
   }
 
   public render() {
-    const { width, height } = this.props;
+    const chartDimensions = this.calculateChartDimensions();
+    const { width, height } = chartDimensions;
     const relativeStyle: React.CSSProperties = {position: "relative", width, height};
     const absoluteStyle: React.CSSProperties = {position: "absolute", top: 0, left: 0};
     return (
@@ -49,16 +52,32 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
     );
   }
 
+  private calculateChartDimensions() {
+    const { width, height, chart } = this.props;
+    const { uniformXYScale } = chart;
+    const xRange = Number(chart.extent(0)[1]) - Number(chart.extent(0)[0]);
+    const yRange = Number(chart.extent(1)[1]) - Number(chart.extent(1)[0]);
+    const chartWidth = width - margin.left - margin.right + (canvasPadding * 2);
+    // adjust height if the x and y axes need to be scaled uniformly, base off of width
+    const chartHeight = uniformXYScale
+      ? yRange / xRange * chartWidth
+      : height - margin.top - margin.bottom + (canvasPadding * 2);
+    const usedHeight = uniformXYScale ? chartHeight + margin.top + margin.bottom + (canvasPadding * 2) : height;
+    return { width, height: usedHeight, chartWidth, chartHeight};
+  }
+
   private drawChart() {
     if (!this.canvasRef.current || !this.svgRef.current) return;
 
-    const { width, height, chart } = this.props;
+    const { chart } = this.props;
     const { data, xAxisLabel, yAxisLabel, fadeIn } = chart;
+    const chartDimensions = this.calculateChartDimensions();
+    const { width, height, chartWidth, chartHeight } = chartDimensions;
 
-    const margin = {top: 15, right: 20, bottom: 43, left: 50};
-    const canvasPadding = 3;      // extend canvas slightly beyond axes
-    const chartWidth = width - margin.left - margin.right + (canvasPadding * 2);
-    const chartHeight = height - margin.top - margin.bottom + (canvasPadding * 2);
+    const xRange = Number(chart.extent(0)[1]) - Number(chart.extent(0)[0]);
+    const yRange = Number(chart.extent(1)[1]) - Number(chart.extent(1)[0]);
+    const xTicks = Math.floor(xRange / 100);
+    const yTicks = Math.floor(yRange / 100);
 
     const svgAxes = d3.select(this.svgRef.current)
       .attr("width", width)
@@ -80,14 +99,14 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
           if (chart.dateLabelFormat === "%b" && date.getFullYear() === 1901) return "";
           return chart.toDateString()(date);
         }) :
-        d3.axisBottom(xScale);
+        d3.axisBottom(xScale).ticks(xTicks);
     svgAxes.append("g")
       .attr("transform", "translate(0," + chartHeight + ")")
       .call(axisBottom);
 
     const axisLeft = chart.isDate(1) ?
       d3.axisLeft(yScale).tickFormat(chart.toDateString()) :
-      d3.axisLeft(yScale);
+      d3.axisLeft(yScale).ticks(yTicks);
     svgAxes.append("g")
       .call(axisLeft);
 
