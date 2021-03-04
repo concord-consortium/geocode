@@ -63,6 +63,7 @@ const Row = styled.div`
 
 const CenteredRow = styled(Row)`
   justify-content: center;
+  height: 135px;
 `;
 
 const BottomBar = styled.div`
