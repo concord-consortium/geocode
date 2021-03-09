@@ -47,6 +47,7 @@ export class LatLngDrawLayer extends BaseComponent<IProps, IState> {
       map.dragging.disable();
       map.on(MOUSE_DOWN, this.drawPoints);
       map.on(MOUSE_UP, this.endDraw);
+      L.DomUtil.addClass(map.getContainer(), "crosshair-cursor");
     }
   }
 
@@ -55,6 +56,7 @@ export class LatLngDrawLayer extends BaseComponent<IProps, IState> {
     if (map !== null) {
       map.dragging.enable();
       map.off(MOUSE_DOWN, this.drawPoints);
+      L.DomUtil.removeClass(map.getContainer(), "crosshair-cursor");
     }
   }
   public drawPoints(event: Leaflet.LeafletMouseEvent) {
@@ -67,13 +69,6 @@ export class LatLngDrawLayer extends BaseComponent<IProps, IState> {
         this.setPoint2(event);
         map.on(MOUSE_MOVE, this.setPoint2);
       }
-      else {
-        this.setPoint2(event);
-        map.dragging.enable();
-        map.off(MOUSE_MOVE, this.setPoint2);
-        map.off(MOUSE_DOWN, this.drawPoints);
-        this.setState({ pointsSet: true });
-      }
     }
   }
   public endDraw() {
@@ -82,10 +77,15 @@ export class LatLngDrawLayer extends BaseComponent<IProps, IState> {
     if (map !== null) {
       // has the user entered two points?
       if (!pointsSet) {
-        // user has clicked / tapped once to select first point
+        // user has clicked / tapped to complete initial rectangle
+        map.dragging.enable();
         map.off(MOUSE_MOVE, this.setPoint1);
+        map.off(MOUSE_MOVE, this.setPoint2);
+        map.off(MOUSE_DOWN, this.drawPoints);
+        this.setState({ pointsSet: true });
+        L.DomUtil.removeClass(map.getContainer(), "crosshair-cursor");
       } else {
-        // user click/dragged the points, assume we're finished
+        // user dragged the points
         map.dragging.enable();
         map.off(MOUSE_MOVE, this.setPoint1);
         map.off(MOUSE_MOVE, this.setPoint2);
@@ -190,10 +190,6 @@ export class LatLngDrawLayer extends BaseComponent<IProps, IState> {
 
     return (
       <LayerGroup map={map}>
-        {point1 && <Marker key={"latlngp1"} marker_index={1} position={point1} icon={p1Icon}
-          draggable={true} onDragStart={this.dragPointStart} onDragEnd={this.dragPointEnd} />}
-        {point2 && <Marker key={"latlngp2"} marker_index={2} position={point2} icon={p2Icon}
-          draggable={true} onDragStart={this.dragPointStart} onDragEnd={this.dragPointEnd} />}
         {point1 && point2 &&
           <Polyline
             key={"lat-lng-line"}
@@ -202,6 +198,10 @@ export class LatLngDrawLayer extends BaseComponent<IProps, IState> {
             color="#b263f7"
             opacity={1}
           />}
+        {point1 && <Marker key={"latlngp1"} marker_index={1} position={point1} icon={p1Icon}
+          draggable={true} onDragStart={this.dragPointStart} onDragEnd={this.dragPointEnd} />}
+        {point2 && <Marker key={"latlngp2"} marker_index={2} position={point2} icon={p2Icon}
+          draggable={true} onDragStart={this.dragPointStart} onDragEnd={this.dragPointEnd} />}
       </LayerGroup>
     );
   }
