@@ -133,6 +133,48 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
       codeString = await intialCodeResp.text();
     }
 
+    if (codeString) {
+      // convert string to XML
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(codeString, "text/xml");
+      // get the blocks from the XML
+      const xmlBlocks = xmlDoc.getElementsByTagName("block");
+      if (xmlBlocks.length) {
+        // find min and max x,y of blocks
+        let minX;
+        let minY;
+        for (const block of xmlBlocks as any) {
+          const x = block.getAttribute("x");
+          const y = block.getAttribute("y");
+          if (x && y) {
+            minX = minX ? Math.min(x, minX) : x;
+            minY = minY ? Math.min(y, minY) : y;
+          }
+        }
+
+        // adjust program position
+        const kWorkspacePadding = 10;
+        const xDelta = kWorkspacePadding - minX;
+        const yDelta = kWorkspacePadding - minY;
+        if (xDelta !== 0 || yDelta !== 0) {
+          for (const block of xmlBlocks as any) {
+            const x = block.getAttribute("x");
+            const y = block.getAttribute("y");
+            if (x && y) {
+              const newX = parseInt(x, 10) + xDelta;
+              const newY = parseInt(y, 10) + yDelta;
+              block.setAttribute("x", newX.toString());
+              block.setAttribute("y", newY.toString());
+            }
+          }
+        }
+
+        const serializer = new XMLSerializer();
+        const newXmlStr = serializer.serializeToString(xmlDoc);
+        codeString = newXmlStr;
+      }
+    }
+
     const toolboxResp = await fetch(toolboxPath);
     const toolbox = await toolboxResp.text();
 
