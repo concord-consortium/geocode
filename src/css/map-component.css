@@ -12,6 +12,10 @@
   cursor: pointer;
 }
 
+.crosshair-cursor {
+  cursor: crosshair;
+}
+
 .arrow-scale {
   z-index: 2000;
   position: absolute;

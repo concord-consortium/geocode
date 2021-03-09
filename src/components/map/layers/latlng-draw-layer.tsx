@@ -145,6 +145,7 @@ export class LatLngDrawLayer extends BaseComponent<IProps, IState> {
 
   public render() {
     const { map } = this.props;
+    const { pointsSet } = this.state;
     if (!map) return null;
 
     const { p1Lat, p1Lng, p2Lat, p2Lng } = this.props;
@@ -183,10 +184,10 @@ export class LatLngDrawLayer extends BaseComponent<IProps, IState> {
 
     const p1Icon = latLngIcon(
       `<b>Corner 1</b><br/>Latitude: ${p1Lat.toFixed(2)} <b>W</b><br/>Longitude: ${p1Lng.toFixed(2)} <b>N</b>`,
-      getCorner(point1, point2));
+      getCorner(point1, point2), !pointsSet);
     const p2Icon = latLngIcon(
       `<b>Corner 2</b><br/>Latitude: ${p2Lat.toFixed(2)} <b>W</b><br/>Longitude: ${p2Lng.toFixed(2)} <b>N</b>`,
-      getCorner(point2, point1, false));
+      getCorner(point2, point1, false), !pointsSet);
 
     return (
       <LayerGroup map={map}>
