@@ -11,9 +11,12 @@ class Map {
     getRulerButton(){
         return cy.get('[data-test=Ruler-button]');
     }
-    getLatlngButton(){
-      return cy.get('[data-test=Latlng-button]');
+    getLatlngRegionButton(){
+      return cy.get('[data-test=Latlng-region-button]');
     }
+    getLatlngPointButton(){
+        return cy.get('[data-test=Latlng-point-button]');
+      }
     getKeyButton(){
         return cy.get('[data-test=Key-button]');
     }

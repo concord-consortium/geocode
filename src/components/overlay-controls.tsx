@@ -9,8 +9,10 @@ import { BaseComponent } from "./base";
 interface IProps {
     showRuler: boolean;
     onRulerClick: () => void;
+    onSetPointClick: () => void;
     onSetRegionClick: () => void;
     isSelectingCrossSection: boolean;
+    isSelectingSetPoint: boolean;
     isSelectingSetRegion: boolean;
     showCrossSection: boolean;
     onCrossSectionClick: () => void;
@@ -30,8 +32,10 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
 
         const { showRuler,
             onRulerClick,
+            onSetPointClick,
             onSetRegionClick,
             isSelectingCrossSection,
+            isSelectingSetPoint,
             isSelectingSetRegion,
             showCrossSection,
             onCrossSectionClick,
@@ -39,7 +43,10 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
         const { hasErupted } = this.stores.tephraSimulation;
 
         const rulerColor = showRuler ? kRightTabInfo[RightSectionTypes.CONDITIONS].hoverBackgroundColor : "white";
-        const selectingLatLngColor = isSelectingSetRegion
+        const selectingLatLngPtColor = isSelectingSetPoint
+                               ? kRightTabInfo[RightSectionTypes.CROSS_SECTION].hoverBackgroundColor
+                               : "white";
+        const selectingLatLngRegionColor = isSelectingSetRegion
                                ? kRightTabInfo[RightSectionTypes.CROSS_SECTION].hoverBackgroundColor
                                : "white";
         const selectingColor = isSelectingCrossSection
@@ -73,16 +80,28 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
                         dataTest={"Ruler-button"}
                     />}
                     {isSeismicUnit && <IconButton
-                        onClick={onSetRegionClick}
+                        onClick={onSetPointClick}
                         disabled={false}
-                        label={"Set Region"}
-                        backgroundColor={selectingLatLngColor}
+                        label={"Set Point"}
+                        backgroundColor={selectingLatLngPtColor}
                         hoverColor={kRightTabInfo[RightSectionTypes.CONDITIONS].hoverBackgroundColor}
                         activeColor={kRightTabInfo[RightSectionTypes.CONDITIONS].backgroundColor}
                         fill={"black"}
                         width={26}
                         height={26}
-                        dataTest={"Latlng-button"}
+                        dataTest={"Latlng-point-button"}
+                    />}
+                    {isSeismicUnit && <IconButton
+                        onClick={onSetRegionClick}
+                        disabled={false}
+                        label={"Set Region"}
+                        backgroundColor={selectingLatLngRegionColor}
+                        hoverColor={kRightTabInfo[RightSectionTypes.CONDITIONS].hoverBackgroundColor}
+                        activeColor={kRightTabInfo[RightSectionTypes.CONDITIONS].backgroundColor}
+                        fill={"black"}
+                        width={26}
+                        height={26}
+                        dataTest={"Latlng-region-button"}
                     />}
                 </div>
                 <div className="controls bottom right">

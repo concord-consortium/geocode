@@ -116,11 +116,14 @@ export const TephraSimulationStore = types
     hasErupted: false,
     isSelectingRuler: false,
     isSelectingCrossSection: false,
+    isSelectingSetPoint: false,
     isSelectingSetRegion: false,
     latLngRegionPoint1Lat: 0,
     latLngRegionPoint1Lng: 0,
     latLngRegionPoint2Lat: 0,
     latLngRegionPoint2Lng: 0,
+    latLngPointLat: 0,
+    latLngPointLng: 0,
     // authoring props
     requireEruption: true,
     requirePainting: true,
@@ -159,9 +162,22 @@ export const TephraSimulationStore = types
       self.isSelectingRuler = !self.isSelectingRuler;
       self.isSelectingCrossSection = false;
       self.isSelectingSetRegion = false;
+      self.isSelectingSetPoint = false;
+    },
+    setPointClick() {
+      self.isSelectingSetPoint = !self.isSelectingSetPoint;
+      self.isSelectingSetRegion = false;
+      self.isSelectingRuler = false;
+      self.isSelectingCrossSection = false;
+      if (!self.isSelectingSetPoint) {
+        // clear original point
+        self.latLngPointLat = 0;
+        self.latLngPointLng = 0;
+      }
     },
     setRegionClick() {
       self.isSelectingSetRegion = !self.isSelectingSetRegion;
+      self.isSelectingSetPoint = false;
       self.isSelectingRuler = false;
       self.isSelectingCrossSection = false;
       if (!self.isSelectingSetRegion) {
@@ -176,6 +192,7 @@ export const TephraSimulationStore = types
       self.isSelectingCrossSection = !self.isSelectingCrossSection;
       self.isSelectingRuler = false;
       self.isSelectingSetRegion = false;
+      self.isSelectingSetPoint = false;
     },
     setIsSelectingRuler(val: boolean) {
       self.isSelectingRuler = val;
@@ -189,6 +206,10 @@ export const TephraSimulationStore = types
       self.viewportZoom = zoom;
       self.viewportCenterLat = viewportCenterLat;
       self.viewportCenterLng = viewportCenterLng;
+    },
+    setLatLngPoint(lat: number, lng: number) {
+      self.latLngPointLat = lat;
+      self.latLngPointLng = lng;
     },
     setLatLngP1(lat: number, lng: number) {
       self.latLngRegionPoint1Lat = lat;

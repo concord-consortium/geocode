@@ -66,16 +66,25 @@ describe("simulation-store", () => {
       simulation.rulerClick();
       expect(simulation.isSelectingRuler).toBe(true);
       expect(simulation.isSelectingCrossSection).toBe(false);
+      expect(simulation.isSelectingSetPoint).toBe(false);
       expect(simulation.isSelectingSetRegion).toBe(false);
 
       simulation.crossSectionClick();
       expect(simulation.isSelectingRuler).toBe(false);
       expect(simulation.isSelectingCrossSection).toBe(true);
+      expect(simulation.isSelectingSetPoint).toBe(false);
       expect(simulation.isSelectingSetRegion).toBe(false);
+
+      simulation.setPointClick();
+      expect(simulation.isSelectingRuler).toBe(false);
+      expect(simulation.isSelectingCrossSection).toBe(false);
+      expect(simulation.isSelectingSetRegion).toBe(false);
+      expect(simulation.isSelectingSetPoint).toBe(true);
 
       simulation.setRegionClick();
       expect(simulation.isSelectingRuler).toBe(false);
       expect(simulation.isSelectingCrossSection).toBe(false);
+      expect(simulation.isSelectingSetPoint).toBe(false);
       expect(simulation.isSelectingSetRegion).toBe(true);
     });
   });
