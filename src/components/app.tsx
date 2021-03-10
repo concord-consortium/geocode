@@ -455,7 +455,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             { showData &&
               <TabPanel
                 width={`${tabWidth}px`}
-                tabcolor={this.getRightTabColor(RightSectionTypes.DATA)}
+                tabcolor={this.getRightTabColor(RightSectionTypes.DATA, unitName)}
                 rightpanel={"true"}
                 data-test={this.getRightTabName(RightSectionTypes.DATA) + "-panel"}
               >
@@ -480,7 +480,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             }
             <RightTabBack
               width={tabWidth}
-              backgroundcolor={this.getRightTabColor(currentRightTabType)}
+              backgroundcolor={this.getRightTabColor(currentRightTabType, unitName)}
             />
             <BottomBar>
               <TabsContainer>
@@ -526,7 +526,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                       selected={rightTabIndex === kRightTabInfo.data.index}
                       leftofselected={rightTabIndex === (kRightTabInfo.data.index + 1) ? "true" : undefined}
                       rightofselected={rightTabIndex === (kRightTabInfo.data.index - 1) ? "true" : undefined}
-                      backgroundcolor={this.getRightTabColor(RightSectionTypes.DATA)}
+                      backgroundcolor={this.getRightTabColor(RightSectionTypes.DATA, unitName)}
                       backgroundhovercolor={this.getRightTabHoverColor(RightSectionTypes.DATA)}
                       data-test={this.getRightTabName(RightSectionTypes.DATA) + "-tab"}
                     >
@@ -580,11 +580,19 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     return (type ? kTabInfo[type].name : "");
   }
 
-  private getRightTabColor = (type: RightSectionTypes) => {
-    return (type ? kRightTabInfo[type].backgroundColor : "white");
+  private getRightTabColor = (type: RightSectionTypes, unit?: UnitNameType) => {
+    if (!type) return "white";
+    if (unit && kRightTabInfo[type].unitBackgroundColor && kRightTabInfo[type].unitBackgroundColor![unit]) {
+      return kRightTabInfo[type].unitBackgroundColor![unit];
+    }
+    return kRightTabInfo[type].backgroundColor;
   }
-  private getRightTabHoverColor = (type: RightSectionTypes) => {
-    return (type ? kRightTabInfo[type].hoverBackgroundColor : "white");
+  private getRightTabHoverColor = (type: RightSectionTypes, unit?: UnitNameType) => {
+    if (!type) return "white";
+    if (unit && kRightTabInfo[type].unitHoverBackgroundColor && kRightTabInfo[type].unitHoverBackgroundColor![unit]) {
+      return kRightTabInfo[type].unitHoverBackgroundColor![unit];
+    }
+    return kRightTabInfo[type].hoverBackgroundColor;
   }
   private getRightTabName = (type: RightSectionTypes, unit?: UnitNameType) => {
     if (!type) return "";
