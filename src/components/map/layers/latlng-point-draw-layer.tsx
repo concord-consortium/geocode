@@ -53,6 +53,7 @@ export class LatLngPointDrawLayer extends BaseComponent<IProps, IState> {
     if (map !== null) {
       map.dragging.enable();
       map.off(MOUSE_DOWN, this.drawPoint);
+      map.off(MOUSE_UP, this.endDraw);
       L.DomUtil.removeClass(map.getContainer(), "crosshair-cursor");
     }
   }

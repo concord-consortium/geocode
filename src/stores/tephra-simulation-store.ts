@@ -174,6 +174,11 @@ export const TephraSimulationStore = types
         self.latLngPointLat = 0;
         self.latLngPointLng = 0;
       }
+      // clear points from set region
+      self.latLngRegionPoint1Lat = 0;
+      self.latLngRegionPoint1Lng = 0;
+      self.latLngRegionPoint2Lat = 0;
+      self.latLngRegionPoint2Lng = 0;
     },
     setRegionClick() {
       self.isSelectingSetRegion = !self.isSelectingSetRegion;
@@ -187,6 +192,9 @@ export const TephraSimulationStore = types
         self.latLngRegionPoint2Lat = 0;
         self.latLngRegionPoint2Lng = 0;
       }
+      // clear point from set point
+      self.latLngPointLat = 0;
+      self.latLngPointLng = 0;
     },
     crossSectionClick() {
       self.isSelectingCrossSection = !self.isSelectingCrossSection;
