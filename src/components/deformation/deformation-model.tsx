@@ -26,8 +26,10 @@ const minModelMargin = 20;
 const backgroundColor = "#eee";
 const lineColor = "#777";
 const drawAreaColor = "#fff";
-const textColor = "#333";
-const stationColor = "#e56d44";
+const textColor = "#434343";
+const stationColor = "#98E643";
+const faultColor = "#ff9300";
+const stationBorderThickness = 2;
 
 const lineSpacing = 20;
 // should be in km
@@ -127,7 +129,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
     // show fault line
     ctx.beginPath();
-    ctx.strokeStyle = stationColor;
+    ctx.strokeStyle = faultColor;
     ctx.lineWidth = 3;
     ctx.setLineDash([20, 5]);
     ctx.moveTo(modelMargin.left + (this.modelWidth / 2), modelMargin.top);
@@ -226,23 +228,27 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.fillText("Plate 2",
     canvasMargin.left + this.modelWidth - 65, canvasMargin.top + modelMargin.top + 20);
 
-    ctx.font = "18px Lato";
+    ctx.font = "13px Lato";
     for (let i = 0; i < stationPoints.length; i++) {
       ctx.textAlign = stationPoints[i].x < this.modelWidth / 2 ? "right" : "left";
       const textPositionAdjust = stationPoints[i].x < this.modelWidth / 2 ? -10 : 10;
-      ctx.fillText(`Station ${i}`, stationPoints[i].x + textPositionAdjust, stationPoints[i].y);
+      ctx.fillText(`Station ${i + 1}`, stationPoints[i].x + textPositionAdjust, stationPoints[i].y + 5);
     }
     ctx.fillText(`Year ${year.toLocaleString()}`,
       canvasMargin.left + this.modelWidth - 10, canvasMargin.top + modelMargin.top + this.modelWidth - 20);
     ctx.stroke();
 
+    ctx.font = "14px Lato";
+    ctx.fillText("Fault", this.modelWidth / 2 + 10, canvasMargin.top + modelMargin.top + this.modelWidth - 20);
+
     // station dots
     ctx.fillStyle = stationColor;
     ctx.strokeStyle = textColor;
+    ctx.lineWidth = stationBorderThickness;
     ctx.beginPath();
     for (const station of stationPoints) {
       ctx.moveTo(station.x, station.y);
-      ctx.arc(station.x, station.y, 5, 0, 2 * Math.PI);
+      ctx.arc(station.x, station.y, 6, 0, 2 * Math.PI);
     }
     ctx.stroke();
     ctx.fill();
