@@ -26,6 +26,7 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
         const { name: unitName } = this.stores.unit;
 
         const isTephraUnit = unitName === "Tephra";
+        const isSeismicUnit = unitName === "Seismic";
 
         const { showRuler,
             onRulerClick,
@@ -71,7 +72,7 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
                         height={26}
                         dataTest={"Ruler-button"}
                     />}
-                    <IconButton
+                    {isSeismicUnit && <IconButton
                         onClick={onLatLngClick}
                         disabled={false}
                         label={"Lat-Long"}
@@ -82,7 +83,7 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
                         width={26}
                         height={26}
                         dataTest={"Latlng-button"}
-                    />
+                    />}
                 </div>
                 <div className="controls bottom right">
                     {(showCrossSection && hasErupted) && <IconButton
