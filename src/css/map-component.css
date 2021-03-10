@@ -1,26 +1,33 @@
 .map-component {
-    position: relative;
-    height: 100%;
+  position: relative;
+  height: 100%;
+}
 
+.map {
+  height: 100%;
+  z-index: 0;
+}
 
-  }
-  .map {
-    height: 100%;
-    z-index: 0;
-  }
+.leaflet-marker-icon {
+  cursor: pointer;
+}
 
-  .leaflet-marker-icon {
-    cursor: pointer;
-  }
+.crosshair-cursor {
+  cursor: crosshair;
+}
 
-  .arrow-scale {
-    z-index: 2000;
-    position: absolute;
-    top: 140px;
-    left: 5px;
-    margin-right: auto;
-    border-top: 2px solid rgb(51, 136, 255);
-    font-size: 0.9em;
-    text-align: center;
-    color: #333
-  }
+.arrow-scale {
+  z-index: 2000;
+  position: absolute;
+  top: 140px;
+  left: 5px;
+  margin-right: auto;
+  border-top: 2px solid rgb(51, 136, 255);
+  font-size: 0.9em;
+  text-align: center;
+  color: #333
+}
+
+.leaflet-container.crosshair-cursor {
+  cursor: crosshair;
+}

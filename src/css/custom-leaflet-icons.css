@@ -92,8 +92,8 @@
   background: #fff;
   width: max-content !important;
   height: max-content !important;
-  margin-top: 2px !important;
-  margin-left: 5px !important;
+  margin-top: 6px !important;
+  margin-left: 6px !important;
   padding: 2px !important;
   border-radius: 0px;
   box-shadow: 0 0 7px rgba(0,0,0,0.55);
@@ -109,12 +109,15 @@
   background-color: white;
 }
 .latlng-icon-content .handle{
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
   position: absolute;
   background-color: white;
   border: 2px solid #999;
-  border-radius: 4px;
+  border-radius: 50%;
+}
+.latlng-icon-content .handle:hover{
+  border: 2px solid black;
 }
 
 .top-left {
@@ -131,7 +134,7 @@
 }
 
 .bottom-left {
-  transform: translate(0%, -100%);;
+  transform: translate(0%, -100%);
 }
 
 .bottom-right {
@@ -158,22 +161,22 @@
 }
 
 .top-left .handle{
-  top: -2px;
-  left: -4px;
+  top: -6px;
+  left: -6px;
 }
 
 .top-right .handle{
-  top: -2px;
-  right: -4px;
+  top: -6px;
+  right: -6px;
 }
 
 .bottom-left .handle{
-  bottom: -8px;
+  bottom: -6px;
   left: -6px;
 }
 
 .bottom-right .handle{
-  bottom: -8px;
+  bottom: -6px;
   right: -6px;
 }
 
