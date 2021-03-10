@@ -66,17 +66,17 @@ describe("simulation-store", () => {
       simulation.rulerClick();
       expect(simulation.isSelectingRuler).toBe(true);
       expect(simulation.isSelectingCrossSection).toBe(false);
-      expect(simulation.isSelectingLatlng).toBe(false);
+      expect(simulation.isSelectingSetRegion).toBe(false);
 
       simulation.crossSectionClick();
       expect(simulation.isSelectingRuler).toBe(false);
       expect(simulation.isSelectingCrossSection).toBe(true);
-      expect(simulation.isSelectingLatlng).toBe(false);
+      expect(simulation.isSelectingSetRegion).toBe(false);
 
-      simulation.latlngClick();
+      simulation.setRegionClick();
       expect(simulation.isSelectingRuler).toBe(false);
       expect(simulation.isSelectingCrossSection).toBe(false);
-      expect(simulation.isSelectingLatlng).toBe(true);
+      expect(simulation.isSelectingSetRegion).toBe(true);
     });
   });
 });

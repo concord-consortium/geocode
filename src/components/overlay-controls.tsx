@@ -9,9 +9,9 @@ import { BaseComponent } from "./base";
 interface IProps {
     showRuler: boolean;
     onRulerClick: () => void;
-    onLatLngClick: () => void;
+    onSetRegionClick: () => void;
     isSelectingCrossSection: boolean;
-    isSelectingLatLng: boolean;
+    isSelectingSetRegion: boolean;
     showCrossSection: boolean;
     onCrossSectionClick: () => void;
     onReCenterClick: () => void;
@@ -30,16 +30,16 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
 
         const { showRuler,
             onRulerClick,
-            onLatLngClick,
+            onSetRegionClick,
             isSelectingCrossSection,
-            isSelectingLatLng,
+            isSelectingSetRegion,
             showCrossSection,
             onCrossSectionClick,
             onReCenterClick} = this.props;
         const { hasErupted } = this.stores.tephraSimulation;
 
         const rulerColor = showRuler ? kRightTabInfo[RightSectionTypes.CONDITIONS].hoverBackgroundColor : "white";
-        const selectingLatLngColor = isSelectingLatLng
+        const selectingLatLngColor = isSelectingSetRegion
                                ? kRightTabInfo[RightSectionTypes.CROSS_SECTION].hoverBackgroundColor
                                : "white";
         const selectingColor = isSelectingCrossSection
@@ -73,9 +73,9 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
                         dataTest={"Ruler-button"}
                     />}
                     {isSeismicUnit && <IconButton
-                        onClick={onLatLngClick}
+                        onClick={onSetRegionClick}
                         disabled={false}
-                        label={"Lat-Long"}
+                        label={"Set Region"}
                         backgroundColor={selectingLatLngColor}
                         hoverColor={kRightTabInfo[RightSectionTypes.CONDITIONS].hoverBackgroundColor}
                         activeColor={kRightTabInfo[RightSectionTypes.CONDITIONS].backgroundColor}

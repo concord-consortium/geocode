@@ -116,11 +116,11 @@ export const TephraSimulationStore = types
     hasErupted: false,
     isSelectingRuler: false,
     isSelectingCrossSection: false,
-    isSelectingLatlng: false,
-    latLngPoint1Lat: 0,
-    latLngPoint1Lng: 0,
-    latLngPoint2Lat: 0,
-    latLngPoint2Lng: 0,
+    isSelectingSetRegion: false,
+    latLngRegionPoint1Lat: 0,
+    latLngRegionPoint1Lng: 0,
+    latLngRegionPoint2Lat: 0,
+    latLngRegionPoint2Lng: 0,
     // authoring props
     requireEruption: true,
     requirePainting: true,
@@ -158,24 +158,24 @@ export const TephraSimulationStore = types
     rulerClick() {
       self.isSelectingRuler = !self.isSelectingRuler;
       self.isSelectingCrossSection = false;
-      self.isSelectingLatlng = false;
+      self.isSelectingSetRegion = false;
     },
-    latlngClick() {
-      self.isSelectingLatlng = !self.isSelectingLatlng;
+    setRegionClick() {
+      self.isSelectingSetRegion = !self.isSelectingSetRegion;
       self.isSelectingRuler = false;
       self.isSelectingCrossSection = false;
-      if (!self.isSelectingLatlng) {
+      if (!self.isSelectingSetRegion) {
         // clear original points
-        self.latLngPoint1Lat = 0;
-        self.latLngPoint1Lng = 0;
-        self.latLngPoint2Lat = 0;
-        self.latLngPoint2Lng = 0;
+        self.latLngRegionPoint1Lat = 0;
+        self.latLngRegionPoint1Lng = 0;
+        self.latLngRegionPoint2Lat = 0;
+        self.latLngRegionPoint2Lng = 0;
       }
     },
     crossSectionClick() {
       self.isSelectingCrossSection = !self.isSelectingCrossSection;
       self.isSelectingRuler = false;
-      self.isSelectingLatlng = false;
+      self.isSelectingSetRegion = false;
     },
     setIsSelectingRuler(val: boolean) {
       self.isSelectingRuler = val;
@@ -191,12 +191,12 @@ export const TephraSimulationStore = types
       self.viewportCenterLng = viewportCenterLng;
     },
     setLatLngP1(lat: number, lng: number) {
-      self.latLngPoint1Lat = lat;
-      self.latLngPoint1Lng = lng;
+      self.latLngRegionPoint1Lat = lat;
+      self.latLngRegionPoint1Lng = lng;
     },
     setLatLngP2(lat: number, lng: number) {
-      self.latLngPoint2Lat = lat;
-      self.latLngPoint2Lng = lng;
+      self.latLngRegionPoint2Lat = lat;
+      self.latLngRegionPoint2Lng = lng;
     },
     reset() {
       self.hasErupted = false;
