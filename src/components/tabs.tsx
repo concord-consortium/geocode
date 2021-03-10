@@ -55,6 +55,8 @@ type RightTabInfo = {
     index: number;
     backgroundColor: string;
     hoverBackgroundColor: string;
+    unitBackgroundColor?: { [unit in UnitNameType ]: string };
+    unitHoverBackgroundColor?: { [unit in UnitNameType ]: string };
   }
 };
 const kRightTabInfo: RightTabInfo = {
@@ -85,12 +87,20 @@ const kRightTabInfo: RightTabInfo = {
     index: -1,
     backgroundColor: "#e6f2e4",
     hoverBackgroundColor: "#dae6d7",
+    unitBackgroundColor: {
+      Tephra: "#e6f2e4",
+      Seismic: "#cee6c9"
+    },
+    unitHoverBackgroundColor: {
+      Tephra: "#dae6d7",
+      Seismic: "#c3dabd"
+    },
   },
   deformation: {
     name: "Deformation",
     index: -1,
-    backgroundColor: "#cee6c9",
-    hoverBackgroundColor: "#c3dabd"
+    backgroundColor: "#e6f2e4",
+    hoverBackgroundColor: "#dae6d7",
   }
 };
 
