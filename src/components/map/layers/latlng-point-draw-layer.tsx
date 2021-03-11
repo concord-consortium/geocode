@@ -142,7 +142,7 @@ export class LatLngPointDrawLayer extends BaseComponent<IProps, IState> {
     };
 
     const pIcon = latLngIcon(
-      `<b>Corner 1</b><br/>Latitude: ${pLat.toFixed(2)} <b>W</b><br/>Longitude: ${pLng.toFixed(2)} <b>N</b>`,
+      `Latitude: ${pLat.toFixed(2)} <b>W</b><br/>Longitude: ${pLng.toFixed(2)} <b>N</b>`,
       getCorner(point), !pointSet);
 
     return (
