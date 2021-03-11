@@ -12,17 +12,35 @@ const StyledTable = styled.table`
   margin-top: 5px;
   border-spacing: 0;
   width: 430px;
+  height: 104px;
+  font-size: 16px;
+  border: solid 1px #979797;
 
   thead>tr {
     background-color: white;
   }
 
-  th, td {
-    padding: 2px 12px;
+  tr.horizontal-spacer {
+    height: 2px;
+    padding: 0;
+    background-color: white;
+  }
+  td.horizontal-spacer {
+    padding: 0;
+  }
+  td.vertical-spacer {
+    padding: 0;
+    width: 2px;
+    background-color: white;
   }
 
-  td.label {
-    font-weight: bold;
+  th, td {
+    padding: 2px 2px 2px 10px;
+  }
+
+  td.value {
+    text-align: right;
+    padding-right: 10px;
   }
 
   td.na {
@@ -61,31 +79,34 @@ export class GPSStationTable extends BaseComponent<IProps, IState> {
       <StyledTable>
         <thead>
           <tr>
-            <th colSpan={4}>
+            <th colSpan={5}>
               GPS Station ID: {station.id}
             </th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td className="label">Latitude</td>
-            <td>{round(station.latitude, 5)}</td>
-            <td className="label">Speed (mm/y)</td>
-            <td>{round(station.speed, 1)}</td>
+            <td>Latitude</td>
+            <td className="value">{round(station.latitude, 5)}</td>
+            <td className="vertical-spacer"/>
+            <td>Speed (mm/y)</td>
+            <td className="value">{round(station.speed, 1)}</td>
           </tr>
+          <tr className="horizontal-spacer"><td colSpan={5} className="horizontal-spacer"/></tr>
           <tr>
-            <td className="label">Longitude</td>
-            <td>{round(station.longitude, 5)}</td>
-            <td rowSpan={2} className="label">Direction<br/>{"\u00A0\u00A0"}(º from 0)</td>
-            <td>{Math.round(station.direction)}</td>
+            <td>Longitude</td>
+            <td className="value">{round(station.longitude, 5)}</td>
+            <td className="vertical-spacer"/>
+            <td>Direction (º from N)</td>
+            <td className="value">{Math.round(station.direction)}</td>
           </tr>
+          <tr className="horizontal-spacer"><td colSpan={5} className="horizontal-spacer"/></tr>
           <tr>
-            <td className="label">Installed</td>
-            <td className={datesClass}>{installed}</td>
-          </tr>
-          <tr>
-            <td className="label">Last Record</td>
-            <td className={datesClass}>{lastRecord}</td>
+            <td>Installed</td>
+            <td className={`value ${datesClass}`}>{installed}</td>
+            <td className="vertical-spacer"/>
+            <td>Last Record</td>
+            <td className={`value ${datesClass}`}>{lastRecord}</td>
           </tr>
         </tbody>
       </StyledTable>
