@@ -29,6 +29,7 @@ const drawAreaColor = "#fff";
 const textColor = "#434343";
 const stationColor = "#98E643";
 const faultColor = "#ff9300";
+const initialPlateAlpha = .07;
 const stationBorderThickness = 2;
 
 const lineSpacing = 20;
@@ -143,6 +144,21 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     const vSpeed = this.getRelativeVerticalSpeed();     // mm/yr
     const hSpeed = this.getRelativeHorizontalSpeed();
 
+    // plates
+    if (year < 50000) {
+      const plateAlpha = initialPlateAlpha - (year / 50000) * initialPlateAlpha;
+      ctx.fillStyle = `rgba(255,58,58,${plateAlpha})`;
+      ctx.beginPath();
+      ctx.rect(modelMargin.left, modelMargin.top, this.modelWidth / 2, this.modelWidth + modelMargin.top);
+      ctx.fill();
+
+      ctx.fillStyle = `rgba(219,194,58,${plateAlpha})`;
+      ctx.beginPath();
+      ctx.rect(modelMargin.left + (this.modelWidth / 2), modelMargin.top,
+        this.modelWidth / 2, this.modelWidth + modelMargin.top);
+      ctx.fill();
+    }
+
     if (cachedHorizontalSpeed !== hSpeed) {
       // reset horizontal displacement cache
       cachedHorizontalSpeed = hSpeed;
@@ -226,7 +242,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.fillText("Plate 1",
       canvasMargin.left + 5, canvasMargin.top + modelMargin.top + 20);
     ctx.fillText("Plate 2",
-    canvasMargin.left + this.modelWidth - 65, canvasMargin.top + modelMargin.top + 20);
+      canvasMargin.left + this.modelWidth - 65, canvasMargin.top + modelMargin.top + 20);
 
     ctx.font = "13px Lato";
     for (let i = 0; i < stationPoints.length; i++) {
