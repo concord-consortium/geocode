@@ -23,7 +23,8 @@ import CompassComponent from "./map-compass";
 import { LegendComponent, LegendType } from "./map-legend";
 import { SamplesCollectionModelType, SamplesLocationModelType } from "../../stores/samples-collections-store";
 import { RiskLevels } from "../montecarlo/monte-carlo";
-import { LatLngDrawLayer } from "./layers/latlng-draw-layer";
+import { LatLngRegionDrawLayer } from "./layers/latlng-region-draw-layer";
+import { LatLngPointDrawLayer } from "./layers/latlng-point-draw-layer";
 import { MapGPSStationsLayer } from "./map-gps-stations-layer";
 import { ColorMethod } from "../../stores/seismic-simulation-store";
 
@@ -75,7 +76,8 @@ export class MapComponent extends BaseComponent<IProps, IState>{
   private map = React.createRef<LeafletMap>();
   private crossRef = React.createRef<CrossSectionDrawLayer>();
   private tephraRef = React.createRef<MapTephraThicknessLayer>();
-  private latlngRef = React.createRef<LatLngDrawLayer>();
+  private latlngPointRef = React.createRef<LatLngPointDrawLayer>();
+  private latlngRegionRef = React.createRef<LatLngRegionDrawLayer>();
   private hoverCoords = React.createRef<L.LatLng>();
 
   constructor(props: IProps) {
@@ -180,7 +182,8 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     const {
       isSelectingCrossSection,
       isSelectingRuler,
-      isSelectingLatlng,
+      isSelectingSetPoint,
+      isSelectingSetRegion,
     } = this.stores.tephraSimulation;
 
     const cityItems = cities.map( (city: CityType) => {
@@ -222,8 +225,8 @@ export class MapComponent extends BaseComponent<IProps, IState>{
 
     const center: L.LatLngTuple = [centerLat, centerLng];
 
-    const { crossPoint1Lat, crossPoint1Lng, crossPoint2Lat, crossPoint2Lng,
-            latLngPoint1Lat, latLngPoint1Lng, latLngPoint2Lat, latLngPoint2Lng } =
+    const { crossPoint1Lat, crossPoint1Lng, crossPoint2Lat, crossPoint2Lng, latLngPointLat, latLngPointLng,
+            latLngRegionPoint1Lat, latLngRegionPoint1Lng, latLngRegionPoint2Lat, latLngRegionPoint2Lng } =
       this.stores.tephraSimulation;
     const volcanoPos = L.latLng(centerLat, centerLng);
     const corner1 = L.latLng(topLeftLat, topLeftLng);
@@ -301,14 +304,21 @@ export class MapComponent extends BaseComponent<IProps, IState>{
                 {pinItems}
                 {/* {riskItems} */}
                 {sampleLocations}
-                {isSelectingLatlng && <LatLngDrawLayer
-                  key="lat-lng-layer"
-                  ref={this.latlngRef}
+                {isSelectingSetPoint && <LatLngPointDrawLayer
+                  key="lat-lng-point-layer"
+                  ref={this.latlngPointRef}
                   map={this.state.mapLeafletRef}
-                  p1Lat={latLngPoint1Lat}
-                  p2Lat={latLngPoint2Lat}
-                  p1Lng={latLngPoint1Lng}
-                  p2Lng={latLngPoint2Lng}
+                  pLat={latLngPointLat}
+                  pLng={latLngPointLng}
+                /> }
+                {isSelectingSetRegion && <LatLngRegionDrawLayer
+                  key="lat-lng-region-layer"
+                  ref={this.latlngRegionRef}
+                  map={this.state.mapLeafletRef}
+                  p1Lat={latLngRegionPoint1Lat}
+                  p2Lat={latLngRegionPoint2Lat}
+                  p1Lng={latLngRegionPoint1Lng}
+                  p2Lng={latLngRegionPoint2Lng}
                 /> }
                 {isSelectingCrossSection && <CrossSectionDrawLayer
                   ref={this.crossRef}
@@ -337,14 +347,21 @@ export class MapComponent extends BaseComponent<IProps, IState>{
                 mapScale={this.getMapScale()}
                 getPointFromLatLng={this.getScreenPointFromLatLng}
               />,
-              (isSelectingLatlng && <LatLngDrawLayer
-                key="lat-lng-layer"
-                ref={this.latlngRef}
+              (isSelectingSetPoint && <LatLngPointDrawLayer
+                key="lat-lng-point-layer"
+                ref={this.latlngPointRef}
                 map={this.state.mapLeafletRef}
-                p1Lat={latLngPoint1Lat}
-                p2Lat={latLngPoint2Lat}
-                p1Lng={latLngPoint1Lng}
-                p2Lng={latLngPoint2Lng}
+                pLat={latLngPointLat}
+                pLng={latLngPointLng}
+              />),
+              (isSelectingSetRegion && <LatLngRegionDrawLayer
+                key="lat-lng-region-layer"
+                ref={this.latlngRegionRef}
+                map={this.state.mapLeafletRef}
+                p1Lat={latLngRegionPoint1Lat}
+                p2Lat={latLngRegionPoint2Lat}
+                p1Lng={latLngRegionPoint1Lng}
+                p2Lng={latLngRegionPoint2Lng}
               />)
             ]
           }
@@ -352,9 +369,11 @@ export class MapComponent extends BaseComponent<IProps, IState>{
         <OverlayControls
           showRuler={isSelectingRuler}
           onRulerClick={this.stores.tephraSimulation.rulerClick}
-          onLatLngClick={this.stores.tephraSimulation.latlngClick}
+          onSetPointClick={this.stores.tephraSimulation.setPointClick}
+          onSetRegionClick={this.stores.tephraSimulation.setRegionClick}
           isSelectingCrossSection={isSelectingCrossSection}
-          isSelectingLatLng={isSelectingLatlng}
+          isSelectingSetPoint={isSelectingSetPoint}
+          isSelectingSetRegion={isSelectingSetRegion}
           showCrossSection={hasErupted && showCrossSection && panelType === RightSectionTypes.CROSS_SECTION}
           onCrossSectionClick={this.stores.tephraSimulation.crossSectionClick}
           onReCenterClick={this.onRecenterClick}
@@ -404,7 +423,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
   }
   private onMapClick = (e: any) => {
     const { tephraSimulation } = this.stores;
-    if (tephraSimulation.isSelectingLatlng) {
+    if (tephraSimulation.isSelectingSetRegion) {
       tephraSimulation.setPoint1Pos(e.latlng.lat, e.latlng.lng);
     } else return;
   }

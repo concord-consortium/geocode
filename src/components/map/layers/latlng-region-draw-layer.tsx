@@ -24,7 +24,7 @@ interface IState {
 
 @inject("stores")
 @observer
-export class LatLngDrawLayer extends BaseComponent<IProps, IState> {
+export class LatLngRegionDrawLayer extends BaseComponent<IProps, IState> {
 
   constructor(props: IProps) {
     super(props);
@@ -56,14 +56,15 @@ export class LatLngDrawLayer extends BaseComponent<IProps, IState> {
     if (map !== null) {
       map.dragging.enable();
       map.off(MOUSE_DOWN, this.drawPoints);
+      map.off(MOUSE_UP, this.endDraw);
       L.DomUtil.removeClass(map.getContainer(), "crosshair-cursor");
     }
   }
   public drawPoints(event: Leaflet.LeafletMouseEvent) {
     const { map } = this.props;
-    const { latLngPoint1Lat } = this.stores.tephraSimulation;
+    const { latLngRegionPoint1Lat } = this.stores.tephraSimulation;
     if (map !== null) {
-      if (latLngPoint1Lat === 0) {
+      if (latLngRegionPoint1Lat === 0) {
         map.dragging.disable();
         this.setPoint1(event);
         this.setPoint2(event);
