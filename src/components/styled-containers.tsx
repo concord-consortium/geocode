@@ -25,6 +25,7 @@ interface ValueContainerProps {
   width?: number;
   height?: number;
   backgroundColor?: string;
+  showBorder?: boolean;
 }
 export const ValueContainer = styled.div`
   display: flex;
@@ -36,6 +37,9 @@ export const ValueContainer = styled.div`
   margin-left: auto;
   padding: 2px;
   border-radius: 7px;
+  border-color: #979797;
+  border-width: 1px;
+  border-style: ${(p: ValueContainerProps) => `${p.showBorder ? `solid` : "none"}`};
   color: #434343;
   background-color: ${(p: ValueContainerProps) => `${p.backgroundColor ? `${p.backgroundColor}` : "#FFDBAC"}`};
   font-size: 12px;

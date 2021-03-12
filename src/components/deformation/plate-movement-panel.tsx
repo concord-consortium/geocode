@@ -11,10 +11,6 @@ const PlateDiv = styled.div`
   font-weight: normal;
 `;
 
-const PlateContainer = styled(HorizontalContainer)`
-  margin: 0 81px 0 81px;
-`;
-
 interface IProps {
   leftSpeed: number;
   leftDirection: number;
@@ -29,7 +25,7 @@ export class PlateMovementPanel extends PureComponent<IProps, IState> {
   public render() {
     const {leftSpeed, leftDirection, rightSpeed, rightDirection} = this.props;
     return (
-        <PlateContainer alignItems="center" justifyContent="space-between">
+      <HorizontalContainer alignItems="center" justifyContent="space-evenly">
         <VerticalContainer alignItems="center" justifyContent="center">
           <PlateDiv>Plate 1</PlateDiv>
           <SpeedDirectionWidget
@@ -43,6 +39,7 @@ export class PlateMovementPanel extends PureComponent<IProps, IState> {
             maxWindSpeed={50}
             showAngleMarkers={true}
             orientArrowFromAngle={false}
+            showBorder={true}
           />
         </VerticalContainer>
         <VerticalContainer alignItems="center" justifyContent="center">
@@ -58,9 +55,10 @@ export class PlateMovementPanel extends PureComponent<IProps, IState> {
             maxWindSpeed={50}
             showAngleMarkers={true}
             orientArrowFromAngle={false}
+            showBorder={true}
           />
         </VerticalContainer>
-      </PlateContainer>
+      </HorizontalContainer>
     );
   }
 }

@@ -98,6 +98,7 @@ interface IProps {
   maxWindSpeed?: number;
   showAngleMarkers?: boolean;
   orientArrowFromAngle?: boolean;
+  showBorder?: boolean;
 }
 
 interface IState {}
@@ -114,11 +115,12 @@ export default class SpeedDirectionWidget extends PureComponent<IProps, IState> 
     maxWindSpeed: 30,
     showAngleMarkers: false,
     orientArrowFromAngle: true,
+    showBorder: false
   };
 
   public render() {
     const { type, showWindSpeed, showWindDirection, windSpeed, windDirection, showWindSymbolIcon,
-            speedUnits, maxWindSpeed, showAngleMarkers, orientArrowFromAngle } = this.props;
+            speedUnits, maxWindSpeed, showAngleMarkers, orientArrowFromAngle, showBorder } = this.props;
     const constrainedSpeed = Math.min(windSpeed, maxWindSpeed || 30);
     const normalizedSpeed = Math.abs(constrainedSpeed);
     const arrowPos = 6;
@@ -130,8 +132,11 @@ export default class SpeedDirectionWidget extends PureComponent<IProps, IState> 
     const speedAdjustedAngle = windSpeed < 0 ? 360 - normalizedAngle : normalizedAngle;
     const rotationAngle = !orientArrowFromAngle ? (180 + speedAdjustedAngle) % 360 : speedAdjustedAngle;
     return (
-      <ValueContainer backgroundColor={kWidgetPanelInfo[type].backgroundColor}
-        height={showAngleMarkers ? 89 : undefined}>
+      <ValueContainer
+        backgroundColor={kWidgetPanelInfo[type].backgroundColor}
+        height={showAngleMarkers ? 89 : undefined}
+        showBorder={showBorder}
+      >
         {showAngleMarkers && <DegreeDiv>0°</DegreeDiv>}
         <RelativeIconContainer>
           <Icon
