@@ -2,7 +2,7 @@ import * as React from "react";
 import { PureComponent } from "react";
 import styled from "styled-components";
 import { HorizontalContainer, VerticalContainer } from "../styled-containers";
-import SpeedDirectionWidget from "../widgets/wind-speed-direction-widget";
+import SpeedDirectionWidget from "../widgets/speed-direction-widget";
 import { WidgetPanelTypes } from "../../utilities/widget";
 
 const PlateDiv = styled.div`

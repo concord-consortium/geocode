@@ -1,5 +1,5 @@
 import * as React from "react";
-import SpeedDirectionWidget from "./wind-speed-direction-widget";
+import SpeedDirectionWidget from "./speed-direction-widget";
 import ColumnHeightWidget from "./column-height-widget";
 import VEIWidget from "./vei-widget";
 import EjectedVolumeWidget from "./ejected-volume-widget";
