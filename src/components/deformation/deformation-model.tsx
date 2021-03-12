@@ -235,7 +235,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     }
 
     // text labels
-    ctx.font = "14px Lato";
+    ctx.font = "15px Lato";
     ctx.fillStyle = textColor;
     ctx.beginPath();
 
@@ -250,11 +250,12 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       const textPositionAdjust = stationPoints[i].x < this.modelWidth / 2 ? -10 : 10;
       ctx.fillText(`Station ${i + 1}`, stationPoints[i].x + textPositionAdjust, stationPoints[i].y + 5);
     }
+    ctx.font = "15px Lato";
     ctx.fillText(`Year ${year.toLocaleString()}`,
       canvasMargin.left + this.modelWidth - 10, canvasMargin.top + modelMargin.top + this.modelWidth - 20);
     ctx.stroke();
 
-    ctx.font = "14px Lato";
+    ctx.font = "15px Lato";
     ctx.fillText("Fault", this.modelWidth / 2 + 10, canvasMargin.top + modelMargin.top + this.modelWidth - 20);
 
     // station dots
