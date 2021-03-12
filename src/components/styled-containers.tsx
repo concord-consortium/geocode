@@ -7,7 +7,7 @@ interface HorizontalContainerProps {
 export const HorizontalContainer = styled.div`
   display: flex;
   align-items: ${(p: HorizontalContainerProps) => `${p.alignItems ? p.alignItems : "flex-start"}`};
-  justify-content: ${(p: VerticalContainerProps) => `${p.alignItems ? p.alignItems : "flex-start"}`};
+  justify-content: ${(p: VerticalContainerProps) => `${p.justifyContent ? p.justifyContent : "flex-start"}`};
 `;
 
 interface VerticalContainerProps {
@@ -18,11 +18,12 @@ export const VerticalContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: ${(p: VerticalContainerProps) => `${p.alignItems ? p.alignItems : "flex-start"}`};
-  justify-content: ${(p: VerticalContainerProps) => `${p.alignItems ? p.alignItems : "flex-start"}`};
+  justify-content: ${(p: VerticalContainerProps) => `${p.justifyContent ? p.justifyContent : "flex-start"}`};
 `;
 
 interface ValueContainerProps {
   width?: number;
+  height?: number;
   backgroundColor?: string;
 }
 export const ValueContainer = styled.div`
@@ -31,7 +32,7 @@ export const ValueContainer = styled.div`
   justify-content: center;
   align-items: center;
   width: ${(p: ValueContainerProps) => `${p.width ? `${p.width}px` : "104px"}`};
-  height: 80px;
+  height: ${(p: ValueContainerProps) => `${p.height ? `${p.height}px` : "80px"}`};
   margin-left: auto;
   padding: 2px;
   border-radius: 7px;

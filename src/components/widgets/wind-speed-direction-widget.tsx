@@ -2,18 +2,20 @@ import * as React from "react";
 import { PureComponent } from "react";
 import styled from "styled-components";
 import { Icon } from "../icon";
-import WindWSDBlueIcon from "../../assets/widget-icons/wind-speed-and-direction-blue.svg";
-import WindWSDOrangeIcon from "../../assets/widget-icons/wind-speed-and-direction-orange.svg";
+import WindWSDIcon from "../../assets/widget-icons/wind-speed-and-direction.svg";
 import WindSymbolOrangeIcon from "../../assets/widget-icons/wind-symbol-orange.svg";
 import WindSymbolBlueIcon from "../../assets/widget-icons/wind-symbol-blue.svg";
 import { HorizontalContainer, ValueContainer, ValueOutput, IconContainer } from "../styled-containers";
 import { WidgetPanelTypes, kWidgetPanelInfo, round } from "../../utilities/widget";
 
+interface ValueDividerProps {
+  backgroundColor?: string;
+}
 const ValueDivider = styled.div`
   width: 1px;
   height: 21px;
   margin: 0 5px 0 5px;
-  background-color: #FFDBAC;
+  background-color: ${(p: ValueDividerProps) => `${p.backgroundColor ? `${p.backgroundColor}` : "#FFDBAC"}`};
 `;
 
 const RelativeIconContainer = styled(IconContainer)`
@@ -22,9 +24,11 @@ const RelativeIconContainer = styled(IconContainer)`
 
 interface RotateProps {
   rotate?: number;
+  top?: number;
 }
 const RotateDiv = styled.div`
   position: absolute;
+  top: ${(p: RotateProps) => `${p.top ? `${p.top}px` : "25px"}`};
   height: 10px;
   width: 10px;
   transform: ${(p: RotateProps) => `${p.rotate ? `rotate(${p.rotate}deg)` : "rotate(0deg)"}`};
@@ -40,6 +44,12 @@ const AbsoluteIcon = styled(Icon)`
   top: ${(p: AbsoluteIconProps) => `${p.top ? `${p.top}px` : "0px"}`};
 `;
 
+const DegreeDiv = styled.div`
+  margin: 2px;
+  font-size: 9px;
+  font-weight: bold;
+`;
+
 interface AbsoluteDivProps {
   top?: number;
   height?: number;
@@ -52,6 +62,18 @@ const AbsoluteDiv = styled.div`
   top: ${(p: AbsoluteDivProps) => `${p.top ? `${p.top}px` : "0px"}`};
   background-color: #979797;
   box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.35);
+`;
+
+interface AbsoluteContentDivProps {
+  top?: number;
+  left?: number;
+}
+const AbsoluteConentDiv = styled.div`
+  position: absolute;
+  top: ${(p: AbsoluteContentDivProps) => `${p.top ? `${p.top}px` : "0px"}`};
+  left: ${(p: AbsoluteContentDivProps) => `${p.left ? `${p.left}px` : "0px"}`};
+  font-size: 9px;
+  font-weight: bold;
 `;
 
 const AbsoluteTriangle = styled.div`
@@ -71,60 +93,85 @@ interface IProps {
   showWindDirection: boolean;
   windSpeed: number;
   windDirection: number;
+  showWindSymbolIcon?: boolean;
+  speedUnits?: string;
+  maxWindSpeed?: number;
+  showAngleMarkers?: boolean;
+  orientArrowFromAngle?: boolean;
 }
 
 interface IState {}
 
-export default class WindSpeedDirectionWidget extends PureComponent<IProps, IState> {
+export default class SpeedDirectionWidget extends PureComponent<IProps, IState> {
   public static defaultProps = {
     type: WidgetPanelTypes.LEFT,
     showWindSpeed: true,
     showWindDirection: true,
     windSpeed: 1,
     windDirection: 0,
+    showWindSymbolIcon: true,
+    speedUnits: "m/s",
+    maxWindSpeed: 30,
+    showAngleMarkers: false,
+    orientArrowFromAngle: true,
   };
 
   public render() {
-    const { type, showWindSpeed, showWindDirection, windSpeed, windDirection } = this.props;
-    const maxWindSpeed = 30;
-    const constrainedSpeed = Math.min(Math.max(windSpeed, 0), maxWindSpeed);
+    const { type, showWindSpeed, showWindDirection, windSpeed, windDirection, showWindSymbolIcon,
+            speedUnits, maxWindSpeed, showAngleMarkers, orientArrowFromAngle } = this.props;
+    const constrainedSpeed = Math.min(windSpeed, maxWindSpeed || 30);
+    const normalizedSpeed = Math.abs(constrainedSpeed);
     const arrowPos = 6;
     const arrowTailPos = -28;
     const arrowHeadOffset = 5;
     const maxArrowLength = 10;
-    const arrowHeight = 1 + constrainedSpeed / maxWindSpeed * maxArrowLength;
+    const arrowHeight = 1 + normalizedSpeed / (maxWindSpeed || 30) * maxArrowLength;
+    const normalizedAngle = windDirection < 0 ? 360 + (windDirection % 360) : windDirection % 360;
+    const speedAdjustedAngle = windSpeed < 0 ? 360 - normalizedAngle : normalizedAngle;
+    const rotationAngle = !orientArrowFromAngle ? (180 + speedAdjustedAngle) % 360 : speedAdjustedAngle;
     return (
-      <ValueContainer backgroundColor={kWidgetPanelInfo[type].backgroundColor}>
+      <ValueContainer backgroundColor={kWidgetPanelInfo[type].backgroundColor}
+        height={showAngleMarkers ? 89 : undefined}>
+        {showAngleMarkers && <DegreeDiv>0°</DegreeDiv>}
         <RelativeIconContainer>
           <Icon
             width={39}
             height={39}
-            fill={"black"}
+            fill={kWidgetPanelInfo[type].highlightColor}
           >
-            { type === WidgetPanelTypes.LEFT
-              ? <WindWSDOrangeIcon/>
-              : <WindWSDBlueIcon/> }
+            <WindWSDIcon/>
           </Icon>
-          { (windSpeed > 0) && <RotateDiv rotate={windDirection}>
-              <AbsoluteIcon
-                width={22}
-                height={17}
-                fill={"black"}
-                top={arrowTailPos}
-              >
-              { type === WidgetPanelTypes.LEFT
-                ? <WindSymbolOrangeIcon/>
-                : <WindSymbolBlueIcon/> }
-              </AbsoluteIcon>
+          {normalizedSpeed > 0 &&
+            <RotateDiv rotate={rotationAngle} top={showAngleMarkers ? 14 : 25}>
+              {showWindSymbolIcon &&
+                <AbsoluteIcon
+                  width={22}
+                  height={17}
+                  fill={"black"}
+                  top={arrowTailPos}
+                >
+                  { type === WidgetPanelTypes.LEFT
+                    ? <WindSymbolOrangeIcon/>
+                    : <WindSymbolBlueIcon/> }
+                </AbsoluteIcon>
+              }
               <AbsoluteDiv top={arrowPos} height={arrowHeight} />
               <AbsoluteTriangle top={arrowHeight + arrowHeadOffset} />
             </RotateDiv>
           }
+          {showAngleMarkers &&
+            <React.Fragment>
+              <AbsoluteConentDiv top={14} left={44}>90°</AbsoluteConentDiv>
+              <AbsoluteConentDiv top={14} left={-24}>270°</AbsoluteConentDiv>
+            </React.Fragment>
+          }
+          {showAngleMarkers && <DegreeDiv>180°</DegreeDiv>}
         </RelativeIconContainer>
         <ValueOutput data-test="info">
           <HorizontalContainer alignItems="center" justifyContent="center">
-          {showWindSpeed && <div>{round(windSpeed, 1)} m/s</div>}
-          {(showWindSpeed && showWindDirection) && <ValueDivider/ >}
+          {showWindSpeed && <div>{`${round(windSpeed, 1)} ${speedUnits}`}</div>}
+          {(showWindSpeed && showWindDirection)
+            && <ValueDivider backgroundColor={kWidgetPanelInfo[type].backgroundColor} />}
           {showWindDirection && <div>{round(windDirection % 360, 1)} °</div>}
           </HorizontalContainer>
         </ValueOutput>
