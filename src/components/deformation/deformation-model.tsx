@@ -23,7 +23,7 @@ const modelMargin = {
 };
 const minModelMargin = 20;
 
-const backgroundColor = "#eee";
+const backgroundColor = "#e6f2e4";
 const lineColor = "#777";
 const drawAreaColor = "#fff";
 const textColor = "#434343";
@@ -235,7 +235,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     }
 
     // text labels
-    ctx.font = "20px Lato";
+    ctx.font = "14px Lato";
     ctx.fillStyle = textColor;
     ctx.beginPath();
 
@@ -268,34 +268,6 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     }
     ctx.stroke();
     ctx.fill();
-
-    // show velocity vector arrows for each plate
-    // start with a circle - no design spec for this yet
-    ctx.beginPath();
-    const points = this.generateVelocityVectorArrows(this.modelWidth);
-    ctx.moveTo(points.p1.x, points.p1.y);
-    ctx.arc(points.p1.x, points.p1.y, 7, 0, 2 * Math.PI);
-    ctx.stroke();
-    ctx.fill();
-
-    // vector line
-    ctx.beginPath();
-    ctx.moveTo(points.p1.x, points.p1.y);
-    ctx.lineTo(points.p1v.x, points.p1v.y);
-    ctx.stroke();
-
-    // plate 2 circle
-    ctx.beginPath();
-    ctx.moveTo(points.p2.x, points.p2.y);
-    ctx.arc(points.p2.x, points.p2.y, 7, 0, 2 * Math.PI);
-    ctx.stroke();
-    ctx.fill();
-
-    // plate 2 vector line
-    ctx.beginPath();
-    ctx.moveTo(points.p2.x, points.p2.y);
-    ctx.lineTo(points.p2v.x, points.p2v.y);
-    ctx.stroke();
 
     // Scale
     const s1 = { x: modelMargin.left + this.modelWidth / 2 - this.worldToCanvas(5) - 10, y: modelMargin.top + 20 };
