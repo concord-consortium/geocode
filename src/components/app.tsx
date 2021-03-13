@@ -479,7 +479,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               >
                 <DeformationModel
                   width={mapWidth}
-                  height={height - 170}
+                  height={height - 160}
                 />
                 <PlateMovementPanel
                   leftSpeed={deformSpeedPlate1}

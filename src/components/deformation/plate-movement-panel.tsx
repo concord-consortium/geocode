@@ -6,7 +6,7 @@ import SpeedDirectionWidget from "../widgets/speed-direction-widget";
 import { WidgetPanelTypes } from "../../utilities/widget";
 
 const PlateDiv = styled.div`
-  margin: 5px;
+  margin: 0 5px 5px 5px;
   font-size: 14px;
   font-weight: normal;
 `;
@@ -21,7 +21,6 @@ interface IProps {
 interface IState {}
 
 export class PlateMovementPanel extends PureComponent<IProps, IState> {
-
   public render() {
     const {leftSpeed, leftDirection, rightSpeed, rightDirection} = this.props;
     return (
