@@ -12,8 +12,8 @@ interface IProps {
 interface Point {x: number; y: number; }
 
 const canvasMargin = {
-  top: 10,
-  left: 20
+  top: 5,
+  left: 8
 };
 let canvasWidth = 0;
 let canvasHeight = 0;
