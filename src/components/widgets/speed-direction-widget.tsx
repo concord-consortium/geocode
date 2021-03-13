@@ -15,7 +15,7 @@ const ValueDivider = styled.div`
   width: 1px;
   height: 21px;
   margin: 0 5px 0 5px;
-  background-color: ${(p: ValueDividerProps) => `${p.backgroundColor ? `${p.backgroundColor}` : "#FFDBAC"}`};
+  background-color: ${(p: ValueDividerProps) => `${p.backgroundColor || "#FFDBAC"}`};
 `;
 
 const RelativeIconContainer = styled(IconContainer)`
@@ -28,10 +28,10 @@ interface RotateProps {
 }
 const RotateDiv = styled.div`
   position: absolute;
-  top: ${(p: RotateProps) => `${p.top ? `${p.top}px` : "25px"}`};
+  top: ${(p: RotateProps) => `${p.top || 25}px`};
   height: 10px;
   width: 10px;
-  transform: ${(p: RotateProps) => `${p.rotate ? `rotate(${p.rotate}deg)` : "rotate(0deg)"}`};
+  transform: ${(p: RotateProps) => `rotate(${p.rotate || 0}deg)`};
 `;
 
 interface AbsoluteIconProps {
@@ -41,7 +41,7 @@ const AbsoluteIcon = styled(Icon)`
   position: absolute;
   left: -5px;
   transform: rotate(180deg);
-  top: ${(p: AbsoluteIconProps) => `${p.top ? `${p.top}px` : "0px"}`};
+  top: ${(p: AbsoluteIconProps) => `${p.top || 0}px`};
 `;
 
 const DegreeDiv = styled.div`
@@ -58,8 +58,8 @@ const AbsoluteDiv = styled.div`
   position: absolute;
   width: 2px;
   left: 4px;
-  height: ${(p: AbsoluteDivProps) => `${p.height ? `${p.height}px` : "12px"}`};
-  top: ${(p: AbsoluteDivProps) => `${p.top ? `${p.top}px` : "0px"}`};
+  height: ${(p: AbsoluteDivProps) => `${p.height || 12}px`};
+  top: ${(p: AbsoluteDivProps) => `${p.top || 0}px`};
   background-color: #979797;
   box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.35);
 `;
@@ -68,10 +68,10 @@ interface AbsoluteContentDivProps {
   top?: number;
   left?: number;
 }
-const AbsoluteConentDiv = styled.div`
+const AbsoluteContentDiv = styled.div`
   position: absolute;
-  top: ${(p: AbsoluteContentDivProps) => `${p.top ? `${p.top}px` : "0px"}`};
-  left: ${(p: AbsoluteContentDivProps) => `${p.left ? `${p.left}px` : "0px"}`};
+  top: ${(p: AbsoluteContentDivProps) => `${p.top || 0}px`};
+  left: ${(p: AbsoluteContentDivProps) => `${p.left || 0}px`};
   font-size: 9px;
   font-weight: bold;
 `;
@@ -81,7 +81,7 @@ const AbsoluteTriangle = styled.div`
   width: 0;
   height: 0;
   left: 1px;
-  top: ${(p: AbsoluteDivProps) => `${p.top ? `${p.top}px` : "0px"}`};
+  top: ${(p: AbsoluteDivProps) => `${p.top || 0}px`};
   border-left: 4px solid transparent;
   border-right: 4px solid transparent;
   border-top: 8px solid #979797;
@@ -166,8 +166,8 @@ export default class SpeedDirectionWidget extends PureComponent<IProps, IState> 
           }
           {showAngleMarkers &&
             <React.Fragment>
-              <AbsoluteConentDiv top={14} left={44}>90°</AbsoluteConentDiv>
-              <AbsoluteConentDiv top={14} left={-24}>270°</AbsoluteConentDiv>
+              <AbsoluteContentDiv top={14} left={44}>90°</AbsoluteContentDiv>
+              <AbsoluteContentDiv top={14} left={-24}>270°</AbsoluteContentDiv>
             </React.Fragment>
           }
           {showAngleMarkers && <DegreeDiv>180°</DegreeDiv>}
