@@ -10,7 +10,7 @@ import { HorizontalContainer, VerticalContainer, Footer, TabContent } from "./st
 import VEIWidget from "./widgets/vei-widget";
 import EjectedVolumeWidget from "./widgets/ejected-volume-widget";
 import ColumnHeightWidget from "./widgets/column-height-widget";
-import WindSpeedDirectionWidget from "./widgets/wind-speed-direction-widget";
+import SpeedDirectionWidget from "./widgets/speed-direction-widget";
 import { WidgetPanelTypes } from "../utilities/widget";
 
 const ControlsContainer = styled.div`
@@ -127,7 +127,7 @@ export class Controls extends BaseComponent<IProps, IState> {
                   />
                 </HorizontalContainer>}
               </VerticalContainer>
-              <WindSpeedDirectionWidget
+              <SpeedDirectionWidget
                 type={WidgetPanelTypes.LEFT}
                 showWindDirection={showWindDirection}
                 showWindSpeed={showWindSpeed}

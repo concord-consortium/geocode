@@ -27,6 +27,7 @@ import { getAuthorableSettings, updateStores, serializeState, getSavableStateAut
 import { ChartPanel } from "./charts/chart-panel";
 import { BlocklyController } from "../blockly/blockly-controller";
 import { HistogramPanel } from "./montecarlo/histogram-panel";
+import { PlateMovementPanel } from "./deformation/plate-movement-panel";
 import { uiStore } from "../stores/ui-store";
 import { GPSStationTable } from "./gps-station-table";
 import { DeformationModel } from "./deformation/deformation-model";
@@ -170,7 +171,11 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       },
       seismicSimulation: {
         selectedGPSStation,
-        startDeformationModel
+        startDeformationModel,
+        deformSpeedPlate1,
+        deformDirPlate1,
+        deformSpeedPlate2,
+        deformDirPlate2
       },
       blocklyStore: {
         initialXmlCode,
@@ -441,13 +446,13 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               >
                 <Simulation width={mapWidth} backgroundColor={this.getRightTabColor(RightSectionTypes.MONTE_CARLO)}>
                   <MapComponent
-                    width={ mapWidth }
-                    height={ (height - 90) * .65 }
+                    width={mapWidth}
+                    height={(height - 90) * .65}
                     panelType={RightSectionTypes.MONTE_CARLO}
                   />
                   <HistogramPanel
-                    width={ mapWidth }
-                    height={ (height - 90) * .35 }
+                    width={mapWidth}
+                    height={(height - 90) * .35}
                   />
                 </Simulation>
               </TabPanel>
@@ -474,7 +479,13 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               >
                 <DeformationModel
                   width={mapWidth}
-                  height={height - 30}
+                  height={height - 160}
+                />
+                <PlateMovementPanel
+                  leftSpeed={deformSpeedPlate1}
+                  leftDirection={180 - deformDirPlate1}
+                  rightSpeed={deformSpeedPlate2}
+                  rightDirection={180 - deformDirPlate2}
                 />
               </TabPanel>
             }

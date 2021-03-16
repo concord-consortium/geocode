@@ -12,8 +12,8 @@ interface IProps {
 interface Point {x: number; y: number; }
 
 const canvasMargin = {
-  top: 10,
-  left: 20
+  top: 5,
+  left: 8
 };
 let canvasWidth = 0;
 let canvasHeight = 0;
@@ -23,7 +23,7 @@ const modelMargin = {
 };
 const minModelMargin = 20;
 
-const backgroundColor = "#eee";
+const backgroundColor = "#e6f2e4";
 const lineColor = "#777";
 const drawAreaColor = "#fff";
 const textColor = "#434343";
@@ -235,14 +235,15 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     }
 
     // text labels
-    ctx.font = "20px Lato";
+    ctx.font = "15px Lato";
     ctx.fillStyle = textColor;
     ctx.beginPath();
 
+    ctx.textAlign = "center";
     ctx.fillText("Plate 1",
-      canvasMargin.left + 5, canvasMargin.top + modelMargin.top + 20);
+      modelMargin.left + this.modelWidth / 4, modelMargin.top + 20);
     ctx.fillText("Plate 2",
-      canvasMargin.left + this.modelWidth - 65, canvasMargin.top + modelMargin.top + 20);
+      modelMargin.left + this.modelWidth / 4 * 3, modelMargin.top + 20);
 
     ctx.font = "13px Lato";
     for (let i = 0; i < stationPoints.length; i++) {
@@ -250,12 +251,14 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       const textPositionAdjust = stationPoints[i].x < this.modelWidth / 2 ? -10 : 10;
       ctx.fillText(`Station ${i + 1}`, stationPoints[i].x + textPositionAdjust, stationPoints[i].y + 5);
     }
+    ctx.font = "15px Lato";
+    ctx.textAlign = "end";
     ctx.fillText(`Year ${year.toLocaleString()}`,
-      canvasMargin.left + this.modelWidth - 10, canvasMargin.top + modelMargin.top + this.modelWidth - 20);
+      modelMargin.left + this.modelWidth - 10, modelMargin.top + this.modelWidth - 10);
     ctx.stroke();
 
-    ctx.font = "14px Lato";
-    ctx.fillText("Fault", this.modelWidth / 2 + 10, canvasMargin.top + modelMargin.top + this.modelWidth - 20);
+    ctx.font = "15px Lato";
+    ctx.fillText("Fault", modelMargin.left + this.modelWidth / 2 - 10, modelMargin.top + this.modelWidth - 10);
 
     // station dots
     ctx.fillStyle = stationColor;
@@ -269,35 +272,8 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.stroke();
     ctx.fill();
 
-    // show velocity vector arrows for each plate
-    // start with a circle - no design spec for this yet
-    ctx.beginPath();
-    const points = this.generateVelocityVectorArrows(this.modelWidth);
-    ctx.moveTo(points.p1.x, points.p1.y);
-    ctx.arc(points.p1.x, points.p1.y, 7, 0, 2 * Math.PI);
-    ctx.stroke();
-    ctx.fill();
-
-    // vector line
-    ctx.beginPath();
-    ctx.moveTo(points.p1.x, points.p1.y);
-    ctx.lineTo(points.p1v.x, points.p1v.y);
-    ctx.stroke();
-
-    // plate 2 circle
-    ctx.beginPath();
-    ctx.moveTo(points.p2.x, points.p2.y);
-    ctx.arc(points.p2.x, points.p2.y, 7, 0, 2 * Math.PI);
-    ctx.stroke();
-    ctx.fill();
-
-    // plate 2 vector line
-    ctx.beginPath();
-    ctx.moveTo(points.p2.x, points.p2.y);
-    ctx.lineTo(points.p2v.x, points.p2v.y);
-    ctx.stroke();
-
     // Scale
+    ctx.lineWidth = 1;
     const s1 = { x: modelMargin.left + this.modelWidth / 2 - this.worldToCanvas(5) - 10, y: modelMargin.top + 20 };
     const s2 = { x: s1.x + this.worldToCanvas(5), y: s1.y };
     ctx.beginPath();
@@ -311,9 +287,10 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.stroke();
 
     ctx.beginPath();
+    ctx.textAlign = "start";
     ctx.fillStyle = textColor;
-    ctx.font = "16px Lato";
-    ctx.fillText(`5km`, s1.x + ((s2.x - s1.x) / 2), s1.y + 20);
+    ctx.font = "13px Lato";
+    ctx.fillText(`5km`, s1.x, s1.y + 20);
     ctx.stroke();
   }
 

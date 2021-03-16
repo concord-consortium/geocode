@@ -1,5 +1,5 @@
 import * as React from "react";
-import WindSpeedDirectionWidget from "./wind-speed-direction-widget";
+import SpeedDirectionWidget from "./speed-direction-widget";
 import ColumnHeightWidget from "./column-height-widget";
 import VEIWidget from "./vei-widget";
 import EjectedVolumeWidget from "./ejected-volume-widget";
@@ -59,7 +59,7 @@ export default class WidgetPanel extends BaseComponent<IProps, IState> {
       <WidgetBar>
         { (showWindSpeed || showWindDirection) && <WidgetContainer data-test="wind-info-widget">
           <WidgetTitle>Wind Speed/Dir.</WidgetTitle>
-            <WindSpeedDirectionWidget
+            <SpeedDirectionWidget
               type={WidgetPanelTypes.RIGHT}
               showWindDirection={true}
               showWindSpeed={true}
