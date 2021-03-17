@@ -1,6 +1,7 @@
 // @ts-ignore
 import * as RawWindDataSet from "../assets/data/winds_Cerro_Negro.csv";
 import RawPositionTimeData, { filterStationByPositionData } from "../assets/data/seismic/position-time-data";
+import { cloneDeep } from "lodash";
 
 interface DatasetCase {[key: string]: number | Date; }
 export type Dataset = DatasetCase[];
@@ -94,7 +95,7 @@ export const Datasets = {
 
   getGPSPositionTimeData(name: string, timeRange?: TimeRange) {
     const storeDataSet = (PositionTimeDataSets as any)[name] as Dataset;
-    let dataSet = [...storeDataSet];
+    let dataSet = cloneDeep(storeDataSet);
     if (timeRange) {
       if (timeRange.from) {
         dataSet = dataSet.filter(d => (d.Date as Date) >= timeRange.from!);
