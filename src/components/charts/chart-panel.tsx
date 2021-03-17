@@ -27,7 +27,7 @@ const Scroll = styled.div`
   width: 95%;
   height: 85vh;
   overflow-y: scroll;
-  background-color: #F9F9F9;
+  background-color: ${(p: {backgroundColor: string}) => p.backgroundColor || "#F9F9F9"};
 `;
 
 const Row = styled.div`
@@ -70,7 +70,7 @@ export class ChartPanel extends BaseComponent<IProps, IState> {
           <Row><Title>Data Charts</Title></Row>
         }
         <Row>
-          <Scroll>
+          <Scroll backgroundColor={this.stores.unit.name === "Seismic" ? "white" : "#F9F9F9"}>
             {
               this.stores.chartsStore.charts.map((chart, i) =>
                 chart.type !== "histogram" ?
@@ -97,7 +97,6 @@ export class ChartPanel extends BaseComponent<IProps, IState> {
                           height={this.props.width * 0.45}
                           chart={chart}
                         />
-
                     }
                   </Row>
                 </div>

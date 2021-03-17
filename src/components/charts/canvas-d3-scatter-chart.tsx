@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as d3 from "d3";
 import { ChartType } from "../../stores/charts-store";
-import { addFadeLegend } from "./svg-d3-scatter-chart";
+import { addFadeLegend, getFadeColor } from "./svg-d3-scatter-chart";
 
 type Scale = d3.ScaleLinear<number, number> | d3.ScaleTime<number, number>;
 
@@ -172,22 +172,20 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
 
     const ctx = this.canvasRef.current.getContext("2d")!;
 
-    const colorLerp = (d3.scaleLinear().domain([0, data.length]) as any).range(["white", "#448878"]);
+    const color = (i: number) => getFadeColor(i);
 
     data.forEach((d: number[] | Date[], i) => {
       ctx.beginPath();
-      ctx.fillStyle = "#448878";
-
       if (!fadeIn) {
         ctx.fillStyle = "#448878";
       } else {
-        ctx.fillStyle = colorLerp(i);
+        ctx.fillStyle = color(i);
       }
 
       const px = xScale(d[0]) + canvasPadding;
       const py = yScale(d[1]) + canvasPadding;
 
-      ctx.arc(px, py, 1.5, 0, 2 * Math.PI, true);
+      ctx.arc(px, py, fadeIn ? 2 : 1.5, 0, 2 * Math.PI, true);
       ctx.fill();
     });
 
