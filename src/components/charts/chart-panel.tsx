@@ -23,10 +23,11 @@ const Background = styled.div`
 
 const Scroll = styled.div`
   position: absolute;
-  top: 30px;
-  width: 95%;
-  height: 85vh;
+  top: 18px;
+  width: calc(100% - 50px);
+  height: calc(100% - 92px);
   overflow-y: scroll;
+  border: solid 1px #979797;
   background-color: ${(p: {backgroundColor: string}) => p.backgroundColor || "#F9F9F9"};
 `;
 
@@ -40,7 +41,8 @@ const Row = styled.div`
 `;
 
 const Title = styled.span`
-  font-weight: 600;
+  font-weight: normal;
+  margin-top: -5px;
 `;
 
 @inject("stores")
