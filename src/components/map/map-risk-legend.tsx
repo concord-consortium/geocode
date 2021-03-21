@@ -80,7 +80,7 @@ const RiskLabel = styled.div`
 `;
 
 interface IProps {
-  onClick: any;
+  onClick: () => void;
 }
 
 interface IState {}

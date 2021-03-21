@@ -27,6 +27,7 @@ import { LatLngRegionDrawLayer } from "./layers/latlng-region-draw-layer";
 import { LatLngPointDrawLayer } from "./layers/latlng-point-draw-layer";
 import { MapGPSStationsLayer } from "./map-gps-stations-layer";
 import { ColorMethod } from "../../stores/seismic-simulation-store";
+import { MapDirectionTool } from "./map-direction-tool";
 
 interface WorkspaceProps {
   width: number;
@@ -57,6 +58,7 @@ const CanvDiv = styled.div`
 
 interface IState {
   moveMouse: boolean;
+  showDirection: boolean;
   showRuler: boolean;
   showKey: boolean;
   mapLeafletRef: any;
@@ -85,6 +87,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
 
     const initialState: IState = {
       moveMouse: false,
+      showDirection: false,
       showRuler: false,
       showKey: true,
       mapLeafletRef: null,
@@ -245,7 +248,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
         <LeafletMap
           className="map"
           ref={this.map}
-          onclick={this.onMapClick}
+          onclick={this.onMapSelect}
           ondragend={this.reRenderMap}
           onzoomend={this.reRenderMap}
           center={center}
@@ -376,29 +379,45 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           isSelectingSetRegion={isSelectingSetRegion}
           showCrossSection={hasErupted && showCrossSection && panelType === RightSectionTypes.CROSS_SECTION}
           onCrossSectionClick={this.stores.tephraSimulation.crossSectionClick}
-          onReCenterClick={this.onRecenterClick}
+          onReCenterClick={this.handleRecenterSelect}
+          onDirectionClick={this.handleDirectionButtonSelect}
         />
         { this.state.showKey
-          ? <KeyButton onClick={this.onKeyClick}/>
+          ? <KeyButton onClick={this.handleKeySelect}/>
           : <LegendComponent
-              onClick={this.onKeyButtonClick}
+              onClick={this.handleKeyButtonSelect}
               legendType={legendType}
               colorMethod={strainMapColorMethod as ColorMethod}
             />
+        }
+        { this.state.showDirection &&
+          <MapDirectionTool
+            onClose={this.handleDirectionToolClose}
+          />
         }
         <CompassComponent/>
       </CanvDiv>
     );
   }
 
-  private onKeyClick = () => {
+  private handleDirectionButtonSelect = () => {
+    this.setState(prevState => ({
+      showDirection: !prevState.showDirection
+    }));
+  }
+  private handleDirectionToolClose = () => {
+    this.setState({showDirection: false});
+  }
+
+  private handleKeySelect = () => {
     this.setState({showKey: false});
   }
-  private onKeyButtonClick = () => {
+
+  private handleKeyButtonSelect = () => {
     this.setState({showKey: true});
   }
 
-  private onRecenterClick = () => {
+  private handleRecenterSelect = () => {
     if (this.map.current) {
       const { name: unitName } = this.stores.unit;
 
@@ -421,7 +440,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       this.map.current.leafletElement.flyTo(L.latLng(centerLat, centerLng), initialZoom);
     }
   }
-  private onMapClick = (e: any) => {
+  private onMapSelect = (e: any) => {
     const { tephraSimulation } = this.stores;
     if (tephraSimulation.isSelectingSetRegion) {
       tephraSimulation.setPoint1Pos(e.latlng.lat, e.latlng.lng);
