@@ -1,4 +1,5 @@
 import * as React from "react";
+import Draggable from "react-draggable";
 import { BaseComponent } from "../base";
 import styled from "styled-components";
 import { Icon } from "../icon";
@@ -21,6 +22,7 @@ const DirectionContainer = styled.div`
   border-radius: 5px;
   box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.35);
   background-color: white;
+  z-index: 99;
 `;
 
 const DirectionTitle = styled.div`
@@ -32,6 +34,7 @@ const DirectionTitle = styled.div`
   width: 100%;
   height: 24px;
   background-color: #e6f2e4;
+  cursor: move;
 `;
 
 const SubTitle = styled.div`
@@ -90,6 +93,7 @@ const CloseIconContainer = styled(Icon)`
   &:active {
     fill: #e6f2e4;
   }
+  cursor: pointer;
 `;
 
 const ArrowIconContainer = styled(Icon)`
@@ -131,57 +135,59 @@ export class MapDirectionTool extends BaseComponent<IProps, IState> {
     const { onClose } = this.props;
     const { direction } = this.state;
     return (
-      <DirectionContainer>
-        <DirectionTitle>
-          Explore: Direction
-          <CloseIconContainer
-            width={12}
-            height={12}
-            fill={"#b7dcad"}
-            onClick={onClose}
-          >
-            <CloseIcon />
-          </CloseIconContainer>
-        </DirectionTitle>
-        <SubTitle>Direction from North in degrees</SubTitle>
-        <DirectionIcon />
-        <RotateDiv rotate={direction}>
-        <ArrowIconContainer width={14} height={44} fill={"#3387ff"}>
-          <ArrowIcon />
-        </ArrowIconContainer>
-        </RotateDiv>
-        <CurrentDirection>
-          Direction =
-          <Direction>{direction % 360}°</Direction>
-          from 0° (N)
-        </CurrentDirection>
-        <RangeControl
-          min={0}
-          max={360}
-          value={direction}
-          step={10}
-          tickMap={{
-            0: "0",
-            90: "90",
-            180: "180",
-            270: "270",
-            360: "0",
-          }}
-          width={150}
-          onChange={this.handleDirectionChange}
-          trackColor={"#3387ff"}
-          trackBorderColor={"#bbd9ff"}
-        />
-        <CardinalContainer>
-          <div>(N)</div>
-          <div>(E)</div>
-          <div>(S)</div>
-          <div>(W)</div>
-          <div>(N)</div>
-        </CardinalContainer>
-        <Instructions>Use the slider to move</Instructions>
-        <Instructions>the arrow from 0° (North).</Instructions>
-      </DirectionContainer>
+      <Draggable handle=".handle" bounds={"#reactApp"}>
+        <DirectionContainer>
+          <DirectionTitle className="handle">
+            Explore: Direction
+            <CloseIconContainer
+              width={12}
+              height={12}
+              fill={"#b7dcad"}
+              onClick={onClose}
+            >
+              <CloseIcon />
+            </CloseIconContainer>
+          </DirectionTitle>
+          <SubTitle>Direction from North in degrees</SubTitle>
+          <DirectionIcon />
+          <RotateDiv rotate={direction}>
+          <ArrowIconContainer width={14} height={44} fill={"#3387ff"}>
+            <ArrowIcon />
+          </ArrowIconContainer>
+          </RotateDiv>
+          <CurrentDirection>
+            Direction =
+            <Direction>{direction % 360}°</Direction>
+            from 0° (N)
+          </CurrentDirection>
+          <RangeControl
+            min={0}
+            max={360}
+            value={direction}
+            step={10}
+            tickMap={{
+              0: "0",
+              90: "90",
+              180: "180",
+              270: "270",
+              360: "0",
+            }}
+            width={150}
+            onChange={this.handleDirectionChange}
+            trackColor={"#3387ff"}
+            trackBorderColor={"#bbd9ff"}
+          />
+          <CardinalContainer>
+            <div>(N)</div>
+            <div>(E)</div>
+            <div>(S)</div>
+            <div>(W)</div>
+            <div>(N)</div>
+          </CardinalContainer>
+          <Instructions>Use the slider to move</Instructions>
+          <Instructions>the arrow from 0° (North).</Instructions>
+        </DirectionContainer>
+      </Draggable>
     );
   }
 
