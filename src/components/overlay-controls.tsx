@@ -1,10 +1,18 @@
 import * as React from "react";
+import RulerIcon from "../assets/map-icons/ruler.svg";
+import SetPointIcon from "../assets/map-icons/set-point.svg";
+import SetRegionIcon from "../assets/map-icons/set-region.svg";
 import IconButton from "./buttons/icon-button";
-import { RightSectionTypes, kRightTabInfo } from "./tabs";
 
 import "../css/overlay-controls.css";
 import { observer, inject } from "mobx-react";
 import { BaseComponent } from "./base";
+
+const kButtonColor = "white";
+const kButtonSelectedColor = "#cee6c9";
+const kButtonHoverColor = "#cee6c9";
+const kButtonSelectedHoverColor = "#b7dcad";
+const kButtonActiveColor = "#e6f2e4";
 
 interface IProps {
     showRuler: boolean;
@@ -42,17 +50,6 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
             onReCenterClick} = this.props;
         const { hasErupted } = this.stores.tephraSimulation;
 
-        const rulerColor = showRuler ? kRightTabInfo[RightSectionTypes.CONDITIONS].hoverBackgroundColor : "white";
-        const selectingLatLngPtColor = isSelectingSetPoint
-                               ? kRightTabInfo[RightSectionTypes.CROSS_SECTION].hoverBackgroundColor
-                               : "white";
-        const selectingLatLngRegionColor = isSelectingSetRegion
-                               ? kRightTabInfo[RightSectionTypes.CROSS_SECTION].hoverBackgroundColor
-                               : "white";
-        const selectingColor = isSelectingCrossSection
-                               ? kRightTabInfo[RightSectionTypes.CROSS_SECTION].hoverBackgroundColor
-                               : "white";
-
         return (
             <div className="overlay-controls">
                 <div className="controls bottom left">
@@ -60,44 +57,45 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
                         onClick={onReCenterClick}
                         disabled={false}
                         label={"Re-center"}
-                        hoverColor={kRightTabInfo[RightSectionTypes.CONDITIONS].hoverBackgroundColor}
-                        activeColor={kRightTabInfo[RightSectionTypes.CONDITIONS].backgroundColor}
+                        hoverColor={kButtonHoverColor}
+                        activeColor={kButtonActiveColor}
                         fill={"black"}
-                        width={26}
-                        height={26}
                         dataTest={"Re-center-button"}
                     />
                     {isTephraUnit && <IconButton
+                        children={<RulerIcon />}
                         onClick={onRulerClick}
                         disabled={false}
                         label={"Ruler"}
-                        backgroundColor={rulerColor}
-                        hoverColor={kRightTabInfo[RightSectionTypes.CONDITIONS].hoverBackgroundColor}
-                        activeColor={kRightTabInfo[RightSectionTypes.CONDITIONS].backgroundColor}
+                        backgroundColor={showRuler ? kButtonSelectedColor : kButtonColor}
+                        hoverColor={showRuler ? kButtonSelectedHoverColor : kButtonHoverColor}
+                        activeColor={kButtonActiveColor}
                         fill={"black"}
                         width={26}
                         height={26}
                         dataTest={"Ruler-button"}
                     />}
                     {isSeismicUnit && <IconButton
+                        children={<SetPointIcon />}
                         onClick={onSetPointClick}
                         disabled={false}
                         label={"Set Point"}
-                        backgroundColor={selectingLatLngPtColor}
-                        hoverColor={kRightTabInfo[RightSectionTypes.CONDITIONS].hoverBackgroundColor}
-                        activeColor={kRightTabInfo[RightSectionTypes.CONDITIONS].backgroundColor}
+                        backgroundColor={isSelectingSetPoint ? kButtonSelectedColor : kButtonColor}
+                        hoverColor={isSelectingSetPoint ? kButtonSelectedHoverColor : kButtonHoverColor}
+                        activeColor={kButtonActiveColor}
                         fill={"black"}
-                        width={26}
-                        height={26}
+                        width={16}
+                        height={16}
                         dataTest={"Latlng-point-button"}
                     />}
                     {isSeismicUnit && <IconButton
+                        children={<SetRegionIcon />}
                         onClick={onSetRegionClick}
                         disabled={false}
                         label={"Set Region"}
-                        backgroundColor={selectingLatLngRegionColor}
-                        hoverColor={kRightTabInfo[RightSectionTypes.CONDITIONS].hoverBackgroundColor}
-                        activeColor={kRightTabInfo[RightSectionTypes.CONDITIONS].backgroundColor}
+                        backgroundColor={isSelectingSetRegion ? kButtonSelectedColor : kButtonColor}
+                        hoverColor={isSelectingSetRegion ? kButtonSelectedHoverColor : kButtonHoverColor}
+                        activeColor={kButtonActiveColor}
                         fill={"black"}
                         width={26}
                         height={26}
@@ -110,9 +108,9 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
                         onClick={onCrossSectionClick}
                         disabled={false}
                         label={"Draw a cross section line"}
-                        backgroundColor={selectingColor}
-                        hoverColor={kRightTabInfo[RightSectionTypes.CROSS_SECTION].hoverBackgroundColor}
-                        activeColor={kRightTabInfo[RightSectionTypes.CROSS_SECTION].backgroundColor}
+                        backgroundColor={isSelectingCrossSection ? kButtonSelectedColor : kButtonColor}
+                        hoverColor={isSelectingCrossSection ? kButtonSelectedHoverColor : kButtonHoverColor}
+                        activeColor={kButtonActiveColor}
                         fill={"black"}
                         width={26}
                         height={26}
