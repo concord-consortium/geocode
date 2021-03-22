@@ -1,10 +1,10 @@
 import * as React from "react";
 import { PureComponent } from "react";
 import styled from "styled-components";
-import { Icon } from "../icon";
 import CloseIcon from "../../assets/map-icons/close.svg";
 import { isNumber } from "util";
 import { RiskLevels } from "../montecarlo/monte-carlo";
+import { AbsoluteIcon } from "./map-tephra-legend";
 
 const LegendContainer = styled.div`
   display: flex;
@@ -19,32 +19,23 @@ const LegendTitleText = styled.div`
   margin: 5px 11px 2px 11px;
   color: #434343;
   font-size: 14px;
+  font-weight: normal;
   width: 105px;
   height: 20px;
   box-sizing: border-box;
   text-align: center;
 `;
+
 const LegendTitleSubText = styled.div`
-  margin: 2px 11px 2px 11px;
+  margin: 2px 11px 5px 11px;
   color: #434343;
   font-size: 11px;
+  font-weight: normal;
   width: 120px;
   height: 30px;
   box-sizing: border-box;
   text-align: center;
   font-style: italic;
-`;
-
-const AbsoluteIcon = styled(Icon)`
-  position: absolute;
-  top: 2px;
-  right: 6px;
-  &:hover {
-    fill: #75cd75;
-  }
-  &:active {
-    fill: #e6f2e4;
-  }
 `;
 
 const RiskContainer = styled.div`
@@ -53,7 +44,7 @@ const RiskContainer = styled.div`
   align-items: center;
   width: 140px;
   height: 34px;
-  margin-top: 5px;
+  margin-bottom: 5px;
 `;
 
 interface RiskDiamondProps {
@@ -84,6 +75,8 @@ export const RiskDiamondText = styled.div`
 const RiskLabel = styled.div`
   color: #434343;
   font-size: 12px;
+  font-weight: normal;
+  margin-left: -3px;
 `;
 
 interface IProps {
@@ -104,12 +97,12 @@ export default class RiskLegendComponent extends PureComponent<IProps, IState> {
         <LegendTitleText>Risk Level</LegendTitleText>
         <LegendTitleSubText>Determined by percents exceeding threshold</LegendTitleSubText>
         <AbsoluteIcon
-          width={12}
-          height={12}
+          width={28}
+          height={28}
           fill={"#b7dcad"}
           onClick={onClick}
         >
-          <CloseIcon />
+          <CloseIcon width={12} height={12} />
         </AbsoluteIcon>
         {RiskLevels.map((riskLevel, index) => {
             return (
@@ -120,8 +113,8 @@ export default class RiskLegendComponent extends PureComponent<IProps, IState> {
                   </RiskDiamondText>
                 </RiskDiamond>
                 { isNumber(riskLevel.max) && isNumber(riskLevel.min)
-                  ? <RiskLabel>{`${riskLevel.type} (${riskLevel.min}-${riskLevel.max}%)`}</RiskLabel>
-                  : <RiskLabel>{riskLevel.type}</RiskLabel>
+                  ? <RiskLabel>{`- ${riskLevel.type} (${riskLevel.min}-${riskLevel.max}%)`}</RiskLabel>
+                  : <RiskLabel>{`- ${riskLevel.type}`}</RiskLabel>
                 }
               </RiskContainer>
             );
@@ -129,5 +122,4 @@ export default class RiskLegendComponent extends PureComponent<IProps, IState> {
       </LegendContainer>
     );
   }
-
 }
