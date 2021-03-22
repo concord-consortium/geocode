@@ -4,6 +4,25 @@ import { ChartType } from "../../stores/charts-store";
 
 type Scale = d3.ScaleLinear<number, number> | d3.ScaleTime<number, number>;
 
+interface FadeColor {
+  color: string;
+  max: number;
+}
+
+const kLegendMiddleValue = "3,500";
+const kLegendMaxValue = "7,179";
+
+const fadeColors: FadeColor[] = [
+  { color: "#00248f", max: 1001 },
+  { color: "#6e08b7", max: 2000 },
+  { color: "#ac19ab", max: 3000 },
+  { color: "#dc3d8c", max: 4000 },
+  { color: "#ff6900", max: 5000 },
+  { color: "#ff9d0b", max: 6000 },
+  { color: "#ffc92c", max: 7000 },
+  { color: "#f2f659", max: 7179 }
+];
+
 interface IProps {
   chart: ChartType;
   width: number;
@@ -11,7 +30,6 @@ interface IProps {
 }
 
 export const SvgD3ScatterChart = (props: IProps) => {
-
   const calculateChartDimensions = (_xRange: number, _yRange: number) => {
     const _chart = props.chart;
     const _width = props.width;
@@ -118,10 +136,9 @@ export const SvgD3ScatterChart = (props: IProps) => {
       .text(yAxisLabel);
   }
 
-  const colorLerp = (d3.scaleLinear().domain([0, data.length]) as any).range(["white", "#448878"]);
-  const color = fadeIn ?
-    (d: number, i: number) => colorLerp(i) :
-    "#448878";
+  const color = fadeIn
+    ? (d: number, i: number) => getFadeColor(i)
+    : "#448878";
 
   svg.append("g")
     .selectAll("dot")
@@ -130,7 +147,7 @@ export const SvgD3ScatterChart = (props: IProps) => {
     .append("circle")
       .attr("cx", d => xScale((d as number[] | Date[])[0]) )
       .attr("cy", d => yScale((d as number[] | Date[])[1]) )
-      .attr("r", 1.5)
+      .attr("r", fadeIn ? 2 : 1.5)
       .style("fill", (color as any));
 
   if (fadeIn) {
@@ -143,19 +160,32 @@ export const SvgD3ScatterChart = (props: IProps) => {
 type SVG = d3.Selection<SVGElement, unknown, null, undefined>;
 interface Margin {left: number; top: number; right: number; bottom: number; }
 
+export const getFadeColor = (index: number) => {
+  const fadeColor = fadeColors.find((item) => index <= item.max);
+  return fadeColor
+    ? fadeColor.color
+    : index < 0 ? fadeColors[0].color : fadeColors[fadeColors.length - 1].color;
+};
+
 // This is hard-coded to the Day legend right now, but would be simple to generalize
 export function addFadeLegend(svg: SVG, data: any[], chartWidth: number, margin: Margin) {
-  const legendSteps = 100;
+  const legendSteps = 98;
   const legendWidth = 25;
   const legendHeight = 80;
   const legendRightPadding = 30;
-  const legendColorLerp = (d3.scaleLinear().domain([0, legendSteps]) as any).range(["#448878", "white"]);
+  const gradientIncrements = [];
+  for (let x = 0; x < fadeColors.length; x++) {
+    gradientIncrements.push(legendSteps / (fadeColors.length - 1) * x);
+  }
+  const legendColorLerp = (d3.scaleLinear().domain(gradientIncrements) as any)
+    .range(fadeColors.map((item) => item.color).reverse());
+
   const legend = svg.append("g")
     .attr("transform", "translate(" + (chartWidth - legendWidth - legendRightPadding) + "," + margin.top + ")");
 
   legend.append("text")
     .attr("x", legendWidth / 2)
-    .attr("y", -5)
+    .attr("y", 0)
     .style("text-anchor", "middle")
     .style("font-size", "0.9em")
     .style("fill", "#555")
@@ -163,7 +193,7 @@ export function addFadeLegend(svg: SVG, data: any[], chartWidth: number, margin:
 
   legend.append("rect")
     .attr("x", 0)
-    .attr("y", 0)
+    .attr("y", 5)
     .attr("width", legendWidth)
     .attr("height", legendHeight)
     .style("stroke", "black")
@@ -175,7 +205,7 @@ export function addFadeLegend(svg: SVG, data: any[], chartWidth: number, margin:
     .enter()
     .append("rect")
       .attr("x", 0)
-      .attr("y", (d, i) => (i / legendSteps) * legendHeight)
+      .attr("y", (d, i) => 5 + (i / legendSteps) * legendHeight)
       .attr("width", legendWidth)
       .attr("height", (legendHeight / legendSteps))
       .style("stroke", "none")
@@ -183,19 +213,19 @@ export function addFadeLegend(svg: SVG, data: any[], chartWidth: number, margin:
 
   legend.append("text")
     .attr("x", legendWidth + 4)
-    .attr("y", 5)
+    .attr("y", 10)
     .style("font-size", "0.6em")
     .style("fill", "#555")
-    .text(data.length);
+    .text(kLegendMaxValue);
   legend.append("text")
     .attr("x", legendWidth + 4)
-    .attr("y", (legendHeight / 2) + 3)
+    .attr("y", (legendHeight / 2) + 8)
     .style("font-size", "0.6em")
     .style("fill", "#555")
-    .text(Math.round(data.length / 2));
+    .text(kLegendMiddleValue);
   legend.append("text")
     .attr("x", legendWidth + 4)
-    .attr("y", legendHeight + 3)
+    .attr("y", legendHeight + 8)
     .style("font-size", "0.6em")
     .style("fill", "#555")
     .text("0");
