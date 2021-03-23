@@ -158,7 +158,7 @@ export class MapDirectionTool extends BaseComponent<IProps, IState> {
           <CurrentDirection>
             Direction =
             <Direction>{direction % 360}°</Direction>
-            from 0° (N)
+            from N
           </CurrentDirection>
           <RangeControl
             min={0}
@@ -185,7 +185,7 @@ export class MapDirectionTool extends BaseComponent<IProps, IState> {
             <div>(N)</div>
           </CardinalContainer>
           <Instructions>Use the slider to move</Instructions>
-          <Instructions>the arrow from 0° (North).</Instructions>
+          <Instructions>the arrow from North.</Instructions>
         </DirectionContainer>
       </Draggable>
     );
