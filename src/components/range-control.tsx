@@ -23,17 +23,19 @@ const railInnerStyle: CSSProperties = {
   transform: "translate(0%, -50%)",
   borderRadius: 7,
   pointerEvents: "none",
-  backgroundColor: "#FFAC00",
   borderWidth: "1px",
-  borderColor: "#FFDBAC",
   borderStyle: "solid"
 };
 
-function SliderRail({ getRailProps }: { getRailProps: () => void }) {
+function SliderRail({ getRailProps, backgroundColor, borderColor }: any) {
+  const railStyle = {...railInnerStyle,
+    backgroundColor: backgroundColor || "#FFAC00",
+    borderColor: borderColor || "#FFDBAC"
+  };
   return (
     <React.Fragment>
       <div style={railOuterStyle} {...getRailProps()} data-test="slider-rail"/>
-      <div style={railInnerStyle} />
+      <div style={railStyle} />
     </React.Fragment>
   );
 }
@@ -214,6 +216,8 @@ interface IProps {
   tickMap?: {[k: number]: string};
   width: number;
   onChange: (value: number) => void;
+  trackColor?: string;
+  trackBorderColor?: string;
 }
 
 interface IState {}
@@ -236,7 +240,9 @@ class RangeControl extends React.Component<IProps, IState> {
       tickArray,
       tickStep,
       tickMap,
-      width
+      width,
+      trackColor,
+      trackBorderColor
     } = this.props;
 
     const values = [value];
@@ -269,7 +275,8 @@ class RangeControl extends React.Component<IProps, IState> {
           values={values}
         >
           <Rail>
-            {({ getRailProps }) => <SliderRail getRailProps={getRailProps} />}
+            {({ getRailProps }) =>
+              <SliderRail getRailProps={getRailProps} backgroundColor={trackColor} borderColor={trackBorderColor}/>}
           </Rail>
           <Handles>
             {({ handles, getHandleProps }) => (

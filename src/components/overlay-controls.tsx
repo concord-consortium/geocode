@@ -3,7 +3,7 @@ import RulerIcon from "../assets/map-icons/ruler.svg";
 import SetPointIcon from "../assets/map-icons/set-point.svg";
 import SetRegionIcon from "../assets/map-icons/set-region.svg";
 import IconButton from "./buttons/icon-button";
-
+import ExploreIcon from "../assets/map-icons/explore.svg";
 import "../css/overlay-controls.css";
 import { observer, inject } from "mobx-react";
 import { BaseComponent } from "./base";
@@ -22,9 +22,11 @@ interface IProps {
     isSelectingCrossSection: boolean;
     isSelectingSetPoint: boolean;
     isSelectingSetRegion: boolean;
+    isSelectingDirection: boolean;
     showCrossSection: boolean;
     onCrossSectionClick: () => void;
     onReCenterClick: () => void;
+    onDirectionClick: () => void;
 }
 
 interface IState {}
@@ -47,7 +49,9 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
             isSelectingSetRegion,
             showCrossSection,
             onCrossSectionClick,
-            onReCenterClick} = this.props;
+            onReCenterClick,
+            onDirectionClick,
+            isSelectingDirection } = this.props;
         const { hasErupted } = this.stores.tephraSimulation;
 
         return (
@@ -114,6 +118,19 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
                         fill={"black"}
                         width={26}
                         height={26}
+                    />}
+                    {isSeismicUnit && <IconButton
+                        onClick={onDirectionClick}
+                        children={<ExploreIcon />}
+                        disabled={false}
+                        label={"Direction"}
+                        backgroundColor={isSelectingDirection ? kButtonSelectedColor : kButtonColor}
+                        hoverColor={isSelectingDirection ? kButtonSelectedHoverColor : kButtonHoverColor}
+                        activeColor={kButtonActiveColor}
+                        fill={"black"}
+                        width={26}
+                        height={26}
+                        dataTest={"directionb-button"}
                     />}
                 </div>
             </div>
