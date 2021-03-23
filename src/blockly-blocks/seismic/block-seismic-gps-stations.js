@@ -165,7 +165,7 @@ Blockly.JavaScript['seismic_filter_data'] = function (block) {
   let filterObj = JSON.stringify(filter);
   filterObj = filterObj.replace(/"([^"]+)":/g, '$1:')
 
-  var code = `filter({dataset: ${dataset}, filter: ${filterObj}})`
+  var code = `filter({dataset: ${dataset}, filter: ${filterObj}, useDirectionTo: ${true}})`
   // TODO: Change ORDER_NONE to the correct strength.
   return [code, Blockly.JavaScript.ORDER_NONE]
 }
