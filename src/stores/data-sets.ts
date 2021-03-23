@@ -94,7 +94,7 @@ export const Datasets = {
 
   getGPSPositionTimeData(name: string, timeRange?: TimeRange) {
     const dataSet = (PositionTimeDataSets as any)[name] as Dataset;
-    let filteredDataSet = [...dataSet];
+    let filteredDataSet = Array.isArray(dataSet) ? [...dataSet] : dataSet;
     if (timeRange) {
       if (timeRange.from) {
         filteredDataSet = filteredDataSet.filter(d => (d.Date as Date) >= timeRange.from!);
