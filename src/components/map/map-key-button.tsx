@@ -25,6 +25,7 @@ const KeyButtonContainer = styled.div`
   &:active {
     background-color: #e6f2e4;
   }
+  cursor: pointer;
 `;
 
 const KeyButtonText = styled.div`

@@ -29,6 +29,7 @@ const IconButtonContainer = styled.div`
     background-color: ${(p: IconButtonContainerProps) => p.activeColor};
   }
   font-size: ${(p: IconButtonContainerProps) => p.fontSize || "16px"};
+  cursor: pointer;
 `;
 
 const IconButtonText = styled.div`

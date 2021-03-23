@@ -14,9 +14,10 @@ const LegendContainer = styled.div`
 `;
 
 const LegendTitleText = styled.div`
-  margin: 5px 11px 2px 11px;
+  margin: 5px 11px 2px 0;
   color: #434343;
   font-size: 14px;
+  font-weight: normal;
   width: 105px;
   height: 20px;
   box-sizing: border-box;
@@ -27,21 +28,31 @@ export const GPSContainer = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
-  width: 97px;
+  width: 108px;
   margin-top: 8px;
 `;
 
 export const GPSLabel = styled.div`
   color: #434343;
   font-size: 12px;
+  font-weight: normal;
   flex: 1;
+  margin-left: 7px;
+  text-indent: -7px;
+`;
+
+export const GPSCircleContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 26px;
 `;
 
 export interface GPSCircleProps {
-    radius: number;
-    fill: string;
-    strokeWeight: number;
-    strokeColor: string;
+  radius: number;
+  fill: string;
+  strokeWeight: number;
+  strokeColor: string;
 }
 export const GPSCircle = styled.div`
   border-radius: 50%;
@@ -56,58 +67,63 @@ export const GPSCircle = styled.div`
 `;
 
 interface IProps {
-    onClick: any;
+  onClick: any;
 }
 
 interface IState {}
 
 export default class GPSLegendComponent extends PureComponent<IProps, IState> {
-    public static defaultProps = {
-        onClick: undefined,
-    };
+  public static defaultProps = {
+    onClick: undefined,
+  };
 
-    public render() {
-        const { onClick } = this.props;
-
-        return(
-            <LegendContainer>
-                <LegendTitleText>GPS Stations</LegendTitleText>
-                <AbsoluteIcon
-                    width={12}
-                    height={12}
-                    fill={"#b7dcad"}
-                    onClick={onClick}
-                >
-                    <CloseIcon />
-                </AbsoluteIcon>
-                <GPSContainer>
-                    <GPSCircle
-                        radius={7}
-                        fill={"#98E643"}
-                        strokeColor={"#9c9c9c"}
-                        strokeWeight={2}
-                    />
-                    <GPSLabel>GPS station without past position data</GPSLabel>
-                </GPSContainer>
-                <GPSContainer>
-                    <GPSCircle
-                        radius={7}
-                        fill={"#37cfff"}
-                        strokeColor={"#9c9c9c"}
-                        strokeWeight={2}
-                    />
-                    <GPSLabel>GPS station with past position data</GPSLabel>
-                </GPSContainer>
-                <GPSContainer>
-                    <GPSCircle
-                        radius={9}
-                        fill={"#DDEDFF"}
-                        strokeColor={"#434343"}
-                        strokeWeight={3}
-                    />
-                    <GPSLabel>Selected GPS station</GPSLabel>
-                </GPSContainer>
-            </LegendContainer>
-        );
-    }
+  public render() {
+    const { onClick } = this.props;
+    return (
+      <LegendContainer>
+        <LegendTitleText>GPS Stations</LegendTitleText>
+        <AbsoluteIcon
+          width={28}
+          height={28}
+          fill={"#b7dcad"}
+          onClick={onClick}
+        >
+          <CloseIcon width={12} height={12} />
+        </AbsoluteIcon>
+        <GPSContainer>
+        <GPSCircleContainer>
+          <GPSCircle
+            radius={7}
+            fill={"#98E643"}
+            strokeColor={"#9c9c9c"}
+            strokeWeight={2}
+          />
+        </GPSCircleContainer>
+        <GPSLabel>- GPS station <span style={{fontWeight: "bold"}}>without</span> past position data</GPSLabel>
+        </GPSContainer>
+        <GPSContainer>
+          <GPSCircleContainer>
+          <GPSCircle
+            radius={7}
+            fill={"#37cfff"}
+            strokeColor={"#9c9c9c"}
+            strokeWeight={2}
+          />
+          </GPSCircleContainer>
+          <GPSLabel>- GPS station <span style={{fontWeight: "bold"}}>with</span> past position data</GPSLabel>
+        </GPSContainer>
+        <GPSContainer>
+          <GPSCircleContainer>
+            <GPSCircle
+              radius={9}
+              fill={"#DDEDFF"}
+              strokeColor={"#434343"}
+              strokeWeight={3}
+            />
+          </GPSCircleContainer>
+          <GPSLabel>- Selected GPS station</GPSLabel>
+        </GPSContainer>
+      </LegendContainer>
+    );
+  }
 }

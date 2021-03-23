@@ -1,8 +1,8 @@
 import * as React from "react";
 import { PureComponent } from "react";
+import styled from "styled-components";
 import CloseIcon from "../../assets/map-icons/close.svg";
-import { LegendContainer, LegendTitleText, AbsoluteIcon,
-  TephraContainer, TephraBox, TephraLabel } from "./map-tephra-legend";
+import { LegendContainer, AbsoluteIcon, TephraContainer, TephraBox, TephraLabel } from "./map-tephra-legend";
 import { ColorMethod } from "../../stores/seismic-simulation-store";
 
 // actual data ranges from 0 to 127000, but with only 4 values above 160
@@ -13,6 +13,17 @@ const MIN_LOG_STRAIN = Math.log10(0.00001);
 const MAX_LOG_STRAIN = Math.log10(1000);
 
 const buckets = 7;
+
+export const LegendTitleText = styled.div`
+  margin: 5px 11px 2px 5px;
+  color: #434343;
+  font-size: 14px;
+  font-weight: normal;
+  width: 80px;
+  height: 34px;
+  box-sizing: border-box;
+  text-align: center;
+`;
 
 export interface StrainRange {
   color: string;
@@ -93,27 +104,25 @@ export default class StrainLegendComponent extends PureComponent<IProps, IState>
       <LegendContainer>
         <LegendTitleText>Strain rate{isLog ? " (log)" : ""}</LegendTitleText>
         <AbsoluteIcon
-          width={12}
-          height={12}
+          width={28}
+          height={28}
           fill={"#b7dcad"}
           onClick={onClick}
         >
-          <CloseIcon />
+          <CloseIcon width={12} height={12} />
         </AbsoluteIcon>
         {ranges.map((range, index) => {
             return (
               <TephraContainer key={index} data-test="tephra-key">
                 <TephraBox backgroundColor={range.color}/>
                 { range.max
-                  ? <TephraLabel>{` ${round(range.min)}—${round(range.max)}`}</TephraLabel>
-                  : <TephraLabel>{` >${round(range.min)}`}</TephraLabel>
+                  ? <TephraLabel>{`- ${round(range.min)}—${round(range.max)}`}</TephraLabel>
+                  : <TephraLabel>{`- >${round(range.min)}`}</TephraLabel>
                 }
               </TephraContainer>
             );
         })}
-
       </LegendContainer>
     );
   }
-
 }
