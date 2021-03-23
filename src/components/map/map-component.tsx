@@ -377,6 +377,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           isSelectingCrossSection={isSelectingCrossSection}
           isSelectingSetPoint={isSelectingSetPoint}
           isSelectingSetRegion={isSelectingSetRegion}
+          isSelectingDirection={this.state.showDirection}
           showCrossSection={hasErupted && showCrossSection && panelType === RightSectionTypes.CROSS_SECTION}
           onCrossSectionClick={this.stores.tephraSimulation.crossSectionClick}
           onReCenterClick={this.handleRecenterSelect}

@@ -22,6 +22,7 @@ interface IProps {
     isSelectingCrossSection: boolean;
     isSelectingSetPoint: boolean;
     isSelectingSetRegion: boolean;
+    isSelectingDirection: boolean;
     showCrossSection: boolean;
     onCrossSectionClick: () => void;
     onReCenterClick: () => void;
@@ -49,7 +50,8 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
             showCrossSection,
             onCrossSectionClick,
             onReCenterClick,
-            onDirectionClick } = this.props;
+            onDirectionClick,
+            isSelectingDirection } = this.props;
         const { hasErupted } = this.stores.tephraSimulation;
 
         return (
@@ -122,8 +124,8 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
                         children={<ExploreIcon />}
                         disabled={false}
                         label={"Direction"}
-                        backgroundColor={isSelectingCrossSection ? kButtonSelectedColor : kButtonColor}
-                        hoverColor={isSelectingCrossSection ? kButtonSelectedHoverColor : kButtonHoverColor}
+                        backgroundColor={isSelectingDirection ? kButtonSelectedColor : kButtonColor}
+                        hoverColor={isSelectingDirection ? kButtonSelectedHoverColor : kButtonHoverColor}
                         activeColor={kButtonActiveColor}
                         fill={"black"}
                         width={26}
