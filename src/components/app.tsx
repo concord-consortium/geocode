@@ -50,7 +50,8 @@ const App = styled.div`
     flex-direction: row;
     height: 100vh;
     background-color: #ffffff;
-    overflow-x: hidden;
+    min-width: 1100px;
+    overflow-x: auto;
 `;
 
 const Row = styled.div`
@@ -71,6 +72,7 @@ const BottomBar = styled.div`
   display: flex;
   width: 100%;
   flex-direction: row;
+  position: relative;
 `;
 
 const TabsContainer = styled.div`
@@ -489,11 +491,11 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 />
               </TabPanel>
             }
-            <RightTabBack
-              width={tabWidth}
-              backgroundcolor={this.getRightTabColor(currentRightTabType, unitName)}
-            />
             <BottomBar>
+              <RightTabBack
+                width={tabWidth}
+                backgroundcolor={this.getRightTabColor(currentRightTabType, unitName)}
+              />
               <TabsContainer>
                 <TabList>
                   { showConditions &&
