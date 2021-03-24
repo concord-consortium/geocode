@@ -69,9 +69,9 @@ export class GPSStationTable extends BaseComponent<IProps, IState> {
     let lastRecord = "N/A";
     let datesClass = "na";
     const positionData = Datasets.getGPSPositionTimeData(station.id);
-    if (positionData) {
-      installed = (positionData[0].Date as Date).toLocaleDateString("en-US");
-      lastRecord = (positionData[positionData.length - 1].Date as Date).toLocaleDateString("en-US");
+    if (positionData.data) {
+      installed = (positionData.data[0].Date as Date).toLocaleDateString("en-US");
+      lastRecord = (positionData.data[positionData.data.length - 1].Date as Date).toLocaleDateString("en-US");
       datesClass = "";
     }
 
