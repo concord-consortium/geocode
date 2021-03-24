@@ -18,7 +18,6 @@ import { MapTriangulatedStrainLayer } from "./map-triangulated-strain-layer";
 import { OverlayControls } from "../overlay-controls";
 import { RulerDrawLayer } from "./layers/ruler-draw-layer";
 import { RightSectionTypes } from "../tabs";
-import CompassComponent from "./map-compass";
 import { SamplesCollectionModelType, SamplesLocationModelType } from "../../stores/samples-collections-store";
 import { RiskLevels } from "../montecarlo/monte-carlo";
 import { LatLngRegionDrawLayer } from "./layers/latlng-region-draw-layer";
@@ -377,7 +376,6 @@ export class MapComponent extends BaseComponent<IProps, IState>{
             onClose={this.handleDirectionToolClose}
           />
         }
-        <CompassComponent/>
       </CanvDiv>
     );
   }

@@ -10,6 +10,7 @@ import KeyButton from "./map/map-key-button";
 import { RightSectionTypes } from "./tabs";
 import { LegendComponent, LegendType } from "./map/map-legend";
 import { ColorMethod } from "../stores/seismic-simulation-store";
+import CompassComponent from "./map/map-compass";
 import "../css/overlay-controls.css";
 
 const kButtonColor = "white";
@@ -163,6 +164,7 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
                 colorMethod={strainMapColorMethod as ColorMethod}
               />
           }
+          <CompassComponent/>
         </div>
       </div>
     );

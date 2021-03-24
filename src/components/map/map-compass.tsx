@@ -9,8 +9,8 @@ const CompassContainer = styled.div`
   justify-content: center;
   align-items: center;
   position: absolute;
-  top: 19px;
-  right: 12px;
+  top: -10px;
+  right: -24px;
 `;
 
 const CompassText = styled.div`
