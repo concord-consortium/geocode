@@ -50,7 +50,7 @@ const App = styled.div`
     flex-direction: row;
     height: 100vh;
     background-color: #ffffff;
-    min-width: 1100px;
+    min-width: 800px;
     overflow-x: auto;
 `;
 
