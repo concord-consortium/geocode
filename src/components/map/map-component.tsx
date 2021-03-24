@@ -18,15 +18,12 @@ import { MapTriangulatedStrainLayer } from "./map-triangulated-strain-layer";
 import { OverlayControls } from "../overlay-controls";
 import { RulerDrawLayer } from "./layers/ruler-draw-layer";
 import { RightSectionTypes } from "../tabs";
-import KeyButton from "./map-key-button";
 import CompassComponent from "./map-compass";
-import { LegendComponent, LegendType } from "./map-legend";
 import { SamplesCollectionModelType, SamplesLocationModelType } from "../../stores/samples-collections-store";
 import { RiskLevels } from "../montecarlo/monte-carlo";
 import { LatLngRegionDrawLayer } from "./layers/latlng-region-draw-layer";
 import { LatLngPointDrawLayer } from "./layers/latlng-point-draw-layer";
 import { MapGPSStationsLayer } from "./map-gps-stations-layer";
-import { ColorMethod } from "../../stores/seismic-simulation-store";
 import { MapDirectionTool } from "./map-direction-tool";
 
 interface WorkspaceProps {
@@ -60,7 +57,6 @@ interface IState {
   moveMouse: boolean;
   showDirection: boolean;
   showRuler: boolean;
-  showKey: boolean;
   mapLeafletRef: any;
 }
 
@@ -89,7 +85,6 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       moveMouse: false,
       showDirection: false,
       showRuler: false,
-      showKey: true,
       mapLeafletRef: null,
     };
     this.handleDragMove = this.handleDragMove.bind(this);
@@ -139,9 +134,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
 
   public render() {
     const { width, height, panelType } = this.props;
-
     const { name: unitName } = this.stores.unit;
-
     const isTephraUnit = unitName === "Tephra";
 
     const {
@@ -158,7 +151,6 @@ export class MapComponent extends BaseComponent<IProps, IState>{
 
     const {
       scenario: seismicScenario,
-      strainMapColorMethod,
     } = this.stores.seismicSimulation;
 
     const scenario = isTephraUnit ? tephraScenario : seismicScenario;
@@ -166,10 +158,6 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     const { showCrossSection } = this.stores.uiStore;
 
     const scenarioData = (Scenarios as {[key: string]: Scenario})[scenario];
-
-    const legendType: LegendType = isTephraUnit ?
-                        (panelType !== RightSectionTypes.MONTE_CARLO ? "Tephra" : "Risk") :
-                        "Strain";
 
     const {
       initialZoom,
@@ -248,7 +236,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
         <LeafletMap
           className="map"
           ref={this.map}
-          onclick={this.onMapSelect}
+          onclick={this.handleMapSelect}
           ondragend={this.reRenderMap}
           onzoomend={this.reRenderMap}
           center={center}
@@ -382,15 +370,8 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           onCrossSectionClick={this.stores.tephraSimulation.crossSectionClick}
           onReCenterClick={this.handleRecenterSelect}
           onDirectionClick={this.handleDirectionButtonSelect}
+          panelType={panelType}
         />
-        { this.state.showKey
-          ? <KeyButton onClick={this.handleKeySelect}/>
-          : <LegendComponent
-              onClick={this.handleKeyButtonSelect}
-              legendType={legendType}
-              colorMethod={strainMapColorMethod as ColorMethod}
-            />
-        }
         { this.state.showDirection &&
           <MapDirectionTool
             onClose={this.handleDirectionToolClose}
@@ -410,38 +391,24 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     this.setState({showDirection: false});
   }
 
-  private handleKeySelect = () => {
-    this.setState({showKey: false});
-  }
-
-  private handleKeyButtonSelect = () => {
-    this.setState({showKey: true});
-  }
-
   private handleRecenterSelect = () => {
     if (this.map.current) {
       const { name: unitName } = this.stores.unit;
-
       const isTephraUnit = unitName === "Tephra";
-
       const {
         scenario: tephraScenario,
       } = this.stores.tephraSimulation;
-
       const {
         scenario: seismicScenario
       } = this.stores.seismicSimulation;
-
       const scenario = isTephraUnit ? tephraScenario : seismicScenario;
-
       const scenarioData = (Scenarios as {[key: string]: Scenario})[scenario];
-
       const { initialZoom, centerLat, centerLng } = scenarioData;
-
       this.map.current.leafletElement.flyTo(L.latLng(centerLat, centerLng), initialZoom);
     }
   }
-  private onMapSelect = (e: any) => {
+
+  private handleMapSelect = (e: any) => {
     const { tephraSimulation } = this.stores;
     if (tephraSimulation.isSelectingSetRegion) {
       tephraSimulation.setPoint1Pos(e.latlng.lat, e.latlng.lng);

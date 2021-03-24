@@ -10,8 +10,8 @@ const KeyButtonContainer = styled.div`
   align-items: center;
   position: absolute;
   box-sizing: border-box;
-  top: 35px;
-  right: 38px;
+  top: 0;
+  right: 0;
   width: 71px;
   height: 34px;
   border-radius: 5px;

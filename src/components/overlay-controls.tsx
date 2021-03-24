@@ -1,12 +1,16 @@
 import * as React from "react";
+import { observer, inject } from "mobx-react";
+import { BaseComponent } from "./base";
 import RulerIcon from "../assets/map-icons/ruler.svg";
 import SetPointIcon from "../assets/map-icons/set-point.svg";
 import SetRegionIcon from "../assets/map-icons/set-region.svg";
 import IconButton from "./buttons/icon-button";
 import ExploreIcon from "../assets/map-icons/explore.svg";
+import KeyButton from "./map/map-key-button";
+import { RightSectionTypes } from "./tabs";
+import { LegendComponent, LegendType } from "./map/map-legend";
+import { ColorMethod } from "../stores/seismic-simulation-store";
 import "../css/overlay-controls.css";
-import { observer, inject } from "mobx-react";
-import { BaseComponent } from "./base";
 
 const kButtonColor = "white";
 const kButtonSelectedColor = "#cee6c9";
@@ -27,13 +31,24 @@ interface IProps {
   onCrossSectionClick: () => void;
   onReCenterClick: () => void;
   onDirectionClick: () => void;
+  panelType: RightSectionTypes;
 }
 
-interface IState {}
+interface IState {
+  showKey: boolean;
+}
 
 @inject("stores")
 @observer
 export class OverlayControls extends BaseComponent<IProps, IState> {
+  constructor(props: IProps) {
+    super(props);
+    const initialState: IState = {
+      showKey: true,
+    };
+    this.state = initialState;
+  }
+
   public render() {
     const { name: unitName } = this.stores.unit;
 
@@ -51,8 +66,14 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
       onCrossSectionClick,
       onReCenterClick,
       onDirectionClick,
-      isSelectingDirection } = this.props;
+      isSelectingDirection,
+      panelType } = this.props;
     const { hasErupted } = this.stores.tephraSimulation;
+    const { strainMapColorMethod } = this.stores.seismicSimulation;
+
+    const legendType: LegendType = isTephraUnit
+      ? (panelType !== RightSectionTypes.MONTE_CARLO ? "Tephra" : "Risk")
+      : "Strain";
 
     return (
       <div className="overlay-controls">
@@ -133,7 +154,26 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
             dataTest={"directionb-button"}
           />}
         </div>
+        <div className="controls top right">
+          { this.state.showKey
+            ? <KeyButton onClick={this.handleKeySelect}/>
+            : <LegendComponent
+                onClick={this.handleKeyButtonSelect}
+                legendType={legendType}
+                colorMethod={strainMapColorMethod as ColorMethod}
+              />
+          }
+        </div>
       </div>
     );
   }
+
+  private handleKeySelect = () => {
+    this.setState({showKey: false});
+  }
+
+  private handleKeyButtonSelect = () => {
+    this.setState({showKey: true});
+  }
+
 }

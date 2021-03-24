@@ -15,8 +15,8 @@ const LegendContainer = styled.div`
   justify-content: flex-start;
   align-items: center;
   position: absolute;
-  top: 35px;
-  right: 38px;
+  top: 0;
+  right: 0;
   border-radius: 5px;
   background-color: white;
   border: solid 2px white;
@@ -68,11 +68,13 @@ export class LegendComponent extends BaseComponent<IProps, IState> {
       currentLegendType = secondaryPanel[currentLegendType];
     }
 
-    const legend = currentLegendType === "Tephra" ? <TephraLegendComponent onClick={onClick} /> :
-                    currentLegendType === "Risk" ? <RiskLegendComponent onClick={onClick} /> :
-                    currentLegendType === "Strain" ?
-                    <StrainLegendComponent onClick={onClick} colorMethod={colorMethod} /> :
-                    <GPSLegendComponent onClick={onClick} />;
+    const legend = currentLegendType === "Tephra"
+      ? <TephraLegendComponent onClick={onClick} />
+      : currentLegendType === "Risk"
+        ? <RiskLegendComponent onClick={onClick} />
+        : currentLegendType === "Strain"
+          ? <StrainLegendComponent onClick={onClick} colorMethod={colorMethod} />
+          : <GPSLegendComponent onClick={onClick} />;
     return (
       <LegendContainer data-test="key-container">
         { legend }
