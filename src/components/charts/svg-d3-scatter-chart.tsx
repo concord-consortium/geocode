@@ -169,16 +169,11 @@ export const getFadeColor = (index: number) => {
 
 // This is hard-coded to the Day legend right now, but would be simple to generalize
 export function addFadeLegend(svg: SVG, data: any[], chartWidth: number, margin: Margin) {
-  const legendSteps = 98;
+  const legendSteps = fadeColors.length;
   const legendWidth = 25;
   const legendHeight = 80;
-  const legendRightPadding = 30;
-  const gradientIncrements = [];
-  for (let x = 0; x < fadeColors.length; x++) {
-    gradientIncrements.push(legendSteps / (fadeColors.length - 1) * x);
-  }
-  const legendColorLerp = (d3.scaleLinear().domain(gradientIncrements) as any)
-    .range(fadeColors.map((item) => item.color).reverse());
+  const legendRightPadding = 35;
+  const legendFadeColors = fadeColors.map((item) => item.color).reverse();
 
   const legend = svg.append("g")
     .attr("transform", "translate(" + (chartWidth - legendWidth - legendRightPadding) + "," + margin.top + ")");
@@ -209,7 +204,7 @@ export function addFadeLegend(svg: SVG, data: any[], chartWidth: number, margin:
       .attr("width", legendWidth)
       .attr("height", (legendHeight / legendSteps))
       .style("stroke", "none")
-      .style("fill", (d, i) => legendColorLerp(i));
+      .style("fill", (d, i) => legendFadeColors[i]);
 
   legend.append("text")
     .attr("x", legendWidth + 4)
