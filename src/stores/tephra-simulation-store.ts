@@ -116,11 +116,14 @@ export const TephraSimulationStore = types
     hasErupted: false,
     isSelectingRuler: false,
     isSelectingCrossSection: false,
-    isSelectingLatlng: false,
-    latLngPoint1Lat: 0,
-    latLngPoint1Lng: 0,
-    latLngPoint2Lat: 0,
-    latLngPoint2Lng: 0,
+    isSelectingSetPoint: false,
+    isSelectingSetRegion: false,
+    latLngRegionPoint1Lat: 0,
+    latLngRegionPoint1Lng: 0,
+    latLngRegionPoint2Lat: 0,
+    latLngRegionPoint2Lng: 0,
+    latLngPointLat: 0,
+    latLngPointLng: 0,
     // authoring props
     requireEruption: true,
     requirePainting: true,
@@ -158,24 +161,46 @@ export const TephraSimulationStore = types
     rulerClick() {
       self.isSelectingRuler = !self.isSelectingRuler;
       self.isSelectingCrossSection = false;
-      self.isSelectingLatlng = false;
+      self.isSelectingSetRegion = false;
+      self.isSelectingSetPoint = false;
     },
-    latlngClick() {
-      self.isSelectingLatlng = !self.isSelectingLatlng;
+    setPointClick() {
+      self.isSelectingSetPoint = !self.isSelectingSetPoint;
+      self.isSelectingSetRegion = false;
       self.isSelectingRuler = false;
       self.isSelectingCrossSection = false;
-      if (!self.isSelectingLatlng) {
-        // clear original points
-        self.latLngPoint1Lat = 0;
-        self.latLngPoint1Lng = 0;
-        self.latLngPoint2Lat = 0;
-        self.latLngPoint2Lng = 0;
+      if (!self.isSelectingSetPoint) {
+        // clear original point
+        self.latLngPointLat = 0;
+        self.latLngPointLng = 0;
       }
+      // clear points from set region
+      self.latLngRegionPoint1Lat = 0;
+      self.latLngRegionPoint1Lng = 0;
+      self.latLngRegionPoint2Lat = 0;
+      self.latLngRegionPoint2Lng = 0;
+    },
+    setRegionClick() {
+      self.isSelectingSetRegion = !self.isSelectingSetRegion;
+      self.isSelectingSetPoint = false;
+      self.isSelectingRuler = false;
+      self.isSelectingCrossSection = false;
+      if (!self.isSelectingSetRegion) {
+        // clear original points
+        self.latLngRegionPoint1Lat = 0;
+        self.latLngRegionPoint1Lng = 0;
+        self.latLngRegionPoint2Lat = 0;
+        self.latLngRegionPoint2Lng = 0;
+      }
+      // clear point from set point
+      self.latLngPointLat = 0;
+      self.latLngPointLng = 0;
     },
     crossSectionClick() {
       self.isSelectingCrossSection = !self.isSelectingCrossSection;
       self.isSelectingRuler = false;
-      self.isSelectingLatlng = false;
+      self.isSelectingSetRegion = false;
+      self.isSelectingSetPoint = false;
     },
     setIsSelectingRuler(val: boolean) {
       self.isSelectingRuler = val;
@@ -190,13 +215,17 @@ export const TephraSimulationStore = types
       self.viewportCenterLat = viewportCenterLat;
       self.viewportCenterLng = viewportCenterLng;
     },
+    setLatLngPoint(lat: number, lng: number) {
+      self.latLngPointLat = lat;
+      self.latLngPointLng = lng;
+    },
     setLatLngP1(lat: number, lng: number) {
-      self.latLngPoint1Lat = lat;
-      self.latLngPoint1Lng = lng;
+      self.latLngRegionPoint1Lat = lat;
+      self.latLngRegionPoint1Lng = lng;
     },
     setLatLngP2(lat: number, lng: number) {
-      self.latLngPoint2Lat = lat;
-      self.latLngPoint2Lng = lng;
+      self.latLngRegionPoint2Lat = lat;
+      self.latLngRegionPoint2Lng = lng;
     },
     reset() {
       self.hasErupted = false;

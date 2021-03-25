@@ -24,7 +24,7 @@ interface IState {
 
 @inject("stores")
 @observer
-export class LatLngDrawLayer extends BaseComponent<IProps, IState> {
+export class LatLngRegionDrawLayer extends BaseComponent<IProps, IState> {
 
   constructor(props: IProps) {
     super(props);
@@ -47,6 +47,7 @@ export class LatLngDrawLayer extends BaseComponent<IProps, IState> {
       map.dragging.disable();
       map.on(MOUSE_DOWN, this.drawPoints);
       map.on(MOUSE_UP, this.endDraw);
+      L.DomUtil.addClass(map.getContainer(), "crosshair-cursor");
     }
   }
 
@@ -55,24 +56,19 @@ export class LatLngDrawLayer extends BaseComponent<IProps, IState> {
     if (map !== null) {
       map.dragging.enable();
       map.off(MOUSE_DOWN, this.drawPoints);
+      map.off(MOUSE_UP, this.endDraw);
+      L.DomUtil.removeClass(map.getContainer(), "crosshair-cursor");
     }
   }
   public drawPoints(event: Leaflet.LeafletMouseEvent) {
     const { map } = this.props;
-    const { latLngPoint1Lat } = this.stores.tephraSimulation;
+    const { latLngRegionPoint1Lat } = this.stores.tephraSimulation;
     if (map !== null) {
-      if (latLngPoint1Lat === 0) {
+      if (latLngRegionPoint1Lat === 0) {
         map.dragging.disable();
         this.setPoint1(event);
         this.setPoint2(event);
         map.on(MOUSE_MOVE, this.setPoint2);
-      }
-      else {
-        this.setPoint2(event);
-        map.dragging.enable();
-        map.off(MOUSE_MOVE, this.setPoint2);
-        map.off(MOUSE_DOWN, this.drawPoints);
-        this.setState({ pointsSet: true });
       }
     }
   }
@@ -82,10 +78,15 @@ export class LatLngDrawLayer extends BaseComponent<IProps, IState> {
     if (map !== null) {
       // has the user entered two points?
       if (!pointsSet) {
-        // user has clicked / tapped once to select first point
+        // user has clicked / tapped to complete initial rectangle
+        map.dragging.enable();
         map.off(MOUSE_MOVE, this.setPoint1);
+        map.off(MOUSE_MOVE, this.setPoint2);
+        map.off(MOUSE_DOWN, this.drawPoints);
+        this.setState({ pointsSet: true });
+        L.DomUtil.removeClass(map.getContainer(), "crosshair-cursor");
       } else {
-        // user click/dragged the points, assume we're finished
+        // user dragged the points
         map.dragging.enable();
         map.off(MOUSE_MOVE, this.setPoint1);
         map.off(MOUSE_MOVE, this.setPoint2);
@@ -145,6 +146,7 @@ export class LatLngDrawLayer extends BaseComponent<IProps, IState> {
 
   public render() {
     const { map } = this.props;
+    const { pointsSet } = this.state;
     if (!map) return null;
 
     const { p1Lat, p1Lng, p2Lat, p2Lng } = this.props;
@@ -154,7 +156,7 @@ export class LatLngDrawLayer extends BaseComponent<IProps, IState> {
     const point2a = L.latLng(p2Lat, p1Lng);
 
     const mapBounds = map.getBounds();
-    const labelWidth = 97;
+    const labelWidth = 116;
     const labelHeight = 56;
 
     const getCorner = (point: L.LatLng, otherPoint: L.LatLng, isPt1 = true) => {
@@ -181,17 +183,15 @@ export class LatLngDrawLayer extends BaseComponent<IProps, IState> {
       return cornerString;
     };
 
-    const p1Icon = latLngIcon(`<b>Corner 1</b><br/>Latitude: ${p1Lat.toFixed(2)}<br/>Longitude: ${p1Lng.toFixed(2)}`,
-      getCorner(point1, point2));
-    const p2Icon = latLngIcon(`<b>Corner 2</b><br/>Latitude: ${p2Lat.toFixed(2)}<br/>Longitude: ${p2Lng.toFixed(2)}`,
-      getCorner(point2, point1, false));
+    const p1Icon = latLngIcon(
+      `<b>Corner 1</b><br/>Latitude: ${p1Lat.toFixed(2)} <b>W</b><br/>Longitude: ${p1Lng.toFixed(2)} <b>N</b>`,
+      getCorner(point1, point2), !pointsSet);
+    const p2Icon = latLngIcon(
+      `<b>Corner 2</b><br/>Latitude: ${p2Lat.toFixed(2)} <b>W</b><br/>Longitude: ${p2Lng.toFixed(2)} <b>N</b>`,
+      getCorner(point2, point1, false), !pointsSet);
 
     return (
       <LayerGroup map={map}>
-        {point1 && <Marker key={"latlngp1"} marker_index={1} position={point1} icon={p1Icon}
-          draggable={true} onDragStart={this.dragPointStart} onDragEnd={this.dragPointEnd} />}
-        {point2 && <Marker key={"latlngp2"} marker_index={2} position={point2} icon={p2Icon}
-          draggable={true} onDragStart={this.dragPointStart} onDragEnd={this.dragPointEnd} />}
         {point1 && point2 &&
           <Polyline
             key={"lat-lng-line"}
@@ -200,6 +200,10 @@ export class LatLngDrawLayer extends BaseComponent<IProps, IState> {
             color="#b263f7"
             opacity={1}
           />}
+        {point1 && <Marker key={"latlngp1"} marker_index={1} position={point1} icon={p1Icon}
+          draggable={true} onDragStart={this.dragPointStart} onDragEnd={this.dragPointEnd} />}
+        {point2 && <Marker key={"latlngp2"} marker_index={2} position={point2} icon={p2Icon}
+          draggable={true} onDragStart={this.dragPointStart} onDragEnd={this.dragPointEnd} />}
       </LayerGroup>
     );
   }

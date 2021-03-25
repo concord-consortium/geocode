@@ -118,18 +118,18 @@ export class RulerDrawLayer extends BaseComponent<IProps, IState> {
 
     const xIconAnchor = (pointLat > volcanoLat ? "top-" : "bottom-") + "center";
 
-    const xData = "X: " + adjustedXDist.toFixed(2) + "km";
+    const xData = "x: " + adjustedXDist.toFixed(2) + " km";
     const xDataIcon = divIcon(xData, xIconAnchor); // I choose not to cache the icons as they are changing every time
 
     const yIconAnchor = "center-" + (pointLng > volcanoLng ? "left" : "right");
 
-    const yData = "Y: " + adjustedYDist.toFixed(2) + "km";
+    const yData = "y: " + adjustedYDist.toFixed(2) + " km";
     const yDataIcon = divIcon(yData, yIconAnchor);
 
     const rIconAnchor = (pointLat > volcanoLat ? "bottom-" : "top-") +
                         (pointLng > volcanoLng ? "right" : "left");
 
-    const rData = "R: " + totalDist.toFixed(2) + "km";
+    const rData = "r: " + totalDist.toFixed(2) + " km";
     const rDataIcon = divIcon(rData, rIconAnchor);
 
     return (

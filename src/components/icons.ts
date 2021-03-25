@@ -58,8 +58,8 @@ export function getCachedSampleLocationIcon(label: string) {
     return iconsCache.get(iconKey);
 }
 
-export function latLngIcon(label: string, anchorCorner: string = "top-left"): DivIcon {
-  const html = `<div class='latlng-icon-content ${anchorCorner}'>
+export function latLngIcon(label: string, anchorCorner: string = "top-left", crosshair: boolean = false): DivIcon {
+  const html = `<div class='latlng-icon-content ${anchorCorner} ${crosshair ? "crosshair-cursor" : ""}'>
     <div class='content'>${label}</div>
     <div class='handle'></div>
   </div>`;

@@ -60,6 +60,7 @@ export const LegendTitleText = styled.div`
   margin: 5px 11px 2px 11px;
   color: #434343;
   font-size: 14px;
+  font-weight: normal;
   width: 95px;
   height: 34px;
   box-sizing: border-box;
@@ -68,20 +69,24 @@ export const LegendTitleText = styled.div`
 
 export const AbsoluteIcon = styled(Icon)`
   position: absolute;
-  top: 2px;
-  right: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  right: 0;
   &:hover {
     fill: #75cd75;
   }
   &:active {
     fill: #e6f2e4;
   }
+  cursor: pointer;
 `;
 
 export const TephraContainer = styled.div`
   display: flex;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: center;
   width: 97px;
   margin-top: 5px;
 `;
@@ -101,6 +106,8 @@ export const TephraBox = styled.div`
 export const TephraLabel = styled.div`
   color: #434343;
   font-size: 12px;
+  font-weight: normal;
+  margin-left: 3px;
 `;
 
 interface IProps {
@@ -120,12 +127,12 @@ export default class TephraLegendComponent extends PureComponent<IProps, IState>
       <LegendContainer>
         <LegendTitleText>Tephra Thickness (mm)</LegendTitleText>
         <AbsoluteIcon
-          width={12}
-          height={12}
+          width={28}
+          height={28}
           fill={"#b7dcad"}
           onClick={onClick}
         >
-          <CloseIcon />
+          <CloseIcon width={12} height={12} />
         </AbsoluteIcon>
         {TephraRanges.map((tephraRange, index) => {
             return (
@@ -138,9 +145,7 @@ export default class TephraLegendComponent extends PureComponent<IProps, IState>
               </TephraContainer>
             );
         })}
-
       </LegendContainer>
     );
   }
-
 }

@@ -1,6 +1,6 @@
 {
   "name": "geocode",
-  "version": "2.2.3",
+  "version": "2.3.0",
   "description": "Concord Consortium GeoCode project",
   "main": "index.js",
   "jest": {
@@ -161,6 +161,7 @@
     "react-compound-slider": "^2.0.0",
     "react-dat-gui": "^3.0.0",
     "react-dom": "^16.8.6",
+    "react-draggable": "^4.4.3",
     "react-faux-dom": "^4.5.0",
     "react-leaflet": "^2.4.0",
     "react-resize-observer": "^1.1.1",

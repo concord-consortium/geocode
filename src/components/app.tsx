@@ -27,6 +27,7 @@ import { getAuthorableSettings, updateStores, serializeState, getSavableStateAut
 import { ChartPanel } from "./charts/chart-panel";
 import { BlocklyController } from "../blockly/blockly-controller";
 import { HistogramPanel } from "./montecarlo/histogram-panel";
+import { PlateMovementPanel } from "./deformation/plate-movement-panel";
 import { uiStore } from "../stores/ui-store";
 import { GPSStationTable } from "./gps-station-table";
 import { DeformationModel } from "./deformation/deformation-model";
@@ -35,8 +36,6 @@ import { UnitNameType } from "../stores/unit-store";
 interface IProps extends IBaseProps {}
 
 interface IState {
-  tabIndex: number;
-  rightTabIndex: number;
   expandOptionsDialog: boolean;
   dimensions: {
     width: number;
@@ -65,6 +64,7 @@ const Row = styled.div`
 
 const CenteredRow = styled(Row)`
   justify-content: center;
+  height: 135px;
 `;
 
 const BottomBar = styled.div`
@@ -144,12 +144,10 @@ export class AppComponent extends BaseComponent<IProps, IState> {
   public constructor(props: IProps) {
     super(props);
 
-    this.handleTabSelect = this.handleTabSelect.bind(this);
+    this.handleLeftTabSelect = this.handleLeftTabSelect.bind(this);
     this.handleRightTabSelect = this.handleRightTabSelect.bind(this);
 
     const initialState: IState = {
-      tabIndex: 0,
-      rightTabIndex: 0,
       expandOptionsDialog: false,
       dimensions: {
         width: window.innerWidth,
@@ -173,7 +171,11 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       },
       seismicSimulation: {
         selectedGPSStation,
-        startDeformationModel
+        startDeformationModel,
+        deformSpeedPlate1,
+        deformDirPlate1,
+        deformSpeedPlate2,
+        deformDirPlate2
       },
       blocklyStore: {
         initialXmlCode,
@@ -194,6 +196,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         showSpeedControls,
         speed,
         hideBlocklyToolbox,
+        leftTabIndex,
+        rightTabIndex
       }
     } = this.stores;
     const {
@@ -210,8 +214,6 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     } = this.blocklyController;
 
     const {
-      tabIndex,
-      rightTabIndex,
       expandOptionsDialog
     } = this.state;
 
@@ -262,7 +264,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     if (showData)         { enabledRightTabTypes.push(RightSectionTypes.DATA); }
     if (showDeformation)  { enabledRightTabTypes.push(RightSectionTypes.DEFORMATION); }
 
-    const currentTabType = enabledTabTypes[tabIndex || 0];
+    const currentTabType = enabledTabTypes[leftTabIndex || 0];
     const currentRightTabType = enabledRightTabTypes[rightTabIndex || 0];
 
     const setSpeed = (_speed: number) => uiStore.setSpeed(_speed);
@@ -273,7 +275,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
           onResize={this.resize}
         />
         <Row>
-          <Tabs selectedIndex={tabIndex} onSelect={this.handleTabSelect}>
+          <Tabs selectedIndex={leftTabIndex} onSelect={this.handleLeftTabSelect}>
             <TabBack
               width={tabWidth}
               backgroundcolor={this.getTabColor(currentTabType)}
@@ -281,9 +283,9 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             <TabList>
               { showBlocks &&
                 <Tab
-                  selected={tabIndex === kTabInfo.blocks.index}
-                  leftofselected={tabIndex === (kTabInfo.blocks.index + 1) ? "true" : undefined}
-                  rightofselected={tabIndex === (kTabInfo.blocks.index - 1) ? "true" : undefined}
+                  selected={leftTabIndex === kTabInfo.blocks.index}
+                  leftofselected={leftTabIndex === (kTabInfo.blocks.index + 1) ? "true" : undefined}
+                  rightofselected={leftTabIndex === (kTabInfo.blocks.index - 1) ? "true" : undefined}
                   backgroundcolor={this.getTabColor(SectionTypes.BLOCKS)}
                   backgroundhovercolor={this.getTabHoverColor(SectionTypes.BLOCKS)}
                   data-test={this.getTabName(SectionTypes.BLOCKS) + "-tab"}
@@ -293,9 +295,9 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               }
               { showCode &&
                 <Tab
-                  selected={tabIndex === kTabInfo.code.index}
-                  leftofselected={tabIndex === (kTabInfo.code.index + 1) ? "true" : undefined}
-                  rightofselected={tabIndex === (kTabInfo.code.index - 1) ? "true" : undefined}
+                  selected={leftTabIndex === kTabInfo.code.index}
+                  leftofselected={leftTabIndex === (kTabInfo.code.index + 1) ? "true" : undefined}
+                  rightofselected={leftTabIndex === (kTabInfo.code.index - 1) ? "true" : undefined}
                   backgroundcolor={this.getTabColor(SectionTypes.CODE)}
                   backgroundhovercolor={this.getTabHoverColor(SectionTypes.CODE)}
                   data-test={this.getTabName(SectionTypes.CODE) + "-tab"}
@@ -305,9 +307,9 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               }
               { showControls &&
                 <Tab
-                  selected={tabIndex === kTabInfo.controls.index}
-                  leftofselected={tabIndex === (kTabInfo.controls.index + 1) ? "true" : undefined}
-                  rightofselected={tabIndex === (kTabInfo.controls.index - 1) ? "true" : undefined}
+                  selected={leftTabIndex === kTabInfo.controls.index}
+                  leftofselected={leftTabIndex === (kTabInfo.controls.index + 1) ? "true" : undefined}
+                  rightofselected={leftTabIndex === (kTabInfo.controls.index - 1) ? "true" : undefined}
                   backgroundcolor={this.getTabColor(SectionTypes.CONTROLS)}
                   backgroundhovercolor={this.getTabHoverColor(SectionTypes.CONTROLS)}
                   data-test={this.getTabName(SectionTypes.CONTROLS) + "-tab"}
@@ -444,13 +446,13 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               >
                 <Simulation width={mapWidth} backgroundColor={this.getRightTabColor(RightSectionTypes.MONTE_CARLO)}>
                   <MapComponent
-                    width={ mapWidth }
-                    height={ (height - 90) * .65 }
+                    width={mapWidth}
+                    height={(height - 90) * .65}
                     panelType={RightSectionTypes.MONTE_CARLO}
                   />
                   <HistogramPanel
-                    width={ mapWidth }
-                    height={ (height - 90) * .35 }
+                    width={mapWidth}
+                    height={(height - 90) * .35}
                   />
                 </Simulation>
               </TabPanel>
@@ -458,7 +460,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             { showData &&
               <TabPanel
                 width={`${tabWidth}px`}
-                tabcolor={this.getRightTabColor(RightSectionTypes.DATA)}
+                tabcolor={this.getRightTabColor(RightSectionTypes.DATA, unitName)}
                 rightpanel={"true"}
                 data-test={this.getRightTabName(RightSectionTypes.DATA) + "-panel"}
               >
@@ -477,13 +479,19 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               >
                 <DeformationModel
                   width={mapWidth}
-                  height={height - 30}
+                  height={height - 160}
+                />
+                <PlateMovementPanel
+                  leftSpeed={deformSpeedPlate1}
+                  leftDirection={180 - deformDirPlate1}
+                  rightSpeed={deformSpeedPlate2}
+                  rightDirection={180 - deformDirPlate2}
                 />
               </TabPanel>
             }
             <RightTabBack
               width={tabWidth}
-              backgroundcolor={this.getRightTabColor(currentRightTabType)}
+              backgroundcolor={this.getRightTabColor(currentRightTabType, unitName)}
             />
             <BottomBar>
               <TabsContainer>
@@ -529,7 +537,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                       selected={rightTabIndex === kRightTabInfo.data.index}
                       leftofselected={rightTabIndex === (kRightTabInfo.data.index + 1) ? "true" : undefined}
                       rightofselected={rightTabIndex === (kRightTabInfo.data.index - 1) ? "true" : undefined}
-                      backgroundcolor={this.getRightTabColor(RightSectionTypes.DATA)}
+                      backgroundcolor={this.getRightTabColor(RightSectionTypes.DATA, unitName)}
                       backgroundhovercolor={this.getRightTabHoverColor(RightSectionTypes.DATA)}
                       data-test={this.getRightTabName(RightSectionTypes.DATA) + "-tab"}
                     >
@@ -583,11 +591,19 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     return (type ? kTabInfo[type].name : "");
   }
 
-  private getRightTabColor = (type: RightSectionTypes) => {
-    return (type ? kRightTabInfo[type].backgroundColor : "white");
+  private getRightTabColor = (type: RightSectionTypes, unit?: UnitNameType) => {
+    if (!type) return "white";
+    if (unit && kRightTabInfo[type].unitBackgroundColor && kRightTabInfo[type].unitBackgroundColor![unit]) {
+      return kRightTabInfo[type].unitBackgroundColor![unit];
+    }
+    return kRightTabInfo[type].backgroundColor;
   }
-  private getRightTabHoverColor = (type: RightSectionTypes) => {
-    return (type ? kRightTabInfo[type].hoverBackgroundColor : "white");
+  private getRightTabHoverColor = (type: RightSectionTypes, unit?: UnitNameType) => {
+    if (!type) return "white";
+    if (unit && kRightTabInfo[type].unitHoverBackgroundColor && kRightTabInfo[type].unitHoverBackgroundColor![unit]) {
+      return kRightTabInfo[type].unitHoverBackgroundColor![unit];
+    }
+    return kRightTabInfo[type].hoverBackgroundColor;
   }
   private getRightTabName = (type: RightSectionTypes, unit?: UnitNameType) => {
     if (!type) return "";
@@ -611,12 +627,12 @@ export class AppComponent extends BaseComponent<IProps, IState> {
 
   private toggleShowOptions = () => this.setState({expandOptionsDialog: !this.state.expandOptionsDialog});
 
-  private handleTabSelect(tabIndex: number) {
-    this.setState({tabIndex});
+  private handleLeftTabSelect(tabIndex: number) {
+    this.stores.uiStore.setLeftTabIndex(tabIndex);
   }
 
-  private handleRightTabSelect(rightTabIndex: number) {
-    this.setState({rightTabIndex});
+  private handleRightTabSelect(tabIndex: number) {
+    this.stores.uiStore.setRightTabIndex(tabIndex);
   }
 
   private updateAuthoring = (authorMenuState: IStoreish) => {

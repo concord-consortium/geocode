@@ -212,7 +212,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       };
     });
 
-    addFunc("filter", (params: {dataset: Dataset, filter: Filter}) => {
+    addFunc("filter", (params: {dataset: Dataset, filter: Filter, useDirectionTo?: boolean}) => {
       if (!params.dataset) {
         blocklyController.throwError("You must include a dataset to filter.");
         return;
@@ -228,7 +228,8 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
             }
             return;
           } else if (key === "direction") {
-            // Wind data is stored using direction to, but we use direction from. Need to convert.
+            if (!params.useDirectionTo) {
+              // Wind data is stored using direction to, but we use direction from. Need to convert.
               const rotate = (dir: number) => dir < 180 ? dir + 180 : dir - 180;
               if (typeof params.filter.direction === "number") {
                 params.filter.direction = rotate(params.filter.direction);
@@ -236,6 +237,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
                 params.filter.direction.min = rotate(params.filter.direction.min as number);
                 params.filter.direction.max = rotate(params.filter.direction.max as number);
               }
+            }
           }
         }
       }
@@ -333,7 +335,8 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
         duration: timeRange.duration ? timeRange.duration : undefined,
       };
       const dataset = Datasets.getGPSPositionTimeData(station, validTimeRange);
-      chartsStore.addArbitraryChart(dataset, "East (mm)", "North (mm)", `${params.station} Position over Time`, true);
+      chartsStore.addArbitraryChart(dataset.data, "East (mm)", "North (mm)", `${params.station} Position over Time`,
+                                    true, true, true, dataset.dataOffset);
     });
 
     addFunc("computeStrainRate", (filter: Filter) => {

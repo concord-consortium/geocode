@@ -121,7 +121,10 @@ export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
 
     private renderGeoJson(geojson: MultiPolygon[]) {
         let gradientIndex = 0;
-        return(geojson.map(multipolygon => {
+        return(geojson.map((multipolygon, i) => {
+            if (i < geojson.length - 1 && geojson[i + 1].coordinates.length > 0) {
+                geojson[i + 1].coordinates.forEach((item) => multipolygon.coordinates.push(item));
+            }
             return (<GeoJSON key={this.keyval++}
                 stroke={false}
                 fillOpacity={0.8}

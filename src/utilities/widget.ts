@@ -1,6 +1,8 @@
 export enum WidgetPanelTypes {
   RIGHT = "right",
   LEFT = "left",
+  RIGHTDEFORMATIONPLATE1 = "rightDeformationPlate1",
+  RIGHTDEFORMATIONPLATE2 = "rightDeformationPlate2",
 }
 export type WidgetPanelInfo = {
   [type in WidgetPanelTypes]: {
@@ -22,6 +24,18 @@ export const kWidgetPanelInfo: WidgetPanelInfo = {
     highlightColor: "#ffac00",
     textColor: "#434343",
     highlightTextColor: "#FF9300",
+  },
+  rightDeformationPlate1: {
+    backgroundColor: "#FFCECE",
+    highlightColor: "#FE3939",
+    textColor: "#434343",
+    highlightTextColor: "#FE3939",
+  },
+  rightDeformationPlate2: {
+    backgroundColor: "#F6F0BF",
+    highlightColor: "#DBC200",
+    textColor: "#434343",
+    highlightTextColor: "#DBC200",
   },
 };
 

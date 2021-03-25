@@ -75,18 +75,16 @@ export class LegendComponent extends BaseComponent<IProps, IState> {
                     <GPSLegendComponent onClick={onClick} />;
     return (
       <LegendContainer data-test="key-container">
-        {
-          legend
-        }
+        { legend }
         {
           <IconButton
             onClick={this.onLegendModeClick}
             disabled={false}
             label={`Show ${secondaryPanel[currentLegendType]}`}
-            borderColor={"#ADD1A2"}
-            hoverColor={"#ADD1A2"}
-            activeColor={"#B7DCAD"}
-            fontSize={"13px"}
+            borderColor={"#cee6c9"}
+            hoverColor={"#cee6c9"}
+            activeColor={"#e6f2e4"}
+            fontSize={"14px"}
             fill={"black"}
             width={26}
             height={26}

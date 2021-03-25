@@ -23,11 +23,12 @@ const Background = styled.div`
 
 const Scroll = styled.div`
   position: absolute;
-  top: 30px;
-  width: 95%;
-  height: 85vh;
+  top: 18px;
+  width: calc(100% - 50px);
+  height: calc(100% - 92px);
   overflow-y: scroll;
-  background-color: #F9F9F9;
+  border: solid 1px #979797;
+  background-color: ${(p: {backgroundColor: string}) => p.backgroundColor || "#F9F9F9"};
 `;
 
 const Row = styled.div`
@@ -40,7 +41,8 @@ const Row = styled.div`
 `;
 
 const Title = styled.span`
-  font-weight: 600;
+  font-weight: normal;
+  margin-top: -5px;
 `;
 
 @inject("stores")
@@ -70,7 +72,7 @@ export class ChartPanel extends BaseComponent<IProps, IState> {
           <Row><Title>Data Charts</Title></Row>
         }
         <Row>
-          <Scroll>
+          <Scroll backgroundColor={this.stores.unit.name === "Seismic" ? "white" : "#F9F9F9"}>
             {
               this.stores.chartsStore.charts.map((chart, i) =>
                 chart.type !== "histogram" ?
@@ -97,7 +99,6 @@ export class ChartPanel extends BaseComponent<IProps, IState> {
                           height={this.props.width * 0.45}
                           chart={chart}
                         />
-
                     }
                   </Row>
                 </div>

@@ -30,6 +30,8 @@ const UIStore = types.model("UI", {
   currentHistogramTab: 0,
   // hide toolbar in reports mode
   hideBlocklyToolbox: false,
+  leftTabIndex: 0,
+  rightTabIndex: 0,
 })
 .actions((self) => ({
   setShowOptionsDialog(show: boolean) {
@@ -38,12 +40,18 @@ const UIStore = types.model("UI", {
   setHideBlocklyToolbox(show: boolean) {
     self.hideBlocklyToolbox = show;
   },
+  setLeftTabIndex(index: number) {
+    self.leftTabIndex = index;
+  },
+  setRightTabIndex(index: number) {
+    self.rightTabIndex = index;
+  }
 }))
 .actions((self) => {
   return {
     loadAuthorSettingsData: (data: UIAuthorSettings) => {
       Object.keys(data).forEach((key: UIAuthorSettingsProps) => {
-        self[key] = data[key];
+        (self[key] as any) = data[key] as any;
       });
 
       // if author is showing fast speed, set model to fast initially

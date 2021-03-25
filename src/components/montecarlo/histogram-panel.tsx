@@ -44,9 +44,9 @@ interface PanelStatProps {
   marginRight?: number;
 }
 const PanelStat = styled.div`
-  margin: 5px;
-  font-size: 14px;
-  margin-right: ${(p: PanelStatProps) => `${p.marginRight ? p.marginRight : 5}px`};
+  margin: 3px;
+  font-size: 13px;
+  margin-right: ${(p: PanelStatProps) => `${p.marginRight ? p.marginRight : 3}px`};
 `;
 const RiskContainer = styled(HorizontalContainer)`
   margin-top: 15px;

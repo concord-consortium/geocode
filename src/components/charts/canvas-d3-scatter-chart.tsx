@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as d3 from "d3";
 import { ChartType } from "../../stores/charts-store";
-import { addFadeLegend } from "./svg-d3-scatter-chart";
+import { addFadeLegend, getFadeColor } from "./svg-d3-scatter-chart";
 
 type Scale = d3.ScaleLinear<number, number> | d3.ScaleTime<number, number>;
 
@@ -11,13 +11,15 @@ interface IProps {
   height: number;
 }
 
+const margin = {top: 15, right: 20, bottom: 43, left: 50};
+const canvasPadding = 3;      // extend canvas slightly beyond axes
+
 /**
  * A D3-based canvas scatter chart, made for render large amounts of data quickly.
  *
  * Chart data may be numeric or Date on either axis (when needed we could support strings as well)
  */
 export class CanvasD3ScatterChart extends React.Component<IProps> {
-
   private canvasRef = React.createRef<HTMLCanvasElement>();
   private svgRef = React.createRef<SVGSVGElement>();
 
@@ -38,7 +40,8 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
   }
 
   public render() {
-    const { width, height } = this.props;
+    const chartDimensions = this.calculateChartDimensions();
+    const { width, height } = chartDimensions;
     const relativeStyle: React.CSSProperties = {position: "relative", width, height};
     const absoluteStyle: React.CSSProperties = {position: "absolute", top: 0, left: 0};
     return (
@@ -49,16 +52,32 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
     );
   }
 
+  private calculateChartDimensions() {
+    const { width, height, chart } = this.props;
+    const { uniformXYScale } = chart;
+    const xRange = Number(chart.extent(0)[1]) - Number(chart.extent(0)[0]);
+    const yRange = Number(chart.extent(1)[1]) - Number(chart.extent(1)[0]);
+    const chartWidth = width - margin.left - margin.right + (canvasPadding * 2);
+    // adjust height if the x and y axes need to be scaled uniformly, base off of width
+    const chartHeight = uniformXYScale
+      ? yRange / xRange * chartWidth
+      : height - margin.top - margin.bottom + (canvasPadding * 2);
+    const usedHeight = uniformXYScale ? chartHeight + margin.top + margin.bottom + (canvasPadding * 2) : height;
+    return { width, height: usedHeight, chartWidth, chartHeight};
+  }
+
   private drawChart() {
     if (!this.canvasRef.current || !this.svgRef.current) return;
 
-    const { width, height, chart } = this.props;
-    const { data, xAxisLabel, yAxisLabel, fadeIn } = chart;
+    const { chart } = this.props;
+    const { data, xAxisLabel, yAxisLabel, fadeIn, gridlines, dataOffset } = chart;
+    const chartDimensions = this.calculateChartDimensions();
+    const { width, height, chartWidth, chartHeight } = chartDimensions;
 
-    const margin = {top: 15, right: 20, bottom: 43, left: 50};
-    const canvasPadding = 3;      // extend canvas slightly beyond axes
-    const chartWidth = width - margin.left - margin.right + (canvasPadding * 2);
-    const chartHeight = height - margin.top - margin.bottom + (canvasPadding * 2);
+    const xRange = Number(chart.extent(0)[1]) - Number(chart.extent(0)[0]);
+    const yRange = Number(chart.extent(1)[1]) - Number(chart.extent(1)[0]);
+    const xTicks = Math.floor(xRange / 100);
+    const yTicks = Math.floor(yRange / 100);
 
     const svgAxes = d3.select(this.svgRef.current)
       .attr("width", width)
@@ -73,6 +92,39 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
     const yScale: Scale = chart.isDate(1) ? d3.scaleTime().nice() : d3.scaleLinear();
     yScale.rangeRound([chartHeight, 0]).domain(chart.extent(1));
 
+    function make_x_gridlines() {
+      return d3.axisBottom(xScale)
+          .ticks(xTicks);
+    }
+
+    function make_y_gridlines() {
+      return d3.axisLeft(yScale)
+          .ticks(yTicks);
+    }
+
+    if (gridlines) {
+      // add the X gridlines
+      svgAxes.append("g")
+        .attr("class", "grid")
+        .attr("transform", "translate(0," + chartHeight + ")")
+        .style("stroke", "#C0C0C0")
+        .style("stroke-opacity", ".5")
+        .call(make_x_gridlines()
+            .tickSize(-chartHeight)
+            .tickFormat((d) => "")
+        );
+
+      // add the Y gridlines
+      svgAxes.append("g")
+        .attr("class", "grid")
+        .style("stroke", "#C0C0C0")
+        .style("stroke-opacity", ".5")
+        .call(make_y_gridlines()
+            .tickSize(-chartWidth)
+            .tickFormat((d) => "")
+        );
+    }
+
     // add axes
     const axisBottom = chart.isDate(0) ?
         d3.axisBottom(xScale).tickFormat((date: Date) => {
@@ -80,14 +132,14 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
           if (chart.dateLabelFormat === "%b" && date.getFullYear() === 1901) return "";
           return chart.toDateString()(date);
         }) :
-        d3.axisBottom(xScale);
+        d3.axisBottom(xScale).ticks(xTicks);
     svgAxes.append("g")
       .attr("transform", "translate(0," + chartHeight + ")")
       .call(axisBottom);
 
     const axisLeft = chart.isDate(1) ?
       d3.axisLeft(yScale).tickFormat(chart.toDateString()) :
-      d3.axisLeft(yScale);
+      d3.axisLeft(yScale).ticks(yTicks);
     svgAxes.append("g")
       .call(axisLeft);
 
@@ -120,22 +172,20 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
 
     const ctx = this.canvasRef.current.getContext("2d")!;
 
-    const colorLerp = (d3.scaleLinear().domain([0, data.length]) as any).range(["white", "#448878"]);
+    const color = (i: number) => getFadeColor(i);
 
     data.forEach((d: number[] | Date[], i) => {
       ctx.beginPath();
-      ctx.fillStyle = "#448878";
-
       if (!fadeIn) {
         ctx.fillStyle = "#448878";
       } else {
-        ctx.fillStyle = colorLerp(i);
+        ctx.fillStyle = color(dataOffset + i);
       }
 
       const px = xScale(d[0]) + canvasPadding;
       const py = yScale(d[1]) + canvasPadding;
 
-      ctx.arc(px, py, 1.5, 0, 2 * Math.PI, true);
+      ctx.arc(px, py, fadeIn ? 2 : 1.5, 0, 2 * Math.PI, true);
       ctx.fill();
     });
 
