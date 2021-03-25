@@ -101,7 +101,8 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
         startScale: 0.8,
         maxScale: 2,
         minScale: 0.2
-      }
+      },
+      scrollbars: true
     };
 
     if (hideToolbox) {
