@@ -70,7 +70,7 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
     if (!this.canvasRef.current || !this.svgRef.current) return;
 
     const { chart } = this.props;
-    const { data, xAxisLabel, yAxisLabel, fadeIn, gridlines } = chart;
+    const { data, xAxisLabel, yAxisLabel, fadeIn, gridlines, dataOffset } = chart;
     const chartDimensions = this.calculateChartDimensions();
     const { width, height, chartWidth, chartHeight } = chartDimensions;
 
@@ -179,7 +179,7 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
       if (!fadeIn) {
         ctx.fillStyle = "#448878";
       } else {
-        ctx.fillStyle = color(i);
+        ctx.fillStyle = color(dataOffset + i);
       }
 
       const px = xScale(d[0]) + canvasPadding;

@@ -94,9 +94,14 @@ export const Datasets = {
 
   getGPSPositionTimeData(name: string, timeRange?: TimeRange) {
     const dataSet = (PositionTimeDataSets as any)[name] as Dataset;
+    let dataOffset = 0;
     let filteredDataSet = Array.isArray(dataSet) ? [...dataSet] : dataSet;
     if (timeRange) {
       if (timeRange.from) {
+        const offsetIndex = filteredDataSet.findIndex(d => (d.Date as Date) >= timeRange.from!);
+        if (offsetIndex > 0) {
+          dataOffset = offsetIndex;
+        }
         filteredDataSet = filteredDataSet.filter(d => (d.Date as Date) >= timeRange.from!);
       }
       if (timeRange.to) {
@@ -110,7 +115,7 @@ export const Datasets = {
         }
       }
     }
-    return filteredDataSet;
+    return {data: filteredDataSet, dataOffset};
   },
 
 };

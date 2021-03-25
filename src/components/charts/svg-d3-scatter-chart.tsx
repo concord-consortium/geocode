@@ -45,7 +45,7 @@ export const SvgD3ScatterChart = (props: IProps) => {
   };
 
   const { chart } = props;
-  const { data, xAxisLabel, yAxisLabel, fadeIn, gridlines } = chart;
+  const { data, xAxisLabel, yAxisLabel, fadeIn, gridlines, dataOffset } = chart;
   const xRange = Number(chart.extent(0)[1]) - Number(chart.extent(0)[0]);
   const yRange = Number(chart.extent(1)[1]) - Number(chart.extent(1)[0]);
   const xTicks = Math.floor(xRange / 100);
@@ -137,7 +137,7 @@ export const SvgD3ScatterChart = (props: IProps) => {
   }
 
   const color = fadeIn
-    ? (d: number, i: number) => getFadeColor(i)
+    ? (d: number, i: number) => getFadeColor(dataOffset + i)
     : "#448878";
 
   svg.append("g")
