@@ -2,13 +2,6 @@
 
 ## Version 2.2.3 - release March 25, 2021
 
-### Bug Fixes
-- TEPHRA: "Counts above threshold" percentage gets cut off on screen in LARA [177021690](https://www.pivotaltracker.com/story/show/177021690)
-- Seismic Map Size in Firefox [177204626](https://www.pivotaltracker.com/story/show/177204626)
-- GPS station direction filter no longer works [177451388](https://www.pivotaltracker.com/story/show/177451388)
-- Code blocks shake once they are displayed in portal reports [172367384](https://www.pivotaltracker.com/story/show/172367384)
-- GPS time vs. position graph changes with each program run [177383703](https://www.pivotaltracker.com/story/show/177383703)
-
 ### Features/Improvements
 - Update browser tab name [175747402](https://www.pivotaltracker.com/story/show/175747402)
 - SEISMIC: Axes Display Equal Intervals on Position over Time Graph [176707032](https://www.pivotaltracker.com/story/show/176707032)
@@ -37,7 +30,14 @@
 - SEISMIC: Make Explore Direction Widget Movable [177429998](https://www.pivotaltracker.com/story/show/177429998)
 - TEPHRA: Make tephra distribution colors semi-transparent [169984469](https://www.pivotaltracker.com/story/show/169984469)
 
-## Version 2.2.3 - release January 20, 2020
+### Bug Fixes
+- TEPHRA: "Counts above threshold" percentage gets cut off on screen in LARA [177021690](https://www.pivotaltracker.com/story/show/177021690)
+- Seismic Map Size in Firefox [177204626](https://www.pivotaltracker.com/story/show/177204626)
+- GPS station direction filter no longer works [177451388](https://www.pivotaltracker.com/story/show/177451388)
+- Code blocks shake once they are displayed in portal reports [172367384](https://www.pivotaltracker.com/story/show/172367384)
+- GPS time vs. position graph changes with each program run [177383703](https://www.pivotaltracker.com/story/show/177383703)
+
+## Version 2.2.3 - release January 20, 2021
 
 - Set Monte-Carlo chart max to be at least 10 mm
 
