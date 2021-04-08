@@ -21,7 +21,7 @@ before(() => {
     modelOptions.getModelOptionsMenu().click();
     blocksTab.setSpeedControl("fast")
     blocksTab.runProgram();
-    cy.wait(15000)
+    cy.wait(4000)
     rightPanel.getMonteCarloTab().click();
   });
 beforeEach(()=>{
