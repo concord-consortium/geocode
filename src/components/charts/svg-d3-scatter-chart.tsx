@@ -1,6 +1,7 @@
 import * as ReactFauxDOM from "react-faux-dom";
 import * as d3 from "d3";
 import { ChartType } from "../../stores/charts-store";
+import { union } from "lodash";
 
 type Scale = d3.ScaleLinear<number, number> | d3.ScaleTime<number, number>;
 
@@ -45,11 +46,11 @@ export const SvgD3ScatterChart = (props: IProps) => {
   };
 
   const { chart } = props;
-  const { data, xAxisLabel, yAxisLabel, fadeIn, gridlines, dataOffset } = chart;
+  const { data, xAxisLabel, yAxisLabel, fadeIn, gridlines, dataOffset, uniformXYScale } = chart;
   const xRange = Number(chart.extent(0)[1]) - Number(chart.extent(0)[0]);
   const yRange = Number(chart.extent(1)[1]) - Number(chart.extent(1)[0]);
-  const xTicks = Math.floor(xRange / 100);
-  const yTicks = Math.floor(yRange / 100);
+  const xUniformTicks = Math.floor(xRange / 100);
+  const yUniformTicks = Math.floor(yRange / 100);
   const margin = {top: 15, right: 20, bottom: 43, left: 50};
   const chartDimensions = calculateChartDimensions(xRange, yRange);
   const { width, height, chartWidth, chartHeight } = chartDimensions;
@@ -71,12 +72,12 @@ export const SvgD3ScatterChart = (props: IProps) => {
 
   function make_x_gridlines() {
     return d3.axisBottom(xScale)
-        .ticks(xTicks);
+        .ticks(xUniformTicks);
   }
 
   function make_y_gridlines() {
     return d3.axisLeft(yScale)
-        .ticks(yTicks);
+        .ticks(yUniformTicks);
   }
 
   if (gridlines) {
@@ -105,14 +106,14 @@ export const SvgD3ScatterChart = (props: IProps) => {
   // add axes
   const axisBottom = chart.isDate(0) ?
       d3.axisBottom(xScale).tickFormat(chart.toDateString()) :
-      d3.axisBottom(xScale).ticks(xTicks);
+      uniformXYScale ? d3.axisBottom(xScale).ticks(xUniformTicks) : d3.axisBottom(xScale).ticks;
   svg.append("g")
     .attr("transform", "translate(0," + chartHeight + ")")
     .call(axisBottom);
 
   const axisLeft = chart.isDate(1) ?
     d3.axisLeft(yScale).tickFormat(chart.toDateString()) :
-    d3.axisLeft(yScale).ticks(yTicks);
+    uniformXYScale ? d3.axisLeft(yScale).ticks(yUniformTicks) : d3.axisLeft(yScale).ticks;
   svg.append("g")
     .call(axisLeft);
 
