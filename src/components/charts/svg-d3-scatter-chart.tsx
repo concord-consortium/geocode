@@ -1,7 +1,6 @@
 import * as ReactFauxDOM from "react-faux-dom";
 import * as d3 from "d3";
 import { ChartType } from "../../stores/charts-store";
-import { union } from "lodash";
 
 type Scale = d3.ScaleLinear<number, number> | d3.ScaleTime<number, number>;
 
