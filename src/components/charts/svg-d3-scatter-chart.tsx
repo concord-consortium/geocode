@@ -35,13 +35,13 @@ export const SvgD3ScatterChart = (props: IProps) => {
     const _chart = props.chart;
     const _width = props.width;
     const _height = props.height;
-    const { uniformXYScale } = _chart;
+    const _uniformXYScale = _chart.uniformXYScale;
     const chartUsedWidth = _width - margin.left - margin.right;
     // adjust height if the x and y axes need to be scaled uniformly, base off of width
-    const chartUsedHeight = uniformXYScale
+    const chartUsedHeight = _uniformXYScale
       ? _yRange / _xRange * chartUsedWidth
       : _height - margin.top - margin.bottom;
-    const usedHeight = uniformXYScale ? chartUsedHeight + margin.top + margin.bottom : _height;
+    const usedHeight = _uniformXYScale ? chartUsedHeight + margin.top + margin.bottom : _height;
     return { width: _width, height: usedHeight, chartWidth: chartUsedWidth, chartHeight: chartUsedHeight};
   };
 
