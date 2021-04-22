@@ -32,7 +32,7 @@ const dataTab = new DataTab
           modelOptions.selectInitialCode('Filtered Wind Data Collection');
           modelOptions.getModelOptionsMenu().click();
           blocksTab.runProgram();
-          cy.wait(1000)
+          cy.wait(2000)
           rightPanel.getDataTab().click();
         });
         it('verify direction v elevation graph is visible',()=>{

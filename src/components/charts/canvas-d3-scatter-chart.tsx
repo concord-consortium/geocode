@@ -70,14 +70,14 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
     if (!this.canvasRef.current || !this.svgRef.current) return;
 
     const { chart } = this.props;
-    const { data, xAxisLabel, yAxisLabel, fadeIn, gridlines, dataOffset } = chart;
+    const { data, xAxisLabel, yAxisLabel, fadeIn, gridlines, dataOffset, uniformXYScale } = chart;
     const chartDimensions = this.calculateChartDimensions();
     const { width, height, chartWidth, chartHeight } = chartDimensions;
 
     const xRange = Number(chart.extent(0)[1]) - Number(chart.extent(0)[0]);
     const yRange = Number(chart.extent(1)[1]) - Number(chart.extent(1)[0]);
-    const xTicks = Math.floor(xRange / 100);
-    const yTicks = Math.floor(yRange / 100);
+    const xUniformTicks = Math.floor(xRange / 100);
+    const yUniformTicks = Math.floor(yRange / 100);
 
     const svgAxes = d3.select(this.svgRef.current)
       .attr("width", width)
@@ -94,12 +94,12 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
 
     function make_x_gridlines() {
       return d3.axisBottom(xScale)
-          .ticks(xTicks);
+          .ticks(xUniformTicks);
     }
 
     function make_y_gridlines() {
       return d3.axisLeft(yScale)
-          .ticks(yTicks);
+          .ticks(yUniformTicks);
     }
 
     if (gridlines) {
@@ -132,14 +132,14 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
           if (chart.dateLabelFormat === "%b" && date.getFullYear() === 1901) return "";
           return chart.toDateString()(date);
         }) :
-        d3.axisBottom(xScale).ticks(xTicks);
+        uniformXYScale ? d3.axisBottom(xScale).ticks(xUniformTicks) : d3.axisBottom(xScale).ticks;
     svgAxes.append("g")
       .attr("transform", "translate(0," + chartHeight + ")")
       .call(axisBottom);
 
     const axisLeft = chart.isDate(1) ?
       d3.axisLeft(yScale).tickFormat(chart.toDateString()) :
-      d3.axisLeft(yScale).ticks(yTicks);
+      uniformXYScale ? d3.axisLeft(yScale).ticks(yUniformTicks) : d3.axisLeft(yScale);
     svgAxes.append("g")
       .call(axisLeft);
 

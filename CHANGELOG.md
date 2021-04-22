@@ -1,6 +1,11 @@
 # Changelog
 
-## Version 2.2.3 - release March 25, 2021
+## Version 2.3.1 - release April 22, 2021
+
+### Bug Fixes
+- No units on y-axis on Wind speed graphs [177856985](https://www.pivotaltracker.com/story/show/177856985)
+
+## Version 2.3.0 - release March 25, 2021
 
 ### Features/Improvements
 - Update browser tab name [175747402](https://www.pivotaltracker.com/story/show/175747402)
