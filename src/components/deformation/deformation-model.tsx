@@ -35,9 +35,6 @@ const stationBorderThickness = 2;
 const lineSpacing = 20;
 // should be in km
 const lockingDepth = 1;
-// for converting pixels to world distance
-// we want the area shown to be approx this size in each direction
-const distanceScale = 50;
 
 // angle between the plates vertically (into the Earth)
 const dip = deg2rad(90);
@@ -276,9 +273,10 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.fill();
 
     // Scale
+    const scaleKm = this.stores.seismicSimulation.deformationModelWidthKm / 10;
     ctx.lineWidth = 1;
-    const s1 = { x: modelMargin.left + this.modelWidth / 2 - this.worldToCanvas(5) - 10, y: modelMargin.top + 20 };
-    const s2 = { x: s1.x + this.worldToCanvas(5), y: s1.y };
+    const s1 = { x: modelMargin.left + this.modelWidth / 2 - this.worldToCanvas(scaleKm) - 10, y: modelMargin.top + 20};
+    const s2 = { x: s1.x + this.worldToCanvas(scaleKm), y: s1.y };
     ctx.beginPath();
     ctx.moveTo(s1.x, s1.y);
     ctx.lineTo(s2.x, s2.y);
@@ -293,7 +291,8 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.textAlign = "start";
     ctx.fillStyle = textColor;
     ctx.font = "13px Lato";
-    ctx.fillText(`5km`, s1.x, s1.y + 20);
+    const distanceLabel = scaleKm >= 1 ? `${scaleKm}km` : `${scaleKm * 1000}m`;
+    ctx.fillText(distanceLabel, s1.x, s1.y + 20);
     ctx.stroke();
   }
 
@@ -423,18 +422,17 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     return totalDisplacement;
   }
 
+  // pixel position, starting from 0 (left or top) to km
   private canvasToWorld(canvasPosition: number) {
-    // screen size affects pixel scale
-    // distanceScale is how many real-world units we want to show across the pixel grid
-    return canvasPosition / this.modelWidth *  distanceScale;
+    return canvasPosition / this.modelWidth *  this.stores.seismicSimulation.deformationModelWidthKm;
   }
 
   // GPS stations are positioned as a percentage 0-1 across the model area
   private percentToWorld(distancePercentage: number) {
-    return distancePercentage * distanceScale;
+    return distancePercentage * this.stores.seismicSimulation.deformationModelWidthKm;
   }
-  private worldToCanvas(distanceInRealUnits: number) {
-    return distanceInRealUnits / distanceScale * this.modelWidth;
+  private worldToCanvas(distanceInKm: number) {
+    return distanceInKm / this.stores.seismicSimulation.deformationModelWidthKm * this.modelWidth;
   }
 
   // Visual representation of the plate velocities based on student values

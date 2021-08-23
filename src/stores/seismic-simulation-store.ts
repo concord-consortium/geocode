@@ -30,6 +30,8 @@ export const SeismicSimulationStore = types
     deformationModelEndStep: 500000,    // years
     deformationModelTotalClockTime: 5,  // seconds
 
+    deformationModelWidthKm: 50,    // km
+
     deformSpeedPlate1: 0,     // mm/yr
     deformDirPlate1: 0,       // º from N
     deformSpeedPlate2: 0,
