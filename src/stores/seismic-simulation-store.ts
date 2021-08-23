@@ -26,9 +26,9 @@ export const SeismicSimulationStore = types
     selectedGPSStationId: types.maybe(types.string),
     showVelocityArrows: false,
 
-    deformationModelStep: 0,            // year
-    deformationModelSpeed: 100000,      // years / second
-    deformationModelEndStep: 500000,
+    deformationModelStep: 0,
+    deformationModelEndStep: 500000,    // years
+    deformationModelTotalClockTime: 5,  // seconds
 
     deformSpeedPlate1: 0,     // mm/yr
     deformDirPlate1: 0,       // º from N
@@ -47,6 +47,11 @@ export const SeismicSimulationStore = types
   .volatile(self => ({
     delaunayTriangles: [] as number[][][],
     delaunayTriangleStrains: [] as number[],
+  }))
+  .views((self) => ({
+    get deformationModelSpeed() {
+      return self.deformationModelEndStep / self.deformationModelTotalClockTime;
+    }
   }))
   .actions((self) => ({
     showGPSStations(stations: StationData[] | string) {

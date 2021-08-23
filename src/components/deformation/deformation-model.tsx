@@ -70,6 +70,9 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     const steps = 100;
     return this.modelWidth / steps;
   }
+  private get fadeOutTime() {
+    return this.stores.seismicSimulation.deformationModelEndStep / 10;
+  }
 
   public componentDidMount() {
     this.drawModel();
@@ -145,8 +148,8 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     const hSpeed = this.getRelativeHorizontalSpeed();
 
     // plates
-    if (year < 50000) {
-      const plateAlpha = initialPlateAlpha - (year / 50000) * initialPlateAlpha;
+    if (year < this.fadeOutTime) {
+      const plateAlpha = initialPlateAlpha - (year / this.fadeOutTime) * initialPlateAlpha;
       ctx.fillStyle = `rgba(255,58,58,${plateAlpha})`;
       ctx.beginPath();
       ctx.rect(modelMargin.left, modelMargin.top, this.modelWidth / 2, this.modelWidth + modelMargin.top);
@@ -217,9 +220,9 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.restore();
 
     // draw the fainter lines behind triangle that will fade
-    if (year < 50000) {
+    if (year < this.fadeOutTime) {
       ctx.save();
-      const alpha = 0.5 - (year / 50000) * 0.5;
+      const alpha = 0.5 - (year / this.fadeOutTime) * 0.5;
       ctx.lineWidth = 0.5;
       ctx.strokeStyle = `rgba(0,0,0,${alpha})`;
       horizontalLines.forEach(drawBzCurve);
