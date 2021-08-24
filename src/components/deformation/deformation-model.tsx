@@ -63,10 +63,6 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     const smallestDimension = Math.min(canvasWidth, canvasHeight);
     return smallestDimension - (minModelMargin * 2);
   }
-  private get stepSize() {
-    const steps = 100;
-    return this.modelWidth / steps;
-  }
   private get fadeOutTime() {
     return this.stores.seismicSimulation.deformationModelEndStep / 10;
   }
@@ -133,8 +129,8 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.strokeStyle = faultColor;
     ctx.lineWidth = 3;
     ctx.setLineDash([20, 5]);
-    ctx.moveTo(modelMargin.left + (this.modelWidth / 2), modelMargin.top);
-    ctx.lineTo(modelMargin.left + (this.modelWidth / 2), this.modelWidth + modelMargin.top);
+    ctx.moveTo(modelMargin.left + (this.modelWidth / 2) - 1, modelMargin.top);
+    ctx.lineTo(modelMargin.left + (this.modelWidth / 2) - 1, this.modelWidth + modelMargin.top);
     ctx.stroke();
     ctx.setLineDash([]);
     ctx.lineWidth = 1;
@@ -194,7 +190,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     // form "horizontal" lines, one for each step vertically
     // (this is slightly inefficient, because they all have the same shape, but the calc is fast)
     for (let y = yBounds[0]; y < yBounds[1]; y += lineSpacing) {
-      horizontalLines.push(this.generateHorizontalLine(y, modelMargin.left, vSpeed, year));
+      horizontalLines.push(...this.generateHorizontalLines(y, modelMargin.left, vSpeed, year));
     }
     // form vertical lines, one for each step horizontally
     for (let x = xBounds[0]; x < xBounds[1]; x += lineSpacing) {
@@ -318,24 +314,52 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     return relativeSpeed;
   }
 
-  private generateHorizontalLine(yOrigin: number, xOffset: number, relativeVerticalSpeed: number, year: number) {
+  // returns two lines, one on either side of the center line, so we can have clean breaks
+  // in the case of earthquakes
+  private generateHorizontalLines(yOrigin: number, xOffset: number, relativeVerticalSpeed: number, year: number) {
     const center = this.modelWidth / 2;
-    const points: Point[] = [];
+    const eighthWidth = (this.modelWidth / 8);
+    const threeEightsWidth = (this.modelWidth * 3 / 8);
+    const lines: Point[][] = [];
 
-    // generate vertical displacements along a horizontal line
-    for (let x = 0; x < this.modelWidth; x += this.stepSize) {
-      // xDist is always distance from the center fault line
-      const xDist = this.canvasToWorld(center - x);
+    for (let line = 0; line < 2; line++) {
+      const points: Point[] = [];
 
-      // distance is measured from the center fault
-      const verticalDisplacement =
-        this.calculateVerticalDisplacement(xDist, relativeVerticalSpeed, year);
+      const start = line === 0 ? 0 : this.modelWidth;
+      let stepSize;
+      let x;
 
-      const newY = yOrigin + this.worldToCanvas(verticalDisplacement);
-      const newX = x + xOffset; // + this.worldToCanvas(horizontalSheer);
-      points.push({ x: newX, y: newY });
+      // for each line going on either side of the fault, we want to sample 50 vertical (sheer) displacements.
+      // However, we don't need to do this evenly, as the far ends of the lines are mostly straight, while the points
+      // nearest the fault may be highly distorted. To draw a smooth line, it is better to have more points in the
+      // curve. Instead of some logarithmic equation for where to sample the points, this simply samples 20
+      // evenly-spaced points across the 3/8ths of the model furthest from the fault, and 30 points in the nearest
+      // eighth. Both lines work from the outside-in.
+      for (let step = 0; step < 50; step++) {
+        const direction = line === 0 ? 1 : -1;
+        if (step < 20) {
+          stepSize = threeEightsWidth / 20;
+          x = start + (step * stepSize * direction);
+        } else {
+          stepSize = eighthWidth / 30;
+          x = start + (threeEightsWidth * direction) + ((step - 20) * stepSize * direction);
+        }
+
+        // xDist is always distance from the center fault line
+        const xDist = this.canvasToWorld(center - x);
+
+        // distance is measured from the center fault
+        const verticalDisplacement =
+          this.calculateVerticalDisplacement(xDist, relativeVerticalSpeed, year);
+
+        const newY = yOrigin + this.worldToCanvas(verticalDisplacement);
+        const newX = x + xOffset; // + this.worldToCanvas(horizontalSheer);
+        points.push({ x: newX, y: newY });
+      }
+
+      lines.push(points);
     }
-    return points;
+    return lines;
   }
 
   // vertical lines are always precisely straight, so just require two points
