@@ -141,7 +141,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
     const { deformationModelStep: year, deformationModelEnableEarthquakes,
       deformationModelRainbowLines, deformationModelWidthKm,
-      deformationModelApparentWidthKm } = this.stores.seismicSimulation;
+      deformationModelApparentWidthKm, deformationModelApparentYearScaling } = this.stores.seismicSimulation;
     const vSpeed = this.getRelativeVerticalSpeed();     // mm/yr
     const hSpeed = this.getRelativeHorizontalSpeed();
 
@@ -260,7 +260,8 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     }
     ctx.font = "15px Lato";
     ctx.textAlign = "end";
-    ctx.fillText(`Year ${year.toLocaleString()}`,
+    const apparentYear = Math.round(year * deformationModelApparentYearScaling);
+    ctx.fillText(`Year ${apparentYear.toLocaleString()}`,
       modelMargin.left + this.modelWidth - 10, modelMargin.top + this.modelWidth - 10);
     ctx.stroke();
 

@@ -44,6 +44,9 @@ export const SeismicSimulationStore = types
 
     deformationModelRainbowLines: false,
 
+    deformationModelApparentYearScaling: 1,   // changes the visible value for years passed, and when students step
+                                              // through years manually with blocks
+
     deformSpeedPlate1: 0,     // mm/yr
     deformDirPlate1: 0,       // º from N
     deformSpeedPlate2: 0,
