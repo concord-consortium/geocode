@@ -34,6 +34,7 @@ export const SeismicSimulationStore = types
     deformationModelTotalClockTime: 5,  // seconds
 
     deformationModelWidthKm: 50,    // km
+    deformationModelApparentWidthKm: 50,    // model width as indicated by the scale marker (km)
 
     deformationModelEnableEarthquakes: false,
     deformationModelFrictionCategory: types.optional(Friction, "low"),

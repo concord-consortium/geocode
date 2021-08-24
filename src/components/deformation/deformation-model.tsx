@@ -140,7 +140,8 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.strokeStyle = textColor;
 
     const { deformationModelStep: year, deformationModelEnableEarthquakes,
-      deformationModelRainbowLines } = this.stores.seismicSimulation;
+      deformationModelRainbowLines, deformationModelWidthKm,
+      deformationModelApparentWidthKm } = this.stores.seismicSimulation;
     const vSpeed = this.getRelativeVerticalSpeed();     // mm/yr
     const hSpeed = this.getRelativeHorizontalSpeed();
 
@@ -287,7 +288,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.fill();
 
     // Scale
-    const scaleKm = this.stores.seismicSimulation.deformationModelWidthKm / 10;
+    const scaleKm = deformationModelWidthKm / 10;
     ctx.lineWidth = 1;
     const s1 = { x: modelMargin.left + this.modelWidth / 2 - this.worldToCanvas(scaleKm) - 10, y: modelMargin.top + 20};
     const s2 = { x: s1.x + this.worldToCanvas(scaleKm), y: s1.y };
@@ -305,7 +306,8 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.textAlign = "start";
     ctx.fillStyle = textColor;
     ctx.font = "13px Lato";
-    const distanceLabel = scaleKm >= 1 ? `${scaleKm}km` : `${scaleKm * 1000}m`;
+    const labelScaleKm = deformationModelApparentWidthKm / 10;
+    const distanceLabel = labelScaleKm >= 1 ? `${labelScaleKm}km` : `${labelScaleKm * 1000}m`;
     ctx.fillText(distanceLabel, s1.x, s1.y + 20);
     ctx.stroke();
   }

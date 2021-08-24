@@ -86,6 +86,8 @@ const AuthoringMenu: React.SFC<IProps> = (props) => {
           <DatFolder title="Deformation Model" key="deformationFolder" closed={false}>
             <DatNumber path="seismicSimulation.deformationModelWidthKm" label="Model width (km)" key="deformationModelWidthKm"
               min={0.1} max={100} step={0.1}/>
+            <DatNumber path="seismicSimulation.deformationModelApparentWidthKm" label="Apparent width (km)" key="deformationModelApparentWidthKm"
+              min={0.01} max={100} step={0.01}/>
             <DatBoolean path="seismicSimulation.deformationModelEnableEarthquakes" label="Enable earthquakes?" key="deformationModelEnableEarthquakes" />
             <DatNumber path="seismicSimulation.deformationModelFrictionLow" label="Max displ. Low" key="deformationModelFrictionLow"
               min={0.1} max={50} step={0.1}/>
