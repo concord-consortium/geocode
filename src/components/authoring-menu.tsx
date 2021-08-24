@@ -82,6 +82,19 @@ const AuthoringMenu: React.SFC<IProps> = (props) => {
             <DatBoolean path="uiStore.showData" label="Show data?" key="showData" />
             <DatBoolean path="uiStore.showDeformation" label="Show deformation?" key="showDeformation" />
           </DatFolder>,
+
+          <DatFolder title="Deformation Model" key="deformationFolder" closed={false}>
+            <DatNumber path="seismicSimulation.deformationModelWidthKm" label="Model width (km)" key="deformationModelWidthKm"
+              min={0.1} max={100} step={0.1}/>
+            <DatBoolean path="seismicSimulation.deformationModelEnableEarthquakes" label="Enable earthquakes?" key="deformationModelEnableEarthquakes" />
+            <DatNumber path="seismicSimulation.deformationModelFrictionLow" label="Max displ. Low" key="deformationModelFrictionLow"
+              min={0.1} max={50} step={0.1}/>
+            <DatNumber path="seismicSimulation.deformationModelFrictionMedium" label="Max displ. Med" key="deformationModelFrictionMedium"
+              min={0.1} max={50} step={0.1}/>
+            <DatNumber path="seismicSimulation.deformationModelFrictionHigh" label="Max displ. High" key="deformationModelFrictionHigh"
+              min={0.1} max={50} step={0.1}/>
+            <DatBoolean path="seismicSimulation.deformationModelRainbowLines" label="Rainbow lines?" key="deformationModelRainbowLines" />
+          </DatFolder>,
         ]
       }
       {

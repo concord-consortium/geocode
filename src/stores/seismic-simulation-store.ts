@@ -3,6 +3,7 @@ import { parseOfflineUNAVCOData } from "../utilities/unavco-data";
 import strainCalc, { StationData, StrainOutput } from "../strain";
 import { Filter, Range } from "./data-sets";
 import Delaunator from "delaunator";
+import { SeismicSimulationAuthorSettings, SeismicSimulationAuthorSettingsProps } from "./stores";
 
 const minLat = 32;
 const maxLat = 42;
@@ -75,6 +76,17 @@ export const SeismicSimulationStore = types
       }
     }
   }))
+  .actions((self) => {
+    return {
+      loadAuthorSettingsData: (data: SeismicSimulationAuthorSettings) => {
+        Object.keys(data).forEach((key: SeismicSimulationAuthorSettingsProps) => {
+          // annoying `as any ... as any` is needed because we're mixing bool and non-bool props, which combine to never
+          // see https://github.com/microsoft/TypeScript/issues/31663
+          (self[key] as any) = data[key] as any;
+        });
+      },
+    };
+  })
   .actions((self) => ({
     showGPSStations(stations: StationData[] | string) {
       self.visibleGPSStationIds.clear();
