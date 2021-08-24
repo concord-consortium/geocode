@@ -141,7 +141,8 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
     const { deformationModelStep: year, deformationModelEnableEarthquakes,
       deformationModelRainbowLines, deformationModelWidthKm,
-      deformationModelApparentWidthKm, deformationModelApparentYearScaling } = this.stores.seismicSimulation;
+      deformationModelApparentWidthKm, deformationModelApparentYearScaling,
+      deformationModelShowYear } = this.stores.seismicSimulation;
     const vSpeed = this.getRelativeVerticalSpeed();     // mm/yr
     const hSpeed = this.getRelativeHorizontalSpeed();
 
@@ -258,12 +259,14 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       const textPositionAdjust = stationPoints[i].x < this.modelWidth / 2 ? -10 : 10;
       ctx.fillText(`Station ${i + 1}`, stationPoints[i].x + textPositionAdjust, stationPoints[i].y + 5);
     }
-    ctx.font = "15px Lato";
-    ctx.textAlign = "end";
-    const apparentYear = Math.round(year * deformationModelApparentYearScaling);
-    ctx.fillText(`Year ${apparentYear.toLocaleString()}`,
-      modelMargin.left + this.modelWidth - 10, modelMargin.top + this.modelWidth - 10);
-    ctx.stroke();
+    if (deformationModelShowYear) {
+      ctx.font = "15px Lato";
+      ctx.textAlign = "end";
+      const apparentYear = Math.round(year * deformationModelApparentYearScaling);
+      ctx.fillText(`Year ${apparentYear.toLocaleString()}`,
+        modelMargin.left + this.modelWidth - 10, modelMargin.top + this.modelWidth - 10);
+      ctx.stroke();
+    }
 
     if (deformationModelEnableEarthquakes) {
       const numEarthquakes = this.getEarthquakes(year, vSpeed).count;
@@ -274,6 +277,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     }
 
     ctx.font = "15px Lato";
+    ctx.textAlign = "end";
     ctx.fillText("Fault", modelMargin.left + this.modelWidth / 2 - 10, modelMargin.top + this.modelWidth - 10);
 
     // station dots

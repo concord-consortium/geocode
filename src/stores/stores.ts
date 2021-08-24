@@ -73,6 +73,7 @@ const seismicSimulationAuthorSettingsProps = tuple(
   "deformationModelFrictionHigh",
   "deformationModelRainbowLines",
   "deformationModelApparentYearScaling",
+  "deformationModelShowYear",
 );
 
 export type SeismicSimulationAuthorSettingsProps = typeof seismicSimulationAuthorSettingsProps[number];
