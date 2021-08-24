@@ -136,7 +136,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.lineWidth = 1;
     ctx.strokeStyle = textColor;
 
-    const { deformationModelStep: year } = this.stores.seismicSimulation;
+    const { deformationModelStep: year, deformationModelEnableEarthquakes } = this.stores.seismicSimulation;
     const vSpeed = this.getRelativeVerticalSpeed();     // mm/yr
     const hSpeed = this.getRelativeHorizontalSpeed();
 
@@ -252,6 +252,14 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.fillText(`Year ${year.toLocaleString()}`,
       modelMargin.left + this.modelWidth - 10, modelMargin.top + this.modelWidth - 10);
     ctx.stroke();
+
+    if (deformationModelEnableEarthquakes) {
+      const numEarthquakes = this.getEarthquakes(year, vSpeed).count;
+      ctx.textAlign = "start";
+      ctx.fillText(`Earthquakes: ${numEarthquakes}`,
+        modelMargin.left + 10, modelMargin.top + this.modelWidth - 10);
+      ctx.stroke();
+    }
 
     ctx.font = "15px Lato";
     ctx.fillText("Fault", modelMargin.left + this.modelWidth / 2 - 10, modelMargin.top + this.modelWidth - 10);
