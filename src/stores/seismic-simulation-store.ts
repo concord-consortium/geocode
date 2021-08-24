@@ -19,6 +19,8 @@ const deformationSite3 = [0.2, 0.6];
 
 export type ColorMethod = "logarithmic" | "equalInterval";
 
+export const Friction = types.enumeration("type", ["low", "medium", "high"]);
+
 export const SeismicSimulationStore = types
   .model("seismicSimulation", {
     scenario: "Seismic CA",
@@ -31,6 +33,12 @@ export const SeismicSimulationStore = types
     deformationModelTotalClockTime: 5,  // seconds
 
     deformationModelWidthKm: 50,    // km
+
+    deformationModelEnableEarthquakes: false,
+    deformationModelFrictionCategory: types.optional(Friction, "low"),
+    deformationModelFrictionLow: 5,     // total plate motion before earthquake (km)
+    deformationModelFrictionMedium: 10,
+    deformationModelFrictionHigh: 20,
 
     deformSpeedPlate1: 0,     // mm/yr
     deformDirPlate1: 0,       // º from N
@@ -53,6 +61,16 @@ export const SeismicSimulationStore = types
   .views((self) => ({
     get deformationModelSpeed() {
       return self.deformationModelEndStep / self.deformationModelTotalClockTime;
+    },
+    get deformationModelMaxDisplacementBeforeEarthquake() {
+      switch (self.deformationModelFrictionCategory) {
+        case "low":
+          return self.deformationModelFrictionLow;
+        case "medium":
+          return self.deformationModelFrictionMedium;
+        case "high":
+          return self.deformationModelFrictionHigh;
+      }
     }
   }))
   .actions((self) => ({

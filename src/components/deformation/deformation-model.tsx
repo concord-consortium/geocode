@@ -183,7 +183,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     const verticalLines: Point[][] = [];
 
     // horizontal lines start below model and go beyond in case lines curve into model
-    const yBounds = [modelMargin.top - 10, modelMargin.top + this.modelWidth + 20];
+    const yBounds = [modelMargin.top - 200, modelMargin.top + this.modelWidth + 400];
     // vertical lines remain vertical and can be clipped to frame
     const xBounds = [modelMargin.left - 10, modelMargin.left + this.modelWidth + 20];
 
@@ -396,14 +396,31 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     return stationPoints;
   }
 
-  // Calculations taken from PowerPoint linked here: https://www.pivotaltracker.com/story/show/174401018
   private calculateVerticalDisplacement(px: number, vSpeed: number, year: number) {
+    let distanceTravelledDueToEarthquakes = 0;
+    let yearsSinceEarthquake = year;
+    if (this.stores.seismicSimulation.deformationModelEnableEarthquakes) {
+      const earthquakes = this.getEarthquakes(year, vSpeed);
+      const direction = px > 0 ? -1 : 1;
+      distanceTravelledDueToEarthquakes = earthquakes.distanceTravelledDueToEarthquakes * direction;
+      yearsSinceEarthquake = earthquakes.yearsSinceEarthquake;
+    }
+
+    const additionalDisplacement = this.calculateVerticalDisplacementWithoutEarthakes(px, vSpeed, yearsSinceEarthquake);
+
+    return distanceTravelledDueToEarthquakes + additionalDisplacement;
+  }
+
+  // The main sheer-strain deformation model.
+  // Calculations taken from PowerPoint linked here: https://www.pivotaltracker.com/story/show/174401018
+  private calculateVerticalDisplacementWithoutEarthakes(px: number, vSpeed: number, year: number) {
     const verticalSlipRatemmYr = vSpeed / Math.PI *
       (Math.cos(dip) * (Math.atan(px / lockingDepth) - dip + Math.PI / 2) -
       (px * (lockingDepth * Math.cos(dip) + px * Math.sin(dip)))
       / (px * px + lockingDepth * lockingDepth));                   // mm/yr
     const verticalSlipRateKmYr = verticalSlipRatemmYr / 1000000;
     const verticalDisplacement = verticalSlipRateKmYr * year;       // km
+
     return (px > 0 ? -verticalDisplacement : verticalDisplacement);
   }
 
@@ -524,6 +541,18 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       preP = curP;
     }
     ctx.stroke();
+  }
+
+  private getEarthquakes(year: number, vSpeed: number) {
+    const maxDisplacement = this.stores.seismicSimulation.deformationModelMaxDisplacementBeforeEarthquake;
+    const speedInKmYr = vSpeed / 1e6;
+    const yearsToEarthquake = Math.abs(maxDisplacement / speedInKmYr);
+    const count = Math.floor(year / yearsToEarthquake);
+    return {
+      count,
+      yearsSinceEarthquake: year % yearsToEarthquake,
+      distanceTravelledDueToEarthquakes: count * (maxDisplacement / 3)
+    };
   }
 
 }
