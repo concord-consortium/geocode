@@ -29,6 +29,9 @@ const drawAreaColor = "#fff";
 const textColor = "#434343";
 const stationColor = "#98E643";
 const faultColor = "#ff9300";
+const rainbowColor = [
+  "#9400D3", "#4B0082", "#0000FF", "#00FF00", "#FF7F00", "#FF0000"
+];
 const initialPlateAlpha = .07;
 const stationBorderThickness = 2;
 
@@ -136,7 +139,8 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.lineWidth = 1;
     ctx.strokeStyle = textColor;
 
-    const { deformationModelStep: year, deformationModelEnableEarthquakes } = this.stores.seismicSimulation;
+    const { deformationModelStep: year, deformationModelEnableEarthquakes,
+      deformationModelRainbowLines } = this.stores.seismicSimulation;
     const vSpeed = this.getRelativeVerticalSpeed();     // mm/yr
     const hSpeed = this.getRelativeHorizontalSpeed();
 
@@ -199,8 +203,14 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
     ctx.strokeStyle = lineColor;
     const drawBzCurve = this.bzCurve(ctx);
-    horizontalLines.forEach(drawBzCurve);
+    horizontalLines.forEach((line, i) => {
+      if (deformationModelRainbowLines) {
+        ctx.strokeStyle = rainbowColor[Math.floor(i / 2) % rainbowColor.length];
+      }
+      drawBzCurve(line);
+    });
 
+    ctx.strokeStyle = lineColor;
     verticalLines.forEach(line => {
       ctx.beginPath();
       ctx.moveTo(line[0].x, line[0].y);

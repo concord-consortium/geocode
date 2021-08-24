@@ -40,6 +40,8 @@ export const SeismicSimulationStore = types
     deformationModelFrictionMedium: 10,
     deformationModelFrictionHigh: 20,
 
+    deformationModelRainbowLines: false,
+
     deformSpeedPlate1: 0,     // mm/yr
     deformDirPlate1: 0,       // º from N
     deformSpeedPlate2: 0,
