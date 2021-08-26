@@ -368,8 +368,8 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     });
 
     addFunc("setPlateVelocity", (params: { plate: number, speed: number, direction: number }) => {
-      if (Math.abs(params.speed) > Math.abs(seismicSimulation.deformMaxSpeed)) {
-        return blocklyController.throwError(`Plate speed must be between ${-seismicSimulation.deformMaxSpeed} and ${seismicSimulation.deformMaxSpeed} mm/year`);
+      if (params.speed < 0 || params.speed > seismicSimulation.deformMaxSpeed) {
+        return blocklyController.throwError(`Plate speed must be between 0 and ${seismicSimulation.deformMaxSpeed} mm/year`);
       }
       seismicSimulation.setPlateVelocity(params.plate, params.speed, params.direction);
     });
