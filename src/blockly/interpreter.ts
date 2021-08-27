@@ -380,6 +380,10 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       seismicSimulation.setApparentYear(params.year);
     });
 
+    addFunc("triggerEarthquake", () => {
+      seismicSimulation.triggerEarthquake();
+    });
+
     /** ==== Utility methods ==== */
 
     addFunc("log", (params) => {

@@ -103,3 +103,24 @@ Blockly.Blocks['deformation-create-sim'] = {
   `;
   return code;
   };
+
+  Blockly.Blocks['deformation-model-earthquake'] = {
+    init: function() {
+      this.appendDummyInput()
+          .appendField("Trigger earthquake to release energy");
+      this.appendDummyInput()
+          .appendField("and set Deformation to 0");
+      this.setPreviousStatement(true, null);
+      this.setNextStatement(true, null);
+      this.setColour(15);
+   this.setTooltip("");
+   this.setHelpUrl("");
+    }
+  };
+
+  Blockly.JavaScript['deformation-model-earthquake'] = function(block) {
+    var code = `
+      triggerEarthquake();
+  `;
+  return code;
+  };
