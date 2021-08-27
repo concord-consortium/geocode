@@ -43,6 +43,9 @@ export const SeismicSimulationStore = types
     deformationModelFrictionMedium: 10,
     deformationModelFrictionHigh: 20,
 
+    deformationModelUserEarthquakeCount: 0,
+    deformationModelUserEarthquakeLatestStep: 0,
+
     deformationModelRainbowLines: false,
     deformationModelShowYear: true,
 
@@ -113,6 +116,8 @@ export const SeismicSimulationStore = types
     },
     resetDeformationModel() {
       self.deformationModelStep = 0;
+      self.deformationModelUserEarthquakeCount = 0;
+      self.deformationModelUserEarthquakeLatestStep = 0;
     },
     setShowVelocityArrows(show: boolean) {
       self.showVelocityArrows = show;
@@ -244,6 +249,8 @@ export const SeismicSimulationStore = types
       self.selectedGPSStationId = undefined;
       self.showVelocityArrows = false;
       self.deformationModelStep = 0;
+      self.deformationModelUserEarthquakeCount = 0;
+      self.deformationModelUserEarthquakeLatestStep = 0;
       self.strainMapMinLat = -90;
       self.strainMapMinLng = -180;
       self.strainMapMaxLat = 90;
@@ -284,6 +291,13 @@ export const SeismicSimulationStore = types
     setApparentYear(year: number) {
       self.setDeformationStep(year / self.deformationModelApparentYearScaling);
     },
+    triggerEarthquake() {
+      if (self.deformationModelEarthquakeControl !== "user") {
+        return;
+      }
+      self.deformationModelUserEarthquakeCount++;
+      self.deformationModelUserEarthquakeLatestStep = self.deformationModelStep;
+    }
   }))
   .views((self) => ({
     get allGPSStations() {

@@ -11,6 +11,8 @@ interface IProps {
 
 interface Point {x: number; y: number; }
 
+interface EarthquakesInfo { count: number; yearsSinceEarthquake: number; distanceTravelledDueToEarthquakes: number; }
+
 const canvasMargin = {
   top: 5,
   left: 8
@@ -568,16 +570,39 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.stroke();
   }
 
-  private getEarthquakes(year: number, vSpeed: number) {
-    const maxDisplacement = this.stores.seismicSimulation.deformationModelMaxDisplacementBeforeEarthquake;
-    const speedInKmYr = vSpeed / 1e6;
-    const yearsToEarthquake = Math.abs(maxDisplacement / speedInKmYr);
-    const count = Math.floor(year / yearsToEarthquake);
-    return {
-      count,
-      yearsSinceEarthquake: year % yearsToEarthquake,
-      distanceTravelledDueToEarthquakes: count * (maxDisplacement / 3)
-    };
+  private getEarthquakes(year: number, vSpeed: number): EarthquakesInfo {
+    const { deformationModelEarthquakeControl, deformationModelMaxDisplacementBeforeEarthquake,
+      deformationModelUserEarthquakeCount, deformationModelUserEarthquakeLatestStep } = this.stores.seismicSimulation;
+    if (deformationModelEarthquakeControl === "auto") {
+      // for auto earthquakes, plates have a maximum distance they can travel before an earthquake.
+      // We work out the years it takes to have an earthquake, the number of earthquakes that have occurred
+      // given this, and the total distance the plates have moved
+      const maxDisplacement = deformationModelMaxDisplacementBeforeEarthquake;
+      const speedInKmYr = vSpeed / 1e6;
+      const yearsToEarthquake = Math.abs(maxDisplacement / speedInKmYr);
+      const count = Math.floor(year / yearsToEarthquake);
+      return {
+        count,
+        yearsSinceEarthquake: year % yearsToEarthquake,
+        distanceTravelledDueToEarthquakes: count * (maxDisplacement / 3)
+      };
+    } else if (deformationModelEarthquakeControl === "user") {
+      // for user-defined earthquakes, the model maintains the count of earthquakes and the year of the last one.
+      // we just need to calculate the distanced the plates had traveled at the last earthquake
+      const absSpeed = Math.abs(vSpeed);
+      const distanceTravelledDueToEarthquakes = absSpeed * deformationModelUserEarthquakeLatestStep / 3e6;
+      return {
+        count: deformationModelUserEarthquakeCount,
+        yearsSinceEarthquake: year - deformationModelUserEarthquakeLatestStep,
+        distanceTravelledDueToEarthquakes
+      };
+    } else {
+      return {
+        count: 0,
+        yearsSinceEarthquake: year,
+        distanceTravelledDueToEarthquakes: 0,
+      };
+    }
   }
 
 }
