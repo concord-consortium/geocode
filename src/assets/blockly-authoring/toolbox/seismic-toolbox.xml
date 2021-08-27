@@ -14,6 +14,8 @@
 
   <category name="Deformation" colour="15">
     <block type="deformation-create-sim"></block>
+    <block type="deformation-year-loop"></block>
+    <block type="deformation-model-step"></block>
   </category>
 
   <category name="Data" colour="130">

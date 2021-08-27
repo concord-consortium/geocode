@@ -373,6 +373,13 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       }
       seismicSimulation.setPlateVelocity(params.plate, params.speed, params.direction);
     });
+
+    addFunc("stepDeformationModel", (params: { year: number, plate_1_speed: number, plate_2_speed: number }) => {
+      seismicSimulation.setPlateVelocity(1, params.plate_1_speed, 0);
+      seismicSimulation.setPlateVelocity(2, params.plate_2_speed, 180);
+      seismicSimulation.setApparentYear(params.year);
+    });
+
     /** ==== Utility methods ==== */
 
     addFunc("log", (params) => {
