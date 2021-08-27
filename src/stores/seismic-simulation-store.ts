@@ -43,10 +43,10 @@ export const SeismicSimulationStore = types
     deformationModelFrictionHigh: 20,
 
     deformationModelRainbowLines: false,
-
-    deformationModelApparentYearScaling: 1,   // changes the visible value for years passed, and when students step
-                                              // through years manually with blocks
     deformationModelShowYear: true,
+
+    // changes the visible value for years passed, and when students step through years manually with blocks
+    deformationModelApparentYearScaling: 1,
 
     deformSpeedPlate1: 0,     // mm/yr
     deformDirPlate1: 0,       // º from N
@@ -105,11 +105,7 @@ export const SeismicSimulationStore = types
       self.selectedGPSStationId = id;
     },
     setDeformationStep(step: number) {
-      if (step > self.deformationModelEndStep) {
-        self.deformationModelStep = self.deformationModelEndStep;
-      } else {
-        self.deformationModelStep = step;
-      }
+      self.deformationModelStep = step;
     },
     resetDeformationModel() {
       self.deformationModelStep = 0;
@@ -260,7 +256,10 @@ export const SeismicSimulationStore = types
 
       const updateStep = () => {
         const dt = (window.performance.now() - startTime) / 1000;   // seconds since start
-        const step = Math.floor(dt * self.deformationModelSpeed);
+        let step = Math.floor(dt * self.deformationModelSpeed);
+        if (step > self.deformationModelEndStep) {
+          step = self.deformationModelEndStep;
+        }
         self.setDeformationStep(step);
         if (step < self.deformationModelEndStep) {
           window.requestAnimationFrame(updateStep);
@@ -270,7 +269,6 @@ export const SeismicSimulationStore = types
       window.requestAnimationFrame(updateStep);
     },
     setPlateVelocity(block: number, speed: number, direction: number) {
-      self.deformationModelStep = 0;
       if (block === 1) {
         self.deformSpeedPlate1 = speed;
         self.deformDirPlate1 = 180 - direction;
@@ -278,7 +276,10 @@ export const SeismicSimulationStore = types
         self.deformSpeedPlate2 = speed;
         self.deformDirPlate2 = 180 - direction;
       }
-    }
+    },
+    setApparentYear(year: number) {
+      self.setDeformationStep(year / self.deformationModelApparentYearScaling);
+    },
   }))
   .views((self) => ({
     get allGPSStations() {
