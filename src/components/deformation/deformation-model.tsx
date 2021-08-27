@@ -139,7 +139,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.lineWidth = 1;
     ctx.strokeStyle = textColor;
 
-    const { deformationModelStep: year, deformationModelEnableEarthquakes,
+    const { deformationModelStep: year, deformationModelEarthquakesEnabled,
       deformationModelRainbowLines, deformationModelWidthKm,
       deformationModelApparentWidthKm, deformationModelApparentYearScaling,
       deformationModelShowYear } = this.stores.seismicSimulation;
@@ -268,7 +268,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       ctx.stroke();
     }
 
-    if (deformationModelEnableEarthquakes) {
+    if (deformationModelEarthquakesEnabled) {
       const numEarthquakes = this.getEarthquakes(year, vSpeed).count;
       ctx.textAlign = "start";
       ctx.fillText(`Earthquakes: ${numEarthquakes}`,
@@ -424,7 +424,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
   private calculateVerticalDisplacement(px: number, vSpeed: number, year: number) {
     let distanceTravelledDueToEarthquakes = 0;
     let yearsSinceEarthquake = year;
-    if (this.stores.seismicSimulation.deformationModelEnableEarthquakes) {
+    if (this.stores.seismicSimulation.deformationModelEarthquakesEnabled) {
       const earthquakes = this.getEarthquakes(year, vSpeed);
       const direction = px > 0 ? -1 : 1;
       distanceTravelledDueToEarthquakes = earthquakes.distanceTravelledDueToEarthquakes * direction;

@@ -21,6 +21,7 @@ const deformationSite3 = [0.2, 0.6];
 export type ColorMethod = "logarithmic" | "equalInterval";
 
 export const Friction = types.enumeration("type", ["low", "medium", "high"]);
+export const EarthquakeControl = types.enumeration("type", ["none", "auto", "user"]);
 
 export const SeismicSimulationStore = types
   .model("seismicSimulation", {
@@ -36,7 +37,7 @@ export const SeismicSimulationStore = types
     deformationModelWidthKm: 50,    // km
     deformationModelApparentWidthKm: 50,    // model width as indicated by the scale marker (km)
 
-    deformationModelEnableEarthquakes: false,
+    deformationModelEarthquakeControl: types.optional(EarthquakeControl, "none"),
     deformationModelFrictionCategory: types.optional(Friction, "low"),
     deformationModelFrictionLow: 5,     // total plate motion before earthquake (km)
     deformationModelFrictionMedium: 10,
@@ -79,6 +80,9 @@ export const SeismicSimulationStore = types
         case "high":
           return self.deformationModelFrictionHigh;
       }
+    },
+    get deformationModelEarthquakesEnabled() {
+      return self.deformationModelEarthquakeControl === "auto" || self.deformationModelEarthquakeControl === "user";
     }
   }))
   .actions((self) => {
