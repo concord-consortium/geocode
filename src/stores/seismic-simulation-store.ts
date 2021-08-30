@@ -4,6 +4,7 @@ import strainCalc, { StationData, StrainOutput } from "../strain";
 import { Filter, Range } from "./data-sets";
 import Delaunator from "delaunator";
 import { SeismicSimulationAuthorSettings, SeismicSimulationAuthorSettingsProps } from "./stores";
+import { deg2rad } from "../utilities/coordinateSpaceConversion";
 
 const minLat = 32;
 const maxLat = 42;
@@ -86,7 +87,25 @@ export const SeismicSimulationStore = types
     },
     get deformationModelEarthquakesEnabled() {
       return self.deformationModelEarthquakeControl === "auto" || self.deformationModelEarthquakeControl === "user";
-    }
+    },
+    get relativeVerticalSpeed() {   // mm/yr
+      const { deformSpeedPlate1, deformDirPlate1, deformSpeedPlate2, deformDirPlate2 } = this;
+
+      const plate1VerticalSpeed = Math.cos(deg2rad(deformDirPlate1)) * deformSpeedPlate1;
+      const plate2VerticalSpeed = Math.cos(deg2rad(deformDirPlate2)) * deformSpeedPlate2;
+
+      const relativeSpeed = plate1VerticalSpeed - plate2VerticalSpeed;
+      return relativeSpeed;
+    },
+    get relativeHorizontalSpeed() {   // mm/yr
+      const { deformSpeedPlate1, deformDirPlate1, deformSpeedPlate2, deformDirPlate2 } = this;
+
+      const plate1HorizontalSpeed = Math.sin(deg2rad(deformDirPlate1)) * deformSpeedPlate1;
+      const plate2HorizontalSpeed = Math.sin(deg2rad(deformDirPlate2)) * deformSpeedPlate2;
+
+      const relativeSpeed = plate1HorizontalSpeed - plate2HorizontalSpeed;
+      return relativeSpeed;
+    },
   }))
   .actions((self) => {
     return {

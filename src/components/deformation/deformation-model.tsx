@@ -144,9 +144,8 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     const { deformationModelStep: year, deformationModelEarthquakesEnabled,
       deformationModelRainbowLines, deformationModelWidthKm,
       deformationModelApparentWidthKm, deformationModelApparentYearScaling,
-      deformationModelShowYear } = this.stores.seismicSimulation;
-    const vSpeed = this.getRelativeVerticalSpeed();     // mm/yr
-    const hSpeed = this.getRelativeHorizontalSpeed();
+      deformationModelShowYear, relativeVerticalSpeed: vSpeed,
+      relativeHorizontalSpeed: hSpeed } = this.stores.seismicSimulation;
 
     // plates
     if (year < this.fadeOutTime) {
@@ -317,28 +316,6 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     const distanceLabel = labelScaleKm >= 1 ? `${labelScaleKm}km` : `${labelScaleKm * 1000}m`;
     ctx.fillText(distanceLabel, s1.x, s1.y + 20);
     ctx.stroke();
-  }
-
-  private getRelativeVerticalSpeed() {
-    const { deformSpeedPlate1, deformDirPlate1, deformSpeedPlate2, deformDirPlate2 } =
-      this.stores.seismicSimulation;
-
-    const plate1VerticalSpeed = Math.cos(deg2rad(deformDirPlate1)) * deformSpeedPlate1;
-    const plate2VerticalSpeed = Math.cos(deg2rad(deformDirPlate2)) * deformSpeedPlate2;
-
-    const relativeSpeed = plate1VerticalSpeed - plate2VerticalSpeed;
-    return relativeSpeed;
-  }
-
-  private getRelativeHorizontalSpeed() {
-    const { deformSpeedPlate1, deformDirPlate1, deformSpeedPlate2, deformDirPlate2 } =
-      this.stores.seismicSimulation;
-
-    const plate1HorizontalSpeed = Math.sin(deg2rad(deformDirPlate1)) * deformSpeedPlate1;
-    const plate2HorizontalSpeed = Math.sin(deg2rad(deformDirPlate2)) * deformSpeedPlate2;
-
-    const relativeSpeed = plate1HorizontalSpeed - plate2HorizontalSpeed;
-    return relativeSpeed;
   }
 
   // returns two lines, one on either side of the center line, so we can have clean breaks
