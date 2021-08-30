@@ -29,15 +29,15 @@ const drawAreaColor = "#fff";
 const textColor = "#434343";
 const stationColor = "#98E643";
 const faultColor = "#ff9300";
+const rainbowColor = [
+  "#9400D3", "#4B0082", "#0000FF", "#00FF00", "#FF7F00", "#FF0000"
+];
 const initialPlateAlpha = .07;
 const stationBorderThickness = 2;
 
 const lineSpacing = 20;
 // should be in km
 const lockingDepth = 1;
-// for converting pixels to world distance
-// we want the area shown to be approx this size in each direction
-const distanceScale = 50;
 
 // angle between the plates vertically (into the Earth)
 const dip = deg2rad(90);
@@ -66,9 +66,8 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     const smallestDimension = Math.min(canvasWidth, canvasHeight);
     return smallestDimension - (minModelMargin * 2);
   }
-  private get stepSize() {
-    const steps = 100;
-    return this.modelWidth / steps;
+  private get fadeOutTime() {
+    return this.stores.seismicSimulation.deformationModelEndStep / 10;
   }
 
   public componentDidMount() {
@@ -133,20 +132,21 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.strokeStyle = faultColor;
     ctx.lineWidth = 3;
     ctx.setLineDash([20, 5]);
-    ctx.moveTo(modelMargin.left + (this.modelWidth / 2), modelMargin.top);
-    ctx.lineTo(modelMargin.left + (this.modelWidth / 2), this.modelWidth + modelMargin.top);
+    ctx.moveTo(modelMargin.left + (this.modelWidth / 2) - 1, modelMargin.top);
+    ctx.lineTo(modelMargin.left + (this.modelWidth / 2) - 1, this.modelWidth + modelMargin.top);
     ctx.stroke();
     ctx.setLineDash([]);
     ctx.lineWidth = 1;
     ctx.strokeStyle = textColor;
 
-    const { deformationModelStep: year } = this.stores.seismicSimulation;
+    const { deformationModelStep: year, deformationModelEnableEarthquakes,
+      deformationModelRainbowLines } = this.stores.seismicSimulation;
     const vSpeed = this.getRelativeVerticalSpeed();     // mm/yr
     const hSpeed = this.getRelativeHorizontalSpeed();
 
     // plates
-    if (year < 50000) {
-      const plateAlpha = initialPlateAlpha - (year / 50000) * initialPlateAlpha;
+    if (year < this.fadeOutTime) {
+      const plateAlpha = initialPlateAlpha - (year / this.fadeOutTime) * initialPlateAlpha;
       ctx.fillStyle = `rgba(255,58,58,${plateAlpha})`;
       ctx.beginPath();
       ctx.rect(modelMargin.left, modelMargin.top, this.modelWidth / 2, this.modelWidth + modelMargin.top);
@@ -187,14 +187,14 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     const verticalLines: Point[][] = [];
 
     // horizontal lines start below model and go beyond in case lines curve into model
-    const yBounds = [modelMargin.top - 10, modelMargin.top + this.modelWidth + 20];
+    const yBounds = [modelMargin.top - 200, modelMargin.top + this.modelWidth + 400];
     // vertical lines remain vertical and can be clipped to frame
     const xBounds = [modelMargin.left - 10, modelMargin.left + this.modelWidth + 20];
 
     // form "horizontal" lines, one for each step vertically
     // (this is slightly inefficient, because they all have the same shape, but the calc is fast)
     for (let y = yBounds[0]; y < yBounds[1]; y += lineSpacing) {
-      horizontalLines.push(this.generateHorizontalLine(y, modelMargin.left, vSpeed, year));
+      horizontalLines.push(...this.generateHorizontalLines(y, modelMargin.left, vSpeed, year));
     }
     // form vertical lines, one for each step horizontally
     for (let x = xBounds[0]; x < xBounds[1]; x += lineSpacing) {
@@ -203,8 +203,14 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
     ctx.strokeStyle = lineColor;
     const drawBzCurve = this.bzCurve(ctx);
-    horizontalLines.forEach(drawBzCurve);
+    horizontalLines.forEach((line, i) => {
+      if (deformationModelRainbowLines) {
+        ctx.strokeStyle = rainbowColor[Math.floor(i / 2) % rainbowColor.length];
+      }
+      drawBzCurve(line);
+    });
 
+    ctx.strokeStyle = lineColor;
     verticalLines.forEach(line => {
       ctx.beginPath();
       ctx.moveTo(line[0].x, line[0].y);
@@ -217,9 +223,9 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.restore();
 
     // draw the fainter lines behind triangle that will fade
-    if (year < 50000) {
+    if (year < this.fadeOutTime) {
       ctx.save();
-      const alpha = 0.5 - (year / 50000) * 0.5;
+      const alpha = 0.5 - (year / this.fadeOutTime) * 0.5;
       ctx.lineWidth = 0.5;
       ctx.strokeStyle = `rgba(0,0,0,${alpha})`;
       horizontalLines.forEach(drawBzCurve);
@@ -257,6 +263,14 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       modelMargin.left + this.modelWidth - 10, modelMargin.top + this.modelWidth - 10);
     ctx.stroke();
 
+    if (deformationModelEnableEarthquakes) {
+      const numEarthquakes = this.getEarthquakes(year, vSpeed).count;
+      ctx.textAlign = "start";
+      ctx.fillText(`Earthquakes: ${numEarthquakes}`,
+        modelMargin.left + 10, modelMargin.top + this.modelWidth - 10);
+      ctx.stroke();
+    }
+
     ctx.font = "15px Lato";
     ctx.fillText("Fault", modelMargin.left + this.modelWidth / 2 - 10, modelMargin.top + this.modelWidth - 10);
 
@@ -273,9 +287,10 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.fill();
 
     // Scale
+    const scaleKm = this.stores.seismicSimulation.deformationModelWidthKm / 10;
     ctx.lineWidth = 1;
-    const s1 = { x: modelMargin.left + this.modelWidth / 2 - this.worldToCanvas(5) - 10, y: modelMargin.top + 20 };
-    const s2 = { x: s1.x + this.worldToCanvas(5), y: s1.y };
+    const s1 = { x: modelMargin.left + this.modelWidth / 2 - this.worldToCanvas(scaleKm) - 10, y: modelMargin.top + 20};
+    const s2 = { x: s1.x + this.worldToCanvas(scaleKm), y: s1.y };
     ctx.beginPath();
     ctx.moveTo(s1.x, s1.y);
     ctx.lineTo(s2.x, s2.y);
@@ -290,7 +305,8 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.textAlign = "start";
     ctx.fillStyle = textColor;
     ctx.font = "13px Lato";
-    ctx.fillText(`5km`, s1.x, s1.y + 20);
+    const distanceLabel = scaleKm >= 1 ? `${scaleKm}km` : `${scaleKm * 1000}m`;
+    ctx.fillText(distanceLabel, s1.x, s1.y + 20);
     ctx.stroke();
   }
 
@@ -316,24 +332,52 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     return relativeSpeed;
   }
 
-  private generateHorizontalLine(yOrigin: number, xOffset: number, relativeVerticalSpeed: number, year: number) {
+  // returns two lines, one on either side of the center line, so we can have clean breaks
+  // in the case of earthquakes
+  private generateHorizontalLines(yOrigin: number, xOffset: number, relativeVerticalSpeed: number, year: number) {
     const center = this.modelWidth / 2;
-    const points: Point[] = [];
+    const eighthWidth = (this.modelWidth / 8);
+    const threeEightsWidth = (this.modelWidth * 3 / 8);
+    const lines: Point[][] = [];
 
-    // generate vertical displacements along a horizontal line
-    for (let x = 0; x < this.modelWidth; x += this.stepSize) {
-      // xDist is always distance from the center fault line
-      const xDist = this.canvasToWorld(center - x);
+    for (let line = 0; line < 2; line++) {
+      const points: Point[] = [];
 
-      // distance is measured from the center fault
-      const verticalDisplacement =
-        this.calculateVerticalDisplacement(xDist, relativeVerticalSpeed, year);
+      const start = line === 0 ? 0 : this.modelWidth;
+      let stepSize;
+      let x;
 
-      const newY = yOrigin + this.worldToCanvas(verticalDisplacement);
-      const newX = x + xOffset; // + this.worldToCanvas(horizontalSheer);
-      points.push({ x: newX, y: newY });
+      // for each line going on either side of the fault, we want to sample 50 vertical (sheer) displacements.
+      // However, we don't need to do this evenly, as the far ends of the lines are mostly straight, while the points
+      // nearest the fault may be highly distorted. To draw a smooth line, it is better to have more points in the
+      // curve. Instead of some logarithmic equation for where to sample the points, this simply samples 20
+      // evenly-spaced points across the 3/8ths of the model furthest from the fault, and 30 points in the nearest
+      // eighth. Both lines work from the outside-in.
+      for (let step = 0; step < 50; step++) {
+        const direction = line === 0 ? 1 : -1;
+        if (step < 20) {
+          stepSize = threeEightsWidth / 20;
+          x = start + (step * stepSize * direction);
+        } else {
+          stepSize = eighthWidth / 30;
+          x = start + (threeEightsWidth * direction) + ((step - 20) * stepSize * direction);
+        }
+
+        // xDist is always distance from the center fault line
+        const xDist = this.canvasToWorld(center - x);
+
+        // distance is measured from the center fault
+        const verticalDisplacement =
+          this.calculateVerticalDisplacement(xDist, relativeVerticalSpeed, year);
+
+        const newY = yOrigin + this.worldToCanvas(verticalDisplacement);
+        const newX = x + xOffset; // + this.worldToCanvas(horizontalSheer);
+        points.push({ x: newX, y: newY });
+      }
+
+      lines.push(points);
     }
-    return points;
+    return lines;
   }
 
   // vertical lines are always precisely straight, so just require two points
@@ -370,14 +414,31 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     return stationPoints;
   }
 
-  // Calculations taken from PowerPoint linked here: https://www.pivotaltracker.com/story/show/174401018
   private calculateVerticalDisplacement(px: number, vSpeed: number, year: number) {
+    let distanceTravelledDueToEarthquakes = 0;
+    let yearsSinceEarthquake = year;
+    if (this.stores.seismicSimulation.deformationModelEnableEarthquakes) {
+      const earthquakes = this.getEarthquakes(year, vSpeed);
+      const direction = px > 0 ? -1 : 1;
+      distanceTravelledDueToEarthquakes = earthquakes.distanceTravelledDueToEarthquakes * direction;
+      yearsSinceEarthquake = earthquakes.yearsSinceEarthquake;
+    }
+
+    const additionalDisplacement = this.calculateVerticalDisplacementWithoutEarthakes(px, vSpeed, yearsSinceEarthquake);
+
+    return distanceTravelledDueToEarthquakes + additionalDisplacement;
+  }
+
+  // The main sheer-strain deformation model.
+  // Calculations taken from PowerPoint linked here: https://www.pivotaltracker.com/story/show/174401018
+  private calculateVerticalDisplacementWithoutEarthakes(px: number, vSpeed: number, year: number) {
     const verticalSlipRatemmYr = vSpeed / Math.PI *
       (Math.cos(dip) * (Math.atan(px / lockingDepth) - dip + Math.PI / 2) -
       (px * (lockingDepth * Math.cos(dip) + px * Math.sin(dip)))
       / (px * px + lockingDepth * lockingDepth));                   // mm/yr
     const verticalSlipRateKmYr = verticalSlipRatemmYr / 1000000;
     const verticalDisplacement = verticalSlipRateKmYr * year;       // km
+
     return (px > 0 ? -verticalDisplacement : verticalDisplacement);
   }
 
@@ -420,18 +481,17 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     return totalDisplacement;
   }
 
+  // pixel position, starting from 0 (left or top) to km
   private canvasToWorld(canvasPosition: number) {
-    // screen size affects pixel scale
-    // distanceScale is how many real-world units we want to show across the pixel grid
-    return canvasPosition / this.modelWidth *  distanceScale;
+    return canvasPosition / this.modelWidth *  this.stores.seismicSimulation.deformationModelWidthKm;
   }
 
   // GPS stations are positioned as a percentage 0-1 across the model area
   private percentToWorld(distancePercentage: number) {
-    return distancePercentage * distanceScale;
+    return distancePercentage * this.stores.seismicSimulation.deformationModelWidthKm;
   }
-  private worldToCanvas(distanceInRealUnits: number) {
-    return distanceInRealUnits / distanceScale * this.modelWidth;
+  private worldToCanvas(distanceInKm: number) {
+    return distanceInKm / this.stores.seismicSimulation.deformationModelWidthKm * this.modelWidth;
   }
 
   // Visual representation of the plate velocities based on student values
@@ -499,6 +559,18 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       preP = curP;
     }
     ctx.stroke();
+  }
+
+  private getEarthquakes(year: number, vSpeed: number) {
+    const maxDisplacement = this.stores.seismicSimulation.deformationModelMaxDisplacementBeforeEarthquake;
+    const speedInKmYr = vSpeed / 1e6;
+    const yearsToEarthquake = Math.abs(maxDisplacement / speedInKmYr);
+    const count = Math.floor(year / yearsToEarthquake);
+    return {
+      count,
+      yearsSinceEarthquake: year % yearsToEarthquake,
+      distanceTravelledDueToEarthquakes: count * (maxDisplacement / 3)
+    };
   }
 
 }

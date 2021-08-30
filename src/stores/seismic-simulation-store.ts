@@ -3,6 +3,7 @@ import { parseOfflineUNAVCOData } from "../utilities/unavco-data";
 import strainCalc, { StationData, StrainOutput } from "../strain";
 import { Filter, Range } from "./data-sets";
 import Delaunator from "delaunator";
+import { SeismicSimulationAuthorSettings, SeismicSimulationAuthorSettingsProps } from "./stores";
 
 const minLat = 32;
 const maxLat = 42;
@@ -19,6 +20,8 @@ const deformationSite3 = [0.2, 0.6];
 
 export type ColorMethod = "logarithmic" | "equalInterval";
 
+export const Friction = types.enumeration("type", ["low", "medium", "high"]);
+
 export const SeismicSimulationStore = types
   .model("seismicSimulation", {
     scenario: "Seismic CA",
@@ -26,9 +29,19 @@ export const SeismicSimulationStore = types
     selectedGPSStationId: types.maybe(types.string),
     showVelocityArrows: false,
 
-    deformationModelStep: 0,            // year
-    deformationModelSpeed: 100000,      // years / second
-    deformationModelEndStep: 500000,
+    deformationModelStep: 0,
+    deformationModelEndStep: 500000,    // years
+    deformationModelTotalClockTime: 5,  // seconds
+
+    deformationModelWidthKm: 50,    // km
+
+    deformationModelEnableEarthquakes: false,
+    deformationModelFrictionCategory: types.optional(Friction, "low"),
+    deformationModelFrictionLow: 5,     // total plate motion before earthquake (km)
+    deformationModelFrictionMedium: 10,
+    deformationModelFrictionHigh: 20,
+
+    deformationModelRainbowLines: false,
 
     deformSpeedPlate1: 0,     // mm/yr
     deformDirPlate1: 0,       // º from N
@@ -48,6 +61,32 @@ export const SeismicSimulationStore = types
     delaunayTriangles: [] as number[][][],
     delaunayTriangleStrains: [] as number[],
   }))
+  .views((self) => ({
+    get deformationModelSpeed() {
+      return self.deformationModelEndStep / self.deformationModelTotalClockTime;
+    },
+    get deformationModelMaxDisplacementBeforeEarthquake() {
+      switch (self.deformationModelFrictionCategory) {
+        case "low":
+          return self.deformationModelFrictionLow;
+        case "medium":
+          return self.deformationModelFrictionMedium;
+        case "high":
+          return self.deformationModelFrictionHigh;
+      }
+    }
+  }))
+  .actions((self) => {
+    return {
+      loadAuthorSettingsData: (data: SeismicSimulationAuthorSettings) => {
+        Object.keys(data).forEach((key: SeismicSimulationAuthorSettingsProps) => {
+          // annoying `as any ... as any` is needed because we're mixing bool and non-bool props, which combine to never
+          // see https://github.com/microsoft/TypeScript/issues/31663
+          (self[key] as any) = data[key] as any;
+        });
+      },
+    };
+  })
   .actions((self) => ({
     showGPSStations(stations: StationData[] | string) {
       self.visibleGPSStationIds.clear();
