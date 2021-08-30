@@ -124,3 +124,39 @@ Blockly.Blocks['deformation-create-sim'] = {
   `;
   return code;
   };
+
+  Blockly.Blocks['deformation-model-get-deformation'] = {
+    init: function() {
+      this.appendDummyInput()
+          .appendField("Deformation");
+      this.setOutput(true, 'Number');
+      this.setColour(15);
+   this.setTooltip("");
+   this.setHelpUrl("");
+    }
+  };
+
+  Blockly.JavaScript['deformation-model-get-deformation'] = function(block) {
+    var code = `getDeformation()`;
+  return [code, Blockly.JavaScript.ORDER_NONE];
+  };
+
+
+  Blockly.Blocks['deformation-model-get-max-deformation'] = {
+    init: function() {
+      this.appendDummyInput()
+          .appendField("Compute max deformation with")
+          .appendField(new Blockly.FieldDropdown([["low", "low"], ["medium", "medium"], ["high", "high"]]), "friction")
+          .appendField("friction");
+      this.setOutput(true, 'Number');
+      this.setColour(15);
+   this.setTooltip("");
+   this.setHelpUrl("");
+    }
+  };
+
+  Blockly.JavaScript['deformation-model-get-max-deformation'] = function(block) {
+    var friction = block.getFieldValue('friction');
+    var code = `getMaxDeformation("${friction}")`;
+  return [code, Blockly.JavaScript.ORDER_NONE];
+  };

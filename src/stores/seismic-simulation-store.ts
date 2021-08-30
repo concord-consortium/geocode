@@ -316,7 +316,17 @@ export const SeismicSimulationStore = types
       }
       self.deformationModelUserEarthquakeCount++;
       self.deformationModelUserEarthquakeLatestStep = self.deformationModelStep;
-    }
+    },
+    getDeformationModelMaxDisplacementBeforeEarthquakeGivenFriction(friction: "low" | "medium" | "high") {
+      switch (friction) {
+        case "low":
+          return self.deformationModelFrictionLow;
+        case "medium":
+          return self.deformationModelFrictionMedium;
+        case "high":
+          return self.deformationModelFrictionHigh;
+      }
+    },
   }))
   .views((self) => ({
     get allGPSStations() {

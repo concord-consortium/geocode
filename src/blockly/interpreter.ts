@@ -384,6 +384,15 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       seismicSimulation.triggerEarthquake();
     });
 
+    addFunc("getDeformation", () => {
+      const year = seismicSimulation.deformationModelStep - seismicSimulation.deformationModelUserEarthquakeLatestStep;
+      return {data: Math.abs(year * seismicSimulation.relativeVerticalSpeed) / 1e6};
+    });
+
+    addFunc("getMaxDeformation", (friction: "low" | "medium" | "high") => {
+      return {data: seismicSimulation.getDeformationModelMaxDisplacementBeforeEarthquakeGivenFriction(friction)};
+    });
+
     /** ==== Utility methods ==== */
 
     addFunc("log", (params) => {

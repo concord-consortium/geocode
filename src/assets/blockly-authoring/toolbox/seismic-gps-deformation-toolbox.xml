@@ -12,6 +12,13 @@
     <block type="deformation-year-loop"></block>
     <block type="deformation-model-step"></block>
     <block type="deformation-model-earthquake"></block>
+    <block type="deformation-model-get-deformation"></block>
+    <block type="deformation-model-get-max-deformation"></block>
+  </category>
+
+  <category name="Logic" colour="%{BKY_LOGIC_HUE}">
+    <block type="controls_if"></block>
+    <block type="value-logic-compare"></block>
   </category>
 
   <category name="Data" colour="130">
