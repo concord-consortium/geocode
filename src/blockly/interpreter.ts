@@ -400,6 +400,32 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       return tephraSimulation.stringConcat(params.lv, params.rv);
     });
 
+    /** ==== value-equals allows us to feed in blocks with wrapped data outputs ==== */
+
+    addFunc("equals", (params: {left: any, right: any}) => {
+      return {toBoolean: () => params.left === params.right};
+    });
+
+    addFunc("notEquals", (params: {left: any, right: any}) => {
+      return {toBoolean: () => params.left !== params.right};
+    });
+
+    addFunc("greaterThan", (params: {left: any, right: any}) => {
+      return {toBoolean: () => params.left > params.right};
+    });
+
+    addFunc("greaterThanOrEqual", (params: {left: any, right: any}) => {
+      return {toBoolean: () => params.left >= params.right};
+    });
+
+    addFunc("lessThan", (params: {left: any, right: any}) => {
+      return {toBoolean: () => params.left < params.right};
+    });
+
+    addFunc("lessThanOrEqual", (params: {left: any, right: any}) => {
+      return {toBoolean: () => params.left <= params.right};
+    });
+
     /** ==== Used under the hood to control highlighting and stepping ==== */
 
     addFunc("startStep", (blockId: number) => {
