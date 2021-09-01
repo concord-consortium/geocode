@@ -86,12 +86,17 @@ const AuthoringMenu: React.SFC<IProps> = (props) => {
           <DatFolder title="Deformation Model" key="deformationFolder" closed={false}>
             <DatNumber path="seismicSimulation.deformationModelWidthKm" label="Model width (km)" key="deformationModelWidthKm"
               min={0.1} max={100} step={0.1}/>
+            <DatNumber path="seismicSimulation.deformationModelApparentWidthKm" label="Apparent width (km)" key="deformationModelApparentWidthKm"
+              min={0.01} max={100} step={0.01}/>
+            <DatNumber path="seismicSimulation.deformationModelApparentYearScaling" label="Apparent year scale" key="deformationModelApparentYearScaling"
+              min={0.0001} max={1} step={0.0001}/>
+            <DatBoolean path="seismicSimulation.deformationModelShowYear" label="Show years?" key="deformationModelShowYear" />
             <DatBoolean path="seismicSimulation.deformationModelEnableEarthquakes" label="Enable earthquakes?" key="deformationModelEnableEarthquakes" />
-            <DatNumber path="seismicSimulation.deformationModelFrictionLow" label="Max displ. Low" key="deformationModelFrictionLow"
+            <DatNumber path="seismicSimulation.deformationModelFrictionLow" label="Max displ. Low friction" key="deformationModelFrictionLow"
               min={0.1} max={50} step={0.1}/>
-            <DatNumber path="seismicSimulation.deformationModelFrictionMedium" label="Max displ. Med" key="deformationModelFrictionMedium"
+            <DatNumber path="seismicSimulation.deformationModelFrictionMedium" label="Max displ. Med friction" key="deformationModelFrictionMedium"
               min={0.1} max={50} step={0.1}/>
-            <DatNumber path="seismicSimulation.deformationModelFrictionHigh" label="Max displ. High" key="deformationModelFrictionHigh"
+            <DatNumber path="seismicSimulation.deformationModelFrictionHigh" label="Max displ. High friction" key="deformationModelFrictionHigh"
               min={0.1} max={50} step={0.1}/>
             <DatBoolean path="seismicSimulation.deformationModelRainbowLines" label="Rainbow lines?" key="deformationModelRainbowLines" />
           </DatFolder>,

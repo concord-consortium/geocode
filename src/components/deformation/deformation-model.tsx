@@ -140,7 +140,9 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.strokeStyle = textColor;
 
     const { deformationModelStep: year, deformationModelEnableEarthquakes,
-      deformationModelRainbowLines } = this.stores.seismicSimulation;
+      deformationModelRainbowLines, deformationModelWidthKm,
+      deformationModelApparentWidthKm, deformationModelApparentYearScaling,
+      deformationModelShowYear } = this.stores.seismicSimulation;
     const vSpeed = this.getRelativeVerticalSpeed();     // mm/yr
     const hSpeed = this.getRelativeHorizontalSpeed();
 
@@ -257,11 +259,14 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       const textPositionAdjust = stationPoints[i].x < this.modelWidth / 2 ? -10 : 10;
       ctx.fillText(`Station ${i + 1}`, stationPoints[i].x + textPositionAdjust, stationPoints[i].y + 5);
     }
-    ctx.font = "15px Lato";
-    ctx.textAlign = "end";
-    ctx.fillText(`Year ${year.toLocaleString()}`,
-      modelMargin.left + this.modelWidth - 10, modelMargin.top + this.modelWidth - 10);
-    ctx.stroke();
+    if (deformationModelShowYear) {
+      ctx.font = "15px Lato";
+      ctx.textAlign = "end";
+      const apparentYear = Math.round(year * deformationModelApparentYearScaling);
+      ctx.fillText(`Year ${apparentYear.toLocaleString()}`,
+        modelMargin.left + this.modelWidth - 10, modelMargin.top + this.modelWidth - 10);
+      ctx.stroke();
+    }
 
     if (deformationModelEnableEarthquakes) {
       const numEarthquakes = this.getEarthquakes(year, vSpeed).count;
@@ -272,6 +277,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     }
 
     ctx.font = "15px Lato";
+    ctx.textAlign = "end";
     ctx.fillText("Fault", modelMargin.left + this.modelWidth / 2 - 10, modelMargin.top + this.modelWidth - 10);
 
     // station dots
@@ -287,7 +293,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.fill();
 
     // Scale
-    const scaleKm = this.stores.seismicSimulation.deformationModelWidthKm / 10;
+    const scaleKm = deformationModelWidthKm / 10;
     ctx.lineWidth = 1;
     const s1 = { x: modelMargin.left + this.modelWidth / 2 - this.worldToCanvas(scaleKm) - 10, y: modelMargin.top + 20};
     const s2 = { x: s1.x + this.worldToCanvas(scaleKm), y: s1.y };
@@ -305,7 +311,8 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.textAlign = "start";
     ctx.fillStyle = textColor;
     ctx.font = "13px Lato";
-    const distanceLabel = scaleKm >= 1 ? `${scaleKm}km` : `${scaleKm * 1000}m`;
+    const labelScaleKm = deformationModelApparentWidthKm / 10;
+    const distanceLabel = labelScaleKm >= 1 ? `${labelScaleKm}km` : `${labelScaleKm * 1000}m`;
     ctx.fillText(distanceLabel, s1.x, s1.y + 20);
     ctx.stroke();
   }

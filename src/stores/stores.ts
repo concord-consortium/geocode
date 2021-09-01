@@ -66,11 +66,14 @@ export type TephraSimulationAuthorSettings = {
 // props settable from authoring menu
 const seismicSimulationAuthorSettingsProps = tuple(
   "deformationModelWidthKm",
+  "deformationModelApparentWidthKm",
   "deformationModelEnableEarthquakes",
   "deformationModelFrictionLow",
   "deformationModelFrictionMedium",
   "deformationModelFrictionHigh",
-  "deformationModelRainbowLines"
+  "deformationModelRainbowLines",
+  "deformationModelApparentYearScaling",
+  "deformationModelShowYear",
 );
 
 export type SeismicSimulationAuthorSettingsProps = typeof seismicSimulationAuthorSettingsProps[number];

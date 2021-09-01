@@ -34,6 +34,7 @@ export const SeismicSimulationStore = types
     deformationModelTotalClockTime: 5,  // seconds
 
     deformationModelWidthKm: 50,    // km
+    deformationModelApparentWidthKm: 50,    // model width as indicated by the scale marker (km)
 
     deformationModelEnableEarthquakes: false,
     deformationModelFrictionCategory: types.optional(Friction, "low"),
@@ -42,6 +43,10 @@ export const SeismicSimulationStore = types
     deformationModelFrictionHigh: 20,
 
     deformationModelRainbowLines: false,
+
+    deformationModelApparentYearScaling: 1,   // changes the visible value for years passed, and when students step
+                                              // through years manually with blocks
+    deformationModelShowYear: true,
 
     deformSpeedPlate1: 0,     // mm/yr
     deformDirPlate1: 0,       // º from N
