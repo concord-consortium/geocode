@@ -368,11 +368,31 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     });
 
     addFunc("setPlateVelocity", (params: { plate: number, speed: number, direction: number }) => {
-      if (Math.abs(params.speed) > Math.abs(seismicSimulation.deformMaxSpeed)) {
-        return blocklyController.throwError(`Plate speed must be between ${-seismicSimulation.deformMaxSpeed} and ${seismicSimulation.deformMaxSpeed} mm/year`);
+      if (params.speed < 0 || params.speed > seismicSimulation.deformMaxSpeed) {
+        return blocklyController.throwError(`Plate speed must be between 0 and ${seismicSimulation.deformMaxSpeed} mm/year`);
       }
       seismicSimulation.setPlateVelocity(params.plate, params.speed, params.direction);
     });
+
+    addFunc("stepDeformationModel", (params: { year: number, plate_1_speed: number, plate_2_speed: number }) => {
+      seismicSimulation.setPlateVelocity(1, params.plate_1_speed, 0);
+      seismicSimulation.setPlateVelocity(2, params.plate_2_speed, 180);
+      seismicSimulation.setApparentYear(params.year);
+    });
+
+    addFunc("triggerEarthquake", () => {
+      seismicSimulation.triggerEarthquake();
+    });
+
+    addFunc("getDeformation", () => {
+      const year = seismicSimulation.deformationModelStep - seismicSimulation.deformationModelUserEarthquakeLatestStep;
+      return {data: Math.abs(year * seismicSimulation.relativeVerticalSpeed) / 1e6};
+    });
+
+    addFunc("getMaxDeformation", (friction: "low" | "medium" | "high") => {
+      return {data: seismicSimulation.getDeformationModelMaxDisplacementBeforeEarthquakeGivenFriction(friction)};
+    });
+
     /** ==== Utility methods ==== */
 
     addFunc("log", (params) => {
@@ -387,6 +407,32 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
 
     addFunc("stringConcat", (params: {lv: any, rv: any}) => {
       return tephraSimulation.stringConcat(params.lv, params.rv);
+    });
+
+    /** ==== value-equals allows us to feed in blocks with wrapped data outputs ==== */
+
+    addFunc("equals", (params: {left: any, right: any}) => {
+      return {toBoolean: () => params.left === params.right};
+    });
+
+    addFunc("notEquals", (params: {left: any, right: any}) => {
+      return {toBoolean: () => params.left !== params.right};
+    });
+
+    addFunc("greaterThan", (params: {left: any, right: any}) => {
+      return {toBoolean: () => params.left > params.right};
+    });
+
+    addFunc("greaterThanOrEqual", (params: {left: any, right: any}) => {
+      return {toBoolean: () => params.left >= params.right};
+    });
+
+    addFunc("lessThan", (params: {left: any, right: any}) => {
+      return {toBoolean: () => params.left < params.right};
+    });
+
+    addFunc("lessThanOrEqual", (params: {left: any, right: any}) => {
+      return {toBoolean: () => params.left <= params.right};
     });
 
     /** ==== Used under the hood to control highlighting and stepping ==== */

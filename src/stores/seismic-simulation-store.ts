@@ -4,6 +4,7 @@ import strainCalc, { StationData, StrainOutput } from "../strain";
 import { Filter, Range } from "./data-sets";
 import Delaunator from "delaunator";
 import { SeismicSimulationAuthorSettings, SeismicSimulationAuthorSettingsProps } from "./stores";
+import { deg2rad } from "../utilities/coordinateSpaceConversion";
 
 const minLat = 32;
 const maxLat = 42;
@@ -21,6 +22,7 @@ const deformationSite3 = [0.2, 0.6];
 export type ColorMethod = "logarithmic" | "equalInterval";
 
 export const Friction = types.enumeration("type", ["low", "medium", "high"]);
+export const EarthquakeControl = types.enumeration("type", ["none", "auto", "user"]);
 
 export const SeismicSimulationStore = types
   .model("seismicSimulation", {
@@ -36,17 +38,20 @@ export const SeismicSimulationStore = types
     deformationModelWidthKm: 50,    // km
     deformationModelApparentWidthKm: 50,    // model width as indicated by the scale marker (km)
 
-    deformationModelEnableEarthquakes: false,
+    deformationModelEarthquakeControl: types.optional(EarthquakeControl, "none"),
     deformationModelFrictionCategory: types.optional(Friction, "low"),
     deformationModelFrictionLow: 5,     // total plate motion before earthquake (km)
     deformationModelFrictionMedium: 10,
     deformationModelFrictionHigh: 20,
 
-    deformationModelRainbowLines: false,
+    deformationModelUserEarthquakeCount: 0,
+    deformationModelUserEarthquakeLatestStep: 0,
 
-    deformationModelApparentYearScaling: 1,   // changes the visible value for years passed, and when students step
-                                              // through years manually with blocks
+    deformationModelRainbowLines: false,
     deformationModelShowYear: true,
+
+    // changes the visible value for years passed, and when students step through years manually with blocks
+    deformationModelApparentYearScaling: 1,
 
     deformSpeedPlate1: 0,     // mm/yr
     deformDirPlate1: 0,       // º from N
@@ -79,7 +84,28 @@ export const SeismicSimulationStore = types
         case "high":
           return self.deformationModelFrictionHigh;
       }
-    }
+    },
+    get deformationModelEarthquakesEnabled() {
+      return self.deformationModelEarthquakeControl === "auto" || self.deformationModelEarthquakeControl === "user";
+    },
+    get relativeVerticalSpeed() {   // mm/yr
+      const { deformSpeedPlate1, deformDirPlate1, deformSpeedPlate2, deformDirPlate2 } = this;
+
+      const plate1VerticalSpeed = Math.cos(deg2rad(deformDirPlate1)) * deformSpeedPlate1;
+      const plate2VerticalSpeed = Math.cos(deg2rad(deformDirPlate2)) * deformSpeedPlate2;
+
+      const relativeSpeed = plate1VerticalSpeed - plate2VerticalSpeed;
+      return relativeSpeed;
+    },
+    get relativeHorizontalSpeed() {   // mm/yr
+      const { deformSpeedPlate1, deformDirPlate1, deformSpeedPlate2, deformDirPlate2 } = this;
+
+      const plate1HorizontalSpeed = Math.sin(deg2rad(deformDirPlate1)) * deformSpeedPlate1;
+      const plate2HorizontalSpeed = Math.sin(deg2rad(deformDirPlate2)) * deformSpeedPlate2;
+
+      const relativeSpeed = plate1HorizontalSpeed - plate2HorizontalSpeed;
+      return relativeSpeed;
+    },
   }))
   .actions((self) => {
     return {
@@ -105,14 +131,12 @@ export const SeismicSimulationStore = types
       self.selectedGPSStationId = id;
     },
     setDeformationStep(step: number) {
-      if (step > self.deformationModelEndStep) {
-        self.deformationModelStep = self.deformationModelEndStep;
-      } else {
-        self.deformationModelStep = step;
-      }
+      self.deformationModelStep = step;
     },
     resetDeformationModel() {
       self.deformationModelStep = 0;
+      self.deformationModelUserEarthquakeCount = 0;
+      self.deformationModelUserEarthquakeLatestStep = 0;
     },
     setShowVelocityArrows(show: boolean) {
       self.showVelocityArrows = show;
@@ -244,6 +268,8 @@ export const SeismicSimulationStore = types
       self.selectedGPSStationId = undefined;
       self.showVelocityArrows = false;
       self.deformationModelStep = 0;
+      self.deformationModelUserEarthquakeCount = 0;
+      self.deformationModelUserEarthquakeLatestStep = 0;
       self.strainMapMinLat = -90;
       self.strainMapMinLng = -180;
       self.strainMapMaxLat = 90;
@@ -260,7 +286,10 @@ export const SeismicSimulationStore = types
 
       const updateStep = () => {
         const dt = (window.performance.now() - startTime) / 1000;   // seconds since start
-        const step = Math.floor(dt * self.deformationModelSpeed);
+        let step = Math.floor(dt * self.deformationModelSpeed);
+        if (step > self.deformationModelEndStep) {
+          step = self.deformationModelEndStep;
+        }
         self.setDeformationStep(step);
         if (step < self.deformationModelEndStep) {
           window.requestAnimationFrame(updateStep);
@@ -270,7 +299,6 @@ export const SeismicSimulationStore = types
       window.requestAnimationFrame(updateStep);
     },
     setPlateVelocity(block: number, speed: number, direction: number) {
-      self.deformationModelStep = 0;
       if (block === 1) {
         self.deformSpeedPlate1 = speed;
         self.deformDirPlate1 = 180 - direction;
@@ -278,7 +306,27 @@ export const SeismicSimulationStore = types
         self.deformSpeedPlate2 = speed;
         self.deformDirPlate2 = 180 - direction;
       }
-    }
+    },
+    setApparentYear(year: number) {
+      self.setDeformationStep(year / self.deformationModelApparentYearScaling);
+    },
+    triggerEarthquake() {
+      if (self.deformationModelEarthquakeControl !== "user") {
+        return;
+      }
+      self.deformationModelUserEarthquakeCount++;
+      self.deformationModelUserEarthquakeLatestStep = self.deformationModelStep;
+    },
+    getDeformationModelMaxDisplacementBeforeEarthquakeGivenFriction(friction: "low" | "medium" | "high") {
+      switch (friction) {
+        case "low":
+          return self.deformationModelFrictionLow;
+        case "medium":
+          return self.deformationModelFrictionMedium;
+        case "high":
+          return self.deformationModelFrictionHigh;
+      }
+    },
   }))
   .views((self) => ({
     get allGPSStations() {

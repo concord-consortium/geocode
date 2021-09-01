@@ -6,6 +6,7 @@ import "./block-console-logger";
 import "./block-logprint";
 import "./block-stringconcat";
 import "./block-clear";
+import "./block-value-logic-compare";
 import "./tephra/block-add-volcano";
 import "./block-add-town";
 import "./tephra/block-set-wind-direction";
