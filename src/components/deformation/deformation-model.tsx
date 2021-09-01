@@ -565,7 +565,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       };
     } else if (deformationModelEarthquakeControl === "user") {
       // for user-defined earthquakes, the model maintains the count of earthquakes and the year of the last one.
-      // we just need to calculate the distanced the plates had traveled at the last earthquake
+      // we just need to calculate the distance the plates had traveled at the last earthquake
       const absSpeed = Math.abs(vSpeed);
       const distanceTravelledDueToEarthquakes = absSpeed * deformationModelUserEarthquakeLatestStep / 3e6;
       return {
