@@ -4,7 +4,7 @@
 
 The goal of GeoCode is to get students exploring geological threats using
 the practice of programming. In this case, we are using Blockly to generate
-code that runs a simple tephra distribution model.
+code that runs a simple tephra distribution model and seismic activity model.
 
 Students change eruption parameters using [Blockly](https://developers.google.com/blockly/).
 
@@ -192,8 +192,12 @@ Inside of your `package.json` file:
 2. `cypress run --headed --no-exit` will open cypress test runner when tests begin to run, and it will remain open when tests are finished running.
 3. `cypress run --spec 'cypress/integration/examples/smoke-test.js'` will point to a smoke-test file rather than running all of the test files for a project.
 
+## URL Parameters
+- hide-model-options: when included, the model options authoring dialog in the upper-right is hidden.
+- unit={name}: configure application for {unit}. Unit name can currently be set to `Seismic` or `Tephra` (e.g., `unit=Seismic`). Values are case sensitive.
+
 ## License
 
-GeoCode  Projects are Copyright 2018 (c) by the Concord Consortium and is distributed under the [MIT license](http://www.opensource.org/licenses/MIT).
+GeoCode is Copyright 2018 (c) by the Concord Consortium and is distributed under the [MIT license](http://www.opensource.org/licenses/MIT).
 
 See license.md for the complete license text.

@@ -156,7 +156,7 @@
     "mobx-state-tree": "^3.9.0",
     "pixi.js": "^4.8.7",
     "prop-types": "^15.7.2",
-    "query-string": "^6.2.0",
+    "query-string": "^7.0.1",
     "react": "^16.8.6",
     "react-compound-slider": "^2.0.0",
     "react-dat-gui": "^3.0.0",
