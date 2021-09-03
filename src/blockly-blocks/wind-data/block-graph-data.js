@@ -5,7 +5,7 @@ Blockly.Blocks['graph_speed_date_wind_data'] = {
       .appendField('Graph Wind Data')
     this.setPreviousStatement(true, null)
     this.setNextStatement(true, null)
-    this.setColour(230)
+    this.setColour("#B35F00")
     this.setTooltip('')
     this.setHelpUrl('')
   }
@@ -27,7 +27,7 @@ Blockly.Blocks['graph_speed_direction_wind_data'] = {
       .setCheck('Dataset')
     this.setPreviousStatement(true, null)
     this.setNextStatement(true, null)
-    this.setColour(230)
+    this.setColour("#B35F00")
     this.setTooltip('')
     this.setHelpUrl('')
   }
@@ -62,7 +62,7 @@ Blockly.Blocks['graph_any_wind_data'] = {
       ]), 'xAxis');
     this.setPreviousStatement(true, null)
     this.setNextStatement(true, null)
-    this.setColour(230)
+    this.setColour("#B35F00")
     this.setTooltip('')
     this.setHelpUrl('')
   }

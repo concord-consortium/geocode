@@ -20,7 +20,7 @@ Blockly.Blocks['calculate_tephra_vei_wind'] = {
         .appendField(new Blockly.FieldDropdown(this.generateOptionsCol), "collections");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(0);
+    this.setColour("#EB0000");
     this.setTooltip("");
     this.setHelpUrl("");
   },

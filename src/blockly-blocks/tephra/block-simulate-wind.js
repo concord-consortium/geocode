@@ -12,9 +12,9 @@ Blockly.Blocks['simulate_wind'] = {
         .appendField("wind direction (degrees)");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(0);
- this.setTooltip("");
- this.setHelpUrl("");
+    this.setColour("#EB0000");
+    this.setTooltip("");
+    this.setHelpUrl("");
   }
 };
 

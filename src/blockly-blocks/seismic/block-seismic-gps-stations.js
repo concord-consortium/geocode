@@ -3,7 +3,7 @@ Blockly.Blocks['seismic_all_gps_stations'] = {
     this.appendDummyInput()
       .appendField('All GPS Stations')
     this.setOutput(true, 'GPS_Station')
-    this.setColour("%{BKY_LISTS_HUE}")
+    this.setColour("#EB0000")
     this.setTooltip('')
     this.setHelpUrl('')
   }
@@ -27,7 +27,7 @@ Blockly.Blocks['seismic_show_gps_stations'] = {
     this.setInputsInline(false)
     this.setPreviousStatement(true, null)
     this.setNextStatement(true, null)
-    this.setColour(230)
+    this.setColour("#EB0000")
     this.setTooltip('')
     this.setHelpUrl('')
   }
@@ -51,7 +51,7 @@ Blockly.Blocks['seismic_sample_data'] = {
       .setAlign(Blockly.ALIGN_RIGHT)
       .appendField('from')
     this.setOutput(true, 'GPS_Station')
-    this.setColour("%{BKY_LISTS_HUE}")
+    this.setColour("#EB0000")
     this.setTooltip('')
     this.setHelpUrl('')
   }
@@ -111,7 +111,7 @@ Blockly.Blocks['seismic_filter_data'] = {
       .appendField(new Blockly.FieldCheckbox(false), 'position_history')
     this.setInputsInline(false)
     this.setOutput(true, 'GPS_Station')
-    this.setColour("%{BKY_LISTS_HUE}")
+    this.setColour("#EB0000")
     this.setTooltip('Filter Data')
     this.setHelpUrl('')
   }

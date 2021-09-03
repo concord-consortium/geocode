@@ -20,7 +20,7 @@ Blockly.Blocks['create_sample_location'] = {
         .appendField("and mark it on the map")
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(240);
+    this.setColour("#108A00");
     this.setTooltip("");
     this.setHelpUrl("");
   }
@@ -51,7 +51,7 @@ Blockly.Blocks['create_sample_collection'] = {
         .appendField("mm");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(240);
+    this.setColour("#108A00");
     this.setTooltip("");
     this.setHelpUrl("");
   }
