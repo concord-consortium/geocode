@@ -11,15 +11,17 @@ Blockly.Blocks['deformation-create-sim'] = {
       this.appendValueInput('direction1')
         .setAlign(Blockly.ALIGN_RIGHT)
         .appendField("direction (degrees)")
-        .setCheck(['Number'])
+        .setCheck(['Number', 'String'])
       this.appendDummyInput()
         .appendField("Set velocity of Plate 2 with")
       this.appendValueInput('speed2')
         .setAlign(Blockly.ALIGN_RIGHT)
         .appendField("speed (mm/yr)")
+        .setCheck(['Number'])
       this.appendValueInput('direction2')
         .setAlign(Blockly.ALIGN_RIGHT)
         .appendField("direction (degrees)")
+        .setCheck(['Number', 'String'])
       this.setColour(15)
       this.setPreviousStatement(false, null);
       this.setNextStatement(false, null);

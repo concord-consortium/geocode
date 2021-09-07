@@ -1,6 +1,5 @@
-import { ITephraModelParams, SimOutput, SimulationVariable, TephraSimulationStore } from "../stores/tephra-simulation-store";
+import { ITephraModelParams } from "../stores/tephra-simulation-store";
 import { BlocklyController } from "./blockly-controller";
-import { TephraSimulationModelType } from "../stores/tephra-simulation-store";
 import { IBlocklyWorkspace } from "../interfaces";
 import { IStore } from "../stores/stores";
 import { Datasets, Dataset, Filter, ProtoTimeRange, TimeRange } from "../stores/data-sets";
@@ -367,11 +366,27 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       seismicSimulation.startDeformationModel();
     });
 
-    addFunc("setPlateVelocity", (params: { plate: number, speed: number, direction: number }) => {
+    addFunc("setPlateVelocity", (params: { plate: number, speed: number, direction: number | string }) => {
       if (params.speed < 0 || params.speed > seismicSimulation.deformMaxSpeed) {
         return blocklyController.throwError(`Plate speed must be between 0 and ${seismicSimulation.deformMaxSpeed} mm/year`);
       }
-      seismicSimulation.setPlateVelocity(params.plate, params.speed, params.direction);
+      // handle string input, user can enter north or south as valid direction input
+      let direction: number = 0;
+      if (typeof params.direction === "string") {
+        if (params.direction.toLowerCase() === "north") {
+          direction = 0;
+        } else if (params.direction.toLowerCase() === "south") {
+          direction = 180;
+        } else {
+          return blocklyController.throwError(`Plate direction must be North, South or a valid number`);
+        }
+      } else {
+        direction = params.direction;
+      }
+      if (direction < 0 || direction > 360) {
+        return blocklyController.throwError(`Plate direction must be between 0 and 360 degrees`);
+      }
+      seismicSimulation.setPlateVelocity(params.plate, params.speed, direction);
     });
 
     addFunc("stepDeformationModel", (params: { year: number, plate_1_speed: number, plate_2_speed: number }) => {
