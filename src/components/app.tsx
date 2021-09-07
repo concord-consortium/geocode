@@ -164,15 +164,17 @@ export class AppComponent extends BaseComponent<IProps, IState> {
 
   public componentDidMount() {
     const unit = queryValue("unit");
-    const hideModelOptions = queryValueBoolean("hide-model-options");
-    uiStore.setShowOptionsDialog(!hideModelOptions);
+    let hideModelOptions = queryValueBoolean("hide-model-options");
     if (unit === "Tephra") {
       blocklyStore.setToolbox(BlocklyAuthoring.tephraToolboxes[0]);
       unitStore.setUnit(unit);
+      hideModelOptions = true;
     } else if (unit === "Seismic") {
       blocklyStore.setToolbox(BlocklyAuthoring.seismicToolboxes[0]);
       unitStore.setUnit(unit);
+      hideModelOptions = true;
     }
+    uiStore.setShowOptionsDialog(!hideModelOptions);
   }
 
   public render() {
