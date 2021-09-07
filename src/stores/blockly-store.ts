@@ -16,6 +16,9 @@ export const BlocklyStore = types
     setInitialXmlCode(xmlCode: string) {
       self.initialXmlCode = xmlCode;
     },
+    setToolbox(newToolbox: string) {
+      self.toolbox = newToolbox;
+    }
   }))
   .actions((self) => {
     return {

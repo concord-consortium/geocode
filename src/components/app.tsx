@@ -7,11 +7,10 @@ import { LogComponent } from "./log-component";
 import { CrossSectionComponent } from "./crosssection/cross-section-component";
 import * as Scenarios from "./../assets/maps/scenarios.json";
 import * as BlocklyAuthoring from "./../assets/blockly-authoring/index.json";
-
 import BlocklyContainer from "./blockly-container";
 import styled from "styled-components";
 import { StyledButton } from "./buttons/styled-button";
-import { SectionTypes, RightSectionTypes, TabInfo, kTabInfo, kRightTabInfo,
+import { SectionTypes, RightSectionTypes, kTabInfo, kRightTabInfo,
          TabBack, Tab, Tabs, TabList, TabPanel, RightTabBack, BottomTab } from "./tabs";
 import { js_beautify } from "js-beautify";
 import SyntaxHighlighter from "react-syntax-highlighter";
@@ -29,9 +28,12 @@ import { BlocklyController } from "../blockly/blockly-controller";
 import { HistogramPanel } from "./montecarlo/histogram-panel";
 import { PlateMovementPanel } from "./deformation/plate-movement-panel";
 import { uiStore } from "../stores/ui-store";
+import { unitStore } from "../stores/unit-store";
+import { blocklyStore } from "../stores/blockly-store";
 import { GPSStationTable } from "./gps-station-table";
 import { DeformationModel } from "./deformation/deformation-model";
 import { UnitNameType } from "../stores/unit-store";
+import { queryValue, queryValueBoolean } from "../utilities/url-query";
 
 interface IProps extends IBaseProps {}
 
@@ -158,6 +160,21 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     this.state = initialState;
 
     this.blocklyController = new BlocklyController(this.stores);
+  }
+
+  public componentDidMount() {
+    const unit = queryValue("unit");
+    let hideModelOptions = queryValueBoolean("hide-model-options");
+    if (unit === "Tephra") {
+      blocklyStore.setToolbox(BlocklyAuthoring.tephraToolboxes[0]);
+      unitStore.setUnit(unit);
+      hideModelOptions = true;
+    } else if (unit === "Seismic") {
+      blocklyStore.setToolbox(BlocklyAuthoring.seismicToolboxes[0]);
+      unitStore.setUnit(unit);
+      hideModelOptions = true;
+    }
+    uiStore.setShowOptionsDialog(!hideModelOptions);
   }
 
   public render() {
@@ -653,7 +670,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       authorMenuState.blocklyStore.toolbox = BlocklyAuthoring.seismicToolboxes[0];
     }
 
-    // the the authored state from the authoring menu overwrites local state
+    // the authored state from the authoring menu overwrites local state
     const mergedState = deepmerge(localState, authorMenuState);
     updateStores(mergedState);
   }
