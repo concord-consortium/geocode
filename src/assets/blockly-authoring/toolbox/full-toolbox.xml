@@ -7,7 +7,6 @@
     <block type="x"></block>
     <block type="y"></block> -->
     <!-- <block type="addVolcano"></block> -->
-    <block type="addTown"></block>
     <!-- <block type="setWindDirection"></block> -->
     <!-- <block type="setWindSpeed"></block> -->
     <!-- <block type="setEruptionHeight"></block> -->
