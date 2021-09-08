@@ -22,7 +22,7 @@ Blockly.Blocks['deformation-create-sim'] = {
         .setAlign(Blockly.ALIGN_RIGHT)
         .appendField("direction (degrees)")
         .setCheck(['Number', 'String'])
-      this.setColour(15)
+      this.setColour("#B35F00")
       this.setPreviousStatement(false, null);
       this.setNextStatement(false, null);
     }
@@ -52,9 +52,9 @@ Blockly.Blocks['deformation-create-sim'] = {
           .setCheck(null);
       this.setPreviousStatement(false, null);
       this.setNextStatement(false, null);
-      this.setColour("%{BKY_LOOPS_HUE}");
-   this.setTooltip("Step through deformation model for a given number of years, with a given step size");
-   this.setHelpUrl("");
+      this.setColour("#B35F00")
+      this.setTooltip("Step through deformation model for a given number of years, with a given step size");
+      this.setHelpUrl("");
     }
   };
 
@@ -89,7 +89,7 @@ Blockly.Blocks['deformation-create-sim'] = {
           .appendField("Plate 2 speed");
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
-      this.setColour(15);
+      this.setColour("#B35F00")
       this.setTooltip("");
       this.setHelpUrl("");
     }
@@ -114,9 +114,9 @@ Blockly.Blocks['deformation-create-sim'] = {
           .appendField("and set Deformation to 0");
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
-      this.setColour(15);
-   this.setTooltip("");
-   this.setHelpUrl("");
+      this.setColour("#B35F00")
+      this.setTooltip("");
+      this.setHelpUrl("");
     }
   };
 
@@ -132,9 +132,9 @@ Blockly.Blocks['deformation-create-sim'] = {
       this.appendDummyInput()
           .appendField("Deformation");
       this.setOutput(true, 'Number');
-      this.setColour(15);
-   this.setTooltip("");
-   this.setHelpUrl("");
+      this.setColour("#B35F00")
+      this.setTooltip("");
+      this.setHelpUrl("");
     }
   };
 
@@ -151,9 +151,9 @@ Blockly.Blocks['deformation-create-sim'] = {
           .appendField(new Blockly.FieldDropdown([["low", "low"], ["medium", "medium"], ["high", "high"]]), "friction")
           .appendField("friction");
       this.setOutput(true, 'Number');
-      this.setColour(15);
-   this.setTooltip("");
-   this.setHelpUrl("");
+      this.setColour("#B35F00")
+      this.setTooltip("");
+      this.setHelpUrl("");
     }
   };
 

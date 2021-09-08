@@ -24,8 +24,8 @@ Blockly.Blocks['value-logic-compare'] = {
 
     this.setOutput(true, 'Boolean');
     this.setColour("%{BKY_LOGIC_HUE}");
- this.setTooltip("");
- this.setHelpUrl("");
+    this.setTooltip("");
+    this.setHelpUrl("");
   }
 };
 
@@ -47,5 +47,5 @@ Blockly.JavaScript['value-logic-compare'] = function(block) {
   if (y === undefined || y === null || y === "") y= "null";
   var operation = block.getFieldValue('OP');
   var code = `${operation}({left: ${x}, right: ${y}})`;
-return [code, Blockly.JavaScript.ORDER_NONE];
+  return [code, Blockly.JavaScript.ORDER_NONE];
 };

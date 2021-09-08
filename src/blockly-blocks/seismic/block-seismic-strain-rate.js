@@ -22,7 +22,7 @@ Blockly.Blocks['seismic_compute_strain'] = {
 
     this.setPreviousStatement(true, null)
     this.setNextStatement(true, null)
-    this.setColour(230)
+    this.setColour("#EB0000")
     this.setTooltip('Compute strain rate')
     this.setHelpUrl('')
   }
@@ -73,7 +73,7 @@ Blockly.Blocks['seismic_logarithmic'] = {
     this.appendDummyInput()
       .appendField('Logarithmic')
     this.setOutput(true, 'Color_method')
-    this.setColour("%{BKY_LISTS_HUE}")
+    this.setColour("#EB0000")
     this.setTooltip('')
     this.setHelpUrl('')
   }
@@ -90,7 +90,7 @@ Blockly.Blocks['seismic_equal_interval'] = {
     this.appendDummyInput()
       .appendField('Equal Interval')
     this.setOutput(true, 'Color_method')
-    this.setColour("%{BKY_LISTS_HUE}")
+    this.setColour("#EB0000")
     this.setTooltip('')
     this.setHelpUrl('')
   }
@@ -114,7 +114,7 @@ Blockly.Blocks['seismic_render_strain_triangles'] = {
 
     this.setPreviousStatement(true, null)
     this.setNextStatement(true, null)
-    this.setColour(230)
+    this.setColour("#EB0000")
     this.setTooltip('Color the map by strain rate')
     this.setHelpUrl('')
   }
@@ -132,7 +132,7 @@ Blockly.Blocks['seismic_render_strain_labels'] = {
     this.setInputsInline(false)
     this.setPreviousStatement(true, null)
     this.setNextStatement(true, null)
-    this.setColour(230)
+    this.setColour("#EB0000")
     this.setTooltip('Show strain rate value')
     this.setHelpUrl('')
   }

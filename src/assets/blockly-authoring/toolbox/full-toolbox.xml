@@ -1,5 +1,5 @@
 <xml id="toolbox" style="display: none">
-  <category name="Volcano" colour="0">
+  <category name="Volcano" colour="#EB0000">
     <!-- <block type="console_logger"></block> -->
     <!-- <block type="run_sumilation"></block>
     <block type="fill_cell"></block>
@@ -27,7 +27,7 @@
     <!-- <block type="redrawMap"></block> -->
   </category>
 
-  <category name="Wind data" colour="%{BKY_LISTS_HUE}">
+  <category name="Wind data" colour="#B35F00">
     <block type="graph_speed_date_wind_data"></block>
     <block type="graph_speed_direction_wind_data"></block>
     <block type="graph_any_wind_data"></block>
@@ -36,7 +36,7 @@
     <block type="filter_data"></block>
   </category>
 
-  <category name="Data Collections" colour="240">
+  <category name="Data Collections" colour="#108A00">
     <block type="create_sample_location"></block>
     <block type="create_sample_collection"></block>
   </category>
@@ -78,7 +78,7 @@
     <block type="controls_forEach"></block>
     <block type="controls_flow_statements"></block>
   </category>
-  <category name="Data" colour="130">
+  <category name="Data" colour="%{BKY_MATH_HUE}">
     <block type="text">
       <field name="TEXT">Name</field>
     </block>
@@ -87,8 +87,8 @@
     </block>
     <block type="input_range"></block>
   </category>
-  <category name="Variables" colour="130" custom="VARIABLE"></category>
-  <category name="Functions" custom="PROCEDURE"></category>
+  <category name="Variables" colour="%{BKY_VARIABLES_HUE}" custom="VARIABLE"></category>
+  <category name="Functions" colour="%{BKY_PROCEDURES_HUE}" custom="PROCEDURE"></category>
   <!-- <category name="Logging" colour="260">
     <block type="logprint"></block>
     <block type="stringconcat"></block>

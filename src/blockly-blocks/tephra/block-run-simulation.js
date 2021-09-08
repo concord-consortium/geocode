@@ -16,7 +16,7 @@ Blockly.Blocks['run_simulation'] = {
           .appendField("Wind Direction");
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
-      this.setColour(0);
+      this.setColour("#EB0000");
       this.setTooltip("Simulation parameters");
       this.setHelpUrl("");
     }

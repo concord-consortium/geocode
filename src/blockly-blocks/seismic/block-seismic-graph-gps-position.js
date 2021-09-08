@@ -47,7 +47,7 @@ Blockly.Blocks['graph_gps_position'] = {
 
     this.setPreviousStatement(true, null)
     this.setNextStatement(true, null)
-    this.setColour(230)
+    this.setColour("#EB0000")
     this.setTooltip('')
     this.setHelpUrl('')
   }

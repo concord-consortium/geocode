@@ -108,6 +108,13 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
     if (hideToolbox) {
       delete blockOpts.toolbox;
     }
+    // update default colors
+    (Blockly as any).Msg.LOGIC_HUE = "#017a39";
+    (Blockly as any).Msg.LOOPS_HUE = "#068477";
+    (Blockly as any).Msg.MATH_HUE = "#006f95";
+    (Blockly as any).Msg.TEXTS_HUE = "#006f95";
+    (Blockly as any).Msg.VARIABLES_HUE = "#0472e7";
+    (Blockly as any).Msg.PROCEDURES_HUE = "#304ffd";
 
     this.workSpace = Blockly.inject(this.workSpaceRef.current, blockOpts);
 
@@ -117,6 +124,7 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
     };
 
     this.workSpace.addChangeListener(myUpdateFunction);
+
   }
 
   private setupBlockly = async () => {

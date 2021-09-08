@@ -9,9 +9,9 @@ Blockly.Blocks['simulate_wind_sample_vei'] = {
         .appendField("a random wind sample from");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(0);
- this.setTooltip("");
- this.setHelpUrl("");
+    this.setColour("#EB0000");
+    this.setTooltip("");
+    this.setHelpUrl("");
   }
 };
 
@@ -46,9 +46,9 @@ Blockly.Blocks['simulate_wind_sample_vei_2'] = {
         .appendField("VEI");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(0);
- this.setTooltip("");
- this.setHelpUrl("");
+    this.setColour("#EB0000");
+    this.setTooltip("");
+    this.setHelpUrl("");
   }
 };
 
