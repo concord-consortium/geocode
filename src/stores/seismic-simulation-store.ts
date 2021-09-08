@@ -51,7 +51,7 @@ export const SeismicSimulationStore = types
     deformationModelShowYear: true,
 
     // changes the visible value for years passed, and when students step through years manually with blocks
-    deformationModelApparentYearScaling: 1,
+    deformationModelApparentYearScaling: .001,
 
     deformSpeedPlate1: 0,     // mm/yr
     deformDirPlate1: 0,       // º from N
