@@ -90,8 +90,8 @@ Blockly.Blocks['deformation-create-sim'] = {
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
       this.setColour(15);
-   this.setTooltip("");
-   this.setHelpUrl("");
+      this.setTooltip("");
+      this.setHelpUrl("");
     }
   };
 

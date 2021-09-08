@@ -390,6 +390,10 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     });
 
     addFunc("stepDeformationModel", (params: { year: number, plate_1_speed: number, plate_2_speed: number }) => {
+      if (params.plate_1_speed < 0 || params.plate_1_speed > seismicSimulation.deformMaxSpeed ||
+          params.plate_2_speed < 0 || params.plate_2_speed > seismicSimulation.deformMaxSpeed) {
+        return blocklyController.throwError(`Plate speed must be between 0 and ${seismicSimulation.deformMaxSpeed} mm/year`);
+      }
       seismicSimulation.setPlateVelocity(1, params.plate_1_speed, 0);
       seismicSimulation.setPlateVelocity(2, params.plate_2_speed, 180);
       seismicSimulation.setApparentYear(params.year);
