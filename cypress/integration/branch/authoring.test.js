@@ -127,20 +127,27 @@ context ('Authoring Options',()=>{
             //Volcano
             blocksTab.getTag('Volcano').click();
             cy.wait(500)
-            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 8)
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length',32)
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 7)
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length', 28)
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(0).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Create a town")
-            })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(4).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("Compute and visualize tephra with")
             })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(5).text().then((text)=>{
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(1).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("wind speed (m/s)")
             })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(6).text().then((text)=>{
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(2).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("wind direction (degrees)")
             })
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(3).text().then((text)=>{
+                expect(removeNBSP(text)).to.contain("Compute and visualize tephra with")
+            })
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(4).text().then((text)=>{
+                expect(removeNBSP(text)).to.contain("wind speed (m/s)")
+            })
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(5).text().then((text)=>{
+                expect(removeNBSP(text)).to.contain("wind direction (degrees)")
+            })
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(6).should('contain','VEI')
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(7).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("Compute and visualize tephra with")
             })
@@ -150,7 +157,9 @@ context ('Authoring Options',()=>{
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(9).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("wind direction (degrees)")
             })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(10).should('contain','VEI')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(10).text().then((text)=>{
+                expect(removeNBSP(text)).to.contain("column height (km)")
+            })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(11).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("Compute and visualize tephra with")
             })
@@ -164,38 +173,26 @@ context ('Authoring Options',()=>{
                 expect(removeNBSP(text)).to.contain("column height (km)")
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(15).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Compute and visualize tephra with")
-            })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(16).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("wind speed (m/s)")
-            })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(17).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("wind direction (degrees)")
-            })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(18).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("column height (km)")
-            })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(19).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("ejected volume (km³)")
             })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(20).text().then((text)=>{
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(16).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("Compute and visualize tephra with")
             })
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(17).text().then((text)=>{
+                expect(removeNBSP(text)).to.contain("a random wind sample from")
+            })
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(18).text().then((text)=>{
+                expect(removeNBSP(text)).to.contain("Compute and visualize tephra with")
+            })
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(19).text().then((text)=>{
+                expect(removeNBSP(text)).to.contain("a random wind sample from")
+            })
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(20).should('contain','VEI')
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(21).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("a random wind sample from")
-            })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(22).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Compute and visualize tephra with")
-            })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(23).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("a random wind sample from")
-            })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(24).should('contain','VEI')
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(25).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("Compute tephra thickness")
             })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(29).should('contain','VEI')
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(28).text().then((text)=>{
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(25).should('contain','VEI')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(24).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("a random wind sample from")
             })
             //Wind data
@@ -278,18 +275,15 @@ context ('Authoring Options',()=>{
 
             blocksTab.getTag('Volcano').click();
             cy.wait(500)
-            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length',7)
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 1)
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length', 3)
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(0).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Create a town")
-            })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(4).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("Compute and visualize tephra with")
             })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(5).text().then((text)=>{
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(1).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("wind speed (m/s)")
             })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(6).text().then((text)=>{
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(2).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("wind direction (degrees)")
             })
 
@@ -314,21 +308,18 @@ context ('Authoring Options',()=>{
 
             blocksTab.getTag('Volcano').click();
             cy.wait(500)
-            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length',8)
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 1)
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length', 4)
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(0).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Create a town")
-            })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(4).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("Compute and visualize tephra with")
             })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(5).text().then((text)=>{
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(1).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("wind speed (m/s)")
             })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(6).text().then((text)=>{
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(2).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("wind direction (degrees)")
             })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(7).should('contain','VEI')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(3).should('contain','VEI')
 
             blocksTab.getTag('Loops').click();
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
@@ -352,21 +343,18 @@ context ('Authoring Options',()=>{
 
             blocksTab.getTag('Volcano').click();
             cy.wait(500)
-            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length',8)
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 1)
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length', 4)
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(0).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Create a town")
-            })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(4).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("Compute and visualize tephra with")
             })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(5).text().then((text)=>{
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(1).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("wind speed (m/s)")
             })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(6).text().then((text)=>{
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(2).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("wind direction (degrees)")
             })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(7).text().then((text)=>{
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(3).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("column height (km)")
             })
 
@@ -391,24 +379,21 @@ context ('Authoring Options',()=>{
 
             blocksTab.getTag('Volcano').click();
             cy.wait(500)
-            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length',9)
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 1)
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length', 5)
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(0).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Create a town")
-            })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(4).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("Compute and visualize tephra with")
             })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(5).text().then((text)=>{
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(1).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("wind speed (m/s)")
             })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(6).text().then((text)=>{
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(2).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("wind direction (degrees)")
             })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(7).text().then((text)=>{
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(3).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("column height (km)")
             })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(8).text().then((text)=>{
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(4).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("ejected volume (km³)")
             })
             blocksTab.getTag('Loops').click();
@@ -721,21 +706,18 @@ context ('Authoring Options',()=>{
 
             blocksTab.getTag('Volcano').click();
             cy.wait(500)
-            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length',8)
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 1)
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length', 4)
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(0).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Create a town")
-            })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(4).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("Compute and visualize tephra with")
             })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(5).text().then((text)=>{
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(1).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("wind speed (m/s)")
             })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(6).text().then((text)=>{
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(2).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("wind direction (degrees)")
             })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(7).should('contain','VEI')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(3).should('contain','VEI')
 
             blocksTab.getTag('Loops').click();
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
@@ -781,21 +763,18 @@ context ('Authoring Options',()=>{
 
             blocksTab.getTag('Volcano').click();
             cy.wait(500)
-            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length',8)
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 1)
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length', 4)
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(0).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Create a town")
-            })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(4).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("Compute and visualize tephra with")
             })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(5).text().then((text)=>{
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(1).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("wind speed (m/s)")
             })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(6).text().then((text)=>{
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(2).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("wind direction (degrees)")
             })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(7).should('contain','VEI')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(3).should('contain','VEI')
 
             blocksTab.getTag('Loops').click();
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
