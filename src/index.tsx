@@ -63,7 +63,6 @@ phone.addListener("initInteractive", (data: {
     authoredState: any,
     interactiveState: any,
     linkedState: any}) => {
-
   parseJSON(data, ["authoredState", "interactiveState", "linkedState"]);
 
   const authorState: UnmigratedSerializedState | {} = data && data.authoredState || {};
@@ -112,3 +111,10 @@ phone.post("supportedFeatures", {
     aspectRatio: 960 / 620
   }
 });
+
+export function RestoreInitialState() {
+  updateStores(initialState);
+  // TODO: import this function into app.tsx or whichever component will have the reload button
+  // when button is pressed, call this function
+  // add ability to reload the blockly blocks
+}
