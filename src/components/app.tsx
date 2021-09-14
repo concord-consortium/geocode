@@ -670,6 +670,14 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       authorMenuState.blocklyStore.toolbox = BlocklyAuthoring.seismicToolboxes[0];
     }
 
+    // update the apparent year scale to a default value if the earthquake mode changes
+    const { deformationModelEarthquakeControl } = this.stores.seismicSimulation;
+    const authoringEarthquakeControl = authorMenuState.seismicSimulation.deformationModelEarthquakeControl;
+    if (authorMenuState.unit.name === "Seismic" && deformationModelEarthquakeControl !== authoringEarthquakeControl) {
+        authorMenuState.seismicSimulation.deformationModelApparentYearScaling =
+          authoringEarthquakeControl === "user" ? .001 : 1;
+    }
+
     // the authored state from the authoring menu overwrites local state
     const mergedState = deepmerge(localState, authorMenuState);
     updateStores(mergedState);
