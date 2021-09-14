@@ -674,9 +674,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     const { deformationModelEarthquakeControl } = this.stores.seismicSimulation;
     const authoringEarthquakeControl = authorMenuState.seismicSimulation.deformationModelEarthquakeControl;
     if (authorMenuState.unit.name === "Seismic" && deformationModelEarthquakeControl !== authoringEarthquakeControl) {
-      authorMenuState.seismicSimulation.deformationModelApparentYearScaling = authoringEarthquakeControl === "user"
-        ? .001
-        : 1;
+        authorMenuState.seismicSimulation.deformationModelApparentYearScaling =
+          authoringEarthquakeControl === "user" ? .001 : 1;
     }
 
     // the authored state from the authoring menu overwrites local state
