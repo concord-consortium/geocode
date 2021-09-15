@@ -337,6 +337,9 @@ export const SeismicSimulationStore = types
           return self.deformationModelFrictionHigh;
       }
     },
+    setDeformationModelFaultAngle(angle: number) {
+      self.deformationModelFaultAngle = angle;
+    }
   }))
   .views((self) => ({
     get allGPSStations() {

@@ -23,8 +23,8 @@ Blockly.Blocks['deformation-create-sim'] = {
         .appendField("direction (degrees)")
         .setCheck(['Number', 'String'])
       this.setColour("#B35F00")
-      this.setPreviousStatement(false, null);
-      this.setNextStatement(false, null);
+      this.setPreviousStatement(true, null);
+      this.setNextStatement(true, null);
     }
   };
 
@@ -50,8 +50,8 @@ Blockly.Blocks['deformation-create-sim'] = {
           .appendField(new Blockly.FieldDropdown([["1","1"], ["10","10"], ["20","20"]]), "year_step");
       this.appendStatementInput("DO")
           .setCheck(null);
-      this.setPreviousStatement(false, null);
-      this.setNextStatement(false, null);
+      this.setPreviousStatement(true, null);
+      this.setNextStatement(true, null);
       this.setColour("#B35F00")
       this.setTooltip("Step through deformation model for a given number of years, with a given step size");
       this.setHelpUrl("");
@@ -162,3 +162,22 @@ Blockly.Blocks['deformation-create-sim'] = {
     var code = `getMaxDeformation("${friction}")`;
   return [code, Blockly.JavaScript.ORDER_NONE];
   };
+
+  Blockly.Blocks['deformation-boundary-orientation'] = {
+    init: function () {
+      this.appendValueInput('orientation')
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("Set boundary orientation")
+        .setCheck(['Number'])
+      this.setColour("#B35F00")
+      this.setPreviousStatement(true, null);
+      this.setNextStatement(true, null);
+    }
+  };
+
+  Blockly.JavaScript['deformation-boundary-orientation'] = function(plate) {
+    var value_orientation = Blockly.JavaScript.valueToCode(plate, 'orientation', Blockly.JavaScript.ORDER_ATOMIC) || 0;
+
+    var code = `setBoundaryOrientation(${value_orientation});\n`;
+    return code;
+  }
