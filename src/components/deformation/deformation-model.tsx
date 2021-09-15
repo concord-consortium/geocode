@@ -334,6 +334,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       const points: Point[] = [];
 
       const start = line === 0 ? -overflow : this.modelWidth + overflow;
+      const totalSteps = line === 0 ? 50 : 51;
       let stepSize;
       let x;
 
@@ -343,7 +344,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       // curve. Instead of some logarithmic equation for where to sample the points, this simply samples 20
       // evenly-spaced points across the 3/8ths of the model furthest from the fault, and 30 points in the nearest
       // eighth. Both lines work from the outside-in.
-      for (let step = 0; step < 50; step++) {
+      for (let step = 0; step < totalSteps; step++) {
         const direction = line === 0 ? 1 : -1;
         if (step < 20) {
           stepSize = threeEightsWidth / 20;
