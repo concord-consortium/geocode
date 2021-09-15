@@ -25,6 +25,8 @@ const modelMargin = {
 };
 const minModelMargin = 20;
 
+const overflow = 200;   // amount to draw under the clipping to account for rotation
+
 const backgroundColor = "#e6f2e4";
 const lineColor = "#777";
 const drawAreaColor = "#fff";
@@ -134,8 +136,8 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.strokeStyle = faultColor;
     ctx.lineWidth = 3;
     ctx.setLineDash([20, 5]);
-    ctx.moveTo(modelMargin.left + (this.modelWidth / 2) - 1, modelMargin.top);
-    ctx.lineTo(modelMargin.left + (this.modelWidth / 2) - 1, this.modelWidth + modelMargin.top);
+    ctx.moveTo(modelMargin.left + (this.modelWidth / 2) - 1, modelMargin.top - overflow);
+    ctx.lineTo(modelMargin.left + (this.modelWidth / 2) - 1, this.modelWidth + modelMargin.top + (overflow * 2));
     ctx.stroke();
     ctx.setLineDash([]);
     ctx.lineWidth = 1;
@@ -152,13 +154,14 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       const plateAlpha = initialPlateAlpha - (year / this.fadeOutTime) * initialPlateAlpha;
       ctx.fillStyle = `rgba(255,58,58,${plateAlpha})`;
       ctx.beginPath();
-      ctx.rect(modelMargin.left, modelMargin.top, this.modelWidth / 2, this.modelWidth + modelMargin.top);
+      ctx.rect(-overflow, -overflow,
+        (this.modelWidth / 2) + modelMargin.left + overflow, this.modelWidth + (overflow * 2));
       ctx.fill();
 
       ctx.fillStyle = `rgba(219,194,58,${plateAlpha})`;
       ctx.beginPath();
-      ctx.rect(modelMargin.left + (this.modelWidth / 2), modelMargin.top,
-        this.modelWidth / 2, this.modelWidth + modelMargin.top);
+      ctx.rect(modelMargin.left + (this.modelWidth / 2), -overflow,
+        (this.modelWidth / 2) + overflow, this.modelWidth + modelMargin.top + (overflow * 2));
       ctx.fill();
     }
 
@@ -190,9 +193,9 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     const verticalLines: Point[][] = [];
 
     // horizontal lines start below model and go beyond in case lines curve into model
-    const yBounds = [modelMargin.top - 200, modelMargin.top + this.modelWidth + 400];
+    const yBounds = [modelMargin.top - 200 - overflow, modelMargin.top + this.modelWidth + 400 + (overflow * 2)];
     // vertical lines remain vertical and can be clipped to frame
-    const xBounds = [modelMargin.left - 10, modelMargin.left + this.modelWidth + 20];
+    const xBounds = [modelMargin.left - overflow, modelMargin.left + this.modelWidth + (overflow * 2)];
 
     // form "horizontal" lines, one for each step vertically
     // (this is slightly inefficient, because they all have the same shape, but the calc is fast)
@@ -201,7 +204,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     }
     // form vertical lines, one for each step horizontally
     for (let x = xBounds[0]; x < xBounds[1]; x += lineSpacing) {
-      verticalLines.push(this.generateVerticalLine(x, modelMargin.top, hSpeed, year));
+      verticalLines.push(this.generateVerticalLine(x, -overflow, hSpeed, year));
     }
 
     ctx.strokeStyle = lineColor;
@@ -321,15 +324,16 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
   // returns two lines, one on either side of the center line, so we can have clean breaks
   // in the case of earthquakes
   private generateHorizontalLines(yOrigin: number, xOffset: number, relativeVerticalSpeed: number, year: number) {
+    const totalWidth = this.modelWidth + (overflow * 2);
     const center = this.modelWidth / 2;
-    const eighthWidth = (this.modelWidth / 8);
-    const threeEightsWidth = (this.modelWidth * 3 / 8);
+    const eighthWidth = (totalWidth / 8);
+    const threeEightsWidth = (totalWidth * 3 / 8);
     const lines: Point[][] = [];
 
     for (let line = 0; line < 2; line++) {
       const points: Point[] = [];
 
-      const start = line === 0 ? 0 : this.modelWidth;
+      const start = line === 0 ? -overflow : this.modelWidth + overflow;
       let stepSize;
       let x;
 
@@ -376,7 +380,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
     const newX = xOrigin - this.worldToCanvas(horizontalDisplacement);
 
-    const points: Point[] = [{x: newX, y: yOffset}, {x: newX, y: yOffset + this.modelWidth}];
+    const points: Point[] = [{x: newX, y: yOffset}, {x: newX, y: yOffset + this.modelWidth + (overflow * 2)}];
 
     return points;
   }
