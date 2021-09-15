@@ -111,6 +111,12 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
   private drawModel = () => {
     if (!this.canvasRef.current) return;
 
+    const { deformationModelStep: year, deformationModelEarthquakesEnabled,
+      deformationModelRainbowLines, deformationModelWidthKm,
+      deformationModelApparentWidthKm, deformationModelApparentYearScaling,
+      deformationModelShowYear, relativeVerticalSpeed: vSpeed,
+      relativeHorizontalSpeed: hSpeed, deformationModelFaultAngle } = this.stores.seismicSimulation;
+
     this.canvasRef.current.width = canvasWidth;
     this.canvasRef.current.height = canvasHeight;
 
@@ -131,6 +137,8 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.fill();
     ctx.clip();
 
+    this.rotateCanvas(ctx, deformationModelFaultAngle);
+
     // show fault line
     ctx.beginPath();
     ctx.strokeStyle = faultColor;
@@ -142,12 +150,6 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.setLineDash([]);
     ctx.lineWidth = 1;
     ctx.strokeStyle = textColor;
-
-    const { deformationModelStep: year, deformationModelEarthquakesEnabled,
-      deformationModelRainbowLines, deformationModelWidthKm,
-      deformationModelApparentWidthKm, deformationModelApparentYearScaling,
-      deformationModelShowYear, relativeVerticalSpeed: vSpeed,
-      relativeHorizontalSpeed: hSpeed } = this.stores.seismicSimulation;
 
     // plates
     if (year < this.fadeOutTime) {
@@ -246,6 +248,18 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       ctx.restore();
     }
 
+    // station dots
+    ctx.fillStyle = stationColor;
+    ctx.strokeStyle = textColor;
+    ctx.lineWidth = stationBorderThickness;
+    ctx.beginPath();
+    for (const station of stationPoints) {
+      ctx.moveTo(station.x, station.y);
+      ctx.arc(station.x, station.y, 6, 0, 2 * Math.PI);
+    }
+    ctx.stroke();
+    ctx.fill();
+
     // text labels
     ctx.font = "15px Lato";
     ctx.fillStyle = textColor;
@@ -256,6 +270,8 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       modelMargin.left + this.modelWidth / 4, modelMargin.top + 20);
     ctx.fillText("Plate 2",
       modelMargin.left + this.modelWidth / 4 * 3, modelMargin.top + 20);
+
+    this.unrotateCanvas(ctx);
 
     ctx.font = "13px Lato";
     for (let i = 0; i < stationPoints.length; i++) {
@@ -284,18 +300,6 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.textAlign = "end";
     ctx.fillText("Fault", modelMargin.left + this.modelWidth / 2 - 10, modelMargin.top + this.modelWidth - 10);
 
-    // station dots
-    ctx.fillStyle = stationColor;
-    ctx.strokeStyle = textColor;
-    ctx.lineWidth = stationBorderThickness;
-    ctx.beginPath();
-    for (const station of stationPoints) {
-      ctx.moveTo(station.x, station.y);
-      ctx.arc(station.x, station.y, 6, 0, 2 * Math.PI);
-    }
-    ctx.stroke();
-    ctx.fill();
-
     // Scale
     const scaleKm = deformationModelWidthKm / 10;
     ctx.lineWidth = 1;
@@ -319,6 +323,16 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     const distanceLabel = labelScaleKm >= 1 ? `${labelScaleKm}km` : `${labelScaleKm * 1000}m`;
     ctx.fillText(distanceLabel, s1.x, s1.y + 20);
     ctx.stroke();
+  }
+
+  private rotateCanvas(ctx: CanvasRenderingContext2D, angle: number) {
+    ctx.translate((modelMargin.left + this.modelWidth) / 2, (modelMargin.top + this.modelWidth) / 2);
+    ctx.rotate(angle * Math.PI / 180);
+    ctx.translate(-(modelMargin.left + this.modelWidth) / 2, -(modelMargin.top + this.modelWidth) / 2);
+  }
+
+  private unrotateCanvas(ctx: CanvasRenderingContext2D) {
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
   }
 
   // returns two lines, one on either side of the center line, so we can have clean breaks
