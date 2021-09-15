@@ -260,25 +260,40 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.stroke();
     ctx.fill();
 
-    // text labels
+    // *** text labels ***
+
+    // A useful number from 0-1 indicating how close we are to 90º
+    const rotationNormalizedTo90 = 1 - (90 - Math.abs(deformationModelFaultAngle)) / 90;
+    const leftwardAngle = deformationModelFaultAngle < 0;
+
     ctx.font = "15px Lato";
     ctx.fillStyle = textColor;
+    ctx.textAlign = "center";
     ctx.beginPath();
 
-    ctx.textAlign = "center";
-    ctx.fillText("Plate 1",
-      modelMargin.left + this.modelWidth / 4, modelMargin.top + 20);
-    ctx.fillText("Plate 2",
-      modelMargin.left + this.modelWidth / 4 * 3, modelMargin.top + 20);
-
-    this.unrotateCanvas(ctx);
+    let labelOffset = 20 + (rotationNormalizedTo90 * 30) + (leftwardAngle ? (rotationNormalizedTo90 * -20) : 0);
+    this.renderHorizontalLabel("Plate 1", deformationModelFaultAngle,
+      modelMargin.left + (this.modelWidth / 2) - 50, modelMargin.top + labelOffset, ctx);
+    this.renderHorizontalLabel("Plate 2", deformationModelFaultAngle,
+      modelMargin.left + (this.modelWidth / 2) + 50, modelMargin.top + labelOffset, ctx);
 
     ctx.font = "13px Lato";
     for (let i = 0; i < stationPoints.length; i++) {
       ctx.textAlign = stationPoints[i].x < this.modelWidth / 2 ? "right" : "left";
       const textPositionAdjust = stationPoints[i].x < this.modelWidth / 2 ? -10 : 10;
-      ctx.fillText(`Station ${i + 1}`, stationPoints[i].x + textPositionAdjust, stationPoints[i].y + 5);
+      const originX = stationPoints[i].x + textPositionAdjust;
+      const originY = stationPoints[i].y + 5;
+      this.renderHorizontalLabel(`Station ${i + 1}`, deformationModelFaultAngle, originX, originY, ctx);
     }
+
+    ctx.font = "15px Lato";
+    ctx.textAlign = "end";
+    labelOffset = 15 + (rotationNormalizedTo90 * 30) + (leftwardAngle ? (rotationNormalizedTo90 * -20) : 0);
+    this.renderHorizontalLabel("Fault", deformationModelFaultAngle,
+      modelMargin.left + this.modelWidth / 2 - 10, modelMargin.top + this.modelWidth - labelOffset, ctx);
+
+    this.unrotateCanvas(ctx);
+
     if (deformationModelShowYear) {
       ctx.font = "15px Lato";
       ctx.textAlign = "end";
@@ -296,14 +311,10 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       ctx.stroke();
     }
 
-    ctx.font = "15px Lato";
-    ctx.textAlign = "end";
-    ctx.fillText("Fault", modelMargin.left + this.modelWidth / 2 - 10, modelMargin.top + this.modelWidth - 10);
-
     // Scale
     const scaleKm = deformationModelWidthKm / 10;
     ctx.lineWidth = 1;
-    const s1 = { x: modelMargin.left + this.modelWidth / 2 - this.worldToCanvas(scaleKm) - 10, y: modelMargin.top + 20};
+    const s1 = { x: modelMargin.left + 20, y: modelMargin.top + 20};
     const s2 = { x: s1.x + this.worldToCanvas(scaleKm), y: s1.y };
     ctx.beginPath();
     ctx.moveTo(s1.x, s1.y);
@@ -325,14 +336,24 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.stroke();
   }
 
-  private rotateCanvas(ctx: CanvasRenderingContext2D, angle: number) {
-    ctx.translate((modelMargin.left + this.modelWidth) / 2, (modelMargin.top + this.modelWidth) / 2);
+  private rotateCanvas(ctx: CanvasRenderingContext2D, angle: number, _originX?: number, _originY?: number) {
+    const originX = typeof _originX !== "undefined" ? _originX : canvasWidth / 2;
+    const originY = typeof _originY !== "undefined" ? _originY : canvasHeight / 2;
+    ctx.translate(originX, originY);
     ctx.rotate(angle * Math.PI / 180);
-    ctx.translate(-(modelMargin.left + this.modelWidth) / 2, -(modelMargin.top + this.modelWidth) / 2);
+    ctx.translate(-originX, -originY);
   }
 
   private unrotateCanvas(ctx: CanvasRenderingContext2D) {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
+  }
+
+  private renderHorizontalLabel(label: string, canvasAngle: number, originX: number, originY: number,
+                                ctx: CanvasRenderingContext2D) {
+    ctx.save();
+    this.rotateCanvas(ctx, -canvasAngle, originX, originY);
+    ctx.fillText(label, originX, originY);
+    ctx.restore();
   }
 
   // returns two lines, one on either side of the center line, so we can have clean breaks
