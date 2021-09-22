@@ -1,5 +1,28 @@
 # Changelog
 
+## Version 2.4.0 - release September 22, 2021
+
+- SEISMIC: Create Earthquakes in Deformation Simulation [#177623916](https://www.pivotaltracker.com/story/show/177623916)
+- SEISMIC: Add an earthquake counter in earthquake version of DS [#179206763](https://www.pivotaltracker.com/story/show/179206763)
+- SEISMIC: Color the horizontal lines inside the triangle in the DS [#179266275](https://www.pivotaltracker.com/story/show/179266275)
+- SEISMIC: Make it possible to scale distance and time labels in deformation model [#179342765](https://www.pivotaltracker.com/story/show/179342765)
+- SEISMIC: Make year counter in DS authorable [#178745470](https://www.pivotaltracker.com/story/show/178745470)
+- SEISMIC: For the earthquake cycle version of this model we need to change the text for scale on the model [#179341569](https://www.pivotaltracker.com/story/show/179341569)
+- SEISMIC: Create a loop block to set the year in the deformation model [#179388651](https://www.pivotaltracker.com/story/show/179388651)
+- SEISMIC: Create a special "deformation" variable block [#179341331](https://www.pivotaltracker.com/story/show/179341331)
+- SEISMIC: Create "Earthquake to release..." block [#179341515](https://www.pivotaltracker.com/story/show/179341515)
+- SEISMIC: Create "Compute max deformation with friction" block [#179206536](https://www.pivotaltracker.com/story/show/179206536)
+- SEISMIC: Create new code toolbox for Earthquake Version in Seismic version [#177623776](https://www.pivotaltracker.com/story/show/177623776)
+- SEISMIC: Create a "change deformation block"  [#179341428](https://www.pivotaltracker.com/story/show/179341428)
+- SEISMIC: Create link to seismic version of model [#177728765](https://www.pivotaltracker.com/story/show/177728765)
+- SEISMIC: Update "Set speed/direction" block for plates in DS [#179197737](https://www.pivotaltracker.com/story/show/179197737)
+- SEISMIC: Remove the ability to set negative speeds in DS speed blocks [179197904](https://www.pivotaltracker.com/story/show/179197904)
+- SEISMIC: Update default value for apparent year scale [179499292](https://www.pivotaltracker.com/story/show/179499292)
+- SEISMIC: Create new block "Set boundary orientation" [#178847442](https://www.pivotaltracker.com/story/show/178847442)
+- SEISMIC: Allow users to set orientation of fault in DS with blocks [#178745477](https://www.pivotaltracker.com/story/show/178745477)
+- SEISMIC/TEPHRA: The color of the block drawer and the blocks in that drawer are the same color [#178527327](https://www.pivotaltracker.com/story/show/178527327)
+- TEPHRA: Remove obsolete blocks [176084553](https://www.pivotaltracker.com/story/show/176084553)
+
 ## Version 2.3.1 - release April 22, 2021
 
 ### Bug Fixes
