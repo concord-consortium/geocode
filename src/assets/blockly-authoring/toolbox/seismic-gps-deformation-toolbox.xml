@@ -9,6 +9,7 @@
 
   <category name="Deformation" colour="#B35F00">
     <block type="deformation-create-sim"></block>
+    <block type="deformation-boundary-orientation"></block>
   </category>
 
   <category name="Data" colour="%{BKY_MATH_HUE}">

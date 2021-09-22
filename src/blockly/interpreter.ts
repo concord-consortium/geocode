@@ -412,6 +412,13 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       return {data: seismicSimulation.getDeformationModelMaxDisplacementBeforeEarthquakeGivenFriction(friction)};
     });
 
+    addFunc("setBoundaryOrientation", (angle: number) => {
+      if (angle < -90 || angle > 90) {
+        return blocklyController.throwError(`Boundary orientaion must be between -90º and 90º`);
+      }
+      seismicSimulation.setDeformationModelFaultAngle(angle);
+    });
+
     /** ==== Utility methods ==== */
 
     addFunc("log", (params) => {
