@@ -1,6 +1,5 @@
-import { ITephraModelParams, SimOutput, SimulationVariable, TephraSimulationStore } from "../stores/tephra-simulation-store";
+import { ITephraModelParams } from "../stores/tephra-simulation-store";
 import { BlocklyController } from "./blockly-controller";
-import { TephraSimulationModelType } from "../stores/tephra-simulation-store";
 import { IBlocklyWorkspace } from "../interfaces";
 import { IStore } from "../stores/stores";
 import { Datasets, Dataset, Filter, ProtoTimeRange, TimeRange } from "../stores/data-sets";
@@ -367,12 +366,59 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       seismicSimulation.startDeformationModel();
     });
 
-    addFunc("setPlateVelocity", (params: { plate: number, speed: number, direction: number }) => {
-      if (Math.abs(params.speed) > Math.abs(seismicSimulation.deformMaxSpeed)) {
-        return blocklyController.throwError(`Plate speed must be between ${-seismicSimulation.deformMaxSpeed} and ${seismicSimulation.deformMaxSpeed} mm/year`);
+    addFunc("setPlateVelocity", (params: { plate: number, speed: number, direction: number | string }) => {
+      if (params.speed < 0 || params.speed > seismicSimulation.deformMaxSpeed) {
+        return blocklyController.throwError(`Plate speed must be between 0 and ${seismicSimulation.deformMaxSpeed} mm/year`);
       }
-      seismicSimulation.setPlateVelocity(params.plate, params.speed, params.direction);
+      // handle string input, user can enter north or south as valid direction input
+      let direction: number = 0;
+      if (typeof params.direction === "string") {
+        if (params.direction.toLowerCase() === "north") {
+          direction = 0;
+        } else if (params.direction.toLowerCase() === "south") {
+          direction = 180;
+        } else {
+          return blocklyController.throwError(`Plate direction must be North, South or a valid number`);
+        }
+      } else {
+        direction = params.direction;
+      }
+      if (direction < 0 || direction > 360) {
+        return blocklyController.throwError(`Plate direction must be between 0 and 360 degrees`);
+      }
+      seismicSimulation.setPlateVelocity(params.plate, params.speed, direction);
     });
+
+    addFunc("stepDeformationModel", (params: { year: number, plate_1_speed: number, plate_2_speed: number }) => {
+      if (params.plate_1_speed < 0 || params.plate_1_speed > seismicSimulation.deformMaxSpeed ||
+          params.plate_2_speed < 0 || params.plate_2_speed > seismicSimulation.deformMaxSpeed) {
+        return blocklyController.throwError(`Plate speed must be between 0 and ${seismicSimulation.deformMaxSpeed} mm/year`);
+      }
+      seismicSimulation.setPlateVelocity(1, params.plate_1_speed, 0);
+      seismicSimulation.setPlateVelocity(2, params.plate_2_speed, 180);
+      seismicSimulation.setApparentYear(params.year);
+    });
+
+    addFunc("triggerEarthquake", () => {
+      seismicSimulation.triggerEarthquake();
+    });
+
+    addFunc("getDeformation", () => {
+      const year = seismicSimulation.deformationModelStep - seismicSimulation.deformationModelUserEarthquakeLatestStep;
+      return {data: Math.abs(year * seismicSimulation.relativeVerticalSpeed) / 1e6};
+    });
+
+    addFunc("getMaxDeformation", (friction: "low" | "medium" | "high") => {
+      return {data: seismicSimulation.getDeformationModelMaxDisplacementBeforeEarthquakeGivenFriction(friction)};
+    });
+
+    addFunc("setBoundaryOrientation", (angle: number) => {
+      if (angle < -90 || angle > 90) {
+        return blocklyController.throwError(`Boundary orientaion must be between -90º and 90º`);
+      }
+      seismicSimulation.setDeformationModelFaultAngle(angle);
+    });
+
     /** ==== Utility methods ==== */
 
     addFunc("log", (params) => {
@@ -387,6 +433,32 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
 
     addFunc("stringConcat", (params: {lv: any, rv: any}) => {
       return tephraSimulation.stringConcat(params.lv, params.rv);
+    });
+
+    /** ==== value-equals allows us to feed in blocks with wrapped data outputs ==== */
+
+    addFunc("equals", (params: {left: any, right: any}) => {
+      return {toBoolean: () => params.left === params.right};
+    });
+
+    addFunc("notEquals", (params: {left: any, right: any}) => {
+      return {toBoolean: () => params.left !== params.right};
+    });
+
+    addFunc("greaterThan", (params: {left: any, right: any}) => {
+      return {toBoolean: () => params.left > params.right};
+    });
+
+    addFunc("greaterThanOrEqual", (params: {left: any, right: any}) => {
+      return {toBoolean: () => params.left >= params.right};
+    });
+
+    addFunc("lessThan", (params: {left: any, right: any}) => {
+      return {toBoolean: () => params.left < params.right};
+    });
+
+    addFunc("lessThanOrEqual", (params: {left: any, right: any}) => {
+      return {toBoolean: () => params.left <= params.right};
     });
 
     /** ==== Used under the hood to control highlighting and stepping ==== */

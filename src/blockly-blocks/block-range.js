@@ -6,7 +6,7 @@ Blockly.Blocks['input_range'] = {
       .appendField('to')
       .appendField(new Blockly.FieldNumber(10), 'max')
     this.setOutput(true, 'range')
-    this.setColour(130)
+    this.setColour("#006f95")
     this.setTooltip('')
     this.setHelpUrl('')
   }

@@ -17,12 +17,12 @@ Blockly.Blocks['addTown'] = {
       this.setInputsInline(true);
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
-      this.setColour(32);
+      this.setColour("#EB0000");
    this.setTooltip("");
    this.setHelpUrl("");
     }
   };
-  
+
   Blockly.JavaScript['addTown'] = function(block) {
     var value_name = Blockly.JavaScript.valueToCode(block, 'name', Blockly.JavaScript.ORDER_ATOMIC);
     var value_x = Blockly.JavaScript.valueToCode(block, 'x', Blockly.JavaScript.ORDER_ATOMIC);
@@ -36,4 +36,3 @@ Blockly.Blocks['addTown'] = {
     `
     return code;
   }
-  

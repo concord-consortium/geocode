@@ -64,6 +64,26 @@ export type TephraSimulationAuthorSettings = {
 };
 
 // props settable from authoring menu
+const seismicSimulationAuthorSettingsProps = tuple(
+  "deformationModelWidthKm",
+  "deformationModelApparentWidthKm",
+  "deformationModelEarthquakeControl",
+  "deformationModelFrictionLow",
+  "deformationModelFrictionMedium",
+  "deformationModelFrictionHigh",
+  "deformationModelRainbowLines",
+  "deformationModelApparentYearScaling",
+  "deformationModelShowYear",
+  "deformationModelFaultAngle",
+);
+
+export type SeismicSimulationAuthorSettingsProps = typeof seismicSimulationAuthorSettingsProps[number];
+
+export type SeismicSimulationAuthorSettings = {
+  [key in SeismicSimulationAuthorSettingsProps]?: any;
+};
+
+// props settable from authoring menu
 const blocklyAuthorSettingsProps = tuple(
   "toolbox",
   "initialCodeTitle",
@@ -117,13 +137,14 @@ export type UIAuthorSettings = {
 const pick = (keys: string[]) => (o: any) => keys.reduce((a, e) => ({ ...a, [e]: o[e] }), {});
 
 // returns a selection of the properties of the store
-function getStoreSubstate(blocklyStoreProps: string[], tephraSimulationProps: string[], uiProps: string[]) {
+function getStoreSubstate(blocklyStoreProps: string[], tephraSimulationProps: string[],
+                          seismicSimulationProps: string[], uiProps: string[]) {
   return (): IStoreish => {
     return {
       unit: { name: stores.unit.name },
       blocklyStore: pick(blocklyStoreProps)(blocklyStore),
       tephraSimulation: pick(tephraSimulationProps)(tephraSimulation),
-      seismicSimulation: {},      // nothing to save yet
+      seismicSimulation: pick(seismicSimulationProps)(seismicSimulation),
       uiStore: pick(uiProps)(uiStore)
     };
   };
@@ -131,13 +152,16 @@ function getStoreSubstate(blocklyStoreProps: string[], tephraSimulationProps: st
 
 // gets the current stores state in a version appropriate for the authoring menu
 export const getAuthorableSettings =
-  getStoreSubstate(blocklyAuthorSettingsProps, tephraSimulationAuthorSettingsProps, uiAuthorSettingsProps);
+  getStoreSubstate(blocklyAuthorSettingsProps, tephraSimulationAuthorSettingsProps,
+    seismicSimulationAuthorSettingsProps, uiAuthorSettingsProps);
 // gets the current store state to be saved by an author
 export const getSavableStateAuthor =
-  getStoreSubstate(blocklyAuthorStateProps, tephraSimulationAuthorStateProps, uiAuthorSettingsProps);
-  // gets the current store state to be saved by a student (the above, plus anything like run state or tab state)
+  getStoreSubstate(blocklyAuthorStateProps, tephraSimulationAuthorStateProps,
+    seismicSimulationAuthorSettingsProps, uiAuthorSettingsProps);
+// gets the current store state to be saved by a student (the above, plus anything like run state or tab state)
 export const getSavableStateStudent =
-getStoreSubstate(blocklyStudentStateProps, tephraSimulationAuthorStateProps, uiAuthorSettingsProps);
+  getStoreSubstate(blocklyStudentStateProps, tephraSimulationAuthorStateProps,
+    seismicSimulationAuthorSettingsProps, uiAuthorSettingsProps);
 
 // makes state appropriate for saving to e.g. LARA. Changes keys or values as needed. Adds a version number
 export const serializeState = (state: IStoreish): SerializedState => {
@@ -171,10 +195,13 @@ export function updateStores(state: IStoreish) {
     pick(blocklyAuthorStateProps)(state.blocklyStore);
   const tephraSimulationStoreSettings: TephraSimulationAuthorSettings =
     pick(tephraSimulationAuthorStateProps)(state.tephraSimulation);
+  const seismicSimulationStoreSettings: SeismicSimulationAuthorSettings =
+    pick(seismicSimulationAuthorSettingsProps)(state.seismicSimulation);
   const uiStoreSettings: UIAuthorSettings = pick(uiAuthorSettingsProps)(state.uiStore);
 
   unitStore.setUnit(state.unit.name);
   blocklyStore.loadAuthorSettingsData(blocklyStoreSettings);
   tephraSimulation.loadAuthorSettingsData(tephraSimulationStoreSettings);
+  seismicSimulation.loadAuthorSettingsData(seismicSimulationStoreSettings);
   uiStore.loadAuthorSettingsData(uiStoreSettings);
 }

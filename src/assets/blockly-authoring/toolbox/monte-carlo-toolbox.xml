@@ -1,12 +1,12 @@
 <xml id="toolbox" style="display: none">
-  <category name="Volcano" colour="0">
+  <category name="Volcano" colour="#EB0000">
     <block type="simulate_wind_vei"></block>
     <block type="simulate_wind_sample_vei"></block>
     <block type="simulate_wind_sample_vei_2"></block>
     <block type="calculate_tephra_vei_wind"></block>
   </category>
 
-  <category name="Wind data" colour="%{BKY_LISTS_HUE}">
+  <category name="Wind data" colour="#B35F00">
     <block type="graph_speed_date_wind_data"></block>
     <block type="graph_speed_direction_wind_data"></block>
     <block type="graph_any_wind_data"></block>
@@ -15,7 +15,7 @@
     <block type="filter_data"></block>
   </category>
 
-  <category name="Data Collections" colour="240">
+  <category name="Data Collections" colour="#108A00">
     <block type="create_sample_location"></block>
     <block type="create_sample_collection"></block>
   </category>
@@ -47,7 +47,7 @@
     </block>
   </category>
 
-  <category name="Data" colour="130">
+  <category name="Data" colour="%{BKY_MATH_HUE}">
     <block type="text">
       <field name="TEXT">Name</field>
     </block>
@@ -57,6 +57,6 @@
     <block type="input_range"></block>
   </category>
 
-  <category name="Variables" colour="130" custom="VARIABLE"></category>
+  <category name="Variables" colour="%{BKY_VARIABLES_HUE}" custom="VARIABLE"></category>
 
 </xml>

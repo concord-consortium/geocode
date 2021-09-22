@@ -1,6 +1,5 @@
 <xml id="toolbox" style="display: none">
-  <category name="Volcano" colour="0">
-    <block type="addTown"></block>
+  <category name="Volcano" colour="#EB0000">
     <block type="simulate_wind_vei"></block>
   </category>
 
@@ -31,7 +30,7 @@
     </block>
   </category>
 
-  <category name="Data" colour="130">
+  <category name="Data" colour="%{BKY_MATH_HUE}">
     <block type="text">
       <field name="TEXT">Name</field>
     </block>
@@ -40,6 +39,6 @@
     </block>
   </category>
 
-  <category name="Variables" colour="130" custom="VARIABLE"></category>
+  <category name="Variables" colour="%{BKY_VARIABLES_HUE}" custom="VARIABLE"></category>
 
 </xml>

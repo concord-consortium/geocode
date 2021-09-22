@@ -82,6 +82,29 @@ const AuthoringMenu: React.SFC<IProps> = (props) => {
             <DatBoolean path="uiStore.showData" label="Show data?" key="showData" />
             <DatBoolean path="uiStore.showDeformation" label="Show deformation?" key="showDeformation" />
           </DatFolder>,
+
+          <DatFolder title="Deformation Model" key="deformationFolder" closed={false}>
+            <DatNumber path="seismicSimulation.deformationModelWidthKm" label="Model width (km)" key="deformationModelWidthKm"
+              min={0.1} max={100} step={0.1}/>
+            <DatNumber path="seismicSimulation.deformationModelApparentWidthKm" label="Apparent width (km)" key="deformationModelApparentWidthKm"
+              min={0.01} max={100} step={0.01}/>
+            <DatNumber path="seismicSimulation.deformationModelApparentYearScaling" label="Apparent year scale" key="deformationModelApparentYearScaling"
+              min={0.0001} max={1} step={0.0001}/>
+            <DatBoolean path="seismicSimulation.deformationModelShowYear" label="Show years?" key="deformationModelShowYear" />
+            <DatNumber path="seismicSimulation.deformationModelFrictionLow" label="Max displ. Low friction" key="deformationModelFrictionLow"
+              min={0.1} max={50} step={0.1}/>
+            <DatNumber path="seismicSimulation.deformationModelFrictionMedium" label="Max displ. Med friction" key="deformationModelFrictionMedium"
+              min={0.1} max={50} step={0.1}/>
+            <DatNumber path="seismicSimulation.deformationModelFrictionHigh" label="Max displ. High friction" key="deformationModelFrictionHigh"
+              min={0.1} max={50} step={0.1}/>
+            <DatBoolean path="seismicSimulation.deformationModelRainbowLines" label="Rainbow lines?" key="deformationModelRainbowLines" />
+            <DatNumber path="seismicSimulation.deformationModelFaultAngle" label="Fault Angle (º)" key="deformationModelFaultAngle"
+              min={-90} max={90} step={1}/>
+          </DatFolder>,
+          <DatSelect path="seismicSimulation.deformationModelEarthquakeControl" label="Earthquakes"
+            options={["none", "auto", "user"]} key="deformationModelEarthquakeControl" />,
+
+          <DatBoolean path="uiStore.showSpeedControls" label="Show Speed Controls?" key="showSpeedControls" />,
         ]
       }
       {

@@ -1,12 +1,12 @@
 <xml id="toolbox" style="display: none">
-  <category name="Seismic" colour="0">
+  <category name="Seismic" colour="#EB0000">
     <block type="seismic_show_gps_stations"></block>
     <block type="seismic_all_gps_stations"></block>
     <block type="seismic_filter_data"></block>
     <block type="seismic_sample_data"></block>
   </category>
 
-  <category name="Data" colour="130">
+  <category name="Data" colour="%{BKY_MATH_HUE}">
     <block type="text">
       <field name="TEXT">Name</field>
     </block>

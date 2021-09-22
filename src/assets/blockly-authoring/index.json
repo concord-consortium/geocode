@@ -10,7 +10,8 @@
     "All Seismic": "./assets/blockly-authoring/toolbox/seismic-toolbox.xml",
     "Seismic: GPS": "./assets/blockly-authoring/toolbox/seismic-gps-toolbox.xml",
     "Seismic: GPS & Graph": "./assets/blockly-authoring/toolbox/seismic-gps-graph-toolbox.xml",
-    "Seismic: GPS & Deformation": "./assets/blockly-authoring/toolbox/seismic-gps-deformation-toolbox.xml"
+    "Seismic: GPS & Deformation": "./assets/blockly-authoring/toolbox/seismic-gps-deformation-toolbox.xml",
+    "Seismic: GPS & Earthquakes": "./assets/blockly-authoring/toolbox/seismic-gps-deformation-earthquakes-toolbox.xml"
   },
   "code": {
     "Basic": "./assets/blockly-authoring/code/basic-setup.xml",
@@ -33,6 +34,7 @@
     "All Seismic",
     "Seismic: GPS",
     "Seismic: GPS & Graph",
-    "Seismic: GPS & Deformation"
+    "Seismic: GPS & Deformation",
+    "Seismic: GPS & Earthquakes"
   ]
 }

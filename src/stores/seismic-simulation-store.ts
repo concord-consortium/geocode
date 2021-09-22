@@ -3,6 +3,8 @@ import { parseOfflineUNAVCOData } from "../utilities/unavco-data";
 import strainCalc, { StationData, StrainOutput } from "../strain";
 import { Filter, Range } from "./data-sets";
 import Delaunator from "delaunator";
+import { SeismicSimulationAuthorSettings, SeismicSimulationAuthorSettingsProps } from "./stores";
+import { deg2rad } from "../utilities/coordinateSpaceConversion";
 
 const minLat = 32;
 const maxLat = 42;
@@ -19,6 +21,9 @@ const deformationSite3 = [0.2, 0.6];
 
 export type ColorMethod = "logarithmic" | "equalInterval";
 
+export const Friction = types.enumeration("type", ["low", "medium", "high"]);
+export const EarthquakeControl = types.enumeration("type", ["none", "auto", "user"]);
+
 export const SeismicSimulationStore = types
   .model("seismicSimulation", {
     scenario: "Seismic CA",
@@ -26,9 +31,28 @@ export const SeismicSimulationStore = types
     selectedGPSStationId: types.maybe(types.string),
     showVelocityArrows: false,
 
-    deformationModelStep: 0,            // year
-    deformationModelSpeed: 100000,      // years / second
-    deformationModelEndStep: 500000,
+    deformationModelStep: 0,
+    deformationModelEndStep: 500000,    // years
+    deformationModelTotalClockTime: 5,  // seconds
+
+    deformationModelWidthKm: 50,    // km
+    deformationModelApparentWidthKm: 50,    // model width as indicated by the scale marker (km)
+    deformationModelFaultAngle: 0,
+
+    deformationModelEarthquakeControl: types.optional(EarthquakeControl, "none"),
+    deformationModelFrictionCategory: types.optional(Friction, "low"),
+    deformationModelFrictionLow: 5,     // total plate motion before earthquake (km)
+    deformationModelFrictionMedium: 10,
+    deformationModelFrictionHigh: 20,
+
+    deformationModelUserEarthquakeCount: 0,
+    deformationModelUserEarthquakeLatestStep: 0,
+
+    deformationModelRainbowLines: false,
+    deformationModelShowYear: true,
+
+    // changes the visible value for years passed, and when students step through years manually with blocks
+    deformationModelApparentYearScaling: 1,
 
     deformSpeedPlate1: 0,     // mm/yr
     deformDirPlate1: 0,       // º from N
@@ -48,6 +72,62 @@ export const SeismicSimulationStore = types
     delaunayTriangles: [] as number[][][],
     delaunayTriangleStrains: [] as number[],
   }))
+  .views((self) => ({
+    get relativeDeformDirPlate1() {
+      // deformDirPlate1 and deformDirPlate2 are rotate 180 from user request, which is why we add instead of subtract
+      return self.deformDirPlate1 +  self.deformationModelFaultAngle;
+    },
+    get relativeDeformDirPlate2() {
+      return self.deformDirPlate2 +  self.deformationModelFaultAngle;
+    }
+  }))
+  .views((self) => ({
+    get deformationModelSpeed() {
+      return self.deformationModelEndStep / self.deformationModelTotalClockTime;
+    },
+    get deformationModelMaxDisplacementBeforeEarthquake() {
+      switch (self.deformationModelFrictionCategory) {
+        case "low":
+          return self.deformationModelFrictionLow;
+        case "medium":
+          return self.deformationModelFrictionMedium;
+        case "high":
+          return self.deformationModelFrictionHigh;
+      }
+    },
+    get deformationModelEarthquakesEnabled() {
+      return self.deformationModelEarthquakeControl === "auto" || self.deformationModelEarthquakeControl === "user";
+    },
+    get relativeVerticalSpeed() {   // mm/yr
+      const { deformSpeedPlate1, relativeDeformDirPlate1, deformSpeedPlate2, relativeDeformDirPlate2 } = this;
+
+      const plate1VerticalSpeed = Math.cos(deg2rad(relativeDeformDirPlate1)) * deformSpeedPlate1;
+      const plate2VerticalSpeed = Math.cos(deg2rad(relativeDeformDirPlate2)) * deformSpeedPlate2;
+
+      const relativeSpeed = plate1VerticalSpeed - plate2VerticalSpeed;
+      return relativeSpeed;
+    },
+    get relativeHorizontalSpeed() {   // mm/yr
+      const { deformSpeedPlate1, relativeDeformDirPlate1, deformSpeedPlate2, relativeDeformDirPlate2 } = this;
+
+      const plate1HorizontalSpeed = Math.sin(deg2rad(relativeDeformDirPlate1)) * deformSpeedPlate1;
+      const plate2HorizontalSpeed = Math.sin(deg2rad(relativeDeformDirPlate2)) * deformSpeedPlate2;
+
+      const relativeSpeed = plate1HorizontalSpeed - plate2HorizontalSpeed;
+      return relativeSpeed;
+    },
+  }))
+  .actions((self) => {
+    return {
+      loadAuthorSettingsData: (data: SeismicSimulationAuthorSettings) => {
+        Object.keys(data).forEach((key: SeismicSimulationAuthorSettingsProps) => {
+          // annoying `as any ... as any` is needed because we're mixing bool and non-bool props, which combine to never
+          // see https://github.com/microsoft/TypeScript/issues/31663
+          (self[key] as any) = data[key] as any;
+        });
+      },
+    };
+  })
   .actions((self) => ({
     showGPSStations(stations: StationData[] | string) {
       self.visibleGPSStationIds.clear();
@@ -61,14 +141,12 @@ export const SeismicSimulationStore = types
       self.selectedGPSStationId = id;
     },
     setDeformationStep(step: number) {
-      if (step > self.deformationModelEndStep) {
-        self.deformationModelStep = self.deformationModelEndStep;
-      } else {
-        self.deformationModelStep = step;
-      }
+      self.deformationModelStep = step;
     },
     resetDeformationModel() {
       self.deformationModelStep = 0;
+      self.deformationModelUserEarthquakeCount = 0;
+      self.deformationModelUserEarthquakeLatestStep = 0;
     },
     setShowVelocityArrows(show: boolean) {
       self.showVelocityArrows = show;
@@ -200,6 +278,8 @@ export const SeismicSimulationStore = types
       self.selectedGPSStationId = undefined;
       self.showVelocityArrows = false;
       self.deformationModelStep = 0;
+      self.deformationModelUserEarthquakeCount = 0;
+      self.deformationModelUserEarthquakeLatestStep = 0;
       self.strainMapMinLat = -90;
       self.strainMapMinLng = -180;
       self.strainMapMaxLat = 90;
@@ -216,7 +296,10 @@ export const SeismicSimulationStore = types
 
       const updateStep = () => {
         const dt = (window.performance.now() - startTime) / 1000;   // seconds since start
-        const step = Math.floor(dt * self.deformationModelSpeed);
+        let step = Math.floor(dt * self.deformationModelSpeed);
+        if (step > self.deformationModelEndStep) {
+          step = self.deformationModelEndStep;
+        }
         self.setDeformationStep(step);
         if (step < self.deformationModelEndStep) {
           window.requestAnimationFrame(updateStep);
@@ -226,7 +309,6 @@ export const SeismicSimulationStore = types
       window.requestAnimationFrame(updateStep);
     },
     setPlateVelocity(block: number, speed: number, direction: number) {
-      self.deformationModelStep = 0;
       if (block === 1) {
         self.deformSpeedPlate1 = speed;
         self.deformDirPlate1 = 180 - direction;
@@ -234,6 +316,29 @@ export const SeismicSimulationStore = types
         self.deformSpeedPlate2 = speed;
         self.deformDirPlate2 = 180 - direction;
       }
+    },
+    setApparentYear(year: number) {
+      self.setDeformationStep(year / self.deformationModelApparentYearScaling);
+    },
+    triggerEarthquake() {
+      if (self.deformationModelEarthquakeControl !== "user") {
+        return;
+      }
+      self.deformationModelUserEarthquakeCount++;
+      self.deformationModelUserEarthquakeLatestStep = self.deformationModelStep;
+    },
+    getDeformationModelMaxDisplacementBeforeEarthquakeGivenFriction(friction: "low" | "medium" | "high") {
+      switch (friction) {
+        case "low":
+          return self.deformationModelFrictionLow;
+        case "medium":
+          return self.deformationModelFrictionMedium;
+        case "high":
+          return self.deformationModelFrictionHigh;
+      }
+    },
+    setDeformationModelFaultAngle(angle: number) {
+      self.deformationModelFaultAngle = angle;
     }
   }))
   .views((self) => ({

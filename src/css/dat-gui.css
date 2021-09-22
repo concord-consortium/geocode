@@ -11,3 +11,15 @@
 .react-dat-gui .cr .label-text {
   width: 55%;
 }
+
+.react-dat-gui .number .label-text {
+  width: 45%!important;
+}
+
+.react-dat-gui .number .slider {
+  width: 25%!important;
+}
+
+.react-dat-gui .number input {
+  width: 30%!important;
+}

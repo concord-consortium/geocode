@@ -13,12 +13,12 @@ Blockly.Blocks['addVolcano'] = {
       this.setInputsInline(true);
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
-      this.setColour(0);
+      this.setColour("#EB0000");
    this.setTooltip("");
    this.setHelpUrl("");
     }
   };
-  
+
   Blockly.JavaScript['addVolcano'] = function(block) {
     var value_x = Blockly.JavaScript.valueToCode(block, 'x', Blockly.JavaScript.ORDER_ATOMIC);
     var value_y = Blockly.JavaScript.valueToCode(block, 'y', Blockly.JavaScript.ORDER_ATOMIC);
@@ -31,4 +31,3 @@ Blockly.Blocks['addVolcano'] = {
     console.log(code);
     return code;
   }
-  
