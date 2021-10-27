@@ -57,9 +57,9 @@ describe("tephra3 calculations", () => {
 
     it("for low mass, no wind", () => {
       const tephraThicknessData = [
-        {y: 0, expectedThickness: 13.095311},
-        {y: 51000, expectedThickness: 0.072006},
-        {y: 102000, expectedThickness: 0.007534},
+        {y: 0, expectedThickness: 10.45358},
+        {y: 51000, expectedThickness: 0.1209},
+        {y: 102000, expectedThickness: 0.0003},
         {y: 153000, expectedThickness: 0.002121},
         {y: 204000, expectedThickness: 0.000829}
       ];
@@ -76,7 +76,6 @@ describe("tephra3 calculations", () => {
           1e11,         // eruption mass
           10000,        // disk radius
           1000,         // disk cell size
-          15            // num phi classes to model
         );
 
         expect(tephraThickness).toBeCloseTo(test.expectedThickness);
@@ -85,11 +84,11 @@ describe("tephra3 calculations", () => {
 
     it("for high mass, no wind", () => {
       const tephraThicknessData = [
-        {y: 0, expectedThickness: 65.476559},
-        {y: 51000, expectedThickness: 0.360033},
-        {y: 102000, expectedThickness: 0.037672},
-        {y: 153000, expectedThickness: 0.010605},
-        {y: 204000, expectedThickness: 0.004145}
+        {y: 0, expectedThickness: 52.2679},
+        {y: 51000, expectedThickness: 0.604503},
+        {y: 102000, expectedThickness: 0.0016},
+        {y: 153000, expectedThickness: 0},
+        {y: 204000, expectedThickness: 0}
       ];
 
       tephraThicknessData.forEach( (test) => {
@@ -104,7 +103,6 @@ describe("tephra3 calculations", () => {
           5e11,         // eruption mass
           10000,        // disk radius
           1000,         // disk cell size
-          15            // phi classes to model
         );
 
         expect(tephraThickness).toBeCloseTo(test.expectedThickness);
@@ -113,11 +111,11 @@ describe("tephra3 calculations", () => {
 
     it("for low mass with wind", () => {
       const tephraThicknessData = [
-        {y: 0, expectedThickness: 5.51739},
-        {y: 5100, expectedThickness: 8.28432},
-        {y: 51000, expectedThickness: 1.256186},
-        {y: 102000, expectedThickness: 0.367375},
-        {y: 153000, expectedThickness: 0.079771},
+        {y: 0, expectedThickness: 2.72188},
+        {y: 5100, expectedThickness: 4.5620},
+        {y: 51000, expectedThickness: 1.7795},
+        {y: 102000, expectedThickness: 0.8706},
+        {y: 153000, expectedThickness: 0.4290},
       ];
 
       tephraThicknessData.forEach( (test) => {
@@ -132,7 +130,6 @@ describe("tephra3 calculations", () => {
           1e11,         // eruption mass
           10000,        // disk radius
           1000,         // disk cell size
-          15            // phi classes to model
         );
 
         expect(tephraThickness).toBeCloseTo(test.expectedThickness);
