@@ -95,6 +95,8 @@ for phi in SIMULATED_PHI_CLASSES:
     phi_mass_fraction += particle_mass_fractions[phi] * MASS
 
 print('Simulated phi classes: {}'.format(str(SIMULATED_PHI_CLASSES)))
+for phi in SIMULATED_PHI_CLASSES:
+    print('{}'.format(particle_mass_fractions[phi]))
 print('Total erupted mass: {} kg'.format(MASS))
 print('Phi mass fraction: {} kg'.format(phi_mass_fraction))
 #print('Phi mass fraction: {} kg'.format(PHI_MASS))
