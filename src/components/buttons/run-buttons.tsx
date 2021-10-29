@@ -14,11 +14,11 @@ interface IProps {
   unpause: () => void;
   step: () => void;
   reset: () => void;
-  running?: boolean;
-  paused?: boolean;
-  showSpeedControls?: boolean;
-  speed?: number;
-  setSpeed?: (speed: number) => void;
+  running: boolean;
+  paused: boolean;
+  showSpeedControls: boolean;
+  speed: number;
+  setSpeed: (speed: number) => void;
 }
 
 interface IState {}
@@ -144,7 +144,7 @@ const SpeedSlider = (props: IProps) => {
 
 export default class RunButtons extends React.Component<IProps, IState> {
   public render() {
-    const { running, paused, showSpeedControls, speed, setSpeed } = this.props;
+    const { running, paused, showSpeedControls } = this.props;
     return (
       <ButtonContainer>
         {
