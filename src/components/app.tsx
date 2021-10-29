@@ -198,6 +198,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         initialXmlCode,
         initialCodeTitle,
         toolbox,
+        blocklyRefreshCount,
       },
       uiStore: {
         showOptionsDialog,
@@ -350,7 +351,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                     initialCode={initialXmlCode}
                     initialCodePath={codePath}
                     setBlocklyCode={setCode}
-                    hideToolbox={hideBlocklyToolbox}/>
+                    hideToolbox={hideBlocklyToolbox}
+                    blocklyRefreshCount={blocklyRefreshCount}/>
                   <RunButtons
                     run={run}
                     stop={stop}
