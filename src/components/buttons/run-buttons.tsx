@@ -3,6 +3,7 @@ import styled from "styled-components";
 import RunIcon from "../../assets/blockly-icons/run.svg";
 import PauseIcon from "../../assets/blockly-icons/pause.svg";
 import ResetIcon from "../../assets/blockly-icons/reset.svg";
+import ReloadIcon from "../../assets/blockly-icons/reload.svg";
 import StepIcon from "../../assets/blockly-icons/step.svg";
 import IconButton from "./icon-button";
 import RangeControl from "../range-control";
@@ -14,21 +15,35 @@ interface IProps {
   unpause: () => void;
   step: () => void;
   reset: () => void;
+  reload: () => void;
   running: boolean;
   paused: boolean;
   showSpeedControls: boolean;
   speed: number;
   setSpeed: (speed: number) => void;
+  isAtInitialState: boolean;
 }
 
 interface IState {}
 
 const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
   width: 100%;
-  flex: 0 0 44px;
+  >div {
+    display: flex;
+    justify-content: center;
+    flex: 0 0 44px;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  >div:first-child {
+    justify-content: start;
+    margin-bottom: 0;
+  }
+  >div:last-child {
+    justify-content: end;
+  }
 `;
 
 const RunButton = (props: IProps) => {
@@ -121,8 +136,26 @@ const ResetButton = (props: IProps) => {
   );
 };
 
+const ReloadButton = (props: IProps) => {
+  const { reload, isAtInitialState } = props;
+  return (
+    <IconButton
+      onClick={reload}
+      disabled={isAtInitialState}
+      children={<ReloadIcon />}
+      label={"Reload"}
+      hoverColor={"#BBD9FF"}
+      activeColor={"#DDEDFF"}
+      fill={"#4AA9FF"}
+      width={26}
+      height={26}
+      dataTest={"Reset-button"}
+    />
+  );
+};
+
 const SpeedSliderContainer = styled.div`
-  margin: 0 50px 0 -100px;
+  margin: 0;
 `;
 
 const SpeedSlider = (props: IProps) => {
@@ -147,16 +180,23 @@ export default class RunButtons extends React.Component<IProps, IState> {
     const { running, paused, showSpeedControls } = this.props;
     return (
       <ButtonContainer>
-        {
-          showSpeedControls &&
-          <SpeedSlider {...this.props} />
-        }
-        { running
-          ? paused ? <RunButton {...this.props} /> : <PauseButton {...this.props} />
-          : <RunButton {...this.props} />
-        }
-        <StepButton  {...this.props} />
-        <ResetButton {...this.props} />
+        <div>
+          {
+            showSpeedControls &&
+            <SpeedSlider {...this.props} />
+          }
+        </div>
+        <div>
+          { running
+            ? paused ? <RunButton {...this.props} /> : <PauseButton {...this.props} />
+            : <RunButton {...this.props} />
+          }
+          <StepButton  {...this.props} />
+          <ResetButton {...this.props} />
+        </div>
+        <div>
+          <ReloadButton {...this.props} />
+        </div>
       </ButtonContainer>
     );
   }

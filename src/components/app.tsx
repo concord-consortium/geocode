@@ -360,9 +360,11 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                     reset={reset}
                     running={running}
                     paused={paused}
+                    isAtInitialState={false}
                     showSpeedControls={showSpeedControls}
                     speed={speed}
                     setSpeed={setSpeed}
+                    reload={this.restoreInitialState}
                    />
                   { showLog &&
                     <LogComponent
@@ -695,4 +697,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     }
   }
 
+  private restoreInitialState = () => {
+    //
+  }
 }
