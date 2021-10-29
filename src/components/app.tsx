@@ -35,7 +35,9 @@ import { DeformationModel } from "./deformation/deformation-model";
 import { UnitNameType } from "../stores/unit-store";
 import { queryValue, queryValueBoolean } from "../utilities/url-query";
 
-interface IProps extends IBaseProps {}
+interface IProps extends IBaseProps {
+  reload: () => void;
+}
 
 interface IState {
   expandOptionsDialog: boolean;
@@ -287,6 +289,13 @@ export class AppComponent extends BaseComponent<IProps, IState> {
 
     const setSpeed = (_speed: number) => uiStore.setSpeed(_speed);
 
+    const reload = () => {
+      // we first reset the blockly controller, which resets all the temporary state of the other
+      // controllers, before reloading the initial application state
+      reset();
+      this.props.reload();
+    };
+
     return (
       <App className="app" ref={this.rootComponent}>
         <ResizeObserver
@@ -366,7 +375,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                     showSpeedControls={showSpeedControls}
                     speed={speed}
                     setSpeed={setSpeed}
-                    reload={this.restoreInitialState}
+                    reload={reload}
                    />
                   { showLog &&
                     <LogComponent
@@ -697,9 +706,5 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       const savedState = JSON.parse(savedStateJSON) as UnmigratedSerializedState;
       updateStores(deserializeState(savedState));
     }
-  }
-
-  private restoreInitialState = () => {
-    //
   }
 }

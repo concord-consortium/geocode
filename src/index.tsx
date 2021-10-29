@@ -11,7 +11,9 @@ import { stores, serializeState, getSavableStateAuthor, getSavableStateStudent, 
 
 ReactDOM.render(
   <Provider stores={stores}>
-    <AppComponent />
+    <AppComponent
+      reload={RestoreInitialState}
+    />
   </Provider>,
   document.getElementById("reactApp")
 );
@@ -113,8 +115,7 @@ phone.post("supportedFeatures", {
 });
 
 export function RestoreInitialState() {
-  updateStores(initialState);
-  // TODO: import this function into app.tsx or whichever component will have the reload button
-  // when button is pressed, call this function
-  // add ability to reload the blockly blocks
+  const initialStateCopy = initialState || deserializeState({});
+
+  updateStores(initialStateCopy, true);
 }

@@ -190,7 +190,7 @@ export const deserializeState = (serializedState: UnmigratedSerializedState | {}
   }
 };
 
-export function updateStores(state: IStoreish) {
+export function updateStores(state: IStoreish, forceBlocklyRefresh = false) {
   const blocklyStoreSettings: BlocklyStoreAuthorSettings =
     pick(blocklyAuthorStateProps)(state.blocklyStore);
   const tephraSimulationStoreSettings: TephraSimulationAuthorSettings =
@@ -204,4 +204,8 @@ export function updateStores(state: IStoreish) {
   tephraSimulation.loadAuthorSettingsData(tephraSimulationStoreSettings);
   seismicSimulation.loadAuthorSettingsData(seismicSimulationStoreSettings);
   uiStore.loadAuthorSettingsData(uiStoreSettings);
+
+  if (forceBlocklyRefresh) {
+    blocklyStore.forceBlocklyRefresh();
+  }
 }
