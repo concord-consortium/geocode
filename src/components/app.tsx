@@ -34,6 +34,7 @@ import { GPSStationTable } from "./gps-station-table";
 import { DeformationModel } from "./deformation/deformation-model";
 import { UnitNameType } from "../stores/unit-store";
 import { queryValue, queryValueBoolean } from "../utilities/url-query";
+import IconButton from "./buttons/icon-button";
 
 interface IProps extends IBaseProps {
   reload: () => void;
@@ -45,6 +46,7 @@ interface IState {
     width: number;
     height: number;
   };
+  showingReloadModal: boolean;
 }
 
 const App = styled.div`
@@ -139,6 +141,64 @@ const FullscreenButtonClosed = styled(FullscreenButton)`
   }
 `;
 
+const ModalBackground = styled.div`
+	z-index: 1000;
+	display: block;
+	position: fixed;
+	top: 0;
+	left: 0;
+	height: 100vh;
+	width:100vw;
+	background: rgba(0,0,0,0.25);
+`;
+
+const ModalPopup = styled.div`
+	position:fixed;
+	background: white;
+	width: 210px;
+	height: auto;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%,-50%);
+	border-radius: 5px;
+  padding: 2px;
+	color: #434343;
+`;
+
+const ModalHeader = styled.div`
+  width: 100%;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f0f0;
+	border-radius: 4px 4px 0 0;
+  >div {
+    position: absolute;
+    right: 10px;
+    top: 6px;
+    font-weight: bold;
+    font-size: 20px;
+    color: #95c9ff;
+    cursor: pointer;
+  }
+`;
+
+const ModalContent = styled.div`
+  width: 100%;
+  height: 100%;
+  >div {
+    padding: 10px;
+  }
+`;
+
+const ModalButtons = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: end;
+  margin-left: -10px;
+`;
+
 @inject("stores")
 @observer
 export class AppComponent extends BaseComponent<IProps, IState> {
@@ -156,7 +216,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       dimensions: {
         width: window.innerWidth,
         height: window.innerHeight
-      }
+      },
+      showingReloadModal: false
     };
 
     this.state = initialState;
@@ -234,7 +295,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     } = this.blocklyController;
 
     const {
-      expandOptionsDialog
+      expandOptionsDialog,
+      showingReloadModal,
     } = this.state;
 
     const isTephra = unitName === "Tephra";
@@ -290,11 +352,15 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     const setSpeed = (_speed: number) => uiStore.setSpeed(_speed);
 
     const reload = () => {
+      this.setState({showingReloadModal: false});
       // we first reset the blockly controller, which resets all the temporary state of the other
       // controllers, before reloading the initial application state
       reset();
       this.props.reload();
     };
+
+    const showReloadModal = () => this.setState({showingReloadModal: true});
+    const hideReloadModal = () => this.setState({showingReloadModal: false});
 
     return (
       <App className="app" ref={this.rootComponent}>
@@ -375,7 +441,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                     showSpeedControls={showSpeedControls}
                     speed={speed}
                     setSpeed={setSpeed}
-                    reload={reload}
+                    reload={showReloadModal}
                    />
                   { showLog &&
                     <LogComponent
@@ -605,6 +671,42 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               loadStateFromLocalStorage={this.loadStateFromLocalStorage}
               handleUpdate={this.updateAuthoring}
             />
+          }
+          {
+            showingReloadModal &&
+            <ModalBackground onClick={hideReloadModal}>
+              <ModalPopup>
+                <ModalHeader>
+                  Reload Model
+                  <div onClick={hideReloadModal}>x</div>
+                </ModalHeader>
+                <ModalContent>
+                  <div>
+                    Are you sure you want to reload the model?
+                  </div>
+                  <div>
+                    Reloading the model will remove all your work and return the
+                    model to it's original settings.
+                  </div>
+                  <ModalButtons>
+                    <IconButton
+                      onClick={hideReloadModal}
+                      label="Cancel"
+                      hoverColor="#BBD9FF"
+                      activeColor="#DDEDFF"
+                      borderColor="#DDEDFF"
+                    />
+                    <IconButton
+                      onClick={reload}
+                      label="Reload"
+                      hoverColor="#BBD9FF"
+                      activeColor="#DDEDFF"
+                      borderColor="#DDEDFF"
+                    />
+                  </ModalButtons>
+                </ModalContent>
+              </ModalPopup>
+            </ModalBackground>
           }
         </Row>
       </App>
