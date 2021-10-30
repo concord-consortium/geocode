@@ -686,7 +686,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                   </div>
                   <div>
                     Reloading the model will remove all your work and return the
-                    model to it's original settings.
+                    model to its original settings.
                   </div>
                   <ModalButtons>
                     <IconButton
