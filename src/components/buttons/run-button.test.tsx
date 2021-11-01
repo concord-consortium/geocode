@@ -12,6 +12,13 @@ describe("RunButtons component", () => {
       reset={nullfunc}
       pause={nullfunc}
       unpause={nullfunc}
+      reload={nullfunc}
+      setSpeed={nullfunc}
+      isAtInitialState={false}
+      running={false}
+      paused={false}
+      showSpeedControls={false}
+      speed={0}
     />);
     expect(wrapper.contains("<RunButton />"));
     expect(wrapper.contains("<StopButton />"));

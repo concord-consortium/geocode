@@ -8,6 +8,7 @@ export const BlocklyStore = types
     toolbox: "Everything",
     initialCodeTitle: "Basic",
     hasRunOnce: false,
+    blocklyRefreshCount: 0,
   })
   .actions((self) => ({
     setBlocklyCode(code: string, workspace: any) {
@@ -18,6 +19,9 @@ export const BlocklyStore = types
     },
     setToolbox(newToolbox: string) {
       self.toolbox = newToolbox;
+    },
+    forceBlocklyRefresh() {
+      self.blocklyRefreshCount++;
     }
   }))
   .actions((self) => {
