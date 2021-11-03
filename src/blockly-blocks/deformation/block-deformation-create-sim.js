@@ -44,10 +44,11 @@ Blockly.Blocks['deformation-create-sim'] = {
   Blockly.Blocks['deformation-year-loop'] = {
     init: function() {
       this.appendDummyInput()
-          .appendField("Count with Years from 0 to ")
+          .appendField("Run from Year 1 to Year ")
           .appendField(new Blockly.FieldNumber(500, 0, 500000), "max_year")
           .appendField("by")
-          .appendField(new Blockly.FieldDropdown([["1","1"], ["10","10"], ["20","20"]]), "year_step");
+          .appendField(new Blockly.FieldDropdown([["1","1"], ["10","10"], ["20","20"]]), "year_step")
+          .appendField("years");
       this.appendStatementInput("DO")
           .setCheck(null);
       this.setPreviousStatement(true, null);
