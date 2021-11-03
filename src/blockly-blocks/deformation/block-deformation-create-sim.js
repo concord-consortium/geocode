@@ -148,7 +148,7 @@ Blockly.Blocks['deformation-create-sim'] = {
   Blockly.Blocks['deformation-model-get-max-deformation'] = {
     init: function() {
       this.appendDummyInput()
-          .appendField("Compute max deformation with")
+          .appendField("Max deformation calculated based on")
           .appendField(new Blockly.FieldDropdown([["low", "low"], ["medium", "medium"], ["high", "high"]]), "friction")
           .appendField("friction");
       this.setOutput(true, 'Number');
