@@ -193,8 +193,6 @@ export default class RunButtons extends React.Component<IProps, IState> {
           }
           <StepButton  {...this.props} />
           <ResetButton {...this.props} />
-        </div>
-        <div>
           <ReloadButton {...this.props} />
         </div>
       </ButtonContainer>
