@@ -16,7 +16,6 @@ const kLargeDiskGridSize = 3000;          // larger = fewer calculations
 const kSmallDiskRadius = 500;
 const kSmallDiskGridSize = 300;
 const kLargeDiskMassThreshold = 1e11;    // when to use the large disk size (1e11 = VEI 4)
-const kNumSimulatedPhiClasses = 8;       // 7, 8 or 15, or you'll need to pre-calculate more massFractions
 const kNumColumnHeightSteps = 3;         // >=1, smaller = fewer calculations
 // the following constants should not be changed
 const g = 9.81;             // gravitational constant m*s^-2
@@ -34,7 +33,11 @@ const columnHeightSpread = 0.2;    // the mass is in the top 20% of the column, 
 // in the original Python code, there are a number of steps involving Cumulative Distribution Functions
 // and calculating errors. However, it uses constants from the Pululagua deposit data (`TGSD_MEAN = 0.82` and
 // `TGSD_SIGMA = 2.31`), so this just skips those calculation and hard-codes the fractions.
-// Because we may want to run with higher or lower accuracy, two diffferent class sets are precalculated.
+// The 15 phi classes at top represent the original code. However, this (1) is slower than necessary, (2) contains
+// a number of phi classes that don't affect the final distribution, and (3) leaves visible holes at some wind speeds.
+// The 9, 10 and 12 phi classes were selected to give visibly-accurate tephra distributions at low, medium and high
+// wind speeds.
+// To re-calculate these values, update `config.py` and run `python main.py` from Tephra_code_RC_Oct29_19/
 const massFractions: {[numClasses: number]: {[phi: number]: number}} = {
   15: {
     "-7": 0.0013075815496227702,
@@ -53,16 +56,8 @@ const massFractions: {[numClasses: number]: {[phi: number]: number}} = {
     "6": 0.0088205776976134926,
     "7": 0.0028782122764640389,
   },
-  7: {
-    "-3": 0.081047169305606515,
-    "-2": 0.1233576602834735,
-    "-1": 0.1649777655327116,
-    "0": 0.18881074501955425,
-    "1": 0.18326601312220842,
-    "2": 0.15114071638352605,
-    "3": 0.10739993035291956,
-  },
-  8: {
+  9: {
+    "-3": 0.0619885022743,
     "-1": 0.145919098501,
     "0": 0.169752077988,
     "1": 0.164207346091,
@@ -71,8 +66,40 @@ const massFractions: {[numClasses: number]: {[phi: number]: number}} = {
     "2.5": 0.110540294723,
     "2.7": 0.101620643448,
     "3": 0.0883412633216
+  },
+  10: {
+    "-4.2": 0.0260225778873,
+    "-2.5": 0.082283623313,
+    "-1": 0.145919098501,
+    "0": 0.169752077988,
+    "0.5": 0.17085176598,
+    "1": 0.164207346091,
+    "1.6": 0.147325762083,
+    "2.2": 0.1236854215,
+    "2.5": 0.110540294723,
+    "2.9": 0.092733739641,
+  },
+  12: {
+    "-6": 0.00429973900196,
+    "-5": 0.0125866472689,
+    "-4.2": 0.0260225778873,
+    "-2.5": 0.082283623313,
+    "-1": 0.145919098501,
+    "0": 0.169752077988,
+    "0.5": 0.17085176598,
+    "1": 0.164207346091,
+    "1.6": 0.147325762083,
+    "2.2": 0.1236854215,
+    "2.5": 0.110540294723,
+    "2.9": 0.092733739641,
   }
 };
+
+const MED_WIND = 16;
+const HIGH_WIND = 26;
+const LOW_WIND_PHI_CLASSES = 9;
+const MED_WIND_PHI_CLASSES = 10;
+const HIGH_WIND_PHI_CLASSES = 12;
 
 // simple memoizer. This shaves off a couple hundred ms when simulating more phi
 // classes or smaller disk cell size
@@ -273,7 +300,6 @@ const gridTephraCalc3 = (
   mass: number,
   diskRadius?: number,        // optional, normally set by mass
   diskGridSize?: number,      //  "
-  numPhiClasses = kNumSimulatedPhiClasses
   ) => {
   if (!diskRadius) {
     diskRadius = mass >= kLargeDiskMassThreshold ? kLargeDiskRadius : kSmallDiskRadius;
@@ -287,6 +313,10 @@ const gridTephraCalc3 = (
   const ventX = ventGridX * dScale;
   const ventY = ventGridY * dScale;
   const rotated = rotateGridPoint({x: modelX, y: modelY}, windDirectionFromNorth + 90, {x: ventX, y: ventY});
+
+  const numPhiClasses = (windSpeed <= MED_WIND)
+      ? LOW_WIND_PHI_CLASSES
+      : (windSpeed <= HIGH_WIND) ? MED_WIND_PHI_CLASSES : HIGH_WIND_PHI_CLASSES;
 
   return tephraCalc3(
     rotated.x, rotated.y,

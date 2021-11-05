@@ -1,6 +1,6 @@
 sudo: false
 language: node_js
-node_js: lts/*
+node_js: 14
 dist: trusty
 cache:
   bundler: true

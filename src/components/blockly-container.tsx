@@ -12,6 +12,7 @@ interface IProps {
   width: number;
   height: number;
   hideToolbox: boolean;
+  blocklyRefreshCount: number;
 }
 
 interface IState {
@@ -66,7 +67,8 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
     if ((prevProps.toolboxPath !== this.props.toolboxPath) ||
         prevProps.initialCode !== this.props.initialCode ||
         prevProps.initialCodePath !== this.props.initialCodePath ||
-        prevProps.hideToolbox !== this.props.hideToolbox) {
+        prevProps.hideToolbox !== this.props.hideToolbox ||
+        prevProps.blocklyRefreshCount !== this.props.blocklyRefreshCount) {
       this.setupBlockly();
     }
     if (this.workSpaceRef.current) {

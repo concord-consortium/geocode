@@ -11,7 +11,9 @@ import { stores, serializeState, getSavableStateAuthor, getSavableStateStudent, 
 
 ReactDOM.render(
   <Provider stores={stores}>
-    <AppComponent />
+    <AppComponent
+      reload={RestoreInitialState}
+    />
   </Provider>,
   document.getElementById("reactApp")
 );
@@ -63,7 +65,6 @@ phone.addListener("initInteractive", (data: {
     authoredState: any,
     interactiveState: any,
     linkedState: any}) => {
-
   parseJSON(data, ["authoredState", "interactiveState", "linkedState"]);
 
   const authorState: UnmigratedSerializedState | {} = data && data.authoredState || {};
@@ -93,6 +94,7 @@ phone.addListener("initInteractive", (data: {
 
   onSnapshot(stores.unit, saveUserData);                   // MobX function called on every store change
   onSnapshot(stores.tephraSimulation, saveUserData);
+  onSnapshot(stores.seismicSimulation, saveUserData);
   onSnapshot(stores.blocklyStore, saveUserData);
   onSnapshot(stores.uiStore, saveUserData);
 });
@@ -112,3 +114,9 @@ phone.post("supportedFeatures", {
     aspectRatio: 960 / 620
   }
 });
+
+export function RestoreInitialState() {
+  const initialStateCopy = initialState || deserializeState({});
+
+  updateStores(initialStateCopy, true);
+}

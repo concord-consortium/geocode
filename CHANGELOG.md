@@ -1,6 +1,17 @@
 # Changelog
 
-## Version 2.4.0 - release September 22, 2021
+## Version 2.5.0 - released November 4, 2021
+
+### Features/Improvements
+- Tephra distribution model in extreme wind  [#178527281](https://www.pivotaltracker.com/story/show/178527281)
+- Rename "Compute max deformation with..." block [#179608332](https://www.pivotaltracker.com/story/show/179608332)
+- Rename "Count with years from..." block [#179608284](https://www.pivotaltracker.com/story/show/179608284)
+- Add reload button to the GeoCoder model [#179499821](https://www.pivotaltracker.com/story/show/179499821)
+
+### Bug Fixes
+- Authored features (colored grid lines, fault tilt) are not holding authored state [#180194849](https://www.pivotaltracker.com/story/show/180194849)
+
+## Version 2.4.0 - released September 22, 2021
 
 - SEISMIC: Create Earthquakes in Deformation Simulation [#177623916](https://www.pivotaltracker.com/story/show/177623916)
 - SEISMIC: Add an earthquake counter in earthquake version of DS [#179206763](https://www.pivotaltracker.com/story/show/179206763)
@@ -23,12 +34,12 @@
 - SEISMIC/TEPHRA: The color of the block drawer and the blocks in that drawer are the same color [#178527327](https://www.pivotaltracker.com/story/show/178527327)
 - TEPHRA: Remove obsolete blocks [176084553](https://www.pivotaltracker.com/story/show/176084553)
 
-## Version 2.3.1 - release April 22, 2021
+## Version 2.3.1 - released April 22, 2021
 
 ### Bug Fixes
 - No units on y-axis on Wind speed graphs [177856985](https://www.pivotaltracker.com/story/show/177856985)
 
-## Version 2.3.0 - release March 25, 2021
+## Version 2.3.0 - released March 25, 2021
 
 ### Features/Improvements
 - Update browser tab name [175747402](https://www.pivotaltracker.com/story/show/175747402)
@@ -65,16 +76,16 @@
 - Code blocks shake once they are displayed in portal reports [172367384](https://www.pivotaltracker.com/story/show/172367384)
 - GPS time vs. position graph changes with each program run [177383703](https://www.pivotaltracker.com/story/show/177383703)
 
-## Version 2.2.3 - release January 20, 2021
+## Version 2.2.3 - released January 20, 2021
 
 - Set Monte-Carlo chart max to be at least 10 mm
 
-## Version 2.2.2 - release January 15, 2021
+## Version 2.2.2 - released January 15, 2021
 
 - Improve learner data saving, such that the app won't save to LARA simply when a model is
   opened, but will save when a user clicks "Run" on a pre-authored model
 
-## Version 2.2.1 - release January 13, 2021
+## Version 2.2.1 - released January 13, 2021
 
 - Fix bug athoring new models in LARA caused my migration code
 
