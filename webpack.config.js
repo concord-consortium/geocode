@@ -11,10 +11,13 @@ module.exports = (env, argv) => {
   return {
     context: __dirname, // to automatically find tsconfig.json
     devtool: 'source-map',
-    entry: './src/index.tsx',
+    entry: {
+      app: "./src/index.tsx",
+      reportItem: "./src/report-item.tsx"
+    },
     mode: 'development',
     output: {
-      filename: 'assets/index.[hash].js'
+      filename: 'assets/[name].[hash].js'
     },
     performance: { hints: false },
     module: {
@@ -112,7 +115,13 @@ module.exports = (env, argv) => {
       }),
       new HtmlWebpackPlugin({
         filename: 'index.html',
+        chunks: ['app'],
         template: 'src/index.html'
+      }),
+      new HtmlWebpackPlugin({
+        filename: 'report-item.html',
+        chunks: ['reportItem'],
+        template: 'src/report-item.html'
       }),
       new CopyWebpackPlugin({
         patterns: [
