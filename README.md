@@ -154,7 +154,9 @@ Merges into production are deployed to http://geocode-app.concord.org.
 
 Other branches are deployed to http://geocode-app.concord.org/branch/<name>.
 
-You can view the status of all the branch deploys [here](https://travis-ci.org/concord-consortium/geocode-app/branches).
+You can view the status of all the branch deploys [here](https://app.travis-ci.com/github/concord-consortium/geocode/builds/).
+
+The report-item-interactive is deployed next to the main app in a file called `report-item.html` eg: http://geocode-app.concord.org/branch/<name>/report-item.html
 
 To deploy a production release:
 
