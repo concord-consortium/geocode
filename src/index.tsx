@@ -78,6 +78,15 @@ phone.addListener("initInteractive", (data: {
     // student state overwrites authored state
     const mergedState = {...authorState, ...studentState};
     initialState = deserializeState(mergedState);
+
+    /*
+    // test inserting comment blocks
+    if (initialState.blocklyStore.initialXmlCode) {
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(initialState.blocklyStore.initialXmlCode,"text/xml");
+    }
+    */
+
     stores.uiStore.setShowOptionsDialog(false);
 
     if (data.mode === "report") {
