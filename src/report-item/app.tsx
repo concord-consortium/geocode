@@ -8,8 +8,6 @@ interface Props {
 
 export const AppComponent: React.FC<Props> = (props) => {
   const initMessage = useInitMessage<IReportItemInitInteractive<{}, {}>, {}>();
-  // The init message here does not contain authoring data.
-  console.log("app init message", initMessage);
   useAutoSetHeight();
 
   if (!initMessage) {

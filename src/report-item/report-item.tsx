@@ -23,7 +23,6 @@ const getBlockList = (interactiveState: SerializedState) => {
   if (initialCode) {
     try {
       const domParser = new DOMParser();
-      console.log(initialCode);
       const doc = domParser.parseFromString(initialCode, "text/xml");
       return new BlockList(doc);
     }
