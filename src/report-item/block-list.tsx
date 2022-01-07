@@ -8,6 +8,27 @@ function isDocument(candidate: Document | any): candidate is Document {
   return (candidate as Document).querySelectorAll !== undefined;
 }
 
+export interface IBlockDiff {
+  missingBlocks: BlockList;
+  addedBlocks: BlockList;
+  changedBlocks: BlockList;
+  addedCount: number;
+  missingCount: number;
+  changedCount: number;
+}
+
+export interface IBlockComment {
+  blockType: string;
+  comment: string;
+}
+export interface IBlockStats {
+  numBlocks: number;
+  numComments: number;
+  comments: IBlockComment[];
+  blockNames: Record<string, number>;
+  allBlocks: string;
+}
+
 class Block {
   public name: string;
   public type: string;
@@ -16,16 +37,14 @@ class Block {
   constructor(node: Element | Block) {
     this.comment = "";
     if (isBlock(node)) {
-      console.log("its a Block");
       this.name = node.name;
       this.type = node.type;
       this.id = node.id;
       this.comment = node.comment;
     }
     else {
-      console.log("its an element");
       this.name = node.getAttribute("name")!;
-      this.type = node.getAttribute("type")!;
+      this.type = node.getAttribute("type")!.replace(/_/g, " ");
       this.id = node.getAttribute("id")!;
       node.querySelectorAll(":scope > comment").forEach((comment: Element) => {
         const commentText = comment.textContent;
@@ -34,7 +53,6 @@ class Block {
         }
       });
     }
-    console.log("this", this);
   }
   public equals(other: Block) {
     return other.id === this.id;
@@ -66,12 +84,14 @@ export class BlockList {
   public toArray() {
     return Object.values(this.blocks);
   }
-  public comments() {
+
+  public comments(): IBlockComment[] {
     return this
       .toArray()
       .filter((block) => block.hasComment())
       .map(block => ({ blockType: block.type, comment: block.comment }));
   }
+
   public typeCount() {
     const results: Record<string, number> = {};
     this.toArray().forEach(block => {
@@ -81,7 +101,7 @@ export class BlockList {
     return results;
   }
 
-  public diff(other: BlockList) {
+  public diff(other: BlockList): IBlockDiff {
     const missingBlocks = new BlockList(null);
     const addedBlocks = new BlockList(null);
     const sameBlocks = new BlockList(null);
@@ -97,14 +117,13 @@ export class BlockList {
       if (!other.blocks[k]) {
         addedBlocks.addBlock(this.blocks[k]);
       } else {
-        if(JSON.stringify(this.blocks[k]) === JSON.stringify(other.blocks[k])) {
+        if (JSON.stringify(this.blocks[k]) === JSON.stringify(other.blocks[k])) {
           sameBlocks.addBlock(this.blocks[k]);
         }
         else {
           changedBlocks.addBlock(this.blocks[k]);
         }
       }
-
     });
 
     return {
@@ -116,13 +135,14 @@ export class BlockList {
       changedCount: changedBlocks.size()
     };
   }
-  public stats() {
+
+  public stats(): IBlockStats {
     return {
       numBlocks: this.size(),
       numComments: this.comments().length,
       comments: this.comments(),
       blockNames: this.typeCount(),
-      allBlcocks: Object.keys(this.blocks).join(", ")
+      allBlocks: Object.keys(this.blocks).join(", ")
     };
   }
 }
