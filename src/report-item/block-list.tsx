@@ -34,6 +34,7 @@ class Block {
   public type: string;
   public id: string;
   public comment: string;
+  public textContent: string;
   constructor(node: Element | Block) {
     this.comment = "";
     if (isBlock(node)) {
@@ -41,22 +42,30 @@ class Block {
       this.type = node.type;
       this.id = node.id;
       this.comment = node.comment;
+      this.textContent = node.textContent;
     }
     else {
       this.name = node.getAttribute("name")!;
       this.type = node.getAttribute("type")!.replace(/_/g, " ");
       this.id = node.getAttribute("id")!;
-      node.querySelectorAll(":scope > comment").forEach((comment: Element) => {
-        const commentText = comment.textContent;
-        if (commentText && commentText.length > 0) {
-          this.comment = this.comment.concat(commentText + "\n");
-        }
-      });
+      this.textContent = node.textContent || "";
+      this.extractComments(node);
     }
   }
+
+  public extractComments(node: Element) {
+    node.querySelectorAll(":scope > comment").forEach((comment: Element) => {
+      const commentText = comment.textContent;
+      if (commentText && commentText.length > 0) {
+        this.comment = this.comment.concat(commentText + "\n");
+      }
+    });
+  }
+
   public equals(other: Block) {
     return other.id === this.id;
   }
+
   public hasComment() {
     return this.comment.length > 1;
   }
@@ -106,7 +115,6 @@ export class BlockList {
     const addedBlocks = new BlockList(null);
     const sameBlocks = new BlockList(null);
     const changedBlocks = new BlockList(null);
-
     Object.keys(other.blocks).forEach(k => {
       if (!this.blocks[k]) {
         missingBlocks.addBlock(other.blocks[k]);

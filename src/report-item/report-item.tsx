@@ -54,7 +54,8 @@ export const ReportItemComponent: React.FC<Props> = (props) => {
       switch (type) {
 
         case "html":
-          const html = studentAnswerHtml({authoredBlocks, studentBlocks});
+          const nextAuthoredBlocks = !authoredBlocks.isEmpty ? nextBlocks : authoredBlocks;
+          const html = studentAnswerHtml({authoredBlocks: nextBlocks, studentBlocks});
           sendReportItemAnswer({type: "html", platformUserId, html});
           break;
       }
