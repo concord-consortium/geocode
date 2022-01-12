@@ -1,14 +1,10 @@
 import * as React from "react";
-import * as Renderer from "react-dom/server";
 import { useEffect, useState } from "react";
 import { IReportItemInitInteractive,
          addGetReportItemAnswerListener,
          sendReportItemAnswer,
          getClient } from "@concord-consortium/lara-interactive-api";
-import { MultipleAnswerSummaryComponent } from "./multiple-answer-summary";
 import { SingleAnswerSummaryComponent } from "./single-answer-summary";
-import { string } from "prop-types";
-import { array } from "mobx-state-tree/dist/internal";
 import { SerializedState } from "../stores/stores";
 import { BlockList } from "./block-list";
 import { studentAnswerHtml } from "./student-answer-view";
@@ -35,9 +31,9 @@ const getBlockList = (interactiveState: SerializedState) => {
 
 export const ReportItemComponent: React.FC<Props> = (props) => {
   const {initMessage} = props;
-  const {users, view} = initMessage;
+  const {view} = initMessage;
   const [userAnswers, setUserAnswers] = useState<Record<string, any>>({});
-  const [authoredBlocks, setAuthoredBlocks] = useState<BlockList>(new BlockList(null));
+  const [cachedAuthoredState, setCachedAuthoredState] = useState<SerializedState|null>(null);
 
   useEffect(() => {
     addGetReportItemAnswerListener((request) => {
@@ -45,16 +41,18 @@ export const ReportItemComponent: React.FC<Props> = (props) => {
 
       setUserAnswers(prev => ({...prev, [platformUserId]: interactiveState}));
 
-      const nextBlocks = getBlockList(authoredState as SerializedState);
-      if (authoredBlocks.isEmpty() && !nextBlocks.isEmpty()) {
-        setAuthoredBlocks(nextBlocks);
+      if (authoredState) {
+        setCachedAuthoredState(authoredState as SerializedState);
       }
       const studentBlocks = getBlockList(interactiveState as SerializedState);
 
       switch (type) {
 
         case "html":
-          const html = studentAnswerHtml({authoredBlocks: nextBlocks, studentBlocks});
+          const html = studentAnswerHtml({
+            authoredState: authoredState as SerializedState || cachedAuthoredState,
+            studentBlocks
+          });
           sendReportItemAnswer({type: "html", platformUserId, html});
           break;
       }
@@ -66,16 +64,12 @@ export const ReportItemComponent: React.FC<Props> = (props) => {
 
   return (
     <div className={`reportItem ${view}`}>
-      {view === "singleAnswer"
-        ? <SingleAnswerSummaryComponent
-            initMessage={initMessage}
-            authoredBlocks={authoredBlocks}
-          />
-        : <MultipleAnswerSummaryComponent
-            initMessage={initMessage}
-            authoredBlocks={authoredBlocks}
-          />
-      }
+      <SingleAnswerSummaryComponent
+        initMessage={initMessage}
+        authoredState={cachedAuthoredState}
+        numAnswers={Object.keys(userAnswers).length}
+        mode={view}
+      />
     </div>
   );
 };
