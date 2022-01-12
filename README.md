@@ -198,6 +198,16 @@ Inside of your `package.json` file:
 - hide-model-options: when included, the model options authoring dialog in the upper-right is hidden.
 - unit={name}: configure application for {unit}. Unit name can currently be set to `Seismic` or `Tephra` (e.g., `unit=Seismic`). Values are case sensitive.
 
+## Report Item Interactive
+This project also includes source files and a webpack target for a customized Portal report view, called a report item interactive.
+
+The code deployed as the report item interactive is located in `src/report-item`.
+
+When an interactive use the Geocode report item interactive (set in LARA authoring using the "Report Item URL" field),
+the report will render the component `src/report-item/report-item.tsx` as an Iframe. This report item uses the
+LARA Interactive API to register a report-item-answer-listener. That listener will render custom HTML for
+each student answer that is solicited by rendering `src/report-item/studnent-answer-view.tsx` to text using
+`renderToStaticMarkup` in the `studentAnswerHtml` method.
 ## License
 
 GeoCode is Copyright 2018 (c) by the Concord Consortium and is distributed under the [MIT license](http://www.opensource.org/licenses/MIT).

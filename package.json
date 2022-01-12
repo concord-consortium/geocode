@@ -73,6 +73,7 @@
   },
   "homepage": "https://github.com/concord-consortium/geocode#readme",
   "devDependencies": {
+    "@concord-consortium/lara-interactive-api": "^1.4.0-pre.3",
     "@cypress/webpack-preprocessor": "^4.1.5",
     "@types/color": "^3.0.0",
     "@types/enzyme": "^3.1.15",
