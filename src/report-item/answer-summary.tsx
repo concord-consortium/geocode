@@ -10,8 +10,7 @@ import { SeismicSimulationModelType } from "../stores/seismic-simulation-store";
 const Title = styled.h1`
   font-family: helvetica, arial, sans-serif;
   color: #0592af;
-  font-size: 14pt;
-  font-weight: bold;
+  font-size: 12pt;
 `;
 
 const Container = styled.div<{vertical: boolean}>`
@@ -44,7 +43,7 @@ interface Props {
   numAnswers: number;
 }
 
-export const SingleAnswerSummaryComponent: React.FC<Props> = (props) => {
+export const AnswerSummaryComponent: React.FC<Props> = (props) => {
   const {authoredState, mode, initMessage, numAnswers} = props;
   const orientation = mode === "singleAnswer" ? "vertical" : "horizontal";
   const viewName = mode === "singleAnswer" ? "single answer" : "multiple answer";

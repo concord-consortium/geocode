@@ -4,7 +4,7 @@ import { IReportItemInitInteractive,
          addGetReportItemAnswerListener,
          sendReportItemAnswer,
          getClient } from "@concord-consortium/lara-interactive-api";
-import { SingleAnswerSummaryComponent } from "./single-answer-summary";
+import { AnswerSummaryComponent } from "./answer-summary";
 import { SerializedState } from "../stores/stores";
 import { BlockList } from "./block-list";
 import { studentAnswerHtml } from "./student-answer-view";
@@ -64,7 +64,7 @@ export const ReportItemComponent: React.FC<Props> = (props) => {
 
   return (
     <div className={`reportItem ${view}`}>
-      <SingleAnswerSummaryComponent
+      <AnswerSummaryComponent
         initMessage={initMessage}
         authoredState={cachedAuthoredState}
         numAnswers={Object.keys(userAnswers).length}
