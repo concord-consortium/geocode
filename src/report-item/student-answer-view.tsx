@@ -3,18 +3,34 @@ import * as Renderer from "react-dom/server";
 import styled from "styled-components";
 import {ServerStyleSheet, StyleSheetManager} from "styled-components";
 
-import {BlockList, IBlockStats, IBlockDiff, IBlockComment} from "./block-list";
+import {BlockList, IBlockStats, IBlockComment} from "./block-list";
 import { style } from "d3";
 import { SerializedState } from "../stores/stores";
+import SpeedDirectionWidget from "../components/widgets/speed-direction-widget";
+import ColumnHeightWidget from "../components/widgets/column-height-widget";
+import VEIWidget from "../components/widgets/vei-widget";
+import EjectedVolumeWidget from "../components/widgets/ejected-volume-widget";
 
 const Container = styled.div<{wide: boolean}>`
   display: flex;
   flex-direction: ${(props: any) => props.wide ? "column" : "row"};
+  flex-wrap: wrap;
+  > * {
+    margin: 0.25em;
+  }
+`;
+
+const Sim = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  > div {
+    margin: 0.5em;
+  }
 `;
 
 const Comments = styled.div<{wide: boolean}>`
   display: flex;
-  flex-direction: column;
   flex-wrap: wrap;
   flex-direction: ${(props: any) => props.wide ? "row" : "column"};
   > div {
@@ -26,8 +42,8 @@ const Comment = styled.div`
   background-color: #0592af;
   color: white;
   border-radius: 5px;
-  padding: 1em;
-  margin: 2px;
+  padding: 0.5em;
+  margin: 0.5em;
 `;
 
 const CommentBlock = styled.div`
@@ -39,10 +55,12 @@ const CommentText = styled.div`
   color: black;
   padding: 0.5em;
   border-radius: 0.25em;
-  margin: 5px;
+  margin-top: 0.5em;
   font-size: 10pt;
   font-weight: normal;
 `;
+
+
 
 const extractBlockInfo = (studentBlockList: BlockList):
   IBlockStats => {
@@ -69,40 +87,66 @@ const CommentsInfo = (props: { blockInfo: IBlockStats, wide: boolean|null }) => 
   );
 };
 
-export const StudentAnswerView: React.FC<StudentAnswerProps> = (props: StudentAnswerProps) => {
-  const {studentBlocks} = props;
-  const blockInfo = extractBlockInfo(studentBlocks);
+export interface StudentAnswerProps {
+  authoredState: SerializedState|null;
+  interactiveState: SerializedState|null;
+  studentBlocks: BlockList;
+}
 
+interface ITephraSimData {
+  requireEruption: boolean;
+  requirePainting: boolean;
+  scenario:
+    "Cerro Negro" | "Cerro Negro (markers)" | "Mt. St. Helens" | "Everything" |
+    "Mount Pinatubo" | "Volcan de Fuego" | "Mount Ruapehu" | "Mount Fuji" |
+    "Mount Vesuvius" | "Seismic CA";
+  stagingColHeight: number;
+  stagingMass: number;
+  stagingWindDirection: number;
+  stagingWindSpeed: number;
+}
+
+export const StudentAnswerView: React.FC<StudentAnswerProps> = (props: StudentAnswerProps) => {
+
+  const {studentBlocks, interactiveState} = props;
+  const blockInfo = extractBlockInfo(studentBlocks);
+  const sim = (interactiveState as SerializedState).state.tephraSimulation as ITephraSimData;
   return(
     <div>
       <div className="tall">
-        <Container wide={false}>
+        <Container>
+          <Sim wide={false}>
+            <SpeedDirectionWidget windSpeed={sim.stagingWindSpeed || 0} windDirection={sim.stagingWindDirection || 0} />
+            <ColumnHeightWidget columnHeightInKilometers={sim.stagingColHeight || 0 }/>
+            <VEIWidget mass={sim.stagingMass || 0} columnHeight={sim.stagingColHeight || 0} />
+            <EjectedVolumeWidget volumeInKilometersCubed={sim.stagingMass || 0 / Math.pow(10, 12)} />
+          </Sim>
           <CommentsInfo wide={false} blockInfo={blockInfo} />
         </Container>
       </div>
 
       <div className="wide">
         <Container wide={true}>
+          <Sim>
+            <SpeedDirectionWidget windSpeed={sim.stagingWindSpeed || 0} windDirection={sim.stagingWindDirection || 0} />
+            <ColumnHeightWidget columnHeightInKilometers={sim.stagingColHeight || 0 }/>
+            <VEIWidget mass={sim.stagingMass || 0} columnHeight={sim.stagingColHeight || 0} />
+            <EjectedVolumeWidget volumeInKilometersCubed={sim.stagingMass || 0 / Math.pow(10, 12)} />
+          </Sim>
           <CommentsInfo wide={true} blockInfo={blockInfo} />
         </Container>
       </div>
     </div>
   );
 };
-
-export interface StudentAnswerProps {
-  authoredState: SerializedState|null;
-  studentBlocks: BlockList;
-}
-
 export const studentAnswerHtml = (props: StudentAnswerProps) => {
-  const {authoredState, studentBlocks} = props;
+  const {authoredState, studentBlocks,} = props;
   const sheet = new ServerStyleSheet();
   let results = "";
   try {
     const html = Renderer.renderToStaticMarkup(
       <StyleSheetManager sheet={sheet.instance}>
-        <StudentAnswerView studentBlocks={studentBlocks} authoredState={authoredState} />
+        <StudentAnswerView {...props}/>
       </StyleSheetManager>
     );
     const styleTags = sheet.getStyleTags();
