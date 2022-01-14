@@ -5,11 +5,7 @@ import {ServerStyleSheet, StyleSheetManager} from "styled-components";
 
 import {BlockList, IBlockStats, IBlockDiff, IBlockComment} from "./block-list";
 import { style } from "d3";
-
-export interface StudentAnswerProps {
-  authoredBlocks: BlockList;
-  studentBlocks: BlockList;
-}
+import { SerializedState } from "../stores/stores";
 
 const Container = styled.div<{wide: boolean}>`
   display: flex;
@@ -34,33 +30,6 @@ const Comment = styled.div`
   margin: 2px;
 `;
 
-const Diff = styled.div`
-  > div {
-    color: white;
-    padding: 0.5em;
-    font-size: 12pt;
-    font-family: monospace;
-    font-weight: bold;
-    display: inline-block;
-    border-radius: 0.3em;
-    margin: 2px;
-    width: 2em;
-    text-align: center;
-  }
-`;
-
-const Missing = styled.div`
-  background-color: hsl(0, 95%, 30%);
-`;
-
-const Changed = styled.div`
-   background-color: hsl(40, 100%, 50%);
-`;
-
-const Added = styled.div`
-  background-color: hsl(70, 95%, 30%);
-`;
-
 const CommentBlock = styled.div`
   font-weight: bold;
 `;
@@ -75,10 +44,9 @@ const CommentText = styled.div`
   font-weight: normal;
 `;
 
-const extractBlockInfo = (studentBlockList: BlockList, authorBlockList: BlockList):
-  IBlockStats & IBlockDiff => {
-    const diff = studentBlockList.diff(authorBlockList);
-    return {...studentBlockList.stats(), ...diff};
+const extractBlockInfo = (studentBlockList: BlockList):
+  IBlockStats => {
+    return studentBlockList.stats();
 };
 
 const CommentItem = (c: IBlockComment) => {
@@ -101,35 +69,20 @@ const CommentsInfo = (props: { blockInfo: IBlockStats, wide: boolean|null }) => 
   );
 };
 
-const Stats = (blockInfo: IBlockStats & IBlockDiff) => {
-  const {addedCount, missingCount, changedCount } = blockInfo;
-  return(
-    <>
-      <Diff>
-        <Missing> -{missingCount}</Missing>
-          <Added> +{addedCount}</Added>
-        <Changed> Δ{changedCount}</Changed>
-      </Diff>
-    </>
-  );
-};
-
 export const StudentAnswerView: React.FC<StudentAnswerProps> = (props: StudentAnswerProps) => {
-  const {authoredBlocks, studentBlocks} = props;
-  const blockInfo = extractBlockInfo(studentBlocks, authoredBlocks);
+  const {studentBlocks} = props;
+  const blockInfo = extractBlockInfo(studentBlocks);
 
   return(
     <div>
       <div className="tall">
         <Container wide={false}>
-          <Stats {...blockInfo} />
           <CommentsInfo wide={false} blockInfo={blockInfo} />
         </Container>
       </div>
 
       <div className="wide">
         <Container wide={true}>
-          <Stats {...blockInfo} />
           <CommentsInfo wide={true} blockInfo={blockInfo} />
         </Container>
       </div>
@@ -137,14 +90,19 @@ export const StudentAnswerView: React.FC<StudentAnswerProps> = (props: StudentAn
   );
 };
 
+export interface StudentAnswerProps {
+  authoredState: SerializedState|null;
+  studentBlocks: BlockList;
+}
+
 export const studentAnswerHtml = (props: StudentAnswerProps) => {
-  const {studentBlocks, authoredBlocks} = props;
+  const {authoredState, studentBlocks} = props;
   const sheet = new ServerStyleSheet();
   let results = "";
   try {
     const html = Renderer.renderToStaticMarkup(
       <StyleSheetManager sheet={sheet.instance}>
-        <StudentAnswerView studentBlocks={studentBlocks} authoredBlocks={authoredBlocks} />
+        <StudentAnswerView studentBlocks={studentBlocks} authoredState={authoredState} />
       </StyleSheetManager>
     );
     const styleTags = sheet.getStyleTags();
