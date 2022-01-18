@@ -60,8 +60,6 @@ const CommentText = styled.div`
   font-weight: normal;
 `;
 
-
-
 const extractBlockInfo = (studentBlockList: BlockList):
   IBlockStats => {
     return studentBlockList.stats();
@@ -114,8 +112,8 @@ export const StudentAnswerView: React.FC<StudentAnswerProps> = (props: StudentAn
   return(
     <div>
       <div className="tall">
-        <Container>
-          <Sim wide={false}>
+        <Container wide={false}>
+          <Sim>
             <SpeedDirectionWidget windSpeed={sim.stagingWindSpeed || 0} windDirection={sim.stagingWindDirection || 0} />
             <ColumnHeightWidget columnHeightInKilometers={sim.stagingColHeight || 0 }/>
             <VEIWidget mass={sim.stagingMass || 0} columnHeight={sim.stagingColHeight || 0} />
@@ -140,7 +138,7 @@ export const StudentAnswerView: React.FC<StudentAnswerProps> = (props: StudentAn
   );
 };
 export const studentAnswerHtml = (props: StudentAnswerProps) => {
-  const {authoredState, studentBlocks,} = props;
+  const {authoredState, studentBlocks} = props;
   const sheet = new ServerStyleSheet();
   let results = "";
   try {
