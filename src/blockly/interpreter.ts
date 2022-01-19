@@ -338,16 +338,8 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
                                     true, true, true, dataset.dataOffset);
     });
 
-    addFunc("computeStrainRate", (filter: Filter) => {
-      if (filter) {
-        for (const key in filter) {
-          if ((filter[key] as any) === "ERROR") {
-            blocklyController.throwError("You can't filter on only one corner for latitude or longitude.\nPlease provide both corners, or leave them empty.");
-            return;
-          }
-        }
-      }
-      seismicSimulation.setStrainMapBounds(filter);
+    addFunc("computeStrainRate", (stations: StationData[]) => {
+      seismicSimulation.setStrainMapBounds(stations);
     });
 
     addFunc("renderStrainRate", (method: ColorMethod) => {
