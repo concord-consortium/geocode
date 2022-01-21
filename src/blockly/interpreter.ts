@@ -338,24 +338,15 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
                                     true, true, true, dataset.dataOffset);
     });
 
-    addFunc("computeStrainRate", (filter: Filter) => {
-      if (filter) {
-        for (const key in filter) {
-          if ((filter[key] as any) === "ERROR") {
-            blocklyController.throwError("You can't filter on only one corner for latitude or longitude.\nPlease provide both corners, or leave them empty.");
-            return;
-          }
-        }
+    addFunc("computeStrainRate", (stations: StationData[]) => {
+      if (!stations || stations.length < 3) {
+        blocklyController.throwError(`You must provide at least three GPS stations to compute deformation build-up.`);
       }
-      seismicSimulation.setStrainMapBounds(filter);
+      seismicSimulation.setStrainMapBounds(stations);
     });
 
     addFunc("renderStrainRate", (method: ColorMethod) => {
-      if (!method) {
-        blocklyController.throwError(`You must include a method by which to color the strain map.`);
-        return;
-      }
-      seismicSimulation.setRenderStrainMap(method);
+      seismicSimulation.setRenderStrainMap("logarithmic");
     });
 
     addFunc("renderStrainRateLabels", () => {

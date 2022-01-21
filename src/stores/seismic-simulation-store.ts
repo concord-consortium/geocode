@@ -151,7 +151,7 @@ export const SeismicSimulationStore = types
     setShowVelocityArrows(show: boolean) {
       self.showVelocityArrows = show;
     },
-    setStrainMapBounds(bounds: Filter) {
+    setStrainMapBounds(stations: StationData[]) {
       self.renderStrainMap = false;
       self.renderStrainLabels = false;
 
@@ -164,43 +164,24 @@ export const SeismicSimulationStore = types
       self.strainMapMaxLat = 90;
       self.strainMapMaxLng = 180;
 
-      if (bounds.latitude && (bounds.latitude as Range).min) {
-        self.strainMapMinLat = (bounds.latitude as Range).min as number;
-      }
-      if (bounds.longitude && (bounds.longitude as Range).min) {
-        self.strainMapMinLng = (bounds.longitude as Range).min as number;
-      }
-      if (bounds.latitude && (bounds.latitude as Range).max) {
-        self.strainMapMaxLat = (bounds.latitude as Range).max as number;
-      }
-      if (bounds.longitude && (bounds.longitude as Range).max) {
-        self.strainMapMaxLng = (bounds.longitude as Range).max as number;
-      }
-
-      // const { minLat, maxLat, minLng, maxLng } = this.props;
-
-      const stationDataInBounds = stationData.filter(s =>
-        s.latitude >= self.strainMapMinLat && s.latitude <= self.strainMapMaxLat &&
-        s.longitude >= self.strainMapMinLng && s.longitude <= self.strainMapMaxLng);
-
       // Proximity based point removal
       // GPS points that are very close to each other will produce extremely high strain values
       // By removing these points, it becomes easier to plot the data using an infinite scale
       // Other methods of solving this problem would be by plotting the data in a bucketed gradient
       // e.g. 0 - 5: Blue, 5 - 50: Green, 50 - 250: Yellow, 250+: Red
       const removablePoints: Set<string> = new Set<string>();
-      for (let i = 0; i < stationDataInBounds.length; i++) {
-        for (let k = i + 1; k < stationDataInBounds.length; k++) {
-          const dist = Math.sqrt(Math.pow(stationDataInBounds[i].latitude - stationDataInBounds[k].latitude, 2) +
-                      Math.pow(stationDataInBounds[i].longitude - stationDataInBounds[k].longitude, 2));
+      for (let i = 0; i < stations.length; i++) {
+        for (let k = i + 1; k < stations.length; k++) {
+          const dist = Math.sqrt(Math.pow(stations[i].latitude - stations[k].latitude, 2) +
+                      Math.pow(stations[i].longitude - stations[k].longitude, 2));
           if (dist < 0.18) {
-            removablePoints.add(stationDataInBounds[i].id);
+            removablePoints.add(stations[i].id);
             break;
           }
         }
       }
 
-      const filteredData: StationData[] = stationDataInBounds.filter(s => !removablePoints.has(s.id));
+      const filteredData: StationData[] = stations.filter(s => !removablePoints.has(s.id));
 
       const points: number[][] = [];
       const coords: number[] = [];
@@ -266,7 +247,7 @@ export const SeismicSimulationStore = types
         self.delaunayTriangles.push([p1, p2, p3]);
       }
     },
-    setRenderStrainMap(method: ColorMethod) {
+    setRenderStrainMap(method: ColorMethod = "logarithmic") {
       self.strainMapColorMethod = method;
       self.renderStrainMap = true;
     },
