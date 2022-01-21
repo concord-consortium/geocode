@@ -247,7 +247,7 @@ export const SeismicSimulationStore = types
         self.delaunayTriangles.push([p1, p2, p3]);
       }
     },
-    setRenderStrainMap(method: ColorMethod) {
+    setRenderStrainMap(method: ColorMethod = "logarithmic") {
       self.strainMapColorMethod = method;
       self.renderStrainMap = true;
     },

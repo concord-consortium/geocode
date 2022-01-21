@@ -346,11 +346,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     });
 
     addFunc("renderStrainRate", (method: ColorMethod) => {
-      if (!method) {
-        blocklyController.throwError(`You must include a method by which to color the deformation build-up map.`);
-        return;
-      }
-      seismicSimulation.setRenderStrainMap(method);
+      seismicSimulation.setRenderStrainMap("logarithmic");
     });
 
     addFunc("renderStrainRateLabels", () => {

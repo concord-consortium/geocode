@@ -17,9 +17,6 @@ Blockly.JavaScript['seismic_compute_strain'] = function (block) {
   var value_stations = Blockly.JavaScript.valueToCode(block, 'stations', Blockly.JavaScript.ORDER_ATOMIC)
   var value_velocities = block.getFieldValue('velocities') === "TRUE";
 
-  // let filterObj = JSON.stringify(filter);
-  // filterObj = filterObj.replace(/"([^"]+)":/g, '$1:');
-
   var code = `computeStrainRate(${value_stations});`
   // TODO: Change ORDER_NONE to the correct strength.
   return code;
@@ -63,23 +60,18 @@ Blockly.Blocks['seismic_render_strain_triangles'] = {
   init: function () {
     this.appendDummyInput()
       .appendField('Color the map by deformation build-up')
-    this.appendValueInput('color_method')
-      .setAlign(Blockly.ALIGN_RIGHT)
-      .setCheck(['Color_method'])
-      .appendField('Method')
     this.setInputsInline(false)
 
     this.setPreviousStatement(true, null)
     this.setNextStatement(true, null)
     this.setColour("#EB0000")
-    this.setTooltip('Color the map by strain rate')
+    this.setTooltip('Color the map by deformation build-up')
     this.setHelpUrl('')
   }
 }
 Blockly.JavaScript['seismic_render_strain_triangles'] = function (block) {
-  var value_color_method = Blockly.JavaScript.valueToCode(block, 'color_method', Blockly.JavaScript.ORDER_ATOMIC)
-  var code = value_color_method ? `renderStrainRate${value_color_method};` : "renderStrainRate();";
-  return code;
+
+  return  "renderStrainRate();";
 }
 
 Blockly.Blocks['seismic_render_strain_labels'] = {
