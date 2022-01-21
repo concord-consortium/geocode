@@ -339,12 +339,15 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     });
 
     addFunc("computeStrainRate", (stations: StationData[]) => {
+      if (!stations || stations.length < 3) {
+        blocklyController.throwError(`You must provide at least three GPS stations to compute deformation build-up.`);
+      }
       seismicSimulation.setStrainMapBounds(stations);
     });
 
     addFunc("renderStrainRate", (method: ColorMethod) => {
       if (!method) {
-        blocklyController.throwError(`You must include a method by which to color the strain map.`);
+        blocklyController.throwError(`You must include a method by which to color the deformation build-up map.`);
         return;
       }
       seismicSimulation.setRenderStrainMap(method);
