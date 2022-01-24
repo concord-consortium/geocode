@@ -30,7 +30,7 @@ const secondaryPanel = {
   Tephra: "Risk" as LegendType,
   Risk: "Tephra" as LegendType,
   Strain: "GPS" as LegendType,
-  GPS: "Strain" as LegendType
+  GPS: "Deformation" as LegendType
 };
 
 interface IProps extends IBaseProps {
