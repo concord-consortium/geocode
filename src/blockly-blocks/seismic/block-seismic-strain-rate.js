@@ -77,12 +77,12 @@ Blockly.JavaScript['seismic_render_strain_triangles'] = function (block) {
 Blockly.Blocks['seismic_render_strain_labels'] = {
   init: function () {
     this.appendDummyInput()
-      .appendField('Show strain rate value')
+      .appendField('Show deformation build-up value')
     this.setInputsInline(false)
     this.setPreviousStatement(true, null)
     this.setNextStatement(true, null)
     this.setColour("#EB0000")
-    this.setTooltip('Show strain rate value')
+    this.setTooltip('Show deformation build-up value')
     this.setHelpUrl('')
   }
 }
