@@ -79,7 +79,7 @@ export class MapTriangulatedStrainLayer extends BaseComponent<IProps, IState> {
         stroke={true}
         color={strokeColor}
         weight={1}
-        fillOpacity={0.8}
+        fillOpacity={0.5}
         fillColor={fillColor}
       />);
 
