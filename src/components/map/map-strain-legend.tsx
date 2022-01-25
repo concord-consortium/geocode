@@ -102,7 +102,7 @@ export default class StrainLegendComponent extends PureComponent<IProps, IState>
     const round = (val: number) => Math.round(val);
     return (
       <LegendContainer>
-        <LegendTitleText>Strain rate{isLog ? " (log)" : ""}</LegendTitleText>
+        <LegendTitleText>Deformation<br/>build-up (s<sup>-1</sup>)</LegendTitleText>
         <AbsoluteIcon
           width={28}
           height={28}

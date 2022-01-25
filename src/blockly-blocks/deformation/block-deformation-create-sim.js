@@ -77,17 +77,23 @@ Blockly.Blocks['deformation-create-sim'] = {
   Blockly.Blocks['deformation-model-step'] = {
     init: function() {
       this.appendDummyInput()
-          .appendField("Increase Deformation by deformation rate");
+          .appendField("Increase Deformation by deformation build-up");
       this.appendDummyInput()
-          .appendField("  calculated based on");
+          .appendField("  calculated based on...");
       this.appendValueInput("speed1")
           .setCheck("Number")
           .setAlign(Blockly.ALIGN_RIGHT)
-          .appendField("Plate 1 speed");
+          .appendField("Plate 1 speed (mm/yr)");
+      this.appendDummyInput()
+          .setAlign(Blockly.ALIGN_RIGHT)
+          .appendField("direction (degrees) = 0");
       this.appendValueInput("speed2")
           .setCheck("Number")
           .setAlign(Blockly.ALIGN_RIGHT)
-          .appendField("Plate 2 speed");
+          .appendField("Plate 2 speed (mm/yr)");
+      this.appendDummyInput()
+          .setAlign(Blockly.ALIGN_RIGHT)
+          .appendField("direction (degrees) = 180");
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
       this.setColour("#B35F00")
