@@ -5,13 +5,13 @@ import "leaflet-kmz";
 
 import { inject, observer } from "mobx-react";
 import { BaseComponent } from "../base";
-import { StationData } from "../../strain";
+import { StationData } from "../../deformation";
 import "../../css/custom-leaflet-icons.css";
 import { LayerGroup, Polygon, Marker } from "react-leaflet";
-import { equalIntervalStrainRanges, logarithmicStrainRanges } from "./map-strain-legend";
+import { equalIntervalDeformationRanges, logarithmicDeformationRanges } from "./map-deformation-legend";
 import { ColorMethod } from "../../stores/seismic-simulation-store";
 import { divIcon } from "leaflet";
-import { strainLabelIcon } from "../icons";
+import { deformationLabelIcon } from "../icons";
 
 interface IProps {
   map: Leaflet.Map | null;
@@ -23,7 +23,7 @@ interface IState {
 
 @inject("stores")
 @observer
-export class MapTriangulatedStrainLayer extends BaseComponent<IProps, IState> {
+export class MapTriangulatedDeformationLayer extends BaseComponent<IProps, IState> {
 
   constructor(props: IProps) {
     super(props);
@@ -46,26 +46,26 @@ export class MapTriangulatedStrainLayer extends BaseComponent<IProps, IState> {
 
   public render() {
     const { map } = this.props;
-    const { delaunayTriangles, delaunayTriangleStrains, renderStrainMap, renderStrainLabels,
-      strainMapColorMethod } = this.stores.seismicSimulation;
+    const { delaunayTriangles, delaunayTriangleDeformations, renderDeformationMap, renderDeformationLabels,
+      deformationMapColorMethod } = this.stores.seismicSimulation;
     const { zoomLevel } = this.state;
 
-    const isLog = (strainMapColorMethod as ColorMethod) === "logarithmic";
+    const isLog = (deformationMapColorMethod as ColorMethod) === "logarithmic";
 
-    if (!map || (!renderStrainMap && !renderStrainLabels)) return null;
+    if (!map || (!renderDeformationMap && !renderDeformationLabels)) return null;
     const triangles = [];
     const labels = [];
     for (let i = 0; i < delaunayTriangles.length; i++) {
       const triangle = delaunayTriangles[i];
       const [p1, p2, p3] = triangle.map(p => Leaflet.latLng(p[0], p[1]));
 
-      const strain = delaunayTriangleStrains[i];
-      const ranges = isLog ? logarithmicStrainRanges : equalIntervalStrainRanges;
+      const deformation = delaunayTriangleDeformations[i];
+      const ranges = isLog ? logarithmicDeformationRanges : equalIntervalDeformationRanges;
 
-      const range = ranges.slice().reverse().find(r => strain > r.min);
+      const range = ranges.slice().reverse().find(r => deformation > r.min);
       let strokeColor = "#333";
       let fillColor = "none";
-      if (renderStrainMap) {
+      if (renderDeformationMap) {
         strokeColor = "#FFF";
         if (range) {
           fillColor = range.color;
@@ -83,7 +83,7 @@ export class MapTriangulatedStrainLayer extends BaseComponent<IProps, IState> {
         fillColor={fillColor}
       />);
 
-      if (renderStrainLabels) {
+      if (renderDeformationLabels) {
         // calculate the incenter of the triangle
         const perim1 = Math.sqrt(((p1.lat - p2.lat) ** 2) + ((p1.lng - p2.lng) ** 2));
         const perim2 = Math.sqrt(((p2.lat - p3.lat) ** 2) + ((p2.lng - p3.lng) ** 2));
@@ -99,8 +99,8 @@ export class MapTriangulatedStrainLayer extends BaseComponent<IProps, IState> {
         if (perimeter > minPerimSize
             && perim1 < largeSide && perim1 > smallSide && perim2 < largeSide
             && perim2 > smallSide  && perim3 < largeSide && perim3 > smallSide ) {
-          const text = strainLabelIcon(parseFloat(delaunayTriangleStrains[i].toFixed(1)));
-          labels.push(<Marker  key={`strain-label-${i}`}position={incenter} icon={text} />);
+          const text = deformationLabelIcon(parseFloat(delaunayTriangleDeformations[i].toFixed(1)));
+          labels.push(<Marker  key={`deformation-label-${i}`}position={incenter} icon={text} />);
         }
       }
     }

@@ -455,7 +455,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     return distanceTravelledDueToEarthquakes + additionalDisplacement;
   }
 
-  // The main sheer-strain deformation model.
+  // The main sheer-deformation deformation model.
   // Calculations taken from PowerPoint linked here: https://www.pivotaltracker.com/story/show/174401018
   private calculateVerticalDisplacementWithoutEarthakes(px: number, vSpeed: number, year: number) {
     const verticalSlipRatemmYr = vSpeed / Math.PI *

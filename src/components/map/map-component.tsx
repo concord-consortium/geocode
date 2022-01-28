@@ -14,7 +14,7 @@ import { BaseComponent, IBaseProps } from "../base";
 import { CrossSectionDrawLayer } from "./layers/cross-section-draw-layer";
 import { LocalToLatLng } from "../../utilities/coordinateSpaceConversion";
 import { MapTephraThicknessLayer } from "./map-tephra-thickness-layer";
-import { MapTriangulatedStrainLayer } from "./map-triangulated-strain-layer";
+import { MapTriangulatedDeformationLayer } from "./map-triangulated-deformation-layer";
 import { OverlayControls } from "../overlay-controls";
 import { RulerDrawLayer } from "./layers/ruler-draw-layer";
 import { RightSectionTypes } from "../tabs";
@@ -158,7 +158,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
 
     const {
       scenario: seismicScenario,
-      strainMapColorMethod,
+      deformationMapColorMethod,
     } = this.stores.seismicSimulation;
 
     const scenario = isTephraUnit ? tephraScenario : seismicScenario;
@@ -169,7 +169,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
 
     const legendType: LegendType = isTephraUnit ?
                         (panelType !== RightSectionTypes.MONTE_CARLO ? "Tephra" : "Risk") :
-                        "Strain";
+                        "Deformation";
 
     const {
       initialZoom,
@@ -340,8 +340,8 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           {
             !isTephraUnit &&
             [
-              <MapTriangulatedStrainLayer
-                key="strain-layer"
+              <MapTriangulatedDeformationLayer
+                key="deformation-layer"
                 map={this.state.mapLeafletRef}
               />,
               <MapGPSStationsLayer
@@ -388,7 +388,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
           : <LegendComponent
               onClick={this.handleKeyButtonSelect}
               legendType={legendType}
-              colorMethod={strainMapColorMethod as ColorMethod}
+              colorMethod={deformationMapColorMethod as ColorMethod}
             />
         }
         { this.state.showDirection &&

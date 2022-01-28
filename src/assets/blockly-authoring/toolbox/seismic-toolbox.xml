@@ -5,9 +5,9 @@
     <block type="seismic_sample_data"></block>
     <block type="seismic_filter_data"></block>
     <block type="graph_gps_position"></block>
-    <block type="seismic_compute_strain"></block>
-    <block type="seismic_render_strain_triangles"></block>
-    <block type="seismic_render_strain_labels"></block>
+    <block type="seismic_compute_deformation"></block>
+    <block type="seismic_render_deformation_triangles"></block>
+    <block type="seismic_render_deformation_labels"></block>
   </category>
 
   <category name="Deformation" colour="#B35F00">

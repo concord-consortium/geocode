@@ -1,6 +1,6 @@
 import { types } from "mobx-state-tree";
 import { parseOfflineUNAVCOData } from "../utilities/unavco-data";
-import strainCalc, { StationData, StrainOutput } from "../strain";
+import deformationCalc, { StationData, DeformationOutput } from "../deformation";
 import { Filter, Range } from "./data-sets";
 import Delaunator from "delaunator";
 import { SeismicSimulationAuthorSettings, SeismicSimulationAuthorSettingsProps } from "./stores";
@@ -60,17 +60,17 @@ export const SeismicSimulationStore = types
     deformDirPlate2: 0,
     deformMaxSpeed: 50,
 
-    strainMapMinLat: -90,
-    strainMapMinLng: -180,
-    strainMapMaxLat: 90,
-    strainMapMaxLng: 180,
-    strainMapColorMethod: types.optional(types.string, "logarithmic"),
-    renderStrainMap: false,
-    renderStrainLabels: false,
+    deformationMapMinLat: -90,
+    deformationMapMinLng: -180,
+    deformationMapMaxLat: 90,
+    deformationMapMaxLng: 180,
+    deformationMapColorMethod: types.optional(types.string, "logarithmic"),
+    renderDeformationMap: false,
+    renderDeformationLabels: false,
   })
   .volatile(self => ({
     delaunayTriangles: [] as number[][][],
-    delaunayTriangleStrains: [] as number[],
+    delaunayTriangleDeformations: [] as number[],
   }))
   .views((self) => ({
     get relativeDeformDirPlate1() {
@@ -151,21 +151,21 @@ export const SeismicSimulationStore = types
     setShowVelocityArrows(show: boolean) {
       self.showVelocityArrows = show;
     },
-    setStrainMapBounds(stations: StationData[]) {
-      self.renderStrainMap = false;
-      self.renderStrainLabels = false;
+    setDeformationMapBounds(stations: StationData[]) {
+      self.renderDeformationMap = false;
+      self.renderDeformationLabels = false;
 
       self.delaunayTriangles = [];
-      self.delaunayTriangleStrains = [];
+      self.delaunayTriangleDeformations = [];
 
       // reset values first
-      self.strainMapMinLat = -90;
-      self.strainMapMinLng = -180;
-      self.strainMapMaxLat = 90;
-      self.strainMapMaxLng = 180;
+      self.deformationMapMinLat = -90;
+      self.deformationMapMinLng = -180;
+      self.deformationMapMaxLat = 90;
+      self.deformationMapMaxLng = 180;
 
       // Proximity based point removal
-      // GPS points that are very close to each other will produce extremely high strain values
+      // GPS points that are very close to each other will produce extremely high deformation values
       // By removing these points, it becomes easier to plot the data using an infinite scale
       // Other methods of solving this problem would be by plotting the data in a bucketed gradient
       // e.g. 0 - 5: Blue, 5 - 50: Green, 50 - 250: Yellow, 250+: Red
@@ -224,18 +224,18 @@ export const SeismicSimulationStore = types
         }
       }
 
-      // const preDelaunayTriangleStrains = [];
+      // const preDelaunayTriangleDeformations = [];
       // const preDelaunayTriangles = [];
 
       for (let i = 0; i < mesh.triangles.length; i += 3) {
         if (removeTriangles.indexOf(i) > -1) continue;
-        const strainOutput: StrainOutput = strainCalc({data: [ filteredData[mesh.triangles[i]],
+        const deformationOutput: DeformationOutput = deformationCalc({data: [ filteredData[mesh.triangles[i]],
           filteredData[mesh.triangles[i + 1]],
           filteredData[mesh.triangles[i + 2]],
         ]});
 
-        const strain = strainOutput.secondInvariant;
-        self.delaunayTriangleStrains.push(strain);
+        const deformation = deformationOutput.secondInvariant;
+        self.delaunayTriangleDeformations.push(deformation);
       }
 
       for (let i = 0; i < mesh.triangles.length; i += 3) {
@@ -247,12 +247,12 @@ export const SeismicSimulationStore = types
         self.delaunayTriangles.push([p1, p2, p3]);
       }
     },
-    setRenderStrainMap(method: ColorMethod = "logarithmic") {
-      self.strainMapColorMethod = method;
-      self.renderStrainMap = true;
+    setRenderDeformationMap(method: ColorMethod = "logarithmic") {
+      self.deformationMapColorMethod = method;
+      self.renderDeformationMap = true;
     },
-    renderStrainRateLabels() {
-      self.renderStrainLabels = true;
+    renderDeformationBuildupLabels() {
+      self.renderDeformationLabels = true;
     },
     reset() {
       self.visibleGPSStationIds.clear();
@@ -261,12 +261,12 @@ export const SeismicSimulationStore = types
       self.deformationModelStep = 0;
       self.deformationModelUserEarthquakeCount = 0;
       self.deformationModelUserEarthquakeLatestStep = 0;
-      self.strainMapMinLat = -90;
-      self.strainMapMinLng = -180;
-      self.strainMapMaxLat = 90;
-      self.strainMapMaxLng = 180;
-      self.renderStrainMap = false;
-      self.renderStrainLabels = false;
+      self.deformationMapMinLat = -90;
+      self.deformationMapMinLng = -180;
+      self.deformationMapMaxLat = 90;
+      self.deformationMapMaxLng = 180;
+      self.renderDeformationMap = false;
+      self.renderDeformationLabels = false;
     }
   }))
   .actions((self) => ({

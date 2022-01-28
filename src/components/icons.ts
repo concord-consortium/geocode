@@ -66,13 +66,13 @@ export function latLngIcon(label: string, anchorCorner: string = "top-left", cro
   return new DivIcon({ className: "div-icon", html });
 }
 
-export function strainLabelIcon(strain: number): DivIcon {
-    let strainText = `${Math.round(Math.abs(strain) * 100) / 100}`;
-    if (strainText.length < 4) {
-        strainText = `${Array(5 - strainText.length).join("&nbsp;")}${strainText}`;
+export function deformationLabelIcon(deformation: number): DivIcon {
+    let deformationText = `${Math.round(Math.abs(deformation) * 100) / 100}`;
+    if (deformationText.length < 4) {
+        deformationText = `${Array(5 - deformationText.length).join("&nbsp;")}${deformationText}`;
     }
-    const html = `<div class='strain-icon'>
-        ${strainText}
+    const html = `<div class='deformation-icon'>
+        ${deformationText}
     </div>`;
     return new DivIcon({ className: "div-icon", html });
 }
