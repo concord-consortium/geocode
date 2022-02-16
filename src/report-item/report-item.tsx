@@ -13,8 +13,8 @@ interface Props {
 }
 
 const getBlockList = (interactiveState: SerializedState) => {
-  const { state } = interactiveState;
-  const initialCode = state.blocklyStore.initialXmlCode;
+  const state  = interactiveState.state || undefined;
+  const initialCode = state && state.blocklyStore && state.blocklyStore.initialXmlCode;
 
   if (initialCode) {
     try {

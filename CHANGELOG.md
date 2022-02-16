@@ -1,5 +1,15 @@
 # Changelog
 
+## Version 2.6.0 - release February 16, 2022
+### Features/Improvements:
+- dependency updates, documentation, cleanup.
+- [#180647562](https://www.pivotaltracker.com/story/show/180647562) - Project: Add webpack target and components for `report-item`.
+- [#180239682](https://www.pivotaltracker.com/story/show/180239682) - Seismic: Compute Strain Rate block.
+- [#181032483](https://www.pivotaltracker.com/story/show/181032483) - Seismic: Increase transparency on deformation build-up map
+- [#180411544](https://www.pivotaltracker.com/story/show/180411544) - Seismic: Adjust wording in deformation key
+- [#180411544](https://www.pivotaltracker.com/story/show/180239758) - Seismic: update deformation block
+- [#180361402](https://www.pivotaltracker.com/story/show/180239758) - Seismic: Rename *Strain-* components to *Deformation-*
+
 ## Version 2.5.0 - released November 4, 2021
 
 ### Features/Improvements

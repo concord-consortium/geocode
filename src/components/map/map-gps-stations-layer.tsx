@@ -2,7 +2,7 @@ import * as React from "react";
 import { inject, observer } from "mobx-react";
 import { Map as LeafletMap, LayerGroup, Marker, CircleMarker, Popup, MarkerProps, Polyline } from "react-leaflet";
 import { BaseComponent } from "../base";
-import { StationData } from "../../strain";
+import { StationData } from "../../deformation";
 import { LatLng } from "leaflet";
 import RawPositionTimeData from "../../assets/data/seismic/position-time-data";
 

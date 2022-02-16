@@ -1,6 +1,6 @@
 // @ts-ignore
 import * as RawVelocityDataSet from "../assets/data/seismic/cwu.final_nam14.vel";
-import { StationData } from "../strain";
+import { StationData } from "../deformation";
 
 /**
  * This method parses the offline UNAVCO velocity data found within "../../assets/data/cwu.snaps_nam14.vel"

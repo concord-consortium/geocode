@@ -1,4 +1,4 @@
-Blockly.Blocks['seismic_compute_strain'] = {
+Blockly.Blocks['seismic_compute_deformation'] = {
   init: function () {
     this.appendDummyInput()
       .appendField('Compute deformation build-up')
@@ -9,15 +9,15 @@ Blockly.Blocks['seismic_compute_strain'] = {
     this.setPreviousStatement(true, null)
     this.setNextStatement(true, null)
     this.setColour("#EB0000")
-    this.setTooltip('Compute strain rate')
+    this.setTooltip('Compute deformation rate')
     this.setHelpUrl('')
   }
 }
-Blockly.JavaScript['seismic_compute_strain'] = function (block) {
+Blockly.JavaScript['seismic_compute_deformation'] = function (block) {
   var value_stations = Blockly.JavaScript.valueToCode(block, 'stations', Blockly.JavaScript.ORDER_ATOMIC)
   var value_velocities = block.getFieldValue('velocities') === "TRUE";
 
-  var code = `computeStrainRate(${value_stations});`
+  var code = `computeDeformationBuildup(${value_stations});`
   // TODO: Change ORDER_NONE to the correct strength.
   return code;
 }
@@ -56,7 +56,7 @@ Blockly.JavaScript['seismic_equal_interval'] = function (block) {
   return [code, Blockly.JavaScript.ORDER_NONE]
 }
 
-Blockly.Blocks['seismic_render_strain_triangles'] = {
+Blockly.Blocks['seismic_render_deformation_triangles'] = {
   init: function () {
     this.appendDummyInput()
       .appendField('Color the map by deformation build-up')
@@ -69,12 +69,12 @@ Blockly.Blocks['seismic_render_strain_triangles'] = {
     this.setHelpUrl('')
   }
 }
-Blockly.JavaScript['seismic_render_strain_triangles'] = function (block) {
+Blockly.JavaScript['seismic_render_deformation_triangles'] = function (block) {
 
-  return  "renderStrainRate();";
+  return  "renderDeformationBuildup();";
 }
 
-Blockly.Blocks['seismic_render_strain_labels'] = {
+Blockly.Blocks['seismic_render_deformation_labels'] = {
   init: function () {
     this.appendDummyInput()
       .appendField('Show deformation build-up value')
@@ -86,7 +86,7 @@ Blockly.Blocks['seismic_render_strain_labels'] = {
     this.setHelpUrl('')
   }
 }
-Blockly.JavaScript['seismic_render_strain_labels'] = function (block) {
-  var code = "renderStrainRateLabels();";
+Blockly.JavaScript['seismic_render_deformation_labels'] = function (block) {
+  var code = "renderDeformationBuildupLabels();";
   return code;
 }

@@ -3,7 +3,7 @@ import { BlocklyController } from "./blockly-controller";
 import { IBlocklyWorkspace } from "../interfaces";
 import { IStore } from "../stores/stores";
 import { Datasets, Dataset, Filter, ProtoTimeRange, TimeRange } from "../stores/data-sets";
-import { StationData } from "../strain";
+import { StationData } from "../deformation";
 import { ColorMethod } from "../stores/seismic-simulation-store";
 const Interpreter = require("js-interpreter");
 
@@ -338,19 +338,19 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
                                     true, true, true, dataset.dataOffset);
     });
 
-    addFunc("computeStrainRate", (stations: StationData[]) => {
+    addFunc("computeDeformationBuildup", (stations: StationData[]) => {
       if (!stations || stations.length < 3) {
         blocklyController.throwError(`You must provide at least three GPS stations to compute deformation build-up.`);
       }
-      seismicSimulation.setStrainMapBounds(stations);
+      seismicSimulation.setDeformationMapBounds(stations);
     });
 
-    addFunc("renderStrainRate", (method: ColorMethod) => {
-      seismicSimulation.setRenderStrainMap("logarithmic");
+    addFunc("renderDeformationBuildup", (method: ColorMethod) => {
+      seismicSimulation.setRenderDeformationMap("logarithmic");
     });
 
-    addFunc("renderStrainRateLabels", () => {
-      seismicSimulation.renderStrainRateLabels();
+    addFunc("renderDeformationBuildupLabels", () => {
+      seismicSimulation.renderDeformationBuildupLabels();
     });
 
     addFunc("runDeformationModel", () => {
