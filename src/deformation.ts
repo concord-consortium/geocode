@@ -155,7 +155,10 @@ function calcStationData(data: StationData): StationDataComputedValues {
 
 // returns calculated Max Shear Deformation within the three GPS stations
 // Uses mathjs for matrix manipulation
-function calculateDeformationOutputData(inputData: DeformationInput, calculatedData: StationDataComputedValues[]): DeformationOutput {
+function calculateDeformationOutputData(
+    inputData: DeformationInput,
+    calculatedData: StationDataComputedValues[]): DeformationOutput {
+
     const utmZones: number[] = [];
     calculatedData.forEach((element: StationDataComputedValues) => {
         utmZones.push(element.utmZone);
