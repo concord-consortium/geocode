@@ -79,7 +79,7 @@
     "@types/enzyme": "^3.10.11",
     "@types/enzyme-adapter-react-16": "^1.0.6",
     "@types/jest": "^23.3.10",
-    "@types/js-beautify": "^1.8.0",
+    "@types/js-beautify": "^1.13.3",
     "@types/lodash": "^4.14.119",
     "@types/pixi.js": "^4.8.6",
     "@types/query-string": "^6.1.1",
