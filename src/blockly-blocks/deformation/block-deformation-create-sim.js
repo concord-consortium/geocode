@@ -1,26 +1,28 @@
+import strings from '../../strings/blockly-deformation';
+
 Blockly.Blocks['deformation-create-sim'] = {
     init: function () {
       this.appendDummyInput()
-        .appendField("Create Deformation Simulation");
+        .appendField(strings.CREATE_DEFORMATION_SIMULATION);
       this.appendDummyInput()
-        .appendField("Set velocity of Plate 1 with")
+        .appendField(strings.SET_VELOCITY_OF_PLATE_1_WITH)
       this.appendValueInput('speed1')
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("speed (mm/yr)")
+        .appendField(strings.SPEED_MM_YR)
         .setCheck(['Number'])
       this.appendValueInput('direction1')
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("direction (degrees)")
+        .appendField(strings.DIRECTION_DEGREES)
         .setCheck(['Number', 'String'])
       this.appendDummyInput()
-        .appendField("Set velocity of Plate 2 with")
+        .appendField(strings.SET_VELOCITY_OF_PLATE_2_WITH)
       this.appendValueInput('speed2')
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("speed (mm/yr)")
+        .appendField(strings.SPEED_MM_YR)
         .setCheck(['Number'])
       this.appendValueInput('direction2')
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("direction (degrees)")
+        .appendField(strings.DIRECTION_DEGREES)
         .setCheck(['Number', 'String'])
       this.setColour("#B35F00")
       this.setPreviousStatement(true, null);
