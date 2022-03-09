@@ -1,19 +1,19 @@
 // compute deformation
-const COMPUTE_DEFORMATION_BUILDUP = 'Compute deformation build-up';
-const SHOW_STATIONS = 'Show GPS Stations';
-const COMPUTE_DEFORMATION_RATE = 'Compute deformation rate';
+const COMPUTE_DEFORMATION_BUILDUP = "Compute deformation build-up";
+const SHOW_STATIONS = "Show GPS Stations";
+const COMPUTE_DEFORMATION_RATE = "Compute deformation rate";
 
 // seismic logarithmic
-const LOGARITHMIC = 'Logarithmic';
+const LOGARITHMIC = "Logarithmic";
 
 // seismic equal interval
-const EQUAL_INTERVAL = 'Equal Interval';
+const EQUAL_INTERVAL = "Equal Interval";
 
 // render deformation triangles
-const COLOR_MAP = 'Color the map by deformation build-up';
+const COLOR_MAP = "Color the map by deformation build-up";
 
 // render deformation labels
-const SHOW_DEFORMATION = 'Show deformation build-up value';
+const SHOW_DEFORMATION = "Show deformation build-up value";
 
 module.exports = {
     COMPUTE_DEFORMATION_BUILDUP,
