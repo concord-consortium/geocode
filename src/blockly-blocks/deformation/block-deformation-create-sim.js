@@ -1,4 +1,4 @@
-import strings from '../../strings/blockly-deformation';
+import strings from '../../strings/blockly-blocks/deformation';
 
 Blockly.Blocks['deformation-create-sim'] = {
     init: function () {
