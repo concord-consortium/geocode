@@ -1,7 +1,9 @@
+import { CREATE_VOLCANO } from '../../strings/blockly-blocks/tephra/add-volcano';
+
 Blockly.Blocks['addVolcano'] = {
     init: function() {
       this.appendDummyInput()
-          .appendField("Create the volcano at");
+          .appendField(CREATE_VOLCANO);
       this.appendValueInput("x")
           .setCheck("Number")
           .setAlign(Blockly.ALIGN_RIGHT)

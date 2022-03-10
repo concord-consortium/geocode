@@ -1,22 +1,24 @@
+import * as strings from '../../strings/blockly-blocks/tephra/calculate-tephra-vei-wind'
+
 Blockly.Blocks['calculate_tephra_vei_wind'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField("Compute tephra thickness")
+        .appendField(strings.COMPUTE_TEPHRA)
     this.appendDummyInput()
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("at location")
+        .appendField(strings.AT_LOCATION)
         .appendField(new Blockly.FieldDropdown(this.generateOptionsLoc), "locations");
     this.appendValueInput("wind samples")
         .setCheck("Dataset")
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("a random wind sample from");
+        .appendField(strings.RANDOM_WIND_SAMPLE);
     this.appendValueInput("vei")
         .setCheck("Number")
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("VEI");
+        .appendField(strings.VEI);
     this.appendDummyInput()
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("add to data collection")
+        .appendField(strings.ADD_TO_COLLECTION)
         .appendField(new Blockly.FieldDropdown(this.generateOptionsCol), "collections");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
