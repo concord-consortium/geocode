@@ -7,7 +7,7 @@ import ExploreIcon from "../assets/map-icons/explore.svg";
 import "../css/overlay-controls.css";
 import { observer, inject } from "mobx-react";
 import { BaseComponent } from "./base";
-import * as strings from '../strings/components/overlay-controls'
+import * as strings from "../strings/components/overlay-controls";
 
 const kButtonColor = "white";
 const kButtonSelectedColor = "#cee6c9";
