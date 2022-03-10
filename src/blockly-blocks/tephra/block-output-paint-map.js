@@ -1,11 +1,13 @@
+import { COLOR_MAP, COLOR_RESULTS } from '../../strings/blockly-blocks/tephra/output-paint-map'
+
 Blockly.Blocks['outputPaintMap'] = {
     init: function() {
       this.appendDummyInput()
-          .appendField("Color the map by tephra thickness")
+          .appendField(COLOR_MAP)
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
       this.setColour("#EB0000");
-      this.setTooltip("Color the results of the simulation in the map");
+      this.setTooltip(COLOR_RESULTS);
       this.setHelpUrl("");
     }
   };

@@ -1,13 +1,15 @@
+import { ERUPT_CURRENT, VOLCANO_ERUPT } from "../../strings/blockly-blocks/tephra/erupt";
+
 Blockly.Blocks['erupt'] = {
     init: function() {
       this.appendDummyInput()
-          .appendField("Erupt with current values");
+          .appendField(ERUPT_CURRENT);
       this.setInputsInline(false);
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
       this.setColour("#EB0000");
-      this.setTooltip("have the volcano erupt");
-      this.setHelpUrl("have the volcano erupt");
+      this.setTooltip(VOLCANO_ERUPT);
+      this.setHelpUrl(VOLCANO_ERUPT);
     }
   };
 
