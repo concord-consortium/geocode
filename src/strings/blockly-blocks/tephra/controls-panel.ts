@@ -1,0 +1,14 @@
+export const SET_EJECTED_VOLUME = "Set ejected volume";
+export const KM_CUBED = "km\u00B3";
+export const SET_COLUMN_HEIGHT = "Set column height";
+export const KM = "km";
+export const SET_ERUPTION_MASS = "Set eruption mass";
+export const KG = "kg";
+export const SET_VEI = "Set VEI (1-8)";
+export const VEI_EXPLAINED = "Volcanic Explosivity Index";
+export const SET_WIND_DIRECTION = "Set wind direction";
+export const DEGREES = "degrees";
+export const WIND_TOOLTIP = "Compass direction,  0 == north 180 == south";
+export const SET_WIND_SPEED = "Set wind speed";
+export const MS = "m/s";
+export const WIND_SPEED_TOOLTIP = "wind speed, meters per second";

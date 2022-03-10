@@ -1,11 +1,13 @@
+import { SET_EJECTED_VOLUME, KM_CUBED } from '../../strings/blockly-blocks/tephra/controls-panel';
+
 Blockly.Blocks['setEjectedVolume'] = {
     init: function() {
       this.appendValueInput("ejectedVolume")
           .setCheck("Number")
           .setAlign(Blockly.ALIGN_RIGHT)
-          .appendField("Set ejected volume");
+          .appendField(SET_EJECTED_VOLUME);
       this.appendDummyInput()
-          .appendField("km\u00B3");
+          .appendField(KM_CUBED);
       this.setInputsInline(true);
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
