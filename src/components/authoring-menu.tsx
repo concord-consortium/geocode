@@ -7,7 +7,7 @@ import { IStoreish } from "../stores/stores.js";
 
 import "../css/dat-gui.css";
 import { stringDependencies } from "mathjs";
-import * as strings from "../strings/components/authoring-menu-strings";
+import * as strings from "../strings/components/authoring-menu";
 
 interface IProps {
   options: IStoreish;

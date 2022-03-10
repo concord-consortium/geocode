@@ -7,6 +7,7 @@ import ExploreIcon from "../assets/map-icons/explore.svg";
 import "../css/overlay-controls.css";
 import { observer, inject } from "mobx-react";
 import { BaseComponent } from "./base";
+import * as strings from '../strings/components/overlay-controls'
 
 const kButtonColor = "white";
 const kButtonSelectedColor = "#cee6c9";
@@ -60,7 +61,7 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
                     <IconButton
                         onClick={onReCenterClick}
                         disabled={false}
-                        label={"Re-center"}
+                        label={strings.RE_CENTER}
                         hoverColor={kButtonHoverColor}
                         activeColor={kButtonActiveColor}
                         fill={"black"}
@@ -70,7 +71,7 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
                         children={<RulerIcon />}
                         onClick={onRulerClick}
                         disabled={false}
-                        label={"Ruler"}
+                        label={strings.RULER}
                         backgroundColor={showRuler ? kButtonSelectedColor : kButtonColor}
                         hoverColor={showRuler ? kButtonSelectedHoverColor : kButtonHoverColor}
                         activeColor={kButtonActiveColor}
@@ -83,7 +84,7 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
                         children={<SetPointIcon />}
                         onClick={onSetPointClick}
                         disabled={false}
-                        label={"Set Point"}
+                        label={strings.SET_POINT}
                         backgroundColor={isSelectingSetPoint ? kButtonSelectedColor : kButtonColor}
                         hoverColor={isSelectingSetPoint ? kButtonSelectedHoverColor : kButtonHoverColor}
                         activeColor={kButtonActiveColor}
@@ -96,7 +97,7 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
                         children={<SetRegionIcon />}
                         onClick={onSetRegionClick}
                         disabled={false}
-                        label={"Set Region"}
+                        label={strings.SET_REGION}
                         backgroundColor={isSelectingSetRegion ? kButtonSelectedColor : kButtonColor}
                         hoverColor={isSelectingSetRegion ? kButtonSelectedHoverColor : kButtonHoverColor}
                         activeColor={kButtonActiveColor}
@@ -111,7 +112,7 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
                         dataTest={isSelectingCrossSection ? "drawing-cross-section" : "not-drawing-cross-section"}
                         onClick={onCrossSectionClick}
                         disabled={false}
-                        label={"Draw a cross section line"}
+                        label={strings.DRAW_CROSS_SECTION}
                         backgroundColor={isSelectingCrossSection ? kButtonSelectedColor : kButtonColor}
                         hoverColor={isSelectingCrossSection ? kButtonSelectedHoverColor : kButtonHoverColor}
                         activeColor={kButtonActiveColor}
@@ -123,7 +124,7 @@ export class OverlayControls extends BaseComponent<IProps, IState> {
                         onClick={onDirectionClick}
                         children={<ExploreIcon />}
                         disabled={false}
-                        label={"Direction"}
+                        label={strings.DIRECTION}
                         backgroundColor={isSelectingDirection ? kButtonSelectedColor : kButtonColor}
                         hoverColor={isSelectingDirection ? kButtonSelectedHoverColor : kButtonHoverColor}
                         activeColor={kButtonActiveColor}
