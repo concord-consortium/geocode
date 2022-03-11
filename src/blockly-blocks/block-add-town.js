@@ -5,17 +5,17 @@ Blockly.Blocks['addTown'] = {
       this.appendValueInput("name")
           .setCheck("String")
           .setAlign(Blockly.ALIGN_RIGHT)
-          .appendField("Create a town named");
+          .appendField(CREATE_TOWN);
       this.appendDummyInput()
-          .appendField("at");
+          .appendField(AT);
       this.appendValueInput("x")
           .setCheck("Number")
           .setAlign(Blockly.ALIGN_RIGHT)
-          .appendField("x");
+          .appendField(X);
       this.appendValueInput("y")
           .setCheck("Number")
           .setAlign(Blockly.ALIGN_RIGHT)
-          .appendField("y");
+          .appendField(Y);
       this.setInputsInline(true);
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
