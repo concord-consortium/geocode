@@ -1,4 +1,4 @@
-import strings from '../../strings/blockly-blocks/seismic/seismic-gps-stations'
+import * as strings from '../../strings/blockly-blocks/seismic/seismic-gps-stations'
 
 Blockly.Blocks['seismic_all_gps_stations'] = {
   init: function () {

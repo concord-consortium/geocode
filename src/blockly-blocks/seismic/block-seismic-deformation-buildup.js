@@ -1,4 +1,4 @@
-import strings from '../../strings/blockly-blocks/seismic/seismic-deformation'
+import * as strings from '../../strings/blockly-blocks/seismic/seismic-deformation'
 
 Blockly.Blocks['seismic_compute_deformation'] = {
   init: function () {

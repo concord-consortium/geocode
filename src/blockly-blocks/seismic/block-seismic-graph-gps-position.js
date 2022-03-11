@@ -1,4 +1,4 @@
-import strings from '../../strings/blockly-blocks/seismic/seismic-graph'
+import * as strings from '../../strings/blockly-blocks/seismic/seismic-graph'
 
 Blockly.Blocks['graph_gps_position'] = {
   init: function () {

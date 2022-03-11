@@ -1,3 +1,5 @@
+import { CREATE_TOWN, AT, X, Y } from "../strings/blockly-blocks/all-other-blocks"
+
 Blockly.Blocks['addTown'] = {
     init: function() {
       this.appendValueInput("name")
