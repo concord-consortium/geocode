@@ -31,7 +31,7 @@ Blockly.Blocks['calculate_tephra_vei_wind'] = {
     if (Blockly.sampleLocations && Blockly.sampleLocations.length > 0) {
       return Blockly.sampleLocations;
     } else {
-      return [["<Create location>",""]];
+      return [[strings.CREATE_LOCATION,""]];
     }
   },
 
@@ -39,7 +39,7 @@ Blockly.Blocks['calculate_tephra_vei_wind'] = {
     if (Blockly.sampleCollections && Blockly.sampleCollections.length > 0) {
       return Blockly.sampleCollections;
     } else {
-      return [["<Create collection>",""]];
+      return [[strings.CREATE_LOCATION,""]];
     }
   }
 };

@@ -1,23 +1,25 @@
+import * as strings from "../../strings/blockly-blocks/tephra/simulate-wind"
+
 Blockly.Blocks['simulate_wind_2'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField("Compute and visualize tephra with");
+        .appendField(strings.COMPUTE_TEPHRA);
     this.appendValueInput("wspeed")
         .setCheck("Number")
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("wind speed (m/s)");
+        .appendField(strings.WIND_SPEED);
     this.appendValueInput("wdirection")
         .setCheck("Number")
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("wind direction (degrees)");
+        .appendField(strings.WIND_DIRECTION);
     this.appendValueInput("columnheight")
         .setCheck("Number")
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("column height (km)");
+        .appendField(strings.COLUMN_HEIGHT);
     this.appendValueInput("ejectedvolume")
         .setCheck("Number")
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("ejected volume (km³)");
+        .appendField(strings.EJECTED_VOLUME);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour("#EB0000");
