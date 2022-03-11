@@ -5,8 +5,8 @@ export const X = "x";
 export const Y = "y";
 
 // clear
-export const CLEAR = "clear";
-export const CLEAR_TOOLTIP = "clear the screen";
+export const CLEAR = "Clear";
+export const CLEAR_TOOLTIP = "Clear the screen";
 
 // console logger
 export const THING_TO_LOG = "thingtoLog";
@@ -18,4 +18,4 @@ export const TO_LOG = "to the log";
 export const PRINT_TOOLTIP = "Print something to the log";
 
 // range
-export const RANGE_FROM = "range from";
+export const RANGE_FROM = "Range from";

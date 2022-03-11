@@ -1,5 +1,5 @@
-export const GRAPH_WIND_DATA = "Graph Wind Data";
-export const AND_DIRECTION = " and Direction";
+export const GRAPH_WIND_DATA = "Graph wind data";
+export const AND_DIRECTION = " and direction";
 export const SPEED = "speed";
 export const DIRECTION = "direction";
 export const DATE = "date";
