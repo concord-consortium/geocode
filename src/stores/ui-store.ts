@@ -14,6 +14,7 @@ const UIStore = types.model("UI", {
   showData: true,
   showDeformation: true,
   // other ui
+  showDeformationGraph: false,
   showSpeedControls: false,
   showBarHistogram: false,
   speed: 0,       // 0-3 (for now)
@@ -52,6 +53,7 @@ const UIStore = types.model("UI", {
     loadAuthorSettingsData: (data: UIAuthorSettings) => {
       Object.keys(data).forEach((key: UIAuthorSettingsProps) => {
         (self[key] as any) = data[key] as any;
+        if (key === "showDeformationGraph") { console.log("the show deformation graph key is there") }
       });
 
       // if author is showing fast speed, set model to fast initially

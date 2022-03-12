@@ -274,6 +274,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         showData,
         showMonteCarlo: _showMonteCarlo,
         showDeformation,
+        showDeformationGraph,
         showSpeedControls,
         speed,
         hideBlocklyToolbox,
@@ -361,6 +362,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
 
     const showReloadModal = () => this.setState({showingReloadModal: true});
     const hideReloadModal = () => this.setState({showingReloadModal: false});
+    console.log('show deformation graph?', showDeformationGraph);
 
     return (
       <App className="app" ref={this.rootComponent}>
@@ -533,6 +535,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 </Simulation>
               </TabPanel>
             }
+            { (showDeformationGraph) && <div>The deformation graph is showing!</div>}
             { (showMonteCarlo) &&
               <TabPanel
                 width={`${tabWidth}px`}
@@ -796,6 +799,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     // the authored state from the authoring menu overwrites local state
     const mergedState = deepmerge(localState, authorMenuState);
     updateStores(mergedState);
+    console.log('merged state', mergedState)
   }
 
   private saveStateToLocalStorage = () => {

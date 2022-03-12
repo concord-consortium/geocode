@@ -118,6 +118,7 @@ const uiAuthorSettingsProps = tuple(
   "showMonteCarlo",
   "showData",
   "showDeformation",
+  "showDeformationGraph",
   "showSpeedControls",
   "showBarHistogram",
   "showLog",
