@@ -130,122 +130,122 @@ context ('Authoring Options',()=>{
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 7)
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length', 28)
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(0).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Compute and visualize tephra with")
+                expect(removeNBSP(text)).to.contain("Compute and visualize tephra with", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(1).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("wind speed (m/s)")
+                expect(removeNBSP(text)).to.contain("wind speed (m/s)", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(2).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("wind direction (degrees)")
+                expect(removeNBSP(text)).to.contain("wind direction (degrees)", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(3).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Compute and visualize tephra with")
+                expect(removeNBSP(text)).to.contain("Compute and visualize tephra with", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(4).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("wind speed (m/s)")
+                expect(removeNBSP(text)).to.contain("wind speed (m/s)", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(5).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("wind direction (degrees)")
+                expect(removeNBSP(text)).to.contain("wind direction (degrees)", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(6).should('contain','VEI')
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(7).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Compute and visualize tephra with")
+                expect(removeNBSP(text)).to.contain("Compute and visualize tephra with", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(8).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("wind speed (m/s)")
+                expect(removeNBSP(text)).to.contain("wind speed (m/s)", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(9).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("wind direction (degrees)")
+                expect(removeNBSP(text)).to.contain("wind direction (degrees)", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(10).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("column height (km)")
+                expect(removeNBSP(text)).to.contain("column height (km)", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(11).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Compute and visualize tephra with")
+                expect(removeNBSP(text)).to.contain("Compute and visualize tephra with", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(12).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("wind speed (m/s)")
+                expect(removeNBSP(text)).to.contain("wind speed (m/s)", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(13).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("wind direction (degrees)")
+                expect(removeNBSP(text)).to.contain("wind direction (degrees)", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(14).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("column height (km)")
+                expect(removeNBSP(text)).to.contain("column height (km)", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(15).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("ejected volume (km³)")
+                expect(removeNBSP(text)).to.contain("ejected volume (km³)", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(16).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Compute and visualize tephra with")
+                expect(removeNBSP(text)).to.contain("Compute and visualize tephra with", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(17).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("a random wind sample from")
+                expect(removeNBSP(text)).to.contain("a random wind sample from", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(18).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Compute and visualize tephra with")
+                expect(removeNBSP(text)).to.contain("Compute and visualize tephra with", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(19).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("a random wind sample from")
+                expect(removeNBSP(text)).to.contain("a random wind sample from", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(20).should('contain','VEI')
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(21).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Compute tephra thickness")
+                expect(removeNBSP(text)).to.contain("Compute tephra thickness", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(25).should('contain','VEI')
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(24).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("a random wind sample from")
+                expect(removeNBSP(text)).to.contain("a random wind sample from", { matchCase: false })
             })
             //Wind data
             blocksTab.getTag('Wind data').click();
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 6)
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length',19)
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(0).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Graph Wind Data")
+                expect(removeNBSP(text)).to.contain("Graph Wind Data", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(1).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Graph Wind Speed")
+                expect(removeNBSP(text)).to.contain("Graph Wind Speed", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(2).text().then((text)=>{
-              expect(removeNBSP(text)).to.contain("and Direction")
+              expect(removeNBSP(text)).to.contain("and Direction", { matchCase: false })
           })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(3).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Graph Wind Data")
+                expect(removeNBSP(text)).to.contain("Graph Wind Data", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(5).should('contain','against')
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(7).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("All Wind Data")
+                expect(removeNBSP(text)).to.contain("All Wind Data", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(8).should('contain','sample')
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(10).should('contain','items')
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(11).should('contain','from')
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(12).should('contain','Filter')
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(13).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Select from")
+                expect(removeNBSP(text)).to.contain("Select from", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(14).should('contain','Day')
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(15).should('contain','Month')
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(16).should('contain','Year')
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(17).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Direction (º from North)")
+                expect(removeNBSP(text)).to.contain("Direction (º from North)", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(18).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Speed (m/s)")
+                expect(removeNBSP(text)).to.contain("Speed (m/s)", { matchCase: false })
             })
             //Data Collections
             blocksTab.getTag('Data Collections').click();
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length',16)
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(0).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Create a location")
+                expect(removeNBSP(text)).to.contain("Create a location", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(9).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("and mark it on the map")
+                expect(removeNBSP(text)).to.contain("and mark it on the map", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(10).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Create a data collection")
+                expect(removeNBSP(text)).to.contain("Create a data collection", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(11).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("named")
+                expect(removeNBSP(text)).to.contain("named", { matchCase: false })
             })
             //Logic
             blocksTab.getTag('Logic').click();
@@ -278,13 +278,13 @@ context ('Authoring Options',()=>{
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 1)
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length', 3)
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(0).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Compute and visualize tephra with")
+                expect(removeNBSP(text)).to.contain("Compute and visualize tephra with", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(1).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("wind speed (m/s)")
+                expect(removeNBSP(text)).to.contain("wind speed (m/s)", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(2).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("wind direction (degrees)")
+                expect(removeNBSP(text)).to.contain("wind direction (degrees)", { matchCase: false })
             })
 
             blocksTab.getTag('Loops').click();
@@ -311,13 +311,13 @@ context ('Authoring Options',()=>{
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 1)
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length', 4)
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(0).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Compute and visualize tephra with")
+                expect(removeNBSP(text)).to.contain("Compute and visualize tephra with", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(1).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("wind speed (m/s)")
+                expect(removeNBSP(text)).to.contain("wind speed (m/s)", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(2).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("wind direction (degrees)")
+                expect(removeNBSP(text)).to.contain("wind direction (degrees)", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(3).should('contain','VEI')
 
@@ -346,16 +346,16 @@ context ('Authoring Options',()=>{
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 1)
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length', 4)
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(0).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Compute and visualize tephra with")
+                expect(removeNBSP(text)).to.contain("Compute and visualize tephra with", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(1).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("wind speed (m/s)")
+                expect(removeNBSP(text)).to.contain("wind speed (m/s)", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(2).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("wind direction (degrees)")
+                expect(removeNBSP(text)).to.contain("wind direction (degrees)", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(3).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("column height (km)")
+                expect(removeNBSP(text)).to.contain("column height (km)", { matchCase: false })
             })
 
             blocksTab.getTag('Loops').click();
@@ -382,19 +382,19 @@ context ('Authoring Options',()=>{
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 1)
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length', 5)
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(0).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Compute and visualize tephra with")
+                expect(removeNBSP(text)).to.contain("Compute and visualize tephra with", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(1).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("wind speed (m/s)")
+                expect(removeNBSP(text)).to.contain("wind speed (m/s)", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(2).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("wind direction (degrees)")
+                expect(removeNBSP(text)).to.contain("wind direction (degrees)", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(3).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("column height (km)")
+                expect(removeNBSP(text)).to.contain("column height (km)", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(4).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("ejected volume (km³)")
+                expect(removeNBSP(text)).to.contain("ejected volume (km³)", { matchCase: false })
             })
             blocksTab.getTag('Loops').click();
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2)
@@ -766,13 +766,13 @@ context ('Authoring Options',()=>{
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 1)
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length', 4)
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(0).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Compute and visualize tephra with")
+                expect(removeNBSP(text)).to.contain("Compute and visualize tephra with", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(1).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("wind speed (m/s)")
+                expect(removeNBSP(text)).to.contain("wind speed (m/s)", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(2).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("wind direction (degrees)")
+                expect(removeNBSP(text)).to.contain("wind direction (degrees)", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(3).should('contain','VEI')
 
