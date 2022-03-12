@@ -58,13 +58,13 @@ context ('Authoring Options',()=>{
             leftPanel.getControlsTab().click();
             controlsTab.getEruptButton().click();
             //verify tephra is visible at a location south of volcano - brittle if the viewport size changes
-            map.getTephra().last().attribute('d').should('contain', "M225 229L228 232L234 232L249 248L249 261L255 267L255 273L249 279L249 336L243 342L243 354L237 361L237 367L234 370L228 370L222 376L201 354L201 329L195 323L201 317L201 311L195 304L195 248L210 232L216 232L222 226z")
+            map.getTephra().last().invoke("attr", "d").should("contain", "M225 229L228 232L234 232L249 248L249 261L255 267L255 273L249 279L249 336L243 342L243 354L237 361L237 367L234 370L228 370L222 376L201 354L201 329L195 323L201 317L201 311L195 304L195 248L210 232L216 232L222 226z")
 
             //change conditions to see tephra change without having to erupt again
             var slider="wind-direction", windDirection = 190;
             controlsTab.setSliderValue(slider,windDirection);
             //verify is in new location north of volcano
-            map.getTephra().last().attribute('d').should('contain', "M249 98L260 110L260 198L255 204L255 217L249 223L249 229L246 232L240 232L234 239L216 239L201 223L201 179L207 173L207 167L213 160L213 135L219 129L219 123L225 116L225 110L234 101L240 101L246 94z")
+            map.getTephra().last().invoke("attr", "d").should("contain", "M249 98L260 110L260 198L255 204L255 217L249 223L249 229L246 232L240 232L234 239L216 239L201 223L201 179L207 173L207 167L213 160L213 135L219 129L219 123L225 116L225 110L234 101L240 101L246 94z")
 
             //reset state for nexxt test
             controlsTab.resetModel();
@@ -79,13 +79,13 @@ context ('Authoring Options',()=>{
             leftPanel.getControlsTab().click();
             controlsTab.getEruptButton().click();
             //verify tephra is visible at a location south of volcano
-            map.getTephra().last().attribute('d').should('contain', "M249 98L260 110L260 198L255 204L255 217L249 223L249 229L246 232L240 232L234 239L216 239L201 223L201 179L207 173L207 167L213 160L213 135L219 129L219 123L225 116L225 110L234 101L240 101L246 94z")
+            map.getTephra().last().invoke("attr", "d").should("contain", "M249 98L260 110L260 198L255 204L255 217L249 223L249 229L246 232L240 232L234 239L216 239L201 223L201 179L207 173L207 167L213 160L213 135L219 129L219 123L225 116L225 110L234 101L240 101L246 94z")
 
             //change conditions to see tephra change without having to erupt again
             var slider="wind-direction", windDirection = 190;
             controlsTab.setSliderValue(slider,windDirection);
             //verify location has not changed north of volcano
-            map.getTephra().last().attribute('d').should('contain', "M249 98L260 110L260 198L255 204L255 217L249 223L249 229L246 232L240 232L234 239L216 239L201 223L201 179L207 173L207 167L213 160L213 135L219 129L219 123L225 116L225 110L234 101L240 101L246 94z")
+            map.getTephra().last().invoke("attr", "d").should("contain", "M249 98L260 110L260 198L255 204L255 217L249 223L249 229L246 232L240 232L234 239L216 239L201 223L201 179L207 173L207 167L213 160L213 135L219 129L219 123L225 116L225 110L234 101L240 101L246 94z")
 
             controlsTab.resetModel();//clean up
          })
@@ -102,7 +102,7 @@ context ('Authoring Options',()=>{
                     modelOptions.getModelOptionsMenu().click();
                     cy.wait(1000)
                     map.getRecenterButton().click(); //x,y,z, coordinates are identical if you recenter first
-                    map.getVolcanoMarker().first().attribute('style').should('contain', 'translate3d('+volcanoes.volcanoes[index].x+'px, '+ volcanoes.volcanoes[index].y+'px, '+ volcanoes.volcanoes[index].z+'px);');
+                    map.getVolcanoMarker().first().invoke("attr", "style").should("contain", 'translate3d(' + volcanoes.volcanoes[index].x + 'px, ' + volcanoes.volcanoes[index].y + 'px, ' + volcanoes.volcanoes[index].z + 'px);');
                 })
             })
         })
@@ -541,7 +541,7 @@ context ('Authoring Options',()=>{
             modelOptions.getModelOptionsMenu().click(); //'checked' state attr doesn't update until menu is closed and re-opened
             modelOptions.getModelOptionsMenu().click(); //re-open
             modelOptions.getShowConditionsOption().should('not.have.attr', 'checked');
-            rightPanel.getConditionsTab().should('not.be.visible');
+            rightPanel.getConditionsTab().should('not.exist');
         })
         it('verify Show data unchecked does not show Data tab',()=>{
             modelOptions.getShowDataOption().should('have.attr', 'checked');
@@ -549,7 +549,7 @@ context ('Authoring Options',()=>{
             modelOptions.getModelOptionsMenu().click(); //'checked' state attr doesn't update until menu is closed and re-opened
             modelOptions.getModelOptionsMenu().click(); //re-open
             modelOptions.getShowDataOption().should('not.have.attr', 'checked');
-            rightPanel.getDataTab().should('not.be.visible');
+            rightPanel.getDataTab().should('not.exist');
         })
         it('verify Show conditions checked does not show Conditions tab',()=>{
             modelOptions.getShowConditionsOption().click();
