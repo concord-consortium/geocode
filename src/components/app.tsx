@@ -534,7 +534,6 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 </Simulation>
               </TabPanel>
             }
-            { (showDeformationGraph) && <div>The deformation graph is showing!</div>}
             { (showMonteCarlo) &&
               <TabPanel
                 width={`${tabWidth}px`}
@@ -568,7 +567,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               </TabPanel>
             }
             {
-              showDeformation && !isTephra &&
+              showDeformation && !showDeformationGraph && !isTephra &&
               <TabPanel
                 width={`${tabWidth}px`}
                 tabcolor={this.getRightTabColor(RightSectionTypes.DEFORMATION)}
@@ -587,6 +586,22 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 />
               </TabPanel>
             }
+            {
+              showDeformation && showDeformationGraph && !isTephra && 
+              <TabPanel
+              width={`${tabWidth}px`}
+              tabcolor={this.getRightTabColor(RightSectionTypes.DEFORMATION)}
+              rightpanel={"true"}
+              data-test={this.getRightTabName(RightSectionTypes.DEFORMATION) + "-panel"}
+            >
+              <DeformationModel
+                width={mapWidth}
+                height={height - 160}
+              />
+              <div>The deformation graph will show here!</div>
+            </TabPanel>
+            }
+            
             <RightTabBack
               width={tabWidth}
               backgroundcolor={this.getRightTabColor(currentRightTabType, unitName)}
