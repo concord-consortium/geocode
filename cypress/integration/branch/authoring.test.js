@@ -130,7 +130,7 @@ context ('Authoring Options',()=>{
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 7)
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length', 28)
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(0).text().then((text)=>{
-                expect(removeNBSP(text)).to.contain("Compute and visualize tephra with", { matchCase: false })
+                expect(removeNBSP(text)).contains("Compute and visualize tephra with", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(1).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("wind speed (m/s)", { matchCase: false })
@@ -206,7 +206,7 @@ context ('Authoring Options',()=>{
                 expect(removeNBSP(text)).to.contain("Graph Wind Speed", { matchCase: false })
             })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(2).text().then((text)=>{
-              expect(removeNBSP(text)).to.contain("and Direction", { matchCase: false })
+              expect(removeNBSP(text)).to.contain("and direction", { matchCase: false})
           })
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(3).text().then((text)=>{
                 expect(removeNBSP(text)).to.contain("Graph Wind Data", { matchCase: false })
