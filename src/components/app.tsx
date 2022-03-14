@@ -596,7 +596,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             >
               <DeformationModel
                 width={mapWidth}
-                height={height - 160}
+                height={height - 300}
               />
               <div>The deformation graph will show here!</div>
             </TabPanel>
