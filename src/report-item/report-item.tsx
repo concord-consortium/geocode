@@ -51,6 +51,7 @@ export const ReportItemComponent: React.FC<Props> = (props) => {
         case "html":
           const html = studentAnswerHtml({
             authoredState: authoredState as SerializedState || cachedAuthoredState,
+            interactiveState: interactiveState as SerializedState,
             studentBlocks
           });
           sendReportItemAnswer({type: "html", platformUserId, html});
