@@ -92,8 +92,8 @@ export const SvgD3HistogramChart = (props: IProps) => {
         .data(binMap)
         .enter()
         .append("circle")
-          .attr("cx", d => (1 + xScale(bin.x0 as number) + dotRadius) )
-          .attr("cy", d => (yScale(d) - dotRadius) )
+          .attr("cx", d => (1 + xScale(bin.x0 as number)! + dotRadius) )
+          .attr("cy", d => (yScale(d)! - dotRadius) )
           .attr("r", dotRadius)
           .style("fill", "#448878");
     });
@@ -104,8 +104,8 @@ export const SvgD3HistogramChart = (props: IProps) => {
     .append("rect")
       .attr("x", 1)
       .attr("transform", d => "translate(" + xScale(d.x0 as number) + "," + (yScale(d.length)) + ")")
-      .attr("width", d => (Math.max(0, xScale(d.x1 as number) - xScale(d.x0 as number) - 1)))
-      .attr("height", d => (chartHeight - yScale(d.length)))
+      .attr("width", d => (Math.max(0, xScale(d.x1 as number)! - xScale(d.x0 as number)! - 1)))
+      .attr("height", d => (chartHeight - yScale(d.length)!))
       .style("fill", "#448878");
   }
 

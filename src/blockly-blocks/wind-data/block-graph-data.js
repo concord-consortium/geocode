@@ -22,7 +22,7 @@ Blockly.JavaScript['graph_speed_date_wind_data'] = function (block) {
 Blockly.Blocks['graph_speed_direction_wind_data'] = {
   init: function () {
     this.appendDummyInput()
-      .appendField(strings.GRAPH_WIND_DATA)
+      .appendField(strings.GRAPH_WIND_SPEED)
     this.appendDummyInput()
       .appendField(strings.AND_DIRECTION)
     this.appendValueInput('wind data')
