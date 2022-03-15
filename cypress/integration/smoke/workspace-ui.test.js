@@ -11,12 +11,12 @@ context("Test app workspace", () => {
 
   describe("left side workspace", () => {
     it("verify correct tabs are visible", () => {
-        leftPanel.getBlocksTab().should('be.visible');
-        leftPanel.getCodeTab().should('not.be.visible');
-        leftPanel.getControlsTab().should('not.be.visible');
-        rightPanel.getConditionsTab().should('be.visible');
-        rightPanel.getMonteCarloTab().should('be.visible');
-        rightPanel.getDataTab().should('be.visible')
+      leftPanel.getBlocksTab().should('be.visible');
+      leftPanel.getCodeTab().should('not.exist');
+      leftPanel.getControlsTab().should('not.exist');
+      rightPanel.getConditionsTab().should('be.visible');
+      rightPanel.getMonteCarloTab().should('be.visible');
+      rightPanel.getDataTab().should('be.visible')
     });
   });
 })

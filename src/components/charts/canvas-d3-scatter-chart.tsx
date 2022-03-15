@@ -182,8 +182,8 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
         ctx.fillStyle = color(dataOffset + i);
       }
 
-      const px = xScale(d[0]) + canvasPadding;
-      const py = yScale(d[1]) + canvasPadding;
+      const px = xScale(d[0])! + canvasPadding;
+      const py = yScale(d[1])! + canvasPadding;
 
       ctx.arc(px, py, fadeIn ? 2 : 1.5, 0, 2 * Math.PI, true);
       ctx.fill();

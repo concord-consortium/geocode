@@ -145,8 +145,8 @@ export const SvgD3ScatterChart = (props: IProps) => {
     .data(data)
     .enter()
     .append("circle")
-      .attr("cx", d => xScale((d as number[] | Date[])[0]) )
-      .attr("cy", d => yScale((d as number[] | Date[])[1]) )
+      .attr("cx", d => xScale((d as number[] | Date[])[0])! )
+      .attr("cy", d => yScale((d as number[] | Date[])[1])! )
       .attr("r", fadeIn ? 2 : 1.5)
       .style("fill", (color as any));
 
