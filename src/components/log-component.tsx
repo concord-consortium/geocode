@@ -4,6 +4,7 @@ import IconButton from "./buttons/icon-button";
 import { SectionTypes, kTabInfo } from "./tabs";
 import { observer, inject } from "mobx-react";
 import { BaseComponent, IBaseProps } from "./base";
+import { CLEAR_LOG } from "../strings/components/log";
 
 const CanvDiv = styled.div`
     border: 1px solid black; border-radius: 0px;
@@ -56,7 +57,7 @@ export class LogComponent extends BaseComponent<IProps, IState> {
                     <IconButton
                         onClick={clear}
                         disabled={false}
-                        label={"Clear Log"}
+                        label={CLEAR_LOG}
                         hoverColor={"#BBD9FF"}
                         activeColor={"#DDEDFF"}
                         fill={"black"}

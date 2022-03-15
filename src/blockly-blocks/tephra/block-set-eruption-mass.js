@@ -1,11 +1,13 @@
+import { SET_ERUPTION_MASS, KG } from "../../strings/blockly-blocks/tephra/controls-panel";
+
 Blockly.Blocks['setEruptionMass'] = {
     init: function() {
       this.appendValueInput("eruptionMass")
           .setCheck("Number")
           .setAlign(Blockly.ALIGN_RIGHT)
-          .appendField("Set eruption mass");
+          .appendField(SET_ERUPTION_MASS);
       this.appendDummyInput()
-          .appendField("kg");
+          .appendField(KG);
       this.setInputsInline(true);
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);

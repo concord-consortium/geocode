@@ -1,3 +1,5 @@
+import { THING_TO_LOG, LOG_TOOLTIP } from "../strings/blockly-blocks/all-other-blocks"
+
 Blockly.Blocks['console_logger'] = {
     init: function() {
       this.appendValueInput("logString")

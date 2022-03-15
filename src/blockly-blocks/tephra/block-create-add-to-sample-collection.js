@@ -1,23 +1,25 @@
+import * as strings from '../../strings/blockly-blocks/tephra/create-add-to-sample-collection'
+
 Blockly.Blocks['create_sample_location'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField("Create a location")
+        .appendField(strings.CREATE_LOCATION)
     this.appendDummyInput()
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("at x")
+        .appendField(strings.AT_X)
         .appendField(new Blockly.FieldNumber(0), "x")
-        .appendField("km");
+        .appendField(strings.KM);
     this.appendDummyInput()
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("y")
+        .appendField(strings.Y)
         .appendField(new Blockly.FieldNumber(0), "y")
-        .appendField("km");
+        .appendField(strings.KM);
     this.appendDummyInput()
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("named")
-        .appendField(new Blockly.FieldTextInput("Location"), "name");
+        .appendField(strings.NAMED)
+        .appendField(new Blockly.FieldTextInput(strings.LOCATION), "name");
     this.appendDummyInput()
-        .appendField("and mark it on the map")
+        .appendField(strings.MARK_MAP)
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour("#108A00");
@@ -39,16 +41,16 @@ Blockly.JavaScript['create_sample_location'] = function (block) {
 Blockly.Blocks['create_sample_collection'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField("Create a data collection")
+        .appendField(strings.CREATE_COLLECTION)
     this.appendDummyInput()
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("named")
+        .appendField(strings.NAMED)
         .appendField(new Blockly.FieldTextInput("Name"), "name");
     this.appendDummyInput()
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("set threshold to")
+        .appendField(strings.SET_THRESHOLD)
         .appendField(new Blockly.FieldNumber(200), "threshold")
-        .appendField("mm");
+        .appendField(strings.MM);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour("#108A00");

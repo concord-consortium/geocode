@@ -1,13 +1,15 @@
+import { CLEAR, CLEAR_TOOLTIP } from "../strings/blockly-blocks/all-other-blocks"
+
 Blockly.Blocks['clear'] = {
     init: function() {
       this.appendValueInput("logString")
           .setCheck("String")
           .setAlign(Blockly.ALIGN_RIGHT)
-          .appendField("clear");
+          .appendField(CLEAR);
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
       this.setColour(165);
-   this.setTooltip("clear the screen");
+   this.setTooltip(CLEAR_TOOLTIP);
    this.setHelpUrl("");
     }
   };

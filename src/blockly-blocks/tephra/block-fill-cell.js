@@ -1,21 +1,23 @@
+import { HUE, SATURATION, VALUE, ALPHA } from '../../strings/blockly-blocks/tephra/fill-cell'
+
 Blockly.Blocks['fill_cell'] = {
     init: function() {
       this.appendValueInput("hue")
           .setCheck("Number")
           .setAlign(Blockly.ALIGN_RIGHT)
-          .appendField("hue");
+          .appendField(HUE);
       this.appendValueInput("sat")
           .setCheck("Number")
           .setAlign(Blockly.ALIGN_RIGHT)
-          .appendField("saturation");
+          .appendField(SATURATION);
       this.appendValueInput("value")
           .setCheck("Number")
           .setAlign(Blockly.ALIGN_RIGHT)
-          .appendField("value");
+          .appendField(VALUE);
       this.appendValueInput("alpha")
           .setCheck("Number")
           .setAlign(Blockly.ALIGN_RIGHT)
-          .appendField("alpha");
+          .appendField(ALPHA);
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
       this.setColour(230);

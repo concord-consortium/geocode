@@ -1,17 +1,19 @@
+import { SET_WIND_DIRECTION, DEGREES, WIND_TOOLTIP } from "../../strings/blockly-blocks/tephra/controls-panel";
+
 Blockly.Blocks['setWindDirection'] = {
     init: function() {
       this.appendValueInput("windDirection")
           .setCheck("Number")
           .setAlign(Blockly.ALIGN_RIGHT)
-          .appendField("Set wind direction");
+          .appendField(SET_WIND_DIRECTION);
       this.appendDummyInput()
-          .appendField("degrees");
+          .appendField(DEGREES);
       this.setInputsInline(true);
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
       this.setColour(32);
-   this.setTooltip("Compass direction,  0 == north 180 == south");
-   this.setHelpUrl("Compass direction,  0 == north 180 == south");
+   this.setTooltip(WIND_TOOLTIP);
+   this.setHelpUrl(WIND_TOOLTIP);
     }
   };
   

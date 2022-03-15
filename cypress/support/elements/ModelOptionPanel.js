@@ -1,6 +1,6 @@
 class ModelOptions {
     getModelOptionsMenu(){
-        return cy.get('.button .label-text').contains('Model options');
+        return cy.get('.button .label-text').contains('Model options', { matchCase: false });
     }
     getModelOptionsList(){
         return cy.get('.dg.main li');
