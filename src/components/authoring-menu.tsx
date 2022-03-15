@@ -83,8 +83,8 @@ const AuthoringMenu: React.SFC<IProps> = (props) => {
             <DatBoolean path="uiStore.showData" label={strings.SHOW_DATA} key="showData" />
             <DatBoolean path="uiStore.showDeformation" label={strings.SHOW_DEFORMATION_Q} key="showDeformation" />
           </DatFolder>,
-
           <DatFolder title={strings.DEFORMATION_MODEL} key="deformationFolder" closed={false}>
+            <DatBoolean path="uiStore.showDeformationGraph" label="Show graph?" key="showDeformationGraph" />
             <DatNumber path="seismicSimulation.deformationModelWidthKm" label={strings.MODEL_WIDTH} key="deformationModelWidthKm"
               min={0.1} max={100} step={0.1}/>
             <DatNumber path="seismicSimulation.deformationModelApparentWidthKm" label={strings.APPARENT_WIDTH} key="deformationModelApparentWidthKm"

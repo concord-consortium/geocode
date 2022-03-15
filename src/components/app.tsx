@@ -274,6 +274,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         showData,
         showMonteCarlo: _showMonteCarlo,
         showDeformation,
+        showDeformationGraph,
         showSpeedControls,
         speed,
         hideBlocklyToolbox,
@@ -566,7 +567,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               </TabPanel>
             }
             {
-              showDeformation && !isTephra &&
+              showDeformation && !showDeformationGraph && !isTephra &&
               <TabPanel
                 width={`${tabWidth}px`}
                 tabcolor={this.getRightTabColor(RightSectionTypes.DEFORMATION)}
@@ -585,6 +586,24 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 />
               </TabPanel>
             }
+            {
+              showDeformation
+              && showDeformationGraph
+              && !isTephra &&
+              <TabPanel
+              width={`${tabWidth}px`}
+              tabcolor={this.getRightTabColor(RightSectionTypes.DEFORMATION)}
+              rightpanel={"true"}
+              data-test={this.getRightTabName(RightSectionTypes.DEFORMATION) + "-panel"}
+            >
+              <DeformationModel
+                width={mapWidth}
+                height={height - 300}
+              />
+              <div>The deformation graph will show here!</div>
+            </TabPanel>
+            }
+
             <RightTabBack
               width={tabWidth}
               backgroundcolor={this.getRightTabColor(currentRightTabType, unitName)}

@@ -14,6 +14,7 @@ const UIStore = types.model("UI", {
   showData: true,
   showDeformation: true,
   // other ui
+  showDeformationGraph: false,
   showSpeedControls: false,
   showBarHistogram: false,
   speed: 0,       // 0-3 (for now)
