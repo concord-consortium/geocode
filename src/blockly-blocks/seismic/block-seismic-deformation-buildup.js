@@ -1,11 +1,13 @@
+import * as strings from '../../strings/blockly-blocks/seismic/seismic-deformation'
+
 Blockly.Blocks['seismic_compute_deformation'] = {
   init: function () {
     this.appendDummyInput()
-      .appendField('Compute deformation build-up')
+      .appendField(strings.COMPUTE_DEFORMATION_BUILDUP)
     this.appendValueInput('stations')
       .setAlign(Blockly.ALIGN_RIGHT)
       .setCheck(['GPS_Station', 'String'])
-      .appendField('Show GPS Stations')
+      .appendField(strings.SHOW_STATIONS)
     this.setPreviousStatement(true, null)
     this.setNextStatement(true, null)
     this.setColour("#EB0000")
@@ -25,7 +27,7 @@ Blockly.JavaScript['seismic_compute_deformation'] = function (block) {
 Blockly.Blocks['seismic_logarithmic'] = {
   init: function () {
     this.appendDummyInput()
-      .appendField('Logarithmic')
+      .appendField(strings.LOGARITHMIC)
     this.setOutput(true, 'Color_method')
     this.setColour("#EB0000")
     this.setTooltip('')
@@ -42,7 +44,7 @@ Blockly.JavaScript['seismic_logarithmic'] = function (block) {
 Blockly.Blocks['seismic_equal_interval'] = {
   init: function () {
     this.appendDummyInput()
-      .appendField('Equal Interval')
+      .appendField(strings.EQUAL_INTERVAL)
     this.setOutput(true, 'Color_method')
     this.setColour("#EB0000")
     this.setTooltip('')
@@ -59,13 +61,13 @@ Blockly.JavaScript['seismic_equal_interval'] = function (block) {
 Blockly.Blocks['seismic_render_deformation_triangles'] = {
   init: function () {
     this.appendDummyInput()
-      .appendField('Color the map by deformation build-up')
+      .appendField(strings.COLOR_MAP)
     this.setInputsInline(false)
 
     this.setPreviousStatement(true, null)
     this.setNextStatement(true, null)
     this.setColour("#EB0000")
-    this.setTooltip('Color the map by deformation build-up')
+    this.setTooltip(strings.COLOR_MAP)
     this.setHelpUrl('')
   }
 }
@@ -77,12 +79,12 @@ Blockly.JavaScript['seismic_render_deformation_triangles'] = function (block) {
 Blockly.Blocks['seismic_render_deformation_labels'] = {
   init: function () {
     this.appendDummyInput()
-      .appendField('Show deformation build-up value')
+      .appendField(strings.SHOW_DEFORMATION)
     this.setInputsInline(false)
     this.setPreviousStatement(true, null)
     this.setNextStatement(true, null)
     this.setColour("#EB0000")
-    this.setTooltip('Show deformation build-up value')
+    this.setTooltip(strings.SHOW_DEFORMATION)
     this.setHelpUrl('')
   }
 }

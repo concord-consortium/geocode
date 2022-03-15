@@ -1,7 +1,9 @@
+import { THICKNESS } from "../../strings/blockly-blocks/tephra/thickness"
+
 Blockly.Blocks['thickness'] = {
     init: function() {
       this.appendDummyInput()
-          .appendField("tephra thickness");
+          .appendField(THICKNESS);
       this.setOutput(true, null);
       this.setColour(230);
    this.setTooltip("");

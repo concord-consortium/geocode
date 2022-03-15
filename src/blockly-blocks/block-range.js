@@ -1,7 +1,9 @@
+import { RANGE_FROM } from "../strings/blockly-blocks/all-other-blocks"
+
 Blockly.Blocks['input_range'] = {
   init: function () {
     this.appendDummyInput()
-      .appendField('range from')
+      .appendField(RANGE_FROM)
       .appendField(new Blockly.FieldNumber(0), 'min')
       .appendField('to')
       .appendField(new Blockly.FieldNumber(10), 'max')

@@ -1,26 +1,28 @@
+import * as strings from '../../strings/blockly-blocks/deformation/deformation';
+
 Blockly.Blocks['deformation-create-sim'] = {
     init: function () {
       this.appendDummyInput()
-        .appendField("Create Deformation Simulation");
+        .appendField(strings.CREATE_DEFORMATION_SIMULATION);
       this.appendDummyInput()
-        .appendField("Set velocity of Plate 1 with")
+        .appendField(strings.SET_VELOCITY_OF_PLATE_1_WITH)
       this.appendValueInput('speed1')
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("speed (mm/yr)")
+        .appendField(strings.SPEED_MM_YR)
         .setCheck(['Number'])
       this.appendValueInput('direction1')
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("direction (degrees)")
+        .appendField(strings.DIRECTION_DEGREES)
         .setCheck(['Number', 'String'])
       this.appendDummyInput()
-        .appendField("Set velocity of Plate 2 with")
+        .appendField(strings.SET_VELOCITY_OF_PLATE_2_WITH)
       this.appendValueInput('speed2')
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("speed (mm/yr)")
+        .appendField(strings.SPEED_MM_YR)
         .setCheck(['Number'])
       this.appendValueInput('direction2')
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("direction (degrees)")
+        .appendField(strings.DIRECTION_DEGREES)
         .setCheck(['Number', 'String'])
       this.setColour("#B35F00")
       this.setPreviousStatement(true, null);
@@ -44,17 +46,17 @@ Blockly.Blocks['deformation-create-sim'] = {
   Blockly.Blocks['deformation-year-loop'] = {
     init: function() {
       this.appendDummyInput()
-          .appendField("Run from Year 1 to Year ")
+          .appendField(strings.RUN_FROM_YEAR_1)
           .appendField(new Blockly.FieldNumber(500, 0, 500000), "max_year")
-          .appendField("by")
+          .appendField(strings.BY)
           .appendField(new Blockly.FieldDropdown([["1","1"], ["10","10"], ["20","20"]]), "year_step")
-          .appendField("years");
+          .appendField(strings.YEARS);
       this.appendStatementInput("DO")
           .setCheck(null);
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
       this.setColour("#B35F00")
-      this.setTooltip("Step through deformation model for a given number of years, with a given step size");
+      this.setTooltip(strings.STEP_THROUGH);
       this.setHelpUrl("");
     }
   };
@@ -77,23 +79,23 @@ Blockly.Blocks['deformation-create-sim'] = {
   Blockly.Blocks['deformation-model-step'] = {
     init: function() {
       this.appendDummyInput()
-          .appendField("Increase Deformation by deformation build-up");
+          .appendField(strings.INCREASE_DEFORMATION);
       this.appendDummyInput()
-          .appendField("  calculated based on...");
+          .appendField(strings.CALCULATED_BASED_ON);
       this.appendValueInput("speed1")
           .setCheck("Number")
           .setAlign(Blockly.ALIGN_RIGHT)
-          .appendField("Plate 1 speed (mm/yr)");
+          .appendField(strings.PLATE1_SPEED);
       this.appendDummyInput()
           .setAlign(Blockly.ALIGN_RIGHT)
-          .appendField("direction (degrees) = 0");
+          .appendField(strings.DIRECTION_MODEL_1);
       this.appendValueInput("speed2")
           .setCheck("Number")
           .setAlign(Blockly.ALIGN_RIGHT)
-          .appendField("Plate 2 speed (mm/yr)");
+          .appendField(strings.PLATE2_SPEED);
       this.appendDummyInput()
           .setAlign(Blockly.ALIGN_RIGHT)
-          .appendField("direction (degrees) = 180");
+          .appendField(strings.DIRECTION_MODEL_2);
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
       this.setColour("#B35F00")
@@ -116,9 +118,9 @@ Blockly.Blocks['deformation-create-sim'] = {
   Blockly.Blocks['deformation-model-earthquake'] = {
     init: function() {
       this.appendDummyInput()
-          .appendField("Trigger earthquake to release energy");
+          .appendField(strings.TRIGGER_EARTHQUAKE);
       this.appendDummyInput()
-          .appendField("and set Deformation to 0");
+          .appendField(strings.SET_DEFORMATION);
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
       this.setColour("#B35F00")
@@ -137,7 +139,7 @@ Blockly.Blocks['deformation-create-sim'] = {
   Blockly.Blocks['deformation-model-get-deformation'] = {
     init: function() {
       this.appendDummyInput()
-          .appendField("Deformation");
+          .appendField(strings.DEFORMATION);
       this.setOutput(true, 'Number');
       this.setColour("#B35F00")
       this.setTooltip("");
@@ -154,9 +156,9 @@ Blockly.Blocks['deformation-create-sim'] = {
   Blockly.Blocks['deformation-model-get-max-deformation'] = {
     init: function() {
       this.appendDummyInput()
-          .appendField("Max deformation calculated based on")
-          .appendField(new Blockly.FieldDropdown([["low", "low"], ["medium", "medium"], ["high", "high"]]), "friction")
-          .appendField("friction");
+          .appendField(strings.MAX_DEFORMATION)
+          .appendField(new Blockly.FieldDropdown([["low", "low"], ["medium", "medium"], ["high", "high"]]), strings.FRICTION)
+          .appendField(strings.FRICTION);
       this.setOutput(true, 'Number');
       this.setColour("#B35F00")
       this.setTooltip("");
@@ -174,7 +176,7 @@ Blockly.Blocks['deformation-create-sim'] = {
     init: function () {
       this.appendValueInput('orientation')
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("Set boundary orientation")
+        .appendField(strings.SET_BOUNDARY)
         .setCheck(['Number'])
       this.setColour("#B35F00")
       this.setPreviousStatement(true, null);

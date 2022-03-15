@@ -1,9 +1,11 @@
+import * as strings from '../../strings/blockly-blocks/seismic/seismic-graph'
+
 Blockly.Blocks['graph_gps_position'] = {
   init: function () {
     this.appendDummyInput()
-      .appendField('Graph GPS location over time')
+      .appendField(strings.GRAPH_GPS)
     this.appendDummyInput()
-      .appendField('Station')
+      .appendField(strings.STATION)
       .setAlign(Blockly.ALIGN_RIGHT)
       .appendField(new Blockly.FieldDropdown([
           ["HARV", "HARV"],
@@ -35,15 +37,15 @@ Blockly.Blocks['graph_gps_position'] = {
     this.appendValueInput('from')
       .setCheck(['String', 'Number'])
       .setAlign(Blockly.ALIGN_RIGHT)
-      .appendField('Start date')
+      .appendField(strings.START_DATE)
     this.appendValueInput('to')
       .setCheck(['String', 'Number'])
       .setAlign(Blockly.ALIGN_RIGHT)
-      .appendField('End date')
+      .appendField(strings.END_DATE)
     this.appendValueInput('duration')
       .setCheck(['String', 'Number'])
       .setAlign(Blockly.ALIGN_RIGHT)
-      .appendField('Duration (days)')
+      .appendField(strings.DURATION)
 
     this.setPreviousStatement(true, null)
     this.setNextStatement(true, null)

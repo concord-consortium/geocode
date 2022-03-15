@@ -1,0 +1,11 @@
+export const GRAPH_WIND_DATA = "Graph Wind Data";
+export const GRAPH_WIND_SPEED = "Graph Wind Speed";
+export const AND_DIRECTION = " and direction";
+export const SPEED = "speed";
+export const DIRECTION = "direction";
+export const DATE = "date";
+export const TIME_OF_YEAR = "time of year";
+export const MONTH = "month";
+export const YEAR = "year";
+export const HOUR = "hour";
+export const ELEVATION = "elevation";
