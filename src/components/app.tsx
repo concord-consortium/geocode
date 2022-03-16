@@ -26,6 +26,7 @@ import { getAuthorableSettings, updateStores, serializeState, getSavableStateAut
 import { ChartPanel } from "./charts/chart-panel";
 import { BlocklyController } from "../blockly/blockly-controller";
 import { HistogramPanel } from "./montecarlo/histogram-panel";
+import { DeformationGraphPanel } from "./deformation/deformation-graph-panel";
 import { PlateMovementPanel } from "./deformation/plate-movement-panel";
 import { uiStore } from "../stores/ui-store";
 import { unitStore } from "../stores/unit-store";
@@ -598,9 +599,11 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             >
               <DeformationModel
                 width={mapWidth}
-                height={height - 300}
+                height={height - 225}
               />
-              <div>The deformation graph will show here!</div>
+              <div>
+                  <DeformationGraphPanel height={250} width={mapWidth}/>
+            </div>
             </TabPanel>
             }
 
