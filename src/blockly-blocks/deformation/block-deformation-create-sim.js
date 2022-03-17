@@ -68,6 +68,8 @@ Blockly.Blocks['deformation-create-sim'] = {
 
     var code = '';
 
+    code += 'clearDeformationRuns();'
+
     code += 'for (var year = ' + dropdown_year_step + '; ' +
         'year <= ' + number_max_year + '; ' +
         'year += ' + dropdown_year_step + ') {\n' +

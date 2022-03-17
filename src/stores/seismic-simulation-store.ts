@@ -24,6 +24,8 @@ export type ColorMethod = "logarithmic" | "equalInterval";
 export const Friction = types.enumeration("type", ["low", "medium", "high"]);
 export const EarthquakeControl = types.enumeration("type", ["none", "auto", "user"]);
 
+export const deformationCase = types.model({year: types.number, deformation: types.number})
+
 export const SeismicSimulationStore = types
   .model("seismicSimulation", {
     scenario: "Seismic CA",
@@ -31,6 +33,7 @@ export const SeismicSimulationStore = types
     selectedGPSStationId: types.maybe(types.string),
     showVelocityArrows: false,
 
+    deformationHistory: types.array(deformationCase),
     deformationModelStep: 0,
     deformationModelEndStep: 500000,    // years
     deformationModelTotalClockTime: 5,  // seconds
@@ -320,7 +323,19 @@ export const SeismicSimulationStore = types
     },
     setDeformationModelFaultAngle(angle: number) {
       self.deformationModelFaultAngle = angle;
-    }
+    },
+    saveDeformationData(year: number){
+      const buildUpYears = self.deformationModelStep - self.deformationModelUserEarthquakeLatestStep;
+      const deformation = Math.abs(buildUpYears * self.relativeVerticalSpeed) / 1e6;
+      self.deformationHistory.push({year, deformation});
+    },
+    clearDeformationHistory(){
+      if (self.deformationHistory.length){
+       while(self.deformationHistory.length){
+          self.deformationHistory.pop();
+        }
+      }
+    },
   }))
   .views((self) => ({
     get allGPSStations() {
