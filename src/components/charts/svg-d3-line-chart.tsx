@@ -15,18 +15,11 @@ export const SvgD3LineChart = () => {
   const svg = d3.select(div)
     .append("svg")
       .attr("viewBox", "0 0 100 100")
-    .selectAll("circle")
-    .data(data)
-    .enter()
-    .append("circle")
-    .attr("cx", function (d, i) {
-          return d.x;
-        })
-    .attr("cy", function (d, i) {
-      return d.y;
-    })
-    .attr("r", 4)
-
+    .append("path")
+    .attr("fill", "none")
+    .attr("stroke", "#69b3a2")
+    .attr("stroke-width", 1.5)
+    .attr("d", d3.line()(data.map(el => [el.x, el.y])))
 
   return div.toReact();
 }
