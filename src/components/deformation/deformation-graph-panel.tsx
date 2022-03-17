@@ -1,6 +1,6 @@
 import * as React from "react";
 import { BaseComponent, IBaseProps } from "../base";
-import {SvgD3LineChart} from '../charts/svg-d3-line-chart';
+import {SvgD3LineChart} from "../charts/svg-d3-line-chart";
 
 interface IState {
     tabIndex: number;

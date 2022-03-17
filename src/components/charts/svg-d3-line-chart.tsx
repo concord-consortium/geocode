@@ -31,21 +31,18 @@ export const SvgD3LineChart = () => {
       .range([height, 0]);
 
   // Line
-  const line = d3.line()
-      .x(d => x(d.year))
-      .y(d => y(d.deformation))
-
+  const line = d3.line();
 
   // append the svg object to the body of the page
   const svg = d3.select(div)
     .append("svg")
-      .style("background-color", '#fff')
+      .style("background-color", "#fff")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
       .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");  
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-  // Arguments for axes : Ranges for x, y  
+  // Arguments for axes : Ranges for x, y
   x.domain(d3.extent(data, (d) => d.year));
   y.domain(d3.extent(data, (d) => d.deformation));
 
@@ -63,22 +60,21 @@ export const SvgD3LineChart = () => {
   svg.append("text")
     .attr("text-anchor", "middle")
     .style("font-size", "14px")
-    .attr("transform", "translate("+ (margin.left - 94 ) +","+(height/2)+")rotate(-90)")  
+    .attr("transform", "translate(" + (margin.left - 94 ) + "," + (height / 2) + ")rotate(-90)")
     .text("Deformation");
 
   svg.append("text")
     .style("font-size", "14px")
-    .attr("text-anchor", "middle") 
-    .attr("transform", "translate("+ (width/2) +","+(height-(margin.bottom -74))+")")
+    .attr("text-anchor", "middle")
+    .attr("transform", "translate(" + (width / 2) + "," + (height - (margin.bottom - 74)) + ")")
     .text("Year");
 
   // Path
   svg.append("path")
-    .datum(data)
     .attr("fill", "none")
     .attr("stroke", "#69b3a2")
     .attr("stroke-width", 1)
-    .attr("d", line);
+    .attr("d", line(data.map(el => [x(el.year), y(el.deformation)])));
 
   return div.toReact();
-}
+};
