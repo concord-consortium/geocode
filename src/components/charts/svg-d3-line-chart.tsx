@@ -1,21 +1,12 @@
 import * as ReactFauxDOM from "react-faux-dom";
 import * as d3 from "d3";
+import { toJS } from "mobx";
 
-const data = [
-  {year: 10, deformation: 10},
-  {year: 20, deformation: 20},
-  {year: 30, deformation: 30},
-  {year: 40, deformation: 10},
-  {year: 50, deformation: 40},
-  {year: 60, deformation: 60},
-  {year: 70, deformation: 20},
-  {year: 80, deformation: 10},
-  {year: 90, deformation: 20},
-  {year: 100, deformation: 30},
-];
 
-export const SvgD3LineChart = () => {
+export const SvgD3LineChart = (props) => {
 
+  let { data } = props;
+  data = toJS(data);
   const div = new ReactFauxDOM.Element("div");
 
   // Calculate Margins and canvas dimensions
