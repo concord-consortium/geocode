@@ -1,4 +1,4 @@
-import { types } from "mobx-state-tree";
+import { IModelType, IMSTArray, Instance, ISimpleType, types, _NotCustomized } from "mobx-state-tree";
 import { parseOfflineUNAVCOData } from "../utilities/unavco-data";
 import deformationCalc, { StationData, DeformationOutput } from "../deformation";
 import { Filter, Range } from "./data-sets";
@@ -25,6 +25,8 @@ export const Friction = types.enumeration("type", ["low", "medium", "high"]);
 export const EarthquakeControl = types.enumeration("type", ["none", "auto", "user"]);
 
 export const deformationCase = types.model({year: types.number, deformation: types.number});
+export const deformationCases = types.array(deformationCase);
+export interface iDeformationCases extends Instance<typeof deformationCases> {}
 
 export const SeismicSimulationStore = types
   .model("seismicSimulation", {
@@ -33,7 +35,7 @@ export const SeismicSimulationStore = types
     selectedGPSStationId: types.maybe(types.string),
     showVelocityArrows: false,
 
-    deformationHistory: types.array(deformationCase),
+    deformationHistory: deformationCases,
     deformationModelStep: 0,
     deformationModelEndStep: 500000,    // years
     deformationModelTotalClockTime: 5,  // seconds
@@ -330,11 +332,7 @@ export const SeismicSimulationStore = types
       self.deformationHistory.push({year, deformation});
     },
     clearDeformationHistory(){
-      if (self.deformationHistory.length){
-       while (self.deformationHistory.length){
-          self.deformationHistory.pop(); // is there another way to do this that would reduce time complexity?
-        }
-      }
+     self.deformationHistory.clear();
     },
   }))
   .views((self) => ({

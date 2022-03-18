@@ -2,7 +2,6 @@ import * as React from "react";
 import { BaseComponent, IBaseProps } from "../base";
 import { inject, observer } from "mobx-react";
 import {SvgD3LineChart} from "../charts/svg-d3-line-chart";
-import { ChartType } from "../../stores/charts-store";
 
 interface IState {
     tabIndex: number;
