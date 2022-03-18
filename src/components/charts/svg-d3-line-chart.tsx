@@ -2,11 +2,11 @@ import * as ReactFauxDOM from "react-faux-dom";
 import * as d3 from "d3";
 import { toJS } from "mobx";
 
-
 export const SvgD3LineChart = (props) => {
 
   let { data } = props;
   data = toJS(data);
+
   const div = new ReactFauxDOM.Element("div");
 
   // Calculate Margins and canvas dimensions

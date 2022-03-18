@@ -18,12 +18,11 @@ interface IProps extends IBaseProps {
 export class DeformationGraphPanel extends BaseComponent<IProps, IState> {
     public render(){
         const deformationGraphData = this.stores.seismicSimulation.deformationHistory;
-        console.log("logged from DeformationGraphPanel", deformationGraphData)
         return (
-        deformationGraphData.length ? 
-            <SvgD3LineChart 
+        deformationGraphData.length ?
+            <SvgD3LineChart
                 data={deformationGraphData}
-                /> 
+                />
             : <div> The graph will show here once there is data </div>
         );
     }

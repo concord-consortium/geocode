@@ -24,7 +24,7 @@ export type ColorMethod = "logarithmic" | "equalInterval";
 export const Friction = types.enumeration("type", ["low", "medium", "high"]);
 export const EarthquakeControl = types.enumeration("type", ["none", "auto", "user"]);
 
-export const deformationCase = types.model({year: types.number, deformation: types.number})
+export const deformationCase = types.model({year: types.number, deformation: types.number});
 
 export const SeismicSimulationStore = types
   .model("seismicSimulation", {
@@ -331,8 +331,8 @@ export const SeismicSimulationStore = types
     },
     clearDeformationHistory(){
       if (self.deformationHistory.length){
-       while(self.deformationHistory.length){
-          self.deformationHistory.pop();
+       while (self.deformationHistory.length){
+          self.deformationHistory.pop(); // is there another way to do this that would reduce time complexity?
         }
       }
     },
