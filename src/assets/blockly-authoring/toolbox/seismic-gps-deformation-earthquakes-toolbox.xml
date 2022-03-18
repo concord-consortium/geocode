@@ -8,6 +8,7 @@
   </category>
 
   <category name="Deformation" colour="#B35F00">
+    <block type="deformation-new-run"></block>
     <block type="deformation-year-loop"></block>
     <block type="deformation-model-step"></block>
     <block type="deformation-model-earthquake"></block>
