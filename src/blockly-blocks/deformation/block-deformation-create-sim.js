@@ -43,6 +43,23 @@ Blockly.Blocks['deformation-create-sim'] = {
     return code;
   }
 
+  Blockly.Blocks['deformation-create-new-run'] = {
+    init: function() {
+      this.appendDummyInput()
+          .appendField('Create a new deforation run')
+      this.setPreviousStatement(true, null);
+      this.setNextStatement(true, null);
+      this.setColour("#B35F00")
+      this.setTooltip("");
+      this.setHelpUrl("");
+    }
+  };
+
+  Blockly.JavaScript['deformation-create-new-run'] = function(block) {
+    const code = 'clearDeformationRuns()';
+    return code;
+  };
+
   Blockly.Blocks['deformation-year-loop'] = {
     init: function() {
       this.appendDummyInput()
@@ -67,8 +84,6 @@ Blockly.Blocks['deformation-create-sim'] = {
     var branch = Blockly.JavaScript.statementToCode(block, 'DO');
 
     var code = '';
-
-    code += 'clearDeformationRuns();'
 
     code += 'for (var year = ' + dropdown_year_step + '; ' +
         'year <= ' + number_max_year + '; ' +
