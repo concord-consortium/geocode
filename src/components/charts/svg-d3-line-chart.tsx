@@ -7,8 +7,38 @@ interface lineChartProps { data: iDeformationCases }
 
 export const SvgD3LineChart = (props: lineChartProps) => {
 
-  let { data } = props;
-  data = toJS(data);
+  const data = [
+    {
+      group: "run1",
+      values: [
+        { x: 20, y: 200 },
+        { x: 40, y: 300 },
+        { x: 60, y: 100 },
+        { x: 80, y: 0 },
+        { x: 100, y: 300 }
+      ]
+    },
+    {
+      group: "run2",
+      values: [
+        { x: 20, y: 200 },
+        { x: 40, y: 100 },
+        { x: 60, y: 0 },
+        { x: 80, y: 100 },
+        { x: 100, y: 200 }
+      ]
+    },
+    {
+      group: "run3",
+      values: [
+        { x: 20, y: 500 },
+        { x: 40, y: 400 },
+        { x: 60, y: 300 },
+        { x: 80, y: 400 },
+        { x: 100, y: 500 }
+      ]
+    }
+  ];
 
   const div = new ReactFauxDOM.Element("div");
 
@@ -17,15 +47,26 @@ export const SvgD3LineChart = (props: lineChartProps) => {
   const width = 500 - margin.left - margin.right;
   const height = 200 - margin.top - margin.bottom;
 
+  // Getting all X and Y values, to be used in scales
+  let xVals = [];
+  let yVals = [];
+
+  for (let i = 0; i < data.length; i++){
+    let values = data[i].values;
+    values.forEach(value => {
+      xVals.push(value.x);
+      yVals.push(value.y)
+    })
+  }
+
   // Scales
   const x = d3.scaleLinear()
-      .range([0, width]);
+      .range([0, width])
+      .domain(d3.extent(xVals));
 
   const y = d3.scaleLinear()
-      .range([height, 0]);
-
-  // Line
-  const line = d3.line();
+      .range([height, 0])
+      y.domain(d3.extent(yVals));
 
   // append the svg object to the body of the page
   const svg = d3.select(div)
@@ -35,10 +76,6 @@ export const SvgD3LineChart = (props: lineChartProps) => {
       .attr("height", height + margin.top + margin.bottom)
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-  // Arguments for axes : Ranges for x, y
-  x.domain(d3.extent(data, (d) => d.year));
-  y.domain(d3.extent(data, (d) => d.deformation));
 
   // Axes
   svg.append("g")
@@ -63,12 +100,20 @@ export const SvgD3LineChart = (props: lineChartProps) => {
     .attr("transform", "translate(" + (width / 2) + "," + (height - (margin.bottom - 74)) + ")")
     .text("Year");
 
+  // Line
+  const line = d3.line()
+    .x((d) => x(d.x))
+    .y((d) => y(d.y))
+
   // Path
-  svg.append("path")
+  svg.selectAll("myLines")
+    .data(data)
+    .enter()
+    .append('path')
     .attr("fill", "none")
     .attr("stroke", "#69b3a2")
-    .attr("stroke-width", 1)
-    .attr("d", line(data.map(el => [x(el.year), y(el.deformation)])));
+    .attr("stroke-width", 4)
+    .attr("d", (d) => line(d.values));
 
   return div.toReact();
 };
