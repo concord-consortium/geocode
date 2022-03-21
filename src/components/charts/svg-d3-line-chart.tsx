@@ -115,11 +115,25 @@ export const SvgD3LineChart = (props: lineChartProps) => {
   svg.selectAll("myLines")
     .data(data)
     .enter()
-    .append('path')
-    .attr("fill", "none")
-    .attr("stroke", (d) => myColor(d.group))
-    .attr("stroke-width", 4)
-    .attr("d", (d) => line(d.values));
+      .append('path')
+      .attr("fill", "none")
+      .attr("stroke", (d) => myColor(d.group))
+      .attr("stroke-width", 4)
+      .attr("d", (d) => line(d.values));
+
+  // Add a legend at the end of each line
+  svg
+    .selectAll("myLabels")
+    .data(data)
+    .enter()
+      .append('g')
+      .append("text")
+        .datum((d) => ({group: d.group, value: d.values[d.values.length - 1]})) // keep only the last value of each time series
+        .attr("transform", (d) => "translate(" + x(d.value.x) + "," + y(d.value.y) + ")") // Put the text at the position of the last point
+        .attr("x", 12) // shift the text a bit more right
+        .text((d) => d.group)
+        .style("fill", (d) => myColor(d.group))
+        .style("font-size", 15)
 
   return div.toReact();
 };
