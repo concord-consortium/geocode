@@ -48,8 +48,8 @@ export const SvgD3LineChart = (props: lineChartProps) => {
   const height = 200 - margin.top - margin.bottom;
 
   // Getting all X and Y values, to be used in scales
-  let xVals = [];
-  let yVals = [];
+  const xVals : Number[] = [];
+  const yVals : Number [] = [];
 
   for (let i = 0; i < data.length; i++){
     let values = data[i].values;
@@ -129,8 +129,8 @@ export const SvgD3LineChart = (props: lineChartProps) => {
     .enter()
       .append('g')
       .append("text")
-        .datum((d) => ({group: d.group, value: d.values[d.values.length - 1]})) // keep only the last value of each time series
-        .attr("transform", (d) => "translate(" + x(d.value.x) + "," + y(d.value.y) + ")") // Put the text at the position of the last point
+        .datum((d) => ({group: d.group, value: d.values[d.values.length - 1]}))
+        .attr("transform", (d) => "translate(" + x(d.value.x) + "," + y(d.value.y) + ")")
         .attr("x", 12) // shift the text a bit more right
         .text((d) => d.group)
         .style("fill", (d) => myColor(d.group))
