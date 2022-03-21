@@ -1,11 +1,12 @@
 import * as ReactFauxDOM from "react-faux-dom";
 import * as d3 from "d3";
 import { toJS } from "mobx";
-import { iDeformationCases } from '../../stores/seismic-simulation-store'
+import { IDeformationCases } from "../../stores/seismic-simulation-store";
+import { NumberValue } from "d3";
 
-interface lineChartProps { data: iDeformationCases }
+interface LineChartProps { data: IDeformationCases; }
 
-export const SvgD3LineChart = (props: lineChartProps) => {
+export const SvgD3LineChart = (props: LineChartProps) => {
 
   const data = [
     {
@@ -39,6 +40,7 @@ export const SvgD3LineChart = (props: lineChartProps) => {
       ]
     }
   ];
+  // const data = toJS(props.data) as IDeformationCases;
 
   const div = new ReactFauxDOM.Element("div");
 
