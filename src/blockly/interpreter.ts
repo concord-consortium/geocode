@@ -361,8 +361,12 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       seismicSimulation.clearDeformationHistory();
     });
 
-    addFunc("setCurrentRunNumber", () => {
-      seismicSimulation.setCurrentRunNumber();
+    addFunc("setCurrentRunNumber", (runNumber) => {
+      if (seismicSimulation.deformationCurrentRunGroup > 3){
+        blocklyController.throwError("The max number of runs possible is three.")
+      } else {
+        seismicSimulation.setCurrentRunNumber(runNumber);
+      }
     });
 
     addFunc("setPlateVelocity", (params: { plate: number, speed: number, direction: number | string }) => {

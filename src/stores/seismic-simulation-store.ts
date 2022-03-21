@@ -24,7 +24,7 @@ export type ColorMethod = "logarithmic" | "equalInterval";
 export const Friction = types.enumeration("type", ["low", "medium", "high"]);
 export const EarthquakeControl = types.enumeration("type", ["none", "auto", "user"]);
 
-export const deformationCase = types.model({group: types.string, values: types.array(types.model({year: types.number, deformation: types.number}))});
+export const deformationCase = types.model({group: types.number, values: types.array(types.model({year: types.number, deformation: types.number}))});
 export const deformationCases = types.array(deformationCase);
 export interface IDeformationCase extends Instance<typeof deformationCase> {}
 export interface IDeformationCases extends Instance<typeof deformationCases> {}
@@ -328,23 +328,25 @@ export const SeismicSimulationStore = types
     setDeformationModelFaultAngle(angle: number) {
       self.deformationModelFaultAngle = angle;
     },
-    setCurrentRunNumber(){
-      self.deformationCurrentRunGroup++;
+    setCurrentRunNumber(runNumber: number){
+      self.deformationCurrentRunGroup = runNumber;
     },
     saveDeformationData(year: number){
       const buildUpYears = self.deformationModelStep - self.deformationModelUserEarthquakeLatestStep;
       const deformation = Math.abs(buildUpYears * self.relativeVerticalSpeed) / 1e6;
 
       const currentRunNumber = self.deformationCurrentRunGroup;
+      const lastGroup = self.deformationHistory[self.deformationHistory.length - 1];
 
-      if (!self.deformationHistory.length){
-        self.deformationHistory.push({group: "run" + currentRunNumber, values: [{year, deformation}]});
-      } else { // the deformation history does have length 
-        self.deformationHistory[self.deformationHistory.length - 1].values.push({year, deformation})
+      if (!self.deformationHistory.length || currentRunNumber > lastGroup.group){
+        self.deformationHistory.push({group: currentRunNumber, values: [{year, deformation}]});
+      } else { 
+          lastGroup.values.push({year, deformation})   
       }
     },
     clearDeformationHistory(){
      self.deformationHistory.clear();
+     self.deformationCurrentRunGroup = 0;
     },
   }))
   .views((self) => ({
