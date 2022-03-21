@@ -24,7 +24,7 @@ export type ColorMethod = "logarithmic" | "equalInterval";
 export const Friction = types.enumeration("type", ["low", "medium", "high"]);
 export const EarthquakeControl = types.enumeration("type", ["none", "auto", "user"]);
 
-export const deformationCase = types.model({year: types.number, deformation: types.number});
+export const deformationCase = types.model({group: types.string, values: types.array(types.model({year: types.number, deformation: types.number}))});
 export const deformationCases = types.array(deformationCase);
 export interface IDeformationCase extends Instance<typeof deformationCase> {}
 export interface IDeformationCases extends Instance<typeof deformationCases> {}
@@ -36,6 +36,7 @@ export const SeismicSimulationStore = types
     selectedGPSStationId: types.maybe(types.string),
     showVelocityArrows: false,
 
+    deformationCurrentRunGroup: 0,
     deformationHistory: deformationCases,
     deformationModelStep: 0,
     deformationModelEndStep: 500000,    // years
@@ -327,10 +328,20 @@ export const SeismicSimulationStore = types
     setDeformationModelFaultAngle(angle: number) {
       self.deformationModelFaultAngle = angle;
     },
+    setCurrentRunNumber(){
+      self.deformationCurrentRunGroup++;
+    },
     saveDeformationData(year: number){
       const buildUpYears = self.deformationModelStep - self.deformationModelUserEarthquakeLatestStep;
       const deformation = Math.abs(buildUpYears * self.relativeVerticalSpeed) / 1e6;
-      self.deformationHistory.push({year, deformation});
+
+      const currentRunNumber = self.deformationCurrentRunGroup;
+
+      if (!self.deformationHistory.length){
+        self.deformationHistory.push({group: "run" + currentRunNumber, values: [{year, deformation}]});
+      } else { // the deformation history does have length 
+        self.deformationHistory[self.deformationHistory.length - 1].values.push({year, deformation})
+      }
     },
     clearDeformationHistory(){
      self.deformationHistory.clear();

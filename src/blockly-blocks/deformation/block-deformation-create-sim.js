@@ -56,7 +56,42 @@ Blockly.Blocks['deformation-create-sim'] = {
   };
 
   Blockly.JavaScript['deformation-new-run'] = function(block) {
-    const code = 'clearDeformationRuns();\n';
+    let code = 'clearDeformationRuns();\n';
+    code += 'setCurrentRunNumber();\n';
+    return code;
+  };
+
+  Blockly.Blocks['deformation-second-run'] = {
+    init: function() {
+      this.appendDummyInput()
+          .appendField('Create a second deformation run')
+      this.setPreviousStatement(true, null);
+      this.setNextStatement(true, null);
+      this.setColour("#B35F00")
+      this.setTooltip("");
+      this.setHelpUrl("");
+    }
+  };
+
+  Blockly.JavaScript['deformation-new-run'] = function(block) {
+    code += 'setCurrentRunNumber();\n';
+    return code;
+  };
+
+  Blockly.Blocks['deformation-second-run'] = {
+    init: function() {
+      this.appendDummyInput()
+          .appendField('Create a third deformation run')
+      this.setPreviousStatement(true, null);
+      this.setNextStatement(true, null);
+      this.setColour("#B35F00")
+      this.setTooltip("");
+      this.setHelpUrl("");
+    }
+  };
+
+  Blockly.JavaScript['deformation-new-run'] = function(block) {
+    code += 'setCurrentRunNumber();\n';
     return code;
   };
 
