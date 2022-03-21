@@ -116,6 +116,7 @@ export const SvgD3LineChart = (props: lineChartProps) => {
     .data(data)
     .enter()
       .append('path')
+      .attr("class", (d) => d.group)
       .attr("fill", "none")
       .attr("stroke", (d) => myColor(d.group))
       .attr("stroke-width", 4)
@@ -134,6 +135,21 @@ export const SvgD3LineChart = (props: lineChartProps) => {
         .text((d) => d.group)
         .style("fill", (d) => myColor(d.group))
         .style("font-size", 15)
+
+    svg.selectAll("myLegend")
+      .data(data)
+      .enter()
+        .append('g')
+        .append("text")
+          .attr('x', (d,i) => 30 + (i * 60))
+          .attr('y', 0)
+          .text((d) => d.group)
+          .style("fill", (d) => myColor(d.group))
+          .style("font-size", 15)
+        .on("click", (d) => {
+          let currentOpacity = d3.selectAll("." + d.group).style("opacity")
+          d3.selectAll("." + d.group).transition().style("opacity", currentOpacity === "1" ? "0" : "1")
+        })
 
   return div.toReact();
 };
