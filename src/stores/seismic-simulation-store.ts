@@ -26,7 +26,8 @@ export const EarthquakeControl = types.enumeration("type", ["none", "auto", "use
 
 export const deformationCase = types.model({year: types.number, deformation: types.number});
 export const deformationCases = types.array(deformationCase);
-export interface iDeformationCases extends Instance<typeof deformationCases> {}
+export interface IDeformationCase extends Instance<typeof deformationCase> {}
+export interface IDeformationCases extends Instance<typeof deformationCases> {}
 
 export const SeismicSimulationStore = types
   .model("seismicSimulation", {
