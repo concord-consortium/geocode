@@ -59,6 +59,12 @@ export const SvgD3LineChart = (props: lineChartProps) => {
     })
   }
 
+  // Setting up color scheme
+  const allGroup = ["run1", "run2", "run3"];
+  const myColor = d3.scaleOrdinal()
+      .domain(allGroup)
+      .range(d3.schemeSet2);
+
   // Scales
   const x = d3.scaleLinear()
       .range([0, width])
@@ -87,7 +93,7 @@ export const SvgD3LineChart = (props: lineChartProps) => {
     .attr("class", "axis axis--y")
     .call(d3.axisLeft(y));
 
-   // Labels
+   // X and Y axes labels
   svg.append("text")
     .attr("text-anchor", "middle")
     .style("font-size", "14px")
@@ -111,7 +117,7 @@ export const SvgD3LineChart = (props: lineChartProps) => {
     .enter()
     .append('path')
     .attr("fill", "none")
-    .attr("stroke", "#69b3a2")
+    .attr("stroke", (d) => myColor(d.group))
     .attr("stroke-width", 4)
     .attr("d", (d) => line(d.values));
 
