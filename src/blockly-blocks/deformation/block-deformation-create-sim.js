@@ -73,12 +73,12 @@ Blockly.Blocks['deformation-create-sim'] = {
     }
   };
 
-  Blockly.JavaScript['deformation-new-run'] = function(block) {
+  Blockly.JavaScript['deformation-second-run'] = function(block) {
     code += 'setCurrentRunNumber();\n';
     return code;
   };
 
-  Blockly.Blocks['deformation-second-run'] = {
+  Blockly.Blocks['deformation-third-run'] = {
     init: function() {
       this.appendDummyInput()
           .appendField('Create a third deformation run')
@@ -90,7 +90,7 @@ Blockly.Blocks['deformation-create-sim'] = {
     }
   };
 
-  Blockly.JavaScript['deformation-new-run'] = function(block) {
+  Blockly.JavaScript['deformation-third-run'] = function(block) {
     code += 'setCurrentRunNumber();\n';
     return code;
   };
