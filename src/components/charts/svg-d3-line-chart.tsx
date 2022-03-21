@@ -1,14 +1,14 @@
 import * as ReactFauxDOM from "react-faux-dom";
 import * as d3 from "d3";
 import { toJS } from "mobx";
-import { iDeformationCases } from '../../stores/seismic-simulation-store'
+import { IDeformationCases } from "../../stores/seismic-simulation-store";
+import { NumberValue } from "d3";
 
-interface lineChartProps { data: iDeformationCases }
+interface LineChartProps { data: IDeformationCases; }
 
-export const SvgD3LineChart = (props: lineChartProps) => {
+export const SvgD3LineChart = (props: LineChartProps) => {
 
-  let { data } = props;
-  data = toJS(data);
+  const data = toJS(props.data) as IDeformationCases;
 
   const div = new ReactFauxDOM.Element("div");
 
@@ -25,7 +25,7 @@ export const SvgD3LineChart = (props: lineChartProps) => {
       .range([height, 0]);
 
   // Line
-  const line = d3.line();
+  const line = d3.line<number[]>();
 
   // append the svg object to the body of the page
   const svg = d3.select(div)
@@ -37,8 +37,8 @@ export const SvgD3LineChart = (props: lineChartProps) => {
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
   // Arguments for axes : Ranges for x, y
-  x.domain(d3.extent(data, (d) => d.year));
-  y.domain(d3.extent(data, (d) => d.deformation));
+  x.domain(d3.extent(data, (d) => d.year) as NumberValue[]);
+  y.domain(d3.extent(data, (d) => d.deformation) as NumberValue[]);
 
   // Axes
   svg.append("g")
@@ -68,7 +68,7 @@ export const SvgD3LineChart = (props: lineChartProps) => {
     .attr("fill", "none")
     .attr("stroke", "#69b3a2")
     .attr("stroke-width", 1)
-    .attr("d", line(data.map(el => [x(el.year), y(el.deformation)])));
+    .attr("d", line(data.map( el => [x(el.year)!, y(el.deformation)!]))!);
 
   return div.toReact();
 };
