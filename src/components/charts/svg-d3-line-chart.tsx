@@ -50,15 +50,15 @@ export const SvgD3LineChart = (props: LineChartProps) => {
   const height = 200 - margin.top - margin.bottom;
 
   // Getting all X and Y values, to be used in scales
-  const xVals : Number[] = [];
-  const yVals : Number [] = [];
+  const xVals: NumberValue[] = [];
+  const yVals: NumberValue[] = [];
 
-  for (let i = 0; i < data.length; i++){
-    let values = data[i].values;
+  for (const run of data){
+    const values = run.values;
     values.forEach(value => {
       xVals.push(value.x);
-      yVals.push(value.y)
-    })
+      yVals.push(value.y);
+    });
   }
 
   // Setting up color scheme
@@ -70,11 +70,11 @@ export const SvgD3LineChart = (props: LineChartProps) => {
   // Scales
   const x = d3.scaleLinear()
       .range([0, width])
-      .domain(d3.extent(xVals));
+      .domain(d3.extent(xVals) as NumberValue[]);
 
   const y = d3.scaleLinear()
       .range([height, 0])
-      y.domain(d3.extent(yVals));
+      .domain(d3.extent(yVals) as NumberValue[]);
 
   // append the svg object to the body of the page
   const svg = d3.select(div)
@@ -110,48 +110,47 @@ export const SvgD3LineChart = (props: LineChartProps) => {
 
   // Line
   const line = d3.line()
-    .x((d) => x(d.x))
-    .y((d) => y(d.y))
+    .x((d) => x(d.x as number) as number)
+    .y((d) => y(d.y as number) as number);
 
   // Path
   svg.selectAll("myLines")
     .data(data)
     .enter()
-      .append('path')
+      .append("path")
       .attr("class", (d) => d.group)
       .attr("fill", "none")
-      .attr("stroke", (d) => myColor(d.group))
+      .attr("stroke", (d) => myColor(d.group) as string)
       .attr("stroke-width", 4)
       .attr("d", (d) => line(d.values));
 
   // Add a legend at the end of each line
-  svg
-    .selectAll("myLabels")
+  svg.selectAll("myLabels")
     .data(data)
     .enter()
-      .append('g')
+      .append("g")
       .append("text")
         .datum((d) => ({group: d.group, value: d.values[d.values.length - 1]}))
         .attr("transform", (d) => "translate(" + x(d.value.x) + "," + y(d.value.y) + ")")
         .attr("x", 12) // shift the text a bit more right
         .text((d) => d.group)
-        .style("fill", (d) => myColor(d.group))
-        .style("font-size", 15)
+        .style("fill", (d) => myColor(d.group) as string)
+        .style("font-size", 15);
 
-    svg.selectAll("myLegend")
-      .data(data)
-      .enter()
-        .append('g')
-        .append("text")
-          .attr('x', (d,i) => 30 + (i * 60))
-          .attr('y', 0)
-          .text((d) => d.group)
-          .style("fill", (d) => myColor(d.group))
-          .style("font-size", 15)
-        .on("click", (d) => {
-          let currentOpacity = d3.selectAll("." + d.group).style("opacity")
-          d3.selectAll("." + d.group).transition().style("opacity", currentOpacity === "1" ? "0" : "1")
-        })
+  svg.selectAll("myLegend")
+    .data(data)
+    .enter()
+      .append("g")
+      .append("text")
+        .attr("x", (d, i) => 30 + (i * 60))
+        .attr("y", 0)
+        .text((d) => d.group)
+        .style("fill", (d) => myColor(d.group) as string)
+        .style("font-size", 15)
+      .on("click", (d) => {
+        const currentOpacity = d3.selectAll("." + d.group).style("opacity");
+        d3.selectAll("." + d.group).transition().style("opacity", currentOpacity === "1" ? "0" : "1");
+      });
 
   return div.toReact();
 };

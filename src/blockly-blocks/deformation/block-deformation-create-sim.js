@@ -46,7 +46,7 @@ Blockly.Blocks['deformation-create-sim'] = {
   Blockly.Blocks['deformation-new-run'] = {
     init: function() {
       this.appendDummyInput()
-          .appendField('Create a new deforation run')
+          .appendField('Create a new deformation run')
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
       this.setColour("#B35F00")
