@@ -1,15 +1,14 @@
 import * as ReactFauxDOM from "react-faux-dom";
 import * as d3 from "d3";
-import { toJS } from "mobx";
-import { IDeformationCases } from "../../stores/seismic-simulation-store";
+import { IDeformationRuns } from "../../stores/seismic-simulation-store";
 import { NumberValue } from "d3";
 
-interface LineChartProps { data: IDeformationCases; }
+interface LineChartProps { data: IDeformationRuns; }
 
 export const SvgD3LineChart = (props: LineChartProps) => {
 
   const div = new ReactFauxDOM.Element("div");
-  const data = toJS(props.data) as IDeformationCases;
+  const data = props.data as IDeformationRuns;
   
   // Calculate Margins and canvas dimensions
   const margin = {top: 40, right: 40, bottom: 40, left: 60};
@@ -36,12 +35,14 @@ export const SvgD3LineChart = (props: LineChartProps) => {
 
   // Scales
   const x = d3.scaleLinear()
-      .range([0, width])
-      .domain(d3.extent(xVals) as NumberValue[]);
+      .range([0, width]);
 
   const y = d3.scaleLinear()
-      .range([height, 0])
-      .domain(d3.extent(yVals) as NumberValue[]);
+      .range([height, 0]);
+
+  // Domains
+  x.domain(d3.extent(xVals) as NumberValue[]);
+  y.domain(d3.extent(yVals) as NumberValue[]);
 
   // append the svg object to the body of the page
   const svg = d3.select(div)
@@ -76,9 +77,7 @@ export const SvgD3LineChart = (props: LineChartProps) => {
     .text("Year");
 
   // Line
-  const line = d3.line()
-    .x((d) => x(d.year as number) as number)
-    .y((d) => y(d.deformation as number) as number);
+  const line = d3.line();
 
   // Path
   svg.selectAll("myLines")
@@ -89,21 +88,9 @@ export const SvgD3LineChart = (props: LineChartProps) => {
       .attr("fill", "none")
       .attr("stroke", (d) => myColor("run" + d.group) as string)
       .attr("stroke-width", 4)
-      .attr("d", (d) => line(d.values));
+      .attr("d", (d) => line(d.values!.map(value => [x(value.year)!, y(value.deformation)!])));
 
-  // Add a legend at the end of each line
-  svg.selectAll("myLabels")
-    .data(data)
-    .enter()
-      .append("g")
-      .append("text")
-        .datum((d) => ({group: d.group, value: d.values![d.values!.length - 1]}))
-        .attr("transform", (d) => "translate(" + x(d.value.year) + "," + y(d.value.deformation) + ")")
-        .attr("x", 12) // shift the text a bit more right
-        .text((d) => "Run" + d.group)
-        .style("fill", (d) => myColor("run" + d.group) as string)
-        .style("font-size", 15);
-
+  // Legend
   svg.selectAll("myLegend")
     .data(data)
     .enter()
