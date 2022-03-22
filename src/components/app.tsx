@@ -592,19 +592,20 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               && showDeformationGraph
               && !isTephra &&
               <TabPanel
-              width={`${tabWidth}px`}
-              tabcolor={this.getRightTabColor(RightSectionTypes.DEFORMATION)}
-              rightpanel={"true"}
-              data-test={this.getRightTabName(RightSectionTypes.DEFORMATION) + "-panel"}
-            >
-              <DeformationModel
-                width={mapWidth}
-                height={height - 225}
-              />
-              <div>
-                  <DeformationGraphPanel height={250} width={mapWidth}/>
-            </div>
-            </TabPanel>
+                width={`${tabWidth}px`}
+                tabcolor={this.getRightTabColor(RightSectionTypes.DEFORMATION)}
+                rightpanel={"true"}
+                data-test={this.getRightTabName(RightSectionTypes.DEFORMATION) + "-panel"}
+              >
+                <DeformationModel
+                  width={mapWidth}
+                  height={(height - 90) * .75}
+                />
+                <DeformationGraphPanel
+                  width={mapWidth}
+                  height={(height - 90) * .25}
+                />
+              </TabPanel>
             }
 
             <RightTabBack

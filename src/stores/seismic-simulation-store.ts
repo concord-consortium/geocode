@@ -24,13 +24,15 @@ export type ColorMethod = "logarithmic" | "equalInterval";
 export const Friction = types.enumeration("type", ["low", "medium", "high"]);
 export const EarthquakeControl = types.enumeration("type", ["none", "auto", "user"]);
 
-export const deformationCase = types.model({year: types.number, deformation: types.number})
+export const deformationCase = types.model({year: types.number, deformation: types.number});
 export const deformationCases = types.array(deformationCase);
 export const deformationGroup = types.model({group: types.number, values: deformationCases});
 export const deformationRuns = types.array(deformationGroup);
 
 export interface IDeformationGroup extends Instance<typeof deformationGroup> {}
 export interface IDeformationRuns extends Instance<typeof deformationRuns> {}
+export interface IDeformationCase extends Instance<typeof deformationCase> {}
+export interface IDeformationCases extends Instance<typeof deformationCases> {}
 
 export const SeismicSimulationStore = types
   .model("seismicSimulation", {
@@ -342,9 +344,12 @@ export const SeismicSimulationStore = types
       const lastGroup = self.deformationHistory[self.deformationHistory.length - 1];
 
       if (!self.deformationHistory.length || currentRunNumber > lastGroup.group){
-        self.deformationHistory.push(deformationGroup.create({group: currentRunNumber, values: deformationCases.create([{year, deformation}])}));
-      } else { 
-          lastGroup.values.push({year, deformation})   
+        self.deformationHistory.push(deformationGroup.create({
+          group: currentRunNumber,
+          values: deformationCases.create([{year, deformation}])
+        }));
+      } else {
+          lastGroup.values.push({year, deformation});
       }
     },
     clearDeformationHistory(){

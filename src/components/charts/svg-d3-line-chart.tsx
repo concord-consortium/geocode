@@ -1,19 +1,22 @@
 import * as ReactFauxDOM from "react-faux-dom";
 import * as d3 from "d3";
-import { IDeformationRuns } from "../../stores/seismic-simulation-store";
+import { IDeformationRuns, IDeformationGroup } from "../../stores/seismic-simulation-store";
 import { NumberValue } from "d3";
 
-interface LineChartProps { data: IDeformationRuns; }
+interface LineChartProps {
+  data: IDeformationRuns;
+  width: number;
+  height: number;
+}
 
 export const SvgD3LineChart = (props: LineChartProps) => {
 
   const div = new ReactFauxDOM.Element("div");
   const data = props.data as IDeformationRuns;
-  
+  const { width, height } = props;
+
   // Calculate Margins and canvas dimensions
-  const margin = {top: 40, right: 40, bottom: 40, left: 60};
-  const width = 500 - margin.left - margin.right;
-  const height = 200 - margin.top - margin.bottom;
+  const margin = {top: 40, right: 40, bottom: 40, left: 40};
 
   // Getting all X and Y values, to be used in scales
   const xVals: NumberValue[] = [];
@@ -35,7 +38,7 @@ export const SvgD3LineChart = (props: LineChartProps) => {
 
   // Scales
   const x = d3.scaleLinear()
-      .range([0, width]);
+      .range([20, width - 60]);
 
   const y = d3.scaleLinear()
       .range([height, 0]);
@@ -48,8 +51,8 @@ export const SvgD3LineChart = (props: LineChartProps) => {
   const svg = d3.select(div)
     .append("svg")
       .style("background-color", "#fff")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
+      .attr("width", width)
+      .attr("height", height + margin.top + margin.bottom - 5)
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -61,13 +64,14 @@ export const SvgD3LineChart = (props: LineChartProps) => {
 
   svg.append("g")
     .attr("class", "axis axis--y")
+    .attr("transform", "translate(20, 0)")
     .call(d3.axisLeft(y));
 
    // X and Y axes labels
   svg.append("text")
     .attr("text-anchor", "middle")
     .style("font-size", "14px")
-    .attr("transform", "translate(" + (margin.left - 94 ) + "," + (height / 2) + ")rotate(-90)")
+    .attr("transform", "translate(" + (margin.left - 65) + "," + (height / 2) + ")rotate(-90)")
     .text("Deformation");
 
   svg.append("text")
@@ -88,7 +92,7 @@ export const SvgD3LineChart = (props: LineChartProps) => {
       .attr("fill", "none")
       .attr("stroke", (d) => myColor("run" + d.group) as string)
       .attr("stroke-width", 4)
-      .attr("d", (d) => line(d.values!.map(value => [x(value.year)!, y(value.deformation)!])));
+      .attr("d", (d: IDeformationGroup) => line(d.values.map(value => [x(value.year)!, y(value.deformation)!])));
 
   // Legend
   svg.selectAll("myLegend")
@@ -97,9 +101,10 @@ export const SvgD3LineChart = (props: LineChartProps) => {
       .append("g")
       .append("text")
         .attr("x", (d, i) => 30 + (i * 60))
-        .attr("y", 0)
+        .attr("y", -15)
         .text((d) => "Run" + d.group)
         .style("fill", (d) => myColor("run" + d.group) as string)
+        .style("text-decoration", "underline")
         .style("font-size", 15)
       .on("click", (d) => {
         const currentOpacity = d3.selectAll(".run" + d.group).style("opacity");
