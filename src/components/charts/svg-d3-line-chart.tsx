@@ -8,42 +8,9 @@ interface LineChartProps { data: IDeformationCases; }
 
 export const SvgD3LineChart = (props: LineChartProps) => {
 
-  const data = [
-    {
-      group: "run1",
-      values: [
-        { x: 20, y: 200 },
-        { x: 40, y: 300 },
-        { x: 60, y: 100 },
-        { x: 80, y: 0 },
-        { x: 100, y: 300 }
-      ]
-    },
-    {
-      group: "run2",
-      values: [
-        { x: 20, y: 200 },
-        { x: 40, y: 100 },
-        { x: 60, y: 0 },
-        { x: 80, y: 100 },
-        { x: 100, y: 200 }
-      ]
-    },
-    {
-      group: "run3",
-      values: [
-        { x: 20, y: 500 },
-        { x: 40, y: 400 },
-        { x: 60, y: 300 },
-        { x: 80, y: 400 },
-        { x: 100, y: 500 }
-      ]
-    }
-  ];
-  // const data = toJS(props.data) as IDeformationCases;
-
   const div = new ReactFauxDOM.Element("div");
-
+  const data = toJS(props.data) as IDeformationCases;
+  
   // Calculate Margins and canvas dimensions
   const margin = {top: 40, right: 40, bottom: 40, left: 60};
   const width = 500 - margin.left - margin.right;
@@ -56,8 +23,8 @@ export const SvgD3LineChart = (props: LineChartProps) => {
   for (const run of data){
     const values = run.values;
     values.forEach(value => {
-      xVals.push(value.x);
-      yVals.push(value.y);
+      xVals.push(value.year);
+      yVals.push(value.deformation);
     });
   }
 
@@ -110,17 +77,17 @@ export const SvgD3LineChart = (props: LineChartProps) => {
 
   // Line
   const line = d3.line()
-    .x((d) => x(d.x as number) as number)
-    .y((d) => y(d.y as number) as number);
+    .x((d) => x(d.year as number) as number)
+    .y((d) => y(d.deformation as number) as number);
 
   // Path
   svg.selectAll("myLines")
     .data(data)
     .enter()
       .append("path")
-      .attr("class", (d) => d.group)
+      .attr("class", (d) => "run" + d.group)
       .attr("fill", "none")
-      .attr("stroke", (d) => myColor(d.group) as string)
+      .attr("stroke", (d) => myColor("run" + d.group) as string)
       .attr("stroke-width", 4)
       .attr("d", (d) => line(d.values));
 
@@ -130,11 +97,11 @@ export const SvgD3LineChart = (props: LineChartProps) => {
     .enter()
       .append("g")
       .append("text")
-        .datum((d) => ({group: d.group, value: d.values[d.values.length - 1]}))
-        .attr("transform", (d) => "translate(" + x(d.value.x) + "," + y(d.value.y) + ")")
+        .datum((d) => ({group: d.group, value: d.values![d.values!.length - 1]}))
+        .attr("transform", (d) => "translate(" + x(d.value.year) + "," + y(d.value.deformation) + ")")
         .attr("x", 12) // shift the text a bit more right
-        .text((d) => d.group)
-        .style("fill", (d) => myColor(d.group) as string)
+        .text((d) => "Run" + d.group)
+        .style("fill", (d) => myColor("run" + d.group) as string)
         .style("font-size", 15);
 
   svg.selectAll("myLegend")
@@ -144,12 +111,12 @@ export const SvgD3LineChart = (props: LineChartProps) => {
       .append("text")
         .attr("x", (d, i) => 30 + (i * 60))
         .attr("y", 0)
-        .text((d) => d.group)
-        .style("fill", (d) => myColor(d.group) as string)
+        .text((d) => "Run" + d.group)
+        .style("fill", (d) => myColor("run" + d.group) as string)
         .style("font-size", 15)
       .on("click", (d) => {
-        const currentOpacity = d3.selectAll("." + d.group).style("opacity");
-        d3.selectAll("." + d.group).transition().style("opacity", currentOpacity === "1" ? "0" : "1");
+        const currentOpacity = d3.selectAll(".run" + d.group).style("opacity");
+        d3.selectAll(".run" + d.group).transition().style("opacity", currentOpacity === "1" ? "0" : "1");
       });
 
   return div.toReact();
