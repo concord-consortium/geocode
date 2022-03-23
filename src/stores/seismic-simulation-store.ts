@@ -334,6 +334,7 @@ export const SeismicSimulationStore = types
       self.deformationModelFaultAngle = angle;
     },
     setCurrentRunNumber(runNumber: number){
+      self.reset();
       self.deformationCurrentRunGroup = runNumber;
     },
     saveDeformationData(year: number){
