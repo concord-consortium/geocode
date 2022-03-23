@@ -44,8 +44,8 @@ export const SvgD3LineChart = (props: LineChartProps) => {
       .range([height, 0]);
 
   // Domains
-  x.domain(d3.extent(xVals) as NumberValue[]);
-  y.domain(d3.extent(yVals) as NumberValue[]);
+  x.domain([0, 500]);
+  y.domain([0, 20]);
 
   // append the svg object to the body of the page
   const svg = d3.select(div)
@@ -65,7 +65,19 @@ export const SvgD3LineChart = (props: LineChartProps) => {
   svg.append("g")
     .attr("class", "axis axis--y")
     .attr("transform", "translate(20, 0)")
-    .call(d3.axisLeft(y));
+    .call(d3.axisLeft(y)
+            .tickValues([0, 2.5, 5, 7.5, 10, 12.5, 15, 17.5, 20])
+            .tickFormat((d) => {
+              if (d === 5){
+                return "Low";
+              } else if (d === 10){
+                return "Medium";
+              } else if (d === 20){
+                return "High";
+              } else {
+                return "";
+              }
+            }));
 
    // X and Y axes labels
   svg.append("text")
