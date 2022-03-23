@@ -18,18 +18,6 @@ export const SvgD3LineChart = (props: LineChartProps) => {
   // Calculate Margins and canvas dimensions
   const margin = {top: 40, right: 40, bottom: 40, left: 40};
 
-  // Getting all X and Y values, to be used in scales
-  const xVals: NumberValue[] = [];
-  const yVals: NumberValue[] = [];
-
-  for (const run of data){
-    const values = run.values;
-    values.forEach(value => {
-      xVals.push(value.year);
-      yVals.push(value.deformation);
-    });
-  }
-
   // Setting up color scheme
   const allGroup = ["run1", "run2", "run3"];
   const myColor = d3.scaleOrdinal()
