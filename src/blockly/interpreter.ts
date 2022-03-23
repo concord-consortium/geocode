@@ -357,10 +357,6 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       seismicSimulation.startDeformationModel();
     });
 
-    addFunc("clearDeformationRuns", () => {
-      seismicSimulation.clearDeformationHistory();
-    });
-
     addFunc("setCurrentRunNumber", (runNumber) => {
       if (seismicSimulation.deformationCurrentRunGroup >= 3){
         blocklyController.throwError("The max number of runs possible is three.");

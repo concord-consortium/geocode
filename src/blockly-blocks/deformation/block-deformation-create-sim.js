@@ -46,7 +46,9 @@ Blockly.Blocks['deformation-create-sim'] = {
   Blockly.Blocks['deformation-new-run'] = {
     init: function() {
       this.appendDummyInput()
-          .appendField('Create a new deformation run')
+          .appendField('Create a ')
+          .appendField(new Blockly.FieldDropdown([["first","1"], ["second","2"], ["third","3"]]), "runNumber")
+          .appendField(' run')
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
       this.setColour("#B35F00")
@@ -56,42 +58,8 @@ Blockly.Blocks['deformation-create-sim'] = {
   };
 
   Blockly.JavaScript['deformation-new-run'] = function(block) {
-    let code = 'clearDeformationRuns();\n';
-    code += `setCurrentRunNumber(${1});\n`;
-    return code;
-  };
-
-  Blockly.Blocks['deformation-second-run'] = {
-    init: function() {
-      this.appendDummyInput()
-          .appendField('Create a second deformation run')
-      this.setPreviousStatement(true, null);
-      this.setNextStatement(true, null);
-      this.setColour("#B35F00")
-      this.setTooltip("");
-      this.setHelpUrl("");
-    }
-  };
-
-  Blockly.JavaScript['deformation-second-run'] = function(block) {
-    const code = `setCurrentRunNumber(${2});\n`;
-    return code;
-  };
-
-  Blockly.Blocks['deformation-third-run'] = {
-    init: function() {
-      this.appendDummyInput()
-          .appendField('Create a third deformation run')
-      this.setPreviousStatement(true, null);
-      this.setNextStatement(true, null);
-      this.setColour("#B35F00")
-      this.setTooltip("");
-      this.setHelpUrl("");
-    }
-  };
-
-  Blockly.JavaScript['deformation-third-run'] = function(block) {
-    const code = `setCurrentRunNumber(${3});\n`;
+    const runNumber = block.getFieldValue("runNumber");
+    const code = `setCurrentRunNumber(${runNumber});\n`;
     return code;
   };
 

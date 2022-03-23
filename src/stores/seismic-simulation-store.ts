@@ -270,6 +270,8 @@ export const SeismicSimulationStore = types
       self.visibleGPSStationIds.clear();
       self.selectedGPSStationId = undefined;
       self.showVelocityArrows = false;
+      self.deformationHistory.clear();
+      self.deformationCurrentRunGroup = 0;
       self.deformationModelStep = 0;
       self.deformationModelUserEarthquakeCount = 0;
       self.deformationModelUserEarthquakeLatestStep = 0;
@@ -334,7 +336,15 @@ export const SeismicSimulationStore = types
       self.deformationModelFaultAngle = angle;
     },
     setCurrentRunNumber(runNumber: number){
-      self.reset();
+      self.deformationModelStep = 0;
+      self.deformationModelUserEarthquakeCount = 0;
+      self.deformationModelUserEarthquakeLatestStep = 0;
+
+      if (runNumber === 1){
+        self.deformationHistory.clear();
+        self.deformationCurrentRunGroup = 0;
+      }
+
       self.deformationCurrentRunGroup = runNumber;
     },
     saveDeformationData(year: number){
@@ -352,11 +362,7 @@ export const SeismicSimulationStore = types
       } else {
           lastGroup.values.push({year, deformation});
       }
-    },
-    clearDeformationHistory(){
-     self.deformationHistory.clear();
-     self.deformationCurrentRunGroup = 0;
-    },
+    }
   }))
   .views((self) => ({
     get allGPSStations() {
