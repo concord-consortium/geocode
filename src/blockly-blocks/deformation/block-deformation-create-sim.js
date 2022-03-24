@@ -43,26 +43,6 @@ Blockly.Blocks['deformation-create-sim'] = {
     return code;
   }
 
-  Blockly.Blocks['deformation-new-run'] = {
-    init: function() {
-      this.appendDummyInput()
-          .appendField('Create a ')
-          .appendField(new Blockly.FieldDropdown([["first","1"], ["second","2"], ["third","3"]]), "runNumber")
-          .appendField(' run')
-      this.setPreviousStatement(true, null);
-      this.setNextStatement(true, null);
-      this.setColour("#B35F00")
-      this.setTooltip("");
-      this.setHelpUrl("");
-    }
-  };
-
-  Blockly.JavaScript['deformation-new-run'] = function(block) {
-    const runNumber = block.getFieldValue("runNumber");
-    const code = `setCurrentRunNumber(${runNumber});\n`;
-    return code;
-  };
-
   Blockly.Blocks['deformation-year-loop'] = {
     init: function() {
       this.appendDummyInput()
@@ -86,13 +66,13 @@ Blockly.Blocks['deformation-create-sim'] = {
     var dropdown_year_step = block.getFieldValue('year_step');
     var branch = Blockly.JavaScript.statementToCode(block, 'DO');
 
-    var code = '';
+    var code = 'createNewRun();\n';
 
     code += 'for (var year = ' + dropdown_year_step + '; ' +
         'year <= ' + number_max_year + '; ' +
         'year += ' + dropdown_year_step + ') {\n' +
         branch +
-        '}\n';
+        '};\n';
     return code;
   };
 

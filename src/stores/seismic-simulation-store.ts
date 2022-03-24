@@ -335,17 +335,12 @@ export const SeismicSimulationStore = types
     setDeformationModelFaultAngle(angle: number) {
       self.deformationModelFaultAngle = angle;
     },
-    setCurrentRunNumber(runNumber: number){
+    createNewRun(){
       self.deformationModelStep = 0;
       self.deformationModelUserEarthquakeCount = 0;
       self.deformationModelUserEarthquakeLatestStep = 0;
 
-      if (runNumber === 1){
-        self.deformationHistory.clear();
-        self.deformationCurrentRunGroup = 0;
-      }
-
-      self.deformationCurrentRunGroup = runNumber;
+      self.deformationCurrentRunGroup++;
     },
     saveDeformationData(year: number){
       const buildUpYears = self.deformationModelStep - self.deformationModelUserEarthquakeLatestStep;
