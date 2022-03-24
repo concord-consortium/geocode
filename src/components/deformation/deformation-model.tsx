@@ -7,6 +7,7 @@ import { deg2rad } from "../../utilities/coordinateSpaceConversion";
 interface IProps {
   width: number;
   height: number;
+  showDeformationGraph: boolean;
 }
 
 interface Point {x: number; y: number; }
@@ -94,6 +95,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     };
     return (
       <div style={relativeStyle}>
+        { this.props.showDeformationGraph ? <div>the deformation graph is showing</div> : <div/>}
         <canvas ref={this.canvasRef} style={absoluteStyle} />
       </div>
     );
