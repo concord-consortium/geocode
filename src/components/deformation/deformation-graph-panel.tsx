@@ -1,7 +1,6 @@
 import * as React from "react";
 import styled from "styled-components";
 import { BaseComponent, IBaseProps } from "../base";
-import { HorizontalContainer, VerticalContainer } from "../styled-containers";
 import { inject, observer } from "mobx-react";
 import {SvgD3LineChart} from "../charts/svg-d3-line-chart";
 import { toJS } from "mobx";

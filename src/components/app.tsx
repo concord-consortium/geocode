@@ -577,7 +577,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               >
                 <DeformationModel
                   width={mapWidth}
-                  height={height - 160}
+                  height={height - 225}
                   showDeformationGraph={showDeformationGraph}
                 />
                 <PlateMovementPanel

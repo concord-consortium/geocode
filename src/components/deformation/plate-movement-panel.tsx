@@ -6,7 +6,7 @@ import SpeedDirectionWidget from "../widgets/speed-direction-widget";
 import { WidgetPanelTypes } from "../../utilities/widget";
 
 const PlateDiv = styled.div`
-  margin: 0 5px 5px 5px;
+  margin: 5px 5px 5px 5px;
   font-size: 14px;
   font-weight: normal;
 `;

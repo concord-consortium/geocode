@@ -3,12 +3,30 @@ import { inject, observer } from "mobx-react";
 import { BaseComponent } from "../base";
 import { IDisposer, onAction } from "mobx-state-tree";
 import { deg2rad } from "../../utilities/coordinateSpaceConversion";
+import styled from "styled-components";
+
+interface WorkSpaceProps {
+  width: number;
+  height: number;
+}
 
 interface IProps {
   width: number;
   height: number;
   showDeformationGraph: boolean;
 }
+
+const CanvDiv = styled.div`
+  position: relative;
+  border: 0px solid black; border-radius: 0px;
+  width: ${(p: WorkSpaceProps) => `${p.width - 56}px`};
+  height: ${(p: WorkSpaceProps) => `${p.height}px`};
+  padding-left: 28px;
+  padding-right: 28px;
+  padding-top: 25px;
+  box-sizing: content-box;
+`;
+
 
 interface Point {x: number; y: number; }
 
@@ -82,21 +100,29 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
   public componentDidUpdate() {
     this.redraw();
+
+    
   }
 
   public render() {
     const { width, height } = this.props;
-
     canvasWidth = width - (canvasMargin.left * 2);
     canvasHeight = height - (canvasMargin.top * 2);
     const relativeStyle: React.CSSProperties = { position: "relative", width, height };
     const absoluteStyle: React.CSSProperties = {
       position: "absolute", top: canvasMargin.top, left: canvasMargin.left, width: canvasWidth, height: canvasHeight
     };
+    const modelStyle: React.CSSProperties = {
+      position: "absolute",
+      top: (canvasWidth - this.modelWidth) / 2, 
+      left: (canvasHeight - this.modelWidth) / 2,
+      width: this.modelWidth,
+      height: this.modelWidth,
+    }
     return (
       <div style={relativeStyle}>
-        { this.props.showDeformationGraph ? <div>the deformation graph is showing</div> : <div/>}
         <canvas ref={this.canvasRef} style={absoluteStyle} />
+        { this.props.showDeformationGraph ? <div style={absoluteStyle}><div style={modelStyle}>Block Inputs</div></div> : <div/>}
       </div>
     );
   }
