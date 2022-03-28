@@ -3,7 +3,7 @@ import { inject, observer } from "mobx-react";
 import { BaseComponent } from "../base";
 import { IDisposer, onAction } from "mobx-state-tree";
 import { deg2rad } from "../../utilities/coordinateSpaceConversion";
-import styled from "styled-components";
+import BlockInputsButton from '../deformation/block-inputs-button';
 
 interface WorkSpaceProps {
   width: number;
@@ -93,8 +93,8 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       <div style={relativeStyle}>
         <canvas ref={this.canvasRef} style={absoluteStyle} />
         { this.props.showDeformationGraph ?
-          <div style={absoluteStyle}>Block Inputs</div>
-        : <div/>}
+          <div style={absoluteStyle}><BlockInputsButton /></div>
+        : <div/> }
       </div>
     );
   }
