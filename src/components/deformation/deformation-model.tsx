@@ -16,37 +16,14 @@ interface IProps {
   showDeformationGraph: boolean;
 }
 
-const CanvDiv = styled.div`
-  position: relative;
-  border: 0px solid black; border-radius: 0px;
-  width: ${(p: WorkSpaceProps) => `${p.width - 56}px`};
-  height: ${(p: WorkSpaceProps) => `${p.height}px`};
-  padding-left: 28px;
-  padding-right: 28px;
-  padding-top: 25px;
-  box-sizing: content-box;
-`;
-
-
 interface Point {x: number; y: number; }
 
 interface EarthquakesInfo { count: number; yearsSinceEarthquake: number; distanceTravelledDueToEarthquakes: number; }
 
-const canvasMargin = {
-  top: 5,
-  left: 8
-};
 let canvasWidth = 0;
-let canvasHeight = 0;
-const modelMargin = {
-  left: 0,
-  top: 0
-};
-const minModelMargin = 20;
 
 const overflow = 200;   // amount to draw under the clipping to account for rotation
 
-const backgroundColor = "#e6f2e4";
 const lineColor = "#777";
 const drawAreaColor = "#fff";
 const textColor = "#434343";
@@ -85,10 +62,6 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
   private canvasRef = React.createRef<HTMLCanvasElement>();
   private disposer: IDisposer;
 
-  private get modelWidth() {
-    const smallestDimension = Math.min(canvasWidth, canvasHeight);
-    return smallestDimension - (minModelMargin * 2);
-  }
   private get fadeOutTime() {
     return this.stores.seismicSimulation.deformationModelEndStep / 10;
   }
@@ -100,29 +73,28 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
   public componentDidUpdate() {
     this.redraw();
-
-    
   }
 
   public render() {
     const { width, height } = this.props;
-    canvasWidth = width - (canvasMargin.left * 2);
-    canvasHeight = height - (canvasMargin.top * 2);
+
+    canvasWidth = width * .6;
+
     const relativeStyle: React.CSSProperties = { position: "relative", width, height };
+
     const absoluteStyle: React.CSSProperties = {
-      position: "absolute", top: canvasMargin.top, left: canvasMargin.left, width: canvasWidth, height: canvasHeight
-    };
-    const modelStyle: React.CSSProperties = {
       position: "absolute",
-      top: (canvasWidth - this.modelWidth) / 2, 
-      left: (canvasHeight - this.modelWidth) / 2,
-      width: this.modelWidth,
-      height: this.modelWidth,
-    }
+      top: 15,
+      left: (width / 2) - (canvasWidth / 2),
+      width: canvasWidth,
+    };
+
     return (
       <div style={relativeStyle}>
         <canvas ref={this.canvasRef} style={absoluteStyle} />
-        { this.props.showDeformationGraph ? <div style={absoluteStyle}><div style={modelStyle}>Block Inputs</div></div> : <div/>}
+        { this.props.showDeformationGraph ?
+          <div style={absoluteStyle}>Block Inputs</div>
+        : <div/>}
       </div>
     );
   }
@@ -146,20 +118,13 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       relativeHorizontalSpeed: hSpeed, deformationModelFaultAngle } = this.stores.seismicSimulation;
 
     this.canvasRef.current.width = canvasWidth;
-    this.canvasRef.current.height = canvasHeight;
-
-    modelMargin.left = (canvasWidth - this.modelWidth) / 2;
-    modelMargin.top = (canvasHeight - this.modelWidth) / 2;
+    this.canvasRef.current.height = canvasWidth;
 
     const ctx = this.canvasRef.current.getContext("2d")!;
 
-    // draw background
-    ctx.fillStyle = backgroundColor;
-    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-
     // draw border
     ctx.beginPath();
-    ctx.rect(modelMargin.left, modelMargin.top, this.modelWidth, this.modelWidth);
+    ctx.rect(0, 0, canvasWidth, canvasWidth);
     ctx.stroke();
     ctx.fillStyle = drawAreaColor;
     ctx.fill();
@@ -172,8 +137,8 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.strokeStyle = faultColor;
     ctx.lineWidth = 3;
     ctx.setLineDash([20, 5]);
-    ctx.moveTo(modelMargin.left + (this.modelWidth / 2) - 1, modelMargin.top - overflow);
-    ctx.lineTo(modelMargin.left + (this.modelWidth / 2) - 1, this.modelWidth + modelMargin.top + (overflow * 2));
+    ctx.moveTo((canvasWidth / 2) - 1, 0 - overflow);
+    ctx.lineTo((canvasWidth / 2) - 1, canvasWidth + (overflow * 2));
     ctx.stroke();
     ctx.setLineDash([]);
     ctx.lineWidth = 1;
@@ -185,13 +150,13 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       ctx.fillStyle = `rgba(255,58,58,${plateAlpha})`;
       ctx.beginPath();
       ctx.rect(-overflow, -overflow,
-        (this.modelWidth / 2) + modelMargin.left + overflow, this.modelWidth + (overflow * 2));
+        (canvasWidth / 2) + overflow, canvasWidth + (overflow * 2));
       ctx.fill();
 
       ctx.fillStyle = `rgba(219,194,58,${plateAlpha})`;
       ctx.beginPath();
-      ctx.rect(modelMargin.left + (this.modelWidth / 2), -overflow,
-        (this.modelWidth / 2) + overflow, this.modelWidth + modelMargin.top + (overflow * 2));
+      ctx.rect((canvasWidth / 2), -overflow,
+        (canvasWidth / 2) + overflow, canvasWidth + (overflow * 2));
       ctx.fill();
     }
 
@@ -223,14 +188,14 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     const verticalLines: Point[][] = [];
 
     // horizontal lines start below model and go beyond in case lines curve into model
-    const yBounds = [modelMargin.top - 200 - overflow, modelMargin.top + this.modelWidth + 400 + (overflow * 2)];
+    const yBounds = [200 - overflow, canvasWidth + 400 + (overflow * 2)];
     // vertical lines remain vertical and can be clipped to frame
-    const xBounds = [modelMargin.left - overflow, modelMargin.left + this.modelWidth + (overflow * 2)];
+    const xBounds = [-overflow, canvasWidth + (overflow * 2)];
 
     // form "horizontal" lines, one for each step vertically
     // (this is slightly inefficient, because they all have the same shape, but the calc is fast)
     for (let y = yBounds[0]; y < yBounds[1]; y += lineSpacing) {
-      horizontalLines.push(...this.generateHorizontalLines(y, modelMargin.left, vSpeed, year));
+      horizontalLines.push(...this.generateHorizontalLines(y, 0, vSpeed, year));
     }
     // form vertical lines, one for each step horizontally
     for (let x = xBounds[0]; x < xBounds[1]; x += lineSpacing) {
@@ -301,14 +266,14 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
     let labelOffset = 20 + (rotationNormalizedTo90 * 30) + (leftwardAngle ? (rotationNormalizedTo90 * -20) : 0);
     this.renderHorizontalLabel("Plate 1", deformationModelFaultAngle,
-      modelMargin.left + (this.modelWidth / 2) - 50, modelMargin.top + labelOffset, ctx);
+     ( (canvasWidth) / 2) - 50, labelOffset, ctx);
     this.renderHorizontalLabel("Plate 2", deformationModelFaultAngle,
-      modelMargin.left + (this.modelWidth / 2) + 50, modelMargin.top + labelOffset, ctx);
+       (canvasWidth / 2) + 50, labelOffset, ctx);
 
     ctx.font = "13px Lato";
     for (let i = 0; i < stationPoints.length; i++) {
-      ctx.textAlign = stationPoints[i].x < this.modelWidth / 2 ? "right" : "left";
-      const textPositionAdjust = stationPoints[i].x < this.modelWidth / 2 ? -10 : 10;
+      ctx.textAlign = stationPoints[i].x < canvasWidth / 2 ? "right" : "left";
+      const textPositionAdjust = stationPoints[i].x < canvasWidth / 2 ? -10 : 10;
       const originX = stationPoints[i].x + textPositionAdjust;
       const originY = stationPoints[i].y + 5;
       this.renderHorizontalLabel(`Station ${i + 1}`, deformationModelFaultAngle, originX, originY, ctx);
@@ -318,7 +283,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.textAlign = "end";
     labelOffset = 15 + (rotationNormalizedTo90 * 30) + (leftwardAngle ? (rotationNormalizedTo90 * -20) : 0);
     this.renderHorizontalLabel("Fault", deformationModelFaultAngle,
-      modelMargin.left + this.modelWidth / 2 - 10, modelMargin.top + this.modelWidth - labelOffset, ctx);
+      canvasWidth / 2 - 10, canvasWidth - labelOffset, ctx);
 
     this.unrotateCanvas(ctx);
 
@@ -327,7 +292,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       ctx.textAlign = "end";
       const apparentYear = Math.round(year * deformationModelApparentYearScaling);
       ctx.fillText(`Year ${apparentYear.toLocaleString()}`,
-        modelMargin.left + this.modelWidth - 10, modelMargin.top + this.modelWidth - 10);
+      canvasWidth - 10, canvasWidth - 10);
       ctx.stroke();
     }
 
@@ -335,14 +300,14 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       const numEarthquakes = this.getEarthquakes(year, vSpeed).count;
       ctx.textAlign = "start";
       ctx.fillText(`Earthquakes: ${numEarthquakes}`,
-        modelMargin.left + 10, modelMargin.top + this.modelWidth - 10);
+       10, canvasWidth - 10);
       ctx.stroke();
     }
 
     // Scale
     const scaleKm = deformationModelWidthKm / 10;
     ctx.lineWidth = 1;
-    const s1 = { x: modelMargin.left + 20, y: modelMargin.top + 20};
+    const s1 = { x: 20, y: 20};
     const s2 = { x: s1.x + this.worldToCanvas(scaleKm), y: s1.y };
     ctx.beginPath();
     ctx.moveTo(s1.x, s1.y);
@@ -366,7 +331,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
   private rotateCanvas(ctx: CanvasRenderingContext2D, angle: number, _originX?: number, _originY?: number) {
     const originX = typeof _originX !== "undefined" ? _originX : canvasWidth / 2;
-    const originY = typeof _originY !== "undefined" ? _originY : canvasHeight / 2;
+    const originY = typeof _originY !== "undefined" ? _originY : canvasWidth / 2;
     ctx.translate(originX, originY);
     ctx.rotate(angle * Math.PI / 180);
     ctx.translate(-originX, -originY);
@@ -387,8 +352,8 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
   // returns two lines, one on either side of the center line, so we can have clean breaks
   // in the case of earthquakes
   private generateHorizontalLines(yOrigin: number, xOffset: number, relativeVerticalSpeed: number, year: number) {
-    const totalWidth = this.modelWidth + (overflow * 2);
-    const center = this.modelWidth / 2;
+    const totalWidth = canvasWidth + (overflow * 2);
+    const center = canvasWidth / 2;
     const eighthWidth = (totalWidth / 8);
     const threeEightsWidth = (totalWidth * 3 / 8);
     const lines: Point[][] = [];
@@ -396,7 +361,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     for (let line = 0; line < 2; line++) {
       const points: Point[] = [];
 
-      const start = line === 0 ? -overflow : this.modelWidth + overflow;
+      const start = line === 0 ? -overflow : canvasWidth + overflow;
       const totalSteps = line === 0 ? 50 : 51;
       let stepSize;
       let x;
@@ -436,7 +401,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
   // vertical lines are always precisely straight, so just require two points
   private generateVerticalLine(xOrigin: number, yOffset: number, relativeHorizontalSpeed: number, year: number) {
-    const center = (this.modelWidth / 2) + modelMargin.left;
+    const center = canvasWidth / 2;
 
     // xDist is always distance from the fault line.
     const xDist = this.canvasToWorld(center - xOrigin);
@@ -444,7 +409,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
     const newX = xOrigin - this.worldToCanvas(horizontalDisplacement);
 
-    const points: Point[] = [{x: newX, y: yOffset}, {x: newX, y: yOffset + this.modelWidth + (overflow * 2)}];
+    const points: Point[] = [{x: newX, y: yOffset}, {x: newX, y: yOffset + canvasWidth + (overflow * 2)}];
 
     return points;
   }
@@ -461,8 +426,8 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       const siteDisplacementY = this.calculateVerticalDisplacement(
         this.percentToWorld(site[0] - 0.5), relativeVerticalSpeed, year);
 
-      const x = this.modelWidth * site[0] + modelMargin.left + this.worldToCanvas(siteDisplacementX);
-      const y = this.modelWidth * site[1] + modelMargin.top - this.worldToCanvas(siteDisplacementY);
+      const x = canvasWidth * site[0] + this.worldToCanvas(siteDisplacementX);
+      const y = canvasWidth * site[1] - this.worldToCanvas(siteDisplacementY);
       stationPoints.push({ x, y });
     }
     return stationPoints;
@@ -537,7 +502,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
   // pixel position, starting from 0 (left or top) to km
   private canvasToWorld(canvasPosition: number) {
-    return canvasPosition / this.modelWidth *  this.stores.seismicSimulation.deformationModelWidthKm;
+    return canvasPosition / canvasWidth *  this.stores.seismicSimulation.deformationModelWidthKm;
   }
 
   // GPS stations are positioned as a percentage 0-1 across the model area
@@ -545,22 +510,22 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     return distancePercentage * this.stores.seismicSimulation.deformationModelWidthKm;
   }
   private worldToCanvas(distanceInKm: number) {
-    return distanceInKm / this.stores.seismicSimulation.deformationModelWidthKm * this.modelWidth;
+    return distanceInKm / this.stores.seismicSimulation.deformationModelWidthKm * canvasWidth;
   }
 
   // Visual representation of the plate velocities based on student values
-  private generateVelocityVectorArrows(modelWidth: number) {
+  private generateVelocityVectorArrows() {
     const {
       deformSpeedPlate1, deformDirPlate1, deformSpeedPlate2, deformDirPlate2 } =
       this.stores.seismicSimulation;
 
     // line starts at given point
-    const p1 = { x: modelMargin.left + 30, y: modelMargin.top + 50 };
+    const p1 = { x: 30, y: 50 };
     // calculate end canvas position of line to represent the magnitude and direction of movement
     const p1vx = p1.x + deformSpeedPlate1 * Math.sin(deformDirPlate1 * Math.PI / 180);
     const p1vy = p1.y + deformSpeedPlate1 * Math.cos(deformDirPlate1 * Math.PI / 180);
 
-    const p2 = { x: modelMargin.left + modelWidth - 30, y: modelMargin.top + 50 };
+    const p2 = { x: canvasWidth - 30, y: 50 };
     const p2vx = p2.x + deformSpeedPlate2 * Math.sin(deformDirPlate2 * Math.PI / 180);
     const p2vy = p2.y + deformSpeedPlate2 * Math.cos(deformDirPlate2 * Math.PI / 180);
 
