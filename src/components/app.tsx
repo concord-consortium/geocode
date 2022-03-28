@@ -26,6 +26,7 @@ import { getAuthorableSettings, updateStores, serializeState, getSavableStateAut
 import { ChartPanel } from "./charts/chart-panel";
 import { BlocklyController } from "../blockly/blockly-controller";
 import { HistogramPanel } from "./montecarlo/histogram-panel";
+import { DeformationGraphPanel } from "./deformation/deformation-graph-panel";
 import { PlateMovementPanel } from "./deformation/plate-movement-panel";
 import { uiStore } from "../stores/ui-store";
 import { unitStore } from "../stores/unit-store";
@@ -591,17 +592,20 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               && showDeformationGraph
               && !isTephra &&
               <TabPanel
-              width={`${tabWidth}px`}
-              tabcolor={this.getRightTabColor(RightSectionTypes.DEFORMATION)}
-              rightpanel={"true"}
-              data-test={this.getRightTabName(RightSectionTypes.DEFORMATION) + "-panel"}
-            >
-              <DeformationModel
-                width={mapWidth}
-                height={height - 300}
-              />
-              <div>The deformation graph will show here!</div>
-            </TabPanel>
+                width={`${tabWidth}px`}
+                tabcolor={this.getRightTabColor(RightSectionTypes.DEFORMATION)}
+                rightpanel={"true"}
+                data-test={this.getRightTabName(RightSectionTypes.DEFORMATION) + "-panel"}
+              >
+                <DeformationModel
+                  width={mapWidth}
+                  height={(height - 90) * .75}
+                />
+                <DeformationGraphPanel
+                  width={mapWidth}
+                  height={(height - 90) * .25}
+                />
+              </TabPanel>
             }
 
             <RightTabBack

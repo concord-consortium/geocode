@@ -1,4 +1,4 @@
-import { types } from "mobx-state-tree";
+import { IModelType, IMSTArray, Instance, ISimpleType, types, _NotCustomized } from "mobx-state-tree";
 import { parseOfflineUNAVCOData } from "../utilities/unavco-data";
 import deformationCalc, { StationData, DeformationOutput } from "../deformation";
 import { Filter, Range } from "./data-sets";
@@ -24,6 +24,16 @@ export type ColorMethod = "logarithmic" | "equalInterval";
 export const Friction = types.enumeration("type", ["low", "medium", "high"]);
 export const EarthquakeControl = types.enumeration("type", ["none", "auto", "user"]);
 
+export const deformationCase = types.model({year: types.number, deformation: types.number});
+export const deformationCases = types.array(deformationCase);
+export const deformationGroup = types.model({group: types.number, values: deformationCases});
+export const deformationRuns = types.array(deformationGroup);
+
+export interface IDeformationGroup extends Instance<typeof deformationGroup> {}
+export interface IDeformationRuns extends Instance<typeof deformationRuns> {}
+export interface IDeformationCase extends Instance<typeof deformationCase> {}
+export interface IDeformationCases extends Instance<typeof deformationCases> {}
+
 export const SeismicSimulationStore = types
   .model("seismicSimulation", {
     scenario: "Seismic CA",
@@ -31,6 +41,8 @@ export const SeismicSimulationStore = types
     selectedGPSStationId: types.maybe(types.string),
     showVelocityArrows: false,
 
+    deformationCurrentRunGroup: 0,
+    deformationHistory: deformationRuns,
     deformationModelStep: 0,
     deformationModelEndStep: 500000,    // years
     deformationModelTotalClockTime: 5,  // seconds
@@ -258,6 +270,8 @@ export const SeismicSimulationStore = types
       self.visibleGPSStationIds.clear();
       self.selectedGPSStationId = undefined;
       self.showVelocityArrows = false;
+      self.deformationHistory.clear();
+      self.deformationCurrentRunGroup = 0;
       self.deformationModelStep = 0;
       self.deformationModelUserEarthquakeCount = 0;
       self.deformationModelUserEarthquakeLatestStep = 0;
@@ -320,6 +334,29 @@ export const SeismicSimulationStore = types
     },
     setDeformationModelFaultAngle(angle: number) {
       self.deformationModelFaultAngle = angle;
+    },
+    createNewRun(){
+      self.deformationModelStep = 0;
+      self.deformationModelUserEarthquakeCount = 0;
+      self.deformationModelUserEarthquakeLatestStep = 0;
+
+      self.deformationCurrentRunGroup++;
+    },
+    saveDeformationData(year: number){
+      const buildUpYears = self.deformationModelStep - self.deformationModelUserEarthquakeLatestStep;
+      const deformation = Math.abs(buildUpYears * self.relativeVerticalSpeed) / 1e6;
+
+      const currentRunNumber = self.deformationCurrentRunGroup;
+      const lastGroup = self.deformationHistory[self.deformationHistory.length - 1];
+
+      if (!self.deformationHistory.length || currentRunNumber > lastGroup.group){
+        self.deformationHistory.push(deformationGroup.create({
+          group: currentRunNumber,
+          values: deformationCases.create([{year, deformation}])
+        }));
+      } else {
+          lastGroup.values.push({year, deformation});
+      }
     }
   }))
   .views((self) => ({

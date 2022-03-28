@@ -277,7 +277,6 @@ function calculateDeformationOutputData(
         // maxShearDeformation: maximumIninitesimalShearDeformation * Math.pow(10, 9),
         // areaDeformation: areaDeformation * Math.pow(10, 9),
     };
-
     return output;
 }
 

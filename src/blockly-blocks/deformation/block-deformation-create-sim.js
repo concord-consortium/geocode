@@ -66,13 +66,13 @@ Blockly.Blocks['deformation-create-sim'] = {
     var dropdown_year_step = block.getFieldValue('year_step');
     var branch = Blockly.JavaScript.statementToCode(block, 'DO');
 
-    var code = '';
+    var code = 'createNewRun();\n';
 
     code += 'for (var year = ' + dropdown_year_step + '; ' +
         'year <= ' + number_max_year + '; ' +
         'year += ' + dropdown_year_step + ') {\n' +
         branch +
-        '}\n';
+        '};\n';
     return code;
   };
 

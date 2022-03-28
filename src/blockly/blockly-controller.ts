@@ -38,6 +38,7 @@ export class BlocklyController {
   }
 
   public run = () => {
+    this.stores.seismicSimulation.reset();
     const reset = () => {
       this.setCode(this.code, this.workspace);
     };

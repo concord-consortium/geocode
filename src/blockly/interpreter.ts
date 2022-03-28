@@ -357,6 +357,14 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       seismicSimulation.startDeformationModel();
     });
 
+    addFunc("createNewRun", () => {
+      if (seismicSimulation.deformationHistory.length >= 3){
+        blocklyController.throwError("The max number of runs possible is three.");
+      } else {
+        seismicSimulation.createNewRun();
+      }
+    });
+
     addFunc("setPlateVelocity", (params: { plate: number, speed: number, direction: number | string }) => {
       if (params.speed < 0 || params.speed > seismicSimulation.deformMaxSpeed) {
         return blocklyController.throwError(`Plate speed must be between 0 and ${seismicSimulation.deformMaxSpeed} mm/year`);
@@ -388,6 +396,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       seismicSimulation.setPlateVelocity(1, params.plate_1_speed, 0);
       seismicSimulation.setPlateVelocity(2, params.plate_2_speed, 180);
       seismicSimulation.setApparentYear(params.year);
+      seismicSimulation.saveDeformationData(params.year);
     });
 
     addFunc("triggerEarthquake", () => {
