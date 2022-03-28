@@ -602,6 +602,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                   width={mapWidth}
                   height={(height - 90) * .75}
                   showDeformationGraph={showDeformationGraph}
+                  running={running}
                 />
                 <DeformationGraphPanel
                   width={mapWidth}

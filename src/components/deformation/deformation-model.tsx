@@ -14,6 +14,7 @@ interface IProps {
   width: number;
   height: number;
   showDeformationGraph: boolean;
+  running: boolean;
 }
 
 interface Point {x: number; y: number; }
@@ -76,7 +77,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
   }
 
   public render() {
-    const { width, height } = this.props;
+    const { width, height, running } = this.props;
 
     canvasWidth = width * .6;
 
@@ -93,7 +94,9 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       <div style={relativeStyle}>
         <canvas ref={this.canvasRef} style={absoluteStyle} />
         { this.props.showDeformationGraph ?
-          <div style={absoluteStyle}><BlockInputsButton /></div>
+          <div style={absoluteStyle}>
+            <BlockInputsButton running={running}/>
+          </div>
         : <div/> }
       </div>
     );

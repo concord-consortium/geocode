@@ -1,6 +1,8 @@
 import * as React from "react";
-import { PureComponent } from "react";
+import { inject, observer } from "mobx-react";
+import { BaseComponent } from "../base";
 import styled from "styled-components";
+import { stores } from "../../stores/stores";
 
 const BlockInputsButtonContainer = styled.div`
   display: flex;
@@ -29,26 +31,26 @@ const BlockInputsButtonContainer = styled.div`
 
 const BlockInputsButtonText = styled.div`
   margin-left: 4px;
-  color: #434343;
+  color: ${ p => p.running ? "#DEDEDE" : "#434343" };
   font-size: 16px;
 `;
 
 interface IProps {
-  onClick: any;
+    running: boolean;
 }
 
 interface IState {}
 
-export default class BlockInputsButton extends PureComponent<IProps, IState> {
-
-  public static defaultProps = {
-    onClick: undefined,
-  };
+@observer
+@inject("stores")
+export default class BlockInputsButton extends BaseComponent<IProps, IState> {
 
   public render() {
+    const { deformationHistory } = this.stores.seismicSimulation;
+    const { running } = this.props;
     return (
       <BlockInputsButtonContainer>
-        <BlockInputsButtonText>Block Inputs</BlockInputsButtonText>
+        <BlockInputsButtonText running={running}>Block Inputs</BlockInputsButtonText>
       </BlockInputsButtonContainer>
     );
   }
