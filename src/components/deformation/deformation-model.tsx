@@ -3,7 +3,8 @@ import { inject, observer } from "mobx-react";
 import { BaseComponent } from "../base";
 import { IDisposer, onAction } from "mobx-state-tree";
 import { deg2rad } from "../../utilities/coordinateSpaceConversion";
-import BlockInputsButton from '../deformation/block-inputs-button';
+import BlockInputsMenu from "./block-inputs-menu";
+import { toJS } from "mobx";
 
 interface WorkSpaceProps {
   width: number;
@@ -77,7 +78,9 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
   }
 
   public render() {
-    const { width, height, running } = this.props;
+    const { width, height, running, showDeformationGraph } = this.props;
+    const { deformationHistory } = this.stores.seismicSimulation;
+    const data = toJS(deformationHistory);
 
     canvasWidth = width * .6;
 
@@ -93,9 +96,9 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     return (
       <div style={relativeStyle}>
         <canvas ref={this.canvasRef} style={absoluteStyle} />
-        { this.props.showDeformationGraph ?
+        { showDeformationGraph ?
           <div style={absoluteStyle}>
-            <BlockInputsButton running={running}/>
+            <BlockInputsMenu running={running} runs={data}/>
           </div>
         : <div/> }
       </div>
