@@ -3,7 +3,7 @@ import { inject, observer } from "mobx-react";
 import { BaseComponent } from "../base";
 import { IDisposer, onAction } from "mobx-state-tree";
 import { deg2rad } from "../../utilities/coordinateSpaceConversion";
-import BlockInputsMenu from "./block-inputs-menu";
+import BlockInputsMenu from "./block-inputs/block-inputs-menu";
 import { toJS } from "mobx";
 
 interface WorkSpaceProps {
@@ -15,7 +15,7 @@ interface IProps {
   width: number;
   height: number;
   showDeformationGraph: boolean;
-  running: boolean;
+  running?: boolean;
 }
 
 interface Point {x: number; y: number; }
@@ -98,7 +98,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
         <canvas ref={this.canvasRef} style={absoluteStyle} />
         { showDeformationGraph ?
           <div style={absoluteStyle}>
-            <BlockInputsMenu running={running} runs={data}/>
+            <BlockInputsMenu running={running!} runs={data}/>
           </div>
         : <div/> }
       </div>
