@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { PlateDiv } from "../plate-movement-panel";
 import SpeedDirectionWidget from "../../widgets/speed-direction-widget";
 import { WidgetPanelTypes } from "../../../utilities/widget";
+import { IDeformationRuns, IDeformationModelInfo } from "../../../stores/seismic-simulation-store";
 
 export const DialogContainer = styled.div`
   display: flex;
@@ -25,23 +26,26 @@ export const DialogContainer = styled.div`
 
 interface IProps{
     run?: number;
+    deformationHistory: IDeformationRuns;
+    currentRun: IDeformationModelInfo;
 };
 interface IState{};
 
 export class InnerDialog extends BaseComponent<IProps, IState>{
-    render(){
-        const { run } = this.props;
+    public render(){
+        const { run, deformationHistory, currentRun } = this.props;
         return (
             <div>
-            <p>Block Inputs</p>
+                {   deformationHistory.length ? 
+            <div><p>Block Inputs</p>
             <p>{"Run " + run}</p>
             <PlateDiv>Plate 1</PlateDiv>
             <SpeedDirectionWidget
                 type={WidgetPanelTypes.RIGHTDEFORMATIONPLATE1}
                 showWindDirection={true}
                 showWindSpeed={true}
-                windDirection={180}
-                windSpeed={35}
+                windDirection={0}
+                windSpeed={currentRun.plate1Speed}
                 showWindSymbolIcon={false}
                 speedUnits={"mm/y"}
                 maxWindSpeed={50}
@@ -55,7 +59,7 @@ export class InnerDialog extends BaseComponent<IProps, IState>{
                 showWindDirection={true}
                 showWindSpeed={true}
                 windDirection={180}
-                windSpeed={35}
+                windSpeed={currentRun.plate2Speed}
                 showWindSymbolIcon={false}
                 speedUnits={"mm/y"}
                 maxWindSpeed={50}
@@ -64,8 +68,8 @@ export class InnerDialog extends BaseComponent<IProps, IState>{
                 showBorder={true}
           />
           <p>Friction</p>
-          <p>Low</p>
-            </div>
-        )
+          <p>Low</p></div> : <div/> }
+            </div> 
+        );
     }
 }

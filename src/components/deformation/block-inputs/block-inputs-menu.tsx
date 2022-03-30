@@ -2,7 +2,7 @@ import * as React from "react";
 import { inject, observer } from "mobx-react";
 import { BaseComponent } from "../../base";
 import styled from "styled-components";
-import { IDeformationRuns } from "../../../stores/seismic-simulation-store";
+import { IDeformationRuns, IDeformationModelInfo } from "../../../stores/seismic-simulation-store";
 import { ButtonContainer, BlockInputsButtonText } from "./button-divs";
 import { DialogContainer, InnerDialog } from "./block-inputs-dialog";
 
@@ -37,12 +37,13 @@ const ExitButton = styled.button`
 
 interface IProps {
     running: boolean;
-    runs: IDeformationRuns;
+    deformationHistory: IDeformationRuns;
 }
 
 interface IState {
-  activeRun: number | null;
+  activeRun: number;
   showInputs: boolean;
+  currentRunInformation: IDeformationModelInfo;
 }
 
 const runButtonTopPositions = [45, 90, 135];
@@ -54,8 +55,9 @@ export default class BlockInputsMenu extends BaseComponent<IProps, IState> {
   constructor(props: IProps){
     super(props);
     this.state = {
-      activeRun: null,
+      activeRun: 0,
       showInputs: false,
+      currentRunInformation: {plate1Speed: 0, plate2Speed: 0},
     };
     this.setActiveRun = this.setActiveRun.bind(this);
     this.handleClick = this.handleClick.bind(this);
@@ -65,13 +67,15 @@ export default class BlockInputsMenu extends BaseComponent<IProps, IState> {
     this.setState({showInputs: !this.state.showInputs});
   }
 
-  public setActiveRun(runNumber: number) {
+  public setActiveRun(runNumber: number, currentRunInfo: IDeformationModelInfo) {
     this.setState({activeRun: runNumber});
+    this.setState({currentRunInformation: currentRunInfo});
+    console.log(this.state);
   }
 
   public render() {
-    const { running, runs } = this.props;
-    const { activeRun, showInputs } = this.state;
+    const { running, deformationHistory } = this.props;
+    const { activeRun, showInputs, currentRunInformation } = this.state;
 
     return (
       <Container>
@@ -83,10 +87,10 @@ export default class BlockInputsMenu extends BaseComponent<IProps, IState> {
             <ExitButtonDiv>
               <ExitButton onClick={this.handleClick}>X</ExitButton>
             </ExitButtonDiv>
-            <InnerDialog run={1}/>
+            <InnerDialog run={activeRun} deformationHistory={deformationHistory} currentRun={currentRunInformation}/>
           </DialogContainer>
           : <div/> }
-        { runs.length ? runs.map((run, idx) => {
+        { deformationHistory.length ? deformationHistory.map((run, idx) => {
           return (
             <ButtonContainer
               key={idx}
@@ -94,7 +98,7 @@ export default class BlockInputsMenu extends BaseComponent<IProps, IState> {
               top={runButtonTopPositions[idx]}
               color={runButtonColors[idx]}
               typeOfButton={"run"}
-              onClick={() => this.setActiveRun(run.group)}
+              onClick={() => this.setActiveRun(run.group, run.deformationModelInfo)}
               activeRun={activeRun!}
             >
               <BlockInputsButtonText

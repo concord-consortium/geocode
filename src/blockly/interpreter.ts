@@ -396,7 +396,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       seismicSimulation.setPlateVelocity(1, params.plate_1_speed, 0);
       seismicSimulation.setPlateVelocity(2, params.plate_2_speed, 180);
       seismicSimulation.setApparentYear(params.year);
-      seismicSimulation.saveDeformationData(params.year);
+      seismicSimulation.saveDeformationData(params.year, params.plate_1_speed, params.plate_2_speed);
     });
 
     addFunc("triggerEarthquake", () => {

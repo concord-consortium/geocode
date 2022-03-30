@@ -98,7 +98,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
         <canvas ref={this.canvasRef} style={absoluteStyle} />
         { showDeformationGraph ?
           <div style={absoluteStyle}>
-            <BlockInputsMenu running={running!} runs={data}/>
+            <BlockInputsMenu running={running!} deformationHistory={data}/>
           </div>
         : <div/> }
       </div>
