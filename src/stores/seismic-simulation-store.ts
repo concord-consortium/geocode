@@ -5,6 +5,7 @@ import { Filter, Range } from "./data-sets";
 import Delaunator from "delaunator";
 import { SeismicSimulationAuthorSettings, SeismicSimulationAuthorSettingsProps } from "./stores";
 import { deg2rad } from "../utilities/coordinateSpaceConversion";
+import { toJS } from "mobx";
 
 const minLat = 32;
 const maxLat = 42;
@@ -24,7 +25,7 @@ export type ColorMethod = "logarithmic" | "equalInterval";
 export const Friction = types.enumeration("type", ["low", "medium", "high"]);
 export const EarthquakeControl = types.enumeration("type", ["none", "auto", "user"]);
 
-export const deformationModelInfo = types.model({plate1Speed: types.number, plate2Speed: types.number})
+export const deformationModelInfo = types.model({plate1Speed: types.number, plate2Speed: types.number, year: types.number})
 export const deformationCase = types.model({year: types.number, deformation: types.number});
 export const deformationCases = types.array(deformationCase);
 export const deformationGroup = types.model({group: types.number, deformationModelInfo, values: deformationCases});
@@ -354,12 +355,14 @@ export const SeismicSimulationStore = types
       if (!self.deformationHistory.length || currentRunNumber > lastGroup.group){
         self.deformationHistory.push(deformationGroup.create({
           group: currentRunNumber,
-          deformationModelInfo: deformationModelInfo.create({plate1Speed, plate2Speed}),
+          deformationModelInfo: deformationModelInfo.create({plate1Speed, plate2Speed, year}),
           values: deformationCases.create([{year, deformation}])
         }));
       } else {
           lastGroup.values.push({year, deformation});
+          lastGroup.deformationModelInfo.year = year;
       }
+      console.log(toJS(self.deformationHistory));
     }
   }))
   .views((self) => ({

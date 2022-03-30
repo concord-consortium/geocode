@@ -10,11 +10,13 @@ export const DialogContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  z-index: 7;
   align-items: center;
   position: absolute;
   box-sizing: border-box;
   width: 150px;
   height: auto;
+  min-height: 50px;
   top: 0px;
   border-radius: 5px;
   background-color: #e6f2e4;
@@ -36,39 +38,42 @@ export class InnerDialog extends BaseComponent<IProps, IState>{
         const { run, deformationHistory, currentRun } = this.props;
         return (
             <div>
-                {   deformationHistory.length ? 
-            <div><p>Block Inputs</p>
-            <p>{"Run " + run}</p>
-            <PlateDiv>Plate 1</PlateDiv>
-            <SpeedDirectionWidget
-                type={WidgetPanelTypes.RIGHTDEFORMATIONPLATE1}
-                showWindDirection={true}
-                showWindSpeed={true}
-                windDirection={0}
-                windSpeed={currentRun.plate1Speed}
-                showWindSymbolIcon={false}
-                speedUnits={"mm/y"}
-                maxWindSpeed={50}
-                showAngleMarkers={true}
-                orientArrowFromAngle={false}
-                showBorder={true}
-          />
-            <PlateDiv>Plate 2</PlateDiv>
-            <SpeedDirectionWidget
-                type={WidgetPanelTypes.RIGHTDEFORMATIONPLATE2}
-                showWindDirection={true}
-                showWindSpeed={true}
-                windDirection={180}
-                windSpeed={currentRun.plate2Speed}
-                showWindSymbolIcon={false}
-                speedUnits={"mm/y"}
-                maxWindSpeed={50}
-                showAngleMarkers={true}
-                orientArrowFromAngle={false}
-                showBorder={true}
-          />
-          <p>Friction</p>
-          <p>Low</p></div> : <div/> }
+                { deformationHistory.length && run! > 0 ? 
+                    <div>
+                        <p>Block Inputs</p>
+                        <p>{"Run " + run}</p>
+                        <PlateDiv>Plate 1</PlateDiv>
+                        <SpeedDirectionWidget
+                            type={WidgetPanelTypes.RIGHTDEFORMATIONPLATE1}
+                            showWindDirection={true}
+                            showWindSpeed={true}
+                            windDirection={0}
+                            windSpeed={currentRun.plate1Speed}
+                            showWindSymbolIcon={false}
+                            speedUnits={"mm/y"}
+                            maxWindSpeed={50}
+                            showAngleMarkers={true}
+                            orientArrowFromAngle={false}
+                            showBorder={true}
+                        />
+                        <PlateDiv>Plate 2</PlateDiv>
+                        <SpeedDirectionWidget
+                            type={WidgetPanelTypes.RIGHTDEFORMATIONPLATE2}
+                            showWindDirection={true}
+                            showWindSpeed={true}
+                            windDirection={180}
+                            windSpeed={currentRun.plate2Speed}
+                            showWindSymbolIcon={false}
+                            speedUnits={"mm/y"}
+                            maxWindSpeed={50}
+                            showAngleMarkers={true}
+                            orientArrowFromAngle={false}
+                            showBorder={true}
+                        />
+                        <p>Friction</p>
+                        <p>Low</p>
+                    </div> 
+                : <div/> }
             </div> 
         );
     }
