@@ -5,7 +5,7 @@ import { HorizontalContainer, VerticalContainer } from "../styled-containers";
 import SpeedDirectionWidget from "../widgets/speed-direction-widget";
 import { WidgetPanelTypes } from "../../utilities/widget";
 
-const PlateDiv = styled.div`
+export const PlateDiv = styled.div`
   margin: 5px 5px 5px 5px;
   font-size: 14px;
   font-weight: normal;
