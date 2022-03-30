@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { IDeformationRuns, IDeformationModelInfo } from "../../../stores/seismic-simulation-store";
 import { ButtonContainer, BlockInputsButtonText } from "./button-divs";
 import { DialogContainer, InnerDialog } from "./block-inputs-dialog";
+import { ExitButtonDiv, ExitButton } from "./block-inputs-exit-buttons";
 
 const Container = styled.div`
   display: flex;
@@ -15,25 +16,6 @@ const Container = styled.div`
   right: 15px;
   width: 110px;
 `;
-
-const ExitButtonDiv = styled.div`
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  position: absolute;
-  top: 0px;
-  align-items: flex-end;
-  justify-content: flex-end;
-`
-
-const ExitButton = styled.button`
-  border: none;
-  font-size: 18px;
-  font-weight: bold;
-  color: #96b48e;
-  background-color: transparent;
-  cursor: pointer;
-`
 
 interface IProps {
     running: boolean;
