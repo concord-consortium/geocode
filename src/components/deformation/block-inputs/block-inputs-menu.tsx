@@ -4,21 +4,7 @@ import { BaseComponent } from "../../base";
 import styled from "styled-components";
 import { IDeformationRuns } from "../../../stores/seismic-simulation-store";
 import { ButtonContainer, BlockInputsButtonText } from "./button-divs";
-
-export interface IButtonProps {
-  running?: boolean;
-  color?: string;
-  top?: number;
-  run?: number;
-  typeOfButton?: string;
-  onClick?: any;
-  activeRun?: number | null;
-}
-
-interface IProps {
-    running: boolean;
-    runs: IDeformationRuns;
-}
+import { DialogContainer } from "./block-inputs-dialog";
 
 const Container = styled.div`
   display: flex;
@@ -30,8 +16,14 @@ const Container = styled.div`
   width: 110px;
 `;
 
+interface IProps {
+    running: boolean;
+    runs: IDeformationRuns;
+}
+
 interface IState {
   activeRun: number | null;
+  showInputs: boolean;
 }
 
 const runButtonTopPositions = [45, 90, 135];
@@ -44,8 +36,14 @@ export default class BlockInputsMenu extends BaseComponent<IProps, IState> {
     super(props);
     this.state = {
       activeRun: null,
+      showInputs: false,
     };
     this.setActiveRun = this.setActiveRun.bind(this);
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  public handleClick(){
+    this.setState({showInputs: !this.state.showInputs});
   }
 
   public setActiveRun(runNumber: number) {
@@ -54,13 +52,19 @@ export default class BlockInputsMenu extends BaseComponent<IProps, IState> {
 
   public render() {
     const { running, runs } = this.props;
-    const { activeRun } = this.state;
+    const { activeRun, showInputs } = this.state;
 
     return (
       <Container>
-        <ButtonContainer top={0} color={"#cee6c9"}>
+        <ButtonContainer top={0} color={"#cee6c9"} onClick={this.handleClick}>
           <BlockInputsButtonText running={running}>Block Inputs</BlockInputsButtonText>
         </ButtonContainer>
+        { showInputs ?
+          <DialogContainer>
+            <button onClick={this.handleClick}>X</button>
+            Block Inputs Information
+          </DialogContainer>
+          : <div/> }
         { runs.length ? runs.map((run, idx) => {
           return (
             <ButtonContainer

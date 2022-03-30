@@ -1,5 +1,14 @@
 import styled from "styled-components";
-import { IButtonProps } from "./block-inputs-menu";
+
+interface IButtonProps {
+  running?: boolean;
+  color?: string;
+  top?: number;
+  run?: number;
+  typeOfButton?: string;
+  onClick?: any;
+  activeRun?: number | null;
+}
 
 export const ButtonContainer = styled.div`
   display: flex;
