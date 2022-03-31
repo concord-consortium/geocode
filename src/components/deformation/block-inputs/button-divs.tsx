@@ -21,7 +21,9 @@ export const ButtonContainer = styled.div`
   height: auto;
   top: ${ (p: IButtonProps) => p.top + "px" };
   border-radius: 5px;
-  background-color: ${p => p.activeRun && p.activeRun === p.run ? p.color : "white"};
+  background-color: ${(p) => {
+    if (p.activeRun && p.activeRun === p.run) {return p.color} 
+    else {return "white"}}};
   border: ${ p => "solid 2px" + p.color };
   padding: 5px;
   box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.35);

@@ -20,12 +20,13 @@ const Container = styled.div`
 interface IProps {
     running: boolean;
     deformationHistory: IDeformationRuns;
+    deformationCurrentRunGroup: number;
 }
 
 interface IState {
-  activeRun: number;
   showInputs: boolean;
-  currentRunInformation: IDeformationModelInfo;
+  activeRunNumber: number;
+  activeRunDeformationModelInfo: IDeformationModelInfo;
 }
 
 const runButtonTopPositions = [45, 90, 135];
@@ -37,9 +38,9 @@ export default class BlockInputsMenu extends BaseComponent<IProps, IState> {
   constructor(props: IProps){
     super(props);
     this.state = {
-      activeRun: 0,
       showInputs: false,
-      currentRunInformation: {plate1Speed: 0, plate2Speed: 0, year: 0},
+      activeRunNumber: 0,
+      activeRunDeformationModelInfo: {plate1Speed: 0, plate2Speed: 0, year: 0},
     };
     this.setActiveRun = this.setActiveRun.bind(this);
     this.handleClick = this.handleClick.bind(this);
@@ -49,18 +50,19 @@ export default class BlockInputsMenu extends BaseComponent<IProps, IState> {
     this.setState({showInputs: !this.state.showInputs});
   }
 
-  public setActiveRun(runNumber: number, currentRunInfo: IDeformationModelInfo) {
-    this.setState({activeRun: runNumber});
-    this.setState({currentRunInformation: currentRunInfo});
+  public setActiveRun(runNumber: number, runDeformationModelInfo: IDeformationModelInfo) {
+    this.setState({activeRunNumber: runNumber});
+    this.setState({activeRunDeformationModelInfo: runDeformationModelInfo});
 
-    this.stores.seismicSimulation.setApparentYear(currentRunInfo.year);
-    this.stores.seismicSimulation.setPlateVelocity(1, currentRunInfo.plate1Speed, 0);
-    this.stores.seismicSimulation.setPlateVelocity(2, currentRunInfo.plate2Speed, 180);
+    this.stores.seismicSimulation.setDeformationCurrentRunNumber(runNumber);
+    this.stores.seismicSimulation.setApparentYear(runDeformationModelInfo.year);
+    this.stores.seismicSimulation.setPlateVelocity(1, runDeformationModelInfo.plate1Speed, 0);
+    this.stores.seismicSimulation.setPlateVelocity(2, runDeformationModelInfo.plate2Speed, 180);
   }
 
   public render() {
-    const { running, deformationHistory } = this.props;
-    const { activeRun, showInputs, currentRunInformation } = this.state;
+    const { running, deformationHistory, deformationCurrentRunGroup } = this.props;
+    const { showInputs, activeRunDeformationModelInfo } = this.state;
 
     return (
       <Container>
@@ -72,7 +74,7 @@ export default class BlockInputsMenu extends BaseComponent<IProps, IState> {
             <ExitButtonDiv>
               <ExitButton onClick={this.handleClick}>X</ExitButton>
             </ExitButtonDiv>
-            <InnerDialog run={activeRun} deformationHistory={deformationHistory} currentRun={currentRunInformation}/>
+            <InnerDialog run={deformationCurrentRunGroup} deformationHistory={deformationHistory} currentRun={activeRunDeformationModelInfo}/>
           </DialogContainer>
           : <div/> }
         { deformationHistory.length ? deformationHistory.map((run, idx) => {
@@ -84,7 +86,7 @@ export default class BlockInputsMenu extends BaseComponent<IProps, IState> {
               color={runButtonColors[idx]}
               typeOfButton={"run"}
               onClick={() => this.setActiveRun(run.group, run.deformationModelInfo)}
-              activeRun={activeRun!}
+              activeRun={deformationCurrentRunGroup}
             >
               <BlockInputsButtonText
                 className="buttonText"
@@ -93,7 +95,7 @@ export default class BlockInputsMenu extends BaseComponent<IProps, IState> {
                 running={running}
                 color={runButtonColors[idx]}
                 typeOfButton={"run"}
-                activeRun={activeRun}
+                activeRun={deformationCurrentRunGroup}
               >
                 {"Run " + run.group}
               </BlockInputsButtonText>

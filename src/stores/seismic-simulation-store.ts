@@ -345,6 +345,9 @@ export const SeismicSimulationStore = types
 
       self.deformationCurrentRunGroup++;
     },
+    setDeformationCurrentRunNumber(runNumber: number){
+      self.deformationCurrentRunGroup = runNumber;
+    },
     saveDeformationData(year: number, plate1Speed: number, plate2Speed: number){
       const buildUpYears = self.deformationModelStep - self.deformationModelUserEarthquakeLatestStep;
       const deformation = Math.abs(buildUpYears * self.relativeVerticalSpeed) / 1e6;
@@ -362,7 +365,6 @@ export const SeismicSimulationStore = types
           lastGroup.values.push({year, deformation});
           lastGroup.deformationModelInfo.year = year;
       }
-      console.log(toJS(self.deformationHistory));
     }
   }))
   .views((self) => ({
