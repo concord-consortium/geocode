@@ -8,9 +8,10 @@ interface IButtonProps {
   typeOfButton?: string;
   onClick?: any;
   activeRun?: number | null;
+  disabled?: boolean;
 }
 
-export const ButtonContainer = styled.div`
+export const ButtonContainer = styled.button`
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -21,25 +22,36 @@ export const ButtonContainer = styled.div`
   height: auto;
   top: ${ (p: IButtonProps) => p.top + "px" };
   border-radius: 5px;
-  background-color: ${p => p.activeRun && p.activeRun === p.run ? p.color : "white" };
+  background-color: white;
   border: ${ p => "solid 2px" + p.color };
   padding: 5px;
   box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.35);
   &:hover {
-    background-color: ${ p => p.color };
-    border: solid 2px #FFF;
-  }
+    background-color: ${p => { if (!p.disabled) return p.color; }};
+    border: ${p => { if (!p.disabled) return "solid 2px #FFF"; }};
+  };
   &:hover .buttonText {
-    color: ${p => p.typeOfButton === "run" ? "#FFF" : "#000"};
-  }
+    color: ${p => { if (!p.disabled) return "#000"; }};
+  };
   &:active {
-    background-color: ${p => p.typeOfButton === "run" ? p.color : "#e6f2e4"};
-    border: ${p => p.typeOfButton === "run" ? "2px solid" + p.color : "2px solid #FFF"}
-  }
-  cursor: pointer;
+    background-color: ${p => { if (!p.disabled) return "#e6f2e4"; }};
+    border: ${p => { if (!p.disabled) return "2px solid #FFF"; }};
+  };
+  cursor: ${ p => !p.disabled ? "default" : "pointer" };
 `;
 
-export const BlockInputsButtonText = styled.div`
+export const RunButtonContainer = styled(ButtonContainer)`
+  background-color: ${p => { if (p.activeRun && p.activeRun === p.run) return p.color; }};
+  &:hover .buttonText {
+    color: ${p => { if (!p.disabled) return "#FFF"; }};
+  }
+  &:active {
+    background-color: ${p => { if (!p.disabled) return p.color; }};
+    border: ${p => { if (!p.disabled) return "2px solid" + p.color; }};
+  }
+`;
+
+export const ButtonText = styled.div`
   color: ${ (p: IButtonProps) => {
     if (p.activeRun && p.activeRun === p.run){
       return "white";
@@ -48,8 +60,7 @@ export const BlockInputsButtonText = styled.div`
     } else {
       return "black";
     }
-  } };
+  }};
   opacity: ${ p => p.running ? "25%" : "100%" };
   font-size: 16px;
-  font-weight: bold;
 `;

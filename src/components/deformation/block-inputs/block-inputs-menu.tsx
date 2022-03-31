@@ -3,7 +3,7 @@ import { inject, observer } from "mobx-react";
 import { BaseComponent } from "../../base";
 import styled from "styled-components";
 import { IDeformationRuns, IDeformationModelInfo } from "../../../stores/seismic-simulation-store";
-import { ButtonContainer, BlockInputsButtonText } from "./button-divs";
+import { ButtonContainer, RunButtonContainer, ButtonText } from "./button-divs";
 import { DialogContainer, InnerDialog } from "./block-inputs-dialog";
 import { ExitButtonDiv, ExitButton } from "./block-inputs-exit-buttons";
 
@@ -65,8 +65,13 @@ export default class BlockInputsMenu extends BaseComponent<IProps, IState> {
 
     return (
       <Container>
-        <ButtonContainer top={0} color={blockInputButtonColor} onClick={this.toggleBlockInputs}>
-          <BlockInputsButtonText running={running}>Block Inputs</BlockInputsButtonText>
+        <ButtonContainer
+          top={0}
+          color={blockInputButtonColor}
+          onClick={this.toggleBlockInputs}
+          disabled={running ? true : false}
+        >
+          <ButtonText running={running}>Block Inputs</ButtonText>
         </ButtonContainer>
         { showInputs ?
           <DialogContainer>
@@ -82,7 +87,7 @@ export default class BlockInputsMenu extends BaseComponent<IProps, IState> {
           : <div/> }
         { deformationHistory.length ? deformationHistory.map((run, idx) => {
           return (
-            <ButtonContainer
+            <RunButtonContainer
               key={idx}
               run={idx + 1}
               top={runButtonTopPositions[idx]}
@@ -90,8 +95,9 @@ export default class BlockInputsMenu extends BaseComponent<IProps, IState> {
               typeOfButton={"run"}
               onClick={() => this.setActiveRun(run.group, run.deformationModelInfo)}
               activeRun={currentRunNumber}
+              disabled={running ? true : false}
             >
-              <BlockInputsButtonText
+              <ButtonText
                 className="buttonText"
                 key={idx}
                 run={idx + 1}
@@ -101,8 +107,8 @@ export default class BlockInputsMenu extends BaseComponent<IProps, IState> {
                 activeRun={currentRunNumber}
               >
                 {"Run " + run.group}
-              </BlockInputsButtonText>
-            </ButtonContainer>);
+              </ButtonText>
+            </RunButtonContainer>);
         }) : <div/> }
       </Container>
     );
