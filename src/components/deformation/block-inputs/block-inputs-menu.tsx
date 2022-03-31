@@ -39,7 +39,7 @@ export default class BlockInputsMenu extends BaseComponent<IProps, IState> {
     this.state = {
       activeRun: 0,
       showInputs: false,
-      currentRunInformation: {plate1Speed: 0, plate2Speed: 0},
+      currentRunInformation: {plate1Speed: 0, plate2Speed: 0, year: 0},
     };
     this.setActiveRun = this.setActiveRun.bind(this);
     this.handleClick = this.handleClick.bind(this);
@@ -52,7 +52,10 @@ export default class BlockInputsMenu extends BaseComponent<IProps, IState> {
   public setActiveRun(runNumber: number, currentRunInfo: IDeformationModelInfo) {
     this.setState({activeRun: runNumber});
     this.setState({currentRunInformation: currentRunInfo});
-    console.log(this.state);
+
+    this.stores.seismicSimulation.setApparentYear(currentRunInfo.year);
+    this.stores.seismicSimulation.setPlateVelocity(1, currentRunInfo.plate1Speed, 0);
+    this.stores.seismicSimulation.setPlateVelocity(2, currentRunInfo.plate2Speed, 180);
   }
 
   public render() {
