@@ -409,6 +409,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     });
 
     addFunc("getMaxDeformation", (friction: "low" | "medium" | "high") => {
+      seismicSimulation.setDeformationCurrentFriction(friction);
       return {data: seismicSimulation.getDeformationModelMaxDisplacementBeforeEarthquakeGivenFriction(friction)};
     });
 

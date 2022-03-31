@@ -27,28 +27,28 @@ export const DialogContainer = styled.div`
 `;
 
 interface IProps{
-    run?: number;
+    runNumber: number;
     deformationHistory: IDeformationRuns;
-    currentRun: IDeformationModelInfo;
+    runInfo: IDeformationModelInfo;
 };
 interface IState{};
 
 export class InnerDialog extends BaseComponent<IProps, IState>{
     public render(){
-        const { run, deformationHistory, currentRun } = this.props;
+        const { runNumber, deformationHistory, runInfo } = this.props;
         return (
             <div>
-                { deformationHistory.length && run! > 0 ? 
+                { deformationHistory.length && runNumber! > 0 ? 
                     <div>
                         <p>Block Inputs</p>
-                        <p>{"Run " + run}</p>
+                        <p>{"Run " + runNumber}</p>
                         <PlateDiv>Plate 1</PlateDiv>
                         <SpeedDirectionWidget
                             type={WidgetPanelTypes.RIGHTDEFORMATIONPLATE1}
                             showWindDirection={true}
                             showWindSpeed={true}
                             windDirection={0}
-                            windSpeed={currentRun.plate1Speed}
+                            windSpeed={runInfo.plate1Speed}
                             showWindSymbolIcon={false}
                             speedUnits={"mm/y"}
                             maxWindSpeed={50}
@@ -62,7 +62,7 @@ export class InnerDialog extends BaseComponent<IProps, IState>{
                             showWindDirection={true}
                             showWindSpeed={true}
                             windDirection={180}
-                            windSpeed={currentRun.plate2Speed}
+                            windSpeed={runInfo.plate2Speed}
                             showWindSymbolIcon={false}
                             speedUnits={"mm/y"}
                             maxWindSpeed={50}
@@ -71,7 +71,7 @@ export class InnerDialog extends BaseComponent<IProps, IState>{
                             showBorder={true}
                         />
                         <p>Friction</p>
-                        <p>Low</p>
+                        <p>{runInfo.friction}</p>
                     </div> 
                 : <div/> }
             </div> 

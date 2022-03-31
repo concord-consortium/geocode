@@ -25,7 +25,7 @@ export type ColorMethod = "logarithmic" | "equalInterval";
 export const Friction = types.enumeration("type", ["low", "medium", "high"]);
 export const EarthquakeControl = types.enumeration("type", ["none", "auto", "user"]);
 
-export const deformationModelInfo = types.model({plate1Speed: types.number, plate2Speed: types.number, year: types.number})
+export const deformationModelInfo = types.model({plate1Speed: types.number, plate2Speed: types.number, year: types.number, friction: types.string})
 export const deformationCase = types.model({year: types.number, deformation: types.number});
 export const deformationCases = types.array(deformationCase);
 export const deformationGroup = types.model({group: types.number, deformationModelInfo, values: deformationCases});
@@ -44,7 +44,8 @@ export const SeismicSimulationStore = types
     selectedGPSStationId: types.maybe(types.string),
     showVelocityArrows: false,
 
-    deformationCurrentRunGroup: 0,
+    deformationCurrentRunNumber: 0,
+    deformationCurrentRunFriction: "",
     deformationHistory: deformationRuns,
     deformationModelStep: 0,
     deformationModelEndStep: 500000,    // years
@@ -274,7 +275,7 @@ export const SeismicSimulationStore = types
       self.selectedGPSStationId = undefined;
       self.showVelocityArrows = false;
       self.deformationHistory.clear();
-      self.deformationCurrentRunGroup = 0;
+      self.deformationCurrentRunNumber = 0;
       self.deformationModelStep = 0;
       self.deformationModelUserEarthquakeCount = 0;
       self.deformationModelUserEarthquakeLatestStep = 0;
@@ -343,22 +344,27 @@ export const SeismicSimulationStore = types
       self.deformationModelUserEarthquakeCount = 0;
       self.deformationModelUserEarthquakeLatestStep = 0;
 
-      self.deformationCurrentRunGroup++;
+      self.deformationCurrentRunNumber++;
     },
     setDeformationCurrentRunNumber(runNumber: number){
-      self.deformationCurrentRunGroup = runNumber;
+      self.deformationCurrentRunNumber = runNumber;
+    },
+    setDeformationCurrentFriction(friction: string){
+      const lastGroup = self.deformationHistory[self.deformationHistory.length - 1];
+      lastGroup.deformationModelInfo.friction = friction;
+      return lastGroup.deformationModelInfo.friction;
     },
     saveDeformationData(year: number, plate1Speed: number, plate2Speed: number){
       const buildUpYears = self.deformationModelStep - self.deformationModelUserEarthquakeLatestStep;
       const deformation = Math.abs(buildUpYears * self.relativeVerticalSpeed) / 1e6;
 
-      const currentRunNumber = self.deformationCurrentRunGroup;
+      const currentRunNumber = self.deformationCurrentRunNumber;
       const lastGroup = self.deformationHistory[self.deformationHistory.length - 1];
 
       if (!self.deformationHistory.length || currentRunNumber > lastGroup.group){
         self.deformationHistory.push(deformationGroup.create({
           group: currentRunNumber,
-          deformationModelInfo: deformationModelInfo.create({plate1Speed, plate2Speed, year}),
+          deformationModelInfo: deformationModelInfo.create({plate1Speed, plate2Speed, year, friction: ""}),
           values: deformationCases.create([{year, deformation}])
         }));
       } else {
