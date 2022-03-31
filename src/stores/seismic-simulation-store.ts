@@ -25,7 +25,12 @@ export type ColorMethod = "logarithmic" | "equalInterval";
 export const Friction = types.enumeration("type", ["low", "medium", "high"]);
 export const EarthquakeControl = types.enumeration("type", ["none", "auto", "user"]);
 
-export const deformationModelInfo = types.model({plate1Speed: types.number, plate2Speed: types.number, year: types.number, friction: types.string})
+export const deformationModelInfo = types.model({
+                                      plate1Speed: types.number,
+                                      plate2Speed: types.number,
+                                      year: types.number,
+                                      friction: types.string
+                                    });
 export const deformationCase = types.model({year: types.number, deformation: types.number});
 export const deformationCases = types.array(deformationCase);
 export const deformationGroup = types.model({group: types.number, deformationModelInfo, values: deformationCases});
@@ -45,7 +50,6 @@ export const SeismicSimulationStore = types
     showVelocityArrows: false,
 
     deformationCurrentRunNumber: 0,
-    deformationCurrentRunFriction: "",
     deformationHistory: deformationRuns,
     deformationModelStep: 0,
     deformationModelEndStep: 500000,    // years

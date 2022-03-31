@@ -73,9 +73,9 @@ export default class BlockInputsMenu extends BaseComponent<IProps, IState> {
             <ExitButtonDiv>
               <ExitButton onClick={this.toggleBlockInputs}>X</ExitButton>
             </ExitButtonDiv>
-            <InnerDialog 
+            <InnerDialog
               runNumber={currentRunNumber}
-              deformationHistory={deformationHistory} 
+              deformationHistory={deformationHistory}
               runInfo={activeRunDeformationModelInfo}
             />
           </DialogContainer>

@@ -30,15 +30,16 @@ interface IProps{
     runNumber: number;
     deformationHistory: IDeformationRuns;
     runInfo: IDeformationModelInfo;
-};
-interface IState{};
+}
+
+interface IState{}
 
 export class InnerDialog extends BaseComponent<IProps, IState>{
     public render(){
         const { runNumber, deformationHistory, runInfo } = this.props;
         return (
             <div>
-                { deformationHistory.length && runNumber! > 0 ? 
+                { deformationHistory.length && runNumber! > 0 ?
                     <div>
                         <p>Block Inputs</p>
                         <p>{"Run " + runNumber}</p>
@@ -72,9 +73,9 @@ export class InnerDialog extends BaseComponent<IProps, IState>{
                         />
                         <p>Friction</p>
                         <p>{runInfo.friction}</p>
-                    </div> 
+                    </div>
                 : <div/> }
-            </div> 
+            </div>
         );
     }
 }

@@ -8,7 +8,7 @@ export const ExitButtonDiv = styled.div`
   top: 0px;
   align-items: flex-end;
   justify-content: flex-end;
-`
+`;
 
 export const ExitButton = styled.button`
   border: none;
@@ -17,4 +17,4 @@ export const ExitButton = styled.button`
   color: #96b48e;
   background-color: transparent;
   cursor: pointer;
-`
+`;

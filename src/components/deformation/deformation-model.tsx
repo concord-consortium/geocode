@@ -80,7 +80,6 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
   public render() {
     const { width, height, running, showDeformationGraph } = this.props;
     const { deformationHistory, deformationCurrentRunNumber } = this.stores.seismicSimulation;
-    const data = toJS(deformationHistory);
 
     canvasWidth = width * .6;
 
@@ -98,7 +97,11 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
         <canvas ref={this.canvasRef} style={absoluteStyle} />
         { showDeformationGraph ?
           <div style={absoluteStyle}>
-            <BlockInputsMenu running={running!} deformationHistory={data} currentRunNumber={toJS(deformationCurrentRunNumber)}/>
+            <BlockInputsMenu
+              running={running!}
+              deformationHistory={toJS(deformationHistory)}
+              currentRunNumber={toJS(deformationCurrentRunNumber)}
+            />
           </div>
         : <div/> }
       </div>
