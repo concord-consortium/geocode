@@ -11,12 +11,14 @@ interface PanelProps {
 }
 
 const Panel = styled.div`
-  background-color: #cee6c9;
+  background-color: #CEE6C9;
   border-radius: 10px;
   height: ${(p: PanelProps) => `${p.height}px`};
   width: ${(p: PanelProps) => `${p.width - 56}px`};
   margin: 10px 28px;
   box-sizing: content-box;
+  positon: absolute;
+  top: ${p => `${p.height * .65}px`}
 `;
 
 const PanelContent = styled.div`

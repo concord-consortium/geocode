@@ -81,15 +81,16 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     const { width, height, running, showDeformationGraph } = this.props;
     const { deformationHistory, deformationCurrentRunNumber } = this.stores.seismicSimulation;
 
-    canvasWidth = width * .6;
+    canvasWidth = height - 18;
 
-    const relativeStyle: React.CSSProperties = { position: "relative", width, height };
+    const relativeStyle: React.CSSProperties = { width, height, position: "relative", top: 0, left: 0 };
 
     const absoluteStyle: React.CSSProperties = {
       position: "absolute",
       top: 15,
       left: (width / 2) - (canvasWidth / 2),
       width: canvasWidth,
+      maxHeight: canvasWidth,
     };
 
     return (
