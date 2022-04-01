@@ -12,6 +12,7 @@
 
   <category name="Deformation" colour="#B35F00">
     <block type="deformation-create-sim"></block>
+    <block type="deformation-create-graph"></block>
     <block type="deformation-year-loop"></block>
     <block type="deformation-model-step"></block>
     <block type="deformation-model-earthquake"></block>

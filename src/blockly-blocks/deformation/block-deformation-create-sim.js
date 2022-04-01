@@ -43,6 +43,20 @@ Blockly.Blocks['deformation-create-sim'] = {
     return code;
   }
 
+  Blockly.Blocks['deformation-create-graph'] = {
+    init: function() {
+      this.appendDummyInput()
+          .appendField(strings.CREATE_DEFORMATION_GRAPH)
+      this.setColour("#B35F00")
+      this.setPreviousStatement(false, null);
+      this.setNextStatement(true, null);
+    }
+  }
+
+  Blockly.JavaScript['deformation-create-graph'] = function(block) {
+    return 'createDeformationGraph();';
+  }
+
   Blockly.Blocks['deformation-year-loop'] = {
     init: function() {
       this.appendDummyInput()

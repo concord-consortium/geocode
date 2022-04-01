@@ -5,6 +5,9 @@ export const SPEED_MM_YR = "speed (mm/yr)";
 export const DIRECTION_DEGREES = "direction (degrees)";
 export const SET_VELOCITY_OF_PLATE_2_WITH = "Set velocity of Plate 2 with";
 
+// Strings for Deformation Graph
+export const CREATE_DEFORMATION_GRAPH = "Create Deformation over Time graph";
+
 // Strings for Year Loop
 export const RUN_FROM_YEAR_1 = "Run from Year 1 to Year ";
 export const BY = "by";
