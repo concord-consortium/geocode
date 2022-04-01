@@ -1,7 +1,6 @@
 import * as React from "react";
 import { BaseComponent } from "../../base";
 import styled from "styled-components";
-import { PlateDiv } from "../plate-movement-panel";
 import SpeedDirectionWidget from "../../widgets/speed-direction-widget";
 import { WidgetPanelTypes } from "../../../utilities/widget";
 import { IDeformationRuns } from "../../../stores/seismic-simulation-store";
@@ -26,6 +25,20 @@ export const DialogContainer = styled.div`
   text-align: center;
 `;
 
+const InnerDiv = styled.div`
+  margin: 5px 5px 5px 5px;
+  font-size: 16px;
+  font-weight: normal;
+`;
+
+const TitleDiv = styled(InnerDiv)`
+  margin: 15px 5px 5px 5px;
+`;
+
+const FrictionText = styled(InnerDiv)`
+  font-size: 14px;
+`;
+
 interface IProps{
     runNumber: number;
     deformationHistory: IDeformationRuns;
@@ -33,17 +46,21 @@ interface IProps{
 
 interface IState{}
 
+const toTitleCase = (str: string) => {
+    return str[0].toUpperCase() + str.slice(1);
+};
+
 export class InnerDialog extends BaseComponent<IProps, IState>{
     public render(){
         const { runNumber, deformationHistory } = this.props;
         const currentRun = deformationHistory.filter(run => run.group === runNumber)[0];
         return (
             <div>
-                { deformationHistory.length && runNumber! > 0 ?
+                { deformationHistory.length && runNumber! > 0 && currentRun ?
                     <div>
-                        <p>Block Inputs</p>
-                        <p>{"Run " + runNumber}</p>
-                        <PlateDiv>Plate 1</PlateDiv>
+                        <InnerDiv>Block Inputs</InnerDiv>
+                        <InnerDiv>{"Run " + runNumber}</InnerDiv>
+                        <TitleDiv>Plate 1</TitleDiv>
                         <SpeedDirectionWidget
                             type={WidgetPanelTypes.RIGHTDEFORMATIONPLATE1}
                             showWindDirection={true}
@@ -57,7 +74,7 @@ export class InnerDialog extends BaseComponent<IProps, IState>{
                             orientArrowFromAngle={false}
                             showBorder={true}
                         />
-                        <PlateDiv>Plate 2</PlateDiv>
+                        <TitleDiv>Plate 2</TitleDiv>
                         <SpeedDirectionWidget
                             type={WidgetPanelTypes.RIGHTDEFORMATIONPLATE2}
                             showWindDirection={true}
@@ -71,8 +88,8 @@ export class InnerDialog extends BaseComponent<IProps, IState>{
                             orientArrowFromAngle={false}
                             showBorder={true}
                         />
-                        <p>Friction</p>
-                        <p>{currentRun.deformationModelInfo.friction}</p>
+                        <TitleDiv>Friction</TitleDiv>
+                        <FrictionText>{currentRun.deformationModelInfo.friction}</FrictionText>
                     </div>
                 : <div/> }
             </div>
