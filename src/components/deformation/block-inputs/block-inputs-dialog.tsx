@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { PlateDiv } from "../plate-movement-panel";
 import SpeedDirectionWidget from "../../widgets/speed-direction-widget";
 import { WidgetPanelTypes } from "../../../utilities/widget";
-import { IDeformationRuns, IDeformationModelInfo } from "../../../stores/seismic-simulation-store";
+import { IDeformationRuns } from "../../../stores/seismic-simulation-store";
 
 export const DialogContainer = styled.div`
   display: flex;
@@ -29,14 +29,14 @@ export const DialogContainer = styled.div`
 interface IProps{
     runNumber: number;
     deformationHistory: IDeformationRuns;
-    runInfo: IDeformationModelInfo;
 }
 
 interface IState{}
 
 export class InnerDialog extends BaseComponent<IProps, IState>{
     public render(){
-        const { runNumber, deformationHistory, runInfo } = this.props;
+        const { runNumber, deformationHistory } = this.props;
+        const currentRun = deformationHistory.filter(run => run.group === runNumber)[0];
         return (
             <div>
                 { deformationHistory.length && runNumber! > 0 ?
@@ -49,7 +49,7 @@ export class InnerDialog extends BaseComponent<IProps, IState>{
                             showWindDirection={true}
                             showWindSpeed={true}
                             windDirection={0}
-                            windSpeed={runInfo.plate1Speed}
+                            windSpeed={currentRun.deformationModelInfo.plate1Speed}
                             showWindSymbolIcon={false}
                             speedUnits={"mm/y"}
                             maxWindSpeed={50}
@@ -63,7 +63,7 @@ export class InnerDialog extends BaseComponent<IProps, IState>{
                             showWindDirection={true}
                             showWindSpeed={true}
                             windDirection={180}
-                            windSpeed={runInfo.plate2Speed}
+                            windSpeed={currentRun.deformationModelInfo.plate2Speed}
                             showWindSymbolIcon={false}
                             speedUnits={"mm/y"}
                             maxWindSpeed={50}
@@ -72,7 +72,7 @@ export class InnerDialog extends BaseComponent<IProps, IState>{
                             showBorder={true}
                         />
                         <p>Friction</p>
-                        <p>{runInfo.friction}</p>
+                        <p>{currentRun.deformationModelInfo.friction}</p>
                     </div>
                 : <div/> }
             </div>

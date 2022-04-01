@@ -25,7 +25,6 @@ interface IProps {
 
 interface IState {
   showInputs: boolean;
-  activeRunDeformationModelInfo: IDeformationModelInfo;
 }
 
 const blockInputButtonColor = "#CEE6C9";
@@ -39,7 +38,6 @@ export default class BlockInputsMenu extends BaseComponent<IProps, IState> {
     super(props);
     this.state = {
       showInputs: false,
-      activeRunDeformationModelInfo: {plate1Speed: 0, plate2Speed: 0, year: 0, friction: ""},
     };
     this.setActiveRun = this.setActiveRun.bind(this);
     this.toggleBlockInputs = this.toggleBlockInputs.bind(this);
@@ -50,8 +48,6 @@ export default class BlockInputsMenu extends BaseComponent<IProps, IState> {
   }
 
   public setActiveRun(runNumber: number, runDeformationModelInfo: IDeformationModelInfo) {
-    this.setState({activeRunDeformationModelInfo: runDeformationModelInfo});
-
     this.stores.seismicSimulation.setDeformationCurrentRunNumber(runNumber);
     this.stores.seismicSimulation.setApparentYear(runDeformationModelInfo.year);
     this.stores.seismicSimulation.setPlateVelocity(1, runDeformationModelInfo.plate1Speed, 0);
@@ -59,9 +55,8 @@ export default class BlockInputsMenu extends BaseComponent<IProps, IState> {
   }
 
   public render() {
-    const { running, deformationHistory, currentRunNumber} = this.props;
-    const { showInputs, activeRunDeformationModelInfo } = this.state;
-    console.log(deformationHistory);
+    const { running, deformationHistory, currentRunNumber } = this.props;
+    const { showInputs } = this.state;
 
     return (
       <Container>
@@ -70,6 +65,7 @@ export default class BlockInputsMenu extends BaseComponent<IProps, IState> {
           color={blockInputButtonColor}
           onClick={this.toggleBlockInputs}
           disabled={running ? true : false}
+          running={running}
         >
           <ButtonText running={running}>Block Inputs</ButtonText>
         </ButtonContainer>
@@ -81,15 +77,15 @@ export default class BlockInputsMenu extends BaseComponent<IProps, IState> {
             <InnerDialog
               runNumber={currentRunNumber}
               deformationHistory={deformationHistory}
-              runInfo={activeRunDeformationModelInfo}
             />
           </DialogContainer>
           : <div/> }
         { deformationHistory.length ? deformationHistory.map((run, idx) => {
           return (
             <RunButtonContainer
+              running={running}
               key={idx}
-              run={idx + 1}
+              run={run.group}
               top={runButtonTopPositions[idx]}
               color={runButtonColors[idx]}
               typeOfButton={"run"}
@@ -100,7 +96,7 @@ export default class BlockInputsMenu extends BaseComponent<IProps, IState> {
               <ButtonText
                 className="buttonText"
                 key={idx}
-                run={idx + 1}
+                run={run.group}
                 running={running}
                 color={runButtonColors[idx]}
                 typeOfButton={"run"}
