@@ -186,6 +186,20 @@ Blockly.Blocks['deformation-create-sim'] = {
   return [code, Blockly.JavaScript.ORDER_NONE];
   };
 
+  Blockly.Blocks['deformation-plot-data'] = {
+    init: function() {
+      this.appendDummyInput()
+          .appendField(strings.PLOT_DEFORMATION)
+      this.setColour("#B35F00")
+      this.setPreviousStatement(true, null);
+      this.setNextStatement(true, null);
+    }
+  }
+
+  Blockly.JavaScript['deformation-plot-data'] = function(block) {
+    return 'plotDeformationData();';
+  }
+
   Blockly.Blocks['deformation-boundary-orientation'] = {
     init: function () {
       this.appendValueInput('orientation')

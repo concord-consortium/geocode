@@ -18,6 +18,7 @@
     <block type="deformation-model-earthquake"></block>
     <block type="deformation-model-get-deformation"></block>
     <block type="deformation-model-get-max-deformation"></block>
+    <block type="deformation-plot-data"></block>
     <block type="deformation-boundary-orientation"></block>
   </category>
 
