@@ -418,8 +418,8 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     });
 
     addFunc("plotDeformationData", () => {
-      console.log("hello");
-    })
+      seismicSimulation.setPlotOnGraph();
+    });
 
     addFunc("setBoundaryOrientation", (angle: number) => {
       if (angle < -90 || angle > 90) {
