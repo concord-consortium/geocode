@@ -358,8 +358,8 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     });
 
     addFunc("createDeformationGraph", () => {
-      console.log("hello");
-    })
+      seismicSimulation.setShowDeformationGraph();
+    });
 
     addFunc("createNewRun", () => {
       if (seismicSimulation.deformationHistory.length >= 3){
