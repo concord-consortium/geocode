@@ -27,27 +27,27 @@ export const ButtonContainer = styled.button`
   padding: 5px;
   box-shadow: ${p => p.running ? "none" : "1px 1px 4px 0 rgba(0, 0, 0, 0.35)"};
   &:hover {
-    background-color: ${p => {if (!p.disabled) return p.color;}};
-    border: ${p => {if (!p.disabled) return "solid 2px #FFF";}};
+    background-color: ${p => { if (!p.disabled) return p.color; }};
+    border: ${p => { if (!p.disabled) return "solid 2px #FFF"; }};
   };
   &:hover .buttonText {
-    color: ${p => {if (!p.disabled) return "#000";}};
+    color: ${p => { if (!p.disabled) return "#000"; }};
   };
   &:active {
-    background-color: ${p => {if (!p.disabled) return "#e6f2e4";}};
-    border: ${p => {if (!p.disabled) return "2px solid #FFF";}};
+    background-color: ${p => { if (!p.disabled) return "#e6f2e4"; }};
+    border: ${p => { if (!p.disabled) return "2px solid #FFF"; }};
   };
   cursor: ${p => !p.disabled ? "default" : "pointer"};
 `;
 
 export const RunButtonContainer = styled(ButtonContainer)`
-  background-color: ${p => {if (p.activeRun && p.activeRun === p.run) return p.color;}};
+  background-color: ${p => { if (p.activeRun && p.activeRun === p.run) return p.color; }};
   &:hover .buttonText {
-    color: ${p => {if (!p.disabled) return "#FFF";}};
+    color: ${p => { if (!p.disabled) return "#FFF"; }};
   }
   &:active {
-    background-color: ${p => {if (!p.disabled) return p.color;}};
-    border: ${p => {if (!p.disabled) return "2px solid" + p.color;}};
+    background-color: ${p => { if (!p.disabled) return p.color; }};
+    border: ${p => { if (!p.disabled) return "2px solid" + p.color; }};
   }
 `;
 
