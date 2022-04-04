@@ -46,14 +46,13 @@ interface IProps{
 
 interface IState{}
 
-const toTitleCase = (str: string) => {
-    return str[0].toUpperCase() + str.slice(1);
-};
-
 export class InnerDialog extends BaseComponent<IProps, IState>{
     public render(){
         const { runNumber, deformationHistory } = this.props;
         const currentRun = deformationHistory.filter(run => run.group === runNumber)[0];
+        const toTitleCase = (str: string) => {
+          return str[0].toUpperCase() + str.slice(1);
+        };
         return (
             <div>
                 { deformationHistory.length && runNumber! > 0 && currentRun ?
@@ -89,7 +88,7 @@ export class InnerDialog extends BaseComponent<IProps, IState>{
                             showBorder={true}
                         />
                         <TitleDiv>Friction</TitleDiv>
-                        <FrictionText>{currentRun.deformationModelInfo.friction}</FrictionText>
+                        <FrictionText>{toTitleCase(currentRun.deformationModelInfo.friction)}</FrictionText>
                     </div>
                 : <div/> }
             </div>
