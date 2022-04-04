@@ -39,6 +39,7 @@ interface IState {
 interface IProps extends IBaseProps {
     height: number;
     width: number;
+    running: boolean;
 }
 
 @inject("stores")
@@ -46,7 +47,7 @@ interface IProps extends IBaseProps {
 export class DeformationGraphPanel extends BaseComponent<IProps, IState> {
     public render(){
         const deformationGraphData = this.stores.seismicSimulation.deformationHistory;
-        const {width, height} = this.props;
+        const {width, height, running} = this.props;
         return (
             <Panel height={height} width={width} data-test={"deformation-graph-panel"}>
                 <PanelContent>
@@ -55,6 +56,7 @@ export class DeformationGraphPanel extends BaseComponent<IProps, IState> {
                         data={toJS(deformationGraphData)}
                         width={toJS(width - 100)}
                         height={toJS(height - 80)}
+                        running={running}
                     />
                     : <div />
                     }
