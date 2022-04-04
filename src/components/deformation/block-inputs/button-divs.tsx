@@ -63,6 +63,6 @@ export const ButtonText = styled.div`
       return "black";
     }
   }};
-  opacity: ${p => p.running ? "25%" : "100%"};
+  opacity: ${p => p.running || p.disabled ? "25%" : "100%"};
   font-size: 16px;
 `;
