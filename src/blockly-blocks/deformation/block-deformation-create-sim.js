@@ -43,6 +43,20 @@ Blockly.Blocks['deformation-create-sim'] = {
     return code;
   }
 
+  Blockly.Blocks['deformation-create-graph'] = {
+    init: function() {
+      this.appendDummyInput()
+          .appendField(strings.CREATE_DEFORMATION_GRAPH)
+      this.setColour("#B35F00")
+      this.setPreviousStatement(false, null);
+      this.setNextStatement(true, null);
+    }
+  }
+
+  Blockly.JavaScript['deformation-create-graph'] = function(block) {
+    return 'createDeformationGraph();';
+  }
+
   Blockly.Blocks['deformation-year-loop'] = {
     init: function() {
       this.appendDummyInput()
@@ -171,6 +185,20 @@ Blockly.Blocks['deformation-create-sim'] = {
     var code = `getMaxDeformation("${friction}")`;
   return [code, Blockly.JavaScript.ORDER_NONE];
   };
+
+  Blockly.Blocks['deformation-plot-data'] = {
+    init: function() {
+      this.appendDummyInput()
+          .appendField(strings.PLOT_DEFORMATION)
+      this.setColour("#B35F00")
+      this.setPreviousStatement(true, null);
+      this.setNextStatement(true, null);
+    }
+  }
+
+  Blockly.JavaScript['deformation-plot-data'] = function(block) {
+    return 'plotDeformationData();';
+  }
 
   Blockly.Blocks['deformation-boundary-orientation'] = {
     init: function () {
