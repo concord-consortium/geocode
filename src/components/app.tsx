@@ -577,7 +577,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               >
                 <DeformationModel
                   width={mapWidth}
-                  height={height - 160}
+                  height={height - 225}
+                  showDeformationGraph={showDeformationGraph}
                 />
                 <PlateMovementPanel
                   leftSpeed={deformSpeedPlate1}
@@ -599,11 +600,13 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               >
                 <DeformationModel
                   width={mapWidth}
-                  height={(height - 90) * .75}
+                  height={height * .65}
+                  showDeformationGraph={showDeformationGraph}
+                  running={running}
                 />
                 <DeformationGraphPanel
                   width={mapWidth}
-                  height={(height - 90) * .25}
+                  height={height * .25}
                 />
               </TabPanel>
             }

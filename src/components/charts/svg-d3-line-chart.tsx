@@ -71,7 +71,7 @@ export const SvgD3LineChart = (props: LineChartProps) => {
   svg.append("text")
     .attr("text-anchor", "middle")
     .style("font-size", "14px")
-    .attr("transform", "translate(" + (margin.left - 65) + "," + (height / 2) + ")rotate(-90)")
+    .attr("transform", "translate(" + (margin.left - 70) + "," + (height / 2) + ")rotate(-90)")
     .text("Deformation");
 
   svg.append("text")
@@ -102,7 +102,7 @@ export const SvgD3LineChart = (props: LineChartProps) => {
       .append("text")
         .attr("x", (d, i) => 30 + (i * 60))
         .attr("y", -15)
-        .text((d) => "Run" + d.group)
+        .text((d) => "Run " + d.group)
         .style("fill", (d) => myColor("run" + d.group) as string)
         .style("text-decoration", "underline")
         .style("font-size", 15)
