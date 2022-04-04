@@ -31,7 +31,7 @@ export const deformationModelInfo = types.model({
                                       year: types.number,
                                       friction: types.string
                                     });
-export const deformationCase = types.model({year: types.number, deformation: types.number});
+export const deformationCase = types.model({year: types.number, deformation: types.number, plotOnGraph: types.boolean});
 export const deformationCases = types.array(deformationCase);
 export const deformationGroup = types.model({group: types.number, deformationModelInfo, values: deformationCases});
 export const deformationRuns = types.array(deformationGroup);
@@ -48,6 +48,7 @@ export const SeismicSimulationStore = types
     visibleGPSStationIds: types.array(types.string),      // by id
     selectedGPSStationId: types.maybe(types.string),
     showVelocityArrows: false,
+    showDeformationGraph: false,
 
     deformationCurrentRunNumber: 0,
     deformationHistory: deformationRuns,
@@ -267,6 +268,9 @@ export const SeismicSimulationStore = types
         self.delaunayTriangles.push([p1, p2, p3]);
       }
     },
+    setShowDeformationGraph(){
+      self.showDeformationGraph = true;
+    },
     setRenderDeformationMap(method: ColorMethod = "logarithmic") {
       self.deformationMapColorMethod = method;
       self.renderDeformationMap = true;
@@ -278,6 +282,7 @@ export const SeismicSimulationStore = types
       self.visibleGPSStationIds.clear();
       self.selectedGPSStationId = undefined;
       self.showVelocityArrows = false;
+      self.showDeformationGraph = false,
       self.deformationHistory.clear();
       self.deformationCurrentRunNumber = 0;
       self.deformationModelStep = 0;
@@ -369,12 +374,17 @@ export const SeismicSimulationStore = types
         self.deformationHistory.push(deformationGroup.create({
           group: currentRunNumber,
           deformationModelInfo: deformationModelInfo.create({plate1Speed, plate2Speed, year, friction: ""}),
-          values: deformationCases.create([{year, deformation}])
+          values: deformationCases.create([{year, deformation, plotOnGraph: false}])
         }));
       } else {
-          lastGroup.values.push({year, deformation});
+          lastGroup.values.push({year, deformation, plotOnGraph: false});
           lastGroup.deformationModelInfo.year = year;
       }
+    },
+    setPlotOnGraph(){
+      const lastGroup = self.deformationHistory[self.deformationHistory.length - 1];
+      const lastValueOfLastGroup = lastGroup.values[lastGroup.values.length - 1];
+      lastValueOfLastGroup.plotOnGraph = true;
     }
   }))
   .views((self) => ({

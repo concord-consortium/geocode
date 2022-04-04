@@ -357,6 +357,10 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       seismicSimulation.startDeformationModel();
     });
 
+    addFunc("createDeformationGraph", () => {
+      seismicSimulation.setShowDeformationGraph();
+    });
+
     addFunc("createNewRun", () => {
       if (seismicSimulation.deformationHistory.length >= 3){
         blocklyController.throwError("The max number of runs possible is three.");
@@ -411,6 +415,10 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     addFunc("getMaxDeformation", (friction: "low" | "medium" | "high") => {
       seismicSimulation.setDeformationCurrentFriction(friction);
       return {data: seismicSimulation.getDeformationModelMaxDisplacementBeforeEarthquakeGivenFriction(friction)};
+    });
+
+    addFunc("plotDeformationData", () => {
+      seismicSimulation.setPlotOnGraph();
     });
 
     addFunc("setBoundaryOrientation", (angle: number) => {
