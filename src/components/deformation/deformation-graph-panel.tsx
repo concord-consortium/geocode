@@ -46,14 +46,14 @@ interface IProps extends IBaseProps {
 @observer
 export class DeformationGraphPanel extends BaseComponent<IProps, IState> {
     public render(){
-        const deformationGraphData = this.stores.seismicSimulation.deformationHistory;
+        const {deformationHistory, showDeformationGraph} = this.stores.seismicSimulation;
         const {width, height, running} = this.props;
         return (
             <Panel height={height} width={width} data-test={"deformation-graph-panel"}>
                 <PanelContent>
-                    {deformationGraphData.length ?
+                    {showDeformationGraph ?
                     <SvgD3LineChart
-                        data={toJS(deformationGraphData)}
+                        data={toJS(deformationHistory)}
                         width={toJS(width - 100)}
                         height={toJS(height - 80)}
                         running={running}
