@@ -375,7 +375,7 @@ export const SeismicSimulationStore = types
         self.deformationHistory.push(deformationGroup.create({
           group: currentRunNumber,
           deformationModelInfo: deformationModelInfo.create({plate1Speed, plate2Speed, year, friction: ""}),
-          values: deformationCases.create([{year, deformation}])
+          values: deformationCases.create([{year: 0, deformation: 0}, {year, deformation}])
         }));
       } else {
           lastGroup.values.push({year, deformation});
