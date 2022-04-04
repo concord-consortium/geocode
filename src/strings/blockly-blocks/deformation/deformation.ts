@@ -1,6 +1,6 @@
 // Strings for Create Deformation Simulation
 export const CREATE_DEFORMATION_SIMULATION = "Create deformation simulation";
-export const SET_VELOCITY_OF_PLATE_1_WITH = "Set velocity of Plate 1 with";
+export const SET_VELOCITY_OF_PLATE_1_WITH = "Set velocity of plate 1 with";
 export const SPEED_MM_YR = "speed (mm/yr)";
 export const DIRECTION_DEGREES = "direction (degrees)";
 export const SET_VELOCITY_OF_PLATE_2_WITH = "Set velocity of plate 2 with";
