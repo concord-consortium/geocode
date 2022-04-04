@@ -105,6 +105,7 @@ export const SvgD3LineChart = (props: LineChartProps) => {
         .text((d) => "Run " + d.group)
         .style("fill", (d) => myColor("run" + d.group) as string)
         .style("text-decoration", "underline")
+        .style("cursor", "pointer")
         .style("font-size", 15)
       .on("click", (d) => {
         const currentOpacity = d3.selectAll(".run" + d.group).style("opacity");

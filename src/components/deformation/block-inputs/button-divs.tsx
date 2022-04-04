@@ -29,15 +29,17 @@ export const ButtonContainer = styled.button`
   &:hover {
     background-color: ${p => { if (!p.disabled) return p.color; }};
     border: ${p => { if (!p.disabled) return "solid 2px #FFF"; }};
+    cursor: ${p => p.disabled ? "default" : "pointer"};
   };
   &:hover .buttonText {
     color: ${p => { if (!p.disabled) return "#000"; }};
+    cursor: ${p => p.disabled ? "default" : "pointer"};
   };
   &:active {
     background-color: ${p => { if (!p.disabled) return "#e6f2e4"; }};
     border: ${p => { if (!p.disabled) return "2px solid #FFF"; }};
+    cursor: ${p => p.disabled ? "default" : "pointer"};
   };
-  cursor: ${p => !p.disabled ? "default" : "pointer"};
 `;
 
 export const RunButtonContainer = styled(ButtonContainer)`

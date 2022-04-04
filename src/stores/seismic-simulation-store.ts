@@ -329,6 +329,12 @@ export const SeismicSimulationStore = types
       }
       self.deformationModelUserEarthquakeCount++;
       self.deformationModelUserEarthquakeLatestStep = self.deformationModelStep;
+
+      const buildUpYears = 0;
+      const deformation = Math.abs(buildUpYears * self.relativeVerticalSpeed) / 1e6;
+      const year = (self.deformationModelStep / 1000);
+      const lastGroup = self.deformationHistory[self.deformationHistory.length - 1];
+      lastGroup.values.push({year, deformation});
     },
     getDeformationModelMaxDisplacementBeforeEarthquakeGivenFriction(friction: "low" | "medium" | "high") {
       switch (friction) {
