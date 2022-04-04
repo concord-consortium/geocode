@@ -1,1 +1,1 @@
-export const THICKNESS = "tephra thickness";
+export const THICKNESS = "Tephra thickness";
