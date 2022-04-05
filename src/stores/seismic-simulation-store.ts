@@ -389,20 +389,10 @@ export const SeismicSimulationStore = types
     },
     setPlotOnGraph(){
       const lastGroup = self.deformationHistory[self.deformationHistory.length - 1];
-<<<<<<< HEAD
-
-      const firstValueOfLastGroup = lastGroup.values[0];
-      
-      if (firstValueOfLastGroup.plotOnGraph === false){ 
-        firstValueOfLastGroup.plotOnGraph = true 
-      };
-
-=======
       
       const firstValueOfLastGroup = lastGroup.values[0];
       if (firstValueOfLastGroup.plotOnGraph === false){ firstValueOfLastGroup.plotOnGraph = true };
       
->>>>>>> e74b1df3446653fc4625a1237abe72e22f4c15be
       const lastValueOfLastGroup = lastGroup.values[lastGroup.values.length - 1];
       lastValueOfLastGroup.plotOnGraph = true;
     }
