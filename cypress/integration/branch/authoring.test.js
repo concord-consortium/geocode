@@ -215,7 +215,7 @@ context ('Authoring Options',()=>{
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(7).text().then((text)=>{
                 expect(removeNBSP(text)).to.containIgnoreCase("All Wind Data")
             })
-            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(8).should('contain','sample')
+            blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(8).should('contain','Sample')
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(10).should('contain','items')
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(11).should('contain','from')
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(12).should('contain','Filter')

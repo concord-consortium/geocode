@@ -31,7 +31,7 @@ export const deformationModelInfo = types.model({
                                       year: types.number,
                                       friction: types.string
                                     });
-export const deformationCase = types.model({year: types.number, deformation: types.number});
+export const deformationCase = types.model({year: types.number, deformation: types.number, plotOnGraph: types.boolean});
 export const deformationCases = types.array(deformationCase);
 export const deformationGroup = types.model({group: types.number, deformationModelInfo, values: deformationCases});
 export const deformationRuns = types.array(deformationGroup);
@@ -334,7 +334,7 @@ export const SeismicSimulationStore = types
       const deformation = Math.abs(buildUpYears * self.relativeVerticalSpeed) / 1e6;
       const year = (self.deformationModelStep / 1000);
       const lastGroup = self.deformationHistory[self.deformationHistory.length - 1];
-      lastGroup.values.push({year, deformation});
+      lastGroup.values.push({year, deformation, plotOnGraph: false});
     },
     getDeformationModelMaxDisplacementBeforeEarthquakeGivenFriction(friction: "low" | "medium" | "high") {
       switch (friction) {
@@ -375,12 +375,24 @@ export const SeismicSimulationStore = types
         self.deformationHistory.push(deformationGroup.create({
           group: currentRunNumber,
           deformationModelInfo: deformationModelInfo.create({plate1Speed, plate2Speed, year, friction: ""}),
-          values: deformationCases.create([{year: 0, deformation: 0}, {year, deformation}])
+          values: deformationCases.create([{year: 0, deformation: 0, plotOnGraph: false}, {year, deformation, plotOnGraph: false}])
         }));
       } else {
-          lastGroup.values.push({year, deformation});
+          lastGroup.values.push({year, deformation, plotOnGraph: false});
           lastGroup.deformationModelInfo.year = year;
       }
+    },
+    setPlotOnGraph(){
+      const lastGroup = self.deformationHistory[self.deformationHistory.length - 1];
+
+      const firstValueOfLastGroup = lastGroup.values[0];
+      
+      if (firstValueOfLastGroup.plotOnGraph === false){ 
+        firstValueOfLastGroup.plotOnGraph = true 
+      };
+
+      const lastValueOfLastGroup = lastGroup.values[lastGroup.values.length - 1];
+      lastValueOfLastGroup.plotOnGraph = true;
     }
   }))
   .views((self) => ({
