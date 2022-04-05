@@ -48,6 +48,7 @@ export const SeismicSimulationStore = types
     visibleGPSStationIds: types.array(types.string),      // by id
     selectedGPSStationId: types.maybe(types.string),
     showVelocityArrows: false,
+    showDeformationGraph: false,
 
     deformationCurrentRunNumber: 0,
     deformationHistory: deformationRuns,
@@ -267,6 +268,9 @@ export const SeismicSimulationStore = types
         self.delaunayTriangles.push([p1, p2, p3]);
       }
     },
+    setShowDeformationGraph(){
+      self.showDeformationGraph = true;
+    },
     setRenderDeformationMap(method: ColorMethod = "logarithmic") {
       self.deformationMapColorMethod = method;
       self.renderDeformationMap = true;
@@ -278,6 +282,7 @@ export const SeismicSimulationStore = types
       self.visibleGPSStationIds.clear();
       self.selectedGPSStationId = undefined;
       self.showVelocityArrows = false;
+      self.showDeformationGraph = false,
       self.deformationHistory.clear();
       self.deformationCurrentRunNumber = 0;
       self.deformationModelStep = 0;
@@ -384,6 +389,7 @@ export const SeismicSimulationStore = types
     },
     setPlotOnGraph(){
       const lastGroup = self.deformationHistory[self.deformationHistory.length - 1];
+<<<<<<< HEAD
 
       const firstValueOfLastGroup = lastGroup.values[0];
       
@@ -391,6 +397,12 @@ export const SeismicSimulationStore = types
         firstValueOfLastGroup.plotOnGraph = true 
       };
 
+=======
+      
+      const firstValueOfLastGroup = lastGroup.values[0];
+      if (firstValueOfLastGroup.plotOnGraph === false){ firstValueOfLastGroup.plotOnGraph = true };
+      
+>>>>>>> e74b1df3446653fc4625a1237abe72e22f4c15be
       const lastValueOfLastGroup = lastGroup.values[lastGroup.values.length - 1];
       lastValueOfLastGroup.plotOnGraph = true;
     }
