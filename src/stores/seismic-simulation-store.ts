@@ -380,7 +380,8 @@ export const SeismicSimulationStore = types
         self.deformationHistory.push(deformationGroup.create({
           group: currentRunNumber,
           deformationModelInfo: deformationModelInfo.create({plate1Speed, plate2Speed, year, friction: ""}),
-          values: deformationCases.create([{year: 0, deformation: 0, plotOnGraph: false}, {year, deformation, plotOnGraph: false}])
+          values: deformationCases.create([{year: 0, deformation: 0, plotOnGraph: false},
+                                          {year, deformation, plotOnGraph: false}])
         }));
       } else {
           lastGroup.values.push({year, deformation, plotOnGraph: false});
@@ -389,10 +390,13 @@ export const SeismicSimulationStore = types
     },
     setPlotOnGraph(){
       const lastGroup = self.deformationHistory[self.deformationHistory.length - 1];
-      
+
       const firstValueOfLastGroup = lastGroup.values[0];
-      if (firstValueOfLastGroup.plotOnGraph === false){ firstValueOfLastGroup.plotOnGraph = true };
-      
+
+      if (firstValueOfLastGroup.plotOnGraph === false){
+        firstValueOfLastGroup.plotOnGraph = true;
+      }
+
       const lastValueOfLastGroup = lastGroup.values[lastGroup.values.length - 1];
       lastValueOfLastGroup.plotOnGraph = true;
     }

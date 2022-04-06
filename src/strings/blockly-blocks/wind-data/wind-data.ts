@@ -21,5 +21,5 @@ export const DAY = "Day";
 export const MONTH = "Month";
 export const YEAR = "Year";
 export const DIRECTION_DEGREES = "Direction (º from North)";
-export const SPEED_MS = "Speed (m/s)"
+export const SPEED_MS = "Speed (m/s)";
 export const FILTER_DATA = "Filter data";

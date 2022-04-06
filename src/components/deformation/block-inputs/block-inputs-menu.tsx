@@ -67,7 +67,12 @@ export default class BlockInputsMenu extends BaseComponent<IProps, IState> {
           disabled={running || !deformationHistory.length ? true : false}
           running={running}
         >
-          <ButtonText running={running} disabled={running || !deformationHistory.length ? true : false}>Block Inputs</ButtonText>
+          <ButtonText
+            running={running}
+            disabled={running || !deformationHistory.length ? true : false}
+          >
+            Block Inputs
+          </ButtonText>
         </ButtonContainer>
         { showInputs ?
           <DialogContainer>
