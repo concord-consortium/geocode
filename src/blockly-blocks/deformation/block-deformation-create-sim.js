@@ -1,4 +1,4 @@
-import * as strings from '../../strings/blockly-blocks/deformation/deformation';
+import * as strings from "../../strings/blockly-blocks/deformation/deformation";
 
 Blockly.Blocks['deformation-create-sim'] = {
     init: function () {
@@ -77,6 +77,12 @@ Blockly.Blocks['deformation-create-sim'] = {
 
   Blockly.JavaScript['deformation-year-loop'] = function(block) {
     var number_max_year = block.getFieldValue('max_year');
+    
+    if (number_max_year > 500) {
+      alert('Please input a year between 1 and 500.');
+      return ""; 
+    }
+
     var dropdown_year_step = block.getFieldValue('year_step');
     var branch = Blockly.JavaScript.statementToCode(block, 'DO');
 

@@ -7,13 +7,14 @@ interface LineChartProps {
   data: IDeformationRuns;
   width: number;
   height: number;
+  running: boolean;
 }
 
 export const SvgD3LineChart = (props: LineChartProps) => {
 
   const div = new ReactFauxDOM.Element("div");
   const data = props.data as IDeformationRuns;
-  const { width, height } = props;
+  const { width, height, running } = props;
 
   // Calculate Margins and canvas dimensions
   const margin = {top: 40, right: 40, bottom: 40, left: 40};
@@ -107,10 +108,13 @@ export const SvgD3LineChart = (props: LineChartProps) => {
         .text((d) => "Run " + d.group)
         .style("fill", (d) => myColor("run" + d.group) as string)
         .style("text-decoration", "underline")
+        .style("cursor", () => running ? "default" : "pointer")
         .style("font-size", 15)
       .on("click", (d) => {
+        if (!running){
         const currentOpacity = d3.selectAll(".run" + d.group).style("opacity");
         d3.selectAll(".run" + d.group).transition().style("opacity", currentOpacity === "1" ? "0" : "1");
+        }
       });
 
   return div.toReact();

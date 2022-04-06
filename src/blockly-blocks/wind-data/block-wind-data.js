@@ -1,7 +1,9 @@
+import * as strings from "../../strings/blockly-blocks/wind-data/wind-data"
+
 Blockly.Blocks['all_wind_data'] = {
   init: function () {
     this.appendDummyInput()
-      .appendField('All Wind Data')
+      .appendField(strings.ALL_WIND_DATA)
     this.setOutput(true, 'Dataset')
     this.setColour("#B35F00")
     this.setTooltip('')
@@ -18,13 +20,13 @@ Blockly.JavaScript['all_wind_data'] = function (block) {
 Blockly.Blocks['sample_data'] = {
   init: function () {
     this.appendDummyInput()
-      .appendField('sample')
+      .appendField(strings.SAMPLE)
       .appendField(new Blockly.FieldTextInput('10'), 'sample_size')
-      .appendField('items')
+      .appendField(strings.ITEMS)
     this.appendValueInput('count')
       .setCheck('Dataset')
       .setAlign(Blockly.ALIGN_RIGHT)
-      .appendField('from')
+      .appendField(strings.FROM)
     this.setOutput(true, 'Dataset')
     this.setColour("#B35F00")
     this.setTooltip('')
@@ -43,7 +45,7 @@ Blockly.JavaScript['sample_data'] = function (block) {
 Blockly.Blocks['filter_data'] = {
   init: function () {
     this.appendDummyInput()
-      .appendField('Filter')
+      .appendField(strings.FILTER)
     this.appendValueInput('source')
       .setCheck('Dataset')
       .setAlign(Blockly.ALIGN_RIGHT)
