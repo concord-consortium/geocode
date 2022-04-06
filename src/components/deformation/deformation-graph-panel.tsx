@@ -55,7 +55,7 @@ export class DeformationGraphPanel extends BaseComponent<IProps, IState> {
                     <SvgD3LineChart
                         data={toJS(deformationHistory)}
                         width={toJS(width - 100)}
-                        height={toJS(height - 80)}
+                        height={toJS(height - 100)}
                         running={running}
                     />
                     : <div />

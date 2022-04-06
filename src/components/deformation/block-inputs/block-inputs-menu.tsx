@@ -64,12 +64,12 @@ export default class BlockInputsMenu extends BaseComponent<IProps, IState> {
           top={0}
           color={blockInputButtonColor}
           onClick={this.toggleBlockInputs}
-          disabled={running || !deformationHistory.length ? true : false}
+          disabled={running || !deformationHistory.length}
           running={running}
         >
           <ButtonText
             running={running}
-            disabled={running || !deformationHistory.length ? true : false}
+            disabled={running || !deformationHistory.length}
           >
             Block Inputs
           </ButtonText>
