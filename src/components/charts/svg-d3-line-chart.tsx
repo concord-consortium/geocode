@@ -73,13 +73,13 @@ export const SvgD3LineChart = (props: LineChartProps) => {
     .attr("text-anchor", "middle")
     .style("font-size", "14px")
     .attr("transform", "translate(" + (margin.left - 70) + "," + (height / 2) + ")rotate(-90)")
-    .text("Deformation");
+    .text("Amount of Deformation");
 
   svg.append("text")
     .style("font-size", "14px")
     .attr("text-anchor", "middle")
     .attr("transform", "translate(" + (width / 2) + "," + (height - (margin.bottom - 74)) + ")")
-    .text("Year");
+    .text("Time (years)");
 
   // Line
   const line = d3.line();
@@ -112,8 +112,8 @@ export const SvgD3LineChart = (props: LineChartProps) => {
         .style("font-size", 15)
       .on("click", (d) => {
         if (!running){
-        const currentOpacity = d3.selectAll(".run" + d.group).style("opacity");
-        d3.selectAll(".run" + d.group).transition().style("opacity", currentOpacity === "1" ? "0" : "1");
+          const currentOpacity = d3.selectAll(".run" + d.group).style("opacity");
+          d3.selectAll(".run" + d.group).transition().style("opacity", currentOpacity === "1" ? "0" : "1");
         }
       });
 

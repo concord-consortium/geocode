@@ -391,8 +391,8 @@ export const SeismicSimulationStore = types
     setPlotOnGraph(){
       const lastGroup = self.deformationHistory[self.deformationHistory.length - 1];
 
+      // checking to make sure the first value (at 0,0) is also plotted
       const firstValueOfLastGroup = lastGroup.values[0];
-
       if (firstValueOfLastGroup.plotOnGraph === false){
         firstValueOfLastGroup.plotOnGraph = true;
       }
