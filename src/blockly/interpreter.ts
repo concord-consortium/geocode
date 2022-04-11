@@ -361,10 +361,11 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       seismicSimulation.setShowDeformationGraph();
     });
 
-    addFunc("createNewRun", () => {
-      if (seismicSimulation.deformationHistory.length >= 3){
-        blocklyController.throwError("The max number of runs possible is three.");
-      } else {
+    addFunc("createNewRun", (maxYear) => {
+      if (maxYear > 500) {
+        blocklyController.throwError('You cannot run a simulation for longer than 500 years. Please edit your code to fix this.');
+      }
+      else {
         seismicSimulation.createNewRun();
       }
     });
