@@ -1,7 +1,7 @@
 import * as ReactFauxDOM from "react-faux-dom";
 import * as d3 from "d3";
 import { IDeformationRuns, IDeformationGroup } from "../../stores/seismic-simulation-store";
-import { NumberValue } from "d3";
+import { X_LABEL, Y_LABEL } from "../../strings/components/svg-d3-line-chart";
 
 interface LineChartProps {
   data: IDeformationRuns;
@@ -73,13 +73,13 @@ export const SvgD3LineChart = (props: LineChartProps) => {
     .attr("text-anchor", "middle")
     .style("font-size", "14px")
     .attr("transform", "translate(" + (margin.left - 70) + "," + (height / 2) + ")rotate(-90)")
-    .text("Amount of Deformation");
+    .text(X_LABEL);
 
   svg.append("text")
     .style("font-size", "14px")
     .attr("text-anchor", "middle")
     .attr("transform", "translate(" + (width / 2) + "," + (height - (margin.bottom - 74)) + ")")
-    .text("Time (years)");
+    .text(Y_LABEL);
 
   // Line
   const line = d3.line();

@@ -362,11 +362,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     });
 
     addFunc("createNewRun", () => {
-      if (seismicSimulation.deformationHistory.length >= 3){
-        blocklyController.throwError("The max number of runs possible is three.");
-      } else {
         seismicSimulation.createNewRun();
-      }
     });
 
     addFunc("setPlateVelocity", (params: { plate: number, speed: number, direction: number | string }) => {
@@ -507,6 +503,14 @@ export const makeInterpreterController = (code: string, blocklyController: Block
 
   const run = (complete: () => void) => {
     if (lastRunID) return;
+
+    // counting 'run from year...' blocks for deformation graph
+    // if more than 3 blocks are being used, need to alert user and not run code
+    const numberOfLoops = workspace.getBlocksByType("deformation-year-loop");
+    if (numberOfLoops.length > 3) {
+      alert("The Deformation Simulation only allows 3 or fewer runs to be coded at once. Please adjust your code to produce 3 runs or less.");
+      return;
+    }
 
     // If we're running at slow speed (ui.speed === 0), we will call interpreter.step() with a
     // 10ms setTimeout.
