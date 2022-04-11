@@ -25,7 +25,7 @@ export const ButtonContainer = styled.button`
   background-color: white;
   border: ${p => "solid 2px" + p.color};
   padding: 5px;
-  box-shadow: ${p => p.running ? "none" : "1px 1px 4px 0 rgba(0, 0, 0, 0.35)"};
+  box-shadow: ${p => p.running || p.disabled ? "none" : "1px 1px 4px 0 rgba(0, 0, 0, 0.35)"};
   &:hover {
     background-color: ${p => { if (!p.disabled) return p.color; }};
     border: ${p => { if (!p.disabled) return "solid 2px #FFF"; }};
@@ -60,7 +60,7 @@ export const ButtonText = styled.div`
     } else if (p.typeOfButton === "run" && p.activeRun !== p.run){
       return p.color;
     } else {
-      return "black";
+      return "#434343";
     }
   }};
   opacity: ${p => p.running || p.disabled ? "25%" : "100%"};
