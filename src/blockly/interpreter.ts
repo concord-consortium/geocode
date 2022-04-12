@@ -358,6 +358,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     });
 
     addFunc("createDeformationGraph", () => {
+      seismicSimulation.reset();
       seismicSimulation.setShowDeformationGraph();
     });
 
@@ -498,15 +499,7 @@ export const makeInterpreterController = (code: string, blocklyController: Block
   }
   const interpreter = new Interpreter(code, makeInterpreterFunc(blocklyController, store, workspace));
   const step = () => {
-        // counting 'run from year...' blocks for deformation graph
-    // if more than 3 blocks are being used, need to alert user and not run code
-    const numberOfLoops = workspace.getBlocksByType("deformation-year-loop");
-    if (numberOfLoops.length > 3) {
-      blocklyController.throwError("The Deformation Simulation only allows 3 or fewer runs to be coded at once. Please adjust your code to produce 3 runs or less.");
-      blocklyController.stop();
-    } else {
     interpreter.step();
-    }
   };
 
   const run = (complete: () => void) => {

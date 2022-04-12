@@ -1,6 +1,7 @@
 import { observable } from "mobx";
 import { IInterpreterController, makeInterpreterController } from "./interpreter";
 import { IStore } from "../stores/stores";
+import { DEFORMATION_SIMULATION_WARNING } from "../strings/blockly-controller";
 
 interface Workspace {
   highlightBlock: (id: string|null) => void;
@@ -45,7 +46,7 @@ export class BlocklyController {
     // if more than 3 blocks are being used, need to alert user and not run code
     const numberOfLoops = this.workspace.getBlocksByType("deformation-year-loop");
     if (numberOfLoops.length > 3) {
-      this.throwError("The Deformation Simulation only allows 3 or fewer runs to be coded at once. Please adjust your code to produce 3 runs or less.");
+      this.throwError(DEFORMATION_SIMULATION_WARNING);
       this.stop();
     } else {
       this.stores.seismicSimulation.reset();
@@ -107,7 +108,7 @@ export class BlocklyController {
   public step = () => {
     const numberOfLoops = this.workspace.getBlocksByType("deformation-year-loop");
     if (numberOfLoops.length > 3) {
-      this.throwError("The Deformation Simulation only allows 3 or fewer runs to be coded at once. Please adjust your code to produce 3 runs or less.");
+      this.throwError(DEFORMATION_SIMULATION_WARNING);
       this.stop();
     } else {
     this.steppingThroughBlock = true;
