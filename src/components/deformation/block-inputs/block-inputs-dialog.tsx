@@ -29,6 +29,7 @@ const InnerDiv = styled.div`
   margin: 5px 5px 5px 5px;
   font-size: 16px;
   font-weight: normal;
+  color: #434343;
 `;
 
 const TitleDiv = styled(InnerDiv)`
