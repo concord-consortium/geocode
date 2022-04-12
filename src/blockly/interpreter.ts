@@ -363,7 +363,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
 
     addFunc("createNewRun", (maxYear) => {
       if (maxYear > 500) {
-        blocklyController.throwError('You cannot run a simulation for longer than 500 years. Please edit your code to fix this.');
+        blocklyController.throwError("You cannot run a simulation for longer than 500 years. Please edit your code to fix this.");
       }
       else {
         seismicSimulation.createNewRun();
