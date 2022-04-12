@@ -61,7 +61,7 @@ Blockly.Blocks['deformation-create-sim'] = {
     init: function() {
       this.appendDummyInput()
           .appendField(strings.RUN_FROM_YEAR_1)
-          .appendField(new Blockly.FieldNumber(500, 0, 500000), "max_year")
+          .appendField(new Blockly.FieldNumber(500, 0, 50000), "max_year")
           .appendField(strings.BY)
           .appendField(new Blockly.FieldDropdown([["1","1"], ["10","10"], ["20","20"]]), "year_step")
           .appendField(strings.YEARS);
