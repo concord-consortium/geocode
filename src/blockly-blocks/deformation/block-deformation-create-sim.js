@@ -54,14 +54,14 @@ Blockly.Blocks['deformation-create-sim'] = {
   }
 
   Blockly.JavaScript['deformation-create-graph'] = function(block) {
-    return 'createDeformationGraph();';
+    return `createDeformationGraph();`;
   }
 
   Blockly.Blocks['deformation-year-loop'] = {
     init: function() {
       this.appendDummyInput()
           .appendField(strings.RUN_FROM_YEAR_1)
-          .appendField(new Blockly.FieldNumber(500, 0, 500000), "max_year")
+          .appendField(new Blockly.FieldNumber(500, 0, 500), "max_year")
           .appendField(strings.BY)
           .appendField(new Blockly.FieldDropdown([["1","1"], ["10","10"], ["20","20"]]), "year_step")
           .appendField(strings.YEARS);
@@ -77,11 +77,6 @@ Blockly.Blocks['deformation-create-sim'] = {
 
   Blockly.JavaScript['deformation-year-loop'] = function(block) {
     var number_max_year = block.getFieldValue('max_year');
-    
-    if (number_max_year > 500) {
-      alert('Please input a year between 1 and 500.');
-      return ""; 
-    }
 
     var dropdown_year_step = block.getFieldValue('year_step');
     var branch = Blockly.JavaScript.statementToCode(block, 'DO');

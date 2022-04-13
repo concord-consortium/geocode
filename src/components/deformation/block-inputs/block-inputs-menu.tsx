@@ -19,6 +19,7 @@ const Container = styled.div`
 
 interface IProps {
     running: boolean;
+    showBlockInputs: boolean;
     deformationHistory: IDeformationRuns;
     currentRunNumber: number;
 }
@@ -36,15 +37,12 @@ const runButtonColors = ["#66C2A4", "#FC8D62", "#8E9FCB"];
 export default class BlockInputsMenu extends BaseComponent<IProps, IState> {
   constructor(props: IProps){
     super(props);
-    this.state = {
-      showInputs: false,
-    };
     this.setActiveRun = this.setActiveRun.bind(this);
     this.toggleBlockInputs = this.toggleBlockInputs.bind(this);
   }
 
   public toggleBlockInputs(){
-    this.setState({showInputs: !this.state.showInputs});
+    this.stores.seismicSimulation.toggleShowBlockInputs();
   }
 
   public setActiveRun(runNumber: number, runDeformationModelInfo: IDeformationModelInfo) {
@@ -55,8 +53,7 @@ export default class BlockInputsMenu extends BaseComponent<IProps, IState> {
   }
 
   public render() {
-    const { running, deformationHistory, currentRunNumber } = this.props;
-    const { showInputs } = this.state;
+    const { running, deformationHistory, currentRunNumber, showBlockInputs } = this.props;
 
     return (
       <Container>
@@ -74,7 +71,7 @@ export default class BlockInputsMenu extends BaseComponent<IProps, IState> {
             Block Inputs
           </ButtonText>
         </ButtonContainer>
-        { showInputs ?
+        { showBlockInputs &&
           <DialogContainer>
             <ExitButtonDiv>
               <ExitButton onClick={this.toggleBlockInputs}>X</ExitButton>
@@ -84,8 +81,8 @@ export default class BlockInputsMenu extends BaseComponent<IProps, IState> {
               deformationHistory={deformationHistory}
             />
           </DialogContainer>
-          : <div/> }
-        { deformationHistory.length ? deformationHistory.map((run, idx) => {
+        }
+        { deformationHistory.length && deformationHistory.map((run, idx) => {
           return (
             <RunButtonContainer
               running={running}
@@ -110,7 +107,7 @@ export default class BlockInputsMenu extends BaseComponent<IProps, IState> {
                 {"Run " + run.group}
               </ButtonText>
             </RunButtonContainer>);
-        }) : <div/> }
+        }) }
       </Container>
     );
   }

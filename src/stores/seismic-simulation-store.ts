@@ -55,6 +55,7 @@ export const SeismicSimulationStore = types
     deformationModelStep: 0,
     deformationModelEndStep: 500000,    // years
     deformationModelTotalClockTime: 5,  // seconds
+    showBlockInputs: false,
 
     deformationModelWidthKm: 50,    // km
     deformationModelApparentWidthKm: 50,    // model width as indicated by the scale marker (km)
@@ -285,6 +286,7 @@ export const SeismicSimulationStore = types
       self.showDeformationGraph = false,
       self.deformationHistory.clear();
       self.deformationCurrentRunNumber = 0;
+      self.showBlockInputs = false;
       self.deformationModelStep = 0;
       self.deformationModelUserEarthquakeCount = 0;
       self.deformationModelUserEarthquakeLatestStep = 0;
@@ -359,7 +361,9 @@ export const SeismicSimulationStore = types
       self.deformationModelUserEarthquakeCount = 0;
       self.deformationModelUserEarthquakeLatestStep = 0;
 
-      self.deformationCurrentRunNumber++;
+      if (self.deformationCurrentRunNumber < 3){
+        self.deformationCurrentRunNumber++;
+      }
     },
     setDeformationCurrentRunNumber(runNumber: number){
       self.deformationCurrentRunNumber = runNumber;
@@ -399,6 +403,9 @@ export const SeismicSimulationStore = types
 
       const lastValueOfLastGroup = lastGroup.values[lastGroup.values.length - 1];
       lastValueOfLastGroup.plotOnGraph = true;
+    },
+    toggleShowBlockInputs(){
+      self.showBlockInputs = !self.showBlockInputs;
     }
   }))
   .views((self) => ({

@@ -1,2 +1,2 @@
-export const X_LABEL = "Amount of Deformation";
-export const Y_LABEL = "Time (years)";
+export const Y_LABEL = "Amount of Deformation";
+export const X_LABEL = "Time (years)";

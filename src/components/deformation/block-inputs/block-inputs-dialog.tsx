@@ -29,6 +29,7 @@ const InnerDiv = styled.div`
   margin: 5px 5px 5px 5px;
   font-size: 16px;
   font-weight: normal;
+  color: #434343;
 `;
 
 const TitleDiv = styled(InnerDiv)`
@@ -51,7 +52,9 @@ export class InnerDialog extends BaseComponent<IProps, IState>{
         const { runNumber, deformationHistory } = this.props;
         const currentRun = deformationHistory.filter(run => run.group === runNumber)[0];
         const toTitleCase = (str: string) => {
-          return str[0].toUpperCase() + str.slice(1);
+          if (str[0]){
+            return str[0].toUpperCase() + str.slice(1);
+          }
         };
         return (
             <div>

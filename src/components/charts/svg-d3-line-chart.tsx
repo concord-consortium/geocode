@@ -41,7 +41,7 @@ export const SvgD3LineChart = (props: LineChartProps) => {
     .append("svg")
       .style("background-color", "#fff")
       .attr("width", width)
-      .attr("height", height + margin.top + margin.bottom - 5)
+      .attr("height", height + margin.top + margin.bottom)
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -73,13 +73,13 @@ export const SvgD3LineChart = (props: LineChartProps) => {
     .attr("text-anchor", "middle")
     .style("font-size", "14px")
     .attr("transform", "translate(" + (margin.left - 70) + "," + (height / 2) + ")rotate(-90)")
-    .text(X_LABEL);
+    .text(Y_LABEL);
 
   svg.append("text")
     .style("font-size", "14px")
     .attr("text-anchor", "middle")
-    .attr("transform", "translate(" + (width / 2) + "," + (height - (margin.bottom - 74)) + ")")
-    .text(Y_LABEL);
+    .attr("transform", "translate(" + (width / 2) + "," + (height - (margin.bottom - 72)) + ")")
+    .text(X_LABEL);
 
   // Line
   const line = d3.line();

@@ -358,6 +358,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     });
 
     addFunc("createDeformationGraph", () => {
+      seismicSimulation.reset();
       seismicSimulation.setShowDeformationGraph();
     });
 
@@ -504,26 +505,20 @@ export const makeInterpreterController = (code: string, blocklyController: Block
   const run = (complete: () => void) => {
     if (lastRunID) return;
 
-    // counting 'run from year...' blocks for deformation graph
-    // if more than 3 blocks are being used, need to alert user and not run code
-    const numberOfLoops = workspace.getBlocksByType("deformation-year-loop");
-    if (numberOfLoops.length > 3) {
-      alert("The Deformation Simulation only allows 3 or fewer runs to be coded at once. Please adjust your code to produce 3 runs or less.");
-      return;
-    }
-
     // If we're running at slow speed (ui.speed === 0), we will call interpreter.step() with a
     // 10ms setTimeout.
     // If we're running at fast speed (ui.speed > 0), we will call interpreter.step() numerous
     // times synchronously, but we must still occasionally call it asynchronously with 0ms setTimeout,
     // or (1) the blocks won't flash, as control will never pass to the renderer, and (2) the React
     // views won't update.
+
     const timeout = store.uiStore.speed > 0 ? 0 : 10;
     const skip = store.uiStore.speed === 0 ? 1 :
                   store.uiStore.speed === 1 ? 2 :
                   store.uiStore.speed === 2 ? 6 : 20;
     let stepCount = 0;
     paused = false;
+
     function runLoop() {
       if (paused) {
         lastRunID = null;
