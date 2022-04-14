@@ -27,8 +27,8 @@ Students change eruption parameters using [Blockly](https://developers.google.co
 * [React-Pixi](https://reactpixi.org/) Use react state to drive Pixi scenes.
 * [React](https://reactjs.org/) Web Components.
 * [TypeScript](https://www.typescriptlang.org/) Javascript that scales.
-* [d3](https://d3js.org/) JavaScript library used for graphing and representing data.
-
+* [D3](https://d3js.org/) JavaScript library used for representing data.
+* [ReactFauxDom](https://www.npmjs.com/package/react-faux-dom) Integrates D3 with React.
 
 ## Development
 
@@ -78,7 +78,12 @@ story, and provide a link to the deployed demo branch.
 The simulation is a simple tephra calculation function defined in `tephra2.ts`.
 This function will be improved, modified with the help of our volcanologist partners.
 
+### Data visualization
+
+We use D3.js to create graphs and charts representing data from simulations. D3 allows you to bind arbitrary data to the DOM, and then apply data-driven transformations to the document. Integrating D3 with React can be challenging since both want direct access to the DOM. To help with potential conflicts, we use ReactFauxDOM, a DOM-like data structure that can be mutated by D3 and then rendered to React elements.
+
 ### Developing new Blockly code blocks
+
 The Blockly configurations and blocks are specified in the GeoCode project in the following locations:
 * `src/blockly-blocks/blocks.js` Imports the files used for the custom blocks. Individual files are located in `src/blockly-blocks` (e.g., `src/blockly-blocks/block-add-town.js`, `src/blockly-blocks/block-add-volcano.js`, etc.).
 * `src/assets/blockly-authoring/code/basic-setup.xml` and `src/assets/blockly-authoring/code/nested-loops.xml` These are the two default programs that are loaded in the Blocks panel (which file is used depends on settings).
@@ -147,6 +152,10 @@ You can also create a program in the Blocks panel (from eg http://localhost:8080
 ## Seismic data
 
 See the [seismic data readme](docs/seismic-data/readme.md), and the `fetch-data` scripts in package.json.
+
+## Authoring options
+
+The GeoCoder model has many authoring options that affect how the model runs and what the model shows users. Most of the authoring options are shown in the “Model Options” menu in the top right corner. A document describing authoring controls can be found [here](https://docs.google.com/document/d/1FPvDe9gTLHzdyMxcGTbEw8uJrcRSZLRjlnX1Kf7kJuc/edit?usp=sharing).
 
 ## Deployment
 
