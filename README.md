@@ -45,7 +45,7 @@ You *do not* need to build to deploy the code, that is automatic.  See more info
 
 ### Contributing:
 
-* Find a story from the [GeoCode - Pivotal Tracker](https://www.pivotaltracker.com/n/projects/2441249)
+* Find a story from the [GeoCode - Pivotal Tracker](https://www.pivotaltracker.com/epic/show/4890571)
 * Assign yourself the role story owner.
 * Add `npaessel` or `lblagg` as a code reviewer for the story.
 * Copy the Story ID, you will need it in the next step.
