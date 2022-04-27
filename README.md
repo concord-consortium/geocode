@@ -21,13 +21,14 @@ Students change eruption parameters using [Blockly](https://developers.google.co
 * [Blockly](https://developers.google.com/blockly/) Block programming tool developed by Google.
 * [JS-interpreter](https://github.com/NeilFraser/JS-Interpreter) An isolated javascript evaluation engine.
 * [mobx](https://github.com/mobxjs/mobx) Simple, scalable state management.
-* [mobx-state-tree](https://github.com/mobxjs/mobx-state-tree)  Transactional, MobX powered state container
+* [mobx-state-tree](https://github.com/mobxjs/mobx-state-tree)  Transactional, MobX powered state container.
 * [styled-components](https://www.styled-components.com/) CSS only components via ES6.
 * [PixiJS](http://www.pixijs.com/) 2D Graphics and scene-graph utlity.
 * [React-Pixi](https://reactpixi.org/) Use react state to drive Pixi scenes.
 * [React](https://reactjs.org/) Web Components.
 * [TypeScript](https://www.typescriptlang.org/) Javascript that scales.
-
+* [D3](https://d3js.org/) JavaScript library used for representing data.
+* [ReactFauxDom](https://www.npmjs.com/package/react-faux-dom) Integrates D3 with React.
 
 ## Development
 
@@ -44,9 +45,9 @@ You *do not* need to build to deploy the code, that is automatic.  See more info
 
 ### Contributing:
 
-* Find a story from the [GeoCode - Pivotal Tracker](https://www.pivotaltracker.com/n/projects/2231509)
+* Find a story from the [GeoCode - Pivotal Tracker](https://www.pivotaltracker.com/n/projects/2441249)
 * Assign yourself the role story owner.
-* Add `npaessel` or `sfentress` as a code reviewer for the story.
+* Add `npaessel` or `lblagg` as a code reviewer for the story.
 * Copy the Story ID, you will need it in the next step.
 * Create a git topic branch in the format of  `#####-pt-story-headline-abbreviated`
 where the PT story ID is thefirst part of the branch name.
@@ -56,26 +57,33 @@ Commits should have concise headlines with details in the body.
 * Test and lint your branch.
 * Push it to GitHub e.g. `git push --set-upstream origin #####-pt-story-headline-abbreviated`
 * After a few moments, your deployed branch should be available at
-`http://geocode-app.concord.org/branch/<branchname>/index.html`.
+`http://geocode-app.concord.org/branch/<branchname>/index.html`. 
+The built url will strip off any leading numbers in the branch (e.g. "1234-feature" -> "feature").
 Verify that your deploy worked, and copy the URL.
 * When you are satisfied with your commits, and the deployment looks good, submit
-a pull request for your branch in GitHub, adding `npaessel` or `sfentress`
+a pull request for your branch in GitHub, adding `npaessel` or `lublagg`
 as code reviewers. In your pull request summarize the work, reference the PT
 story, and provide a link to the deployed demo branch.
 * Update the PT story with a link to the demo deployment and the GitHub pull request.
 
 ### Stores
 
-At the moment, all data is saved in the store `stores/simulation-store.ts`.
-The store is coupled to the simulation and the code interpreter. It would be
-nice to silo these three concerns better.
+* Data related to simulations is saved in `stores/tephra-simulation-store.ts`, `stores/seismic-simulation-store.ts`, and `stores/sample-collections-store.ts`. 
+* Data related to charts (used in tephra unit) is saved in `stores/charts-store.ts`.
+* Data related to UI options available to authors is saved in `stores/ui-store.ts`.
+* Data related to the code interpreter is stored in `stores/blockly-store.ts`.
 
 ### The simulation and tephra calculation
 
 The simulation is a simple tephra calculation function defined in `tephra2.ts`.
 This function will be improved, modified with the help of our volcanologist partners.
 
+### Data visualization
+
+We use D3.js to create graphs and charts representing data from simulations. D3 allows you to bind arbitrary data to the DOM, and then apply data-driven transformations to the document. Integrating D3 with React can be challenging since both want direct access to the DOM. To help with potential conflicts, we use ReactFauxDOM, a DOM-like data structure that can be mutated by D3 and then rendered to React elements.
+
 ### Developing new Blockly code blocks
+
 The Blockly configurations and blocks are specified in the GeoCode project in the following locations:
 * `src/blockly-blocks/blocks.js` Imports the files used for the custom blocks. Individual files are located in `src/blockly-blocks` (e.g., `src/blockly-blocks/block-add-town.js`, `src/blockly-blocks/block-add-volcano.js`, etc.).
 * `src/assets/blockly-authoring/code/basic-setup.xml` and `src/assets/blockly-authoring/code/nested-loops.xml` These are the two default programs that are loaded in the Blocks panel (which file is used depends on settings).
@@ -144,6 +152,10 @@ You can also create a program in the Blocks panel (from eg http://localhost:8080
 ## Seismic data
 
 See the [seismic data readme](docs/seismic-data/readme.md), and the `fetch-data` scripts in package.json.
+
+## Authoring options
+
+The GeoCoder model has many authoring options that affect how the model runs and what the model shows users. Most of the authoring options are shown in the “Model Options” menu in the top right corner. A document describing authoring controls can be found [here](https://docs.google.com/document/d/1FPvDe9gTLHzdyMxcGTbEw8uJrcRSZLRjlnX1Kf7kJuc/edit?usp=sharing).
 
 ## Deployment
 
