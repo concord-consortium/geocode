@@ -173,16 +173,17 @@ The report-item-interactive is deployed next to the main app in a file called `r
 To deploy a production release:
 
 1. Increment version number in package.json
-2. Create new entry in CHANGELOG.md
-3. Run `git log --pretty=oneline --reverse <last release tag>...HEAD | grep '#' | grep -v Merge` and add contents (after edits if needed to CHANGELOG.md)
-4. Run `npm run build`
-5. Copy asset size markdown table from previous release and change sizes to match new sizes in `dist`
-6. Create `release-<version>` branch and commit changes, push to GitHub, create PR and merge
-7. Checkout master and pull
-8. Checkout production
-9. Run `git merge master --no-ff`
-10. Push production to GitHub
-11. Use https://github.com/concord-consortium/geocode/releases to create a new release tag
+2. Go to the repository `dev-templates`, cd `scripts` and run `npm run release-notes <new-release-tag>`. This gives a list of all the features and bugs.
+3. Create a new entry in CHANGELOG.md with the output from the above script.
+4. Run `git log --pretty=oneline --reverse <last release tag>...HEAD | grep '#' | grep -v Merge` and add contents (after edits if needed to CHANGELOG.md)
+5. Run `npm run build`
+6. Copy asset size markdown table from previous release and change sizes to match new sizes in `dist`
+7. Create `release-<version>` branch and commit changes, push to GitHub, create PR and merge
+8. Checkout master and pull
+9. Get confirmation from the Product Team if they want to do only a tagged release or deploy the changes to production. If it's the latter, then checkout production and do the next 3 steps. If not, skip and directly jump to step 12.
+10. Run `git merge master --no-ff`
+11. Push production to GitHub
+12. Use https://github.com/concord-consortium/geocode/releases to create a new release tag
 
 ### Testing
 
