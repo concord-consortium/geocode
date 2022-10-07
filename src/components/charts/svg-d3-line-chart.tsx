@@ -91,12 +91,12 @@ export const SvgD3LineChart = (props: LineChartProps) => {
       .append("path")
       .attr("class", (d) => "run" + d.group)
       .attr("fill", "none")
+      .style("opacity", (d) => running && Number(d.group) === data.length ? "100%" : !running ? "100%" : "50%")
       .attr("stroke", (d) => myColor("run" + d.group) as string)
       .attr("stroke-width", 4)
       .attr("d", (d: IDeformationGroup) => line(d.values
                                                   .filter(value => value.plotOnGraph === true)
-                                                  .map(value => [x(value.year)!, y(value.deformation)!])));
-
+                                                  .map(value => [x(value.year)!, y(value.deformation)!])))
   // Legend
   svg.selectAll("myLegend")
     .data(data)
