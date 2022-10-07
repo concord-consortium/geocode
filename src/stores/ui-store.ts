@@ -57,7 +57,7 @@ const UIStore = types.model("UI", {
 
       // if author is showing fast speed, set model to fast initially
       if (self.showSpeedControls) {
-        self.speed = 2;
+        self.speed = 3;
       } else {
         self.speed = 0;
       }
