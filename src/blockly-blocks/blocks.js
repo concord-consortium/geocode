@@ -33,3 +33,4 @@ import "./seismic/block-seismic-gps-stations";
 import "./seismic/block-seismic-graph-gps-position";
 import "./seismic/block-seismic-deformation-buildup";
 import "./deformation/block-deformation-create-sim";
+import "./block-run-from-year";
