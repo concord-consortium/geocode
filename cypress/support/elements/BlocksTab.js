@@ -44,8 +44,8 @@ class BlocksTab{
     }
     setSpeedControl(speed){
         switch (speed) {
-            case ("fast"):
-                cy.get('[data-test=slider-rail').click("right")
+            case ("medium"):
+                cy.get('[data-test=slider-rail').click("left")
                 break;
             case ("slow"):
                 cy.get('[data-test=slider-rail').click("left")
