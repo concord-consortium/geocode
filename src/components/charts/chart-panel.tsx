@@ -52,6 +52,8 @@ export class ChartPanel extends BaseComponent<IProps, IState> {
   private lastScrollEl = React.createRef<HTMLDivElement>();
 
   public render() {
+    console.log("I am chartPanel rendering");
+    console.log("this.stores.chartsStore.charts[0]", this.stores.chartsStore.charts[0]);
     return (
       <Background width={this.props.width}>
         {

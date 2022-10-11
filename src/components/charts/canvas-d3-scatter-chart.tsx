@@ -40,6 +40,7 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
   }
 
   public render() {
+    console.log("CanvasD3ScatterChart is rendering");
     const chartDimensions = this.calculateChartDimensions();
     const { width, height } = chartDimensions;
     const relativeStyle: React.CSSProperties = {position: "relative", width, height};
