@@ -336,7 +336,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       const dataset = Datasets.getGPSPositionTimeData(station, validTimeRange);
       /// this is where we need to look
       chartsStore.addArbitraryChart(dataset.data, "East (mm)", "North (mm)", `${params.station} Position over Time`,
-                                    true, true, true, dataset.dataOffset);
+                                    true, true, true, dataset.dataOffset, "West (mm)", "South(mm)");
     });
 
     addFunc("computeDeformationBuildup", (stations: StationData[]) => {

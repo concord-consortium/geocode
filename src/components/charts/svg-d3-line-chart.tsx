@@ -11,8 +11,6 @@ interface LineChartProps {
 }
 
 export const SvgD3LineChart = (props: LineChartProps) => {
-  console.log("I am SvgD3LineChart");
-
   const div = new ReactFauxDOM.Element("div");
   const data = props.data as IDeformationRuns;
   const { width, height, running } = props;

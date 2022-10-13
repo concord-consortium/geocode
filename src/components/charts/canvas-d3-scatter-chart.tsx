@@ -40,7 +40,6 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
   }
 
   public render() {
-    console.log("CanvasD3ScatterChart is rendering");
     const chartDimensions = this.calculateChartDimensions();
     const { width, height } = chartDimensions;
     const relativeStyle: React.CSSProperties = {position: "relative", width, height};
@@ -55,15 +54,29 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
 
   private calculateChartDimensions() {
     const { width, height, chart } = this.props;
-    const { uniformXYScale } = chart;
+    const { uniformXYScale, xAxisLabel2, yAxisLabel2 } = chart;
     const xRange = Number(chart.extent(0)[1]) - Number(chart.extent(0)[0]);
     const yRange = Number(chart.extent(1)[1]) - Number(chart.extent(1)[0]);
-    const chartWidth = width - margin.left - margin.right + (canvasPadding * 2);
+
+    let chartWidth = width - margin.left - margin.right + (canvasPadding * 2);
+    if (xAxisLabel2) {
+      chartWidth -= 200;
+    }
+
     // adjust height if the x and y axes need to be scaled uniformly, base off of width
     const chartHeight = uniformXYScale
       ? yRange / xRange * chartWidth
       : height - margin.top - margin.bottom + (canvasPadding * 2);
-    const usedHeight = uniformXYScale ? chartHeight + margin.top + margin.bottom + (canvasPadding * 2) : height;
+
+    let usedHeight = height;
+
+    if (uniformXYScale) {
+      usedHeight = chartHeight + margin.top + margin.bottom + (canvasPadding * 2);
+      if (yAxisLabel2) {
+        usedHeight += 200;
+      }
+    }
+
     return { width, height: usedHeight, chartWidth, chartHeight};
   }
 
@@ -71,20 +84,30 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
     if (!this.canvasRef.current || !this.svgRef.current) return;
 
     const { chart } = this.props;
-    const { data, xAxisLabel, yAxisLabel, fadeIn, gridlines, dataOffset, uniformXYScale } = chart;
+    const { data, xAxisLabel, yAxisLabel, fadeIn, gridlines, dataOffset, uniformXYScale,
+      xAxisLabel2, yAxisLabel2 } = chart;
     const chartDimensions = this.calculateChartDimensions();
     const { width, height, chartWidth, chartHeight } = chartDimensions;
+    const hasFourAxisLabels = xAxisLabel && yAxisLabel && xAxisLabel2 && xAxisLabel2.length && yAxisLabel2 && yAxisLabel2.length;
 
     const xRange = Number(chart.extent(0)[1]) - Number(chart.extent(0)[0]);
     const yRange = Number(chart.extent(1)[1]) - Number(chart.extent(1)[0]);
     const xUniformTicks = Math.floor(xRange / 100);
     const yUniformTicks = Math.floor(yRange / 100);
 
+    let marginLeft = margin.left;
+    let marginTop = margin.top;
+
+    if (hasFourAxisLabels) {
+      marginLeft += 100;
+      marginTop += 50;
+    }
+
     const svgAxes = d3.select(this.svgRef.current)
       .attr("width", width)
       .attr("height", height)
       .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      .attr("transform", "translate(" + marginLeft + "," + marginTop + ")");
 
     const xScale: Scale = chart.isDate(0) ? d3.scaleTime() : d3.scaleLinear();
     xScale.rangeRound([0, chartWidth]).domain(chart.extent(0));
@@ -106,10 +129,9 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
     if (gridlines) {
       // add the X gridlines
       svgAxes.append("g")
-        .attr("class", "grid")
+        .attr("class", "grid x")
         .attr("transform", "translate(0," + chartHeight + ")")
         .style("stroke", "#C0C0C0")
-        .style("stroke-opacity", ".5")
         .call(make_x_gridlines()
             .tickSize(-chartHeight)
             .tickFormat((d) => "")
@@ -117,13 +139,40 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
 
       // add the Y gridlines
       svgAxes.append("g")
-        .attr("class", "grid")
+        .attr("class", "grid y")
         .style("stroke", "#C0C0C0")
-        .style("stroke-opacity", ".5")
         .call(make_y_gridlines()
             .tickSize(-chartWidth)
             .tickFormat((d) => "")
         );
+
+       d3.selectAll(".grid").selectAll(".domain").style("opacity", "0");
+
+      const ticks = d3.selectAll(".grid").selectAll(".tick");
+      ticks
+        .style("stroke-width", (d, idx) => d === 0 ? "5px" : d === 700 || d === -600 ? "0px" : "1px")
+        .style("stroke-opacity", (d) => d === 0 ? "1" : ".5");
+
+      const blah = (idx: number) => {
+        if (idx === 0 || idx === 8) {
+          return "0px"
+        } else {
+          return "1px";
+        }
+      }
+
+      const blah2 = (idx: number) => {
+        if (idx === 0 || idx === 7) {
+          return "0px"
+        } else {
+          return "1px";
+        }
+      }
+
+      d3.selectAll(".grid.y").selectAll(".tick")
+        .style("stroke-width", (d, idx) => d === 0 ? "5px" : blah(idx))
+      d3.selectAll(".grid.x").selectAll(".tick")
+        .style("stroke-width", (d, idx) => d === 0 ? "5px" : blah2(idx))
     }
 
     // add axes
@@ -133,43 +182,111 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
           if (chart.dateLabelFormat === "%b" && date.getFullYear() === 1901) return "";
           return chart.toDateString()(date);
         }) :
-        uniformXYScale ? d3.axisBottom(xScale).ticks(xUniformTicks) : d3.axisBottom(xScale).ticks;
+        uniformXYScale ?
+        d3.axisBottom(xScale).ticks(xUniformTicks).tickSize(0).tickFormat((d) => Number(d) < 0 ? `${(Number(d) * (-1))}` : `${d}`) :
+        d3.axisBottom(xScale).ticks;
+
     svgAxes.append("g")
-      .attr("transform", "translate(0," + chartHeight + ")")
+      .attr("transform", "translate(0," + (yScale(0)! + 10) + ")")
+      .attr("class", "x-axis")
       .call(axisBottom);
+
+
 
     const axisLeft = chart.isDate(1) ?
       d3.axisLeft(yScale).tickFormat(chart.toDateString()) :
-      uniformXYScale ? d3.axisLeft(yScale).ticks(yUniformTicks) : d3.axisLeft(yScale);
+      uniformXYScale ? d3.axisLeft(yScale).ticks(yUniformTicks).tickSize(0).tickFormat((d) => Number(d) < 0 ? `${(Number(d) * (-1))}` : `${d}`) : d3.axisLeft(yScale);
+
     svgAxes.append("g")
-      .call(axisLeft);
+      .attr("transform", `translate(${xScale(0)! - 10}, 0)`)
+      .attr("class", "y-axis")
+      .call(axisLeft)
+
+    d3.select(".x-axis")
+      .select("path")
+        .style("transform", "translate(0, 5px)")
+        .style("stroke-width", "25px")
+        .style("stroke", "#fff")
+
+    d3.select(".y-axis")
+      .select("path")
+        .style("transform", "translate(-12px, 0)")
+        .style("stroke-width", "25px")
+        .style("stroke", "#fff")
 
     // Add labels
-    if (xAxisLabel) {
-      svgAxes.append("text")
-        .attr("x", `${chartWidth / 2}`)
-        .attr("y", `${height - 20}`)
-        .style("text-anchor", "middle")
-        .style("font-size", "0.9em")
-        .style("fill", "#555")
-        .text(xAxisLabel);
-    }
-    if (yAxisLabel) {
-      svgAxes.append("text")
-        .attr("x", `-${(height / 2) - 20}`)
-        .attr("dy", "-30px")
-        .style("text-anchor", "middle")
-        .attr("transform", "rotate(-90)")
-        .style("font-size", "0.9em")
-        .style("fill", "#555")
-        .text(yAxisLabel);
-    }
+    if (!hasFourAxisLabels) {
+      if (xAxisLabel) {
+        svgAxes.append("text")
+          .attr("x", `${chartWidth / 2}`)
+          .attr("y", `${height - 20}`)
+          .style("text-anchor", "middle")
+          .style("font-size", "0.9em")
+          .style("fill", "#555")
+          .text(xAxisLabel);
+      }
+      if (yAxisLabel) {
+        svgAxes.append("text")
+          .attr("x", `-${(height / 2) - 20}`)
+          .attr("dy", "-30px")
+          .style("text-anchor", "middle")
+          .attr("transform", "rotate(-90)")
+          .style("font-size", "0.9em")
+          .style("fill", "#555")
+          .text(yAxisLabel);
+      }
+  } else {
+    // add additional labels
+    const northLabel = d3.axisTop(xScale).ticks(xUniformTicks).tickSize(0).tickFormat((d) => d === 0 ? yAxisLabel : "");
+    svgAxes.append("g")
+      .attr("class", "axes-labels")
+      .attr("transform", "translate(0," + -20 + ")")
+      .call(northLabel)
+
+    const southLabel = d3.axisBottom(xScale).ticks(xUniformTicks).tickSize(0).tickFormat((d) => d === 0 ? yAxisLabel2 : "");
+    svgAxes.append("g")
+      .attr("class", "axes-labels")
+      .attr("transform", "translate(0," + (chartHeight + 30) + ")")
+      .call(southLabel);
+
+    const westLabel = d3.axisLeft(yScale).ticks(yUniformTicks).tickSize(0).tickFormat((d) => d === 0 ? xAxisLabel2 : "");
+    svgAxes.append("g")
+      .attr("class", "axes-labels")
+      .call(westLabel);
+
+    const eastLabel = d3.axisRight(yScale).ticks(yUniformTicks).tickSize(0).tickFormat((d) => d === 0 ? xAxisLabel : "");
+    svgAxes.append("g")
+      .attr("class", "axes-labels")
+      .attr("transform", "translate(0" + chartWidth + ")")
+      .call(eastLabel)
+
+    d3.selectAll("g.axes-labels")
+      .selectAll("g.tick")
+      .filter((d) => d === 0)
+      .append("g")
+        .attr("class", "mm-label")
+        .append("text")
+          .style("fill", "#555")
+          .html("(mm)")
+
+    d3.selectAll("g.axes-labels").selectAll("path").style("opacity", "0");
+    d3.selectAll("g.axes-labels").style("font-size", "0.9em").style("font-weight", "bold");
+
+    const translations = ["10px, 10px", "0px, 30px", "-35px, 20px", "40px, 20px"]
+
+    const getTranslationValue = (idx: number) => {
+      return `translate(${translations[idx]})`
+    };
+
+    d3.selectAll(".mm-label")
+      .style("transform", (d, idx) => getTranslationValue(idx))
+  }
 
     d3.select(this.canvasRef.current)
-      .attr("width", width + (canvasPadding * 2))
+      .attr("width", chartWidth + (canvasPadding * 2))
       .attr("height", height + (canvasPadding * 2))
-      .style("margin-left", margin.left - canvasPadding + "px")
-      .style("margin-top", margin.top - canvasPadding + "px");
+      .style("margin-left", marginLeft - canvasPadding + "px")
+      .style("margin-top", marginTop - canvasPadding + "px");
 
     const ctx = this.canvasRef.current.getContext("2d")!;
 
@@ -195,9 +312,9 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
         .attr("width", width)
         .attr("height", height)
         .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        .attr("transform", "translate(" + marginLeft + "," + marginTop + ")");
 
-      addFadeLegend(svg, data, chartWidth, margin);
+      addFadeLegend(svg, data, chartWidth + 80, margin);
     }
   }
 
