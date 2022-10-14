@@ -56,9 +56,6 @@ export const SvgD3ScatterChart = (props: IProps) => {
   const yRange = Number(chart.extent(1)[1]) - Number(chart.extent(1)[0]);
   const xUniformTicks = Math.floor(xRange / 100);
   const yUniformTicks = Math.floor(yRange / 100);
-
-  console.log("xRange", xRange, "yRange", yRange, uniformXYScale);
-
   const margin = {top: 15, right: 20, bottom: 43, left: 50};
   const marginLeft = hasFourAxisLabels ? (margin.left + 75) : margin.left;
   const marginTop = hasFourAxisLabels ? (margin.top + 50) : margin.top;
