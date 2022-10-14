@@ -166,11 +166,11 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
     if (hasFourAxisLabels) {
       const formatTick = (d: unknown) => Number(d) < 0 ? `${(Number(d) * (-1))}` : `${d}`;
 
-      axisBottom = d3.axisBottom(xScale).ticks(xUniformTicks).tickSize(0).tickFormat((d) => formatTick(d))
+      axisBottom = d3.axisBottom(xScale).ticks(xUniformTicks).tickSize(0).tickFormat((d) => formatTick(d));
       xAxisTranslation = `(0, ${(yScale(0)! + 10)})`;
 
       axisLeft = d3.axisLeft(yScale).ticks(yUniformTicks).tickSize(0).tickFormat((d) => formatTick(d));
-      yAxisTranslation = `translate(${xScale(0)! - 10}, 0)`
+      yAxisTranslation = `translate(${xScale(0)! - 10}, 0)`;
     } else {
       axisBottom = chart.isDate(0) ?
           d3.axisBottom(xScale).tickFormat((date: Date) => {
@@ -183,7 +183,7 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
 
       axisLeft = chart.isDate(1) ?
         d3.axisLeft(yScale).tickFormat(chart.toDateString()) :
-        uniformXYScale ? d3.axisLeft(yScale).ticks(yUniformTicks): d3.axisLeft(yScale);
+        uniformXYScale ? d3.axisLeft(yScale).ticks(yUniformTicks) : d3.axisLeft(yScale);
       yAxisTranslation = `translate(0, 0)`;
     }
     svgAxes.append("g")
@@ -194,7 +194,7 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
     svgAxes.append("g")
       .attr("transform", yAxisTranslation)
       .attr("class", "left axis")
-      .call(axisLeft)
+      .call(axisLeft);
 
     if (hasFourAxisLabels) {
       d3.selectAll(".axis").selectAll("path").style("stroke-width", "25px").style("stroke", "#fff");
@@ -235,7 +235,7 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
       svgAxes.append("g")
         .attr("class", "axes-labels")
         .attr("transform", `translate${labelTranslations[i]}`)
-        .call(label)
+        .call(label);
     }
 
     const axesLabels = d3.selectAll("g.axes-labels");
@@ -243,14 +243,14 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
     axesLabels.style("font-size", "0.9em").style("font-weight", "bold");
 
     axesLabels.selectAll("g.tick").filter((d) => d === 0).append("g")
-        .attr("class", "mm-label")
-        .append("text")
-          .style("fill", "#555")
-          .text("(mm)")
+      .attr("class", "mm-label")
+      .append("text")
+        .style("fill", "#555")
+        .text("(mm)");
 
-    const mmTranslations = ["10px, 10px", "0px, 30px", "-35px, 20px", "40px, 20px"]
+    const mmTranslations = ["10px, 10px", "0px, 30px", "-35px, 20px", "40px, 20px"];
     const getMMTranslationValue = (idx: number) => `translate(${mmTranslations[idx]})`;
-    d3.selectAll(".mm-label").style("transform", (d, idx) => getMMTranslationValue(idx))
+    d3.selectAll(".mm-label").style("transform", (d, idx) => getMMTranslationValue(idx));
   }
 
     d3.select(this.canvasRef.current)

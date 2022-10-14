@@ -35,16 +35,16 @@ export const SvgD3ScatterChart = (props: IProps) => {
     const _width = props.width;
     const _height = props.height;
     const _uniformXYScale = _chart.uniformXYScale;
-    const xAxisLabel2 = _chart.xAxisLabel2;
-    const yAxisLabel2 = _chart.yAxisLabel2;
+    const _xAxisLabel2 = _chart.xAxisLabel2;
+    const _yAxisLabel2 = _chart.yAxisLabel2;
     let chartUsedWidth = _width - margin.left - margin.right;
-    if (xAxisLabel2) chartUsedWidth -= 200;
+    if (_xAxisLabel2) chartUsedWidth -= 200;
     // adjust height if the x and y axes need to be scaled uniformly, base off of width
     const chartUsedHeight = _uniformXYScale
       ? _yRange / _xRange * chartUsedWidth
       : _height - margin.top - margin.bottom;
     let usedHeight = _uniformXYScale ? chartUsedHeight + margin.top + margin.bottom : _height;
-    if (yAxisLabel2) usedHeight += 50;
+    if (_yAxisLabel2) usedHeight += 50;
     return { width: _width, height: usedHeight, chartWidth: chartUsedWidth, chartHeight: chartUsedHeight};
   };
 
@@ -135,11 +135,11 @@ export const SvgD3ScatterChart = (props: IProps) => {
   if (hasFourAxisLabels) {
     const formatTick = (d: unknown) => Number(d) < 0 ? `${(Number(d) * (-1))}` : `${d}`;
 
-    axisBottom = d3.axisBottom(xScale).ticks(xUniformTicks).tickSize(0).tickFormat((d) => formatTick(d))
+    axisBottom = d3.axisBottom(xScale).ticks(xUniformTicks).tickSize(0).tickFormat((d) => formatTick(d));
     xAxisTranslation = `(0, ${(yScale(0)! + 10)})`;
 
     axisLeft = d3.axisLeft(yScale).ticks(yUniformTicks).tickSize(0).tickFormat((d) => formatTick(d));
-    yAxisTranslation = `translate(${xScale(0)! - 10}, 0)`
+    yAxisTranslation = `translate(${xScale(0)! - 10}, 0)`;
   } else {
     axisBottom = chart.isDate(0) ?
         d3.axisBottom(xScale).tickFormat((date: Date) => {
@@ -150,24 +150,25 @@ export const SvgD3ScatterChart = (props: IProps) => {
     xAxisTranslation = `(0, ${chartHeight})`;
 
     axisLeft = chart.isDate(1) ?
-      d3.axisLeft(yScale).tickFormat(chart.toDateString()) : uniformXYScale ? d3.axisLeft(yScale).ticks(yUniformTicks): d3.axisLeft(yScale);
-      yAxisTranslation = `translate(0, 0)`;
-    }
+      d3.axisLeft(yScale).tickFormat(chart.toDateString()) :
+      uniformXYScale ? d3.axisLeft(yScale).ticks(yUniformTicks) : d3.axisLeft(yScale);
+    yAxisTranslation = `translate(0, 0)`;
+  }
 
-    svg.append("g")
-      .attr("transform", `translate${xAxisTranslation}`)
-      .attr("class", "bottom axis")
-      .call(axisBottom);
+  svg.append("g")
+    .attr("transform", `translate${xAxisTranslation}`)
+    .attr("class", "bottom axis")
+    .call(axisBottom);
 
-    svg.append("g")
-      .attr("transform", yAxisTranslation)
-      .attr("class", "left axis")
-      .call(axisLeft)
+  svg.append("g")
+    .attr("transform", yAxisTranslation)
+    .attr("class", "left axis")
+    .call(axisLeft);
 
-    if (hasFourAxisLabels) {
-      svg.selectAll(".axis").selectAll("path").style("stroke-width", "25px").style("stroke", "#fff");
-      svg.selectAll(".bottom.axis").selectAll("path").attr("transform", "translate(0, 5)");
-      svg.selectAll(".left.axis").selectAll("path").attr("transform", "translate(-12, 0)");
+  if (hasFourAxisLabels) {
+    svg.selectAll(".axis").selectAll("path").style("stroke-width", "25px").style("stroke", "#fff");
+    svg.selectAll(".bottom.axis").selectAll("path").attr("transform", "translate(0, 5)");
+    svg.selectAll(".left.axis").selectAll("path").attr("transform", "translate(-12, 0)");
   }
 
   // Add labels
@@ -202,7 +203,7 @@ export const SvgD3ScatterChart = (props: IProps) => {
       svg.append("g")
         .attr("class", "axes-labels")
         .attr("transform", `translate${labelTranslations[i]}`)
-        .call(label)
+        .call(label);
     }
 
     const axesLabels = svg.selectAll("g.axes-labels");
@@ -210,14 +211,14 @@ export const SvgD3ScatterChart = (props: IProps) => {
     axesLabels.style("font-size", "0.9em").style("font-weight", "bold");
 
     axesLabels.selectAll("g.tick").filter((d) => d === 0).append("g")
-        .attr("class", "mm-label")
-        .append("text")
-          .style("fill", "#555")
-          .text("(mm)")
+      .attr("class", "mm-label")
+      .append("text")
+        .style("fill", "#555")
+        .text("(mm)");
 
-    const mmTranslations = ["10px, 10px", "0px, 30px", "-35px, 20px", "40px, 20px"]
+    const mmTranslations = ["10px, 10px", "0px, 30px", "-35px, 20px", "40px, 20px"];
     const getMMTranslationValue = (idx: number) => `translate(${mmTranslations[idx]})`;
-    svg.selectAll(".mm-label").style("transform", (d, idx) => getMMTranslationValue(idx))
+    svg.selectAll(".mm-label").style("transform", (d, idx) => getMMTranslationValue(idx));
   }
 
   const color = fadeIn
