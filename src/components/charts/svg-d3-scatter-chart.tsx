@@ -35,22 +35,34 @@ export const SvgD3ScatterChart = (props: IProps) => {
     const _width = props.width;
     const _height = props.height;
     const _uniformXYScale = _chart.uniformXYScale;
-    const chartUsedWidth = _width - margin.left - margin.right;
+    const xAxisLabel2 = _chart.xAxisLabel2;
+    const yAxisLabel2 = _chart.yAxisLabel2;
+    let chartUsedWidth = _width - margin.left - margin.right;
+    if (xAxisLabel2) chartUsedWidth -= 200;
     // adjust height if the x and y axes need to be scaled uniformly, base off of width
     const chartUsedHeight = _uniformXYScale
       ? _yRange / _xRange * chartUsedWidth
       : _height - margin.top - margin.bottom;
-    const usedHeight = _uniformXYScale ? chartUsedHeight + margin.top + margin.bottom : _height;
+    let usedHeight = _uniformXYScale ? chartUsedHeight + margin.top + margin.bottom : _height;
+    if (yAxisLabel2) usedHeight += 50;
     return { width: _width, height: usedHeight, chartWidth: chartUsedWidth, chartHeight: chartUsedHeight};
   };
 
   const { chart } = props;
-  const { data, xAxisLabel, yAxisLabel, fadeIn, gridlines, dataOffset, uniformXYScale } = chart;
+  const { data, xAxisLabel, yAxisLabel, fadeIn, gridlines, dataOffset,
+          uniformXYScale, xAxisLabel2, yAxisLabel2 } = chart;
+  const hasFourAxisLabels = !!xAxisLabel && !!yAxisLabel && !!xAxisLabel2 && !!yAxisLabel2;
   const xRange = Number(chart.extent(0)[1]) - Number(chart.extent(0)[0]);
   const yRange = Number(chart.extent(1)[1]) - Number(chart.extent(1)[0]);
   const xUniformTicks = Math.floor(xRange / 100);
   const yUniformTicks = Math.floor(yRange / 100);
+
+  console.log("xRange", xRange, "yRange", yRange, uniformXYScale);
+
   const margin = {top: 15, right: 20, bottom: 43, left: 50};
+  const marginLeft = hasFourAxisLabels ? (margin.left + 75) : margin.left;
+  const marginTop = hasFourAxisLabels ? (margin.top + 50) : margin.top;
+
   const chartDimensions = calculateChartDimensions(xRange, yRange);
   const { width, height, chartWidth, chartHeight } = chartDimensions;
 
@@ -60,7 +72,7 @@ export const SvgD3ScatterChart = (props: IProps) => {
     .attr("width", width)
     .attr("height", height)
     .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    .attr("transform", "translate(" + marginLeft + "," + marginTop + ")");
 
   const xScale: Scale = chart.isDate(0) ? d3.scaleTime() : d3.scaleLinear();
   xScale.rangeRound([0, chartWidth]).domain(chart.extent(0));
@@ -82,7 +94,7 @@ export const SvgD3ScatterChart = (props: IProps) => {
   if (gridlines) {
     // add the X gridlines
     svg.append("g")
-      .attr("class", "grid")
+      .attr("class", "grid x")
       .attr("transform", "translate(0," + chartHeight + ")")
       .style("stroke", "#C0C0C0")
       .style("stroke-opacity", ".5")
@@ -93,47 +105,122 @@ export const SvgD3ScatterChart = (props: IProps) => {
 
     // add the Y gridlines
     svg.append("g")
-      .attr("class", "grid")
+      .attr("class", "grid y")
       .style("stroke", "#C0C0C0")
       .style("stroke-opacity", ".5")
       .call(make_y_gridlines()
           .tickSize(-chartWidth)
           .tickFormat((d) => "")
       );
+
+    if (hasFourAxisLabels) {
+      svg.selectAll(".grid").selectAll(".domain").style("opacity", "0");
+      const ticks = svg.selectAll(".tick");
+      ticks.style("stroke-opacity", (d) => d === 0 ? "1" : ".5");
+
+      const getStrokeWidth = (d: unknown, idx: number, numTicks: number) => {
+        return d === 0 ? "5px" : idx === 0 || idx === numTicks ? "0px" : "1px";
+      };
+
+      svg.selectAll(".grid.x").selectAll(".tick")
+        .style("stroke-width", (d, idx) => getStrokeWidth(d, idx, xUniformTicks));
+      svg.selectAll(".grid.y").selectAll(".tick")
+        .style("stroke-width", (d, idx) =>  getStrokeWidth(d, idx, yUniformTicks));
+    }
   }
 
   // add axes
-  const axisBottom = chart.isDate(0) ?
-      d3.axisBottom(xScale).tickFormat(chart.toDateString()) :
-      uniformXYScale ? d3.axisBottom(xScale).ticks(xUniformTicks) : d3.axisBottom(xScale).ticks;
-  svg.append("g")
-    .attr("transform", "translate(0," + chartHeight + ")")
-    .call(axisBottom);
+  let axisBottom;
+  let xAxisTranslation;
+  let axisLeft;
+  let yAxisTranslation;
 
-  const axisLeft = chart.isDate(1) ?
-    d3.axisLeft(yScale).tickFormat(chart.toDateString()) :
-    uniformXYScale ? d3.axisLeft(yScale).ticks(yUniformTicks) : d3.axisLeft(yScale).ticks;
-  svg.append("g")
-    .call(axisLeft);
+  if (hasFourAxisLabels) {
+    const formatTick = (d: unknown) => Number(d) < 0 ? `${(Number(d) * (-1))}` : `${d}`;
+
+    axisBottom = d3.axisBottom(xScale).ticks(xUniformTicks).tickSize(0).tickFormat((d) => formatTick(d))
+    xAxisTranslation = `(0, ${(yScale(0)! + 10)})`;
+
+    axisLeft = d3.axisLeft(yScale).ticks(yUniformTicks).tickSize(0).tickFormat((d) => formatTick(d));
+    yAxisTranslation = `translate(${xScale(0)! - 10}, 0)`
+  } else {
+    axisBottom = chart.isDate(0) ?
+        d3.axisBottom(xScale).tickFormat((date: Date) => {
+          // remove last "Jan" from Time of Year chart
+          if (chart.dateLabelFormat === "%b" && date.getFullYear() === 1901) return "";
+          return chart.toDateString()(date);
+        }) : uniformXYScale ? d3.axisBottom(xScale).ticks(xUniformTicks) : d3.axisBottom(xScale);
+    xAxisTranslation = `(0, ${chartHeight})`;
+
+    axisLeft = chart.isDate(1) ?
+      d3.axisLeft(yScale).tickFormat(chart.toDateString()) : uniformXYScale ? d3.axisLeft(yScale).ticks(yUniformTicks): d3.axisLeft(yScale);
+      yAxisTranslation = `translate(0, 0)`;
+    }
+
+    svg.append("g")
+      .attr("transform", `translate${xAxisTranslation}`)
+      .attr("class", "bottom axis")
+      .call(axisBottom);
+
+    svg.append("g")
+      .attr("transform", yAxisTranslation)
+      .attr("class", "left axis")
+      .call(axisLeft)
+
+    if (hasFourAxisLabels) {
+      svg.selectAll(".axis").selectAll("path").style("stroke-width", "25px").style("stroke", "#fff");
+      svg.selectAll(".bottom.axis").selectAll("path").attr("transform", "translate(0, 5)");
+      svg.selectAll(".left.axis").selectAll("path").attr("transform", "translate(-12, 0)");
+  }
 
   // Add labels
-  if (xAxisLabel) {
-    svg.append("text")
-      .attr("x", `${chartWidth / 2}`)
-      .attr("y", `${height - 20}`)
-      .style("text-anchor", "middle")
-      .style("font-size", "0.9em")
-      .style("fill", "#555")
-      .text(xAxisLabel);
-  }
-  if (yAxisLabel) {
-    svg.append("text")
-      .attr("x", `-${height / 2}`)
-      .attr("dy", "-30px")
-      .attr("transform", "rotate(-90)")
-      .style("font-size", "0.9em")
-      .style("fill", "#555")
-      .text(yAxisLabel);
+  if (!hasFourAxisLabels) {
+    if (xAxisLabel) {
+      svg.append("text")
+        .attr("x", `${chartWidth / 2}`)
+        .attr("y", `${height - 20}`)
+        .style("text-anchor", "middle")
+        .style("font-size", "0.9em")
+        .style("fill", "#555")
+        .text(xAxisLabel);
+    }
+    if (yAxisLabel) {
+      svg.append("text")
+        .attr("x", `-${height / 2}`)
+        .attr("dy", "-30px")
+        .attr("transform", "rotate(-90)")
+        .style("font-size", "0.9em")
+        .style("fill", "#555")
+        .text(yAxisLabel);
+    }
+  } else {
+    const axesForLabels = [d3.axisTop, d3.axisBottom, d3.axisLeft, d3.axisRight];
+    const scales = [xScale, xScale, yScale, yScale];
+    const ticks = [xUniformTicks, xUniformTicks, yUniformTicks, yUniformTicks];
+    const labelText = [yAxisLabel, yAxisLabel2, xAxisLabel2, xAxisLabel];
+    const labelTranslations = [`(0, -20)`, `(0, ${(chartHeight + 10)})`, `(0, 0)`, `(${chartWidth}, 0)`];
+
+    for (let i = 0; i < axesForLabels.length; i ++) {
+      const label = axesForLabels[i](scales[i]).ticks(ticks[i]).tickSize(0).tickFormat((d) => d === 0 ? labelText[i] : "");
+      svg.append("g")
+        .attr("class", "axes-labels")
+        .attr("transform", `translate${labelTranslations[i]}`)
+        .call(label)
+    }
+
+    const axesLabels = svg.selectAll("g.axes-labels");
+    axesLabels.selectAll("path").style("opacity", "0");
+    axesLabels.style("font-size", "0.9em").style("font-weight", "bold");
+
+    axesLabels.selectAll("g.tick").filter((d) => d === 0).append("g")
+        .attr("class", "mm-label")
+        .append("text")
+          .style("fill", "#555")
+          .text("(mm)")
+
+    const mmTranslations = ["10px, 10px", "0px, 30px", "-35px, 20px", "40px, 20px"]
+    const getMMTranslationValue = (idx: number) => `translate(${mmTranslations[idx]})`;
+    svg.selectAll(".mm-label").style("transform", (d, idx) => getMMTranslationValue(idx))
   }
 
   const color = fadeIn
@@ -172,11 +259,10 @@ export function addFadeLegend(svg: SVG, data: any[], chartWidth: number, margin:
   const legendSteps = fadeColors.length;
   const legendWidth = 25;
   const legendHeight = 80;
-  const legendRightPadding = 35;
   const legendFadeColors = fadeColors.map((item) => item.color).reverse();
 
   const legend = svg.append("g")
-    .attr("transform", "translate(" + (chartWidth - legendWidth - legendRightPadding) + "," + margin.top + ")");
+    .attr("transform", "translate(" + (chartWidth + 20) + "," + margin.top + ")");
 
   legend.append("text")
     .attr("x", legendWidth / 2)

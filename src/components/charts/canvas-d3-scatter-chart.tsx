@@ -178,13 +178,13 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
             if (chart.dateLabelFormat === "%b" && date.getFullYear() === 1901) return "";
             return chart.toDateString()(date);
           }) :
-          uniformXYScale ? d3.axisBottom(xScale).ticks(xUniformTicks) : d3.axisBottom(xScale).ticks;
+          uniformXYScale ? d3.axisBottom(xScale).ticks(xUniformTicks) : d3.axisBottom(xScale);
       xAxisTranslation = `(0, ${chartHeight})`;
 
       axisLeft = chart.isDate(1) ?
         d3.axisLeft(yScale).tickFormat(chart.toDateString()) :
         uniformXYScale ? d3.axisLeft(yScale).ticks(yUniformTicks): d3.axisLeft(yScale);
-      yAxisTranslation = "none";
+      yAxisTranslation = `translate(0, 0)`;
     }
     svgAxes.append("g")
       .attr("transform", `translate${xAxisTranslation}`)
@@ -195,8 +195,6 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
       .attr("transform", yAxisTranslation)
       .attr("class", "left axis")
       .call(axisLeft)
-
-    console.log(`d3.selectAll(".bottom.axis").selectAll("path")`, d3.selectAll(".bottom.axis").selectAll("path"));
 
     if (hasFourAxisLabels) {
       d3.selectAll(".axis").selectAll("path").style("stroke-width", "25px").style("stroke", "#fff");
