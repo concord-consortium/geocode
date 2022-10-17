@@ -1,6 +1,8 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
+import * as semver from "semver";
 import { IReportItemInitInteractive,
+         IReportItemAnswerItem,
          addGetReportItemAnswerListener,
          sendReportItemAnswer,
          getClient } from "@concord-consortium/lara-interactive-api";
@@ -36,31 +38,43 @@ export const ReportItemComponent: React.FC<Props> = (props) => {
   const [cachedAuthoredState, setCachedAuthoredState] = useState<SerializedState|null>(null);
 
   useEffect(() => {
-    addGetReportItemAnswerListener((request) => {
-      const {type, platformUserId, interactiveState, authoredState} = request;
+      if (initMessage && initMessage.mode === "reportItem") {
+        const {interactiveItemId} = initMessage;
 
-      setUserAnswers(prev => ({...prev, [platformUserId]: interactiveState}));
+        addGetReportItemAnswerListener(async (request) => {
+          // TODO: update lara interactive api to change addGetReportItemAnswerListener
+          // to a generic with <IInteractiveState, IAuthoredState> and remove the `any` after request
+          const { platformUserId, interactiveState, authoredState, version } = request as any;
 
-      if (authoredState) {
-        setCachedAuthoredState(authoredState as SerializedState);
+          if (!version) {
+            // for hosts sending older, unversioned requests
+            console.error("Missing version in getReportItemAnswer request.");
+          } else if (semver.satisfies(version, "2.x")) {
+            const studentBlocks = getBlockList(interactiveState as SerializedState);
+
+            const html = studentAnswerHtml({
+              authoredState: authoredState as SerializedState || cachedAuthoredState,
+              studentBlocks
+            });
+            const items: IReportItemAnswerItem[] = [
+              {
+                type: "html",
+                html
+              }
+            ];
+            sendReportItemAnswer({version, platformUserId, items, itemsType: "fullAnswer"});
+          } else {
+            console.error("Unsupported version in getReportItemAnswer request:", version);
+          }
+        });
+        getClient().post("reportItemClientReady");
       }
-      const studentBlocks = getBlockList(interactiveState as SerializedState);
+    }, [initMessage]);
 
-      switch (type) {
-
-        case "html":
-          const html = studentAnswerHtml({
-            authoredState: authoredState as SerializedState || cachedAuthoredState,
-            studentBlocks
-          });
-          sendReportItemAnswer({type: "html", platformUserId, html});
-          break;
-      }
-    });
-
-    // tell the portal-report we are ready for messages
-    getClient().post("reportItemClientReady");
-  }, []);
+  // do not render anything if hidden
+  if (view === "hidden") {
+    return null;
+  }
 
   return (
     <div className={`reportItem ${view}`}>
