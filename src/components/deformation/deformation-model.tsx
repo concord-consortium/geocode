@@ -31,9 +31,7 @@ const drawAreaColor = "#fff";
 const textColor = "#434343";
 const stationColor = "#98E643";
 const faultColor = "#ff9300";
-const rainbowColor = [
-  "#9400D3", "#4B0082", "#0000FF", "#00FF00", "#FF7F00", "#FF0000"
-];
+const highlightColor = "yellow";
 const initialPlateAlpha = .07;
 const stationBorderThickness = 2;
 
@@ -123,7 +121,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     if (!this.canvasRef.current) return;
 
     const { deformationModelStep: year, deformationModelEarthquakesEnabled,
-      deformationModelRainbowLines, deformationModelWidthKm,
+      deformationModelHighlightedBoxes, deformationModelWidthKm,
       deformationModelApparentWidthKm, deformationModelApparentYearScaling,
       deformationModelShowYear, relativeVerticalSpeed: vSpeed,
       relativeHorizontalSpeed: hSpeed, deformationModelFaultAngle } = this.stores.seismicSimulation;
@@ -190,6 +188,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.closePath();
     ctx.stroke();
     ctx.save();
+
     // now we stop the deformation lines appearing outside of the area
     // useful to disable this while debugging!
     ctx.clip();
@@ -215,14 +214,22 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
     ctx.strokeStyle = lineColor;
     const drawBzCurve = this.bzCurve(ctx);
+
     horizontalLines.forEach((line, i) => {
-      if (deformationModelRainbowLines) {
-        ctx.strokeStyle = rainbowColor[Math.floor(i / 2) % rainbowColor.length];
+      const midLineIndex = Math.round(horizontalLines.length / 4) - 2;
+      if (deformationModelHighlightedBoxes && (i === midLineIndex || i === midLineIndex + 1)) {
+        const highlightedSection = horizontalLines[i].map((pt) => ({x: pt.x, y: (pt.y - 10)}));
+        ctx.strokeStyle = highlightColor;
+        ctx.lineWidth = lineSpacing - 2;
+        drawBzCurve(highlightedSection);
       }
+      ctx.strokeStyle = lineColor;
+      ctx.lineWidth = 1;
       drawBzCurve(line);
     });
 
     ctx.strokeStyle = lineColor;
+    ctx.lineWidth = 1;
     verticalLines.forEach(line => {
       ctx.beginPath();
       ctx.moveTo(line[0].x, line[0].y);
@@ -588,6 +595,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
       dy1 = dy2;
       preP = curP;
     }
+
     ctx.stroke();
   }
 

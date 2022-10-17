@@ -62,6 +62,6 @@ export const SHOW_YEARS = "Show years?";
 export const LOW_FRICTION = "Max displ. Low friction";
 export const MED_FRICTION = "Max displ. Med friction";
 export const HIGH_FRICTION = "Max displ. High friction";
-export const RAINBOW_LINES = "Rainbow lines?";
+export const HIGHLIGHT_BOXES = "Highlighted boxes?";
 export const FAULT_ANGLE = "Fault Angle (º)";
 export const EARTHQUAKES = "Earthquakes";
