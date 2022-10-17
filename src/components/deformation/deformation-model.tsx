@@ -214,9 +214,9 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
     ctx.strokeStyle = lineColor;
     const drawBzCurve = this.bzCurve(ctx);
+    const midLineIndex = Math.round(horizontalLines.length / 4) - 2;
 
     horizontalLines.forEach((line, i) => {
-      const midLineIndex = Math.round(horizontalLines.length / 4) - 2;
       if (deformationModelHighlightedBoxes && (i === midLineIndex || i === midLineIndex + 1)) {
         const highlightedSection = horizontalLines[i].map((pt) => ({x: pt.x, y: (pt.y - 10)}));
         ctx.strokeStyle = highlightColor;
