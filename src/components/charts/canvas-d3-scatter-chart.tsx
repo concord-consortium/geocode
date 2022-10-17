@@ -231,7 +231,7 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
     const labelTranslations = [`(0, -20)`, `(0, ${(chartHeight + 10)})`, `(0, 0)`, `(${chartWidth}, 0)`];
 
     for (let i = 0; i < axesForLabels.length; i ++) {
-      const label = axesForLabels[i](scales[i]).ticks(ticks[i]).tickSize(0).tickFormat((d) => d === 0 ? labelText[i] : "");
+      const label = axesForLabels[i](scales[i]).ticks(ticks[i]).tickSize(0).tickFormat((d) => d === 0 ? labelText[i]! : "");
       svgAxes.append("g")
         .attr("class", "axes-labels")
         .attr("transform", `translate${labelTranslations[i]}`)
