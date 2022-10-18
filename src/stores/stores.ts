@@ -71,7 +71,7 @@ const seismicSimulationAuthorSettingsProps = tuple(
   "deformationModelFrictionLow",
   "deformationModelFrictionMedium",
   "deformationModelFrictionHigh",
-  "deformationModelRainbowLines",
+  "deformationModelHighlightedBoxes",
   "deformationModelApparentYearScaling",
   "deformationModelShowYear",
   "deformationModelFaultAngle",

@@ -70,7 +70,7 @@ export const SeismicSimulationStore = types
     deformationModelUserEarthquakeCount: 0,
     deformationModelUserEarthquakeLatestStep: 0,
 
-    deformationModelRainbowLines: false,
+    deformationModelHighlightedBoxes: false,
     deformationModelShowYear: true,
 
     // changes the visible value for years passed, and when students step through years manually with blocks

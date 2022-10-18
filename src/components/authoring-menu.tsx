@@ -98,7 +98,7 @@ const AuthoringMenu: React.SFC<IProps> = (props) => {
               min={0.1} max={50} step={0.1}/>
             <DatNumber path="seismicSimulation.deformationModelFrictionHigh" label={strings.HIGH_FRICTION} key="deformationModelFrictionHigh"
               min={0.1} max={50} step={0.1}/>
-            <DatBoolean path="seismicSimulation.deformationModelRainbowLines" label={strings.RAINBOW_LINES} key="deformationModelRainbowLines" />
+            <DatBoolean path="seismicSimulation.deformationModelHighlightedBoxes" label={strings.HIGHLIGHT_BOXES} key="deformationModelHighlightedBoxes" />
             <DatNumber path="seismicSimulation.deformationModelFaultAngle" label={strings.FAULT_ANGLE} key="deformationModelFaultAngle"
               min={-90} max={90} step={1}/>
           </DatFolder>,
