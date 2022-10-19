@@ -141,18 +141,18 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
         );
 
       if (hasFourAxisLabels) {
-        d3.selectAll(".grid").selectAll(".domain").style("opacity", "0");
+        svgAxes.selectAll(".grid").selectAll(".domain").style("opacity", "0");
 
-        const ticks = d3.selectAll(".grid").selectAll(".tick");
+        const ticks = svgAxes.selectAll(".grid").selectAll(".tick");
         ticks.style("stroke-opacity", (d) => d === 0 ? "1" : ".5");
 
         const getStrokeWidth = (d: unknown, idx: number, numTicks: number) => {
           return d === 0 ? "5px" : idx === 0 || idx === numTicks ? "0px" : "1px";
         };
 
-        d3.selectAll(".grid.x").selectAll(".tick")
+        svgAxes.selectAll(".grid.x").selectAll(".tick")
           .style("stroke-width", (d, idx) => getStrokeWidth(d, idx, xUniformTicks));
-        d3.selectAll(".grid.y").selectAll(".tick")
+          svgAxes.selectAll(".grid.y").selectAll(".tick")
           .style("stroke-width", (d, idx) =>  getStrokeWidth(d, idx, yUniformTicks));
       }
     }
@@ -197,9 +197,9 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
       .call(axisLeft);
 
     if (hasFourAxisLabels) {
-      d3.selectAll(".axis").selectAll("path").style("stroke-width", "25px").style("stroke", "#fff");
-      d3.selectAll(".bottom.axis").selectAll("path").attr("transform", "translate(0, 5)");
-      d3.selectAll(".left.axis").selectAll("path").attr("transform", "translate(-12, 0)");
+      svgAxes.selectAll(".axis").selectAll("path").style("stroke-width", "25px").style("stroke", "#fff");
+      svgAxes.selectAll(".bottom.axis").selectAll("path").attr("transform", "translate(0, 5)");
+      svgAxes.selectAll(".left.axis").selectAll("path").attr("transform", "translate(-12, 0)");
     }
 
     // Add labels
@@ -238,7 +238,7 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
         .call(label);
     }
 
-    const axesLabels = d3.selectAll("g.axes-labels");
+    const axesLabels = svgAxes.selectAll("g.axes-labels");
     axesLabels.selectAll("path").style("opacity", "0");
     axesLabels.style("font-size", "0.9em").style("font-weight", "bold");
 
@@ -250,7 +250,8 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
 
     const mmTranslations = ["10px, 10px", "0px, 30px", "-35px, 20px", "40px, 20px"];
     const getMMTranslationValue = (idx: number) => `translate(${mmTranslations[idx]})`;
-    d3.selectAll(".mm-label").style("transform", (d, idx) => getMMTranslationValue(idx));
+    console.log(` svgAxes.selectAll(".mm-label")`,  svgAxes.selectAll(".mm-label"));
+    svgAxes.selectAll(".mm-label").style("transform", (d, idx) => getMMTranslationValue(idx));
   }
 
     d3.select(this.canvasRef.current)
@@ -285,7 +286,7 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
         .append("g")
         .attr("transform", "translate(" + marginLeft + "," + marginTop + ")");
 
-      addFadeLegend(svg, data, chartWidth + 80, margin);
+      addFadeLegend(svg, data, chartWidth, margin);
     }
   }
 
