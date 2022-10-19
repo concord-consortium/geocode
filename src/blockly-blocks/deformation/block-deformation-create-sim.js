@@ -139,6 +139,8 @@ Blockly.Blocks['deformation-create-sim'] = {
     init: function() {
       this.appendDummyInput()
           .appendField(strings.MAX_DEFORMATION)
+      this.appendDummyInput()
+          .appendField(strings.BASED_ON)
           .appendField(new Blockly.FieldDropdown([["low", "low"], ["medium", "medium"], ["high", "high"]]), strings.FRICTION)
           .appendField(strings.FRICTION);
       this.setOutput(true, 'Number');
