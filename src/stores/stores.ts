@@ -75,6 +75,7 @@ const seismicSimulationAuthorSettingsProps = tuple(
   "deformationModelApparentYearScaling",
   "deformationModelShowYear",
   "deformationModelFaultAngle",
+  "deformationModelHighlightedBoxes",
 );
 
 export type SeismicSimulationAuthorSettingsProps = typeof seismicSimulationAuthorSettingsProps[number];
