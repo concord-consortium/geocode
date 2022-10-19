@@ -31,7 +31,7 @@ export const DEFORMATION = "Deformation";
 
 // Strings for Get Max Deformation
 export const MAX_DEFORMATION = "Max deformation calculated";
-export const BASED_ON = "based on"
+export const BASED_ON = "based on";
 export const FRICTION = "friction";
 
 // Strings for Plot Deformation
