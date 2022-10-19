@@ -58,6 +58,9 @@ export const ReportItemComponent: React.FC<Props> = (props) => {
             });
             const items: IReportItemAnswerItem[] = [
               {
+                type: "links"
+              },
+              {
                 type: "html",
                 html
               }
