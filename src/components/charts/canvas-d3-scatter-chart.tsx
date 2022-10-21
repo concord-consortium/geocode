@@ -152,7 +152,7 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
 
         svgAxes.selectAll(".grid.x").selectAll(".tick")
           .style("stroke-width", (d, idx) => getStrokeWidth(d, idx, xUniformTicks));
-          svgAxes.selectAll(".grid.y").selectAll(".tick")
+        svgAxes.selectAll(".grid.y").selectAll(".tick")
           .style("stroke-width", (d, idx) =>  getStrokeWidth(d, idx, yUniformTicks));
       }
     }
@@ -250,7 +250,6 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
 
     const mmTranslations = ["10px, 10px", "0px, 30px", "-35px, 20px", "40px, 20px"];
     const getMMTranslationValue = (idx: number) => `translate(${mmTranslations[idx]})`;
-    console.log(` svgAxes.selectAll(".mm-label")`,  svgAxes.selectAll(".mm-label"));
     svgAxes.selectAll(".mm-label").style("transform", (d, idx) => getMMTranslationValue(idx));
   }
 
