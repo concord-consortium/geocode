@@ -44,7 +44,7 @@ export class BlocklyController {
   public run = () => {
     // counting 'run from year...' blocks for deformation graph
     // if more than 3 blocks are being used, need to alert user and not run code
-    const numberOfLoops = this.workspace.getBlocksByType("deformation-year-loop");
+    const numberOfLoops = this.workspace.getBlocksByType("run-from-year-loop");
     if (numberOfLoops.length > 3) {
       this.throwError(DEFORMATION_SIMULATION_WARNING);
       this.stop();
@@ -106,7 +106,7 @@ export class BlocklyController {
    * at the end of the block's function, which will set steppingThroughBlock to false.
    */
   public step = () => {
-    const numberOfLoops = this.workspace.getBlocksByType("deformation-year-loop");
+    const numberOfLoops = this.workspace.getBlocksByType("run-from-year-loop");
     if (numberOfLoops.length > 3) {
       this.throwError(DEFORMATION_SIMULATION_WARNING);
       this.stop();
