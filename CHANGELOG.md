@@ -1,4 +1,17 @@
 # Changelog
+## Version 2.8.0 - release October 26, 2022
+### Features/Improvements
+- **[GeoCode][Seismic]** Change color of "Run from year..." loop block to the blue "Logic" color and move it to that category [#183340567](https://www.pivotaltracker.com/story/show/183340567)
+- Set default speed of the Earthquake slider to "Fast" [#179499758](https://www.pivotaltracker.com/story/show/179499758)
+- Fade previous line(s) when new line is being plotted on deformation graph [#181728014](https://www.pivotaltracker.com/story/show/181728014)
+- Upgrade report-item api to version 2 [#183561672](https://www.pivotaltracker.com/story/show/183561672)
+- **[GeoCode][Seismic]** Redesign GPS movement over time graph [#183340756](https://www.pivotaltracker.com/story/show/183340756)
+- Color in full line of grid squares in Deformation Simulation [#181488809](https://www.pivotaltracker.com/story/show/181488809)
+- **[GeoCode][Seismic]** Make "max deformation calculated based on __ friction" block two lines [#183583725](https://www.pivotaltracker.com/story/show/183583725)
+
+### Bug Fixes
+- When clicking on run button, error message is no longer displayed If code designed to produce more than 3 runs [#183544683](https://www.pivotaltracker.com/story/show/183544683)
+
 ## Version 2.7.0 - release May 2, 2022
 ### Features/Improvements:
 - Author Switch to Show Deformation Graph [#181515776](https://www.pivotaltracker.com/story/show/181515776)
