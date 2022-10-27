@@ -131,8 +131,8 @@ export const WindData: DataSetInfo = {
   extents: {
     "elevation": [1450, 1600],
     "speed": [0, 23],
-    "East (mm)": [-800, 300],
-    "North (mm)": [0, 700],
+    "East (mm)": [-600, 100],
+    "North (mm)": [-100, 700],
   },
   timeParsers: {
     date: {
@@ -165,7 +165,9 @@ export const WindData: DataSetInfo = {
     "speed": "Wind Speed (m/s)",
     "timeOfYear": "Time of year",
     "direction": "Direction (degrees)",
-    "East (mm)": "East movement (mm)",
-    "North (mm)": "North movement (mm)",
+    "West (mm)": "West movement",
+    "East (mm)": "East movement",
+    "North (mm)": "North movement",
+    "South (mm)": "South movement"
   }
 };

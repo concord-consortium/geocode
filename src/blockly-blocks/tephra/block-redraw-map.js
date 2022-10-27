@@ -1,13 +1,15 @@
+import { REDRAW_MAP, ERUPT_VOLCANO } from "../../strings/blockly-blocks/tephra/redraw-map";
+
 Blockly.Blocks['redrawMap'] = {
     init: function() {
       this.appendDummyInput()
-          .appendField("Redraw the map");
+          .appendField(REDRAW_MAP);
       this.setInputsInline(true);
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
       this.setColour("#EB0000");
-      this.setTooltip("have the volcano erupt");
-      this.setHelpUrl("have the volcano erupt");
+      this.setTooltip(ERUPT_VOLCANO);
+      this.setHelpUrl(ERUPT_VOLCANO);
     }
   };
 

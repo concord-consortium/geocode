@@ -11,10 +11,13 @@ module.exports = (env, argv) => {
   return {
     context: __dirname, // to automatically find tsconfig.json
     devtool: 'source-map',
-    entry: './src/index.tsx',
+    entry: {
+      "app": "./src/index.tsx",
+      "report-item": "./src/report-item/index.tsx"
+    },
     mode: 'development',
     output: {
-      filename: 'assets/index.[hash].js'
+      filename: 'assets/[name].[hash].js'
     },
     performance: { hints: false },
     module: {
@@ -108,11 +111,17 @@ module.exports = (env, argv) => {
     plugins: [
       new ForkTsCheckerWebpackPlugin(),
       new MiniCssExtractPlugin({
-        filename: devMode ? "assets/index.css" : "assets/index.[hash].css"
+        filename: devMode ? "assets/index.css" : "assets/[name].[hash].css"
       }),
       new HtmlWebpackPlugin({
         filename: 'index.html',
+        chunks: ['app'],
         template: 'src/index.html'
+      }),
+      new HtmlWebpackPlugin({
+        filename: 'report-item/index.html',
+        chunks: ['report-item'],
+        template: 'src/report-item/index.html'
       }),
       new CopyWebpackPlugin({
         patterns: [

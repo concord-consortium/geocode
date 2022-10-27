@@ -1,8 +1,12 @@
 import { observable } from "mobx";
 import { IInterpreterController, makeInterpreterController } from "./interpreter";
 import { IStore } from "../stores/stores";
+import { DEFORMATION_SIMULATION_WARNING } from "../strings/blockly-controller";
 
-interface Workspace {highlightBlock: (id: string|null) => void; }
+interface Workspace {
+  highlightBlock: (id: string|null) => void;
+  getBlocksByType: (name: string) => [];
+}
 
 export class BlocklyController {
 
@@ -38,16 +42,25 @@ export class BlocklyController {
   }
 
   public run = () => {
-    const reset = () => {
-      this.setCode(this.code, this.workspace);
-    };
-    if (this.interpreterController) {
-      this.interpreterController.run(reset);
-      this.running = true;
-    }
-    this.stores.chartsStore.reset();
-    this.stores.samplesCollectionsStore.reset();
-    this.stores.blocklyStore.runClicked();
+    // counting 'run from year...' blocks for deformation graph
+    // if more than 3 blocks are being used, need to alert user and not run code
+    const numberOfLoops = this.workspace.getBlocksByType("run-from-year-loop");
+    if (numberOfLoops.length > 3) {
+      this.throwError(DEFORMATION_SIMULATION_WARNING);
+      this.stop();
+    } else {
+      this.stores.seismicSimulation.reset();
+      const reset = () => {
+        this.setCode(this.code, this.workspace);
+      };
+      if (this.interpreterController) {
+        this.interpreterController.run(reset);
+        this.running = true;
+      }
+      this.stores.chartsStore.reset();
+      this.stores.samplesCollectionsStore.reset();
+      this.stores.blocklyStore.runClicked();
+  }
   }
 
   public reset = () => {
@@ -93,6 +106,11 @@ export class BlocklyController {
    * at the end of the block's function, which will set steppingThroughBlock to false.
    */
   public step = () => {
+    const numberOfLoops = this.workspace.getBlocksByType("run-from-year-loop");
+    if (numberOfLoops.length > 3) {
+      this.throwError(DEFORMATION_SIMULATION_WARNING);
+      this.stop();
+    } else {
     this.steppingThroughBlock = true;
 
     // guard against infinite loops or a block failing to call endStep
@@ -108,6 +126,7 @@ export class BlocklyController {
       }
     };
     stepAsync();
+    }
   }
 
   // called by interpreted block code

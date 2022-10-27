@@ -26,6 +26,7 @@ import { getAuthorableSettings, updateStores, serializeState, getSavableStateAut
 import { ChartPanel } from "./charts/chart-panel";
 import { BlocklyController } from "../blockly/blockly-controller";
 import { HistogramPanel } from "./montecarlo/histogram-panel";
+import { DeformationGraphPanel } from "./deformation/deformation-graph-panel";
 import { PlateMovementPanel } from "./deformation/plate-movement-panel";
 import { uiStore } from "../stores/ui-store";
 import { unitStore } from "../stores/unit-store";
@@ -274,6 +275,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         showData,
         showMonteCarlo: _showMonteCarlo,
         showDeformation,
+        showDeformationGraph,
         showSpeedControls,
         speed,
         hideBlocklyToolbox,
@@ -566,7 +568,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               </TabPanel>
             }
             {
-              showDeformation && !isTephra &&
+              showDeformation && !showDeformationGraph && !isTephra &&
               <TabPanel
                 width={`${tabWidth}px`}
                 tabcolor={this.getRightTabColor(RightSectionTypes.DEFORMATION)}
@@ -575,7 +577,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               >
                 <DeformationModel
                   width={mapWidth}
-                  height={height - 160}
+                  height={height - 225}
+                  showDeformationGraph={showDeformationGraph}
                 />
                 <PlateMovementPanel
                   leftSpeed={deformSpeedPlate1}
@@ -585,6 +588,30 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 />
               </TabPanel>
             }
+            {
+              showDeformation
+              && showDeformationGraph
+              && !isTephra &&
+              <TabPanel
+                width={`${tabWidth}px`}
+                tabcolor={this.getRightTabColor(RightSectionTypes.DEFORMATION)}
+                rightpanel={"true"}
+                data-test={this.getRightTabName(RightSectionTypes.DEFORMATION) + "-panel"}
+              >
+                <DeformationModel
+                  width={mapWidth}
+                  height={height * .65}
+                  showDeformationGraph={showDeformationGraph}
+                  running={running}
+                />
+                <DeformationGraphPanel
+                  width={mapWidth}
+                  height={height * .25}
+                  running={running}
+                />
+              </TabPanel>
+            }
+
             <RightTabBack
               width={tabWidth}
               backgroundcolor={this.getRightTabColor(currentRightTabType, unitName)}

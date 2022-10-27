@@ -12,6 +12,7 @@ import EjectedVolumeWidget from "./widgets/ejected-volume-widget";
 import ColumnHeightWidget from "./widgets/column-height-widget";
 import SpeedDirectionWidget from "./widgets/speed-direction-widget";
 import { WidgetPanelTypes } from "../utilities/widget";
+import * as strings from "../strings/components/controls";
 
 const ControlsContainer = styled.div`
   display: flex;
@@ -225,7 +226,7 @@ export class Controls extends BaseComponent<IProps, IState> {
               onClick={reset}
               disabled={false}
               children={<ResetIcon />}
-              label={"Reset"}
+              label={strings.RESET}
               hoverColor={"#FFDBAC"}
               activeColor={"#FFECD6"}
               fill={"#FFAC00"}
@@ -237,7 +238,7 @@ export class Controls extends BaseComponent<IProps, IState> {
               onClick={this.erupt}
               disabled={false}
               children={<RunIcon />}
-              label={"Erupt"}
+              label={strings.ERUPT}
               hoverColor={"#FFDBAC"}
               activeColor={"#FFECD6"}
               fill={"#FFAC00"}

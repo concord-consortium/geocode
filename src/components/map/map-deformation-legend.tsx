@@ -25,7 +25,7 @@ export const LegendTitleText = styled.div`
   text-align: center;
 `;
 
-export interface StrainRange {
+export interface DeformationRange {
   color: string;
   min: number;
   max: number | undefined;
@@ -35,17 +35,17 @@ const colors = ["#EEE270", "#FFBF4E", "#FF754B", "#E94E83", "#AE4ED3", "#7B58AE"
 const stepSize = (MAX_STRAIN - MIN_STRAIN) / buckets;
 const logStepSize = (MAX_LOG_STRAIN - MIN_LOG_STRAIN) / buckets;
 
-export const equalIntervalStrainRanges: StrainRange[] = [];
+export const equalIntervalDeformationRanges: DeformationRange[] = [];
 
 for (let i = 0; i < buckets; i++) {
-  equalIntervalStrainRanges.push({
+  equalIntervalDeformationRanges.push({
     color: colors[i],
     min: MIN_STRAIN + (stepSize * i),
     max: (i < buckets - 1) ? MIN_STRAIN + (stepSize * (i + 1)) : undefined
   });
 }
 
-export const logarithmicStrainRanges: StrainRange[] = [
+export const logarithmicDeformationRanges: DeformationRange[] = [
   {
     color: colors[0],
     min: 0,
@@ -90,7 +90,7 @@ interface IProps {
 
 interface IState {}
 
-export default class StrainLegendComponent extends PureComponent<IProps, IState> {
+export default class DeformationLegendComponent extends PureComponent<IProps, IState> {
   public static defaultProps = {
     onClick: undefined,
   };
@@ -98,11 +98,11 @@ export default class StrainLegendComponent extends PureComponent<IProps, IState>
   public render() {
     const { onClick, colorMethod } = this.props;
     const isLog = colorMethod === "logarithmic";
-    const ranges = isLog ? logarithmicStrainRanges : equalIntervalStrainRanges;
+    const ranges = isLog ? logarithmicDeformationRanges : equalIntervalDeformationRanges;
     const round = (val: number) => Math.round(val);
     return (
       <LegendContainer>
-        <LegendTitleText>Strain rate{isLog ? " (log)" : ""}</LegendTitleText>
+        <LegendTitleText>Deformation<br/>build-up (s<sup>-1</sup>)</LegendTitleText>
         <AbsoluteIcon
           width={28}
           height={28}

@@ -78,6 +78,7 @@ phone.addListener("initInteractive", (data: {
     // student state overwrites authored state
     const mergedState = {...authorState, ...studentState};
     initialState = deserializeState(mergedState);
+
     stores.uiStore.setShowOptionsDialog(false);
 
     if (data.mode === "report") {

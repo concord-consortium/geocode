@@ -9,7 +9,7 @@ export type ChartTypeType = typeof ChartType.Type;
 export const ChartStyle = types.enumeration("type", ["dot", "arrow"]);
 export type ChartStyleType = typeof ChartStyle.Type;
 
-type ChartData = Array<Array<number|Date>> | number[];
+export type ChartData = Array<Array<number|Date>> | number[];
 type Column = number|Date;
 
 const Chart = types.model("Chart", {
@@ -26,7 +26,9 @@ const Chart = types.model("Chart", {
   fadeIn: types.optional(types.boolean, false),
   uniformXYScale: types.optional(types.boolean, false),
   gridlines: types.optional(types.boolean, false),
-  dataOffset: types.optional(types.number, 0)
+  dataOffset: types.optional(types.number, 0),
+  xAxisLabel2: types.maybe(types.string),
+  yAxisLabel2: types.maybe(types.string)
 })
 .views((self) => {
   const isDate = (column: 0|1) => {
@@ -74,7 +76,8 @@ const ChartsStore = types.model("Charts", {
 .actions((self) => ({
   addChart(chartProps: {type: ChartTypeType, chartStyle?: ChartStyleType, data: ChartData, customExtents?: number[][],
           title?: string, xAxisLabel?: string, yAxisLabel?: string, dateLabelFormat?: string, fadeIn?: boolean,
-          uniformXYScale?: boolean, gridlines?: boolean, dataOffset?: number}) {
+          uniformXYScale?: boolean, gridlines?: boolean, dataOffset?: number, xAxisLabel2?: string,
+          yAxisLabel2?: string}) {
     const chart = Chart.create(chartProps);
     self.charts.push(chart);
     return chart;     // returns in case anyone wants to use the new chart
@@ -122,7 +125,8 @@ const ChartsStore = types.model("Charts", {
    * Creates a custom chart based on known properties of wind data.
    */
   addArbitraryChart(dataset: Dataset, xAxis: string, yAxis: string, _title?: string, _fadeIn?: boolean,
-                    _uniformXYScale?: boolean, _gridlines?: boolean, _dataOffset?: number) {
+                    _uniformXYScale?: boolean, _gridlines?: boolean, _dataOffset?: number, extraLabel1?: string,
+                    extraLabel2?: string) {
     let data;
 
     const timeParser = WindData.timeParsers[xAxis];
@@ -145,12 +149,20 @@ const ChartsStore = types.model("Charts", {
     const capFirst = (name: string) => name.charAt(0).toUpperCase() + name.slice(1);
     const xAxisLabel = WindData.axisLabel[xAxis] ?  WindData.axisLabel[xAxis] : capFirst(xAxis);
     const yAxisLabel = WindData.axisLabel[yAxis] ?  WindData.axisLabel[yAxis] : capFirst(yAxis);
+    const xAxisLabel2 = extraLabel1 ?
+        WindData.axisLabel[extraLabel1] ?
+        WindData.axisLabel[extraLabel1] :
+        capFirst(extraLabel1) : "";
+    const yAxisLabel2 = extraLabel2 ?
+        WindData.axisLabel[extraLabel2] ?
+        WindData.axisLabel[extraLabel2] :
+        capFirst(extraLabel2) : "";
     const fadeIn = _fadeIn || false;
     const uniformXYScale = _uniformXYScale || false;
     const dataOffset = _dataOffset;
     const gridlines = _gridlines || false;
     self.addChart({type, data, customExtents, title, xAxisLabel, yAxisLabel, chartStyle, dateLabelFormat, fadeIn,
-                   uniformXYScale, gridlines, dataOffset});
+                   uniformXYScale, gridlines, dataOffset, xAxisLabel2, yAxisLabel2});
   },
 
   /**

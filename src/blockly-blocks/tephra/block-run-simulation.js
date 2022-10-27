@@ -1,23 +1,25 @@
+import * as strings from '../../strings/blockly-blocks/tephra/run-simulation'
+
 Blockly.Blocks['run_simulation'] = {
     init: function() {
       this.appendDummyInput()
-          .appendField("Run simulation");
+          .appendField(strings.RUN_SIMULATION);
       this.appendValueInput("vei")
           .setCheck("Number")
           .setAlign(Blockly.ALIGN_RIGHT)
-          .appendField("VEI");
+          .appendField(strings.VEI);
       this.appendValueInput("wind_speed")
           .setCheck("Number")
           .setAlign(Blockly.ALIGN_RIGHT)
-          .appendField("Wind Speed (m/s)");
+          .appendField(strings.WIND_SPEED_MS);
       this.appendValueInput("wind_direction")
           .setCheck("Number")
           .setAlign(Blockly.ALIGN_RIGHT)
-          .appendField("Wind Direction");
+          .appendField(strings.WIND_DIRECTION);
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
       this.setColour("#EB0000");
-      this.setTooltip("Simulation parameters");
+      this.setTooltip(strings.SIMULATION_PARAMETERS);
       this.setHelpUrl("");
     }
   }

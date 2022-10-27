@@ -1,7 +1,7 @@
 
-// Calculate the max shear strain between three gps points
+// Calculate the max shear deformation between three gps points
 // Saul Amster 06/2020
-// Translated from GPS strain calculator--gps_strain_calculator_excel.v3.xls by Vince Cronin
+// Translated from GPS deformation calculator--gps_deformation_calculator_excel.v3.xls by Vince Cronin
 import * as math from "mathjs";
 import { area } from "d3";
 
@@ -18,7 +18,7 @@ const e2 = 0.006739497;
 const n = 0.00167922;
 
 // Input interfaces for typing the data
-export interface StrainInput {
+export interface DeformationInput {
     data: StationData[];
 }
 
@@ -35,9 +35,9 @@ export interface StationData {
     direction: number;                      // º from N
 }
 
-// This is all of the outputs of the algorithm. Currently only maxShearStrain is returned
+// This is all of the outputs of the algorithm. Currently only maxShearDeformation is returned
 // This interface is unused
-export interface StrainOutput {
+export interface DeformationOutput {
     secondInvariant: number;
 }
 
@@ -69,14 +69,14 @@ interface StationDataComputedValues {
     pseudoEasting: number;
 }
 
-// returns Max Shear Strain for the three data GPS stations inputed
-const strainCalc = (inputData: StrainInput): StrainOutput => {
+// returns Max Shear Deformation for the three data GPS stations inputed
+const deformationCalc = (inputData: DeformationInput): DeformationOutput => {
     const stationData: StationDataComputedValues[] = [];
     inputData.data.forEach(element => {
         stationData.push(calcStationData(element));
     });
-    const strainOutput = calculateStrainOutputData(inputData, stationData);
-    return strainOutput;
+    const deformationOutput = calculateDeformationOutputData(inputData, stationData);
+    return deformationOutput;
 };
 
 // returns populated StationDataComputedValues interface based on a single GPS station
@@ -153,9 +153,12 @@ function calcStationData(data: StationData): StationDataComputedValues {
     return output;
 }
 
-// returns calculated Max Shear Strain within the three GPS stations
+// returns calculated Max Shear Deformation within the three GPS stations
 // Uses mathjs for matrix manipulation
-function calculateStrainOutputData(inputData: StrainInput, calculatedData: StationDataComputedValues[]): StrainOutput {
+function calculateDeformationOutputData(
+    inputData: DeformationInput,
+    calculatedData: StationDataComputedValues[]): DeformationOutput {
+
     const utmZones: number[] = [];
     calculatedData.forEach((element: StationDataComputedValues) => {
         utmZones.push(element.utmZone);
@@ -243,15 +246,15 @@ function calculateStrainOutputData(inputData: StrainInput, calculatedData: Stati
                                 [eigenValues.get([0]), eigenValues.get([1])] :
                                 [eigenValues.get([1]), eigenValues.get([0])];
 
-    // const maximumIninitesimalShearStrain = 2 * Math.sqrt(Math.pow((m6[0][0] - m6[1][1]) / 2, 2) +
+    // const maximumIninitesimalShearDeformation = 2 * Math.sqrt(Math.pow((m6[0][0] - m6[1][1]) / 2, 2) +
     //                                         Math.pow(m6[1][1], 2));
-    // const areaStrain = correctedValues[0] + correctedValues[1];
+    // const areaDeformation = correctedValues[0] + correctedValues[1];
 
     // This returns values from 0 - 2e-6. We scale by 1e9 below, resulting in values 0-2000.
-    const strainSecondInvariant = Math.sqrt(correctedValues[0] ** 2 +  correctedValues[1] ** 2);
+    const deformationSecondInvariant = Math.sqrt(correctedValues[0] ** 2 +  correctedValues[1] ** 2);
 
-    const output: StrainOutput = {
-        secondInvariant: strainSecondInvariant * Math.pow(10, 9),
+    const output: DeformationOutput = {
+        secondInvariant: deformationSecondInvariant * Math.pow(10, 9),
 
         // these were old calculations that were included but are not currently
         // being used.
@@ -271,10 +274,9 @@ function calculateStrainOutputData(inputData: StrainInput, calculatedData: Stati
         // directionOfRotation: m5.get([2]) < 0 ? "clockwise" : "anit-clockwise",
         // maxHorizontalExtension: correctedValues[0],
         // minHorizontalExtension: correctedValues[1],
-        // maxShearStrain: maximumIninitesimalShearStrain * Math.pow(10, 9),
-        // areaStrain: areaStrain * Math.pow(10, 9),
+        // maxShearDeformation: maximumIninitesimalShearDeformation * Math.pow(10, 9),
+        // areaDeformation: areaDeformation * Math.pow(10, 9),
     };
-
     return output;
 }
 
@@ -306,4 +308,4 @@ function average(data: number[]){
     return avg;
 }
 
-export default strainCalc;
+export default deformationCalc;

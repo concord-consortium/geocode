@@ -5,24 +5,24 @@
     <block type="seismic_sample_data"></block>
     <block type="seismic_filter_data"></block>
     <block type="graph_gps_position"></block>
-    <block type="seismic_compute_strain"></block>
-    <block type="seismic_render_strain_triangles"></block>
-    <block type="seismic_logarithmic"></block>
-    <block type="seismic_equal_interval"></block>
-    <block type="seismic_render_strain_labels"></block>
+    <block type="seismic_compute_deformation"></block>
+    <block type="seismic_render_deformation_triangles"></block>
+    <block type="seismic_render_deformation_labels"></block>
   </category>
 
   <category name="Deformation" colour="#B35F00">
     <block type="deformation-create-sim"></block>
-    <block type="deformation-year-loop"></block>
+    <block type="deformation-create-graph"></block>
     <block type="deformation-model-step"></block>
     <block type="deformation-model-earthquake"></block>
     <block type="deformation-model-get-deformation"></block>
     <block type="deformation-model-get-max-deformation"></block>
+    <block type="deformation-plot-data"></block>
     <block type="deformation-boundary-orientation"></block>
   </category>
 
   <category name="Logic" colour="%{BKY_LOGIC_HUE}">
+    <block type="run-from-year-loop"></block>
     <block type="controls_if"></block>
     <block type="value-logic-compare"></block>
   </category>

@@ -3,7 +3,7 @@ import { BlocklyController } from "./blockly-controller";
 import { IBlocklyWorkspace } from "../interfaces";
 import { IStore } from "../stores/stores";
 import { Datasets, Dataset, Filter, ProtoTimeRange, TimeRange } from "../stores/data-sets";
-import { StationData } from "../strain";
+import { StationData } from "../deformation";
 import { ColorMethod } from "../stores/seismic-simulation-store";
 const Interpreter = require("js-interpreter");
 
@@ -335,35 +335,35 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       };
       const dataset = Datasets.getGPSPositionTimeData(station, validTimeRange);
       chartsStore.addArbitraryChart(dataset.data, "East (mm)", "North (mm)", `${params.station} Position over Time`,
-                                    true, true, true, dataset.dataOffset);
+                                    true, true, true, dataset.dataOffset, "West (mm)", "South (mm)");
     });
 
-    addFunc("computeStrainRate", (filter: Filter) => {
-      if (filter) {
-        for (const key in filter) {
-          if ((filter[key] as any) === "ERROR") {
-            blocklyController.throwError("You can't filter on only one corner for latitude or longitude.\nPlease provide both corners, or leave them empty.");
-            return;
-          }
-        }
+    addFunc("computeDeformationBuildup", (stations: StationData[]) => {
+      if (!stations || stations.length < 3) {
+        blocklyController.throwError(`You must provide at least three GPS stations to compute deformation build-up.`);
       }
-      seismicSimulation.setStrainMapBounds(filter);
+      seismicSimulation.setDeformationMapBounds(stations);
     });
 
-    addFunc("renderStrainRate", (method: ColorMethod) => {
-      if (!method) {
-        blocklyController.throwError(`You must include a method by which to color the strain map.`);
-        return;
-      }
-      seismicSimulation.setRenderStrainMap(method);
+    addFunc("renderDeformationBuildup", (method: ColorMethod) => {
+      seismicSimulation.setRenderDeformationMap("logarithmic");
     });
 
-    addFunc("renderStrainRateLabels", () => {
-      seismicSimulation.renderStrainRateLabels();
+    addFunc("renderDeformationBuildupLabels", () => {
+      seismicSimulation.renderDeformationBuildupLabels();
     });
 
     addFunc("runDeformationModel", () => {
       seismicSimulation.startDeformationModel();
+    });
+
+    addFunc("createDeformationGraph", () => {
+      seismicSimulation.reset();
+      seismicSimulation.setShowDeformationGraph();
+    });
+
+    addFunc("createNewRun", () => {
+        seismicSimulation.createNewRun();
     });
 
     addFunc("setPlateVelocity", (params: { plate: number, speed: number, direction: number | string }) => {
@@ -397,6 +397,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       seismicSimulation.setPlateVelocity(1, params.plate_1_speed, 0);
       seismicSimulation.setPlateVelocity(2, params.plate_2_speed, 180);
       seismicSimulation.setApparentYear(params.year);
+      seismicSimulation.saveDeformationData(params.year, params.plate_1_speed, params.plate_2_speed);
     });
 
     addFunc("triggerEarthquake", () => {
@@ -409,7 +410,12 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     });
 
     addFunc("getMaxDeformation", (friction: "low" | "medium" | "high") => {
+      seismicSimulation.setDeformationCurrentFriction(friction);
       return {data: seismicSimulation.getDeformationModelMaxDisplacementBeforeEarthquakeGivenFriction(friction)};
+    });
+
+    addFunc("plotDeformationData", () => {
+      seismicSimulation.setPlotOnGraph();
     });
 
     addFunc("setBoundaryOrientation", (angle: number) => {
@@ -505,12 +511,14 @@ export const makeInterpreterController = (code: string, blocklyController: Block
     // times synchronously, but we must still occasionally call it asynchronously with 0ms setTimeout,
     // or (1) the blocks won't flash, as control will never pass to the renderer, and (2) the React
     // views won't update.
+
     const timeout = store.uiStore.speed > 0 ? 0 : 10;
     const skip = store.uiStore.speed === 0 ? 1 :
                   store.uiStore.speed === 1 ? 2 :
                   store.uiStore.speed === 2 ? 6 : 20;
     let stepCount = 0;
     paused = false;
+
     function runLoop() {
       if (paused) {
         lastRunID = null;

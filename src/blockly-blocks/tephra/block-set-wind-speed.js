@@ -1,17 +1,19 @@
+import { SET_WIND_SPEED, MS, WIND_SPEED_TOOLTIP } from "../../strings/blockly-blocks/tephra/controls-panel"
+
 Blockly.Blocks['setWindSpeed'] = {
     init: function() {
       this.appendValueInput("windSpeed")
           .setCheck("Number")
           .setAlign(Blockly.ALIGN_RIGHT)
-          .appendField("Set wind speed");
+          .appendField(SET_WIND_SPEED);
       this.appendDummyInput()
-          .appendField("m/s");
+          .appendField(MS);
       this.setInputsInline(true);
       this.setPreviousStatement(true, null);
       this.setNextStatement(true, null);
       this.setColour(32);
-   this.setTooltip("wind speed, meters per second");
-   this.setHelpUrl("wind speed, meters per second");
+   this.setTooltip(WIND_SPEED_TOOLTIP);
+   this.setHelpUrl(WIND_SPEED_TOOLTIP);
     }
   };
   

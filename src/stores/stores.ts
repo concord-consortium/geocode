@@ -71,10 +71,11 @@ const seismicSimulationAuthorSettingsProps = tuple(
   "deformationModelFrictionLow",
   "deformationModelFrictionMedium",
   "deformationModelFrictionHigh",
-  "deformationModelRainbowLines",
+  "deformationModelHighlightedBoxes",
   "deformationModelApparentYearScaling",
   "deformationModelShowYear",
   "deformationModelFaultAngle",
+  "deformationModelHighlightedBoxes",
 );
 
 export type SeismicSimulationAuthorSettingsProps = typeof seismicSimulationAuthorSettingsProps[number];
@@ -118,6 +119,7 @@ const uiAuthorSettingsProps = tuple(
   "showMonteCarlo",
   "showData",
   "showDeformation",
+  "showDeformationGraph",
   "showSpeedControls",
   "showBarHistogram",
   "showLog",

@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as d3 from "d3";
 import { ChartType } from "../../stores/charts-store";
+import { ValueFn } from "d3";
 
 interface IProps {
   chart: ChartType;
@@ -99,7 +100,7 @@ export class CanvasD3RadialChart extends React.Component<IProps> {
       .attr("stroke-dasharray", "8")
       .attr("cx", center.x)
       .attr("cy", center.y)
-      .attr("r", magScale);
+      .attr("r", (x) => magScale(x)!);
 
     const text = svgAxes.append("g")
       .selectAll("g")
@@ -108,7 +109,7 @@ export class CanvasD3RadialChart extends React.Component<IProps> {
 
     text.append("text")
       .attr("x", center.x)
-      .attr("y",  d => center.y + magScale(d))
+      .attr("y",  d => center.y + magScale(d)!)
       .text(d => `${d} m/s`)
       .attr("dominant-baseline", "middle")
       .attr("text-anchor", "middle")
@@ -133,8 +134,8 @@ export class CanvasD3RadialChart extends React.Component<IProps> {
         ctx.beginPath();
         ctx.fillStyle = "#448878";
         // for both charts, we want to rotate 180º so that 0º is downward
-        const px = center.x + Math.cos((180 + 90 - point[0]) * Math.PI / 180) * magScale(point[1]);
-        const py = center.y - Math.sin((180 + 90 - point[0]) * Math.PI / 180) * magScale(point[1]);
+        const px = center.x + Math.cos((180 + 90 - point![0]) * Math.PI / 180) * magScale(point[1])!;
+        const py = center.y - Math.sin((180 + 90 - point![0]!) * Math.PI / 180) * magScale(point[1])!;
 
         ctx.arc(px, py, 1.5, 0, 2 * Math.PI, true);
         ctx.fill();
@@ -142,8 +143,8 @@ export class CanvasD3RadialChart extends React.Component<IProps> {
     } else {
       ctx.beginPath();
       (data as number[][]).forEach((point) => {
-        const px = center.x + Math.cos((90 - point[0]) * Math.PI / 180) * magScale(point[1]);
-        const py = center.y - Math.sin((90 - point[0]) * Math.PI / 180) * magScale(point[1]);
+        const px = center.x + Math.cos((90 - point[0]) * Math.PI / 180) * magScale(point[1])!;
+        const py = center.y - Math.sin((90 - point[0]) * Math.PI / 180) * magScale(point[1])!;
         // const px = center.x + xScale(x);
         // const py = yScale(y);
         const headlen = 6; // length of head in pixels

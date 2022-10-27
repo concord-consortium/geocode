@@ -5,7 +5,7 @@ import styled from "styled-components";
 import IconButton from "../buttons/icon-button";
 import TephraLegendComponent from "./map-tephra-legend";
 import RiskLegendComponent from "./map-risk-legend";
-import StrainLegendComponent from "./map-strain-legend";
+import DeformationLegendComponent from "./map-deformation-legend";
 import GPSLegendComponent from "./map-gps-legend";
 import { ColorMethod } from "../../stores/seismic-simulation-store";
 
@@ -24,13 +24,13 @@ const LegendContainer = styled.div`
   padding-bottom: 5px;
 `;
 
-export type LegendType = "Tephra" | "Risk" | "Strain" | "GPS";
+export type LegendType = "Tephra" | "Risk" | "Deformation" | "GPS";
 
 const secondaryPanel = {
   Tephra: "Risk" as LegendType,
   Risk: "Tephra" as LegendType,
-  Strain: "GPS" as LegendType,
-  GPS: "Strain" as LegendType
+  Deformation: "GPS" as LegendType,
+  GPS: "Deformation" as LegendType
 };
 
 interface IProps extends IBaseProps {
@@ -61,7 +61,7 @@ export class LegendComponent extends BaseComponent<IProps, IState> {
     if (isTephraUnit) {
       currentLegendType = legendType === "Tephra" ? "Tephra" : "Risk";
     } else {
-      currentLegendType = legendType === "Strain" ? "Strain" : "GPS";
+      currentLegendType = legendType === "Deformation" ? "Deformation" : "GPS";
     }
 
     if (toggledToSecondary) {
@@ -70,8 +70,8 @@ export class LegendComponent extends BaseComponent<IProps, IState> {
 
     const legend = currentLegendType === "Tephra" ? <TephraLegendComponent onClick={onClick} /> :
                     currentLegendType === "Risk" ? <RiskLegendComponent onClick={onClick} /> :
-                    currentLegendType === "Strain" ?
-                    <StrainLegendComponent onClick={onClick} colorMethod={colorMethod} /> :
+                    currentLegendType === "Deformation" ?
+                    <DeformationLegendComponent onClick={onClick} colorMethod={colorMethod} /> :
                     <GPSLegendComponent onClick={onClick} />;
     return (
       <LegendContainer data-test="key-container">

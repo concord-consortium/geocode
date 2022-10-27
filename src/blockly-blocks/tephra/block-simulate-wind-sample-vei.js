@@ -1,12 +1,14 @@
+import * as strings from "../../strings/blockly-blocks/tephra/simulate-wind"
+
 // frst one was misnamed (it doesn't take vei as an input) but is already in authors' data
 Blockly.Blocks['simulate_wind_sample_vei'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField("Compute and visualize tephra with");
+        .appendField(strings.COMPUTE_TEPHRA);
         this.appendValueInput("wind samples")
         .setCheck("Dataset")
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("a random wind sample from");
+        .appendField(strings.RANDOM_WIND_SAMPLE);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour("#EB0000");

@@ -1,4 +1,49 @@
 # Changelog
+## Version 2.8.0 - release October 26, 2022
+### Features/Improvements
+- **[GeoCode][Seismic]** Change color of "Run from year..." loop block to the blue "Logic" color and move it to that category [#183340567](https://www.pivotaltracker.com/story/show/183340567)
+- Set default speed of the Earthquake slider to "Fast" [#179499758](https://www.pivotaltracker.com/story/show/179499758)
+- Fade previous line(s) when new line is being plotted on deformation graph [#181728014](https://www.pivotaltracker.com/story/show/181728014)
+- Upgrade report-item api to version 2 [#183561672](https://www.pivotaltracker.com/story/show/183561672)
+- **[GeoCode][Seismic]** Redesign GPS movement over time graph [#183340756](https://www.pivotaltracker.com/story/show/183340756)
+- Color in full line of grid squares in Deformation Simulation [#181488809](https://www.pivotaltracker.com/story/show/181488809)
+- **[GeoCode][Seismic]** Make "max deformation calculated based on __ friction" block two lines [#183583725](https://www.pivotaltracker.com/story/show/183583725)
+
+### Bug Fixes
+- When clicking on run button, error message is no longer displayed If code designed to produce more than 3 runs [#183544683](https://www.pivotaltracker.com/story/show/183544683)
+
+## Version 2.7.0 - release May 2, 2022
+### Features/Improvements:
+- Author Switch to Show Deformation Graph [#181515776](https://www.pivotaltracker.com/story/show/181515776)
+- Update project dependencies. [#181497650](https://www.pivotaltracker.com/story/show/181497650)
+- Standardize block title case [#180994167](https://www.pivotaltracker.com/story/show/180994167)
+- Show/Hide Graph Lines via Legend [#181576903](https://www.pivotaltracker.com/story/show/181576903)
+- Graph Multiple Runs of Deformation Sim on a Single Plot [#181516924](https://www.pivotaltracker.com/story/show/181516924)
+- Graph a Single Deformation Model Run [#181516185](https://www.pivotaltracker.com/story/show/181516185)
+- Deformation graph update in real-time as the model runs [#181516910](https://www.pivotaltracker.com/story/show/181516910)
+- Run Buttons on Deformation Sim [#181516948](https://www.pivotaltracker.com/story/show/181516948)
+- Cursor change on clickable run labels in the graph legend [#181722649](https://www.pivotaltracker.com/story/show/181722649)
+- Limit the number of deformation model runs that a student can create in the blocks [#181516254](https://www.pivotaltracker.com/story/show/181516254)
+- Create new block "Create Deformation over Time graph" [#181658809](https://www.pivotaltracker.com/story/show/181658809)
+- Create new block "Plot deformation on the graph" [#181658884](https://www.pivotaltracker.com/story/show/181658884)
+- Block Inputs Button & Dialog [#181576799](https://www.pivotaltracker.com/story/show/181576799)
+- Lock x and y axes in deformation over time graph [#181658720](https://www.pivotaltracker.com/story/show/181658720)
+### Asset Sizes
+
+| File | Size | % Increase from Previous Release |
+|---|---|---|
+| app.css | 7KB | 0% |
+| app.js | 2.4MB | 0% |
+
+## Version 2.6.0 - release February 16, 2022
+### Features/Improvements:
+- dependency updates, documentation, cleanup.
+- [#180647562](https://www.pivotaltracker.com/story/show/180647562) - Project: Add webpack target and components for `report-item`.
+- [#180239682](https://www.pivotaltracker.com/story/show/180239682) - Seismic: Compute Strain Rate block.
+- [#181032483](https://www.pivotaltracker.com/story/show/181032483) - Seismic: Increase transparency on deformation build-up map
+- [#180411544](https://www.pivotaltracker.com/story/show/180411544) - Seismic: Adjust wording in deformation key
+- [#180411544](https://www.pivotaltracker.com/story/show/180239758) - Seismic: update deformation block
+- [#180361402](https://www.pivotaltracker.com/story/show/180239758) - Seismic: Rename *Strain-* components to *Deformation-*
 
 ## Version 2.5.0 - released November 4, 2021
 
