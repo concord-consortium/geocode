@@ -379,7 +379,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     for (let line = 0; line < 2; line++) {
       const points: Point[] = [];
 
-      const start = line === 0 ? -overflow : canvasWidth + overflow;;
+      const start = line === 0 ? -overflow : canvasWidth + overflow;
       const totalSteps = line === 0 ? 50 : 51;
       let stepSize;
       let x;
