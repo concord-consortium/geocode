@@ -195,14 +195,14 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     const lineSpacing = canvasWidth / numLines;
 
     // horizontal lines start below model and go beyond in case lines curve into model
-    const yBounds = [0, canvasWidth + (overflow * 4)];
+    const yBounds = [0, canvasWidth + (overflow * 2)];
     // vertical lines remain vertical and can be clipped to frame
     const xBounds = [-overflow, canvasWidth + (overflow * 2)];
 
     // form "horizontal" lines, one for each step vertically
     // (this is slightly inefficient, because they all have the same shape, but the calc is fast)
     for (let y = yBounds[0]; y < yBounds[1]; y += lineSpacing) {
-      horizontalLines.push(...this.generateHorizontalLines(y, 0, vSpeed, year));
+      horizontalLines.push(...this.generateHorizontalLines(y, -overflow, vSpeed, year));
     }
     // form vertical lines, one for each step horizontally
     for (let x = xBounds[0]; x < xBounds[1]; x += lineSpacing) {
@@ -212,13 +212,9 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     ctx.strokeStyle = lineColor;
     const drawBzCurve = this.bzCurve(ctx);
 
-    // why 30?
-    // there are 25 squares in the canvas (as per lineSpacing)
-    // we draw two lines for each horizontal line (one on each side of the fault line)
-    // and the lines start from y = 0, so we can assume there are 50 lines visible inside the canvas
-    // 25 is technically the mid-linethen, but it looks better to have the line a little further down,
-    // where it most visible inside the triangle
-    let midLineIndex = 30;
+    let midLine = Math.floor(horizontalLines.length / 4);
+    if (midLine % 2 === 1) midLine++;
+    const midLineIndex = midLine + 4; // position a little lower inside the triangle
 
     horizontalLines.forEach((line, i) => {
       if (deformationModelHighlightedBoxes && (i === midLineIndex || i === midLineIndex + 1)) {
@@ -374,7 +370,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
   // returns two lines, one on either side of the center line, so we can have clean breaks
   // in the case of earthquakes
   private generateHorizontalLines(yOrigin: number, xOffset: number, relativeVerticalSpeed: number, year: number) {
-    const totalWidth = canvasWidth;
+    const totalWidth = canvasWidth + (overflow * 2);
     const center = canvasWidth / 2;
     const eighthWidth = (totalWidth / 8);
     const threeEightsWidth = (totalWidth * 3 / 8);
@@ -383,7 +379,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     for (let line = 0; line < 2; line++) {
       const points: Point[] = [];
 
-      const start = line === 0 ? 0 : canvasWidth;
+      const start = line === 0 ? -overflow : canvasWidth + overflow;;
       const totalSteps = line === 0 ? 50 : 51;
       let stepSize;
       let x;
