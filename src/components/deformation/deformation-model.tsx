@@ -5,12 +5,6 @@ import { IDisposer, onAction } from "mobx-state-tree";
 import { deg2rad } from "../../utilities/coordinateSpaceConversion";
 import BlockInputsMenu from "./block-inputs/block-inputs-menu";
 import { toJS } from "mobx";
-
-interface WorkSpaceProps {
-  width: number;
-  height: number;
-}
-
 interface IProps {
   width: number;
   height: number;
@@ -22,9 +16,9 @@ interface Point {x: number; y: number; }
 
 interface EarthquakesInfo { count: number; yearsSinceEarthquake: number; distanceTravelledDueToEarthquakes: number; }
 
+const numLines = 25;
 let canvasWidth = 0;
-
-const overflow = 200;   // amount to draw under the clipping to account for rotation
+let overflow = 0; // amount to draw under the clipping to account for rotation
 
 const lineColor = "#777";
 const drawAreaColor = "#fff";
@@ -35,7 +29,6 @@ const highlightColor = "yellow";
 const initialPlateAlpha = .07;
 const stationBorderThickness = 2;
 
-const lineSpacing = 20;
 // should be in km
 const lockingDepth = 1;
 
@@ -80,6 +73,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     const { deformationHistory, deformationCurrentRunNumber, showBlockInputs } = this.stores.seismicSimulation;
 
     canvasWidth = height - 18;
+    overflow = canvasWidth * .5;
 
     const relativeStyle: React.CSSProperties = { width, height, position: "relative", top: 0, left: 0 };
 
@@ -197,11 +191,13 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     const horizontalLines: Point[][] = [];
     const verticalLines: Point[][] = [];
 
-    const yBounds = [0, canvasWidth];
-    const xBounds = [0, canvasWidth];
+    // 25 lines across the canvas
+    const lineSpacing = canvasWidth / numLines;
 
-    // get line spacing from width of component
-    const lineSpacing = Math.round(canvasWidth / 25);
+    // horizontal lines start below model and go beyond in case lines curve into model
+    const yBounds = [0, canvasWidth + (overflow * 4)];
+    // vertical lines remain vertical and can be clipped to frame
+    const xBounds = [-overflow, canvasWidth + (overflow * 2)];
 
     // form "horizontal" lines, one for each step vertically
     // (this is slightly inefficient, because they all have the same shape, but the calc is fast)
@@ -215,15 +211,18 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
     ctx.strokeStyle = lineColor;
     const drawBzCurve = this.bzCurve(ctx);
-    let midLineIndex = Math.floor(horizontalLines.length * .5);
-    // needs to be even so the highlighted section starts on left side of fault
-    if (midLineIndex % 2 === 1) {
-      midLineIndex--;
-    }
+
+    // why 30?
+    // there are 25 squares in the canvas (as per lineSpacing)
+    // we draw two lines for each horizontal line (one on each side of the fault line)
+    // and the lines start from y = 0, so we can assume there are 50 lines visible inside the canvas
+    // 25 is technically the mid-linethen, but it looks better to have the line a little further down,
+    // where it most visible inside the triangle
+    let midLineIndex = 30;
 
     horizontalLines.forEach((line, i) => {
       if (deformationModelHighlightedBoxes && (i === midLineIndex || i === midLineIndex + 1)) {
-        const highlightedSection = line.map((pt) => ({x: pt.x, y: (pt.y - (lineSpacing / 2))}));
+        const highlightedSection = horizontalLines[i].map((pt) => ({x: pt.x, y: (pt.y - (lineSpacing / 2))}));
         ctx.strokeStyle = highlightColor;
         ctx.lineWidth = lineSpacing - 2;
         drawBzCurve(highlightedSection);
