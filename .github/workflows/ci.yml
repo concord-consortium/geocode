@@ -13,7 +13,7 @@ jobs:
     - name: Install modules
       run: npm install
     - name: jest
-      run: npm run test:jest
+      run: npm run test
   cypress:
     runs-on: ubuntu-latest
     strategy:
