@@ -57,7 +57,7 @@ jobs:
   s3-deploy:
     name: S3 Deploy
     needs:
-      - build_test
+      - jest
       - cypress
     runs-on: ubuntu-latest
     steps:
