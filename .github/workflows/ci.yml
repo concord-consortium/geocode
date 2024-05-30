@@ -77,7 +77,7 @@ jobs:
       - uses: concord-consortium/s3-deploy-action@v1
         with:
           bucket: models-resources
-          prefix: geocode
+          prefix: geocode-app
           awsAccessKeyId: ${{ secrets.AWS_ACCESS_KEY_ID }}
           awsSecretAccessKey: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           # Parameters to GHActions have to be strings, so a regular yaml array cannot
