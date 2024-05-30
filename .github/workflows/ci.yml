@@ -61,7 +61,6 @@ jobs:
     name: S3 Deploy
     needs:
       - jest
-      - cypress
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
