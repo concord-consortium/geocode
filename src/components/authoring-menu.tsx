@@ -2,7 +2,7 @@ import * as React from "react";
 import DatGui, { DatBoolean, DatButton, DatSelect, DatFolder, DatNumber } from "react-dat-gui";
 
 import * as Scenarios from "./../assets/maps/scenarios.json";
-import * as BlocklyAuthoring from "./../assets/blockly-authoring/index.json";
+import { BlocklyAuthoring } from "../assets/blockly-authoring";
 import { IStoreish } from "../stores/stores.js";
 
 import "../css/dat-gui.css";

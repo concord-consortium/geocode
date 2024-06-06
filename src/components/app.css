@@ -1,0 +1,12 @@
+.fullscreenOpen {
+  background-image: url("../assets/fullscreen-exit.svg");
+}
+.fullscreenOpen:hover {
+  background-image: url("../assets/fullscreen-exit-dark.svg")
+}
+.fullscreenClosed {
+  background-image: url("../assets/fullscreen.svg");
+}
+.fullscreenClosed:hover {
+  background-image: url("../assets/fullscreen-dark.svg")
+};
