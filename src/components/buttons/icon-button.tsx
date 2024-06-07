@@ -41,6 +41,7 @@ const IconButtonText = styled.div`
 
 interface IProps {
   onClick: any;
+  children?: React.ReactNode;
   disabled: any;
   label: string;
   backgroundColor?: string;
