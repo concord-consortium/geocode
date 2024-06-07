@@ -18,6 +18,9 @@ jobs:
           aws s3 cp
           s3://${{ env.BUCKET }}/${{ env.PREFIX }}/version/${{ github.event.inputs.version }}/${{ env.SRC_FILE }}
           s3://${{ env.BUCKET }}/${{ env.PREFIX }}/${{ env.DEST_FILE }}
+          aws s3 cp \
+          s3://${{ env.BUCKET }}/${{ env.PREFIX }}/version/${{ github.event.inputs.version }}/report-item/${{ env.SRC_FILE }}
+          s3://${{ env.BUCKET }}/${{ env.PREFIX }}/report-item/${{ env.DEST_FILE }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

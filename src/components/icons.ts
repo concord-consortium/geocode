@@ -1,6 +1,6 @@
 import * as L from "leaflet";
-import * as VolcanoPng from "../assets/volcano.png";
-import * as IconPng from "../assets/marker.png";
+import VolcanoPng from "../assets/volcano.png";
+import IconPng from "../assets/marker.png";
 
 import { DivIcon } from "leaflet";
 
@@ -17,8 +17,6 @@ const iconMarker = new L.Icon({
     iconRetinaUrl: IconPng,
     iconSize: new L.Point(20, 30),
 });
-
-console.log("iconVolcano", iconVolcano);
 
 // Cache icons. First, it's just faster. Second, it prevents us from unnecessary re-rendering and buttons blinking.
 const iconsCache: Map<string, DivIcon> = new Map<string, DivIcon>();

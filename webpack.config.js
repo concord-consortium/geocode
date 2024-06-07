@@ -140,6 +140,8 @@ module.exports = (env, argv) => {
       warningsFilter: /export .* was not found in/
     },
     plugins: [
+      // since we updated to webpack 5, we need to polyfill node modules
+      // see: https://github.com/webpack/changelog-v5#automatic-nodejs-polyfills-removed
       new NodePolyfillPlugin(),
       new webpack.ProvidePlugin({
         process: 'process/browser',
