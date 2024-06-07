@@ -205,7 +205,7 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
       this.workSpace.updateToolbox(toolbox);
     }
 
-    const xml = Blockly.Xml.textToDom(codeString);
+    const xml = Blockly.Xml.textToDom(`${codeString}`);
     Blockly.Xml.domToWorkspace(xml, this.workSpace);
   }
 }
