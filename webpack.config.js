@@ -27,7 +27,6 @@ module.exports = (env, argv) => {
     output: {
       path: path.resolve(__dirname, 'dist'),
       filename: 'assets/[name].[hash].js',
-      publicPath: 'auto'
     },
     performance: { hints: false },
     module: {
