@@ -18,7 +18,7 @@ module.exports = (env, argv) => {
 
   return {
     context: __dirname, // to automatically find tsconfig.json
-    devtool: 'source-map',
+    devtool: devMode ? 'eval-cheap-module-source-map' : 'source-map',
     entry: {
       "app": "./src/index.tsx",
       "report-item": "./src/report-item/index.tsx"
