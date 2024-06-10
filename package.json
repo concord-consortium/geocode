@@ -38,7 +38,7 @@
     "start": "webpack serve",
     "build": "npm-run-all lint:build clean build:webpack",
     "build:top-test": "cross-env DEPLOY_PATH=specific/release/ webpack --mode production --output-path top-test/specific/release && cp top-test/specific/release/index-top.html top-test/",
-    "build:webpack": "webpack --mode production --devtool false",
+    "build:webpack": "webpack --mode production",
     "clean": "rimraf dist",
     "lint": "tslint -c tslint.json 'src/**/*.{ts,tsx}'",
     "lint:build": "tslint -c tslint-build.json 'src/**/*.{ts,tsx}'",
