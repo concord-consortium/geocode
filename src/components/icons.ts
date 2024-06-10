@@ -1,18 +1,20 @@
 import * as L from "leaflet";
+import * as VolcanoPng from "../assets/volcano.png";
+import * as IconPng from "../assets/marker.png";
 
 import { DivIcon } from "leaflet";
 
 import "../css/custom-leaflet-icons.css";
 
 const iconVolcano = new L.Icon({
-    iconUrl: "./assets/volcano.png",
-    iconRetinaUrl: "./assets/volcano.png",
+    iconUrl: VolcanoPng,
+    iconRetinaUrl: VolcanoPng,
     iconSize: new L.Point(25, 25),
 });
 
 const iconMarker = new L.Icon({
-    iconUrl: "./assets/marker.png",
-    iconRetinaUrl: "./assets/marker.png",
+    iconUrl: IconPng,
+    iconRetinaUrl: IconPng,
     iconSize: new L.Point(20, 30),
 });
 

@@ -6,7 +6,7 @@ import { MapComponent, Scenario } from "./map/map-component";
 import { LogComponent } from "./log-component";
 import { CrossSectionComponent } from "./crosssection/cross-section-component";
 import * as Scenarios from "./../assets/maps/scenarios.json";
-import * as BlocklyAuthoring from "./../assets/blockly-authoring/index.json";
+import { BlocklyAuthoring } from "../assets/blockly-authoring";
 import BlocklyContainer from "./blockly-container";
 import styled from "styled-components";
 import { StyledButton } from "./buttons/styled-button";
@@ -36,6 +36,8 @@ import { DeformationModel } from "./deformation/deformation-model";
 import { UnitNameType } from "../stores/unit-store";
 import { queryValue, queryValueBoolean } from "../utilities/url-query";
 import IconButton from "./buttons/icon-button";
+
+import "./app.css";
 
 interface IProps extends IBaseProps {
   reload: () => void;
@@ -127,19 +129,9 @@ const FullscreenButton = styled(StyledButton)`
 `;
 
 const FullscreenButtonOpen = styled(FullscreenButton)`
-  background-image: url("./assets/fullscreen-exit.svg");
-
-  &:hover {
-    background-image: url("./assets/fullscreen-exit-dark.svg");
-  }
 `;
 
 const FullscreenButtonClosed = styled(FullscreenButton)`
-  background-image: url("./assets/fullscreen.svg");
-
-  &:hover {
-    background-image: url("./assets/fullscreen-dark.svg");
-  }
 `;
 
 const ModalBackground = styled.div`
@@ -682,10 +674,10 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 </TabList>
               </TabsContainer>
               { (screenfull && screenfull.isFullscreen) &&
-                <FullscreenButtonOpen onClick={this.toggleFullscreen} />
+                <FullscreenButtonOpen className="fullscreenOpen" onClick={this.toggleFullscreen} />
               }
               { (screenfull && !screenfull.isFullscreen) &&
-                <FullscreenButtonClosed onClick={this.toggleFullscreen} />
+                <FullscreenButtonClosed className="fullscreenClosed" onClick={this.toggleFullscreen} />
               }
             </BottomBar>
           </Tabs>

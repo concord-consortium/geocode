@@ -2,6 +2,8 @@ import * as React from "react";
 import styled from "styled-components";
 import "../blockly-blocks/blocks.js";
 
+declare const __webpack_public_path__: string;
+
 let loadingUID: number;
 
 interface IProps {
@@ -92,7 +94,7 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
     // note: we need to pass in a toolbox, and it has to have categories, otherwise blockly
     // won't let us update the toolbox later with another def that includes categories
     const blockOpts = {
-      media: "blockly/media/",
+      media: `${__webpack_public_path__}blockly/media/`,
       toolbox: `
       <xml id="toolbox" style="display: none">
         <category name="Loading...">
@@ -203,7 +205,7 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
       this.workSpace.updateToolbox(toolbox);
     }
 
-    const xml = Blockly.Xml.textToDom(codeString);
+    const xml = Blockly.Xml.textToDom(`${codeString}`);
     Blockly.Xml.domToWorkspace(xml, this.workSpace);
   }
 }
