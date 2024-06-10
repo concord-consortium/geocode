@@ -25,6 +25,26 @@ import * as P093 from "./position.P093.cwu.nam14.csv";
 import * as P094 from "./position.P094.cwu.nam14.csv";
 import * as P092 from "./position.P092.cwu.nam14.csv";
 import * as CRAM from "./position.CRAM.cwu.nam14.csv";
+import * as MIG1 from "./position.MIG1.cwu.nam14.csv";
+import * as P256 from "./position.P256.cwu.nam14.csv";
+import * as P273 from "./position.P273.cwu.nam14.csv";
+import * as P306 from "./position.P306.cwu.nam14.csv";
+import * as P309 from "./position.P309.cwu.nam14.csv";
+import * as P557 from "./position.P557.cwu.nam14.csv";
+import * as P781 from "./position.P781.cwu.nam14.csv";
+import * as CMOD from "./position.CMOD.cwu.nam14.csv";
+import * as P097 from "./position.P097.cwu.nam14.csv";
+import * as P128 from "./position.P128.cwu.nam14.csv";
+import * as P142 from "./position.P142.cwu.nam14.csv";
+import * as P177 from "./position.P177.cwu.nam14.csv";
+import * as P223 from "./position.P223.cwu.igs14.csv";
+import * as P225 from "./position.P225.cwu.nam14.csv";
+import * as P229 from "./position.P229.cwu.nam14.csv";
+import * as P230 from "./position.P230.cwu.nam14.csv";
+import * as P248 from "./position.P248.cwu.nam14.csv";
+import * as P275 from "./position.P275.cwu.nam14.csv";
+import * as P276 from "./position.P276.cwu.nam14.csv";
+import * as P310 from "./position.P310.cwu.nam14.csv";
 
 const RawPositionTimeData = {
 	HARV,
@@ -52,6 +72,26 @@ const RawPositionTimeData = {
 	P094,
 	P092,
 	CRAM,
+  MIG1,
+  P557,
+  P256,
+  P273,
+  P306,
+  P309,
+  P781,
+  CMOD,
+  P097,
+  P128,
+  P142,
+  P177,
+  P223,
+  P225,
+  P229,
+  P230,
+  P248,
+  P275,
+  P276,
+  P310
 };
 
 export default RawPositionTimeData;
@@ -82,6 +122,26 @@ const positionStationNames = [
 	"P094",
 	"P092",
 	"CRAM",
+  "MIG1",
+  "P256",
+  "P273",
+  "P306",
+  "P309",
+  "P557",
+  "P781",
+  "CMOD",
+  "P097",
+  "P128",
+  "P142",
+  "P177",
+  "P223",
+  "P225",
+  "P229",
+  "P230",
+  "P248",
+  "P275",
+  "P276",
+  "P310"
 ];
 
 export const filterStationByPositionData = (station) => {
