@@ -5,12 +5,6 @@ import { IDisposer, onAction } from "mobx-state-tree";
 import { deg2rad } from "../../utilities/coordinateSpaceConversion";
 import BlockInputsMenu from "./block-inputs/block-inputs-menu";
 import { toJS } from "mobx";
-
-interface WorkSpaceProps {
-  width: number;
-  height: number;
-}
-
 interface IProps {
   width: number;
   height: number;
@@ -22,9 +16,9 @@ interface Point {x: number; y: number; }
 
 interface EarthquakesInfo { count: number; yearsSinceEarthquake: number; distanceTravelledDueToEarthquakes: number; }
 
+const numLines = 25;
 let canvasWidth = 0;
-
-const overflow = 200;   // amount to draw under the clipping to account for rotation
+let overflow = 0; // amount to draw under the clipping to account for rotation
 
 const lineColor = "#777";
 const drawAreaColor = "#fff";
@@ -35,7 +29,6 @@ const highlightColor = "yellow";
 const initialPlateAlpha = .07;
 const stationBorderThickness = 2;
 
-const lineSpacing = 20;
 // should be in km
 const lockingDepth = 1;
 
@@ -80,6 +73,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     const { deformationHistory, deformationCurrentRunNumber, showBlockInputs } = this.stores.seismicSimulation;
 
     canvasWidth = height - 18;
+    overflow = canvasWidth * .5;
 
     const relativeStyle: React.CSSProperties = { width, height, position: "relative", top: 0, left: 0 };
 
@@ -197,27 +191,34 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     const horizontalLines: Point[][] = [];
     const verticalLines: Point[][] = [];
 
+    // 25 lines across the canvas
+    const lineSpacing = canvasWidth / numLines;
+
     // horizontal lines start below model and go beyond in case lines curve into model
-    const yBounds = [200 - overflow, canvasWidth + 400 + (overflow * 2)];
+    const yBounds = [0, canvasWidth + (overflow * 2)];
     // vertical lines remain vertical and can be clipped to frame
     const xBounds = [-overflow, canvasWidth + (overflow * 2)];
 
     // form "horizontal" lines, one for each step vertically
     // (this is slightly inefficient, because they all have the same shape, but the calc is fast)
     for (let y = yBounds[0]; y < yBounds[1]; y += lineSpacing) {
-      horizontalLines.push(...this.generateHorizontalLines(y, 0, vSpeed, year));
+      horizontalLines.push(...this.generateHorizontalLines(y, -overflow, vSpeed, year));
     }
     // form vertical lines, one for each step horizontally
     for (let x = xBounds[0]; x < xBounds[1]; x += lineSpacing) {
-      verticalLines.push(this.generateVerticalLine(x, -overflow, hSpeed, year));
+      verticalLines.push(this.generateVerticalLine(x, 0, hSpeed, year));
     }
 
     ctx.strokeStyle = lineColor;
     const drawBzCurve = this.bzCurve(ctx);
-    const midLineIndex = 30;
+
+    let midLine = Math.floor(horizontalLines.length / 4);
+    if (midLine % 2 === 1) midLine++;
+    const midLineIndex = midLine + 4; // position a little lower inside the triangle
+
     horizontalLines.forEach((line, i) => {
       if (deformationModelHighlightedBoxes && (i === midLineIndex || i === midLineIndex + 1)) {
-        const highlightedSection = horizontalLines[i].map((pt) => ({x: pt.x, y: (pt.y - 10)}));
+        const highlightedSection = horizontalLines[i].map((pt) => ({x: pt.x, y: (pt.y - (lineSpacing / 2))}));
         ctx.strokeStyle = highlightColor;
         ctx.lineWidth = lineSpacing - 2;
         drawBzCurve(highlightedSection);
@@ -426,7 +427,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
 
     const newX = xOrigin - this.worldToCanvas(horizontalDisplacement);
 
-    const points: Point[] = [{x: newX, y: yOffset}, {x: newX, y: yOffset + canvasWidth + (overflow * 2)}];
+    const points: Point[] = [{x: newX, y: yOffset}, {x: newX, y: yOffset + canvasWidth}];
 
     return points;
   }
