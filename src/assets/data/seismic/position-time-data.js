@@ -96,7 +96,7 @@ const RawPositionTimeData = {
 
 export default RawPositionTimeData;
 
-const positionStationNames = [
+export const positionStationNames = [
 	"HARV",
 	"P513",
 	"FGST",
