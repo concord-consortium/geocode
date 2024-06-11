@@ -1,4 +1,7 @@
-import * as strings from '../../strings/blockly-blocks/seismic/seismic-graph'
+import * as strings from '../../strings/blockly-blocks/seismic/seismic-graph';
+import {positionStationNames} from '../../assets/data/seismic/position-time-data';
+
+const stationOptions = positionStationNames.sort().map(station => [station, station]);
 
 Blockly.Blocks['graph_gps_position'] = {
   init: function () {
@@ -7,53 +10,7 @@ Blockly.Blocks['graph_gps_position'] = {
     this.appendDummyInput()
       .appendField(strings.STATION)
       .setAlign(Blockly.ALIGN_RIGHT)
-      .appendField(new Blockly.FieldDropdown([
-          ["HARV", "HARV"],
-          ["P513", "P513"],
-          ["FGST", "FGST"],
-          ["P519", "P519"],
-          ["P518", "P518"],
-          ["P521", "P521"],
-          ["P535", "P535"],
-          ["P537", "P537"],
-          ["CRGG", "CRGG"],
-          ["P522", "P522"],
-          ["P541", "P541"],
-          ["P543", "P543"],
-          ["BVPP", "BVPP"],
-          ["P544", "P544"],
-          ["P563", "P563"],
-          ["P558", "P558"],
-          ["P565", "P565"],
-          ["P567", "P567"],
-          ["P570", "P570"],
-          ["P571", "P571"],
-          ["P573", "P573"],
-          ["P093", "P093"],
-          ["P094", "P094"],
-          ["P092", "P092"],
-          ["CRAM", "CRAM"],
-          ["MIG1", "MIG1"],
-          ["P256", "P256"],
-          ["P273", "P273"],
-          ["P306", "P306"],
-          ["P309", "P309"],
-          ["P557", "P557"],
-          ["P781", "P781"],
-          ["CMOD", "CMOD"],
-          ["P097", "P097"],
-          ["P128", "P128"],
-          ["P142", "P142"],
-          ["P177", "P177"],
-          ["P223", "P223"],
-          ["P225", "P225"],
-          ["P229", "P229"],
-          ["P230", "P230"],
-          ["P248", "P248"],
-          ["P275", "P275"],
-          ["P276", "P276"],
-          ["P310", "P310"]
-      ]), 'station');
+      .appendField(new Blockly.FieldDropdown(stationOptions), 'station');
     this.appendValueInput('from')
       .setCheck(['String', 'Number'])
       .setAlign(Blockly.ALIGN_RIGHT)
