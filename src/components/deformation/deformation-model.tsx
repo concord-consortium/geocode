@@ -202,7 +202,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     // form "horizontal" lines, one for each step vertically
     // (this is slightly inefficient, because they all have the same shape, but the calc is fast)
     for (let y = yBounds[0]; y < yBounds[1]; y += lineSpacing) {
-      horizontalLines.push(...this.generateHorizontalLines(y, -overflow, vSpeed, year));
+      horizontalLines.push(...this.generateHorizontalLines(y, 0, vSpeed, year));
     }
     // form vertical lines, one for each step horizontally
     for (let x = xBounds[0]; x < xBounds[1]; x += lineSpacing) {
