@@ -174,7 +174,7 @@ module.exports = (env, argv) => {
         chunks: ['report-item'],
         template: 'src/report-item/index.html',
         favicon: 'src/public/favicon.ico',
-        publicPath: DEPLOY_PATH
+        publicPath: `../${DEPLOY_PATH}`
       })] : []),
       new CopyWebpackPlugin({
         patterns: [
