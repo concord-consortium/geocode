@@ -7,7 +7,7 @@ on:
         required: true
 env:
   BUCKET: models-resources
-  PREFIX: geocode
+  PREFIX: geocode-app
   SRC_FILE: index-top.html
   DEST_FILE: index.html
 jobs:
