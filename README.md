@@ -57,7 +57,7 @@ Commits should have concise headlines with details in the body.
 * Test and lint your branch.
 * Push it to GitHub e.g. `git push --set-upstream origin #####-pt-story-headline-abbreviated`
 * After a few moments, your deployed branch should be available at
-`http://geocode-app.concord.org/branch/<branchname>/index.html`. 
+`http://geocode-app.concord.org/branch/<branchname>/index.html`.
 The built url will strip off any leading numbers in the branch (e.g. "1234-feature" -> "feature").
 Verify that your deploy worked, and copy the URL.
 * When you are satisfied with your commits, and the deployment looks good, submit
@@ -68,7 +68,7 @@ story, and provide a link to the deployed demo branch.
 
 ### Stores
 
-* Data related to simulations is saved in `stores/tephra-simulation-store.ts`, `stores/seismic-simulation-store.ts`, and `stores/sample-collections-store.ts`. 
+* Data related to simulations is saved in `stores/tephra-simulation-store.ts`, `stores/seismic-simulation-store.ts`, and `stores/sample-collections-store.ts`.
 * Data related to charts (used in tephra unit) is saved in `stores/charts-store.ts`.
 * Data related to UI options available to authors is saved in `stores/ui-store.ts`.
 * Data related to the code interpreter is stored in `stores/blockly-store.ts`.
@@ -172,18 +172,34 @@ The report-item-interactive is deployed next to the main app in a file called `r
 
 To deploy a production release:
 
-1. Increment version number in package.json
-2. Go to the repository `dev-templates`, cd `scripts` and run `npm run release-notes <new-release-tag>`. This gives a list of all the features and bugs.
-3. Create a new entry in CHANGELOG.md with the output from the above script.
-4. Run `git log --pretty=oneline --reverse <last release tag>...HEAD | grep '#' | grep -v Merge` and add contents (after edits if needed to CHANGELOG.md)
-5. Run `npm run build`
-6. Copy asset size markdown table from previous release and change sizes to match new sizes in `dist`
-7. Create `release-<version>` branch and commit changes, push to GitHub, create PR and merge
-8. Checkout master and pull
-9. Get confirmation from the Product Team if they want to do only a tagged release or deploy the changes to production. If it's the latter, then checkout production and do the next 3 steps. If not, skip and directly jump to step 12.
-10. Run `git merge master --no-ff`
-11. Push production to GitHub
-12. Use https://github.com/concord-consortium/geocode/releases to create a new release tag
+1. Make sure all of the stories for the release are accepted and PRs are merged.
+2. Run `npm version [major.minor.patch]` (for example, `npm version 5.8.0`) to update the version number in package.json and package-lock.json, create a commit with this change, and create a tag. It isn't necessary to add the `v` prefix, the version command does that automatically. This will make a tag called `v5.8.0`
+3. Push the updated tag: `git push` and `git push origin v[major.minor.patch]`
+4. GitHub actions will automatically start building and deploying the branch when it is pushed, and the tag. You can track the progress here:
+https://github.com/concord-consortium/collaborative-learning/actions
+5. Generate the release notes.
+    1. You need to check out: https://github.com/concord-consortium/dev-templates
+    2. Go into the scripts folder `cd scripts` and run `npm i`
+    3. Create a `.env` file in the scripts folder to include a `PT_TOKEN=<token>`.
+    4. You can get the PT token from https://www.pivotaltracker.com/profile and then copy the API TOKEN.
+    5. Run the release notes script: `npm run release-notes <pt label>`. The `pt label` is usually `clue-[major.minor.patch]`. This output is for the GitHub release.
+    6. Run the release notes script again for slack: `npm run release-notes <pt label> slack`. This changes the formatting so it can be pasted into Slack.
+6. Create a GitHub release and add the release notes.
+    1. Go to https://github.com/concord-consortium/collaborative-learning/releases
+    2. Click "Draft a new release"
+    3. Choose the tag that you pushed before `v[major.minor.patch]`
+    4. Give it a title like: "Version [major.minor.patch] - Released [Date of planned release]"
+    5. Paste in the non-slack release notes from the script for the description
+    6. Click publish release
+7. Do the release: run a GitHub action with the tag name.
+    1. Go to https://github.com/concord-consortium/collaborative-learning/actions
+    2. Click on "Release Production"
+    3. Click on "Run Workflow"
+    4. Fill the dialog with the tag `v[major.minor.patch]`
+    5. Click the "Run Workflow"
+8. Open an activity that is using the interactive and ensure that it works as expected.
+9. If everything works correctly, notify the slack channel #releases.
+The message should be the slack formatted release notes along with the date and time of the planned release. To paste the message into slack and get the formatting working correctly you have to into your slack settings/advanced section and tick the box: `Format messages with markup`. Usually we include a link to the github release notes in the slack message.
 
 ### Testing
 
