@@ -26,7 +26,7 @@ module.exports = (env, argv) => {
     mode: 'development',
     output: {
       path: path.resolve(__dirname, 'dist'),
-      filename: 'assets/[name].[hash].js',
+      filename: 'assets/[name].[chunkhash:8].js',
     },
     performance: { hints: false },
     module: {
@@ -80,13 +80,13 @@ module.exports = (env, argv) => {
                         overrides: {
                           // don't minify "id"s (i.e. turn randomly-generated unique ids into "a", "b", ...)
                           // https://github.com/svg/svgo/blob/master/plugins/cleanupIDs.js
-                          cleanupIDs: { minify: false },
+                          cleanupIds: { minify: false },
                           // leave <line>s, <rect>s and <circle>s alone
                           // https://github.com/svg/svgo/blob/master/plugins/convertShapeToPath.js
                           convertShapeToPath: false,
                           // leave "class"es and "id"s alone
                           // https://github.com/svg/svgo/blob/master/plugins/prefixIds.js
-                          prefixIds: false,
+                          // prefixIds: false,
                           // leave "stroke"s and "fill"s alone
                           // https://github.com/svg/svgo/blob/master/plugins/removeUnknownsAndDefaults.js
                           removeUnknownsAndDefaults: { defaultAttrs: false },
@@ -122,7 +122,10 @@ module.exports = (env, argv) => {
           test: /\.(kmz|xml)$/i,
           use: [
             {
-              loader: 'file-loader'
+              loader: 'file-loader',
+              options: {
+                esModule: false,
+              },
             },
           ],
         }
@@ -148,7 +151,7 @@ module.exports = (env, argv) => {
         process: 'process/browser',
       }),
       new MiniCssExtractPlugin({
-        filename: devMode ? 'assets/[name].css' : 'assets/[name].[hash].css',
+        filename: devMode ? 'assets/[name].css' : 'assets/[name].[chunkhash:8].css',
       }),
       new HtmlWebpackPlugin({
         filename: 'index.html',
