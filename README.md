@@ -35,7 +35,7 @@ Students change eruption parameters using [Blockly](https://developers.google.co
 ### Initial steps
 
 1. Clone this repo and `cd` into it
-2. Run `npm install` to pull dependencies.
+2. Run `npm install --legacy-peer-deps` to pull dependencies. (Requirement to use `--legacy-peer-deps` expected to be removed shortly.)
 3. Run `npm start` to run `webpack-dev-server` in development mode with hot module replacement.
 
 ### Building
@@ -45,15 +45,15 @@ You *do not* need to build to deploy the code, that is automatic.  See more info
 
 ### Contributing:
 
-* Find a story from the [GeoCode - Pivotal Tracker](https://www.pivotaltracker.com/epic/show/4890571)
-* Assign yourself the role story owner.
-* Add `npaessel` or `lblagg` as a code reviewer for the story.
-* Copy the Story ID, you will need it in the next step.
-* Create a git topic branch in the format of  `#####-pt-story-headline-abbreviated`
-where the PT story ID is thefirst part of the branch name.
-* In your commit comment-body reference the PT Story ID  and URL.
+* ~~Find a story from the [GeoCode - Pivotal Tracker](https://www.pivotaltracker.com/epic/show/4890571)~~
+* ~~Assign yourself the role story owner.~~
+* ~~Add `npaessel` or `lblagg` as a code reviewer for the story.~~
+* ~~Copy the Story ID, you will need it in the next step.~~
+* ~~Create a git topic branch in the format of  `#####-pt-story-headline-abbreviated`
+where the PT story ID is the first part of the branch name.~~
+* ~~In your commit comment-body reference the PT Story ID  and URL.
 e.g.: `[#1234567] https://www.pivotaltracker.com/story/show/1234567`
-Commits should have concise headlines with details in the body.
+Commits should have concise headlines with details in the body.~~
 * Test and lint your branch.
 * Push it to GitHub e.g. `git push --set-upstream origin #####-pt-story-headline-abbreviated`
 * After a few moments, your deployed branch should be available at
@@ -159,8 +159,7 @@ The GeoCoder model has many authoring options that affect how the model runs and
 
 ## Deployment
 
-Production releases to S3 are based on the contents of the /dist folder and are built automatically by Travis
-for each branch pushed to GitHub and each merge into production.
+Production releases to S3 are based on the contents of the `/dist` folder and are built automatically by GitHub Actions for each branch pushed to GitHub and each merge into production.
 
 Merges into production are deployed to http://geocode-app.concord.org.
 
@@ -239,6 +238,6 @@ each student answer that is solicited by rendering `src/report-item/studnent-ans
 `renderToStaticMarkup` in the `studentAnswerHtml` method.
 ## License
 
-GeoCode is Copyright 2018 (c) by the Concord Consortium and is distributed under the [MIT license](http://www.opensource.org/licenses/MIT).
+GeoCode is Copyright 2018-2025 (c) by the Concord Consortium and is distributed under the [MIT license](http://www.opensource.org/licenses/MIT).
 
 See license.md for the complete license text.
