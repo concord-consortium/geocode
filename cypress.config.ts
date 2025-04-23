@@ -15,7 +15,9 @@ function getEnvVariablesStartingWith(prefix: string) {
   Object.keys(process.env).forEach(key => {
     if (key.startsWith(prefix)) {
       const [_, configKey] = key.split(prefix);
-      result[configKey] = process.env[key]
+      if (configKey) { // Ensure configKey is not an empty string
+        result[configKey] = process.env[key];
+      }
     }
   });
   return result
