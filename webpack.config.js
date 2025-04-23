@@ -137,10 +137,12 @@ module.exports = (env, argv) => {
         process: "process/browser"
       },
     },
-    stats: {
-      // suppress "export not found" warnings about re-exported types
-      warningsFilter: /export .* was not found in/
-    },
+    ignoreWarnings: [
+      {
+        // Suppress "export not found" warnings about re-exported types
+        message: /export .* was not found in/,
+      }
+    ],
     plugins: [
       // since we updated to webpack 5, we need to polyfill node modules
       // because the current version of pixijs we are using needs 'path'
