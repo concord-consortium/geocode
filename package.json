@@ -77,6 +77,7 @@
   "homepage": "https://github.com/concord-consortium/geocode#readme",
   "devDependencies": {
     "@cypress/webpack-preprocessor": "^6.0.4",
+    "@simonsmith/cypress-image-snapshot": "^9.1.0",
     "@svgr/webpack": "^8.1.0",
     "@types/color": "^4.2.0",
     "@types/d3": "^5.16.4",
@@ -108,7 +109,6 @@
     "css-loader": "^7.1.2",
     "cypress": "^11.2.0",
     "cypress-commands": "^3.0.0",
-    "cypress-image-snapshot": "^4.0.1",
     "dsv-loader": "^2.0.0",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.8",
