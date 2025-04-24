@@ -162,7 +162,7 @@
     "mobx-react": "^5.4.3",
     "mobx-state-tree": "^3.17.3",
     "node-polyfill-webpack-plugin": "^4.0.0",
-    "pixi.js": "^6.5.10",
+    "pixi.js": "^7.4.3",
     "prop-types": "^15.8.1",
     "query-string": "^7.1.1",
     "react": "^18.3.1",
