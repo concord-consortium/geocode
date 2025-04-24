@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { PixiComponent, Text, Container } from "@inlet/react-pixi";
+import { PixiComponent, Text, Container } from "@pixi/react";
 import { TextStyle } from "pixi.js";
 import { ICanvasShape } from "../../interfaces";
 import * as PIXI from "pixi.js";

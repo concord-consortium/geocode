@@ -69,10 +69,12 @@ class ControlsTab{
                 break;
             case "vei":
                 unit=27;
-                break;            
-        } 
+                break;
+        }
         cy.log("slider: "+slider+" value: "+value+" unit: "+unit+" slider to: "+value*unit)
-        cy.get('[data-test='+slider+'-slider]').find(this.getSliderTrackEl()).click(value*unit,-1,{force:true})
+        // have to click twice to prevent the slider from thinking it's a drag ¯\_(ツ)_/¯
+        cy.get('[data-test='+slider+'-slider] [data-test=slider-rail]').click(value*unit, 6, {force:true})
+        cy.get('[data-test='+slider+'-slider] [data-test=slider-rail]').click(value*unit, 6, {force:true})
     }
 }
 export default ControlsTab;

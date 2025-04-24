@@ -1,7 +1,11 @@
-import * as React from "react";
-import * as ReactDOM from "react-dom";
+import React from "react";
+import { createRoot } from "react-dom/client";
 import { AppComponent } from "./app";
 
 import "../css/report-item.css";
 
-ReactDOM.render(<AppComponent />, document.getElementById("reportItemApp"));
+const container = document.getElementById("reportItemApp");
+if (container) {
+  const root = createRoot(container);
+  root.render(<AppComponent />);
+}

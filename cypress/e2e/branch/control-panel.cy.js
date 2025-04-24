@@ -30,7 +30,7 @@ context("Controls panel", () => {
             controlsTab.getWindSpeedDirectionContainer().find('[data-test=info]').should('contain',windDirection)
             controlsTab.getWindSymbol().parent().parent().should('have.attr','rotate',windDirection.toString())
         })
-        it('verify ejected volumne slider',()=>{
+        it('verify ejected volume slider',()=>{
             var slider="ejected-volume", volume = '2', height='17.5';
             controlsTab.setSliderValue(slider,volume);
             controlsTab.getEjectedVolumeContainer().find('[data-test=info]').should('contain',volume)

@@ -1,6 +1,5 @@
 import { Provider } from "mobx-react";
-import * as React from "react";
-import * as ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 
 import * as iframePhone from "iframe-phone";
 
@@ -9,14 +8,17 @@ import { onSnapshot } from "mobx-state-tree";
 import { stores, serializeState, getSavableStateAuthor, getSavableStateStudent, deserializeState, updateStores,
         IStoreish, UnmigratedSerializedState, SerializedState } from "./stores/stores";
 
-ReactDOM.render(
-  <Provider stores={stores}>
-    <AppComponent
-      reload={RestoreInitialState}
-    />
-  </Provider>,
-  document.getElementById("reactApp")
-);
+const container = document.getElementById("reactApp");
+if (container) {
+  const root = createRoot(container);
+  root.render(
+    <Provider stores={stores}>
+      <AppComponent
+        reload={RestoreInitialState}
+      />
+    </Provider>
+  );
+}
 
 // *** LARA Data-Saving ***
 

@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Container, PixiComponent } from "@inlet/react-pixi";
+import { Container, PixiComponent } from "@pixi/react";
 import { Ipoint } from "../../interfaces";
 
 interface IParticleSizeWidgetProps {
