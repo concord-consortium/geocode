@@ -1,10 +1,10 @@
 import { Provider } from "mobx-react";
+import { onSnapshot } from "mobx-state-tree";
 import { createRoot } from "react-dom/client";
 
 import * as iframePhone from "iframe-phone";
 
 import { AppComponent } from "./components/app";
-import { onSnapshot } from "mobx-state-tree";
 import { stores, serializeState, getSavableStateAuthor, getSavableStateStudent, deserializeState, updateStores,
         IStoreish, UnmigratedSerializedState, SerializedState } from "./stores/stores";
 
