@@ -30,11 +30,13 @@ const MountainArrow = PixiComponent<IColumnHeightWidgetProps, PIXI.Graphics>("VE
     g.lineTo(0, lineEnd);
     g.lineStyle(0, 0);
     g.beginFill(0, 1);
+    // @ts-ignore
     g.drawStar(0, headCenter, 3, arrowheadRadius, 0, 0);
     g.endFill();
 
     g.lineStyle(0, 0);
     g.beginFill(0x999999, 1);
+    // @ts-ignore
     g.drawStar(0 - mountainRadius - 5, 0 - mountainRadius / 2, 3, mountainRadius, 0, 0);
     g.endFill();
   }

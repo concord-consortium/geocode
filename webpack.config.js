@@ -43,10 +43,7 @@ module.exports = (env, argv) => {
         },
         {
           test: /\.tsx?$/,
-          loader: 'ts-loader',
-          options: {
-            transpileOnly: true // IMPORTANT! use transpileOnly mode to speed-up compilation
-          }
+          loader: 'ts-loader'
         },
         {
           test: /\.css$/,

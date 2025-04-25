@@ -1,6 +1,6 @@
 import { inject, observer } from "mobx-react";
 import React from "react";
-const deepmerge = require("deepmerge");
+import deepmerge from "deepmerge";
 import { BaseComponent, IBaseProps } from "./base";
 import { MapComponent, Scenario } from "./map/map-component";
 import { LogComponent } from "./log-component";

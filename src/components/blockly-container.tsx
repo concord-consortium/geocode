@@ -110,6 +110,7 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
     };
 
     if (hideToolbox) {
+      // @ts-ignore
       delete blockOpts.toolbox;
     }
     // update default colors

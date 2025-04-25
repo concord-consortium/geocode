@@ -1,3 +1,4 @@
+import Interpreter  from "js-interpreter";
 import { ITephraModelParams } from "../stores/tephra-simulation-store";
 import { BlocklyController } from "./blockly-controller";
 import { IBlocklyWorkspace } from "../interfaces";
@@ -5,7 +6,6 @@ import { IStore } from "../stores/stores";
 import { Datasets, Dataset, Filter, ProtoTimeRange, TimeRange } from "../stores/data-sets";
 import { StationData } from "../deformation";
 import { ColorMethod } from "../stores/seismic-simulation-store";
-const Interpreter = require("js-interpreter");
 
 const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore,
                              workspace: IBlocklyWorkspace) => {

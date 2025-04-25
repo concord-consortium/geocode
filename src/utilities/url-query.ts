@@ -1,4 +1,4 @@
-const queryString = require("query-string");
+import queryString from "query-string";
 
 /**
  * Simplifies query-string library by only returning `string | undefined`, instead
