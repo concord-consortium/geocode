@@ -769,7 +769,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
   }
 
   private toggleFullscreen = () => {
-    if (screenfull && screenfull.enabled) {
+    if (screenfull && screenfull.isEnabled) {
       // we expand the entire body, instead of just the app, because blockly appends
       // things like input dialogs to the end of the document body
       screenfull.toggle(document.body);
