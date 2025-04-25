@@ -7,7 +7,6 @@ import { ChartType } from "../../stores/charts-store";
 import { RiskDiamond, RiskDiamondText } from "../map/map-risk-legend";
 import { ThresholdData, calculateThresholdData, calculateRisk, RiskLevel, RiskLevels } from "./monte-carlo";
 import { Tab, HistogramTabs, TabList, TabPanel } from "../tabs";
-import { string } from "prop-types";
 
 interface PanelProps {
   height: number;

@@ -3,7 +3,6 @@
 const webpack = require('webpack');
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
@@ -127,11 +126,6 @@ module.exports = (env, argv) => {
       }
     ],
     plugins: [
-      // since we updated to webpack 5, we need to polyfill node modules
-      // because the current version of pixijs we are using needs 'path'
-      // if we update pixijs to a newer version, we can probably remove this
-      // see: https://github.com/webpack/changelog-v5#automatic-nodejs-polyfills-removed
-      new NodePolyfillPlugin(),
       new webpack.ProvidePlugin({
         process: 'process/browser',
       }),
