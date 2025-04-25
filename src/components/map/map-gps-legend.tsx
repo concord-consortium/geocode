@@ -1,4 +1,3 @@
-import * as React from "react";
 import { PureComponent } from "react";
 import CloseIcon from "../../assets/map-icons/close.svg";
 import { AbsoluteIcon } from "./map-tephra-legend";

@@ -1,6 +1,6 @@
-import * as L from "leaflet";
-import * as VolcanoPng from "../assets/volcano.png";
-import * as IconPng from "../assets/marker.png";
+import L from "leaflet";
+import VolcanoPng from "../assets/volcano.png";
+import IconPng from "../assets/marker.png";
 
 import { DivIcon } from "leaflet";
 

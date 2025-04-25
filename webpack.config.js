@@ -109,25 +109,11 @@ module.exports = (env, argv) => {
         },
         {
           test: /\.(txt|vel)$/i,
-          use: [
-            {
-              loader: 'raw-loader',
-              options: {
-                esModule: false,
-              },
-            },
-          ],
+          type: 'asset/source'  // Exports the raw source code of the file
         },
         {
           test: /\.(kmz|xml)$/i,
-          use: [
-            {
-              loader: 'file-loader',
-              options: {
-                esModule: false,
-              },
-            },
-          ],
+          type: 'asset/resource'  // Emits a separate file and exports the URL
         }
       ]
     },

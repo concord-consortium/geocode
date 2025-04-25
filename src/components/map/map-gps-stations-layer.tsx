@@ -1,4 +1,3 @@
-import * as React from "react";
 import { inject, observer } from "mobx-react";
 import { Map as LeafletMap, LayerGroup, Marker, CircleMarker, Popup, MarkerProps, Polyline } from "react-leaflet";
 import { BaseComponent } from "../base";

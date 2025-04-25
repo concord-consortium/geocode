@@ -1,9 +1,7 @@
-import * as React from "react";
 import styled from "styled-components";
 import { observer, inject } from "mobx-react";
 import { BaseComponent, IBaseProps } from "./base";
 import { round } from "../utilities/widget";
-import RawPositionTimeData from "../assets/data/seismic/position-time-data";
 import { Datasets } from "../stores/data-sets";
 
 const StyledTable = styled.table`

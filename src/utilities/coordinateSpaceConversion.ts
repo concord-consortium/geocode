@@ -1,5 +1,5 @@
 import { Ipoint } from "../interfaces";
-import * as L from "leaflet";
+import L from "leaflet";
 
 /*
     Formulas for conversion translated from javascript code found here:

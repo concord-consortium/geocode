@@ -1,4 +1,4 @@
-import * as testMigrations from "./../assets/test/test-serialization.json";
+import testMigrations from "./../assets/test/test-serialization.json";
 import { migrate } from "./migrate-state";
 
 describe("stores", () => {

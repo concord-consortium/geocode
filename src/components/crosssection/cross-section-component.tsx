@@ -1,9 +1,9 @@
-import * as React from "react";
+import React from "react";
 import { ICanvasShape } from "../../interfaces";
 import styled from "styled-components";
 import { Stage } from "@pixi/react";
 import { PixiTephraCrossSection } from "./pixi-tephra-cross-section";
-import * as Color from "color";
+import Color from "color";
 import { inject, observer } from "mobx-react";
 import { BaseComponent, IBaseProps } from "../base";
 const CanvDiv = styled.div`

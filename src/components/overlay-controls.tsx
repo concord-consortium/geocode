@@ -1,4 +1,3 @@
-import * as React from "react";
 import RulerIcon from "../assets/map-icons/ruler.svg";
 import SetPointIcon from "../assets/map-icons/set-point.svg";
 import SetRegionIcon from "../assets/map-icons/set-region.svg";

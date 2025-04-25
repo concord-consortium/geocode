@@ -1,5 +1,5 @@
 
-import * as React from "react";
+import React from "react";
 import { Slider, Rail, Handles, Tracks, Ticks } from "react-compound-slider";
 import styled from "styled-components";
 import { CSSProperties } from "react";

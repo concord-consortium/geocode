@@ -1,6 +1,5 @@
-import * as React from "react";
-
 import { Container, PixiComponent } from "@pixi/react";
+import PIXI from "pixi.js";
 import { Ipoint } from "../../interfaces";
 
 interface IColumnHeightWidgetProps {

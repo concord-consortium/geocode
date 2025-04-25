@@ -2,8 +2,7 @@
 // Calculate the max shear deformation between three gps points
 // Saul Amster 06/2020
 // Translated from GPS deformation calculator--gps_deformation_calculator_excel.v3.xls by Vince Cronin
-import * as math from "mathjs";
-import { area } from "d3";
+import math from "mathjs";
 
 // The following are constants and should not be changed (except for maybe the excessively large value of PI)
 // Do understand though, that many of these values are being scaled by tremendous factors, so innacuracy in PI

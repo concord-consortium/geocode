@@ -1,6 +1,5 @@
-import * as React from "react";
-import { useEffect, useState } from "react";
-import * as semver from "semver";
+import React, { useEffect, useState } from "react";
+import semver from "semver";
 import { IReportItemInitInteractive,
          IReportItemAnswerItem,
          addGetReportItemAnswerListener,

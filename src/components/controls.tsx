@@ -1,4 +1,3 @@
-import * as React from "react";
 import { BaseComponent, IBaseProps } from "./base";
 import { inject, observer } from "mobx-react";
 import RangeControl from "./range-control";

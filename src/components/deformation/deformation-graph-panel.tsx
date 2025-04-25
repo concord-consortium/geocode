@@ -1,4 +1,3 @@
-import * as React from "react";
 import styled from "styled-components";
 import { BaseComponent, IBaseProps } from "../base";
 import { inject, observer } from "mobx-react";

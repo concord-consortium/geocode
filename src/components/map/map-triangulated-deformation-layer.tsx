@@ -1,5 +1,4 @@
-import * as React from "react";
-import * as Leaflet from "leaflet";
+import Leaflet from "leaflet";
 
 import "leaflet-kmz";
 

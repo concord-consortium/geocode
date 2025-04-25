@@ -1,5 +1,5 @@
-import * as ReactFauxDOM from "react-faux-dom";
-import * as d3 from "d3";
+import ReactFauxDOM from "react-faux-dom";
+import { axisBottom, axisLeft, line, scaleLinear, scaleOrdinal, schemeSet2, select, selectAll } from "d3";
 import { IDeformationRuns, IDeformationGroup } from "../../stores/seismic-simulation-store";
 import { X_LABEL, Y_LABEL } from "../../strings/components/svg-d3-line-chart";
 
@@ -20,15 +20,15 @@ export const SvgD3LineChart = (props: LineChartProps) => {
 
   // Setting up color scheme
   const allGroup = ["run1", "run2", "run3"];
-  const myColor = d3.scaleOrdinal()
+  const myColor = scaleOrdinal()
       .domain(allGroup)
-      .range(d3.schemeSet2);
+      .range(schemeSet2);
 
   // Scales
-  const x = d3.scaleLinear()
+  const x = scaleLinear()
       .range([20, width - 60]);
 
-  const y = d3.scaleLinear()
+  const y = scaleLinear()
       .range([height, 0]);
 
   // Domains
@@ -36,7 +36,7 @@ export const SvgD3LineChart = (props: LineChartProps) => {
   y.domain([0, 20]);
 
   // append the svg object to the body of the page
-  const svg = d3.select(div)
+  const svg = select(div)
     .append("svg")
       .style("background-color", "#fff")
       .attr("width", width)
@@ -48,12 +48,12 @@ export const SvgD3LineChart = (props: LineChartProps) => {
   svg.append("g")
     .attr("class", "axis axis--x")
     .attr("transform", "translate(0," + height + ")")
-    .call(d3.axisBottom(x));
+    .call(axisBottom(x));
 
   svg.append("g")
     .attr("class", "axis axis--y")
     .attr("transform", "translate(20, 0)")
-    .call(d3.axisLeft(y)
+    .call(axisLeft(y)
             .tickValues([0, 2.5, 5, 7.5, 10, 12.5, 15, 17.5, 20])
             .tickFormat((d) => {
               if (d === 5){
@@ -81,7 +81,7 @@ export const SvgD3LineChart = (props: LineChartProps) => {
     .text(X_LABEL);
 
   // Line
-  const line = d3.line();
+  const _line = line();
 
   // Path
   svg.selectAll("myLines")
@@ -93,7 +93,7 @@ export const SvgD3LineChart = (props: LineChartProps) => {
       .style("opacity", (d) => running && Number(d.group) === data.length ? "100%" : !running ? "100%" : "50%")
       .attr("stroke", (d) => myColor("run" + d.group) as string)
       .attr("stroke-width", 4)
-      .attr("d", (d: IDeformationGroup) => line(d.values
+      .attr("d", (d: IDeformationGroup) => _line(d.values
                                                   .filter(value => value.plotOnGraph === true)
                                                   .map(value => [x(value.year)!, y(value.deformation)!])));
   // Legend
@@ -111,8 +111,8 @@ export const SvgD3LineChart = (props: LineChartProps) => {
         .style("font-size", 15)
       .on("click", (d) => {
         if (!running){
-          const currentOpacity = d3.selectAll(".run" + d.group).style("opacity");
-          d3.selectAll(".run" + d.group).transition().style("opacity", currentOpacity === "1" ? "0" : "1");
+          const currentOpacity = selectAll(".run" + d.group).style("opacity");
+          selectAll(".run" + d.group).transition().style("opacity", currentOpacity === "1" ? "0" : "1");
         }
       });
 

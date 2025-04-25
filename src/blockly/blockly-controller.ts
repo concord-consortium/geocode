@@ -1,4 +1,4 @@
-import { observable } from "mobx";
+import { makeObservable, observable } from "mobx";
 import { IInterpreterController, makeInterpreterController } from "./interpreter";
 import { IStore } from "../stores/stores";
 import { DEFORMATION_SIMULATION_WARNING } from "../strings/blockly-controller";
@@ -23,6 +23,7 @@ export class BlocklyController {
 
   public constructor(stores: IStore) {
     this.stores = stores;
+    makeObservable(this)
   }
 
   public setCode = (code: string, workspace: Workspace) => {

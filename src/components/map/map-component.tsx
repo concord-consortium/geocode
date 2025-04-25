@@ -1,5 +1,5 @@
-import * as React from "react";
-import * as L from "leaflet";
+import React from "react";
+import L from "leaflet";
 
 import { Map as LeafletMap, TileLayer, Marker, Popup, ScaleControl, Pane } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
@@ -7,7 +7,7 @@ import "../../css/map-component.css";
 import { iconVolcano, iconMarker, getCachedDivIcon, getCachedCircleIcon, riskIcon, getCachedSampleLocationIcon } from "../icons";
 
 import { CityType  } from "../../stores/tephra-simulation-store";
-import * as Scenarios from "../../assets/maps/scenarios.json";
+import Scenarios from "../../assets/maps/scenarios.json";
 import styled from "styled-components";
 import { observer, inject } from "mobx-react";
 import { BaseComponent, IBaseProps } from "../base";

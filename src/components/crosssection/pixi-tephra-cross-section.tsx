@@ -1,11 +1,9 @@
-import * as React from "react";
-
 import { PixiComponent, Text, Container } from "@pixi/react";
 import { TextStyle } from "pixi.js";
 import { ICanvasShape } from "../../interfaces";
-import * as PIXI from "pixi.js";
-import * as Color from "color";
-import * as L from "leaflet";
+import PIXI from "pixi.js";
+import Color from "color";
+import L from "leaflet";
 import gridTephraCalc from "../../tephra2";
 import { LatLngToLocal, getDistanceFromLatLonInKm } from "../../utilities/coordinateSpaceConversion";
 

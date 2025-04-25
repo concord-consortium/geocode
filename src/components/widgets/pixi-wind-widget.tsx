@@ -1,6 +1,5 @@
-import * as React from "react";
-
 import { Container, PixiComponent } from "@pixi/react";
+import PIXI from "pixi.js";
 import { Ipoint } from "../../interfaces";
 
 interface IWindWidgetProps {
@@ -31,6 +30,7 @@ const CircledArrow = PixiComponent<IWindWidgetProps, PIXI.Graphics>("WindWidget"
     g.lineTo(0, lineEnd);
     g.lineStyle(0, 0);
     g.beginFill(0, 1);
+    // @ts-ignore
     g.drawStar(0, headCenter, 3, arrowheadRadius, 0, 0);
     g.endFill();
 

@@ -1,4 +1,3 @@
-import * as React from "react";
 import SpeedDirectionWidget from "./speed-direction-widget";
 import ColumnHeightWidget from "./column-height-widget";
 import VEIWidget from "./vei-widget";

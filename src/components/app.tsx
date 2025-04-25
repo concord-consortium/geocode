@@ -1,11 +1,11 @@
 import { inject, observer } from "mobx-react";
-import * as React from "react";
+import React from "react";
 const deepmerge = require("deepmerge");
 import { BaseComponent, IBaseProps } from "./base";
 import { MapComponent, Scenario } from "./map/map-component";
 import { LogComponent } from "./log-component";
 import { CrossSectionComponent } from "./crosssection/cross-section-component";
-import * as Scenarios from "./../assets/maps/scenarios.json";
+import Scenarios from "./../assets/maps/scenarios.json";
 import { BlocklyAuthoring } from "../assets/blockly-authoring";
 import BlocklyContainer from "./blockly-container";
 import styled from "styled-components";

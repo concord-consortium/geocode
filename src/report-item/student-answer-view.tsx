@@ -1,10 +1,9 @@
-import * as React from "react";
-import * as Renderer from "react-dom/server";
+import React from "react";
+import Renderer from "react-dom/server";
 import styled from "styled-components";
 import {ServerStyleSheet, StyleSheetManager} from "styled-components";
 
 import {BlockList, IBlockStats, IBlockDiff, IBlockComment} from "./block-list";
-import { style } from "d3";
 import { SerializedState } from "../stores/stores";
 
 const Container = styled.div<{wide: boolean}>`

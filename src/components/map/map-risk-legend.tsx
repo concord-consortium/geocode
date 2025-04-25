@@ -1,8 +1,6 @@
-import * as React from "react";
 import { PureComponent } from "react";
 import styled from "styled-components";
 import CloseIcon from "../../assets/map-icons/close.svg";
-import { isNumber } from "util";
 import { RiskLevels } from "../montecarlo/monte-carlo";
 import { AbsoluteIcon } from "./map-tephra-legend";
 
@@ -112,7 +110,7 @@ export default class RiskLegendComponent extends PureComponent<IProps, IState> {
                     {riskLevel.iconText}
                   </RiskDiamondText>
                 </RiskDiamond>
-                { isNumber(riskLevel.max) && isNumber(riskLevel.min)
+                { (riskLevel.max != null) && (riskLevel.min != null)
                   ? <RiskLabel>{`- ${riskLevel.type} (${riskLevel.min}-${riskLevel.max}%)`}</RiskLabel>
                   : <RiskLabel>{`- ${riskLevel.type}`}</RiskLabel>
                 }

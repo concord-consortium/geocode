@@ -4,7 +4,7 @@
     "sourceMap": true,
     "noImplicitAny": true,
     "module": "commonjs",
-    "target": "es5",
+    "target": "es2018",
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
@@ -14,11 +14,7 @@
     "skipLibCheck": true,
     "types": ["jest"],
     "jsx": "react-jsx",
-    "lib": [
-      "dom",
-      "es5",
-      "es2015"
-    ]
+    "lib": ["dom", "dom.iterable", "es2018"]
   },
   "include": [
     "./src/**/*"

@@ -1,4 +1,3 @@
-import * as React from "react";
 import Draggable from "react-draggable";
 import { BaseComponent } from "../base";
 import styled from "styled-components";

@@ -1,5 +1,4 @@
-// @ts-ignore
-import * as RawWindDataSet from "../assets/data/winds_Cerro_Negro.csv";
+import RawWindDataSet from "../assets/data/winds_Cerro_Negro.csv";
 import RawPositionTimeData, { filterStationByPositionData } from "../assets/data/seismic/position-time-data";
 
 interface DatasetCase {[key: string]: number | Date; }
