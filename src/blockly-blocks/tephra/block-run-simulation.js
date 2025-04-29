@@ -1,7 +1,7 @@
-import * as strings from '../../strings/blockly-blocks/tephra/run-simulation'
+import * as strings from '../../strings/blockly-blocks/tephra/run-simulation';
 
-Blockly.Blocks['run_simulation'] = {
-    init: function() {
+Blockly.Blocks.run_simulation = {
+    init() {
       this.appendDummyInput()
           .appendField(strings.RUN_SIMULATION);
       this.appendValueInput("vei")
@@ -22,13 +22,13 @@ Blockly.Blocks['run_simulation'] = {
       this.setTooltip(strings.SIMULATION_PARAMETERS);
       this.setHelpUrl("");
     }
-  }
+  };
 
-  Blockly.JavaScript['run_simulation'] = function(block) {
-    var value_vei = Blockly.JavaScript.valueToCode(block, 'vei', Blockly.JavaScript.ORDER_ATOMIC);
-    var value_wind_speed = Blockly.JavaScript.valueToCode(block, 'wind_speed', Blockly.JavaScript.ORDER_ATOMIC);
-    var value_direction = Blockly.JavaScript.valueToCode(block, 'wind_direction', Blockly.JavaScript.ORDER_ATOMIC);
-    var code = `
+  Blockly.JavaScript.run_simulation = function(block) {
+    const value_vei = Blockly.JavaScript.valueToCode(block, 'vei', Blockly.JavaScript.ORDER_ATOMIC);
+    const value_wind_speed = Blockly.JavaScript.valueToCode(block, 'wind_speed', Blockly.JavaScript.ORDER_ATOMIC);
+    const value_direction = Blockly.JavaScript.valueToCode(block, 'wind_direction', Blockly.JavaScript.ORDER_ATOMIC);
+    const code = `
       var vei=${value_vei};
       var speed=${value_wind_speed};
       var direction=${value_direction};
@@ -39,4 +39,4 @@ Blockly.Blocks['run_simulation'] = {
       this.paintMap();
     `;
     return code;
-  }
+  };

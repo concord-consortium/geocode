@@ -16,7 +16,7 @@ const angle = 180;
 const center = {x: 1, y: 1};
 
 describe("rotateGridPoint", () => {
-  it("it returns a rotated index", () => {
+  it("returns a rotated index", () => {
     data.forEach( (point, index) => {
       const result = rotateGridPoint(point, angle, center);
       expect(result.x).toBeCloseTo(rotated[index].x);
@@ -26,7 +26,7 @@ describe("rotateGridPoint", () => {
 });
 
 describe("rotateGridPoints", () => {
-  it("it returns rotated indexes", () => {
+  it("returns rotated indexes", () => {
     const result = rotateGridPoints(data, angle, center);
     result.forEach( (element, index) => {
       expect(element.x).toBeCloseTo(rotated[index].x, 5);

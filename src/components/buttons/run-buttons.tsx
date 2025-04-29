@@ -1,4 +1,5 @@
-import * as React from "react";
+import { observer } from "mobx-react";
+import React from "react";
 import styled from "styled-components";
 import RunIcon from "../../assets/blockly-icons/run.svg";
 import PauseIcon from "../../assets/blockly-icons/pause.svg";
@@ -46,7 +47,7 @@ const ButtonContainer = styled.div`
   }
 `;
 
-const RunButton = (props: IProps) => {
+const RunButton = observer((props: IProps) => {
   const { run, unpause, paused } = props;
   return (
     <IconButton
@@ -62,7 +63,7 @@ const RunButton = (props: IProps) => {
       dataTest={"Run-button"}
     />
   );
-};
+});
 
 const StepButton = (props: IProps) => {
   const { step } = props;
@@ -82,23 +83,23 @@ const StepButton = (props: IProps) => {
   );
 };
 
-const StopButton = (props: IProps) => {
-  const { stop } = props;
-  return (
-    <IconButton
-      onClick={stop}
-      disabled={false}
-      children={<PauseIcon />}
-      label={"Stop"}
-      hoverColor={"#BBD9FF"}
-      activeColor={"#DDEDFF"}
-      fill={"#4AA9FF"}
-      width={26}
-      height={26}
-      dataTest={"Stop-button"}
-    />
-  );
-};
+// const StopButton = (props: IProps) => {
+//   const { stop } = props;
+//   return (
+//     <IconButton
+//       onClick={stop}
+//       disabled={false}
+//       children={<PauseIcon />}
+//       label={"Stop"}
+//       hoverColor={"#BBD9FF"}
+//       activeColor={"#DDEDFF"}
+//       fill={"#4AA9FF"}
+//       width={26}
+//       height={26}
+//       dataTest={"Stop-button"}
+//     />
+//   );
+// };
 
 const PauseButton = (props: IProps) => {
   const { pause } = props;
@@ -175,6 +176,7 @@ const SpeedSlider = (props: IProps) => {
   );
 };
 
+@observer
 export default class RunButtons extends React.Component<IProps, IState> {
   public render() {
     const { running, paused, showSpeedControls } = this.props;

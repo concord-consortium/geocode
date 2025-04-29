@@ -1,5 +1,5 @@
-Blockly.Blocks['x'] = {
-    init: function() {
+Blockly.Blocks.x = {
+    init() {
       this.appendDummyInput()
           .appendField("X");
       this.setOutput(true, null);
@@ -9,15 +9,15 @@ Blockly.Blocks['x'] = {
     }
   };
   
-  Blockly.JavaScript['x'] = function(block) {
+  Blockly.JavaScript.x = function(block) {
     // TODO: Assemble JavaScript into code variable.
-    var code = `(this.x)`;
+    const code = `(this.x)`;
     // TODO: Change ORDER_NONE to the correct strength.
     return [code, Blockly.JavaScript.ORDER_NONE];
-  }
+  };
   
-  Blockly.Blocks['y'] = {
-    init: function() {
+  Blockly.Blocks.y = {
+    init() {
       this.appendDummyInput()
           .appendField("Y");
       this.setOutput(true, null);
@@ -27,11 +27,11 @@ Blockly.Blocks['x'] = {
     }
   };
   
-  Blockly.JavaScript['y'] = function(block) {
+  Blockly.JavaScript.y = function(block) {
     // TODO: Assemble JavaScript into code variable.
-    var code = `(this.y)`;
+    const code = `(this.y)`;
     // TODO: Change ORDER_NONE to the correct strength.
     return [code, Blockly.JavaScript.ORDER_NONE];
-  }
+  };
   
   

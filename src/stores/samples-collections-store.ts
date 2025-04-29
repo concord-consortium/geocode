@@ -1,5 +1,5 @@
 import { types } from "mobx-state-tree";
-import uuid = require("uuid");
+import { v4 as uuid } from 'uuid';
 import { calculateThresholdData, calculateRisk, ThresholdData } from "../components/montecarlo/monte-carlo";
 
 export const RiskLevel = types.enumeration("type", ["Undefined", "Low", "Medium", "High"]);

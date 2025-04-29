@@ -1,7 +1,7 @@
-import { THICKNESS } from "../../strings/blockly-blocks/tephra/thickness"
+import { THICKNESS } from "../../strings/blockly-blocks/tephra/thickness";
 
-Blockly.Blocks['thickness'] = {
-    init: function() {
+Blockly.Blocks.thickness = {
+    init() {
       this.appendDummyInput()
           .appendField(THICKNESS);
       this.setOutput(true, null);
@@ -12,10 +12,10 @@ Blockly.Blocks['thickness'] = {
   };
   
   
-  Blockly.JavaScript['thickness'] = function(block) {
+  Blockly.JavaScript.thickness = function(block) {
     // TODO: Assemble JavaScript into code variable.
-    var code = `(this.thickness)`;
+    const code = `(this.thickness)`;
     // TODO: Change ORDER_NONE to the correct strength.
     return [code, Blockly.JavaScript.ORDER_NONE];
-  }
+  };
   

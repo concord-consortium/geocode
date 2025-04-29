@@ -1,4 +1,3 @@
-import * as React from "react";
 import { PureComponent } from "react";
 import styled from "styled-components";
 import { Icon } from "../icon";
@@ -106,6 +105,7 @@ export default class EjectedVolumeWidget extends PureComponent<IProps, IState> {
         </RelativeIconContainer>
         <ValueOutput>
           <div data-test="info"
+            // eslint-disable-next-line react/no-danger
             dangerouslySetInnerHTML={
               {__html: `10<sup>${index}</sup> km<sup>3</sup>`}
           } />

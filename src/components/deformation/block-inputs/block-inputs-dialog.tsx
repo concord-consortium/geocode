@@ -1,4 +1,3 @@
-import * as React from "react";
 import { BaseComponent } from "../../base";
 import styled from "styled-components";
 import SpeedDirectionWidget from "../../widgets/speed-direction-widget";

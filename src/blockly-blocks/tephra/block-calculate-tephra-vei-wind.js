@@ -1,9 +1,9 @@
-import * as strings from '../../strings/blockly-blocks/tephra/calculate-tephra-vei-wind'
+import * as strings from '../../strings/blockly-blocks/tephra/calculate-tephra-vei-wind';
 
-Blockly.Blocks['calculate_tephra_vei_wind'] = {
-  init: function() {
+Blockly.Blocks.calculate_tephra_vei_wind = {
+  init() {
     this.appendDummyInput()
-        .appendField(strings.COMPUTE_TEPHRA)
+        .appendField(strings.COMPUTE_TEPHRA);
     this.appendDummyInput()
         .setAlign(Blockly.ALIGN_RIGHT)
         .appendField(strings.AT_LOCATION)
@@ -27,7 +27,7 @@ Blockly.Blocks['calculate_tephra_vei_wind'] = {
     this.setHelpUrl("");
   },
 
-  generateOptionsLoc: function() {
+  generateOptionsLoc() {
     if (Blockly.sampleLocations && Blockly.sampleLocations.length > 0) {
       return Blockly.sampleLocations;
     } else {
@@ -35,7 +35,7 @@ Blockly.Blocks['calculate_tephra_vei_wind'] = {
     }
   },
 
-  generateOptionsCol: function() {
+  generateOptionsCol() {
     if (Blockly.sampleCollections && Blockly.sampleCollections.length > 0) {
       return Blockly.sampleCollections;
     } else {
@@ -44,13 +44,13 @@ Blockly.Blocks['calculate_tephra_vei_wind'] = {
   }
 };
 
-Blockly.JavaScript['calculate_tephra_vei_wind'] = function(block) {
-    var location = block.getFieldValue('locations');
-    var wind_samples = Blockly.JavaScript.valueToCode(block, 'wind samples', Blockly.JavaScript.ORDER_ATOMIC) || "null";
-    var value_vei = Blockly.JavaScript.valueToCode(block, 'vei', Blockly.JavaScript.ORDER_ATOMIC) || "undefined";
-    var collection = block.getFieldValue('collections')
+Blockly.JavaScript.calculate_tephra_vei_wind = function(block) {
+    const location = block.getFieldValue('locations');
+    const wind_samples = Blockly.JavaScript.valueToCode(block, 'wind samples', Blockly.JavaScript.ORDER_ATOMIC) || "null";
+    const value_vei = Blockly.JavaScript.valueToCode(block, 'vei', Blockly.JavaScript.ORDER_ATOMIC) || "undefined";
+    const collection = block.getFieldValue('collections');
 
-    var code = `computeTephra({location: "${location}", windSamples: ${wind_samples}, vei: ${value_vei}, collection: "${collection}"});`;
+    const code = `computeTephra({location: "${location}", windSamples: ${wind_samples}, vei: ${value_vei}, collection: "${collection}"});`;
 
     return code;
   };

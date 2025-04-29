@@ -1,7 +1,7 @@
-import { THING_TO_LOG, LOG_TOOLTIP } from "../strings/blockly-blocks/all-other-blocks"
+// import { THING_TO_LOG, LOG_TOOLTIP } from "../strings/blockly-blocks/all-other-blocks";
 
-Blockly.Blocks['console_logger'] = {
-    init: function() {
+Blockly.Blocks.console_logger = {
+    init() {
       this.appendValueInput("logString")
           .setCheck("String")
           .setAlign(Blockly.ALIGN_RIGHT)
@@ -11,11 +11,10 @@ Blockly.Blocks['console_logger'] = {
    this.setHelpUrl("");
     }
   };
-  
-  Blockly.JavaScript['console_logger'] = function(block) {
+
+  Blockly.JavaScript.console_logger = function(block) {
     const value_logstring = Blockly.JavaScript.valueToCode(block, 'logString', Blockly.JavaScript.ORDER_ATOMIC);
     // TODO: Assemble JavaScript into code variable.
     const code = `console.log(${value_logstring});`;
     return code;
-  }
-  
+  };

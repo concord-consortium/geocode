@@ -1,16 +1,13 @@
-import * as React from "react";
-import * as Leaflet from "leaflet";
+import Leaflet from "leaflet";
 
 import "leaflet-kmz";
 
 import { inject, observer } from "mobx-react";
 import { BaseComponent } from "../base";
-import { StationData } from "../../deformation";
 import "../../css/custom-leaflet-icons.css";
 import { LayerGroup, Polygon, Marker } from "react-leaflet";
 import { equalIntervalDeformationRanges, logarithmicDeformationRanges } from "./map-deformation-legend";
 import { ColorMethod } from "../../stores/seismic-simulation-store";
-import { divIcon } from "leaflet";
 import { deformationLabelIcon } from "../icons";
 
 interface IProps {

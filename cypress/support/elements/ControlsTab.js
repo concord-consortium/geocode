@@ -1,59 +1,59 @@
 class ControlsTab{
     getControlsPanel(){
-        return cy.get('[data-test=Controls-panel]')
+        return cy.get('[data-test=Controls-panel]');
     }
     getWindSpeedDirectionContainer(){
-        return cy.get('[data-test=wind-direction-speed-slider-container]')
+        return cy.get('[data-test=wind-direction-speed-slider-container]');
     }
     getEjectedVolumeContainer(){
-        return cy.get('[data-test=ejected-volume-slider-container]')
+        return cy.get('[data-test=ejected-volume-slider-container]');
     }
     getColumnHeightContainer(){
-        return cy.get('[data-test=column-height-slider-container]')
+        return cy.get('[data-test=column-height-slider-container]');
     }
     getVEIContainer(){
-        return cy.get('[data-test=vei-slider-container]')
+        return cy.get('[data-test=vei-slider-container]');
     }
     getSliderTrackEl(){
-        return '[data-test=slider-rail]'
+        return '[data-test=slider-rail]';
     }
     getWindSpeedSlider(){
-        return cy.get('[data-test=wind-speed-slider]')
+        return cy.get('[data-test=wind-speed-slider]');
     }
     getWindDirectionSlider(){
-        return cy.get('[data-test=wind-direction-slider]')
+        return cy.get('[data-test=wind-direction-slider]');
     }
     getEjectedVolumeSlider(){
-        return cy.get('[data-test=ejected-volume-slider]')
+        return cy.get('[data-test=ejected-volume-slider]');
     }
     getColumnHeightSlider(){
-        return cy.get('[data-test=column-height-slider]')
+        return cy.get('[data-test=column-height-slider]');
     }
     getVEISlider(){
-        return cy.get('[data-test=vei-slider]')
+        return cy.get('[data-test=vei-slider]');
     }
     getWindSymbol(){
-        return cy.get('[data-name="Wind Symbol - orange"]')
+        return cy.get('[data-name="Wind Symbol - orange"]');
     }
     getEjectedVolumeHeightVisual(){
-        return cy.get('[data-test="ejected-volume-height-visual"]')
+        return cy.get('[data-test="ejected-volume-height-visual"]');
     }
     getColumnHeightVisual(){
-        return cy.get('[data-test="column-height-visual"]')
+        return cy.get('[data-test="column-height-visual"]');
     }
     getResetButtonEl(){
-        return ('[data-test=Reset-button]')
+        return ('[data-test=Reset-button]');
     }
     getEruptButton(){
-        return cy.get('[data-test=Erupt-button]')
+        return cy.get('[data-test=Erupt-button]');
     }
     resetModel(){
         this.getControlsPanel().within(($panel)=>{
             cy.get(this.getResetButtonEl()).click();
-        })
+        });
     }
     setSliderValue(slider, value){ //pass in -0.1 as value for min slider value
-        var unit=0; //brittle to changes in viewport size
+        let unit=0; //brittle to changes in viewport size
         switch (slider) {
             case "wind-speed":
                 unit=9.5;
@@ -69,10 +69,12 @@ class ControlsTab{
                 break;
             case "vei":
                 unit=27;
-                break;            
-        } 
-        cy.log("slider: "+slider+" value: "+value+" unit: "+unit+" slider to: "+value*unit)
-        cy.get('[data-test='+slider+'-slider]').find(this.getSliderTrackEl()).click(value*unit,-1,{force:true})
+                break;
+        }
+        cy.log("slider: "+slider+" value: "+value+" unit: "+unit+" slider to: "+value*unit);
+        // have to click twice to prevent the slider from thinking it's a drag ¯\_(ツ)_/¯
+        cy.get('[data-test='+slider+'-slider] [data-test=slider-rail]').click(value*unit, 6, {force:true});
+        cy.get('[data-test='+slider+'-slider] [data-test=slider-rail]').click(value*unit, 6, {force:true});
     }
 }
 export default ControlsTab;

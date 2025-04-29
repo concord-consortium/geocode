@@ -1,5 +1,5 @@
-import * as ReactFauxDOM from "react-faux-dom";
-import * as d3 from "d3";
+import ReactFauxDOM from "react-faux-dom";
+import { axisBottom, axisLeft, histogram, scaleLinear, select } from "d3";
 import { ChartType } from "../../stores/charts-store";
 
 interface IProps {
@@ -23,29 +23,29 @@ export const SvgD3HistogramChart = (props: IProps) => {
 
   const div = new ReactFauxDOM.Element("div");
 
-  const svg = d3.select(div).append("svg")
+  const svg = select(div).append("svg")
     .attr("width", width)
     .attr("height", height)
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-  const xScale = d3.scaleLinear();
+  const xScale = scaleLinear();
   xScale.domain([chartMin, chartMax]);
   xScale.range([0, chartWidth]);
 
   // add axes
-  const axisBottom = d3.axisBottom(xScale).tickFormat(x => (x === chartMax) ? `${x}+` : `${x}`);
+  const _axisBottom = axisBottom(xScale).tickFormat(x => (x === chartMax) ? `${x}+` : `${x}`);
   svg.append("g")
     .attr("transform", "translate(0," + chartHeight + ")")
-    .call(axisBottom);
+    .call(_axisBottom);
 
   const xDomain: number[] = xScale.domain();
-  const histogram = d3.histogram<number, number>()
+  const _histogram = histogram<number, number>()
     .domain([ xDomain[0], xDomain[1] ])
     .thresholds(xScale.ticks(numBins));
 
   // Add all the cases exceeding the max into the max's bin
-  const bins = histogram((data as number[]).map(d => Math.min(d, xDomain[1] - 1)));
+  const bins = _histogram((data as number[]).map(d => Math.min(d, xDomain[1] - 1)));
   let binMax = 0;
   bins.forEach(bin => {
     binMax = Math.max(binMax, bin.length);
@@ -57,13 +57,13 @@ export const SvgD3HistogramChart = (props: IProps) => {
               ? Math.floor(chartHeight / radius * .45)
               : binMax;
 
-  const yScale = d3.scaleLinear();
+  const yScale = scaleLinear();
   yScale.range([chartHeight, 0]);
   yScale.domain([0, max]);
 
-  const axisLeft = d3.axisLeft(yScale);
+  const _axisLeft = axisLeft(yScale);
   svg.append("g")
-    .call(axisLeft);
+    .call(_axisLeft);
 
   // Add labels
   if (xAxisLabel) {

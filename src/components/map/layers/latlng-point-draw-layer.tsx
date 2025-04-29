@@ -1,10 +1,9 @@
 import { inject, observer } from "mobx-react";
 import Leaflet from "leaflet";
-import * as L from "leaflet";
-import * as React from "react";
+const L = Leaflet;
 import { BaseComponent } from "../../base";
 import { latLngIcon } from "../../icons";
-import { LayerGroup, Marker, Polyline } from "react-leaflet";
+import { LayerGroup, Marker } from "react-leaflet";
 
 const MOUSE_DOWN = "mousedown touchstart";
 const MOUSE_MOVE = "mousemove touchmove";
@@ -136,8 +135,8 @@ export class LatLngPointDrawLayer extends BaseComponent<IProps, IState> {
       const willOverlapWest = containerPoint.x < labelWidth;
       const willOverlapEast = containerPoint.x > mapEastContainerPoint.x - labelWidth;
 
-      !willOverlapNorth || willOverlapSouth ? cornerString = "bottom-" : cornerString = "top-";
-      !willOverlapEast || willOverlapWest ? cornerString += "left" : cornerString += "right";
+      cornerString = !willOverlapNorth || willOverlapSouth ? "bottom-" : "top-";
+      cornerString += !willOverlapEast || willOverlapWest ? "left" : "right";
       return cornerString;
     };
 

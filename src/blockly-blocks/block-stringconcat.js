@@ -1,5 +1,5 @@
-Blockly.Blocks['stringconcat'] = {
-  init: function() {
+Blockly.Blocks.stringconcat = {
+  init() {
     this.appendValueInput("lv")
         .setCheck(null);
     this.appendDummyInput()
@@ -14,11 +14,11 @@ Blockly.Blocks['stringconcat'] = {
   }
 };
 
-Blockly.JavaScript['stringconcat'] = function(block) {
-  var value_lv = Blockly.JavaScript.valueToCode(block, 'lv', Blockly.JavaScript.ORDER_ATOMIC);
-  var value_rv = Blockly.JavaScript.valueToCode(block, 'rv', Blockly.JavaScript.ORDER_ATOMIC);
+Blockly.JavaScript.stringconcat = function(block) {
+  const value_lv = Blockly.JavaScript.valueToCode(block, 'lv', Blockly.JavaScript.ORDER_ATOMIC);
+  const value_rv = Blockly.JavaScript.valueToCode(block, 'rv', Blockly.JavaScript.ORDER_ATOMIC);
   // TODO: Assemble JavaScript into code variable.
-  var code = ``;
+  let code = ``;
   if (value_lv || value_rv) {
     code = ` stringConcat({lv: ${value_lv ? value_lv : null}, rv: ${value_rv ? value_rv : null}}) \n`;
   }

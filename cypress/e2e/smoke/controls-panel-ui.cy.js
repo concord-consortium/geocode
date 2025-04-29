@@ -1,6 +1,6 @@
 import ModelOptions from "../../support/elements/ModelOptionPanel";
-import LeftPanel from "../../support/elements/LeftPanel"
-import ControlsTab from "../../support/elements/ControlsTab"
+import LeftPanel from "../../support/elements/LeftPanel";
+import ControlsTab from "../../support/elements/ControlsTab";
 
 const modelOptions = new ModelOptions;
 const leftPanel = new LeftPanel;
@@ -30,6 +30,6 @@ context("Controls panel", () => {
         controlsTab.getVEISlider().should('be.visible');
         cy.get(controlsTab.getResetButtonEl()).should('be.visible');
         controlsTab.getEruptButton().should('be.visible');
-      })
+      });
     });
   });

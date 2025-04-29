@@ -1,5 +1,5 @@
-import { types } from "mobx-state-tree";
-import * as d3 from "d3";
+import { getSnapshot, types } from "mobx-state-tree";
+import { extent, timeFormat, timeParse } from "d3";
 import { Dataset, WindData } from "./data-sets";
 import { SamplesCollectionModelType } from "./samples-collections-store";
 
@@ -10,7 +10,7 @@ export const ChartStyle = types.enumeration("type", ["dot", "arrow"]);
 export type ChartStyleType = typeof ChartStyle.Type;
 
 export type ChartData = Array<Array<number|Date>> | number[];
-type Column = number|Date;
+// type Column = number|Date;
 
 const Chart = types.model("Chart", {
   type: ChartType,
@@ -44,11 +44,11 @@ const Chart = types.model("Chart", {
 
   // returns a function to convert a Date to a string, given an axis
   const toDateString = () => {
-    return d3.timeFormat(self.dateLabelFormat!);
+    return timeFormat(self.dateLabelFormat!);
   };
 
   // returns min and max of column
-  const extent = (column: 0|1) => {
+  const _extent = (column: 0|1) => {
     if (self.customExtents[column] && self.customExtents[column].length) {
       return self.customExtents[column];
     }
@@ -58,7 +58,7 @@ const Chart = types.model("Chart", {
       // assume starting at 0 for now
       return [0, Math.max(...columnData as number[])];
     } else {
-      return d3.extent(columnData) as [Date, Date];
+      return extent(columnData) as [Date, Date];
     }
   };
 
@@ -66,7 +66,7 @@ const Chart = types.model("Chart", {
     isDate,
     getColumnData,
     toDateString,
-    extent,
+    extent: _extent,
   };
 });
 
@@ -95,7 +95,7 @@ const ChartsStore = types.model("Charts", {
    * year, month and day values
    */
   addDateScatterChart(dataset: Dataset, yAxis: string, yAxisLabel: string, _title?: string) {
-    const dateParser = d3.timeParse("%Y-%m-%d");
+    const dateParser = timeParse("%Y-%m-%d");
     const data = dataset.map(d => {
       const dateStr = d.year + "-" + d.month + "-" + d.day;
       const date = dateParser(dateStr)!;
@@ -131,7 +131,7 @@ const ChartsStore = types.model("Charts", {
 
     const timeParser = WindData.timeParsers[xAxis];
     if (timeParser) {
-      const dateParser = d3.timeParse(timeParser.parser);
+      const dateParser = timeParse(timeParser.parser);
       data = dataset.map(d => {
         const dateStr = timeParser.fields.map(f => d[f]).join("-");
         const date = dateParser(dateStr)!;
@@ -182,7 +182,7 @@ const ChartsStore = types.model("Charts", {
         yAxisLabel: "Number of Runs"
       });
     }
-    chart.data = samplesCollection.samples.toJS() as any;
+    chart.data = getSnapshot(samplesCollection.samples) as any;
     chart.threshold = threshold;
 }
 }));

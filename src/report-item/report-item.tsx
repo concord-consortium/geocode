@@ -1,6 +1,5 @@
-import * as React from "react";
-import { useEffect, useState } from "react";
-import * as semver from "semver";
+import React, { useEffect, useState } from "react";
+import semver from "semver";
 import { IReportItemInitInteractive,
          IReportItemAnswerItem,
          addGetReportItemAnswerListener,
@@ -16,7 +15,7 @@ interface Props {
 
 const getBlockList = (interactiveState: SerializedState) => {
   const state  = interactiveState.state || undefined;
-  const initialCode = state && state.blocklyStore && state.blocklyStore.initialXmlCode;
+  const initialCode = state?.blocklyStore?.initialXmlCode;
 
   if (initialCode) {
     try {
@@ -34,12 +33,12 @@ const getBlockList = (interactiveState: SerializedState) => {
 export const ReportItemComponent: React.FC<Props> = (props) => {
   const {initMessage} = props;
   const {view} = initMessage;
-  const [userAnswers, setUserAnswers] = useState<Record<string, any>>({});
-  const [cachedAuthoredState, setCachedAuthoredState] = useState<SerializedState|null>(null);
+  const [userAnswers] = useState<Record<string, any>>({});
+  const [cachedAuthoredState] = useState<SerializedState|null>(null);
 
   useEffect(() => {
       if (initMessage && initMessage.mode === "reportItem") {
-        const {interactiveItemId} = initMessage;
+        // const {interactiveItemId} = initMessage;
 
         addGetReportItemAnswerListener(async (request) => {
           // TODO: update lara interactive api to change addGetReportItemAnswerListener
@@ -72,7 +71,7 @@ export const ReportItemComponent: React.FC<Props> = (props) => {
         });
         getClient().post("reportItemClientReady");
       }
-    }, [initMessage]);
+    }, [cachedAuthoredState, initMessage]);
 
   // do not render anything if hidden
   if (view === "hidden") {

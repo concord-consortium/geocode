@@ -1,7 +1,7 @@
 class CodeTab {
         //Code Tab
         getCodePanel(){
-            return cy.get('[data-test=Code-panel]')
+            return cy.get('[data-test=Code-panel]');
         }
 }
-export default CodeTab
+export default CodeTab;

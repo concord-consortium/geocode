@@ -1,11 +1,10 @@
 import { Provider } from "mobx-react";
-import * as React from "react";
-import * as ReactDOM from "react-dom";
+import { onSnapshot } from "mobx-state-tree";
+import ReactDOM from "react-dom";
 
-import * as iframePhone from "iframe-phone";
+import iframePhone from "iframe-phone";
 
 import { AppComponent } from "./components/app";
-import { onSnapshot } from "mobx-state-tree";
 import { stores, serializeState, getSavableStateAuthor, getSavableStateStudent, deserializeState, updateStores,
         IStoreish, UnmigratedSerializedState, SerializedState } from "./stores/stores";
 
@@ -27,7 +26,7 @@ let mode: Mode = "student";
 let initialState: IStoreish;
 let unsaved = true;
 
-// Save data everytime stores change (after initInteractive is called)
+// Save data every time stores change (after initInteractive is called)
 const saveUserData = () => {
   let serializedState: SerializedState;
   let postMessage;
@@ -67,7 +66,7 @@ phone.addListener("initInteractive", (data: {
     linkedState: any}) => {
   parseJSON(data, ["authoredState", "interactiveState", "linkedState"]);
 
-  const authorState: UnmigratedSerializedState | {} = data && data.authoredState || {};
+  const authorState: UnmigratedSerializedState | {} = data?.authoredState || {};
   // student data may be in either the current interactive's saved state, or a previous model's linked state
   const studentState: UnmigratedSerializedState | {} = data && (data.interactiveState || data.linkedState) || {};
 

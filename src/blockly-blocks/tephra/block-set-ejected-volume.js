@@ -1,7 +1,7 @@
 import { SET_EJECTED_VOLUME, KM_CUBED } from '../../strings/blockly-blocks/tephra/controls-panel';
 
-Blockly.Blocks['setEjectedVolume'] = {
-    init: function() {
+Blockly.Blocks.setEjectedVolume = {
+    init() {
       this.appendValueInput("ejectedVolume")
           .setCheck("Number")
           .setAlign(Blockly.ALIGN_RIGHT)
@@ -17,11 +17,11 @@ Blockly.Blocks['setEjectedVolume'] = {
     }
   };
 
-  Blockly.JavaScript['setEjectedVolume'] = function(block) {
-    var value_volume = Blockly.JavaScript.valueToCode(block, 'ejectedVolume', Blockly.JavaScript.ORDER_ATOMIC);
+  Blockly.JavaScript.setEjectedVolume = function(block) {
+    const value_volume = Blockly.JavaScript.valueToCode(block, 'ejectedVolume', Blockly.JavaScript.ORDER_ATOMIC);
     // TODO: Assemble JavaScript into code variable.
-    var code = `
+    const code = `
       setVolume(${value_volume});
     `;
     return code;
-  }
+  };

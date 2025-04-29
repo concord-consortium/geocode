@@ -1,4 +1,3 @@
-import * as React from "react";
 import { PureComponent } from "react";
 import styled from "styled-components";
 import CloseIcon from "../../assets/map-icons/close.svg";
@@ -9,8 +8,8 @@ import { ColorMethod } from "../../stores/seismic-simulation-store";
 const MIN_STRAIN = 0;
 const MAX_STRAIN = 175;
 
-const MIN_LOG_STRAIN = Math.log10(0.00001);
-const MAX_LOG_STRAIN = Math.log10(1000);
+// const MIN_LOG_STRAIN = Math.log10(0.00001);
+// const MAX_LOG_STRAIN = Math.log10(1000);
 
 const buckets = 7;
 
@@ -33,7 +32,7 @@ export interface DeformationRange {
 const colors = ["#EEE270", "#FFBF4E", "#FF754B", "#E94E83", "#AE4ED3", "#7B58AE", "#515A94"];
 
 const stepSize = (MAX_STRAIN - MIN_STRAIN) / buckets;
-const logStepSize = (MAX_LOG_STRAIN - MIN_LOG_STRAIN) / buckets;
+// const logStepSize = (MAX_LOG_STRAIN - MIN_LOG_STRAIN) / buckets;
 
 export const equalIntervalDeformationRanges: DeformationRange[] = [];
 

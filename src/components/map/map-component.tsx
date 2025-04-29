@@ -1,13 +1,13 @@
-import * as React from "react";
-import * as L from "leaflet";
+import React from "react";
+import L from "leaflet";
 
 import { Map as LeafletMap, TileLayer, Marker, Popup, ScaleControl, Pane } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "../../css/map-component.css";
-import { iconVolcano, iconMarker, getCachedDivIcon, getCachedCircleIcon, riskIcon, getCachedSampleLocationIcon } from "../icons";
+import { iconVolcano, iconMarker, getCachedDivIcon, getCachedSampleLocationIcon } from "../icons";
 
 import { CityType  } from "../../stores/tephra-simulation-store";
-import * as Scenarios from "../../assets/maps/scenarios.json";
+import Scenarios from "../../assets/maps/scenarios.json";
 import styled from "styled-components";
 import { observer, inject } from "mobx-react";
 import { BaseComponent, IBaseProps } from "../base";
@@ -21,8 +21,7 @@ import { RightSectionTypes } from "../tabs";
 import KeyButton from "./map-key-button";
 import CompassComponent from "./map-compass";
 import { LegendComponent, LegendType } from "./map-legend";
-import { SamplesCollectionModelType, SamplesLocationModelType } from "../../stores/samples-collections-store";
-import { RiskLevels } from "../montecarlo/monte-carlo";
+import { SamplesLocationModelType } from "../../stores/samples-collections-store";
 import { LatLngRegionDrawLayer } from "./layers/latlng-region-draw-layer";
 import { LatLngPointDrawLayer } from "./layers/latlng-point-draw-layer";
 import { MapGPSStationsLayer } from "./map-gps-stations-layer";
@@ -405,18 +404,18 @@ export class MapComponent extends BaseComponent<IProps, IState>{
     this.setState(prevState => ({
       showDirection: !prevState.showDirection
     }));
-  }
+  };
   private handleDirectionToolClose = () => {
     this.setState({showDirection: false});
-  }
+  };
 
   private handleKeySelect = () => {
     this.setState({showKey: false});
-  }
+  };
 
   private handleKeyButtonSelect = () => {
     this.setState({showKey: true});
-  }
+  };
 
   private handleRecenterSelect = () => {
     if (this.map.current) {
@@ -440,13 +439,13 @@ export class MapComponent extends BaseComponent<IProps, IState>{
 
       this.map.current.leafletElement.flyTo(L.latLng(centerLat, centerLng), initialZoom);
     }
-  }
+  };
   private onMapSelect = (e: any) => {
     const { tephraSimulation } = this.stores;
     if (tephraSimulation.isSelectingSetRegion) {
       tephraSimulation.setPoint1Pos(e.latlng.lat, e.latlng.lng);
-    } else return;
-  }
+    }
+  };
 
   private reRenderMap = () => {
     if (this.tephraRef.current) {
@@ -458,7 +457,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
         this.stores.tephraSimulation.setViewportParameters(zoom, center.lat, center.lng);
       }
     }
-  }
+  };
 
   private getSampleLocations = () => {
     const { samplesCollectionsStore } = this.stores;
@@ -475,7 +474,7 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       );
     });
     return locations;
-  }
+  };
 
   // for now we are eliminating risk diamonds on the map. They will probably return later.
 
@@ -512,13 +511,15 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       // calculate how many meters each pixel represents
       const meterPerPixel = maxMeters / x;
       return meterPerPixel;
-    } else return 100;
-  }
+    } else {
+      return 100;
+    }
+  };
 
   private getScreenPointFromLatLng = (latLng: L.LatLngExpression) => {
     if (this.map.current) {
       const map = this.map.current.leafletElement;
       return map.latLngToLayerPoint(latLng);
     }
-  }
+  };
 }

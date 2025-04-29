@@ -1,8 +1,6 @@
-import * as L from "leaflet";
-import * as VolcanoPng from "../assets/volcano.png";
-import * as IconPng from "../assets/marker.png";
-
-import { DivIcon } from "leaflet";
+import L, { DivIcon } from "leaflet";
+import VolcanoPng from "../assets/volcano.png";
+import IconPng from "../assets/marker.png";
 
 import "../css/custom-leaflet-icons.css";
 
@@ -38,7 +36,7 @@ export function getCachedCircleIcon(label: string) {
     return iconsCache.get(iconKey);
 }
 
-export function divIcon(label: string, anchorCorner: string = "top-left"): DivIcon {
+export function divIcon(label: string, anchorCorner = "top-left"): DivIcon {
     const html = "<div class='icon-content " + anchorCorner + "'>" + label + "</div>";
     return new DivIcon({ className: "div-icon", html });
 }
@@ -49,7 +47,7 @@ export function getCachedDivIcon(label: string) {
     return iconsCache.get(iconKey);
 }
 
-export function sampleLocationIcon(label: string, anchorCorner: string = "top-left"): DivIcon {
+export function sampleLocationIcon(label: string, anchorCorner = "top-left"): DivIcon {
     const html = "<div class='icon-content sample-label " + anchorCorner + "'>" + label + "</div>";
     return new DivIcon({ className: "div-icon sample-label", html });
 }
@@ -60,7 +58,7 @@ export function getCachedSampleLocationIcon(label: string) {
     return iconsCache.get(iconKey);
 }
 
-export function latLngIcon(label: string, anchorCorner: string = "top-left", crosshair: boolean = false): DivIcon {
+export function latLngIcon(label: string, anchorCorner = "top-left", crosshair = false): DivIcon {
   const html = `<div class='latlng-icon-content ${anchorCorner} ${crosshair ? "crosshair-cursor" : ""}'>
     <div class='content'>${label}</div>
     <div class='handle'></div>

@@ -1,7 +1,7 @@
-import * as React from "react";
+import React from "react";
 import DatGui, { DatBoolean, DatButton, DatSelect, DatFolder, DatNumber } from "react-dat-gui";
 
-import * as Scenarios from "./../assets/maps/scenarios.json";
+import Scenarios from "../assets/maps/scenarios.json";
 import { BlocklyAuthoring } from "../assets/blockly-authoring";
 import { IStoreish } from "../stores/stores.js";
 
@@ -17,7 +17,7 @@ interface IProps {
   handleUpdate: (state: IStoreish) => void;
 }
 
-const AuthoringMenu: React.SFC<IProps> = (props) => {
+const AuthoringMenu: React.FC<IProps> = (props) => {
   return (
     <DatGui data={props.options} onUpdate={props.handleUpdate} data-test="Model-option-toggle">
       <DatButton label={strings.MODEL_OPTIONS} onClick={props.toggleShowOptions}/>

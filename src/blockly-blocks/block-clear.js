@@ -1,7 +1,7 @@
-import { CLEAR, CLEAR_TOOLTIP } from "../strings/blockly-blocks/all-other-blocks"
+import { CLEAR, CLEAR_TOOLTIP } from "../strings/blockly-blocks/all-other-blocks";
 
-Blockly.Blocks['clear'] = {
-    init: function() {
+Blockly.Blocks.clear = {
+    init() {
       this.appendValueInput("logString")
           .setCheck("String")
           .setAlign(Blockly.ALIGN_RIGHT)
@@ -14,7 +14,7 @@ Blockly.Blocks['clear'] = {
     }
   };
   
-  Blockly.JavaScript['clear'] = function(block) {
+  Blockly.JavaScript.clear = function(block) {
     const code ='clearCanvas();\n';
     return code;
-  }
+  };

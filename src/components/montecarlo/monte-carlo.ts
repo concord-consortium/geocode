@@ -41,16 +41,16 @@ export const calculateThresholdData = (data: any, threshold: number) => {
                                          greaterThanPercent: 0,
                                          lessThanEqualPercent: 0
                                         };
-  data && data.forEach((d: number) => {
+  data?.forEach((d: number) => {
     if (d > threshold) {
       thresholdData.greaterThan++;
     }
   });
   thresholdData.lessThanEqual = data ? data.length - thresholdData.greaterThan : 0;
-  thresholdData.greaterThanPercent = data && data.length
+  thresholdData.greaterThanPercent = data?.length
                                      ? Math.round(thresholdData.greaterThan / data.length * 100)
                                      : 0;
-  thresholdData.lessThanEqualPercent = data && data.length ? 100 - thresholdData.greaterThanPercent : 0;
+  thresholdData.lessThanEqualPercent = data?.length ? 100 - thresholdData.greaterThanPercent : 0;
   return thresholdData;
 };
 

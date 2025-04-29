@@ -3,5 +3,9 @@ declare module "*.svg" {
   export default content;
 }
 
+declare module "*.csv";
 declare module "*.png";
+declare module "*.vel";
 declare module "*.xml";
+
+declare module "js-interpreter";

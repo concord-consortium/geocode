@@ -1,5 +1,5 @@
-import * as ReactFauxDOM from "react-faux-dom";
-import * as d3 from "d3";
+import ReactFauxDOM from "react-faux-dom";
+import { axisBottom, axisLeft, axisRight, axisTop, scaleLinear, scaleTime, select } from "d3";
 import { ChartType } from "../../stores/charts-store";
 
 type Scale = d3.ScaleLinear<number, number> | d3.ScaleTime<number, number>;
@@ -65,26 +65,26 @@ export const SvgD3ScatterChart = (props: IProps) => {
 
   const div = new ReactFauxDOM.Element("div");
 
-  const svg = d3.select(div).append("svg")
+  const svg = select(div).append("svg")
     .attr("width", width)
     .attr("height", height)
     .append("g")
     .attr("transform", "translate(" + marginLeft + "," + marginTop + ")");
 
-  const xScale: Scale = chart.isDate(0) ? d3.scaleTime() : d3.scaleLinear();
+  const xScale: Scale = chart.isDate(0) ? scaleTime() : scaleLinear();
   xScale.rangeRound([0, chartWidth]).domain(chart.extent(0));
   xScale.nice();
 
-  const yScale: Scale = chart.isDate(1) ? d3.scaleTime().nice() : d3.scaleLinear();
+  const yScale: Scale = chart.isDate(1) ? scaleTime().nice() : scaleLinear();
   yScale.rangeRound([chartHeight, 0]).domain(chart.extent(1));
 
   function make_x_gridlines() {
-    return d3.axisBottom(xScale)
+    return axisBottom(xScale)
         .ticks(xUniformTicks);
   }
 
   function make_y_gridlines() {
-    return d3.axisLeft(yScale)
+    return axisLeft(yScale)
         .ticks(yUniformTicks);
   }
 
@@ -127,43 +127,43 @@ export const SvgD3ScatterChart = (props: IProps) => {
   }
 
   // add axes
-  let axisBottom;
+  let _axisBottom;
   let xAxisTranslation;
-  let axisLeft;
+  let _axisLeft;
   let yAxisTranslation;
 
   if (hasFourAxisLabels) {
     const formatTick = (d: unknown) => Number(d) < 0 ? `${(Number(d) * (-1))}` : `${d}`;
 
-    axisBottom = d3.axisBottom(xScale).ticks(xUniformTicks).tickSize(0).tickFormat((d) => formatTick(d));
+    _axisBottom = axisBottom(xScale).ticks(xUniformTicks).tickSize(0).tickFormat((d) => formatTick(d));
     xAxisTranslation = `(0, ${(yScale(0)! + 10)})`;
 
-    axisLeft = d3.axisLeft(yScale).ticks(yUniformTicks).tickSize(0).tickFormat((d) => formatTick(d));
+    _axisLeft = axisLeft(yScale).ticks(yUniformTicks).tickSize(0).tickFormat((d) => formatTick(d));
     yAxisTranslation = `translate(${xScale(0)! - 10}, 0)`;
   } else {
-    axisBottom = chart.isDate(0) ?
-        d3.axisBottom(xScale).tickFormat((date: Date) => {
+    _axisBottom = chart.isDate(0) ?
+        axisBottom(xScale).tickFormat((date: Date) => {
           // remove last "Jan" from Time of Year chart
           if (chart.dateLabelFormat === "%b" && date.getFullYear() === 1901) return "";
           return chart.toDateString()(date);
-        }) : uniformXYScale ? d3.axisBottom(xScale).ticks(xUniformTicks) : d3.axisBottom(xScale);
+        }) : uniformXYScale ? axisBottom(xScale).ticks(xUniformTicks) : axisBottom(xScale);
     xAxisTranslation = `(0, ${chartHeight})`;
 
-    axisLeft = chart.isDate(1) ?
-      d3.axisLeft(yScale).tickFormat(chart.toDateString()) :
-      uniformXYScale ? d3.axisLeft(yScale).ticks(yUniformTicks) : d3.axisLeft(yScale);
+    _axisLeft = chart.isDate(1) ?
+      axisLeft(yScale).tickFormat(chart.toDateString()) :
+      uniformXYScale ? axisLeft(yScale).ticks(yUniformTicks) : axisLeft(yScale);
     yAxisTranslation = `translate(0, 0)`;
   }
 
   svg.append("g")
     .attr("transform", `translate${xAxisTranslation}`)
     .attr("class", "bottom axis")
-    .call(axisBottom);
+    .call(_axisBottom);
 
   svg.append("g")
     .attr("transform", yAxisTranslation)
     .attr("class", "left axis")
-    .call(axisLeft);
+    .call(_axisLeft);
 
   if (hasFourAxisLabels) {
     svg.selectAll(".axis").selectAll("path").style("stroke-width", "25px").style("stroke", "#fff");
@@ -192,7 +192,7 @@ export const SvgD3ScatterChart = (props: IProps) => {
         .text(yAxisLabel);
     }
   } else {
-    const axesForLabels = [d3.axisTop, d3.axisBottom, d3.axisLeft, d3.axisRight];
+    const axesForLabels = [axisTop, axisBottom, axisLeft, axisRight];
     const scales = [xScale, xScale, yScale, yScale];
     const ticks = [xUniformTicks, xUniformTicks, yUniformTicks, yUniformTicks];
     const labelText = [yAxisLabel, yAxisLabel2, xAxisLabel2, xAxisLabel];

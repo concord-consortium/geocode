@@ -1,4 +1,3 @@
-import * as React from "react";
 import { BaseComponent, IBaseProps } from "./base";
 import { inject, observer } from "mobx-react";
 import RangeControl from "./range-control";
@@ -93,127 +92,132 @@ export class Controls extends BaseComponent<IProps, IState> {
     return(
       <TabContent>
         <ControlsContainer>
-          {(showWindSpeed || showWindDirection) && <ControlContainer
-                                                      height={showWindSpeed && showWindDirection ? 172 : 100}>
-            <HorizontalContainer alignItems="center" data-test="wind-direction-speed-slider-container">
-              <VerticalContainer alignItems="center" justifyContent="center">
-                {showWindSpeed && <ControlLabel>Wind Speed (m/s)</ControlLabel>}
-                {showWindSpeed && <HorizontalContainer data-test="wind-speed-slider">
-                  <RangeControl
-                    min={0}
-                    max={30}
-                    value={stagingWindSpeed}
-                    step={1}
-                    tickStep={5}
-                    width={this.props.width - 220}
-                    onChange={this.changeWindSpeed}
-                  />
-                </HorizontalContainer> }
-                {showWindDirection && <ControlLabel>Wind Direction (° from North)</ControlLabel>}
-                {showWindDirection && <HorizontalContainer data-test="wind-direction-slider">
-                  <RangeControl
-                    min={0}
-                    max={360}
-                    value={stagingWindDirection}
-                    step={10}
-                    tickMap={{
-                      0: "0",
-                      90: "90",
-                      180: "180",
-                      270: "270",
-                      360: "0",
-                    }}
-                    width={this.props.width - 220}
-                    onChange={this.changeWindDirection}
-                  />
-                </HorizontalContainer>}
-              </VerticalContainer>
-              <SpeedDirectionWidget
-                type={WidgetPanelTypes.LEFT}
-                showWindDirection={showWindDirection}
-                showWindSpeed={showWindSpeed}
-                windDirection={stagingWindDirection}
-                windSpeed={stagingWindSpeed}
-              />
-            </HorizontalContainer>
-          </ControlContainer>}
-          {showEjectedVolume && <ControlContainer>
-            <HorizontalContainer data-test="ejected-volume-slider-container">
-              <VerticalContainer alignItems="center" justifyContent="center">
-                <ControlLabel>Ejected Volume (km<sup>3</sup>)</ControlLabel>
-                <HorizontalContainer data-test="ejected-volume-slider">
-                  <RangeControl
-                    min={0}
-                    max={7}
-                    value={Math.round(Math.log(stagingMass) / Math.LN10) - 8}
-                    step={1}
-                    tickMap={{
-                      0: "10<sup>-4</sup>",
-                      1: "10<sup>-3</sup>",
-                      2: "10<sup>-2</sup>",
-                      3: "10<sup>-1</sup>",
-                      4: "10<sup>0</sup>",
-                      5: "10<sup>1</sup>",
-                      6: "10<sup>2</sup>",
-                      7: "10<sup>3</sup>",
-                    }}
-                    width={this.props.width - 220}
-                    onChange={this.changeMass}
-                  />
-                </HorizontalContainer>
-              </VerticalContainer>
-              <EjectedVolumeWidget
-                type={WidgetPanelTypes.LEFT}
-                volumeInKilometersCubed={stagingMass / Math.pow(10, 12)}
-              />
-            </HorizontalContainer>
-          </ControlContainer>}
-          {showColumnHeight && <ControlContainer>
-            <HorizontalContainer data-test="column-height-slider-container">
-              <VerticalContainer alignItems="center" justifyContent="center">
-                <ControlLabel>Column Height (km)</ControlLabel>
-                <HorizontalContainer data-test="column-height-slider">
-                  <RangeControl
-                    min={.5}
-                    max={25}
-                    value={stagingColHeight / 1000}
-                    step={.1}
-                    tickArray={[.5, 5, 10, 15, 20, 25]}
-                    width={this.props.width - 220}
-                    onChange={this.changeColumnHeight}
-                  />
-                </HorizontalContainer>
-              </VerticalContainer>
-              <ColumnHeightWidget
-                type={WidgetPanelTypes.LEFT}
-                columnHeightInKilometers={stagingColHeight / 1000}
-              />
-            </HorizontalContainer>
-          </ControlContainer>}
-          {showVEI && <ControlContainer>
-            <HorizontalContainer data-test="vei-slider-container">
-              <VerticalContainer alignItems="center" justifyContent="center">
-                <label>VEI</label>
-                <HorizontalContainer data-test="vei-slider">
-                  <RangeControl
-                    min={1}
-                    max={8}
-                    value={stagingVei}
-                    step={1}
-                    tickArray={[1, 2, 3, 4, 5, 6, 7, 8]}
-                    width={this.props.width - 274}
-                    onChange={this.changeVEI}
-                  />
-                </HorizontalContainer>
-              </VerticalContainer>
-              <VEIWidget
-                type={WidgetPanelTypes.LEFT}
-                vei={stagingVei}
-                mass={stagingMass}
-                columnHeight={stagingColHeight}
-              />
-            </HorizontalContainer>
-          </ControlContainer>}
+          {(showWindSpeed || showWindDirection) &&
+            <ControlContainer height={showWindSpeed && showWindDirection ? 172 : 100}>
+              <HorizontalContainer alignItems="center" data-test="wind-direction-speed-slider-container">
+                <VerticalContainer alignItems="center" justifyContent="center">
+                  {showWindSpeed && <ControlLabel>Wind Speed (m/s)</ControlLabel>}
+                  {showWindSpeed &&
+                    <HorizontalContainer data-test="wind-speed-slider">
+                      <RangeControl
+                        min={0}
+                        max={30}
+                        value={stagingWindSpeed}
+                        step={1}
+                        tickStep={5}
+                        width={this.props.width - 220}
+                        onChange={this.changeWindSpeed}
+                      />
+                    </HorizontalContainer> }
+                  {showWindDirection && <ControlLabel>Wind Direction (° from North)</ControlLabel>}
+                  {showWindDirection &&
+                    <HorizontalContainer data-test="wind-direction-slider">
+                      <RangeControl
+                        min={0}
+                        max={360}
+                        value={stagingWindDirection}
+                        step={10}
+                        tickMap={{
+                          0: "0",
+                          90: "90",
+                          180: "180",
+                          270: "270",
+                          360: "0",
+                        }}
+                        width={this.props.width - 220}
+                        onChange={this.changeWindDirection}
+                      />
+                    </HorizontalContainer>}
+                </VerticalContainer>
+                <SpeedDirectionWidget
+                  type={WidgetPanelTypes.LEFT}
+                  showWindDirection={showWindDirection}
+                  showWindSpeed={showWindSpeed}
+                  windDirection={stagingWindDirection}
+                  windSpeed={stagingWindSpeed}
+                />
+              </HorizontalContainer>
+            </ControlContainer>}
+          {showEjectedVolume &&
+            <ControlContainer>
+              <HorizontalContainer data-test="ejected-volume-slider-container">
+                <VerticalContainer alignItems="center" justifyContent="center">
+                  <ControlLabel>Ejected Volume (km<sup>3</sup>)</ControlLabel>
+                  <HorizontalContainer data-test="ejected-volume-slider">
+                    <RangeControl
+                      min={0}
+                      max={7}
+                      value={Math.round(Math.log(stagingMass) / Math.LN10) - 8}
+                      step={1}
+                      tickMap={{
+                        0: "10<sup>-4</sup>",
+                        1: "10<sup>-3</sup>",
+                        2: "10<sup>-2</sup>",
+                        3: "10<sup>-1</sup>",
+                        4: "10<sup>0</sup>",
+                        5: "10<sup>1</sup>",
+                        6: "10<sup>2</sup>",
+                        7: "10<sup>3</sup>",
+                      }}
+                      width={this.props.width - 220}
+                      onChange={this.changeMass}
+                    />
+                  </HorizontalContainer>
+                </VerticalContainer>
+                <EjectedVolumeWidget
+                  type={WidgetPanelTypes.LEFT}
+                  volumeInKilometersCubed={stagingMass / Math.pow(10, 12)}
+                />
+              </HorizontalContainer>
+            </ControlContainer>}
+          {showColumnHeight &&
+            <ControlContainer>
+              <HorizontalContainer data-test="column-height-slider-container">
+                <VerticalContainer alignItems="center" justifyContent="center">
+                  <ControlLabel>Column Height (km)</ControlLabel>
+                  <HorizontalContainer data-test="column-height-slider">
+                    <RangeControl
+                      min={.5}
+                      max={25}
+                      value={stagingColHeight / 1000}
+                      step={.1}
+                      tickArray={[.5, 5, 10, 15, 20, 25]}
+                      width={this.props.width - 220}
+                      onChange={this.changeColumnHeight}
+                    />
+                  </HorizontalContainer>
+                </VerticalContainer>
+                <ColumnHeightWidget
+                  type={WidgetPanelTypes.LEFT}
+                  columnHeightInKilometers={stagingColHeight / 1000}
+                />
+              </HorizontalContainer>
+            </ControlContainer>}
+          {showVEI &&
+            <ControlContainer>
+              <HorizontalContainer data-test="vei-slider-container">
+                <VerticalContainer alignItems="center" justifyContent="center">
+                  <label>VEI</label>
+                  <HorizontalContainer data-test="vei-slider">
+                    <RangeControl
+                      min={1}
+                      max={8}
+                      value={stagingVei}
+                      step={1}
+                      tickArray={[1, 2, 3, 4, 5, 6, 7, 8]}
+                      width={this.props.width - 274}
+                      onChange={this.changeVEI}
+                    />
+                  </HorizontalContainer>
+                </VerticalContainer>
+                <VEIWidget
+                  type={WidgetPanelTypes.LEFT}
+                  vei={stagingVei}
+                  mass={stagingMass}
+                  columnHeight={stagingColHeight}
+                />
+              </HorizontalContainer>
+            </ControlContainer>}
           <NoteLabel>
             <span>Note: changes made here will </span>
             <BoldSpan>not be</BoldSpan>
@@ -254,29 +258,29 @@ export class Controls extends BaseComponent<IProps, IState> {
 
   private changeWindDirection = (direction: number) => {
     this.stores.tephraSimulation.setWindDirection(direction);
-  }
+  };
 
   private changeWindSpeed = (speed: number) => {
     this.stores.tephraSimulation.setWindSpeed(speed);
-  }
+  };
 
   private changeColumnHeight = (heightInKilometers: number) => {
     this.stores.tephraSimulation.setColumnHeight(heightInKilometers);
-  }
+  };
 
   private changeMass = (zeroBasedPower: number) => {
     // -4 index conversion, +9 km^3 to m^3, +3 m^3 to kg
     const massInKilograms = Math.pow(10, zeroBasedPower - 4 + 9 + 3);
     this.stores.tephraSimulation.setMass(massInKilograms);
-  }
+  };
 
   private changeSize = (size: number) => {
     this.stores.tephraSimulation.setParticleSize(size);
-  }
+  };
 
   private changeVEI = (vei: number) => {
     this.stores.tephraSimulation.setVEI(vei);
-  }
+  };
 
   private erupt = () => {
     this.stores.tephraSimulation.erupt();
@@ -291,7 +295,5 @@ export class Controls extends BaseComponent<IProps, IState> {
     // } else {
     //   this.stores.paintMap();
     // }
-  }
+  };
 }
-
-export default Controls;

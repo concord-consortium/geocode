@@ -1,7 +1,6 @@
 import { inject, observer } from "mobx-react";
 import Leaflet from "leaflet";
-import * as L from "leaflet";
-import * as React from "react";
+const L = Leaflet;
 import { BaseComponent } from "../../base";
 import { getCachedCircleIcon } from "../../icons";
 import { LayerGroup, Marker, Polyline } from "react-leaflet";
@@ -86,6 +85,7 @@ export class CrossSectionDrawLayer extends BaseComponent<IProps, IState> {
       this._tempPoint1 = point;
     }
     if (index === 1 && point !== null && this._tempPoint1 !== null) {
+      // eslint-disable-next-line no-self-assign
       point = point;
     }
     if (point !== null) {

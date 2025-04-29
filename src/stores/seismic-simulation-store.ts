@@ -1,11 +1,9 @@
-import { IModelType, IMSTArray, Instance, ISimpleType, types, _NotCustomized } from "mobx-state-tree";
+import { Instance, types } from "mobx-state-tree";
 import { parseOfflineUNAVCOData } from "../utilities/unavco-data";
 import deformationCalc, { StationData, DeformationOutput } from "../deformation";
-import { Filter, Range } from "./data-sets";
 import Delaunator from "delaunator";
 import { SeismicSimulationAuthorSettings, SeismicSimulationAuthorSettingsProps } from "./stores";
 import { deg2rad } from "../utilities/coordinateSpaceConversion";
-import { toJS } from "mobx";
 
 const minLat = 32;
 const maxLat = 42;
@@ -283,7 +281,7 @@ export const SeismicSimulationStore = types
       self.visibleGPSStationIds.clear();
       self.selectedGPSStationId = undefined;
       self.showVelocityArrows = false;
-      self.showDeformationGraph = false,
+      self.showDeformationGraph = false;
       self.deformationHistory.clear();
       self.deformationCurrentRunNumber = 0;
       self.showBlockInputs = false;

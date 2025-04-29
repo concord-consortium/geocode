@@ -1,7 +1,7 @@
 import { REDRAW_MAP, ERUPT_VOLCANO } from "../../strings/blockly-blocks/tephra/redraw-map";
 
-Blockly.Blocks['redrawMap'] = {
-    init: function() {
+Blockly.Blocks.redrawMap = {
+    init() {
       this.appendDummyInput()
           .appendField(REDRAW_MAP);
       this.setInputsInline(true);
@@ -13,8 +13,8 @@ Blockly.Blocks['redrawMap'] = {
     }
   };
 
-  Blockly.JavaScript['redrawMap'] = function(block) {
+  Blockly.JavaScript.redrawMap = function(block) {
     // TODO: Assemble JavaScript into code variable.
-    var code = '//...;\n';
+    const code = '//...;\n';
     return code;
-  }
+  };

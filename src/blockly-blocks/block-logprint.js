@@ -1,7 +1,7 @@
-import { PRINT, TO_LOG, PRINT_TOOLTIP } from "../"
+import { PRINT, TO_LOG, PRINT_TOOLTIP } from "..";
 
-Blockly.Blocks['logprint'] = {
-    init: function() {
+Blockly.Blocks.logprint = {
+    init() {
       this.appendDummyInput()
           .appendField(PRINT);
       this.appendValueInput("data")
@@ -17,9 +17,9 @@ Blockly.Blocks['logprint'] = {
     }
   };
   
-  Blockly.JavaScript['logprint'] = function(block) {
-    var value_data = Blockly.JavaScript.valueToCode(block, 'data', Blockly.JavaScript.ORDER_ATOMIC);
-    var code = `logInfo(${value_data});`;
+  Blockly.JavaScript.logprint = function(block) {
+    const value_data = Blockly.JavaScript.valueToCode(block, 'data', Blockly.JavaScript.ORDER_ATOMIC);
+    const code = `logInfo(${value_data});`;
     return code;
   };
   

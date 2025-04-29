@@ -1,4 +1,3 @@
-import * as React from "react";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import { BaseComponent, IBaseProps } from "../base";
@@ -8,7 +7,6 @@ import { ChartType } from "../../stores/charts-store";
 import { RiskDiamond, RiskDiamondText } from "../map/map-risk-legend";
 import { ThresholdData, calculateThresholdData, calculateRisk, RiskLevel, RiskLevels } from "./monte-carlo";
 import { Tab, HistogramTabs, TabList, TabPanel } from "../tabs";
-import { string } from "prop-types";
 
 interface PanelProps {
   height: number;
@@ -186,27 +184,27 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
             </PanelStat>
             {showRiskDiamonds &&
               <RiskContainer>
-              <PanelStat marginRight={10}>
-                {"Risk:"}
-                {data && riskLevelType && (!percentComplete || percentComplete === 100)
-                  ? <span style={riskStyle}>{` ${riskLevelType}`}</span>
-                  : " ---"
+                <PanelStat marginRight={10}>
+                  {"Risk:"}
+                  {data && riskLevelType && (!percentComplete || percentComplete === 100)
+                    ? <span style={riskStyle}>{` ${riskLevelType}`}</span>
+                    : " ---"
+                  }
+                </PanelStat>
+                {data && riskLevel &&
+                  <RiskDiamond backgroundColor={riskLevel.iconColor} data-test={"risk-diamond"}>
+                    <RiskDiamondText>
+                      {riskLevel.iconText}
+                    </RiskDiamondText>
+                  </RiskDiamond>
                 }
-              </PanelStat>
-              {data && riskLevel &&
-                <RiskDiamond backgroundColor={riskLevel.iconColor} data-test={"risk-diamond"}>
-                  <RiskDiamondText>
-                    {riskLevel.iconText}
-                  </RiskDiamondText>
-                </RiskDiamond>
-              }
-            </RiskContainer>
+              </RiskContainer>
             }
           </VerticalContainer>
         </HorizontalContainer>
       </TabPanel>
     );
-  }
+  };
 
   private renderHistogram = (chart: ChartType, threshold: number) => {
     const { width, height } = this.props;
@@ -223,6 +221,6 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
         data-test={"histogram-chart-container"}
         />
     );
-  }
+  };
 
 }

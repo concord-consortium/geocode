@@ -1,7 +1,6 @@
-import * as React from "react";
-import * as Leaflet from "leaflet";
-import * as Color from "color";
-import * as d3 from "d3";
+import Leaflet from "leaflet";
+import Color from "color";
+import { contours } from "d3";
 import { inject, observer } from "mobx-react";
 import { BaseComponent } from "../base";
 import gridTephraCalc from "../../tephra2";
@@ -31,7 +30,7 @@ export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
 
     // Not ideal, but geoJson does not update with state changes
     // It will however update if given a new unique key.
-    private keyval: number = 0;
+    private keyval = 0;
 
     private gradient: Color[] = [new Color("rgb(238, 226, 112)"),
                                 new Color("rgb(255, 191, 78)"),
@@ -95,13 +94,14 @@ export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
             }
         }
 
-        const contours = d3.contours()
+        const _contours = contours()
                         .size([latSegments, longSegments])
                         .thresholds([1000, 300, 100, 30, 10, 3, 1])
                         .smooth(false)
+                        // eslint-disable-next-line no-unexpected-multiline
                         (data);
 
-        contours.forEach(multipolygon => {
+        _contours.forEach(multipolygon => {
             multipolygon.coordinates.forEach(polygon => {
                 polygon.forEach(poly => {
                     poly.forEach(coord => {
@@ -114,7 +114,7 @@ export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
 
         return (
             <LayerGroup map={map}>
-                { this.renderGeoJson(contours) }
+                { this.renderGeoJson(_contours) }
             </LayerGroup>
         );
     }

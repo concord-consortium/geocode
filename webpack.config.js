@@ -2,8 +2,8 @@
 
 const webpack = require('webpack');
 const path = require('path');
+const ESLintPlugin = require('eslint-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
@@ -33,20 +33,7 @@ module.exports = (env, argv) => {
       rules: [
         {
           test: /\.tsx?$/,
-          enforce: 'pre',
-          use: [
-            {
-              loader: 'tslint-loader',
-              options: {}
-            }
-          ]
-        },
-        {
-          test: /\.tsx?$/,
-          loader: 'ts-loader',
-          options: {
-            transpileOnly: true // IMPORTANT! use transpileOnly mode to speed-up compilation
-          }
+          loader: 'ts-loader'
         },
         {
           test: /\.css$/,
@@ -109,25 +96,11 @@ module.exports = (env, argv) => {
         },
         {
           test: /\.(txt|vel)$/i,
-          use: [
-            {
-              loader: 'raw-loader',
-              options: {
-                esModule: false,
-              },
-            },
-          ],
+          type: 'asset/source'  // Exports the raw source code of the file
         },
         {
           test: /\.(kmz|xml)$/i,
-          use: [
-            {
-              loader: 'file-loader',
-              options: {
-                esModule: false,
-              },
-            },
-          ],
+          type: 'asset/resource'  // Emits a separate file and exports the URL
         }
       ]
     },
@@ -137,16 +110,16 @@ module.exports = (env, argv) => {
         process: "process/browser"
       },
     },
-    stats: {
-      // suppress "export not found" warnings about re-exported types
-      warningsFilter: /export .* was not found in/
-    },
+    ignoreWarnings: [
+      {
+        // Suppress "export not found" warnings about re-exported types
+        message: /export .* was not found in/,
+      }
+    ],
     plugins: [
-      // since we updated to webpack 5, we need to polyfill node modules
-      // because the current version of pixijs we are using needs 'path'
-      // if we update pixijs to a newer version, we can probably remove this
-      // see: https://github.com/webpack/changelog-v5#automatic-nodejs-polyfills-removed
-      new NodePolyfillPlugin(),
+      new ESLintPlugin({
+        extensions: ['ts', 'tsx', 'js', 'jsx'],
+      }),
       new webpack.ProvidePlugin({
         process: 'process/browser',
       }),

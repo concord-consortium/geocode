@@ -27,17 +27,17 @@ context('Data blocks in code',()=>{
             blocksTab.getTextBlock().contains('Name').click();
         });
         leftPanel.getCodeTab().click();
-        codeTab.getCodePanel().should('contain','Name')
-    })
+        codeTab.getCodePanel().should('contain','Name');
+    });
     it('verify edit text block edits Code panel',()=>{
-        var text='Berkeley'
+        const text='Berkeley';
         leftPanel.getBlocksTab().click();
         blocksTab.getTextBlock().eq(0).click().then(()=>{
-            blocksTab.editText(text)
-        })
+            blocksTab.editText(text);
+        });
         leftPanel.getCodeTab().click();
-        codeTab.getCodePanel().should('contain',text)
-    })
+        codeTab.getCodePanel().should('contain',text);
+    });
     it('verify add number block adds number in Code panel',()=>{
         leftPanel.getBlocksTab().click();
         blocksTab.getTag(DataRegEx).click();
@@ -45,24 +45,24 @@ context('Data blocks in code',()=>{
             blocksTab.getTextBlock().contains('4').click();
         });
         leftPanel.getCodeTab().click();
-        codeTab.getCodePanel().should('contain','4')
-    })
+        codeTab.getCodePanel().should('contain','4');
+    });
     it('verify edit number edits Code Panel',()=>{
-        var num='9'
+        const num='9';
         leftPanel.getBlocksTab().click();
         blocksTab.getTextBlock().eq(1).click().then(()=>{
-            blocksTab.editText(num)
-        })
+            blocksTab.editText(num);
+        });
         leftPanel.getCodeTab().click();
-        codeTab.getCodePanel().should('contain',num)
-    })
+        codeTab.getCodePanel().should('contain',num);
+    });
     it('verify number block disallows text entry',()=>{
-        var text='pool',num=9;
+        const text='pool',num=9;
         leftPanel.getBlocksTab().click();
         blocksTab.getTextBlock().eq(1).click({force:true}).then(()=>{
-            blocksTab.editText(text)
-        })
+            blocksTab.editText(text);
+        });
         leftPanel.getCodeTab().click();
-        codeTab.getCodePanel().should('contain',num)
-    })
-})
+        codeTab.getCodePanel().should('contain',num);
+    });
+});

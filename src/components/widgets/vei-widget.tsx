@@ -1,4 +1,3 @@
-import * as React from "react";
 import { PureComponent } from "react";
 import styled from "styled-components";
 import { Icon } from "../icon";
@@ -95,10 +94,10 @@ export default class VEIWidget extends PureComponent<IProps, IState> {
       case 8: return type === WidgetPanelTypes.LEFT ? <VEI8Orange/> : <VEI8Blue/>;
       default: return type === WidgetPanelTypes.LEFT ? <VEI1Orange/> : <VEI1Blue/>;
     }
-  }
+  };
 
   private getVEIDescription = (vei: number) => {
-    return ((kVEIIndexInfo[vei] && kVEIIndexInfo[vei].description) || "");
-  }
+    return ((kVEIIndexInfo[vei]?.description) || "");
+  };
 
 }

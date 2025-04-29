@@ -1,11 +1,11 @@
-import * as React from "react";
+import React from "react";
 import { CanvasD3ScatterChart } from "./canvas-d3-scatter-chart";
 import { CanvasD3RadialChart } from "./canvas-d3-radial-chart";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import { BaseComponent } from "../base";
 import { Datasets } from "../../stores/data-sets";
-import * as d3 from "d3";
+import { timeParse } from "d3";
 import { SvgD3ScatterChart } from "./svg-d3-scatter-chart";
 
 interface IProps {
@@ -56,8 +56,7 @@ export class ChartPanel extends BaseComponent<IProps, IState> {
       <Background width={this.props.width}>
         {
           this.stores.uiStore.showDemoCharts ?
-          <React.Fragment>
-            <Row>
+          <Row>
               Add:&nbsp;
               <button onClick={this.addDemoChart("all-time-scatter", 0)}>Speed-time (sm)</button>
               <button onClick={this.addDemoChart("all-time-scatter", 1)}>Speed-time (lg)</button>
@@ -67,8 +66,7 @@ export class ChartPanel extends BaseComponent<IProps, IState> {
               <button onClick={this.addDemoChart("radial-arrows", 1)}>Radial (lg)</button>
               <button onClick={this.addDemoChart("radial-dots", 0)}>Radial dots (sm)</button>
               <button onClick={this.addDemoChart("radial-dots", 1)}>Radial dots (lg)</button>
-            </Row>
-          </React.Fragment> :
+          </Row> :
           <Row><Title>Data Charts</Title></Row>
         }
         <Row>
@@ -113,7 +111,7 @@ export class ChartPanel extends BaseComponent<IProps, IState> {
   }
 
   public componentDidUpdate() {
-    if (this.lastScrollEl && this.lastScrollEl.current) {
+    if (this.lastScrollEl?.current) {
       this.lastScrollEl.current.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
     }
   }
@@ -131,7 +129,7 @@ export class ChartPanel extends BaseComponent<IProps, IState> {
       const data: number[][] = [];
 
       if (type === "all-time-scatter") {
-        const dateParser = d3.timeParse("%Y-%m-%d");
+        const dateParser = timeParse("%Y-%m-%d");
         for (let i = 0; i < numPoints; i++) {
           const dateStr = sample[i].year + "-" + sample[i].month + "-" + sample[i].day;
           const date = dateParser(dateStr)!;
@@ -142,7 +140,7 @@ export class ChartPanel extends BaseComponent<IProps, IState> {
         const dateLabelFormat = "%b %Y";
         this.stores.chartsStore.addChart({type: "scatter", data, title, xAxisLabel, yAxisLabel, dateLabelFormat});
       } else if (type === "month-scatter") {
-        const dateParser = d3.timeParse("%m");
+        const dateParser = timeParse("%m");
         for (let i = 0; i < numPoints; i++) {
           const date = dateParser(sample[i].month)!;
           data.push([date, sample[i].speed]);
@@ -160,5 +158,5 @@ export class ChartPanel extends BaseComponent<IProps, IState> {
         this.stores.chartsStore.addChart({type: "radial", data, customExtents, title, chartStyle});
       }
     };
-  }
+  };
 }

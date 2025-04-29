@@ -1,5 +1,5 @@
-import LeftPanel from "../../support/elements/LeftPanel"
-import RightPanel from "../../support/elements/RightPanel"
+import LeftPanel from "../../support/elements/LeftPanel";
+import RightPanel from "../../support/elements/RightPanel";
 
 const leftPanel = new LeftPanel;
 const rightPanel = new RightPanel;
@@ -16,7 +16,7 @@ context("Test app workspace", () => {
       leftPanel.getControlsTab().should('not.exist');
       rightPanel.getConditionsTab().should('be.visible');
       rightPanel.getMonteCarloTab().should('be.visible');
-      rightPanel.getDataTab().should('be.visible')
+      rightPanel.getDataTab().should('be.visible');
     });
   });
-})
+});

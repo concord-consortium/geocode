@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { inject, observer } from "mobx-react";
 import { BaseComponent } from "../base";
 import { IDisposer, onAction } from "mobx-state-tree";
@@ -345,7 +345,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     const distanceLabel = labelScaleKm >= 1 ? `${labelScaleKm}km` : `${labelScaleKm * 1000}m`;
     ctx.fillText(distanceLabel, s1.x, s1.y + 20);
     ctx.stroke();
-  }
+  };
 
   private rotateCanvas(ctx: CanvasRenderingContext2D, angle: number, _originX?: number, _originY?: number) {
     const originX = typeof _originX !== "undefined" ? _originX : canvasWidth / 2;
@@ -597,7 +597,7 @@ export class DeformationModel extends BaseComponent<IProps, {}> {
     }
 
     ctx.stroke();
-  }
+  };
 
   private getEarthquakes(year: number, vSpeed: number): EarthquakesInfo {
     const { deformationModelEarthquakeControl, deformationModelMaxDisplacementBeforeEarthquake,

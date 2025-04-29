@@ -1,7 +1,7 @@
 class DataTab {
     getDataPanel(){
-        return cy.get('[data-test=Data-panel]')
+        return cy.get('[data-test=Data-panel]');
     }
 }
 
-export default DataTab
+export default DataTab;

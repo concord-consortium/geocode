@@ -30,14 +30,14 @@ export interface SimDatumType {
 export type SimOutput = "thickness";
 export type SimulationVariable = "windSpeed" | "windDirection" | "colHeight" | "mass" | "vei";
 
-const MeasurementLabel: {[key in (SimOutput | SimulationVariable)]: string} = {
-  thickness: "Thickness (mm)",
-  windSpeed: "Wind speed (m/s)",
-  windDirection: "Wind direction (degrees)",
-  mass: "Eruption mass (kg)",
-  colHeight: "Column height (km)",
-  vei: "VEI"
-};
+// const MeasurementLabel: {[key in (SimOutput | SimulationVariable)]: string} = {
+//   thickness: "Thickness (mm)",
+//   windSpeed: "Wind speed (m/s)",
+//   windDirection: "Wind direction (degrees)",
+//   mass: "Eruption mass (kg)",
+//   colHeight: "Column height (km)",
+//   vei: "VEI"
+// };
 
 export const PlotData = types
   .model("PlotData", {
@@ -340,7 +340,7 @@ export const TephraSimulationStore = types
         const mass = Math.pow(10, clippedVEI + 7);
         self.stagingMass = mass;
 
-        const colHeight = ((kVEIIndexInfo[vei] && kVEIIndexInfo[vei].columnHeight) || .1 * 1000);
+        const colHeight = ((kVEIIndexInfo[vei]?.columnHeight) || .1 * 1000);
         self.stagingColHeight = colHeight;
 
         if (!self.requireEruption) {

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 
 import { useInitMessage, useAutoSetHeight, IReportItemInitInteractive } from "@concord-consortium/lara-interactive-api";
 import { ReportItemComponent } from "./report-item";
