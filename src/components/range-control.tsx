@@ -1,8 +1,7 @@
 
-import React from "react";
+import React, { CSSProperties } from "react";
 import { Slider, Rail, Handles, Tracks, Ticks } from "react-compound-slider";
 import styled from "styled-components";
-import { CSSProperties } from "react";
 
 // *******************************************************
 // RAIL
@@ -182,6 +181,7 @@ function Tick({ tick, count, format }: any) {
           width: `${100 / count}%`,
           left: `${tick.percent}%`,
         }}
+        // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{__html: format(tick.value)}}
       />
     </div>
@@ -229,7 +229,7 @@ class RangeControl extends React.Component<IProps, IState> {
     const invStep = 1 / (this.props.step || 1);
     const val = Math.round(update[0] * invStep) / invStep;
     this.props.onChange(val);
-  }
+  };
 
   public render() {
     const {

@@ -2,6 +2,7 @@
 
 const webpack = require('webpack');
 const path = require('path');
+const ESLintPlugin = require('eslint-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
@@ -30,16 +31,6 @@ module.exports = (env, argv) => {
     performance: { hints: false },
     module: {
       rules: [
-        {
-          test: /\.tsx?$/,
-          enforce: 'pre',
-          use: [
-            {
-              loader: 'tslint-loader',
-              options: {}
-            }
-          ]
-        },
         {
           test: /\.tsx?$/,
           loader: 'ts-loader'
@@ -126,6 +117,9 @@ module.exports = (env, argv) => {
       }
     ],
     plugins: [
+      new ESLintPlugin({
+        extensions: ['ts', 'tsx', 'js', 'jsx'],
+      }),
       new webpack.ProvidePlugin({
         process: 'process/browser',
       }),

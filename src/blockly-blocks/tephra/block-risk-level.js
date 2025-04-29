@@ -1,7 +1,7 @@
-import * as strings from "../../strings/blockly-blocks/tephra/risk-level"
+import * as strings from "../../strings/blockly-blocks/tephra/risk-level";
 
-Blockly.Blocks['show_risk'] = {
-  init: function() {
+Blockly.Blocks.show_risk = {
+  init() {
     this.appendDummyInput()
         .appendField(strings.SHOW_RISK);
     this.appendDummyInput()
@@ -20,18 +20,18 @@ Blockly.Blocks['show_risk'] = {
     this.setHelpUrl("");
   },
 
-  generateOptions: function() {
+  generateOptions() {
     if (Blockly.sampleCollections && Blockly.sampleCollections.length > 0) {
       return Blockly.sampleCollections;
     } else {
       return [[strings.CREATE_COLLECTION,""]];
     }
   }
-}
-Blockly.JavaScript['show_risk'] = function (block) {
-  var collection = block.getFieldValue(strings.COLLECTIONS)
-  var threshold = block.getFieldValue(strings.THRESHOLD);
+};
+Blockly.JavaScript.show_risk = function (block) {
+  const collection = block.getFieldValue(strings.COLLECTIONS);
+  const threshold = block.getFieldValue(strings.THRESHOLD);
 
-  var code = `showRisk({collection: "${collection}", threshold: ${threshold}});\n`
-  return code
-}
+  const code = `showRisk({collection: "${collection}", threshold: ${threshold}});\n`;
+  return code;
+};

@@ -1,7 +1,7 @@
-import { CREATE_TOWN, AT, X, Y } from "../strings/blockly-blocks/all-other-blocks"
+import { CREATE_TOWN, AT, X, Y } from "../strings/blockly-blocks/all-other-blocks";
 
-Blockly.Blocks['addTown'] = {
-    init: function() {
+Blockly.Blocks.addTown = {
+    init() {
       this.appendValueInput("name")
           .setCheck("String")
           .setAlign(Blockly.ALIGN_RIGHT)
@@ -25,16 +25,16 @@ Blockly.Blocks['addTown'] = {
     }
   };
 
-  Blockly.JavaScript['addTown'] = function(block) {
-    var value_name = Blockly.JavaScript.valueToCode(block, 'name', Blockly.JavaScript.ORDER_ATOMIC);
-    var value_x = Blockly.JavaScript.valueToCode(block, 'x', Blockly.JavaScript.ORDER_ATOMIC);
-    var value_y = Blockly.JavaScript.valueToCode(block, 'y', Blockly.JavaScript.ORDER_ATOMIC);
+  Blockly.JavaScript.addTown = function(block) {
+    let value_name = Blockly.JavaScript.valueToCode(block, 'name', Blockly.JavaScript.ORDER_ATOMIC);
+    let value_x = Blockly.JavaScript.valueToCode(block, 'x', Blockly.JavaScript.ORDER_ATOMIC);
+    let value_y = Blockly.JavaScript.valueToCode(block, 'y', Blockly.JavaScript.ORDER_ATOMIC);
     // TODO: Assemble JavaScript into code variable.
     value_x = value_x || 1;
     value_y = value_y || 1;
-    value_name = value_name || "'untitled'"
-    var code = `
+    value_name = value_name || "'untitled'";
+    const code = `
       addCity({x: ${value_x}, y: ${value_y}, name: ${value_name}});
-    `
+    `;
     return code;
-  }
+  };

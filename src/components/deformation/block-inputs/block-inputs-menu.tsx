@@ -92,7 +92,7 @@ export default class BlockInputsMenu extends BaseComponent<IProps, IState> {
               typeOfButton={"run"}
               onClick={() => this.setActiveRun(run.group, run.deformationModelInfo)}
               activeRun={currentRunNumber}
-              disabled={running ? true : false}
+              disabled={!!running}
             >
               <ButtonText
                 className="buttonText"

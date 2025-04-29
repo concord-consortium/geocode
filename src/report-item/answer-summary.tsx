@@ -2,8 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 import { IReportItemInitInteractive } from "@concord-consortium/lara-interactive-api";
-import { InitMessageInfoComponent } from "./init-message-info";
-import { SerializedState, serializeState } from "../stores/stores";
+import { SerializedState } from "../stores/stores";
 import { TephraSimulationModelType } from "../stores/tephra-simulation-store";
 import { SeismicSimulationModelType } from "../stores/seismic-simulation-store";
 
@@ -24,8 +23,8 @@ const Container = styled.div<{vertical: boolean}>`
 const AuthoredInfo = (props: {authoredState: SerializedState|null}) => {
   const { authoredState } = props;
   if (authoredState !== null) {
-    const {version, state} = authoredState;
-    const { unit} = state;
+    const {state} = authoredState;
+    const {unit} = state;
 
     const scenario = unit.name === "Tephra"
       ? (state.tephraSimulation as TephraSimulationModelType).scenario
@@ -49,8 +48,7 @@ export const AnswerSummaryComponent: React.FC<Props> = (props) => {
   const viewName = mode === "singleAnswer" ? "single answer" : "multiple answer";
   const numStudents = Object.keys(initMessage.users).length;
   return (
-    <>
-      <Container vertical={orientation === "vertical"}>
+    <Container vertical={orientation === "vertical"}>
         <Title>GeoCode {viewName} Blockly Report</Title>
         <AuthoredInfo authoredState={authoredState} />
         { mode === "multipleAnswer" &&
@@ -60,7 +58,6 @@ export const AnswerSummaryComponent: React.FC<Props> = (props) => {
           Debug init message:
           <InitMessageInfoComponent initMessage={initMessage} />
         */}
-      </Container>
-    </>
+    </Container>
   );
 };

@@ -1,7 +1,6 @@
 import { PixiComponent, Text, Container } from "@pixi/react";
-import { TextStyle } from "pixi.js";
+import PIXI, { TextStyle } from "pixi.js";
 import { ICanvasShape } from "../../interfaces";
-import PIXI from "pixi.js";
 import Color from "color";
 import L from "leaflet";
 import gridTephraCalc from "../../tephra2";

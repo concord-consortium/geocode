@@ -1,12 +1,10 @@
-import { black } from "color-name";
-
 function isBlock(candidate: Block | Element): candidate is Block {
   return (candidate as Block).comment !== undefined;
 }
 
-function isDocument(candidate: Document | any): candidate is Document {
-  return (candidate as Document).querySelectorAll !== undefined;
-}
+// function isDocument(candidate: Document | any): candidate is Document {
+//   return (candidate as Document).querySelectorAll !== undefined;
+// }
 
 export interface IBlockDiff {
   missingBlocks: BlockList;

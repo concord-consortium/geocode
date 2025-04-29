@@ -74,7 +74,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
         tephraSimulation.setWindDirection(windSample.direction);
       } else {
         blocklyController.throwError("You must add a dataset for the wind sample.");
-        return;
+
       }
     });
 
@@ -371,7 +371,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
         return blocklyController.throwError(`Plate speed must be between 0 and ${seismicSimulation.deformMaxSpeed} mm/year`);
       }
       // handle string input, user can enter north or south as valid direction input
-      let direction: number = 0;
+      let direction = 0;
       if (typeof params.direction === "string") {
         if (params.direction.toLowerCase() === "north") {
           direction = 0;
@@ -428,6 +428,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     /** ==== Utility methods ==== */
 
     addFunc("log", (params) => {
+      // eslint-disable-next-line no-console
       console.log(params);
     });
 

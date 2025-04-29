@@ -1,7 +1,7 @@
 import { SET_VEI, VEI_EXPLAINED } from "../../strings/blockly-blocks/tephra/controls-panel";
 
-Blockly.Blocks['setVEI'] = {
-    init: function() {
+Blockly.Blocks.setVEI = {
+    init() {
       this.appendValueInput("vei")
           .setCheck("Number")
           .setAlign(Blockly.ALIGN_RIGHT)
@@ -16,12 +16,12 @@ Blockly.Blocks['setVEI'] = {
     }
   };
 
-Blockly.JavaScript['setFoo'] = function(block) {
-  var foo = Blockly.JavaScript.valueToCode(block, 'foo', Blockly.JavaScript.ORDER_ATOMIC);
+Blockly.JavaScript.setFoo = function(block) {
+  const foo = Blockly.JavaScript.valueToCode(block, 'foo', Blockly.JavaScript.ORDER_ATOMIC);
 
   if (foo === "") {
     window.blocklyErrorMessage = "You are missing an input for 'Foo'";
   }
 
   // [...]
-}
+};

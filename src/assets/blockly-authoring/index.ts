@@ -27,8 +27,8 @@ interface IBlocklyAuthoring {
 
 export const BlocklyAuthoring: IBlocklyAuthoring = {
   toolbox: {
-    "Everything": Everything,
-    "Wind": Wind,
+    Everything,
+    Wind,
     "Wind and VEI": WindAndVEI,
     "Wind and Height": WindAndHeight,
     "Wind + 2": Wind2,
@@ -41,7 +41,7 @@ export const BlocklyAuthoring: IBlocklyAuthoring = {
     "Seismic: GPS & Earthquakes": SeismicGPSEarthquakes
   },
   code: {
-    "Basic": Basic,
+    Basic,
     "Nested loops": NestedLoops,
     "Monte Carlo": MonteCarloCode,
     "Monte Carlo (3 locs)": MonteCarlo3Locs,

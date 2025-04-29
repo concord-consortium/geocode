@@ -262,7 +262,7 @@ export class CanvasD3ScatterChart extends React.Component<IProps> {
 
     const color = (i: number) => getFadeColor(i);
 
-    // @ts-ignore
+    // @ts-expect-error Type 'number' is not assignable to type 'number[] | Date[]
     data.forEach((d: number[] | Date[], i) => {
       ctx.beginPath();
       if (!fadeIn) {

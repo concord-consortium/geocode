@@ -1,6 +1,7 @@
 import { Container, PixiComponent } from "@pixi/react";
 import PIXI from "pixi.js";
 import { Ipoint } from "../../interfaces";
+import { drawStar } from "./pixi-utilities";
 
 interface IWindWidgetProps {
   windDirection: number;
@@ -30,8 +31,7 @@ const CircledArrow = PixiComponent<IWindWidgetProps, PIXI.Graphics>("WindWidget"
     g.lineTo(0, lineEnd);
     g.lineStyle(0, 0);
     g.beginFill(0, 1);
-    // @ts-ignore
-    g.drawStar(0, headCenter, 3, arrowheadRadius, 0, 0);
+    drawStar(g, 0, headCenter, 3, arrowheadRadius, 0, 0);
     g.endFill();
 
     g.lineStyle(1, 0);

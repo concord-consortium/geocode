@@ -154,7 +154,7 @@ const getDensity = memo((phi: number) => {
 /** returns diameter in m */
 const getDiameter = (phi: number) => 2 ** (-1 * phi) * 10 ** -3;
 // returns phi given a diameter in mm
-const getPhi = (diameterMM: number) => (Math.log(1 / (125 * (diameterMM / 1000))) / Math.log(2)) - 3;  // solved for phi
+// const getPhi = (diameterMM: number) => (Math.log(1 / (125 * (diameterMM / 1000))) / Math.log(2)) - 3;  // solved for phi
 
 /**
  * @param phi Phi class (particle size)

@@ -62,28 +62,29 @@ export class CrossSectionComponent extends BaseComponent<IProps, IState>{
 
     return (
       <CanvDiv ref={this.ref}>
-        {hasErupted && <ContainerDiv>
-          {isSelectingCrossSection &&
-          <ContainerDiv data-test="tephra-thickness-cross-section-container">
-            <Stage
-              width={width}
-              height={height}
-              options={{backgroundColor: Color("hsl(0, 10%, 95%)").rgbNumber()}} >
-              <PixiTephraCrossSection
-                canvasMetrics={this.metrics}
-                volcanoLat={volcanoLat}
-                volcanoLng={volcanoLng}
-                crossPoint1Lat={crossPoint1Lat}
-                crossPoint1Lng={crossPoint1Lng}
-                crossPoint2Lat={crossPoint2Lat}
-                crossPoint2Lng={crossPoint2Lng}
-                windSpeed={windSpeed}
-                windDirection={windDirection}
-                colHeight={colHeight}
-                mass={mass} />
-            </Stage>
+        {hasErupted &&
+          <ContainerDiv>
+            {isSelectingCrossSection &&
+            <ContainerDiv data-test="tephra-thickness-cross-section-container">
+              <Stage
+                width={width}
+                height={height}
+                options={{backgroundColor: Color("hsl(0, 10%, 95%)").rgbNumber()}} >
+                <PixiTephraCrossSection
+                  canvasMetrics={this.metrics}
+                  volcanoLat={volcanoLat}
+                  volcanoLng={volcanoLng}
+                  crossPoint1Lat={crossPoint1Lat}
+                  crossPoint1Lng={crossPoint1Lng}
+                  crossPoint2Lat={crossPoint2Lat}
+                  crossPoint2Lng={crossPoint2Lng}
+                  windSpeed={windSpeed}
+                  windDirection={windDirection}
+                  colHeight={colHeight}
+                  mass={mass} />
+              </Stage>
+            </ContainerDiv>}
           </ContainerDiv>}
-        </ContainerDiv>}
       </CanvDiv>
     );
   }

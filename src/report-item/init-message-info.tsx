@@ -1,5 +1,4 @@
-import React from "react";
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { IReportItemInitInteractive } from "@concord-consortium/lara-interactive-api";
 
 interface Props {
@@ -13,7 +12,7 @@ export const InitMessageInfoComponent: React.FC<Props> = (props) => {
   const numAnswersAtInit = userIds.reduce<number>((acc, studentId) => {
     return users[studentId].hasAnswer ? acc + 1 : acc;
   }, 0);
-  const [userAnswers, setUserAnswers] = useState<Record<string, any>>({});
+  const [userAnswers] = useState<Record<string, any>>({});
   const numCurrentAnswers = Object.keys(userAnswers).length;
 
   return (
@@ -32,6 +31,6 @@ export const InitMessageInfoComponent: React.FC<Props> = (props) => {
 
       <dt>Number of Answers Currently</dt>
       <dd>{numCurrentAnswers}</dd>
-  </div>
+    </div>
   );
 };

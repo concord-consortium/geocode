@@ -1,141 +1,141 @@
-import * as strings from '../../strings/blockly-blocks/seismic/seismic-gps-stations'
+import * as strings from '../../strings/blockly-blocks/seismic/seismic-gps-stations';
 
-Blockly.Blocks['seismic_all_gps_stations'] = {
-  init: function () {
+Blockly.Blocks.seismic_all_gps_stations = {
+  init () {
     this.appendDummyInput()
-      .appendField(strings.ALL_STATIONS)
-    this.setOutput(true, 'GPS_Station')
-    this.setColour("#EB0000")
-    this.setTooltip('')
-    this.setHelpUrl('')
+      .appendField(strings.ALL_STATIONS);
+    this.setOutput(true, 'GPS_Station');
+    this.setColour("#EB0000");
+    this.setTooltip('');
+    this.setHelpUrl('');
   }
-}
-Blockly.JavaScript['seismic_all_gps_stations'] = function (block) {
+};
+Blockly.JavaScript.seismic_all_gps_stations = function (block) {
   // TODO: Assemble JavaScript into code variable.
-  var code = 'getAllGPSStations()'
+  const code = 'getAllGPSStations()';
   // TODO: Change ORDER_NONE to the correct strength.
-  return [code, Blockly.JavaScript.ORDER_NONE]
-}
+  return [code, Blockly.JavaScript.ORDER_NONE];
+};
 
-Blockly.Blocks['seismic_show_gps_stations'] = {
-  init: function () {
+Blockly.Blocks.seismic_show_gps_stations = {
+  init () {
     this.appendValueInput('stations')
       .setCheck(['GPS_Station', 'String'])
-      .appendField(strings.SHOW_GPS_STATIONS)
+      .appendField(strings.SHOW_GPS_STATIONS);
     this.appendDummyInput()
       .setAlign(Blockly.ALIGN_RIGHT)
       .appendField(strings.SHOW_VELOCITIES)
-      .appendField(new Blockly.FieldCheckbox(true), 'velocities')
-    this.setInputsInline(false)
-    this.setPreviousStatement(true, null)
-    this.setNextStatement(true, null)
-    this.setColour("#EB0000")
-    this.setTooltip('')
-    this.setHelpUrl('')
+      .appendField(new Blockly.FieldCheckbox(true), 'velocities');
+    this.setInputsInline(false);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour("#EB0000");
+    this.setTooltip('');
+    this.setHelpUrl('');
   }
-}
-Blockly.JavaScript['seismic_show_gps_stations'] = function (block) {
-  var value_stations = Blockly.JavaScript.valueToCode(block, 'stations', Blockly.JavaScript.ORDER_ATOMIC)
-  var value_velocities = block.getFieldValue('velocities') === "TRUE";
+};
+Blockly.JavaScript.seismic_show_gps_stations = function (block) {
+  const value_stations = Blockly.JavaScript.valueToCode(block, 'stations', Blockly.JavaScript.ORDER_ATOMIC);
+  const value_velocities = block.getFieldValue('velocities') === "TRUE";
 
-  var code = `showGPSStations(${value_stations});\nshowGPSStationVelocities(${value_velocities});\n`
-  return code
-}
+  const code = `showGPSStations(${value_stations});\nshowGPSStationVelocities(${value_velocities});\n`;
+  return code;
+};
 
-Blockly.Blocks['seismic_sample_data'] = {
-  init: function () {
+Blockly.Blocks.seismic_sample_data = {
+  init () {
     this.appendDummyInput()
       .appendField(strings.SAMPLE)
       .appendField(new Blockly.FieldTextInput('10'), 'sample_size')
-      .appendField(strings.ITEMS)
+      .appendField(strings.ITEMS);
     this.appendValueInput('count')
       .setCheck('GPS_Station')
       .setAlign(Blockly.ALIGN_RIGHT)
-      .appendField(strings.FROM)
-    this.setOutput(true, 'GPS_Station')
-    this.setColour("#EB0000")
-    this.setTooltip('')
-    this.setHelpUrl('')
+      .appendField(strings.FROM);
+    this.setOutput(true, 'GPS_Station');
+    this.setColour("#EB0000");
+    this.setTooltip('');
+    this.setHelpUrl('');
   }
-}
-Blockly.JavaScript['seismic_sample_data'] = function (block) {
-  var sampleSize = block.getFieldValue('sample_size');
-  var dataset = Blockly.JavaScript.valueToCode(block, 'count', Blockly.JavaScript.ORDER_ATOMIC) || "null";
+};
+Blockly.JavaScript.seismic_sample_data = function (block) {
+  const sampleSize = block.getFieldValue('sample_size');
+  const dataset = Blockly.JavaScript.valueToCode(block, 'count', Blockly.JavaScript.ORDER_ATOMIC) || "null";
   // TODO: Assemble JavaScript into code variable.
-  var code = `sampleDataset({dataset: ${dataset}, sampleSize: ${sampleSize}})`
+  const code = `sampleDataset({dataset: ${dataset}, sampleSize: ${sampleSize}})`;
   // TODO: Change ORDER_NONE to the correct strength.
-  return [code, Blockly.JavaScript.ORDER_NONE]
+  return [code, Blockly.JavaScript.ORDER_NONE];
 };
 
-Blockly.Blocks['seismic_filter_data'] = {
-  init: function () {
+Blockly.Blocks.seismic_filter_data = {
+  init () {
     this.appendDummyInput()
-      .appendField(strings.FILTER)
+      .appendField(strings.FILTER);
     this.appendValueInput('source')
       .setCheck('GPS_Station')
       .setAlign(Blockly.ALIGN_RIGHT)
-      .appendField(strings.SELECT_FROM)
+      .appendField(strings.SELECT_FROM);
     this.appendValueInput('lat_1')
       .setCheck(['Number'])
       .setAlign(Blockly.ALIGN_RIGHT)
-      .appendField(strings.CORNER_1_LAT)
+      .appendField(strings.CORNER_1_LAT);
     this.appendValueInput('lng_1')
       .setCheck(['Number'])
       .setAlign(Blockly.ALIGN_RIGHT)
-      .appendField(strings.CORNER_1_LONG)
+      .appendField(strings.CORNER_1_LONG);
     this.appendValueInput('lat_2')
       .setCheck(['Number'])
       .setAlign(Blockly.ALIGN_RIGHT)
-      .appendField(strings.CORNER_2_LAT)
+      .appendField(strings.CORNER_2_LAT);
     this.appendValueInput('lng_2')
       .setCheck(['Number'])
       .setAlign(Blockly.ALIGN_RIGHT)
-      .appendField(strings.CORNER_2_LONG)
+      .appendField(strings.CORNER_2_LONG);
     this.appendValueInput('min_speed')
       .setCheck(['Number'])
       .setAlign(Blockly.ALIGN_RIGHT)
-      .appendField(strings.MIN_SPEED)
+      .appendField(strings.MIN_SPEED);
     this.appendValueInput('max_speed')
       .setCheck(['Number'])
       .setAlign(Blockly.ALIGN_RIGHT)
-      .appendField(strings.MAX_SPEED)
+      .appendField(strings.MAX_SPEED);
     this.appendValueInput('min_dir')
       .setCheck(['Number'])
       .setAlign(Blockly.ALIGN_RIGHT)
-      .appendField(strings.MIN_DIRECTION)
+      .appendField(strings.MIN_DIRECTION);
     this.appendValueInput('max_dir')
       .setCheck(['Number'])
       .setAlign(Blockly.ALIGN_RIGHT)
-      .appendField(strings.MAX_DIRECTION)
+      .appendField(strings.MAX_DIRECTION);
     this.appendDummyInput()
       .setAlign(Blockly.ALIGN_RIGHT)
       .appendField(strings.STATIONS_HISTORICAL)
-      .appendField(new Blockly.FieldCheckbox(false), 'position_history')
-    this.setInputsInline(false)
-    this.setOutput(true, 'GPS_Station')
-    this.setColour("#EB0000")
-    this.setTooltip(strings.FILTER_DATA)
-    this.setHelpUrl('')
+      .appendField(new Blockly.FieldCheckbox(false), 'position_history');
+    this.setInputsInline(false);
+    this.setOutput(true, 'GPS_Station');
+    this.setColour("#EB0000");
+    this.setTooltip(strings.FILTER_DATA);
+    this.setHelpUrl('');
   }
-}
-Blockly.JavaScript['seismic_filter_data'] = function (block) {
+};
+Blockly.JavaScript.seismic_filter_data = function (block) {
 
   function num(n) {
     // Blockly adds parentheses around negatives, so we have to strip them first
     return parseFloat(n.replace(/[\(\)]/g, ""));
   }
-  var dataset = Blockly.JavaScript.valueToCode(block, 'source', Blockly.JavaScript.ORDER_ATOMIC) || "null";
-  var value_lat_1 = num(Blockly.JavaScript.valueToCode(block, 'lat_1', Blockly.JavaScript.ORDER_ATOMIC))
-  var value_lng_1 = num(Blockly.JavaScript.valueToCode(block, 'lng_1', Blockly.JavaScript.ORDER_ATOMIC))
-  var value_lat_2 = num(Blockly.JavaScript.valueToCode(block, 'lat_2', Blockly.JavaScript.ORDER_ATOMIC))
-  var value_lng_2 = num(Blockly.JavaScript.valueToCode(block, 'lng_2', Blockly.JavaScript.ORDER_ATOMIC))
-  var value_min_speed = num(Blockly.JavaScript.valueToCode(block, 'min_speed', Blockly.JavaScript.ORDER_ATOMIC))
-  var value_max_speed = num(Blockly.JavaScript.valueToCode(block, 'max_speed', Blockly.JavaScript.ORDER_ATOMIC))
-  var value_min_dir = num(Blockly.JavaScript.valueToCode(block, 'min_dir', Blockly.JavaScript.ORDER_ATOMIC))
-  var value_max_dir = num(Blockly.JavaScript.valueToCode(block, 'max_dir', Blockly.JavaScript.ORDER_ATOMIC))
-  var value_position_history = block.getFieldValue('position_history') === "TRUE";
+  const dataset = Blockly.JavaScript.valueToCode(block, 'source', Blockly.JavaScript.ORDER_ATOMIC) || "null";
+  const value_lat_1 = num(Blockly.JavaScript.valueToCode(block, 'lat_1', Blockly.JavaScript.ORDER_ATOMIC));
+  const value_lng_1 = num(Blockly.JavaScript.valueToCode(block, 'lng_1', Blockly.JavaScript.ORDER_ATOMIC));
+  const value_lat_2 = num(Blockly.JavaScript.valueToCode(block, 'lat_2', Blockly.JavaScript.ORDER_ATOMIC));
+  const value_lng_2 = num(Blockly.JavaScript.valueToCode(block, 'lng_2', Blockly.JavaScript.ORDER_ATOMIC));
+  const value_min_speed = num(Blockly.JavaScript.valueToCode(block, 'min_speed', Blockly.JavaScript.ORDER_ATOMIC));
+  const value_max_speed = num(Blockly.JavaScript.valueToCode(block, 'max_speed', Blockly.JavaScript.ORDER_ATOMIC));
+  const value_min_dir = num(Blockly.JavaScript.valueToCode(block, 'min_dir', Blockly.JavaScript.ORDER_ATOMIC));
+  const value_max_dir = num(Blockly.JavaScript.valueToCode(block, 'max_dir', Blockly.JavaScript.ORDER_ATOMIC));
+  const value_position_history = block.getFieldValue('position_history') === "TRUE";
 
-  var filter = {
+  const filter = {
     latitude: {
       min: Math.min(value_lat_1, value_lat_2) || "DEFAULT",
       max: Math.max(value_lat_1, value_lat_2) || "DEFAULT"
@@ -165,9 +165,9 @@ Blockly.JavaScript['seismic_filter_data'] = function (block) {
   }
 
   let filterObj = JSON.stringify(filter);
-  filterObj = filterObj.replace(/"([^"]+)":/g, '$1:')
+  filterObj = filterObj.replace(/"([^"]+)":/g, '$1:');
 
-  var code = `filter({dataset: ${dataset}, filter: ${filterObj}, useDirectionTo: ${true}})`
+  const code = `filter({dataset: ${dataset}, filter: ${filterObj}, useDirectionTo: ${true}})`;
   // TODO: Change ORDER_NONE to the correct strength.
-  return [code, Blockly.JavaScript.ORDER_NONE]
-}
+  return [code, Blockly.JavaScript.ORDER_NONE];
+};

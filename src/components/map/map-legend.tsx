@@ -98,6 +98,6 @@ export class LegendComponent extends BaseComponent<IProps, IState> {
     this.setState(prevState => ({
       toggledToSecondary: !prevState.toggledToSecondary
     }));
-  }
+  };
 
 }

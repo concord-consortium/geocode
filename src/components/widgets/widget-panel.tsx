@@ -56,8 +56,9 @@ export default class WidgetPanel extends BaseComponent<IProps, IState> {
     const { vei, mass, colHeight, windDirection, windSpeed } = this.stores.tephraSimulation;
     return (
       <WidgetBar>
-        { (showWindSpeed || showWindDirection) && <WidgetContainer data-test="wind-info-widget">
-          <WidgetTitle>Wind Speed/Dir.</WidgetTitle>
+        { (showWindSpeed || showWindDirection) &&
+          <WidgetContainer data-test="wind-info-widget">
+            <WidgetTitle>Wind Speed/Dir.</WidgetTitle>
             <SpeedDirectionWidget
               type={WidgetPanelTypes.RIGHT}
               showWindDirection={true}
@@ -65,30 +66,33 @@ export default class WidgetPanel extends BaseComponent<IProps, IState> {
               windDirection={windDirection}
               windSpeed={windSpeed}
             />
-        </WidgetContainer> }
-        { showVEI && <WidgetContainer data-test="vei-widget">
-          <WidgetTitle>VEI</WidgetTitle>
-          <VEIWidget
-            type={WidgetPanelTypes.RIGHT}
-            vei={vei}
-            mass={mass}
-            columnHeight={colHeight}
-          />
-        </WidgetContainer> }
-        { showEjectedVolume && <WidgetContainer data-test="ejected-volume-widget">
-          <WidgetTitle>Ejected Volume</WidgetTitle>
-          <EjectedVolumeWidget
-            type={WidgetPanelTypes.RIGHT}
-            volumeInKilometersCubed={mass / Math.pow(10, 12)}
-          />
-        </WidgetContainer> }
-        { showColumnHeight && <WidgetContainer data-test="column-height-widget">
-          <WidgetTitle>Column Height</WidgetTitle>
-            <ColumnHeightWidget
+          </WidgetContainer> }
+        { showVEI &&
+          <WidgetContainer data-test="vei-widget">
+            <WidgetTitle>VEI</WidgetTitle>
+            <VEIWidget
               type={WidgetPanelTypes.RIGHT}
-              columnHeightInKilometers={colHeight / 1000}
+              vei={vei}
+              mass={mass}
+              columnHeight={colHeight}
             />
-        </WidgetContainer> }
+          </WidgetContainer> }
+        { showEjectedVolume &&
+          <WidgetContainer data-test="ejected-volume-widget">
+            <WidgetTitle>Ejected Volume</WidgetTitle>
+            <EjectedVolumeWidget
+              type={WidgetPanelTypes.RIGHT}
+              volumeInKilometersCubed={mass / Math.pow(10, 12)}
+            />
+          </WidgetContainer> }
+        { showColumnHeight &&
+          <WidgetContainer data-test="column-height-widget">
+            <WidgetTitle>Column Height</WidgetTitle>
+              <ColumnHeightWidget
+                type={WidgetPanelTypes.RIGHT}
+                columnHeightInKilometers={colHeight / 1000}
+              />
+          </WidgetContainer> }
       </WidgetBar>
     );
   }

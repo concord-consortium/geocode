@@ -184,27 +184,27 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
             </PanelStat>
             {showRiskDiamonds &&
               <RiskContainer>
-              <PanelStat marginRight={10}>
-                {"Risk:"}
-                {data && riskLevelType && (!percentComplete || percentComplete === 100)
-                  ? <span style={riskStyle}>{` ${riskLevelType}`}</span>
-                  : " ---"
+                <PanelStat marginRight={10}>
+                  {"Risk:"}
+                  {data && riskLevelType && (!percentComplete || percentComplete === 100)
+                    ? <span style={riskStyle}>{` ${riskLevelType}`}</span>
+                    : " ---"
+                  }
+                </PanelStat>
+                {data && riskLevel &&
+                  <RiskDiamond backgroundColor={riskLevel.iconColor} data-test={"risk-diamond"}>
+                    <RiskDiamondText>
+                      {riskLevel.iconText}
+                    </RiskDiamondText>
+                  </RiskDiamond>
                 }
-              </PanelStat>
-              {data && riskLevel &&
-                <RiskDiamond backgroundColor={riskLevel.iconColor} data-test={"risk-diamond"}>
-                  <RiskDiamondText>
-                    {riskLevel.iconText}
-                  </RiskDiamondText>
-                </RiskDiamond>
-              }
-            </RiskContainer>
+              </RiskContainer>
             }
           </VerticalContainer>
         </HorizontalContainer>
       </TabPanel>
     );
-  }
+  };
 
   private renderHistogram = (chart: ChartType, threshold: number) => {
     const { width, height } = this.props;
@@ -221,6 +221,6 @@ export class HistogramPanel extends BaseComponent<IProps, IState>{
         data-test={"histogram-chart-container"}
         />
     );
-  }
+  };
 
 }

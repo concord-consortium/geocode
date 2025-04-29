@@ -1,6 +1,6 @@
 import ModelOptions from "../../support/elements/ModelOptionPanel";
-import LeftPanel from "../../support/elements/LeftPanel"
-import CodeTab from "../../support/elements/CodeTab"
+import LeftPanel from "../../support/elements/LeftPanel";
+import CodeTab from "../../support/elements/CodeTab";
 
 const modelOptions = new ModelOptions;
 const leftPanel = new LeftPanel;
@@ -19,6 +19,6 @@ context("Code panel", () => {
     describe("Code panel ui", () => {
       it('verify Code tab shows correct elements',()=>{
         codeTab.getCodePanel().should('be.visible');
-      })
+      });
     });
   });

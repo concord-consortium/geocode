@@ -30,7 +30,7 @@ export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
 
     // Not ideal, but geoJson does not update with state changes
     // It will however update if given a new unique key.
-    private keyval: number = 0;
+    private keyval = 0;
 
     private gradient: Color[] = [new Color("rgb(238, 226, 112)"),
                                 new Color("rgb(255, 191, 78)"),
@@ -98,6 +98,7 @@ export class MapTephraThicknessLayer extends BaseComponent<IProps, IState> {
                         .size([latSegments, longSegments])
                         .thresholds([1000, 300, 100, 30, 10, 3, 1])
                         .smooth(false)
+                        // eslint-disable-next-line no-unexpected-multiline
                         (data);
 
         _contours.forEach(multipolygon => {

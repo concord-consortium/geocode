@@ -5,7 +5,7 @@
 // mix-and-match as desired.
 
 Blockly.Blocks['value-logic-compare'] = {
-  init: function() {
+  init() {
     this.appendValueInput("x")
         .setCheck("Number")
         .setAlign(Blockly.ALIGN_RIGHT);
@@ -34,18 +34,18 @@ Blockly.JavaScript['value-logic-compare'] = function(block) {
   let y;
   try {
     x = Blockly.JavaScript.statementToCode(block, 'x');
-  } catch (e) {
+  } catch {
     x = Blockly.JavaScript.valueToCode(block, 'x', Blockly.JavaScript.ORDER_ATOMIC) || null;
   }
   try {
     y = Blockly.JavaScript.statementToCode(block, 'y');
-  } catch (e) {
+  } catch {
     y = Blockly.JavaScript.valueToCode(block, 'y', Blockly.JavaScript.ORDER_ATOMIC) || null;
   }
 
   if (x === undefined || x === null || x === "") x = "null";
   if (y === undefined || y === null || y === "") y= "null";
-  var operation = block.getFieldValue('OP');
-  var code = `${operation}({left: ${x}, right: ${y}})`;
+  const operation = block.getFieldValue('OP');
+  const code = `${operation}({left: ${x}, right: ${y}})`;
   return [code, Blockly.JavaScript.ORDER_NONE];
 };

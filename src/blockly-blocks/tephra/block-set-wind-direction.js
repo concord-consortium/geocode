@@ -1,7 +1,7 @@
 import { SET_WIND_DIRECTION, DEGREES, WIND_TOOLTIP } from "../../strings/blockly-blocks/tephra/controls-panel";
 
-Blockly.Blocks['setWindDirection'] = {
-    init: function() {
+Blockly.Blocks.setWindDirection = {
+    init() {
       this.appendValueInput("windDirection")
           .setCheck("Number")
           .setAlign(Blockly.ALIGN_RIGHT)
@@ -17,13 +17,13 @@ Blockly.Blocks['setWindDirection'] = {
     }
   };
   
-  Blockly.JavaScript['setWindDirection'] = function(block) {
-    var value_winddirection = Blockly.JavaScript.valueToCode(block, 'windDirection', Blockly.JavaScript.ORDER_ATOMIC);
+  Blockly.JavaScript.setWindDirection = function(block) {
+    const value_winddirection = Blockly.JavaScript.valueToCode(block, 'windDirection', Blockly.JavaScript.ORDER_ATOMIC);
     // TODO: Assemble JavaScript into code variable.
-    var code = `
+    const code = `
       setWindDirection(${value_winddirection});
   
     `;
     return code;
-  }
+  };
   

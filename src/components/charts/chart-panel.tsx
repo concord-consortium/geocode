@@ -56,8 +56,7 @@ export class ChartPanel extends BaseComponent<IProps, IState> {
       <Background width={this.props.width}>
         {
           this.stores.uiStore.showDemoCharts ?
-          <React.Fragment>
-            <Row>
+          <Row>
               Add:&nbsp;
               <button onClick={this.addDemoChart("all-time-scatter", 0)}>Speed-time (sm)</button>
               <button onClick={this.addDemoChart("all-time-scatter", 1)}>Speed-time (lg)</button>
@@ -67,8 +66,7 @@ export class ChartPanel extends BaseComponent<IProps, IState> {
               <button onClick={this.addDemoChart("radial-arrows", 1)}>Radial (lg)</button>
               <button onClick={this.addDemoChart("radial-dots", 0)}>Radial dots (sm)</button>
               <button onClick={this.addDemoChart("radial-dots", 1)}>Radial dots (lg)</button>
-            </Row>
-          </React.Fragment> :
+          </Row> :
           <Row><Title>Data Charts</Title></Row>
         }
         <Row>
@@ -113,7 +111,7 @@ export class ChartPanel extends BaseComponent<IProps, IState> {
   }
 
   public componentDidUpdate() {
-    if (this.lastScrollEl && this.lastScrollEl.current) {
+    if (this.lastScrollEl?.current) {
       this.lastScrollEl.current.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
     }
   }
@@ -160,5 +158,5 @@ export class ChartPanel extends BaseComponent<IProps, IState> {
         this.stores.chartsStore.addChart({type: "radial", data, customExtents, title, chartStyle});
       }
     };
-  }
+  };
 }

@@ -10,7 +10,7 @@ export const ChartStyle = types.enumeration("type", ["dot", "arrow"]);
 export type ChartStyleType = typeof ChartStyle.Type;
 
 export type ChartData = Array<Array<number|Date>> | number[];
-type Column = number|Date;
+// type Column = number|Date;
 
 const Chart = types.model("Chart", {
   type: ChartType,

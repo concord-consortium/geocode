@@ -5,7 +5,7 @@ import { Icon } from "../icon";
 import CloseIcon from "../../assets/map-icons/close.svg";
 import ArrowIcon from "../../assets/map-icons/arrow.svg";
 import DirectionIcon from "../../assets/map-icons/compass.svg";
-import RangeControl from "../../components/range-control";
+import RangeControl from "../range-control";
 
 const DirectionContainer = styled.div`
   display: flex;
@@ -192,5 +192,5 @@ export class MapDirectionTool extends BaseComponent<IProps, IState> {
 
   private handleDirectionChange = (direction: number) => {
     this.setState({ direction });
-  }
+  };
 }

@@ -83,23 +83,23 @@ const StepButton = (props: IProps) => {
   );
 };
 
-const StopButton = (props: IProps) => {
-  const { stop } = props;
-  return (
-    <IconButton
-      onClick={stop}
-      disabled={false}
-      children={<PauseIcon />}
-      label={"Stop"}
-      hoverColor={"#BBD9FF"}
-      activeColor={"#DDEDFF"}
-      fill={"#4AA9FF"}
-      width={26}
-      height={26}
-      dataTest={"Stop-button"}
-    />
-  );
-};
+// const StopButton = (props: IProps) => {
+//   const { stop } = props;
+//   return (
+//     <IconButton
+//       onClick={stop}
+//       disabled={false}
+//       children={<PauseIcon />}
+//       label={"Stop"}
+//       hoverColor={"#BBD9FF"}
+//       activeColor={"#DDEDFF"}
+//       fill={"#4AA9FF"}
+//       width={26}
+//       height={26}
+//       dataTest={"Stop-button"}
+//     />
+//   );
+// };
 
 const PauseButton = (props: IProps) => {
   const { pause } = props;

@@ -19,11 +19,11 @@ export class BlocklyController {
   private stores: IStore;
   private interpreterController?: IInterpreterController;
   private workspace: Workspace;
-  private steppingThroughBlock: boolean = false;
+  private steppingThroughBlock = false;
 
   public constructor(stores: IStore) {
     this.stores = stores;
-    makeObservable(this)
+    makeObservable(this);
   }
 
   public setCode = (code: string, workspace: Workspace) => {
@@ -40,7 +40,7 @@ export class BlocklyController {
 
     this.stores.blocklyStore.setBlocklyCode(code, workspace);
     this.parseVariables();
-  }
+  };
 
   public run = () => {
     // counting 'run from year...' blocks for deformation graph
@@ -62,7 +62,7 @@ export class BlocklyController {
       this.stores.samplesCollectionsStore.reset();
       this.stores.blocklyStore.runClicked();
   }
-  }
+  };
 
   public reset = () => {
     this.setCode(this.code, this.workspace);
@@ -70,7 +70,7 @@ export class BlocklyController {
     this.stores.seismicSimulation.reset();
     this.stores.chartsStore.reset();
     this.stores.samplesCollectionsStore.reset();
-  }
+  };
 
   public stop = () => {
     if (this.interpreterController) {
@@ -78,7 +78,7 @@ export class BlocklyController {
       this.running = false;
       this.paused = false;
     }
-  }
+  };
 
   // pauses the interpreter run without setting self.running = false
   public pause = () => {
@@ -86,7 +86,7 @@ export class BlocklyController {
       this.interpreterController.pause();
       this.paused = true;
     }
-  }
+  };
 
   // only restarts if self.running = true. If user hit stop between `pause` and this
   // function, this won't restart the run.
@@ -98,7 +98,7 @@ export class BlocklyController {
       this.interpreterController.run(reset);
       this.paused = false;
     }
-  }
+  };
 
   /**
    * Steps through one complete block.
@@ -128,24 +128,24 @@ export class BlocklyController {
     };
     stepAsync();
     }
-  }
+  };
 
   // called by interpreted block code
   public startStep = () => {
     // anything we need to do at start of step (previously we turned off
     // animation before moving to next block)
-  }
+  };
 
   // called by interpreted block code
   public endStep = () => {
     this.steppingThroughBlock = false;
-  }
+  };
 
   public throwError = (errorMessage: string) => {
     this.pause();
     alert(errorMessage);
     this.reset();
-  }
+  };
 
   /**
    * This manually parses code to find fields that the user has named, for use
@@ -166,7 +166,6 @@ export class BlocklyController {
     const findValues = (regex: RegExp) => {
       const results = [];
       let match;
-      // tslint:disable-next-line
       while ((match = regex.exec(this.code)) !== null) {
         const value = match[1];
         if (value) results.push([value, value]);   // dropdowns need two strings

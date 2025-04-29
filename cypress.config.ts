@@ -1,26 +1,26 @@
-import { defineConfig } from "cypress"
-import { addMatchImageSnapshotPlugin } from "@simonsmith/cypress-image-snapshot/plugin"
-const fs = require('fs-extra');
-const path = require('path');
+import { defineConfig } from "cypress";
+import { addMatchImageSnapshotPlugin } from "@simonsmith/cypress-image-snapshot/plugin";
+import fs from "fs-extra";
+import path from "path";
 
 function getConfigFile (name) {
   const pathToConfigFile = path.resolve('config', name);
   return fs.readJson(pathToConfigFile)
     // Don't throw an error if config file does not exist. Just return an empty config.
-    .catch(_ => {})
+    .catch(_ => null);
 }
 
 function getEnvVariablesStartingWith(prefix: string) {
   const result = {};
   Object.keys(process.env).forEach(key => {
     if (key.startsWith(prefix)) {
-      const [_, configKey] = key.split(prefix);
+      const [, configKey] = key.split(prefix);
       if (configKey) { // Ensure configKey is not an empty string
         result[configKey] = process.env[key];
       }
     }
   });
-  return result
+  return result;
 }
 
 export default defineConfig({
@@ -38,13 +38,13 @@ export default defineConfig({
         // launchOptions.args.width = 1000
         // launchOptions.args.height = 660
         // open issue for Cypress screenshot, fix sizes https://github.com/cypress-io/cypress/issues/587
-        launchOptions.preferences['width'] = 1000
-        launchOptions.preferences['height'] = 660
-        launchOptions.preferences['resizable'] = false
-        return launchOptions
-      })
+        launchOptions.preferences.width = 1000;
+        launchOptions.preferences.height = 660;
+        launchOptions.preferences.resizable = false;
+        return launchOptions;
+      });
 
-      addMatchImageSnapshotPlugin(on, config)
+      addMatchImageSnapshotPlugin(on, config);
 
       // Why do we need to read process.env again? Cypress preprocess environment variables. If it finds one with name
       // that matches one of the Cypress config options, it will update the config and remove this entry from environment
@@ -59,8 +59,8 @@ export default defineConfig({
         .then(content => {
           // Pick correct set of values for given environment.
           const envSpecificConfig = content?.[environment] || { "baseUrl": "http://localhost:8080/" };
-          return Object.assign(envSpecificConfig, unifiedCypressEnvVariables)
-        })
+          return Object.assign(envSpecificConfig, unifiedCypressEnvVariables);
+        });
     }
   }
-})
+});

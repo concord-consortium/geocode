@@ -1,7 +1,7 @@
-import * as strings from "../../strings/blockly-blocks/tephra/simulate-wind"
+import * as strings from "../../strings/blockly-blocks/tephra/simulate-wind";
 
-Blockly.Blocks['simulate_wind_vei'] = {
-  init: function() {
+Blockly.Blocks.simulate_wind_vei = {
+  init() {
     this.appendDummyInput()
         .appendField(strings.COMPUTE_TEPHRA);
     this.appendValueInput("wspeed")
@@ -24,12 +24,12 @@ Blockly.Blocks['simulate_wind_vei'] = {
   }
 };
 
-Blockly.JavaScript['simulate_wind_vei'] = function(block) {
-  var value_wspeed = Blockly.JavaScript.valueToCode(block, 'wspeed', Blockly.JavaScript.ORDER_ATOMIC);
-  var value_wdirection = Blockly.JavaScript.valueToCode(block, 'wdirection', Blockly.JavaScript.ORDER_ATOMIC);
-  var value_vei = Blockly.JavaScript.valueToCode(block, 'vei', Blockly.JavaScript.ORDER_ATOMIC);
+Blockly.JavaScript.simulate_wind_vei = function(block) {
+  const value_wspeed = Blockly.JavaScript.valueToCode(block, 'wspeed', Blockly.JavaScript.ORDER_ATOMIC);
+  const value_wdirection = Blockly.JavaScript.valueToCode(block, 'wdirection', Blockly.JavaScript.ORDER_ATOMIC);
+  const value_vei = Blockly.JavaScript.valueToCode(block, 'vei', Blockly.JavaScript.ORDER_ATOMIC);
 
-  var code = `
+  const code = `
   this.setWindspeed(${value_wspeed});
   this.setWindDirection(${value_wdirection});
   this.setVEI(${value_vei});

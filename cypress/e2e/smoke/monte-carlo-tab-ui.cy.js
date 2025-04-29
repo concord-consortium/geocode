@@ -1,5 +1,5 @@
-import RightPanel from "../../support/elements/RightPanel"
-import MonteCarloTab from "../../support/elements/MonteCarloTab"
+import RightPanel from "../../support/elements/RightPanel";
+import MonteCarloTab from "../../support/elements/MonteCarloTab";
 import Map from "../../support/elements/Map";
 
 const rightPanel = new RightPanel;
@@ -20,6 +20,6 @@ context("Monte Carlo panel", () => {
             map.getRulerButton().should('be.visible');
             map.getKeyButton().should('be.visible');
             map.getMap().should('be.visible');
-        })
+        });
     });
   });

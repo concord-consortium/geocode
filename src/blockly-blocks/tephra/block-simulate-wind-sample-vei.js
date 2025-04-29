@@ -1,8 +1,8 @@
-import * as strings from "../../strings/blockly-blocks/tephra/simulate-wind"
+import * as strings from "../../strings/blockly-blocks/tephra/simulate-wind";
 
 // frst one was misnamed (it doesn't take vei as an input) but is already in authors' data
-Blockly.Blocks['simulate_wind_sample_vei'] = {
-  init: function() {
+Blockly.Blocks.simulate_wind_sample_vei = {
+  init() {
     this.appendDummyInput()
         .appendField(strings.COMPUTE_TEPHRA);
         this.appendValueInput("wind samples")
@@ -17,14 +17,14 @@ Blockly.Blocks['simulate_wind_sample_vei'] = {
   }
 };
 
-Blockly.JavaScript['simulate_wind_sample_vei'] = function(block) {
-  var dataset = Blockly.JavaScript.valueToCode(block, 'wind samples', Blockly.JavaScript.ORDER_ATOMIC) || "null";
+Blockly.JavaScript.simulate_wind_sample_vei = function(block) {
+  const dataset = Blockly.JavaScript.valueToCode(block, 'wind samples', Blockly.JavaScript.ORDER_ATOMIC) || "null";
 
   if (dataset === "null") {
     window.blocklyErrorMessage = "null";
   }
 
-  var code = `
+  const code = `
     var windSample = getSingleSample(${dataset});
     this.setWindspeedAndDirection(windSample);
     this.setVEI(4);
@@ -34,8 +34,8 @@ Blockly.JavaScript['simulate_wind_sample_vei'] = function(block) {
 return code;
 };
 
-Blockly.Blocks['simulate_wind_sample_vei_2'] = {
-  init: function() {
+Blockly.Blocks.simulate_wind_sample_vei_2 = {
+  init() {
     this.appendDummyInput()
         .appendField("Compute and visualize tephra with");
     this.appendValueInput("wind samples")
@@ -54,15 +54,15 @@ Blockly.Blocks['simulate_wind_sample_vei_2'] = {
   }
 };
 
-Blockly.JavaScript['simulate_wind_sample_vei_2'] = function(block) {
-  var dataset = Blockly.JavaScript.valueToCode(block, 'wind samples', Blockly.JavaScript.ORDER_ATOMIC) || "null";
-  var value_vei = Blockly.JavaScript.valueToCode(block, 'vei', Blockly.JavaScript.ORDER_ATOMIC);
+Blockly.JavaScript.simulate_wind_sample_vei_2 = function(block) {
+  const dataset = Blockly.JavaScript.valueToCode(block, 'wind samples', Blockly.JavaScript.ORDER_ATOMIC) || "null";
+  const value_vei = Blockly.JavaScript.valueToCode(block, 'vei', Blockly.JavaScript.ORDER_ATOMIC);
 
   if (dataset === "null") {
     window.blocklyErrorMessage = "null";
   }
 
-  var code = `
+  const code = `
     var windSample = getSingleSample(${dataset});
     this.setWindspeedAndDirection(windSample);
     this.setVEI(${value_vei});

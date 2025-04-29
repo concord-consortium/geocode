@@ -5,7 +5,7 @@ import { BaseComponent, IBaseProps } from "./base";
 import { MapComponent, Scenario } from "./map/map-component";
 import { LogComponent } from "./log-component";
 import { CrossSectionComponent } from "./crosssection/cross-section-component";
-import Scenarios from "./../assets/maps/scenarios.json";
+import Scenarios from "../assets/maps/scenarios.json";
 import { BlocklyAuthoring } from "../assets/blockly-authoring";
 import BlocklyContainer from "./blockly-container";
 import styled from "styled-components";
@@ -14,7 +14,7 @@ import { SectionTypes, RightSectionTypes, kTabInfo, kRightTabInfo,
          TabBack, Tab, Tabs, TabList, TabPanel, RightTabBack, BottomTab } from "./tabs";
 import { js_beautify } from "js-beautify";
 import SyntaxHighlighter from "react-syntax-highlighter";
-import Controls from "./controls";
+import { Controls } from "./controls";
 import RunButtons from "./buttons/run-buttons";
 import { Footer, TabContent } from "./styled-containers";
 import WidgetPanel from "./widgets/widget-panel";
@@ -29,11 +29,10 @@ import { HistogramPanel } from "./montecarlo/histogram-panel";
 import { DeformationGraphPanel } from "./deformation/deformation-graph-panel";
 import { PlateMovementPanel } from "./deformation/plate-movement-panel";
 import { uiStore } from "../stores/ui-store";
-import { unitStore } from "../stores/unit-store";
+import { unitStore , UnitNameType } from "../stores/unit-store";
 import { blocklyStore } from "../stores/blockly-store";
 import { GPSStationTable } from "./gps-station-table";
 import { DeformationModel } from "./deformation/deformation-model";
-import { UnitNameType } from "../stores/unit-store";
 import { queryValue, queryValueBoolean } from "../utilities/url-query";
 import IconButton from "./buttons/icon-button";
 
@@ -53,13 +52,13 @@ interface IState {
 }
 
 const App = styled.div`
-    display: flex;
-    justify-content: flex-start;
-    align-items: flex-start;
-    flex-direction: row;
-    height: 100vh;
-    background-color: #ffffff;
-    overflow-x: hidden;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: row;
+  height: 100vh;
+  background-color: #ffffff;
+  overflow-x: hidden;
 `;
 
 const Row = styled.div`
@@ -135,27 +134,27 @@ const FullscreenButtonClosed = styled(FullscreenButton)`
 `;
 
 const ModalBackground = styled.div`
-	z-index: 1000;
-	display: block;
-	position: fixed;
-	top: 0;
-	left: 0;
-	height: 100vh;
-	width:100vw;
-	background: rgba(0,0,0,0.25);
+  z-index: 1000;
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width:100vw;
+  background: rgba(0,0,0,0.25);
 `;
 
 const ModalPopup = styled.div`
-	position:fixed;
-	background: white;
-	width: 210px;
-	height: auto;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%,-50%);
-	border-radius: 5px;
+  position:fixed;
+  background: white;
+  width: 210px;
+  height: auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  border-radius: 5px;
   padding: 2px;
-	color: #434343;
+  color: #434343;
 `;
 
 const ModalHeader = styled.div`
@@ -165,7 +164,7 @@ const ModalHeader = styled.div`
   align-items: center;
   justify-content: center;
   background-color: #f0f0f0;
-	border-radius: 4px 4px 0 0;
+  border-radius: 4px 4px 0 0;
   >div {
     position: absolute;
     right: 10px;
@@ -244,7 +243,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       },
       seismicSimulation: {
         selectedGPSStation,
-        startDeformationModel,
+        // startDeformationModel,
         deformSpeedPlate1,
         deformDirPlate1,
         deformSpeedPlate2,
@@ -503,7 +502,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                       }
                     </CenteredRow>
                   }
-                </Simulation>
+              </Simulation>
 
               </TabPanel>
             }
@@ -734,47 +733,47 @@ export class AppComponent extends BaseComponent<IProps, IState> {
 
   private getTabColor = (type: SectionTypes) => {
     return (type ? kTabInfo[type].backgroundColor : "white");
-  }
+  };
   private getTabHoverColor = (type: SectionTypes) => {
     return (type ? kTabInfo[type].hoverBackgroundColor : "white");
-  }
+  };
   private getTabName = (type: SectionTypes) => {
     return (type ? kTabInfo[type].name : "");
-  }
+  };
 
   private getRightTabColor = (type: RightSectionTypes, unit?: UnitNameType) => {
     if (!type) return "white";
-    if (unit && kRightTabInfo[type].unitBackgroundColor && kRightTabInfo[type].unitBackgroundColor![unit]) {
+    if (unit && kRightTabInfo[type].unitBackgroundColor?.[unit]) {
       return kRightTabInfo[type].unitBackgroundColor![unit];
     }
     return kRightTabInfo[type].backgroundColor;
-  }
+  };
   private getRightTabHoverColor = (type: RightSectionTypes, unit?: UnitNameType) => {
     if (!type) return "white";
-    if (unit && kRightTabInfo[type].unitHoverBackgroundColor && kRightTabInfo[type].unitHoverBackgroundColor![unit]) {
+    if (unit && kRightTabInfo[type].unitHoverBackgroundColor?.[unit]) {
       return kRightTabInfo[type].unitHoverBackgroundColor![unit];
     }
     return kRightTabInfo[type].hoverBackgroundColor;
-  }
+  };
   private getRightTabName = (type: RightSectionTypes, unit?: UnitNameType) => {
     if (!type) return "";
-    if (unit && kRightTabInfo[type].unitDisplayName && kRightTabInfo[type].unitDisplayName![unit]) {
+    if (unit && kRightTabInfo[type].unitDisplayName?.[unit]) {
       return kRightTabInfo[type].unitDisplayName![unit];
     }
     return kRightTabInfo[type].name;
-  }
+  };
 
   private resize = (rect: DOMRect) => {
     this.setState({dimensions: rect});
-  }
+  };
 
   private toggleFullscreen = () => {
-    if (screenfull && screenfull.isEnabled) {
+    if (screenfull?.isEnabled) {
       // we expand the entire body, instead of just the app, because blockly appends
       // things like input dialogs to the end of the document body
       screenfull.toggle(document.body);
     }
-  }
+  };
 
   private toggleShowOptions = () => this.setState({expandOptionsDialog: !this.state.expandOptionsDialog});
 
@@ -815,11 +814,11 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     // the authored state from the authoring menu overwrites local state
     const mergedState = deepmerge(localState, authorMenuState);
     updateStores(mergedState);
-  }
+  };
 
   private saveStateToLocalStorage = () => {
     localStorage.setItem("geocode-state", JSON.stringify(serializeState(getSavableStateAuthor())));
-  }
+  };
 
   private loadStateFromLocalStorage = () => {
     const savedStateJSON = localStorage.getItem("geocode-state");
@@ -827,5 +826,5 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       const savedState = JSON.parse(savedStateJSON) as UnmigratedSerializedState;
       updateStores(deserializeState(savedState));
     }
-  }
+  };
 }

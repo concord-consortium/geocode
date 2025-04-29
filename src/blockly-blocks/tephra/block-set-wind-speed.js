@@ -1,7 +1,7 @@
-import { SET_WIND_SPEED, MS, WIND_SPEED_TOOLTIP } from "../../strings/blockly-blocks/tephra/controls-panel"
+import { SET_WIND_SPEED, MS, WIND_SPEED_TOOLTIP } from "../../strings/blockly-blocks/tephra/controls-panel";
 
-Blockly.Blocks['setWindSpeed'] = {
-    init: function() {
+Blockly.Blocks.setWindSpeed = {
+    init() {
       this.appendValueInput("windSpeed")
           .setCheck("Number")
           .setAlign(Blockly.ALIGN_RIGHT)
@@ -17,13 +17,13 @@ Blockly.Blocks['setWindSpeed'] = {
     }
   };
   
-  Blockly.JavaScript['setWindSpeed'] = function(block) {
-    var value_wind_speed = Blockly.JavaScript.valueToCode(block, 'windSpeed', Blockly.JavaScript.ORDER_ATOMIC);
+  Blockly.JavaScript.setWindSpeed = function(block) {
+    const value_wind_speed = Blockly.JavaScript.valueToCode(block, 'windSpeed', Blockly.JavaScript.ORDER_ATOMIC);
     // TODO: Assemble JavaScript into code variable.
-    var code = `
+    const code = `
       setWindspeed(${value_wind_speed});
   
     `;
     return code;
-  }
+  };
   

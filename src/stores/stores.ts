@@ -181,7 +181,7 @@ export const serializeState = (state: IStoreish): SerializedState => {
 };
 // deserializes saved state, migrating data if necessary
 export const deserializeState = (serializedState: UnmigratedSerializedState | {}): IStoreish => {
-  if (serializedState && serializedState.hasOwnProperty("version")) {
+  if (Object.prototype.hasOwnProperty.call(serializedState, "version")) {
     const migratedState = migrate(serializedState as UnmigratedSerializedState);
     return migratedState.state;
   } else {

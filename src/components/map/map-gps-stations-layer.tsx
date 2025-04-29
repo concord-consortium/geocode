@@ -1,8 +1,8 @@
 import { inject, observer } from "mobx-react";
-import { Map as LeafletMap, LayerGroup, Marker, CircleMarker, Popup, MarkerProps, Polyline } from "react-leaflet";
+import { Map as LeafletMap, LayerGroup, CircleMarker, Polyline } from "react-leaflet";
 import { BaseComponent } from "../base";
 import { StationData } from "../../deformation";
-import { LatLng } from "leaflet";
+import { LatLng, LeafletMouseEvent } from "leaflet";
 import RawPositionTimeData from "../../assets/data/seismic/position-time-data";
 
 interface IProps {
@@ -21,7 +21,7 @@ export class MapGPSStationsLayer extends BaseComponent<IProps, IState> {
     const { map, mapScale, getPointFromLatLng } = this.props;
     if (!map) return;
 
-    const { visibleGPSStations, selectedGPSStationId, showVelocityArrows, allGPSStations }
+    const { visibleGPSStations, selectedGPSStationId, showVelocityArrows }
       = this.stores.seismicSimulation;
 
     // stations for which we have position history
@@ -47,7 +47,6 @@ export class MapGPSStationsLayer extends BaseComponent<IProps, IState> {
           color={selected ? selectedStroke : stroke}
           fillColor={fill}
           fillOpacity={1}
-          // @ts-ignore
           onclick={this.handleMarkerClicked}
         />
       );
@@ -109,8 +108,9 @@ export class MapGPSStationsLayer extends BaseComponent<IProps, IState> {
       return <div className="arrow-scale" style={arrowStyle}>{Math.round(velMag * 1000)}mm/year</div>;
     };
 
-    // need to manually set z-index via different groups, as CircleMarker doesn't support zIndexOffet
+    // need to manually set z-index via different groups, as CircleMarker doesn't support zIndexOffset
     const markers = visibleGPSStations.filter(stat => stat.id! !== selectedGPSStationId).map(stationMarker);
+    // eslint-disable-next-line @typescript-eslint/no-confusing-non-null-assertion
     const selectedMarker = visibleGPSStations.filter(stat => stat.id! === selectedGPSStationId).map(stationMarker);
 
     return (
@@ -123,7 +123,7 @@ export class MapGPSStationsLayer extends BaseComponent<IProps, IState> {
     );
   }
 
-  private handleMarkerClicked = (props: Readonly<MarkerProps>) => {
-    this.stores.seismicSimulation.selectGPSStation((props as any).sourceTarget.options.title);
-  }
+  private handleMarkerClicked = (event: LeafletMouseEvent) => {
+    this.stores.seismicSimulation.selectGPSStation(event.sourceTarget.options.title);
+  };
 }

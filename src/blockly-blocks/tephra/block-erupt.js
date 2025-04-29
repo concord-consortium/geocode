@@ -1,7 +1,7 @@
 import { ERUPT_CURRENT, VOLCANO_ERUPT } from "../../strings/blockly-blocks/tephra/erupt";
 
-Blockly.Blocks['erupt'] = {
-    init: function() {
+Blockly.Blocks.erupt = {
+    init() {
       this.appendDummyInput()
           .appendField(ERUPT_CURRENT);
       this.setInputsInline(false);
@@ -13,9 +13,9 @@ Blockly.Blocks['erupt'] = {
     }
   };
 
-  Blockly.JavaScript['erupt'] = function(block) {
-    var code = `
+  Blockly.JavaScript.erupt = function(block) {
+    const code = `
       erupt();
     `;
     return code;
-  }
+  };

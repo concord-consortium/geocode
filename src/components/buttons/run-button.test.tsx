@@ -1,12 +1,11 @@
-import { render } from "@testing-library/react";
-import { screen } from "@testing-library/dom";
+import { render, screen } from "@testing-library/react";
 import RunButtons from "./run-buttons";
 
 describe("RunButtons component", () => {
   it("renders all the buttons", () => {
     const nullfunc = () => null;
 
-    const { container } = render(
+    render(
       <RunButtons
         run={nullfunc}
         stop={nullfunc}

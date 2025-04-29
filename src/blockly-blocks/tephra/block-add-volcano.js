@@ -1,7 +1,7 @@
 import { CREATE_VOLCANO } from '../../strings/blockly-blocks/tephra/add-volcano';
 
-Blockly.Blocks['addVolcano'] = {
-    init: function() {
+Blockly.Blocks.addVolcano = {
+    init() {
       this.appendDummyInput()
           .appendField(CREATE_VOLCANO);
       this.appendValueInput("x")
@@ -21,15 +21,15 @@ Blockly.Blocks['addVolcano'] = {
     }
   };
 
-  Blockly.JavaScript['addVolcano'] = function(block) {
-    var value_x = Blockly.JavaScript.valueToCode(block, 'x', Blockly.JavaScript.ORDER_ATOMIC);
-    var value_y = Blockly.JavaScript.valueToCode(block, 'y', Blockly.JavaScript.ORDER_ATOMIC);
+  Blockly.JavaScript.addVolcano = function(block) {
+    let value_x = Blockly.JavaScript.valueToCode(block, 'x', Blockly.JavaScript.ORDER_ATOMIC);
+    let value_y = Blockly.JavaScript.valueToCode(block, 'y', Blockly.JavaScript.ORDER_ATOMIC);
     // TODO: Assemble JavaScript into code variable.
     value_x = value_x || 10;
     value_y = value_y || 10;
-    var code = `
+    const code = `
       setVolcano({x: ${value_x}, y: ${value_y}});
-    `
-    console.log(code);
+    `;
+    // console.log(code);
     return code;
-  }
+  };

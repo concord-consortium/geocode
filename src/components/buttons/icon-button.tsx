@@ -1,5 +1,4 @@
-import React from "react";
-import { PureComponent } from "react";
+import React, { PureComponent } from "react";
 import styled from "styled-components";
 import { Icon } from "../icon";
 
@@ -85,7 +84,8 @@ export default class IconButton extends PureComponent<IProps, IState> {
         activeColor={activeColor}
         data-test={dataTest}
       >
-        { children && <Icon
+        { children &&
+          <Icon
             width={width}
             height={height}
             fill={fill}
