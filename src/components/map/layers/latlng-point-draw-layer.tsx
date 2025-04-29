@@ -136,7 +136,7 @@ export class LatLngPointDrawLayer extends BaseComponent<IProps, IState> {
       const willOverlapEast = containerPoint.x > mapEastContainerPoint.x - labelWidth;
 
       cornerString = !willOverlapNorth || willOverlapSouth ? "bottom-" : "top-";
-      cornerString += (!willOverlapEast || willOverlapWest) ? "left" : "right";
+      cornerString += !willOverlapEast || willOverlapWest ? "left" : "right";
       return cornerString;
     };
 

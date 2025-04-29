@@ -511,7 +511,9 @@ export class MapComponent extends BaseComponent<IProps, IState>{
       // calculate how many meters each pixel represents
       const meterPerPixel = maxMeters / x;
       return meterPerPixel;
-    } else {return 100;}
+    } else {
+      return 100;
+    }
   };
 
   private getScreenPointFromLatLng = (latLng: L.LatLngExpression) => {

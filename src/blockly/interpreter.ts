@@ -1,4 +1,4 @@
-import Interpreter  from "js-interpreter";
+import Interpreter from "js-interpreter";
 import { ITephraModelParams } from "../stores/tephra-simulation-store";
 import { BlocklyController } from "./blockly-controller";
 import { IBlocklyWorkspace } from "../interfaces";
@@ -74,7 +74,6 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
         tephraSimulation.setWindDirection(windSample.direction);
       } else {
         blocklyController.throwError("You must add a dataset for the wind sample.");
-
       }
     });
 
