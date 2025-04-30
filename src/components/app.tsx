@@ -35,6 +35,7 @@ import { GPSStationTable } from "./gps-station-table";
 import { DeformationModel } from "./deformation/deformation-model";
 import { queryValue, queryValueBoolean } from "../utilities/url-query";
 import IconButton from "./buttons/icon-button";
+import { Lava } from "./lava/lava";
 
 import "./app.css";
 
@@ -727,6 +728,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             </ModalBackground>
           }
         </Row>
+        <Lava />
       </App>
     );
   }

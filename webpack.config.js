@@ -36,7 +36,7 @@ module.exports = (env, argv) => {
           loader: 'ts-loader'
         },
         {
-          test: /\.css$/,
+          test: /\.(css|scss)$/,
           use: [
             devMode ? 'style-loader' : MiniCssExtractPlugin.loader, "css-loader"
           ]
