@@ -140,7 +140,7 @@ const ModalBackground = styled.div`
   top: 0;
   left: 0;
   height: 100vh;
-  width:100vw;
+  width: 100vw;
   background: rgba(0,0,0,0.25);
 `;
 
@@ -293,8 +293,13 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     } = this.state;
 
     const isTephra = unitName === "Tephra";
+    const isSeismic = unitName === "Seismic";
+    const isLavaCoder = unitName === "LavaCoder";
 
+    const showDataLeft = showData && isLavaCoder;
+    const showDataRight = showData && (isTephra || isSeismic);
     const showMonteCarlo = _showMonteCarlo && isTephra;
+    const showBottomTabs = isTephra || isSeismic;
 
     const toolboxPath = (BlocklyAuthoring.toolbox as {[key: string]: string})[toolbox];
     const codePath = (BlocklyAuthoring.code as {[key: string]: string})[initialCodeTitle];
@@ -320,6 +325,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     if (showBlocks)   { enabledTabTypes.push(SectionTypes.BLOCKS); }
     if (showCode)     { enabledTabTypes.push(SectionTypes.CODE); }
     if (showControls) { enabledTabTypes.push(SectionTypes.CONTROLS); }
+    if (showDataLeft) { enabledTabTypes.push(SectionTypes.DATA); }
 
     kRightTabInfo.conditions.index = showConditions ? 0 : -1;
     kRightTabInfo.crossSection.index = showCrossSection ? kRightTabInfo.conditions.index + 1 : -1;
@@ -336,7 +342,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     if (showConditions)   { enabledRightTabTypes.push(RightSectionTypes.CONDITIONS); }
     if (showCrossSection) { enabledRightTabTypes.push(RightSectionTypes.CROSS_SECTION); }
     if (showMonteCarlo)   { enabledRightTabTypes.push(RightSectionTypes.MONTE_CARLO); }
-    if (showData)         { enabledRightTabTypes.push(RightSectionTypes.DATA); }
+    if (showDataRight)    { enabledRightTabTypes.push(RightSectionTypes.DATA); }
     if (showDeformation)  { enabledRightTabTypes.push(RightSectionTypes.DEFORMATION); }
 
     const currentTabType = enabledTabTypes[leftTabIndex || 0];
@@ -357,9 +363,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
 
     return (
       <App className="app" ref={this.rootComponent}>
-        <ResizeObserver
-          onResize={this.resize}
-        />
+        <ResizeObserver onResize={this.resize} />
         <Row>
           <Tabs selectedIndex={leftTabIndex} onSelect={this.handleLeftTabSelect}>
             <TabBack
@@ -401,6 +405,18 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                   data-test={this.getTabName(SectionTypes.CONTROLS) + "-tab"}
                 >
                   {this.getTabName(SectionTypes.CONTROLS)}
+                </Tab>
+              }
+              { showDataLeft &&
+                <Tab
+                  selected={leftTabIndex === kTabInfo.data.index}
+                  leftofselected={leftTabIndex === (kTabInfo.data.index + 1) ? "true" : undefined}
+                  rightofselected={leftTabIndex === (kTabInfo.data.index - 1) ? "true" : undefined}
+                  backgroundcolor={this.getTabColor(SectionTypes.DATA)}
+                  backgroundhovercolor={this.getTabHoverColor(SectionTypes.DATA)}
+                  data-test={this.getTabName(SectionTypes.DATA) + "-tab"}
+                >
+                  {this.getTabName(SectionTypes.DATA)}
                 </Tab>
               }
             </TabList>
@@ -481,20 +497,27 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 width={`${tabWidth}px`}
                 tabcolor={this.getRightTabColor(RightSectionTypes.CONDITIONS)}
                 rightpanel={"true"}
-                data-test={this.getRightTabName(RightSectionTypes.CONDITIONS) + "-panel"}
-            >
-              <Simulation width={mapWidth} backgroundColor={this.getRightTabColor(RightSectionTypes.CONDITIONS)}>
-                  <MapComponent
-                    width={ mapWidth }
-                    height={ height - 190 }
-                    panelType={RightSectionTypes.CONDITIONS}
-                  />
+                data-test={this.getRightTabName(RightSectionTypes.CONDITIONS) + "-panel"}>
+
+                <Simulation width={mapWidth} backgroundColor={this.getRightTabColor(RightSectionTypes.CONDITIONS)}>
+                  { (isTephra || isSeismic) &&
+                    <MapComponent
+                      width={ mapWidth }
+                      height={ height - 190 }
+                      panelType={RightSectionTypes.CONDITIONS}
+                    />
+                  }
+                  { isLavaCoder &&
+                    <div className="lava-coder-placeholder"
+                      style={{ width: mapWidth - 56, height: height - 190, background: "white", margin: "25px 28px 0px 28px" }}>
+                    </div>
+                  }
                   {
                     isTephra &&
                     <WidgetPanel />
                   }
                   {
-                    !isTephra &&
+                    isSeismic &&
                     <CenteredRow>
                       {
                         selectedGPSStation &&
@@ -502,7 +525,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                       }
                     </CenteredRow>
                   }
-              </Simulation>
+                </Simulation>
 
               </TabPanel>
             }
@@ -559,7 +582,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               </TabPanel>
             }
             {
-              showDeformation && !showDeformationGraph && !isTephra &&
+              showDeformation && !showDeformationGraph && isSeismic &&
               <TabPanel
                 width={`${tabWidth}px`}
                 tabcolor={this.getRightTabColor(RightSectionTypes.DEFORMATION)}
@@ -582,7 +605,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             {
               showDeformation
               && showDeformationGraph
-              && !isTephra &&
+              && isSeismic &&
               <TabPanel
                 width={`${tabWidth}px`}
                 tabcolor={this.getRightTabColor(RightSectionTypes.DEFORMATION)}
@@ -603,75 +626,79 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               </TabPanel>
             }
 
-            <RightTabBack
-              width={tabWidth}
-              backgroundcolor={this.getRightTabColor(currentRightTabType, unitName)}
-            />
+            { showBottomTabs &&
+              <RightTabBack
+                width={tabWidth}
+                backgroundcolor={this.getRightTabColor(currentRightTabType, unitName)}
+              />
+            }
             <BottomBar>
-              <TabsContainer>
-                <TabList>
-                  { showConditions &&
-                    <BottomTab
-                      selected={rightTabIndex === kRightTabInfo.conditions.index}
-                      leftofselected={rightTabIndex === (kRightTabInfo.conditions.index + 1) ? "true" : undefined}
-                      rightofselected={rightTabIndex === (kRightTabInfo.conditions.index - 1) ? "true" : undefined}
-                      backgroundcolor={this.getRightTabColor(RightSectionTypes.CONDITIONS)}
-                      backgroundhovercolor={this.getRightTabHoverColor(RightSectionTypes.CONDITIONS)}
-                      data-test={this.getRightTabName(RightSectionTypes.CONDITIONS) + "-tab"}
-                    >
-                      {this.getRightTabName(RightSectionTypes.CONDITIONS, unitName)}
-                    </BottomTab>
-                  }
-                  { showCrossSection &&
-                    <BottomTab
-                      selected={rightTabIndex === kRightTabInfo.crossSection.index}
-                      leftofselected={rightTabIndex === (kRightTabInfo.crossSection.index + 1) ? "true" : undefined}
-                      rightofselected={rightTabIndex === (kRightTabInfo.crossSection.index - 1) ? "true" : undefined}
-                      backgroundcolor={this.getRightTabColor(RightSectionTypes.CROSS_SECTION)}
-                      backgroundhovercolor={this.getRightTabHoverColor(RightSectionTypes.CROSS_SECTION)}
-                      data-test={this.getRightTabName(RightSectionTypes.CROSS_SECTION) + "-tab"}
-                    >
-                      {this.getRightTabName(RightSectionTypes.CROSS_SECTION)}
-                    </BottomTab>
-                  }
-                  { showMonteCarlo &&
-                    <BottomTab
-                      selected={rightTabIndex === kRightTabInfo.monteCarlo.index}
-                      leftofselected={rightTabIndex === (kRightTabInfo.monteCarlo.index + 1) ? "true" : undefined}
-                      rightofselected={rightTabIndex === (kRightTabInfo.monteCarlo.index - 1) ? "true" : undefined}
-                      backgroundcolor={this.getRightTabColor(RightSectionTypes.MONTE_CARLO)}
-                      backgroundhovercolor={this.getRightTabHoverColor(RightSectionTypes.MONTE_CARLO)}
-                      data-test={this.getRightTabName(RightSectionTypes.MONTE_CARLO) + "-tab"}
-                    >
-                      {this.getRightTabName(RightSectionTypes.MONTE_CARLO)}
-                    </BottomTab>
-                  }
-                  { showData &&
-                    <BottomTab
-                      selected={rightTabIndex === kRightTabInfo.data.index}
-                      leftofselected={rightTabIndex === (kRightTabInfo.data.index + 1) ? "true" : undefined}
-                      rightofselected={rightTabIndex === (kRightTabInfo.data.index - 1) ? "true" : undefined}
-                      backgroundcolor={this.getRightTabColor(RightSectionTypes.DATA, unitName)}
-                      backgroundhovercolor={this.getRightTabHoverColor(RightSectionTypes.DATA)}
-                      data-test={this.getRightTabName(RightSectionTypes.DATA) + "-tab"}
-                    >
-                      {this.getRightTabName(RightSectionTypes.DATA)}
-                    </BottomTab>
-                  }
-                  { showDeformation && !isTephra &&
-                    <BottomTab
-                      selected={rightTabIndex === kRightTabInfo.deformation.index}
-                      leftofselected={rightTabIndex === (kRightTabInfo.deformation.index + 1) ? "true" : undefined}
-                      rightofselected={rightTabIndex === (kRightTabInfo.deformation.index - 1) ? "true" : undefined}
-                      backgroundcolor={this.getRightTabColor(RightSectionTypes.DEFORMATION)}
-                      backgroundhovercolor={this.getRightTabHoverColor(RightSectionTypes.DEFORMATION)}
-                      data-test={this.getRightTabName(RightSectionTypes.DEFORMATION) + "-tab"}
-                    >
-                      {this.getRightTabName(RightSectionTypes.DEFORMATION)}
-                    </BottomTab>
-                  }
-                </TabList>
-              </TabsContainer>
+              { showBottomTabs &&
+                <TabsContainer>
+                  <TabList>
+                    { showConditions &&
+                      <BottomTab
+                        selected={rightTabIndex === kRightTabInfo.conditions.index}
+                        leftofselected={rightTabIndex === (kRightTabInfo.conditions.index + 1) ? "true" : undefined}
+                        rightofselected={rightTabIndex === (kRightTabInfo.conditions.index - 1) ? "true" : undefined}
+                        backgroundcolor={this.getRightTabColor(RightSectionTypes.CONDITIONS)}
+                        backgroundhovercolor={this.getRightTabHoverColor(RightSectionTypes.CONDITIONS)}
+                        data-test={this.getRightTabName(RightSectionTypes.CONDITIONS) + "-tab"}
+                      >
+                        {this.getRightTabName(RightSectionTypes.CONDITIONS, unitName)}
+                      </BottomTab>
+                    }
+                    { showCrossSection &&
+                      <BottomTab
+                        selected={rightTabIndex === kRightTabInfo.crossSection.index}
+                        leftofselected={rightTabIndex === (kRightTabInfo.crossSection.index + 1) ? "true" : undefined}
+                        rightofselected={rightTabIndex === (kRightTabInfo.crossSection.index - 1) ? "true" : undefined}
+                        backgroundcolor={this.getRightTabColor(RightSectionTypes.CROSS_SECTION)}
+                        backgroundhovercolor={this.getRightTabHoverColor(RightSectionTypes.CROSS_SECTION)}
+                        data-test={this.getRightTabName(RightSectionTypes.CROSS_SECTION) + "-tab"}
+                      >
+                        {this.getRightTabName(RightSectionTypes.CROSS_SECTION)}
+                      </BottomTab>
+                    }
+                    { showMonteCarlo &&
+                      <BottomTab
+                        selected={rightTabIndex === kRightTabInfo.monteCarlo.index}
+                        leftofselected={rightTabIndex === (kRightTabInfo.monteCarlo.index + 1) ? "true" : undefined}
+                        rightofselected={rightTabIndex === (kRightTabInfo.monteCarlo.index - 1) ? "true" : undefined}
+                        backgroundcolor={this.getRightTabColor(RightSectionTypes.MONTE_CARLO)}
+                        backgroundhovercolor={this.getRightTabHoverColor(RightSectionTypes.MONTE_CARLO)}
+                        data-test={this.getRightTabName(RightSectionTypes.MONTE_CARLO) + "-tab"}
+                      >
+                        {this.getRightTabName(RightSectionTypes.MONTE_CARLO)}
+                      </BottomTab>
+                    }
+                    { showData &&
+                      <BottomTab
+                        selected={rightTabIndex === kRightTabInfo.data.index}
+                        leftofselected={rightTabIndex === (kRightTabInfo.data.index + 1) ? "true" : undefined}
+                        rightofselected={rightTabIndex === (kRightTabInfo.data.index - 1) ? "true" : undefined}
+                        backgroundcolor={this.getRightTabColor(RightSectionTypes.DATA, unitName)}
+                        backgroundhovercolor={this.getRightTabHoverColor(RightSectionTypes.DATA)}
+                        data-test={this.getRightTabName(RightSectionTypes.DATA) + "-tab"}
+                      >
+                        {this.getRightTabName(RightSectionTypes.DATA)}
+                      </BottomTab>
+                    }
+                    { showDeformation && isSeismic &&
+                      <BottomTab
+                        selected={rightTabIndex === kRightTabInfo.deformation.index}
+                        leftofselected={rightTabIndex === (kRightTabInfo.deformation.index + 1) ? "true" : undefined}
+                        rightofselected={rightTabIndex === (kRightTabInfo.deformation.index - 1) ? "true" : undefined}
+                        backgroundcolor={this.getRightTabColor(RightSectionTypes.DEFORMATION)}
+                        backgroundhovercolor={this.getRightTabHoverColor(RightSectionTypes.DEFORMATION)}
+                        data-test={this.getRightTabName(RightSectionTypes.DEFORMATION) + "-tab"}
+                      >
+                        {this.getRightTabName(RightSectionTypes.DEFORMATION)}
+                      </BottomTab>
+                    }
+                  </TabList>
+                </TabsContainer>
+              }
               { (screenfull && screenfull.isFullscreen) &&
                 <FullscreenButtonOpen className="fullscreenOpen" onClick={this.toggleFullscreen} />
               }
@@ -690,8 +717,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               handleUpdate={this.updateAuthoring}
             />
           }
-          {
-            showingReloadModal &&
+          { showingReloadModal &&
             <ModalBackground onClick={hideReloadModal}>
               <ModalPopup>
                 <ModalHeader>

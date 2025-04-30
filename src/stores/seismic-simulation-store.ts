@@ -220,7 +220,7 @@ export const SeismicSimulationStore = types
       // Each vertex is returned as an index to an array of coordinates
       const mesh = new Delaunator(coords);
 
-      // filter trianges by removing those that have a vertex with an angle that is too small
+      // filter triangles by removing those that have a vertex with an angle that is too small
       const removeTriangles: number[] = [];
       const minAngleDeg = 5;
       const minAngleRad = minAngleDeg / 180 * Math.PI;

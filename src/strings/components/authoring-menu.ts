@@ -5,6 +5,7 @@ export const UNIT = "Unit";
 // chart names
 export const TEPHRA = "Tephra";
 export const SEISMIC = "Seismic";
+export const LAVA_CODER = "LavaCoder";
 
 // shared menu options
 export const CODE_TOOLBOX = "Code toolbox";
