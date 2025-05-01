@@ -6,6 +6,7 @@ export interface AsciiRaster {
 }
 
 export function parseAsciiRaster(content: string) {
+  const startTime = Date.now();
   const lines = content.trim().split('\n');
   const header: Record<string, number> = {};
   let dataStartIndex = 0;
@@ -25,6 +26,7 @@ export function parseAsciiRaster(content: string) {
   const values = lines.slice(dataStartIndex).map(line =>
     line.trim().split(/\s+/).map(Number)
   );
+  console.log(`... parseAsciiRaster took ${Date.now() - startTime}ms`);
 
   return {
     header,

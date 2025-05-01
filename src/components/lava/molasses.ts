@@ -16,6 +16,7 @@ interface GridCell {
   baseElevation: number;
   elevationDifference: number;
   lavaElevation: number;
+  parent?: GridCell;
   x: number;
   y: number;
 }
@@ -60,18 +61,20 @@ function getTotalElevation(cell: GridCell) {
 
 function getLowerNeighbors(cell: GridCell, grid: GridCell[][]) {
   const neighbors: GridCell[] = [];
-  // FIXME: do not include parents (probably a better method than this)
   [-1, 0, 1].forEach(dy => {
     [-1, 0, 1].forEach(dx => {
       if (dx === 0 && dy === 0) return; // Skip the cell itself
       const newY = cell.y + dy;
       const newX = cell.x + dx;
+      // Only add the neighbor if it's within the grid bounds
       if (newY >= 0 && newY < grid.length && newX >= 0 && newX < grid[newY].length) {
         const scale = (dx === 0 || dy === 0) ? 1 : diagonalScale;
         const neighbor = grid[newY][newX];
         const elevationDifference = scale * (getTotalElevation(cell) - getTotalElevation(neighbor));
-        if (elevationDifference > 0) {
+        // Only add the neighbor if it has a lower elevation and is not the parent
+        if (elevationDifference > 0 && neighbor !== cell.parent) {
           neighbor.elevationDifference = elevationDifference;
+          neighbor.parent = cell;
           neighbors.push(neighbor);
         }
       }
@@ -142,17 +145,21 @@ export async function runSimulation(raster: AsciiRaster, setState: (state: Simul
         }
       }
     }
-
-    let coveredCells = 0;
-    grid.forEach(row => {
-      row.forEach(cell => {
-        if (cell.lavaElevation > 0) {
-          coveredCells++;
-        }
-      });
-    });
-    setState({ coveredCells, pulseCount });
   }
+
+  const startCellCount = Date.now();
+  let coveredCells = 0;
+  grid.forEach(row => {
+    row.forEach(cell => {
+      if (cell.lavaElevation > 0) {
+        coveredCells++;
+      }
+    });
+  });
+  setState({ coveredCells, pulseCount });
+  const endCellCount = Date.now();
+  console.log(` -- Counted covered cells in ${endCellCount - startCellCount} ms`);
+
   const endTime = Date.now();
   console.log(`  - Simulation completed in ${endTime - startTime} ms`);
 }

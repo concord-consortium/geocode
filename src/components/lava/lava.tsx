@@ -33,13 +33,18 @@ export function Lava() {
         const asciiRaster = parseAsciiRaster(content);
         console.log(`--- raster`, asciiRaster);
         setRaster(asciiRaster);
-        runSimulation(asciiRaster, setSimulationState);
       }
     };
     fetch("/data/data.asc")
       .then(response => response.blob())
       .then(blob => reader.readAsText(blob));
   }, []);
+
+  useEffect(() => {
+    if (raster) {
+      runSimulation(raster, setSimulationState);
+    }
+  }, [raster]);
 
   return (
     <div className="lava-output">
