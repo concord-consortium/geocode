@@ -1,19 +1,39 @@
 import { useEffect, useState } from "react";
+import { runSimulation, SimulationState } from "./molasses";
 import { AsciiRaster, parseAsciiRaster } from "./parse-ascii-raster";
 
 import "./lava.scss";
 
+interface ISimulationDisplayProps {
+  simulationState: SimulationState | null;
+}
+function SimulationDisplay({ simulationState }: ISimulationDisplayProps) {
+  return (
+    <>
+      <h3>Running Simulation</h3>
+      {simulationState && (
+        <>
+          <p>Pulse: {simulationState.pulseCount}</p>
+          <p>Covered Cells: {simulationState.coveredCells}</p>
+        </>
+      )}
+    </>
+  );
+}
+
 export function Lava() {
-  const [rasterData, setRasterData] = useState<AsciiRaster|null>(null);
+  const [raster, setRaster] = useState<AsciiRaster|null>(null);
+  const [simulationState, setSimulationState] = useState<SimulationState|null>(null);
 
   useEffect(() => {
     const reader = new FileReader();
     reader.onload = () => {
       const content = reader.result;
       if (typeof content === "string") {
-        const raster = parseAsciiRaster(content);
-        setRasterData(raster);
-        console.log(`--- raster`, raster);
+        const asciiRaster = parseAsciiRaster(content);
+        console.log(`--- raster`, asciiRaster);
+        setRaster(asciiRaster);
+        runSimulation(asciiRaster, setSimulationState);
       }
     };
     fetch("/data/data.asc")
@@ -23,9 +43,9 @@ export function Lava() {
 
   return (
     <div className="lava-output">
-      {rasterData
-        ? Object.keys(rasterData.header).map(key => `${key}: ${rasterData.header[key]}\n`) + `\n` + rasterData.values.map(row => `${row.join(",\t")}\n`)
-        : "Loading Data..."
+      {raster
+        ? <SimulationDisplay simulationState={simulationState} />
+        : <h3>Loading Data...</h3>
       }
     </div>
   );

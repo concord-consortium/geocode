@@ -1,0 +1,158 @@
+// Based on the molasses algorithm https://github.com/geoscience-community-codes/MOLASSES
+
+import { AsciiRaster } from "./parse-ascii-raster";
+
+const diagonalScale = 1 / Math.sqrt(2);
+
+const ventEasting = 232214;
+const ventNorthing = 2158722;
+let ventX = -1;
+let ventY = -1;
+const residual = 5;
+const totalVolume = 200000000;
+const pulseVolume = 1000000;
+
+interface GridCell {
+  baseElevation: number;
+  elevationDifference: number;
+  lavaElevation: number;
+  x: number;
+  y: number;
+}
+
+function createCell(x: number, y: number, baseElevation: number) {
+  return {
+    baseElevation,
+    elevationDifference: 0,
+    lavaElevation: 0,
+    x,
+    y,
+  };
+}
+
+function createGrid(raster: AsciiRaster) {
+  const grid: GridCell[][] = [];
+  raster.values.forEach((row, y) => {
+    const gridRow: GridCell[] = [];
+    row.forEach((baseElevation, x) => {
+      gridRow.push(createCell(x, y, baseElevation));
+    });
+    grid.push(gridRow);
+  });
+  return grid;
+}
+
+function convertEastingToX(easting: number, raster: AsciiRaster) {
+  return Math.floor((easting - raster.header.xllcorner) / raster.header.cellsize);
+}
+
+function convertNorthingToY(northing: number, raster: AsciiRaster) {
+  return Math.floor((northing - raster.header.yllcorner) / raster.header.cellsize);
+}
+
+function getVentCell(grid: GridCell[][]) {
+  return grid[ventY][ventX];
+}
+
+function getTotalElevation(cell: GridCell) {
+  return cell.baseElevation + cell.lavaElevation;
+}
+
+function getLowerNeighbors(cell: GridCell, grid: GridCell[][]) {
+  const neighbors: GridCell[] = [];
+  // FIXME: do not include parents (probably a better method than this)
+  [-1, 0, 1].forEach(dy => {
+    [-1, 0, 1].forEach(dx => {
+      if (dx === 0 && dy === 0) return; // Skip the cell itself
+      const newY = cell.y + dy;
+      const newX = cell.x + dx;
+      if (newY >= 0 && newY < grid.length && newX >= 0 && newX < grid[newY].length) {
+        const scale = (dx === 0 || dy === 0) ? 1 : diagonalScale;
+        const neighbor = grid[newY][newX];
+        const elevationDifference = scale * (getTotalElevation(cell) - getTotalElevation(neighbor));
+        if (elevationDifference > 0) {
+          neighbor.elevationDifference = elevationDifference;
+          neighbors.push(neighbor);
+        }
+      }
+    });
+  });
+
+  // Randomize the order of neighbors
+  for (let i = neighbors.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [neighbors[i], neighbors[j]] = [neighbors[j], neighbors[i]];
+  }
+  
+  return neighbors;
+}
+
+export interface SimulationState {
+  coveredCells: number;
+  pulseCount: number;
+}
+
+export async function runSimulation(raster: AsciiRaster, setState: (state: SimulationState) => void) {
+  const startTime = Date.now();
+  const grid = createGrid(raster);
+  ventX = convertEastingToX(ventEasting, raster);
+  ventY = convertNorthingToY(ventNorthing, raster);
+  console.log(`--- ventX: ${ventX}, ventY: ${ventY}`);
+  let currentTotalVolume = totalVolume;
+  let pulseCount = 0;
+  while (currentTotalVolume > 0) {
+    pulseCount++;
+
+    // Add lava to the vent cell
+    const currentPulseVolume = Math.min(currentTotalVolume, pulseVolume);
+    currentTotalVolume -= currentPulseVolume;
+    getVentCell(grid).lavaElevation += currentPulseVolume;
+
+    // Spread the lava
+    const activeCells = [getVentCell(grid)];
+    const visitedCells = new Set<GridCell>();
+    // The Molasses algorithm spreads for three iterations, which seems to be completely arbitrary
+    for (let count = 0; count < 3; count++) {
+      for (const currentCell of activeCells) {
+        visitedCells.add(currentCell);
+        if (currentCell.lavaElevation > residual) {
+          const lavaToSpread = currentCell.lavaElevation - residual;
+          
+          // Find neighbors that can receive lava
+          const neighbors = getLowerNeighbors(currentCell, grid);
+
+          // Find total amount of lava that can be transferred
+          const totalElevationDifference = neighbors.reduce((sum, neighbor) => {
+            return sum + neighbor.elevationDifference;
+          }, 0);
+
+          if (totalElevationDifference > 0) {
+            // Transfer lava to neighbors
+            neighbors.forEach(neighbor => {
+              const elevationPercent = neighbor.elevationDifference / totalElevationDifference;
+              const lavaToTransfer = elevationPercent * lavaToSpread;
+              currentCell.lavaElevation -= lavaToTransfer;
+              neighbor.lavaElevation += lavaToTransfer;
+
+              if (!visitedCells.has(neighbor) && neighbor.lavaElevation > residual) {
+                activeCells.push(neighbor);
+              }
+            });
+          }
+        }
+      }
+    }
+
+    let coveredCells = 0;
+    grid.forEach(row => {
+      row.forEach(cell => {
+        if (cell.lavaElevation > 0) {
+          coveredCells++;
+        }
+      });
+    });
+    setState({ coveredCells, pulseCount });
+  }
+  const endTime = Date.now();
+  console.log(`  - Simulation completed in ${endTime - startTime} ms`);
+}

@@ -1,3 +1,5 @@
+// Based on a suggestion from ChatGPT
+
 export interface AsciiRaster {
   header: Record<string, number>;
   values: number[][];
