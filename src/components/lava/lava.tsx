@@ -1,20 +1,21 @@
-import { useEffect, useState } from "react";
-import { runSimulation, SimulationState } from "./molasses";
+import { useEffect, useMemo, useState } from "react";
+import { GridCell, runSimulation } from "./molasses";
 import { AsciiRaster, parseAsciiRaster } from "./parse-ascii-raster";
 
 import "./lava.scss";
+import { visualizeLava } from "./visualize-lava";
 
 interface ISimulationDisplayProps {
-  simulationState: SimulationState | null;
+  coveredCells: number;
 }
-function SimulationDisplay({ simulationState }: ISimulationDisplayProps) {
+function SimulationDisplay({ coveredCells }: ISimulationDisplayProps) {
   return (
     <>
       <h3>Running Simulation</h3>
-      {simulationState && (
+      {coveredCells > 0 && (
         <>
-          <p>Pulse: {simulationState.pulseCount}</p>
-          <p>Covered Cells: {simulationState.coveredCells}</p>
+          {/* <p>Pulse: {simulationState.pulseCount}</p> */}
+          <p>Covered Cells: {coveredCells}</p>
         </>
       )}
     </>
@@ -23,7 +24,7 @@ function SimulationDisplay({ simulationState }: ISimulationDisplayProps) {
 
 export function Lava() {
   const [raster, setRaster] = useState<AsciiRaster|null>(null);
-  const [simulationState, setSimulationState] = useState<SimulationState|null>(null);
+  const [grid, setGrid] = useState<GridCell[][]|null>(null);
 
   useEffect(() => {
     const reader = new FileReader();
@@ -42,14 +43,34 @@ export function Lava() {
 
   useEffect(() => {
     if (raster) {
-      runSimulation(raster, setSimulationState);
+      runSimulation(raster, setGrid);
     }
   }, [raster]);
+
+  const coveredCells = useMemo(() => {
+    if (!grid) return 0;
+
+    let _coveredCells = 0;
+    grid.forEach(row => {
+      row.forEach(cell => {
+        if (cell.lavaElevation > 0) {
+          _coveredCells++;
+        }
+      });
+    });
+    return _coveredCells;
+  }, [grid]);
+
+  useEffect(() => {
+    if (!grid || !raster) return;
+
+    return visualizeLava(raster, grid);
+  }, [grid, raster]);
 
   return (
     <div className="lava-output">
       {raster
-        ? <SimulationDisplay simulationState={simulationState} />
+        ? <SimulationDisplay coveredCells={coveredCells} />
         : <h3>Loading Data...</h3>
       }
     </div>

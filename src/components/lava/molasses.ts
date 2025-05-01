@@ -8,11 +8,11 @@ const ventEasting = 232214;
 const ventNorthing = 2158722;
 let ventX = -1;
 let ventY = -1;
-const residual = 5;
+export const residual = 5;
 const totalVolume = 200000000;
-const pulseVolume = 1000000;
+const pulseVolume = 100000;
 
-interface GridCell {
+export interface GridCell {
   baseElevation: number;
   elevationDifference: number;
   lavaElevation: number;
@@ -48,7 +48,7 @@ function convertEastingToX(easting: number, raster: AsciiRaster) {
 }
 
 function convertNorthingToY(northing: number, raster: AsciiRaster) {
-  return Math.floor((northing - raster.header.yllcorner) / raster.header.cellsize);
+  return raster.header.nrows - Math.floor((northing - raster.header.yllcorner) / raster.header.cellsize);
 }
 
 function getVentCell(grid: GridCell[][]) {
@@ -90,26 +90,20 @@ function getLowerNeighbors(cell: GridCell, grid: GridCell[][]) {
   return neighbors;
 }
 
-export interface SimulationState {
-  coveredCells: number;
-  pulseCount: number;
-}
-
-export async function runSimulation(raster: AsciiRaster, setState: (state: SimulationState) => void) {
+export async function runSimulation(raster: AsciiRaster, setState: (grid: GridCell[][]) => void) {
   const startTime = Date.now();
   const grid = createGrid(raster);
   ventX = convertEastingToX(ventEasting, raster);
   ventY = convertNorthingToY(ventNorthing, raster);
   console.log(`--- ventX: ${ventX}, ventY: ${ventY}`);
+  const cellArea = raster.header.cellsize ** 2;
   let currentTotalVolume = totalVolume;
-  let pulseCount = 0;
   while (currentTotalVolume > 0) {
-    pulseCount++;
-
     // Add lava to the vent cell
     const currentPulseVolume = Math.min(currentTotalVolume, pulseVolume);
     currentTotalVolume -= currentPulseVolume;
-    getVentCell(grid).lavaElevation += currentPulseVolume;
+    const pulseHeight = currentPulseVolume / cellArea;
+    getVentCell(grid).lavaElevation += pulseHeight;
 
     // Spread the lava
     const activeCells = [getVentCell(grid)];
@@ -147,18 +141,7 @@ export async function runSimulation(raster: AsciiRaster, setState: (state: Simul
     }
   }
 
-  const startCellCount = Date.now();
-  let coveredCells = 0;
-  grid.forEach(row => {
-    row.forEach(cell => {
-      if (cell.lavaElevation > 0) {
-        coveredCells++;
-      }
-    });
-  });
-  setState({ coveredCells, pulseCount });
-  const endCellCount = Date.now();
-  console.log(` -- Counted covered cells in ${endCellCount - startCellCount} ms`);
+  setState(grid);
 
   const endTime = Date.now();
   console.log(`  - Simulation completed in ${endTime - startTime} ms`);
