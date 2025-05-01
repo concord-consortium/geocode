@@ -23,7 +23,7 @@ const AuthoringMenu: React.FC<IProps> = (props) => {
       <DatButton label={strings.MODEL_OPTIONS} onClick={props.toggleShowOptions}/>
       { props.expandOptionsDialog &&
         <DatSelect path="unit.name" label={strings.UNIT}
-          options={[strings.TEPHRA, strings.SEISMIC]} key="unit" />
+          options={[strings.TEPHRA, strings.SEISMIC, strings.LAVA_CODER]} key="unit" />
       }
       { (props.expandOptionsDialog && props.options.unit.name === strings.TEPHRA) &&
         [
@@ -106,6 +106,21 @@ const AuthoringMenu: React.FC<IProps> = (props) => {
             options={["none", "auto", "user"]} key="deformationModelEarthquakeControl" />,
 
           <DatBoolean path="uiStore.showSpeedControls" label={strings.SHOW_SPEED_CONTROLS} key="showSpeedControls" />,
+        ]
+      }
+
+      { (props.expandOptionsDialog && props.options.unit.name === strings.LAVA_CODER) &&
+        [
+          // <DatSelect path="blocklyStore.toolbox" label={strings.CODE_TOOLBOX}
+          //   options={BlocklyAuthoring.seismicToolboxes} key="toolbox" />,
+          // <DatSelect path="blocklyStore.initialCodeTitle" label={strings.INITIAL_CODE}
+          //   options={Object.keys(BlocklyAuthoring.code)} key="code" />,
+
+          <DatFolder title={strings.LEFT_TABS} key="leftTabsFolder" closed={false}>
+            <DatBoolean path="uiStore.showBlocks" label={strings.SHOW_BLOCKS} key="showBlocks" />
+            {/* <DatBoolean path="uiStore.showCode" label={strings.SHOW_CODE} key="showCode" /> */}
+            <DatBoolean path="uiStore.showData" label={strings.SHOW_DATA} key="showData" />
+          </DatFolder>,
         ]
       }
       {

@@ -19,7 +19,7 @@ export interface IStore {
 }
 
 export interface IStoreish {
-  unit: {name: "Tephra" | "Seismic" };
+  unit: {name: "Tephra" | "Seismic" | "LavaCoder" };
   blocklyStore: any;
   tephraSimulation: any;
   seismicSimulation: any;
@@ -39,7 +39,7 @@ export const stores: IStore = {
   samplesCollectionsStore,
 };
 
-// this tuple syntx allows us to declare an array of strings and a type based on
+// this tuple syntax allows us to declare an array of strings and a type based on
 // that array at the same time.
 const tuple = <T extends string[]>(...args: T) => args;
 

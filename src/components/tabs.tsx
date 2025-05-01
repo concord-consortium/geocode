@@ -10,7 +10,8 @@ import { UnitNameType } from "../stores/unit-store";
 enum SectionTypes {
   BLOCKS = "blocks",
   CODE = "code",
-  CONTROLS = "controls"
+  CONTROLS = "controls",
+  DATA = "data"
 }
 type TabInfo = {
   [tab in SectionTypes]: {
@@ -39,6 +40,12 @@ const kTabInfo: TabInfo = {
     backgroundColor: "#FFCA79",
     hoverBackgroundColor: "#FABF6E",
   },
+  data: {
+    name: "Data",
+    index: -1,
+    backgroundColor: "#BBD9FF",
+    hoverBackgroundColor: "#AECEFF",
+  }
 };
 
 enum RightSectionTypes {
@@ -63,6 +70,7 @@ const kRightTabInfo: RightTabInfo = {
   conditions: {
     name: "Conditions",
     unitDisplayName: {
+      LavaCoder: "LavaCoder",
       Tephra: "Conditions",
       Seismic: "Map"
     },
@@ -88,10 +96,12 @@ const kRightTabInfo: RightTabInfo = {
     backgroundColor: "#e6f2e4",
     hoverBackgroundColor: "#dae6d7",
     unitBackgroundColor: {
+      LavaCoder: "#cee6c9",
       Tephra: "#e6f2e4",
       Seismic: "#cee6c9"
     },
     unitHoverBackgroundColor: {
+      LavaCoder: "#c3dabd",
       Tephra: "#dae6d7",
       Seismic: "#c3dabd"
     },
