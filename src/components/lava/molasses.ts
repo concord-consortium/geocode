@@ -16,7 +16,8 @@ export interface GridCell {
   baseElevation: number;
   elevationDifference: number;
   lavaElevation: number;
-  parent?: GridCell;
+  parentDX?: number;
+  parentDY?: number;
   x: number;
   y: number;
 }
@@ -64,6 +65,11 @@ function getLowerNeighbors(cell: GridCell, grid: GridCell[][]) {
   [-1, 0, 1].forEach(dy => {
     [-1, 0, 1].forEach(dx => {
       if (dx === 0 && dy === 0) return; // Skip the cell itself
+      // Skip the "parent".
+      // Following a bug in the c algorithm, this includes any neighbors in any of the same directions as the actual parent.
+      // ...which is really just the last parent.
+      if (cell.parentDX && cell.parentDX === dx && cell.parentDY && cell.parentDY === dy) return;
+
       const newY = cell.y + dy;
       const newX = cell.x + dx;
       // Only add the neighbor if it's within the grid bounds
@@ -71,10 +77,11 @@ function getLowerNeighbors(cell: GridCell, grid: GridCell[][]) {
         const scale = (dx === 0 || dy === 0) ? 1 : diagonalScale;
         const neighbor = grid[newY][newX];
         const elevationDifference = scale * (getTotalElevation(cell) - getTotalElevation(neighbor));
-        // Only add the neighbor if it has a lower elevation and is not the parent
-        if (elevationDifference > 0 && neighbor !== cell.parent) {
+        // Only add the neighbor if it has a lower elevation
+        if (elevationDifference > 0) {
           neighbor.elevationDifference = elevationDifference;
-          neighbor.parent = cell;
+          neighbor.parentDX = -1 * dx;
+          neighbor.parentDY = -1 * dy;
           neighbors.push(neighbor);
         }
       }
