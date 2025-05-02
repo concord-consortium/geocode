@@ -5,7 +5,7 @@
 
 import { types } from "mobx-state-tree";
 
-export const UnitName = types.enumeration("type", ["Tephra", "Seismic"]);
+export const UnitName = types.enumeration("type", ["Tephra", "Seismic", "LavaCoder"]);
 export type UnitNameType = typeof UnitName.Type;
 
 export const UnitStore = types

@@ -133,7 +133,7 @@ export const TephraSimulationStore = types
     const getVei = (mass: number, colHeight: number) => {
       // calculate the vei given the mass and the column height.
       // If the mass and column height were set by setting vei, these values will agree. If the user manually
-      // changes mass and column height, we must make our best guess. We take the averge and round towards the
+      // changes mass and column height, we must make our best guess. We take the average and round towards the
       // value given by mass.
       const massVEI =  Math.max(7, Math.min(15, Math.round(Math.log(mass) / Math.LN10))) - 7;
       let columnVEI = 1;
