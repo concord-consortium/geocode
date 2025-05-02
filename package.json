@@ -151,9 +151,9 @@
     "webpack-dev-server": "^5.2.1"
   },
   "dependencies": {
+    "@cesium/engine": "^17.0.0",
     "@concord-consortium/lara-interactive-api": "^1.9.4",
     "@pixi/react": "^7.1.2",
-    "cesium": "^1.129.0",
     "color": "^4.2.3",
     "d3": "^7.9.0",
     "deepmerge": "^4.3.1",
@@ -168,7 +168,6 @@
     "mobx": "^6.13.7",
     "mobx-react": "^9.2.0",
     "mobx-state-tree": "^7.0.2",
-    "path-browserify": "^1.0.1",
     "pixi.js": "^7.4.3",
     "query-string": "^9.1.1",
     "react": "^17.0.2",

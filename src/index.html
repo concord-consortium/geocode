@@ -3,13 +3,12 @@
   <head>
     <meta charset="UTF-8">
     <title>GeoCoder</title>
-    <meta name="description" content="Starter Projects">
+    <meta name="description" content="a scaffolded visual programming platform">
     <link rel="shortcut icon" href="favicon.ico">
     <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
     <link rel="stylesheet" href="<%= htmlWebpackPlugin.files.publicPath %>index.css">
     <link rel="stylesheet" href="<%= htmlWebpackPlugin.files.publicPath %>css/react-dat-gui.css">
     <link rel="stylesheet" href="<%= htmlWebpackPlugin.files.publicPath %>css/blockly-toolbar-override.css">
-    <link rel="stylesheet" href="https://cesium.com/downloads/cesiumjs/releases/1.129/Build/Cesium/Widgets/widgets.css">
     <style>
       .hidden { display: none; }
     </style>
@@ -17,7 +16,10 @@
     <script src="<%= htmlWebpackPlugin.files.publicPath %>blockly/blocks_compressed.js"></script>
     <script src="<%= htmlWebpackPlugin.files.publicPath %>blockly/javascript_compressed.js"></script>
     <script src="<%= htmlWebpackPlugin.files.publicPath %>blockly/en.js"></script>
-    <script src="https://cesium.com/downloads/cesiumjs/releases/1.129/Build/Cesium/Cesium.js"></script>
+    <script>
+      // Set the CESIUM_BASE_URL on the window object
+      window.CESIUM_BASE_URL = "<%= htmlWebpackPlugin.options.templateParameters.CESIUM_BASE_URL %>";
+    </script>
   </head>
   <body>
     <div id="reactApp" />

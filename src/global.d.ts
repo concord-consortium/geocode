@@ -18,9 +18,3 @@ declare namespace process {
     [index: string]: string
   };
 }
-
-declare global {
-  interface Window {
-    Cesium: typeof import("cesium");
-  }
-}

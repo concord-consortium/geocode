@@ -12,7 +12,7 @@
     "experimentalDecorators": true,
     "strictNullChecks": true,
     "skipLibCheck": true,
-    "types": ["cesium", "jest"],
+    "types": ["jest"],
     "jsx": "react-jsx",
     "lib": ["dom", "dom.iterable", "es2018"]
   },
