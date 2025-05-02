@@ -12,8 +12,8 @@ let ventX = -1;
 let ventY = -1;
 export const residual = 5;
 const totalVolume = 200000000;
-// const pulseVolume = 100000; // Standard for small eruption
-const pulseVolume = 500000;
+const pulseVolume = 100000; // Standard for small eruption
+// const pulseVolume = 500000;
 
 export interface GridCell {
   baseElevation: number;
@@ -104,7 +104,8 @@ function getLowerNeighbors(cell: GridCell, grid: GridCell[][]) {
   return neighbors;
 }
 
-export async function runSimulation(raster: AsciiRaster, setState: (grid: GridCell[][]) => void) {
+export async function runSimulation(raster: AsciiRaster, postMessage: (message: any) => void) {
+  let pulseCount = 0;
   const startTime = Date.now();
   const grid = createGrid(raster);
   ventX = convertEastingToX(ventEasting, raster);
@@ -153,9 +154,15 @@ export async function runSimulation(raster: AsciiRaster, setState: (grid: GridCe
         }
       }
     }
+
+    pulseCount++;
+    if (pulseCount % 100 === 0) {
+      console.log(`  - Pulse ${pulseCount}: ${currentTotalVolume} m3 remaining`);
+      // postMessage({ status: "updatedGrid", grid, pulseCount });
+    }
   }
 
-  setState(grid);
+  postMessage({ status: "updatedGrid", grid, pulseCount });
 
   const endTime = Date.now();
   console.log(`  - Simulation completed in ${endTime - startTime} ms`);

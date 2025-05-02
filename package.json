@@ -147,7 +147,8 @@
     "wait-on": "^8.0.3",
     "webpack": "^5.99.7",
     "webpack-cli": "^6.0.1",
-    "webpack-dev-server": "^5.2.1"
+    "webpack-dev-server": "^5.2.1",
+    "worker-loader": "^3.0.8"
   },
   "dependencies": {
     "@concord-consortium/lara-interactive-api": "^1.9.4",

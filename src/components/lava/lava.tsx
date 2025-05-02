@@ -1,20 +1,22 @@
 import { useEffect, useMemo, useState } from "react";
-import { GridCell, runSimulation } from "./molasses";
-import { AsciiRaster, parseAsciiRaster } from "./parse-ascii-raster";
+import { GridCell } from "./molasses";
+import RasterWorker from "./molasses.worker";
+import { AsciiRaster } from "./parse-ascii-raster";
+import { visualizeLava } from "./visualize-lava";
 
 import "./lava.scss";
-import { visualizeLava } from "./visualize-lava";
 
 interface ISimulationDisplayProps {
   coveredCells: number;
+  pulseCount: number;
 }
-function SimulationDisplay({ coveredCells }: ISimulationDisplayProps) {
+function SimulationDisplay({ coveredCells, pulseCount }: ISimulationDisplayProps) {
   return (
     <>
       <h3>Running Simulation</h3>
       {coveredCells > 0 && (
         <>
-          {/* <p>Pulse: {simulationState.pulseCount}</p> */}
+          <p>Pulse: {pulseCount}</p>
           <p>Covered Cells: {coveredCells}</p>
         </>
       )}
@@ -24,28 +26,34 @@ function SimulationDisplay({ coveredCells }: ISimulationDisplayProps) {
 
 export function Lava() {
   const [raster, setRaster] = useState<AsciiRaster|null>(null);
+  const [pulseCount, setPulseCount] = useState(0);
   const [grid, setGrid] = useState<GridCell[][]|null>(null);
 
   useEffect(() => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const content = reader.result;
-      if (typeof content === "string") {
-        const asciiRaster = parseAsciiRaster(content);
-        console.log(`--- raster`, asciiRaster);
-        setRaster(asciiRaster);
+    const worker = new RasterWorker();
+    worker.onmessage = (e) => {
+      try {
+        console.log(`>>> Worker message:`, e.data);
+        const { status } = e.data;
+        if (status === "rasterParsed") {
+          setRaster(e.data.raster);
+        } else if (status === "runningSimulation") {
+          console.log(`Running simulation...`);
+        } else if (status === "updatedGrid") {
+          setPulseCount(e.data.pulseCount);
+          setGrid(e.data.grid);
+        }
+      } catch (error) {
+        console.error("Error handling worker message:", error, e);
       }
     };
-    fetch("/data/data.asc")
-      .then(response => response.blob())
-      .then(blob => reader.readAsText(blob));
-  }, []);
 
-  useEffect(() => {
-    if (raster) {
-      runSimulation(raster, setGrid);
-    }
-  }, [raster]);
+    worker.postMessage({ type: "start" });
+
+    return () => {
+      worker.terminate();
+    };
+  }, []);
 
   const coveredCells = useMemo(() => {
     if (!grid) return 0;
@@ -70,7 +78,7 @@ export function Lava() {
   return (
     <div className="lava-output">
       {raster
-        ? <SimulationDisplay coveredCells={coveredCells} />
+        ? <SimulationDisplay coveredCells={coveredCells} pulseCount={pulseCount} />
         : <h3>Loading Data...</h3>
       }
     </div>
