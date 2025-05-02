@@ -2,6 +2,8 @@
 
 import { AsciiRaster } from "./parse-ascii-raster";
 
+const cParents = false; // If true, replicate the incorrect method of determining parents from the c version
+const trueParents = true;
 const diagonalScale = 1 / Math.sqrt(2);
 
 const ventEasting = 232214;
@@ -10,7 +12,8 @@ let ventX = -1;
 let ventY = -1;
 export const residual = 5;
 const totalVolume = 200000000;
-const pulseVolume = 100000;
+// const pulseVolume = 100000; // Standard for small eruption
+const pulseVolume = 500000;
 
 export interface GridCell {
   baseElevation: number;
@@ -18,6 +21,7 @@ export interface GridCell {
   lavaElevation: number;
   parentDX?: number;
   parentDY?: number;
+  parents: Set<GridCell>;
   x: number;
   y: number;
 }
@@ -27,6 +31,7 @@ function createCell(x: number, y: number, baseElevation: number) {
     baseElevation,
     elevationDifference: 0,
     lavaElevation: 0,
+    parents: new Set<GridCell>(),
     x,
     y,
   };
@@ -68,18 +73,20 @@ function getLowerNeighbors(cell: GridCell, grid: GridCell[][]) {
       // Skip the "parent".
       // Following a bug in the c algorithm, this includes any neighbors in any of the same directions as the actual parent.
       // ...which is really just the last parent.
-      if (cell.parentDX && cell.parentDX === dx && cell.parentDY && cell.parentDY === dy) return;
+      if (cParents && cell.parentDX && cell.parentDX === dx && cell.parentDY && cell.parentDY === dy) return;
 
       const newY = cell.y + dy;
       const newX = cell.x + dx;
       // Only add the neighbor if it's within the grid bounds
       if (newY >= 0 && newY < grid.length && newX >= 0 && newX < grid[newY].length) {
-        const scale = (dx === 0 || dy === 0) ? 1 : diagonalScale;
         const neighbor = grid[newY][newX];
+        if (trueParents && cell.parents.has(neighbor)) return;
+        const scale = (dx === 0 || dy === 0) ? 1 : diagonalScale;
         const elevationDifference = scale * (getTotalElevation(cell) - getTotalElevation(neighbor));
         // Only add the neighbor if it has a lower elevation
         if (elevationDifference > 0) {
           neighbor.elevationDifference = elevationDifference;
+          neighbor.parents.add(cell);
           neighbor.parentDX = -1 * dx;
           neighbor.parentDY = -1 * dy;
           neighbors.push(neighbor);
