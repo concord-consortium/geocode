@@ -39,6 +39,7 @@ const IconButtonText = styled.div`
 `;
 
 interface IProps {
+  className?: string;
   onClick: any;
   children?: React.ReactNode;
   disabled: any;
@@ -58,6 +59,7 @@ interface IState {}
 
 export default class IconButton extends PureComponent<IProps, IState> {
   public static defaultProps = {
+    className: undefined,
     onClick: undefined,
     disabled: undefined,
     label: undefined,
@@ -72,10 +74,11 @@ export default class IconButton extends PureComponent<IProps, IState> {
   };
 
   public render() {
-    const { onClick, disabled, children, label, backgroundColor, hoverColor, activeColor,
+    const { className, onClick, disabled, children, label, backgroundColor, hoverColor, activeColor,
             borderColor, fontSize, fill, width, height, dataTest } = this.props;
     return (
       <IconButtonContainer
+        className={className}
         onClick={onClick}
         backgroundColor={backgroundColor}
         borderColor={borderColor}

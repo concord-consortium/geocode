@@ -33,6 +33,7 @@ import { unitStore , UnitNameType } from "../stores/unit-store";
 import { blocklyStore } from "../stores/blockly-store";
 import { GPSStationTable } from "./gps-station-table";
 import { DeformationModel } from "./deformation/deformation-model";
+import { LavaCoderView } from "./lava-coder/lava-coder-view";
 import { queryValue, queryValueBoolean } from "../utilities/url-query";
 import IconButton from "./buttons/icon-button";
 
@@ -308,11 +309,14 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     const blocklyMargin = 3;
     const tabWidth = Math.floor(width * .5);
     const mapWidth = Math.floor(width * .5);
+    const mapHeight = height - 190;
     const blocklyWidth = tabWidth - (blocklyMargin * 2);
     const logWidth = Math.floor(tabWidth * 0.95);
     const logHeight = Math.floor(height * .2);
     const blocklyHeight = Math.floor(height - 90 - (showLog ? logHeight : 0));
     const scenarioData = (Scenarios as {[key: string]: Scenario})[scenario];
+    const simMargin = { x: 28, y: 25 };
+    const simMarginStr = `${simMargin.y}px ${simMargin.x}px 0 ${simMargin.y}px`;
 
     if (isTephra) {
       this.stores.tephraSimulation.setVolcano(scenarioData.centerLat, scenarioData.centerLng);
@@ -489,6 +493,14 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 />
               </TabPanel>
             }
+            { showDataLeft &&
+              <TabPanel
+                width={`${tabWidth}px`}
+                tabcolor={this.getTabColor(SectionTypes.DATA)}
+                data-test={this.getTabName(SectionTypes.DATA) + "-panel"}
+              >
+              </TabPanel>
+            }
           </Tabs>
 
           <Tabs selectedIndex={rightTabIndex} onSelect={this.handleRightTabSelect}>
@@ -502,15 +514,13 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 <Simulation width={mapWidth} backgroundColor={this.getRightTabColor(RightSectionTypes.CONDITIONS)}>
                   { (isTephra || isSeismic) &&
                     <MapComponent
-                      width={ mapWidth }
-                      height={ height - 190 }
+                      width={mapWidth}
+                      height={mapHeight}
                       panelType={RightSectionTypes.CONDITIONS}
                     />
                   }
                   { isLavaCoder &&
-                    <div className="lava-coder-placeholder"
-                      style={{ width: mapWidth - 56, height: height - 190, background: "white", margin: "25px 28px 0px 28px" }}>
-                    </div>
+                    <LavaCoderView width={mapWidth - 2 * simMargin.x} height={mapHeight} margin={simMarginStr} />
                   }
                   {
                     isTephra &&
@@ -538,12 +548,12 @@ export class AppComponent extends BaseComponent<IProps, IState> {
               >
                 <Simulation width={mapWidth} backgroundColor={this.getRightTabColor(RightSectionTypes.CROSS_SECTION)}>
                   <MapComponent
-                    width={ mapWidth }
-                    height={ height - 190 }
+                    width={mapWidth}
+                    height={mapHeight}
                     panelType={RightSectionTypes.CROSS_SECTION}
                   />
                   <CrossSectionComponent
-                    width={ mapWidth }
+                    width={mapWidth}
                     height={ 100 }
                   />
                 </Simulation>
@@ -569,7 +579,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 </Simulation>
               </TabPanel>
             }
-            { showData &&
+            { showDataRight &&
               <TabPanel
                 width={`${tabWidth}px`}
                 tabcolor={this.getRightTabColor(RightSectionTypes.DATA, unitName)}

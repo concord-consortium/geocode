@@ -2,6 +2,7 @@
 
 const webpack = require('webpack');
 const path = require('path');
+const Dotenv = require('dotenv-webpack');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -99,7 +100,7 @@ module.exports = (env, argv) => {
           type: 'asset/source'  // Exports the raw source code of the file
         },
         {
-          test: /\.(kmz|xml)$/i,
+          test: /\.(kml|kmz|xml)$/i,
           type: 'asset/resource'  // Emits a separate file and exports the URL
         }
       ]
@@ -108,7 +109,7 @@ module.exports = (env, argv) => {
       extensions: [ '.ts', '.tsx', '.js' ],
       alias: {
         process: "process/browser"
-      },
+      }
     },
     ignoreWarnings: [
       {
@@ -117,6 +118,7 @@ module.exports = (env, argv) => {
       }
     ],
     plugins: [
+      new Dotenv(),
       new ESLintPlugin({
         extensions: ['ts', 'tsx', 'js', 'jsx'],
       }),
@@ -155,7 +157,7 @@ module.exports = (env, argv) => {
       new CopyWebpackPlugin({
         patterns: [
           {from: 'src/public'}
-        ],
+        ]
       })
     ]
   };
