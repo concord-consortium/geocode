@@ -4,6 +4,7 @@ import { AsciiRaster } from "./parse-ascii-raster";
 
 const cParents = false; // If true, replicate the incorrect method of determining parents from the c version
 const trueParents = true;
+const pulsesPerMessage = 50;
 const diagonalScale = 1 / Math.sqrt(2);
 
 const ventEasting = 232214;
@@ -104,6 +105,18 @@ function getLowerNeighbors(cell: GridCell, grid: GridCell[][]) {
   return neighbors;
 }
 
+function getLavaElevationGrid(grid: GridCell[][]) {
+  const lavaElevationGrid: number[][] = [];
+  grid.forEach(row => {
+    const lavaRow: number[] = [];
+    row.forEach(cell => {
+      lavaRow.push(cell.lavaElevation);
+    });
+    lavaElevationGrid.push(lavaRow);
+  });
+  return lavaElevationGrid;
+}
+
 export async function runSimulation(raster: AsciiRaster, postMessage: (message: any) => void) {
   let pulseCount = 0;
   const startTime = Date.now();
@@ -156,13 +169,16 @@ export async function runSimulation(raster: AsciiRaster, postMessage: (message: 
     }
 
     pulseCount++;
-    if (pulseCount % 100 === 0) {
+    if (pulseCount % pulsesPerMessage === 0) {
       console.log(`  - Pulse ${pulseCount}: ${currentTotalVolume} m3 remaining`);
-      // postMessage({ status: "updatedGrid", grid, pulseCount });
+      postMessage({ status: "updatedGrid", grid: getLavaElevationGrid(grid), pulseCount });
     }
   }
 
-  postMessage({ status: "updatedGrid", grid, pulseCount });
+  // Send a final update if the last pulse is off
+  if (pulseCount % pulsesPerMessage !== 0) {
+    postMessage({ status: "updatedGrid", grid: getLavaElevationGrid(grid), pulseCount });
+  }
 
   const endTime = Date.now();
   console.log(`  - Simulation completed in ${endTime - startTime} ms`);

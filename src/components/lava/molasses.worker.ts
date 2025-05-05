@@ -5,7 +5,7 @@ let asciiRaster: AsciiRaster | undefined;
 
 self.onmessage = (e) => {
   const reader = new FileReader();
-  
+
   reader.onload = () => {
     const content = reader.result;
     if (typeof content === "string") {
@@ -18,7 +18,7 @@ self.onmessage = (e) => {
     }
   };
 
-  fetch("/data/data.asc")
+  fetch("/data/data-half.asc")
     .then(response => response.blob())
     .then(blob => reader.readAsText(blob));
 };

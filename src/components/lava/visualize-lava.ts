@@ -1,7 +1,7 @@
 import { AsciiRaster } from "./parse-ascii-raster";
-import { GridCell, residual } from "./molasses";
+import { residual } from "./molasses";
 
-export function visualizeLava(raster: AsciiRaster, grid: GridCell[][]) {
+export function visualizeLava(raster: AsciiRaster, grid: number[][]) {
   const canvas = document.createElement("canvas");
   canvas.style.position = "absolute";
   canvas.style.top = "30px";
@@ -22,18 +22,18 @@ export function visualizeLava(raster: AsciiRaster, grid: GridCell[][]) {
 
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
-      const cell = grid[y][x];
+      const lavaElevation = grid[y][x];
       const index = (y * width + x) * 4;
       data[index] = 150; // Red
       data[index + 1] = 150; // Green
       data[index + 2] = 255; // Blue
-      if (cell.lavaElevation > 0) {
-        if (cell.lavaElevation <= residual) {
-          data[index] = 255 * cell.lavaElevation / residual;
+      if (lavaElevation > 0) {
+        if (lavaElevation <= residual) {
+          data[index] = 255 * lavaElevation / residual;
           data[index + 1] = 0;
           data[index + 2] = 0;
         } else {
-          const value = 255 * Math.min(1, (cell.lavaElevation - residual) / (residual));
+          const value = 255 * Math.min(1, (lavaElevation - residual) / (residual));
           data[index] = 255;
           data[index + 1] = value;
           data[index + 2] = 0;

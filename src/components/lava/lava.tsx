@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import { GridCell } from "./molasses";
 import RasterWorker from "./molasses.worker";
 import { AsciiRaster } from "./parse-ascii-raster";
 import { visualizeLava } from "./visualize-lava";
@@ -27,7 +26,7 @@ function SimulationDisplay({ coveredCells, pulseCount }: ISimulationDisplayProps
 export function Lava() {
   const [raster, setRaster] = useState<AsciiRaster|null>(null);
   const [pulseCount, setPulseCount] = useState(0);
-  const [grid, setGrid] = useState<GridCell[][]|null>(null);
+  const [grid, setGrid] = useState<number[][]|null>(null);
 
   useEffect(() => {
     const worker = new RasterWorker();
@@ -60,8 +59,8 @@ export function Lava() {
 
     let _coveredCells = 0;
     grid.forEach(row => {
-      row.forEach(cell => {
-        if (cell.lavaElevation > 0) {
+      row.forEach(lavaElevation => {
+        if (lavaElevation > 0) {
           _coveredCells++;
         }
       });
