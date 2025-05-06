@@ -84,6 +84,7 @@ export function useCesiumViewer(container: Element | null) {
         console.error("Failed to load KML file:", error);
       });
     }
+    return () => viewer.current?.destroy();
   }, [container]);
 
   return { viewer: viewer.current, hazardZones: hazardZones.current };
