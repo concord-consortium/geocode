@@ -509,9 +509,10 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                     />
                   }
                   { isLavaCoder &&
-                    <div className="lava-coder-placeholder"
-                      style={{ width: mapWidth - 56, height: height - 190, background: "white", margin: "25px 28px 0px 28px" }}>
-                    </div>
+                    <Lava
+                      height={height - 190}
+                      width={mapWidth - 56}
+                    />
                   }
                   {
                     isTephra &&
@@ -754,7 +755,6 @@ export class AppComponent extends BaseComponent<IProps, IState> {
             </ModalBackground>
           }
         </Row>
-        <Lava />
       </App>
     );
   }

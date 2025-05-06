@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import RasterWorker from "./molasses.worker";
+import MolassesWorker from "./molasses.worker";
 import { AsciiRaster } from "./parse-ascii-raster";
 import { visualizeLava } from "./visualize-lava";
 
@@ -23,13 +23,17 @@ function SimulationDisplay({ coveredCells, pulseCount }: ISimulationDisplayProps
   );
 }
 
-export function Lava() {
+interface ILavaProps {
+  height: number;
+  width: number;
+}
+export function Lava({ height, width }: ILavaProps) {
   const [raster, setRaster] = useState<AsciiRaster|null>(null);
   const [pulseCount, setPulseCount] = useState(0);
   const [grid, setGrid] = useState<number[][]|null>(null);
 
   useEffect(() => {
-    const worker = new RasterWorker();
+    const worker = new MolassesWorker();
     worker.onmessage = (e) => {
       try {
         const { status } = e.data;
@@ -74,11 +78,12 @@ export function Lava() {
   }, [grid, raster]);
 
   return (
-    <div className="lava-output">
+    <div className="lava-output" style={{ height, width }}>
       {raster
         ? <SimulationDisplay coveredCells={coveredCells} pulseCount={pulseCount} />
         : <h3>Loading Data...</h3>
       }
+      <div id="lava-map" />
     </div>
   );
 }

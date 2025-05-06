@@ -1,12 +1,12 @@
 import { AsciiRaster } from "./parse-ascii-raster";
 import { residual } from "./molasses";
 
+function containerElement() {
+  return document.getElementById("lava-map") || document.body;
+}
+
 export function visualizeLava(raster: AsciiRaster, grid: number[][]) {
   const canvas = document.createElement("canvas");
-  canvas.style.position = "absolute";
-  canvas.style.top = "30px";
-  canvas.style.left = "350px";
-  canvas.style.zIndex = "9999";
   const ctx = canvas.getContext("2d");
   if (!ctx) {
     throw new Error("Failed to get canvas context");
@@ -24,9 +24,9 @@ export function visualizeLava(raster: AsciiRaster, grid: number[][]) {
     for (let x = 0; x < width; x++) {
       const lavaElevation = grid[y][x];
       const index = (y * width + x) * 4;
-      data[index] = 150; // Red
-      data[index + 1] = 150; // Green
-      data[index + 2] = 255; // Blue
+      data[index] = 230; // Red
+      data[index + 1] = 230; // Green
+      data[index + 2] = 230; // Blue
       if (lavaElevation > 0) {
         if (lavaElevation <= residual) {
           data[index] = 255 * lavaElevation / residual;
@@ -44,9 +44,9 @@ export function visualizeLava(raster: AsciiRaster, grid: number[][]) {
   }
 
   ctx.putImageData(imageData, 0, 0);
-  document.body.appendChild(canvas);
+  containerElement().appendChild(canvas);
 
   return () => {
-    document.body.removeChild(canvas);
+    containerElement().removeChild(canvas);
   };
 }
