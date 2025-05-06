@@ -123,9 +123,12 @@ export async function runSimulation(raster: AsciiRaster, postMessage: (message: 
   const grid = createGrid(raster);
   ventX = convertEastingToX(ventEasting, raster);
   ventY = convertNorthingToY(ventNorthing, raster);
-  console.log(`--- ventX: ${ventX}, ventY: ${ventY}`);
   const cellArea = raster.header.cellsize ** 2;
   let currentTotalVolume = totalVolume;
+  const sendUpdateMessage = () => {
+    postMessage({ status: "updatedGrid", grid: getLavaElevationGrid(grid), pulseCount });
+  };
+
   while (currentTotalVolume > 0) {
     // Add lava to the vent cell
     const currentPulseVolume = Math.min(currentTotalVolume, pulseVolume);
@@ -170,14 +173,13 @@ export async function runSimulation(raster: AsciiRaster, postMessage: (message: 
 
     pulseCount++;
     if (pulseCount % pulsesPerMessage === 0) {
-      console.log(`  - Pulse ${pulseCount}: ${currentTotalVolume} m3 remaining`);
-      postMessage({ status: "updatedGrid", grid: getLavaElevationGrid(grid), pulseCount });
+      sendUpdateMessage();
     }
   }
 
   // Send a final update if the last pulse is off
   if (pulseCount % pulsesPerMessage !== 0) {
-    postMessage({ status: "updatedGrid", grid: getLavaElevationGrid(grid), pulseCount });
+    sendUpdateMessage();
   }
 
   const endTime = Date.now();

@@ -24,4 +24,3 @@ self.onmessage = (e) => {
 };
 
 export default {} as typeof Worker & (new () => Worker);
-// export {};

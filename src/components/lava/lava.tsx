@@ -32,7 +32,6 @@ export function Lava() {
     const worker = new RasterWorker();
     worker.onmessage = (e) => {
       try {
-        console.log(`>>> Worker message:`, e.data);
         const { status } = e.data;
         if (status === "rasterParsed") {
           setRaster(e.data.raster);
