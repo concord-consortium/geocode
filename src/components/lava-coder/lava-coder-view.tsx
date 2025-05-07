@@ -1,6 +1,5 @@
 
 import { createWorldImageryAsync, ImageryLayer, IonWorldImageryStyle } from "@cesium/engine";
-import { observer } from "mobx-react-lite";
 import { useEffect, useState } from "react";
 import { lavaSimulation } from "../../stores/lava-simulation-store";
 import IconButton from "../buttons/icon-button";
@@ -15,7 +14,7 @@ interface IProps {
   margin: string;
 }
 
-export const LavaCoderView = observer(function LavaCoderView({ width, height, margin }: IProps) {
+export function LavaCoderView({ width, height, margin }: IProps) {
   const [lavaCoderElt, setLavaCoderElt] = useState<HTMLDivElement | null>(null);
   const [showLabels, setShowLabels] = useState(false);
   const [showHazardZones, setShowHazardZones] = useState(false);
@@ -87,4 +86,4 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
       </div>
     </div>
   );
-});
+}
