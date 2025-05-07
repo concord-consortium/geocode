@@ -48,13 +48,13 @@ export const LavaSimulationStore = types
   }))
   .actions((self) => ({
     runSimulation() {
+      if (!self.raster) return;
+      
       self.worker = new MolassesWorker();
       self.worker.onmessage = (e) => {
         try {
           const { status } = e.data;
-          if (status === "rasterParsed") {
-            self.setRaster(e.data.raster);
-          } else if (status === "runningSimulation") {
+          if (status === "runningSimulation") {
             console.log(`Running simulation...`);
           } else if (status === "updatedGrid") {
             self.setPulseCount(e.data.pulseCount);
@@ -66,7 +66,7 @@ export const LavaSimulationStore = types
         }
       };
   
-      self.worker.postMessage({ type: "start" });
+      self.worker.postMessage({ type: "start", raster: self.raster });
   
       return () => {
         self.worker?.terminate();
