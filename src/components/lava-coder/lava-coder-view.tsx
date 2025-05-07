@@ -1,5 +1,7 @@
-import { useEffect, useState } from "react";
+
+import { createWorldImageryAsync, ImageryLayer, IonWorldImageryStyle } from "@cesium/engine";
 import { observer } from "mobx-react-lite";
+import { useEffect, useState } from "react";
 import { lavaSimulation } from "../../stores/lava-simulation-store";
 import IconButton from "../buttons/icon-button";
 import RasterWorker from "./raster.worker";
@@ -15,9 +17,27 @@ interface IProps {
 
 export const LavaCoderView = observer(function LavaCoderView({ width, height, margin }: IProps) {
   const [lavaCoderElt, setLavaCoderElt] = useState<HTMLDivElement | null>(null);
+  const [showLabels, setShowLabels] = useState(false);
   const [showHazardZones, setShowHazardZones] = useState(false);
 
-  const { hazardZones } = useCesiumViewer(lavaCoderElt);
+  const { hazardZones, widget } = useCesiumViewer(lavaCoderElt);
+
+  function toggleShowLabels() {
+    setShowLabels(prev => !prev);
+  }
+
+  useEffect(() => {
+    if (widget) {
+      const style: IonWorldImageryStyle = showLabels
+        ? IonWorldImageryStyle.AERIAL_WITH_LABELS
+        : IonWorldImageryStyle.AERIAL;
+      createWorldImageryAsync({ style }).then((imageryProvider) => {
+        const imageryLayer = new ImageryLayer(imageryProvider);
+        widget.imageryLayers.removeAll();
+        widget.imageryLayers.add(imageryLayer);
+      });
+    }
+  }, [showLabels, widget]);
 
   // Load the elevation data
   useEffect(() => {
@@ -44,22 +64,26 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
   }, []);
 
   function toggleHazardZones() {
-    const newShowHazardZones = !showHazardZones;
-    setShowHazardZones(newShowHazardZones);
-    if (hazardZones) {
-      hazardZones.show = newShowHazardZones;
-    }
+    setShowHazardZones(prev => !prev);
   }
+
+  useEffect(() => {
+    if (hazardZones) {
+      hazardZones.show = showHazardZones;
+    }
+  }, [hazardZones, showHazardZones]);
 
   const containerStyle: React.CSSProperties = { width, height, margin };
 
-  const label = showHazardZones ? "Hide Hazard Zones" : "Show Hazard Zones";
+  const showLabelsLabel = showLabels ? "Hide Labels" : "Show Labels";
+  const hazardZonesLabel = showHazardZones ? "Hide Hazard Zones" : "Show Hazard Zones";
 
   return (
     <div className="lava-coder-view" style={containerStyle}>
       <div ref={elt => setLavaCoderElt(elt)} className="lava-coder-simulation" />
       <div className="lava-overlay-controls">
-        <IconButton className="show-hazard-zones-button" label={label} onClick={() => toggleHazardZones()} />
+        <IconButton className="show-labels-button" label={showLabelsLabel} onClick={() => toggleShowLabels()} />
+        <IconButton className="show-hazard-zones-button" label={hazardZonesLabel} onClick={() => toggleHazardZones()} />
       </div>
     </div>
   );

@@ -14,6 +14,10 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 //   https://github.com/concord-consortium/s3-deploy-action/blob/main/README.md#top-branch-example
 const DEPLOY_PATH = process.env.DEPLOY_PATH;
 
+// this is the base url for static files that CesiumJS needs to load
+// Not required but if it's set remember to update CESIUM_BASE_URL as shown below
+const cesiumBaseUrl = "cesiumStatic";
+
 module.exports = (env, argv) => {
   const devMode = argv.mode !== 'production';
 
@@ -59,6 +63,9 @@ module.exports = (env, argv) => {
         {
           test: /\.(png|woff|woff2|eot|ttf)$/,
           type: 'asset',
+          generator: {
+            filename: 'assets/[name].[contenthash:8][ext]' // Specify the output filename here
+          }
         },
         {
           test: /\.svg$/i,
@@ -115,15 +122,18 @@ module.exports = (env, argv) => {
         },
         {
           test: /\.(kml|kmz|xml)$/i,
-          type: 'asset/resource'  // Emits a separate file and exports the URL
+          type: 'asset/resource', // Emits a separate file and exports the URL
+          generator: {
+            filename: 'assets/[name].[contenthash:8][ext]' // Specify the output filename here
+          }
         }
       ]
     },
     resolve: {
-      extensions: [ '.ts', '.tsx', '.js' ],
       alias: {
         process: "process/browser"
-      }
+      },
+      extensions: [ '.ts', '.tsx', '.js' ]
     },
     ignoreWarnings: [
       {
@@ -147,30 +157,45 @@ module.exports = (env, argv) => {
         chunks: ['app'],
         template: 'src/index.html',
         favicon: 'src/public/favicon.ico',
+        templateParameters: {
+          CESIUM_BASE_URL: `${cesiumBaseUrl}/`, // Pass the base URL to the template
+        }
       }),
       new HtmlWebpackPlugin({
         filename: 'report-item/index.html',
         chunks: ['report-item'],
         template: 'src/report-item/index.html',
         favicon: 'src/public/favicon.ico',
+        templateParameters: {
+          CESIUM_BASE_URL: `${cesiumBaseUrl}/`, // Pass the base URL to the template
+        }
       }),
       ...(DEPLOY_PATH ? [new HtmlWebpackPlugin({
         filename: 'index-top.html',
         chunks: ['app'],
         template: 'src/index.html',
         favicon: 'src/public/favicon.ico',
-        publicPath: DEPLOY_PATH
+        publicPath: DEPLOY_PATH,
+        templateParameters: {
+          CESIUM_BASE_URL: `${DEPLOY_PATH}/${cesiumBaseUrl}/`, // Pass the base URL to the template
+        }
       })] : []),
       ...(DEPLOY_PATH ? [new HtmlWebpackPlugin({
         filename: 'report-item/index-top.html',
         chunks: ['report-item'],
         template: 'src/report-item/index.html',
         favicon: 'src/public/favicon.ico',
-        publicPath: `../${DEPLOY_PATH}`
+        publicPath: `../${DEPLOY_PATH}`,
+        templateParameters: {
+          CESIUM_BASE_URL: `${DEPLOY_PATH}/${cesiumBaseUrl}/`, // Pass the base URL to the template
+        }
       })] : []),
       new CopyWebpackPlugin({
         patterns: [
-          {from: 'src/public'}
+          { from: 'src/public' },
+          { from: 'node_modules/@cesium/engine/Build/Workers', to: `${cesiumBaseUrl}/Workers` },
+          { from: 'node_modules/@cesium/engine/Build/ThirdParty', to: `${cesiumBaseUrl}/ThirdParty` },
+          { from: 'node_modules/@cesium/engine/Source/Assets', to: `${cesiumBaseUrl}/Assets` }
         ]
       })
     ]
