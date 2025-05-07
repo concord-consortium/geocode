@@ -112,7 +112,7 @@
     "copy-webpack-plugin": "^13.0.0",
     "cross-env": "^7.0.3",
     "css-loader": "^7.1.2",
-    "cypress": "^11.2.0",
+    "cypress": "^14.3.3",
     "cypress-commands": "^3.0.0",
     "dotenv-webpack": "^8.1.0",
     "dsv-loader": "^2.0.0",
