@@ -3,6 +3,7 @@ import { autorun } from "mobx";
 import { useEffect, useRef } from "react";
 import hazardZonesKml from "../../assets/Volcano_Lava_Flow_Hazard_Zones.kml";
 import { lavaElevations, lavaSimulation } from "../../stores/lava-simulation-store";
+import { maxLat, maxLong, minLat, minLong } from "./lava-constants";
 import { visualizeLava } from "./visualize-lava";
 
 const Cesium = (window as any).Cesium;
@@ -107,12 +108,7 @@ export function useCesiumViewer(container: Element | null) {
       const url = visualizeLava(raster, lavaElevations);
       lavaLayerRef.current = Cesium.ImageryLayer.fromProviderAsync(
         Cesium.SingleTileImageryProvider.fromUrl(url, {
-          rectangle: Cesium.Rectangle.fromDegrees(
-            -155.673766,
-            19.370473,
-            -155.008440,
-            19.819655
-          )
+          rectangle: Cesium.Rectangle.fromDegrees(minLong, minLat, maxLong, maxLat)
         })
       );
       if (lavaLayerRef.current) viewer.current.imageryLayers.add(lavaLayerRef.current);
