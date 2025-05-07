@@ -1,9 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
-import MolassesWorker from "./molasses.worker";
-import { AsciiRaster } from "./parse-ascii-raster";
+import { useEffect, useMemo } from "react";
+import { observer } from "mobx-react-lite";
+import { getSnapshot } from "mobx-state-tree";
+import { lavaSimulation } from "../../stores/lava-simulation-store";
 import { visualizeLava } from "./visualize-lava";
 
 import "./lava.scss";
+import { autorun } from "mobx";
 
 interface ISimulationDisplayProps {
   coveredCells: number;
@@ -27,55 +29,18 @@ interface ILavaProps {
   height: number;
   width: number;
 }
-export function Lava({ height, width }: ILavaProps) {
-  const [raster, setRaster] = useState<AsciiRaster|null>(null);
-  const [pulseCount, setPulseCount] = useState(0);
-  const [grid, setGrid] = useState<number[][]|null>(null);
+export const Lava = observer(function Lava({ height, width }: ILavaProps) {
+  const { coveredCells, lavaElevations, pulseCount, raster } = lavaSimulation;
+  console.log(`>>> rendering lava`, pulseCount);
 
   useEffect(() => {
-    const worker = new MolassesWorker();
-    worker.onmessage = (e) => {
-      try {
-        const { status } = e.data;
-        if (status === "rasterParsed") {
-          setRaster(e.data.raster);
-        } else if (status === "runningSimulation") {
-          console.log(`Running simulation...`);
-        } else if (status === "updatedGrid") {
-          setPulseCount(e.data.pulseCount);
-          setGrid(e.data.grid);
-        }
-      } catch (error) {
-        console.error("Error handling worker message:", error, e);
-      }
-    };
+    return autorun(() => {
+      if (!lavaElevations || !raster) return;
 
-    worker.postMessage({ type: "start" });
-
-    return () => {
-      worker.terminate();
-    };
-  }, []);
-
-  const coveredCells = useMemo(() => {
-    if (!grid) return 0;
-
-    let _coveredCells = 0;
-    grid.forEach(row => {
-      row.forEach(lavaElevation => {
-        if (lavaElevation > 0) {
-          _coveredCells++;
-        }
-      });
+      const lavaSnapshot = getSnapshot(lavaElevations);
+      return visualizeLava(raster, lavaSnapshot);
     });
-    return _coveredCells;
-  }, [grid]);
-
-  useEffect(() => {
-    if (!grid || !raster) return;
-
-    return visualizeLava(raster, grid);
-  }, [grid, raster]);
+  }, [lavaElevations, raster]);
 
   return (
     <div className="lava-output" style={{ height, width }}>
@@ -86,4 +51,4 @@ export function Lava({ height, width }: ILavaProps) {
       <div id="lava-map" />
     </div>
   );
-}
+});

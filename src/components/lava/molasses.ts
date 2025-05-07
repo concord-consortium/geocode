@@ -4,15 +4,15 @@ import { AsciiRaster } from "./parse-ascii-raster";
 
 const cParents = false; // If true, replicate the incorrect method of determining parents from the c version
 const trueParents = true;
-const pulsesPerMessage = 50;
+const millisecondsPerFrame = 200;
 const diagonalScale = 1 / Math.sqrt(2);
 
-const ventEasting = 232214; // Suggested location
-const ventNorthing = 2158722; // Suggested location
+// const ventEasting = 232214; // Suggested location
+// const ventNorthing = 2158722; // Suggested location
 // const ventEasting = 242214;
 // const ventNorthing = 2168722;
-// const ventEasting = 237214;
-// const ventNorthing = 2173722;
+const ventEasting = 237214;
+const ventNorthing = 2173722;
 let ventX = -1;
 let ventY = -1;
 export const residual = 5;
@@ -133,6 +133,7 @@ export async function runSimulation(raster: AsciiRaster, postMessage: (message: 
     postMessage({ status: "updatedGrid", grid: getLavaElevationGrid(grid), pulseCount });
   };
 
+  let lastFrameTime = Date.now();
   while (currentTotalVolume > 0) {
     // Add lava to the vent cell
     const currentPulseVolume = Math.min(currentTotalVolume, pulseVolume);
@@ -176,15 +177,14 @@ export async function runSimulation(raster: AsciiRaster, postMessage: (message: 
     }
 
     pulseCount++;
-    if (pulseCount % pulsesPerMessage === 0) {
+    if (Date.now() - lastFrameTime >= millisecondsPerFrame) {
       sendUpdateMessage();
+      lastFrameTime = Date.now();
     }
   }
 
-  // Send a final update if the last pulse is off
-  if (pulseCount % pulsesPerMessage !== 0) {
-    sendUpdateMessage();
-  }
+  // Send a final update
+  sendUpdateMessage();
 
   const endTime = Date.now();
   console.log(`  - Simulation completed in ${endTime - startTime} ms`);

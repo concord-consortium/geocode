@@ -5,11 +5,20 @@ function containerElement() {
   return document.getElementById("lava-map") || document.body;
 }
 
+const canvas = document.createElement("canvas");
+const ctx = canvas.getContext("2d");
+let addedCanvas = false;
+
 export function visualizeLava(raster: AsciiRaster, grid: number[][]) {
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
   if (!ctx) {
     throw new Error("Failed to get canvas context");
+  }
+
+  if (!addedCanvas) {
+    containerElement().appendChild(canvas);
+    addedCanvas = true;
+  } else {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
   }
 
   const width = raster.header.ncols;
@@ -20,8 +29,8 @@ export function visualizeLava(raster: AsciiRaster, grid: number[][]) {
   const imageData = ctx.createImageData(width, height);
   const data = imageData.data;
 
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
+  for (let y = 0; y < height && y < grid.length; y++) {
+    for (let x = 0; x < width && x < grid[y].length; x++) {
       const lavaElevation = grid[y][x];
       const index = (y * width + x) * 4;
       data[index] = 230; // Red
@@ -44,9 +53,4 @@ export function visualizeLava(raster: AsciiRaster, grid: number[][]) {
   }
 
   ctx.putImageData(imageData, 0, 0);
-  containerElement().appendChild(canvas);
-
-  return () => {
-    containerElement().removeChild(canvas);
-  };
 }
