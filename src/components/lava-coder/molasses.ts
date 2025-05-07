@@ -7,12 +7,12 @@ const trueParents = true;
 const millisecondsPerFrame = 200;
 const diagonalScale = 1 / Math.sqrt(2);
 
-// const ventEasting = 232214; // Suggested location
-// const ventNorthing = 2158722; // Suggested location
+const ventEasting = 232214; // Suggested location
+const ventNorthing = 2158722; // Suggested location
 // const ventEasting = 242214;
 // const ventNorthing = 2168722;
-const ventEasting = 237214;
-const ventNorthing = 2173722;
+// const ventEasting = 237214;
+// const ventNorthing = 2173722;
 let ventX = -1;
 let ventY = -1;
 export const residual = 5;

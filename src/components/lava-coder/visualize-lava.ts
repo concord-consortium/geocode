@@ -39,6 +39,7 @@ export function visualizeLava(raster: AsciiRaster, grid: number[][]) {
       data[index] = elevationColor; // Red
       data[index + 1] = elevationColor; // Green
       data[index + 2] = elevationColor; // Blue
+      data[index + 3] = 0; // Alpha
       if (lavaElevation > 0) {
         if (lavaElevation <= residual) {
           data[index] = 255 * lavaElevation / residual;
@@ -50,10 +51,11 @@ export function visualizeLava(raster: AsciiRaster, grid: number[][]) {
           data[index + 1] = value;
           data[index + 2] = 0;
         }
+        data[index + 3] = 255; // Alpha
       }
-      data[index + 3] = 255; // Alpha
     }
   }
 
   ctx.putImageData(imageData, 0, 0);
+  return canvas.toDataURL("image/png");
 }
