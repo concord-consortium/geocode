@@ -144,7 +144,7 @@ module.exports = (env, argv) => {
         template: 'src/index.html',
         favicon: 'src/public/favicon.ico',
         templateParameters: {
-          CESIUM_BASE_URL: `/${cesiumBaseUrl}/`, // Pass the base URL to the template
+          CESIUM_BASE_URL: `${cesiumBaseUrl}/`, // Pass the base URL to the template
         }
       }),
       new HtmlWebpackPlugin({
@@ -153,7 +153,7 @@ module.exports = (env, argv) => {
         template: 'src/report-item/index.html',
         favicon: 'src/public/favicon.ico',
         templateParameters: {
-          CESIUM_BASE_URL: `/${cesiumBaseUrl}/`, // Pass the base URL to the template
+          CESIUM_BASE_URL: `${cesiumBaseUrl}/`, // Pass the base URL to the template
         }
       }),
       ...(DEPLOY_PATH ? [new HtmlWebpackPlugin({
@@ -163,7 +163,7 @@ module.exports = (env, argv) => {
         favicon: 'src/public/favicon.ico',
         publicPath: DEPLOY_PATH,
         templateParameters: {
-          CESIUM_BASE_URL: `/${cesiumBaseUrl}/`, // Pass the base URL to the template
+          CESIUM_BASE_URL: `${DEPLOY_PATH}/${cesiumBaseUrl}/`, // Pass the base URL to the template
         }
       })] : []),
       ...(DEPLOY_PATH ? [new HtmlWebpackPlugin({
@@ -171,7 +171,10 @@ module.exports = (env, argv) => {
         chunks: ['report-item'],
         template: 'src/report-item/index.html',
         favicon: 'src/public/favicon.ico',
-        publicPath: `../${DEPLOY_PATH}`
+        publicPath: `../${DEPLOY_PATH}`,
+        templateParameters: {
+          CESIUM_BASE_URL: `${DEPLOY_PATH}/${cesiumBaseUrl}/`, // Pass the base URL to the template
+        }
       })] : []),
       new CopyWebpackPlugin({
         patterns: [
