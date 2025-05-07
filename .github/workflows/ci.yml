@@ -76,6 +76,11 @@ jobs:
           # skip installing cypress since it isn't needed for just building
           # This decreases the deploy time quite a bit
           CYPRESS_INSTALL_BINARY: 0
+      - name: Configure Environment
+        run: |
+          cat <<EOF > .env
+          CESIUM_ION_ACCESS_TOKEN="${{ secrets.CESIUM_ION_ACCESS_TOKEN }}"
+          EOF
       - uses: concord-consortium/s3-deploy-action@v1
         with:
           bucket: models-resources
