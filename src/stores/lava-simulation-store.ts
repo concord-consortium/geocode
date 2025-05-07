@@ -2,6 +2,20 @@ import { applySnapshot, types } from "mobx-state-tree";
 import MolassesWorker from "../components/lava/molasses.worker";
 import { AsciiRaster } from "../components/lava/parse-ascii-raster";
 
+export let lavaElevations: number[][] | undefined;
+
+function countCoveredCells(_lavaElevations: number[][]) {
+  let coveredCells = 0;
+  _lavaElevations.forEach(row => {
+    row.forEach(lavaElevation => {
+      if (lavaElevation > 0) {
+        coveredCells++;
+      }
+    });
+  });
+  return coveredCells;
+}
+
 export const LavaSimulationStore = types
   .model("lavaSimulation", {
     residual: 5,
@@ -18,23 +32,18 @@ export const LavaSimulationStore = types
     worker: null as Worker | null
   }))
   .actions((self) => ({
-    setLavaElevations(lavaElevations: number[][]) {
-      applySnapshot(self.lavaElevations, lavaElevations);
-
-      self.coveredCells = 0;
-      lavaElevations.forEach(row => {
-        row.forEach(lavaElevation => {
-          if (lavaElevation > 0) {
-            self.coveredCells++;
-          }
-        });
-      });
+    // FIXME: Set the MST lava elevations when saving. It is too slow to do it frequently.
+    setLavaElevations(_lavaElevations: number[][]) {
+      applySnapshot(self.lavaElevations, _lavaElevations);
     },
     setPulseCount(pulseCount: number) {
       self.pulseCount = pulseCount;
     },
     setRaster(raster: AsciiRaster) {
       self.raster = raster;
+    },
+    countCoveredCells(grid: number[][]) {
+      self.coveredCells = countCoveredCells(grid);
     }
   }))
   .actions((self) => ({
@@ -49,7 +58,8 @@ export const LavaSimulationStore = types
             console.log(`Running simulation...`);
           } else if (status === "updatedGrid") {
             self.setPulseCount(e.data.pulseCount);
-            self.setLavaElevations(e.data.grid);
+            lavaElevations = e.data.grid;
+            self.countCoveredCells(e.data.grid);
           }
         } catch (error) {
           console.error("Error handling worker message:", error, e);

@@ -1,11 +1,10 @@
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
+import { autorun } from "mobx";
 import { observer } from "mobx-react-lite";
-import { getSnapshot } from "mobx-state-tree";
-import { lavaSimulation } from "../../stores/lava-simulation-store";
+import { lavaElevations, lavaSimulation } from "../../stores/lava-simulation-store";
 import { visualizeLava } from "./visualize-lava";
 
 import "./lava.scss";
-import { autorun } from "mobx";
 
 interface ISimulationDisplayProps {
   coveredCells: number;
@@ -30,17 +29,15 @@ interface ILavaProps {
   width: number;
 }
 export const Lava = observer(function Lava({ height, width }: ILavaProps) {
-  const { coveredCells, lavaElevations, pulseCount, raster } = lavaSimulation;
-  console.log(`>>> rendering lava`, pulseCount);
+  const { coveredCells, pulseCount, raster } = lavaSimulation;
 
   useEffect(() => {
     return autorun(() => {
-      if (!lavaElevations || !raster) return;
+      if (!coveredCells || !lavaElevations || !raster) return;
 
-      const lavaSnapshot = getSnapshot(lavaElevations);
-      return visualizeLava(raster, lavaSnapshot);
+      return visualizeLava(raster, lavaElevations);
     });
-  }, [lavaElevations, raster]);
+  }, [coveredCells, raster]);
 
   return (
     <div className="lava-output" style={{ height, width }}>
