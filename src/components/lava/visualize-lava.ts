@@ -1,6 +1,8 @@
 import { AsciiRaster } from "./parse-ascii-raster";
 import { residual } from "./molasses";
 
+const maxHeight = 13670;
+
 function containerElement() {
   return document.getElementById("lava-map") || document.body;
 }
@@ -33,9 +35,10 @@ export function visualizeLava(raster: AsciiRaster, grid: number[][]) {
     for (let x = 0; x < width && x < grid[y].length; x++) {
       const lavaElevation = grid[y][x];
       const index = (y * width + x) * 4;
-      data[index] = 230; // Red
-      data[index + 1] = 230; // Green
-      data[index + 2] = 230; // Blue
+      const elevationColor = Math.max(0, Math.min(1, raster.values[y][x] / maxHeight)) * 255;
+      data[index] = elevationColor; // Red
+      data[index + 1] = elevationColor; // Green
+      data[index + 2] = elevationColor; // Blue
       if (lavaElevation > 0) {
         if (lavaElevation <= residual) {
           data[index] = 255 * lavaElevation / residual;
