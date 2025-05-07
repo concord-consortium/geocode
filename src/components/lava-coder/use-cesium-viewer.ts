@@ -1,6 +1,9 @@
-import type { KmlDataSource, Viewer } from "cesium";
+import type { ImageryLayer, KmlDataSource, Viewer } from "cesium";
+import { autorun } from "mobx";
 import { useEffect, useRef } from "react";
 import hazardZonesKml from "../../assets/Volcano_Lava_Flow_Hazard_Zones.kml";
+import { lavaElevations, lavaSimulation } from "../../stores/lava-simulation-store";
+import { visualizeLava } from "./visualize-lava";
 
 const Cesium = (window as any).Cesium;
 
@@ -22,6 +25,10 @@ const kDefaultZHeight = 132000;
 export function useCesiumViewer(container: Element | null) {
   const viewer = useRef<Viewer | null>(null);
   const hazardZones = useRef<KmlDataSource | null>(null);
+  const lavaLayerRef = useRef<ImageryLayer | null>(null);
+  // Two layers are displayed to avoid flickering. A layer is only removed when it is the third oldest.
+  // This works as long as the lava always expands. If it ever contracts, this will display incorrectly.
+  const oldLavaLayerRef = useRef<ImageryLayer | null>(null);
 
   useEffect(() => {
     if (container && !viewer.current) {
@@ -86,6 +93,32 @@ export function useCesiumViewer(container: Element | null) {
     }
     return () => viewer.current?.destroy();
   }, [container]);
+  
+  // Update the lava display
+  useEffect(() => {
+    return autorun(() => {
+      const { coveredCells, raster } = lavaSimulation;
+
+      if (!coveredCells || !lavaElevations || !raster || !viewer.current) return;
+
+      const oldLayer = oldLavaLayerRef.current;
+      oldLavaLayerRef.current = lavaLayerRef.current;
+
+      const url = visualizeLava(raster, lavaElevations);
+      lavaLayerRef.current = Cesium.ImageryLayer.fromProviderAsync(
+        Cesium.SingleTileImageryProvider.fromUrl(url, {
+          rectangle: Cesium.Rectangle.fromDegrees(
+            -155.673766,
+            19.370473,
+            -155.008440,
+            19.819655
+          )
+        })
+      );
+      if (lavaLayerRef.current) viewer.current.imageryLayers.add(lavaLayerRef.current);
+      if (oldLayer) viewer.current.imageryLayers.remove(oldLayer, true);
+    });
+  }, []);
 
   return { viewer: viewer.current, hazardZones: hazardZones.current };
 }
