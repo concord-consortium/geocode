@@ -1,6 +1,6 @@
 import { applySnapshot, types } from "mobx-state-tree";
-import MolassesWorker from "../components/lava/molasses.worker";
-import { AsciiRaster } from "../components/lava/parse-ascii-raster";
+import MolassesWorker from "../components/lava-coder/molasses.worker";
+import { AsciiRaster } from "../components/lava-coder/parse-ascii-raster";
 
 export let lavaElevations: number[][] | undefined;
 
