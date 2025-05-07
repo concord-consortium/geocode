@@ -114,6 +114,7 @@
     "css-loader": "^7.1.2",
     "cypress": "^11.2.0",
     "cypress-commands": "^3.0.0",
+    "dotenv-webpack": "^8.1.0",
     "dsv-loader": "^2.0.0",
     "eslint": "^9.25.1",
     "eslint-config-react": "^1.1.7",
@@ -153,6 +154,7 @@
   "dependencies": {
     "@concord-consortium/lara-interactive-api": "^1.9.4",
     "@pixi/react": "^7.1.2",
+    "cesium": "^1.129.0",
     "color": "^4.2.3",
     "d3": "^7.9.0",
     "deepmerge": "^4.3.1",
@@ -168,6 +170,7 @@
     "mobx-react": "^9.2.0",
     "mobx-react-lite": "^4.1.0",
     "mobx-state-tree": "^7.0.2",
+    "path-browserify": "^1.0.1",
     "pixi.js": "^7.4.3",
     "query-string": "^9.1.1",
     "react": "^17.0.2",

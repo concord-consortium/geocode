@@ -21,10 +21,11 @@ Students change eruption parameters using [Blockly](https://developers.google.co
 * [Blockly](https://developers.google.com/blockly/) Block programming tool developed by Google.
 * [JS-interpreter](https://github.com/NeilFraser/JS-Interpreter) An isolated javascript evaluation engine.
 * [mobx](https://github.com/mobxjs/mobx) Simple, scalable state management.
-* [mobx-state-tree](https://github.com/mobxjs/mobx-state-tree)  Transactional, MobX powered state container.
+* [mobx-state-tree](https://github.com/mobxjs/mobx-state-tree) Transactional, MobX powered state container.
 * [styled-components](https://www.styled-components.com/) CSS only components via ES6.
-* [PixiJS](http://www.pixijs.com/) 2D Graphics and scene-graph utlity.
-* [React-Pixi](https://reactpixi.org/) Use react state to drive Pixi scenes.
+* [CesiumJS](https://cesium.com/) The Platform for 3D Geospatial (used for LavaCoder)
+* [PixiJS](http://www.pixijs.com/) 2D Graphics and scene-graph utility.
+* [@pixi/react](https://github.com/pixijs/pixi-react/) Use react state to drive Pixi scenes.
 * [React](https://reactjs.org/) Web Components.
 * [TypeScript](https://www.typescriptlang.org/) Javascript that scales.
 * [D3](https://d3js.org/) JavaScript library used for representing data.
@@ -77,6 +78,15 @@ story, and provide a link to the deployed demo branch.
 
 The simulation is a simple tephra calculation function defined in `tephra2.ts`.
 This function will be improved, modified with the help of our volcanologist partners.
+
+### The LavaCoder simulation
+
+The LavaCoder simulation is based on the [MOLASSES](https://github.com/geoscience-community-codes/MOLASSES) (*MO*dular *LA*va *S*imulation *S*oftware for *E*arth *S*cience) model developed by our volcanologist partners. Visualization for the LavaCoder simulation uses [CesiumJS](https://cesium.com/). Using CesiumJS requires use of a Cesium Ion API token. This token can be retrieved from the CC 1Password account or by asking another developer. It should be placed in a `.env` file at the root directory of the project with contents:
+```
+CESIUM_ION_ACCESS_TOKEN="replace-with-real-access-token"
+```
+
+The LavaCoder simulation makes use of a `Volcano_Lava_Flow_Hazard_Zones.kml` file for illustrating the hazard zones for the island. The repository also contains a `Volcano_Lava_Flow_Hazard_Zones_Original.kml` file, which is the original downloaded from the USGS which contains data for all regions of the island. The one used by the simulation has been pruned down to just include hazard zones 1 and 2 and to indicate the colors to be used when overlaying them on the map.
 
 ### Data visualization
 
