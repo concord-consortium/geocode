@@ -44,6 +44,7 @@ export class BlocklyController {
   };
 
   public run = () => {
+    // TODO: Remove this special case when we implement a block for the lava simulation.
     if (this.stores.unit.name === "LavaCoder") {
       lavaSimulation.runSimulation();
       return;

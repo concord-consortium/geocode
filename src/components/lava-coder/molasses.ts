@@ -2,7 +2,6 @@
 
 import { AsciiRaster } from "./parse-ascii-raster";
 
-const cParents = false; // If true, replicate the incorrect method of determining parents from the c version
 const trueParents = true;
 const millisecondsPerFrame = 200;
 const diagonalScale = 1 / Math.sqrt(2);
@@ -24,8 +23,6 @@ export interface GridCell {
   baseElevation: number;
   elevationDifference: number;
   lavaElevation: number;
-  parentDX?: number;
-  parentDY?: number;
   parents: Set<GridCell>;
   x: number;
   y: number;
@@ -75,10 +72,6 @@ function getLowerNeighbors(cell: GridCell, grid: GridCell[][]) {
   [-1, 0, 1].forEach(dy => {
     [-1, 0, 1].forEach(dx => {
       if (dx === 0 && dy === 0) return; // Skip the cell itself
-      // Skip the "parent".
-      // Following a bug in the c algorithm, this includes any neighbors in any of the same directions as the actual parent.
-      // ...which is really just the last parent.
-      if (cParents && cell.parentDX && cell.parentDX === dx && cell.parentDY && cell.parentDY === dy) return;
 
       const newY = cell.y + dy;
       const newX = cell.x + dx;
@@ -92,8 +85,6 @@ function getLowerNeighbors(cell: GridCell, grid: GridCell[][]) {
         if (elevationDifference > 0) {
           neighbor.elevationDifference = elevationDifference;
           neighbor.parents.add(cell);
-          neighbor.parentDX = -1 * dx;
-          neighbor.parentDY = -1 * dy;
           neighbors.push(neighbor);
         }
       }
