@@ -1,6 +1,6 @@
 
 import { createWorldImageryAsync, ImageryLayer, IonWorldImageryStyle } from "@cesium/engine";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { lavaSimulation } from "../../stores/lava-simulation-store";
 import IconButton from "../buttons/icon-button";
 import RasterWorker from "./raster.worker";

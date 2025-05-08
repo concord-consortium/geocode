@@ -7,18 +7,6 @@ const diagonalScale = 1 / Math.sqrt(2);
 // The Molasses algorithm spreads for three iterations, which seems to be completely arbitrary
 const pulseIterations = 3;
 
-const ventEasting = 232214; // Suggested location
-const ventNorthing = 2158722; // Suggested location
-// const ventEasting = 242214;
-// const ventNorthing = 2168722;
-// const ventEasting = 237214;
-// const ventNorthing = 2173722;
-let ventX = -1;
-let ventY = -1;
-export const residual = 5;
-const totalVolume = 200000000;
-const pulseVolume = 100000; // Standard for small eruption
-
 export interface GridCell {
   baseElevation: number;
   elevationDifference: number;
@@ -57,10 +45,6 @@ function convertEastingToX(easting: number, raster: AsciiRaster) {
 
 function convertNorthingToY(northing: number, raster: AsciiRaster) {
   return raster.header.nrows - Math.floor((northing - raster.header.yllcorner) / raster.header.cellsize);
-}
-
-function getVentCell(grid: GridCell[][]) {
-  return grid[ventY][ventX];
 }
 
 function getTotalElevation(cell: GridCell) {
@@ -114,14 +98,26 @@ function getLavaElevationGrid(grid: GridCell[][]) {
   return lavaElevationGrid;
 }
 
-export async function runSimulation(raster: AsciiRaster, postMessage: (message: any) => void) {
+export interface LavaSimulationParameters {
+  postMessage: (message: any) => void;
+  pulseVolume: number;
+  raster: AsciiRaster;
+  residual: number;
+  totalVolume: number;
+  ventEasting: number;
+  ventNorthing: number;
+}
+export async function runSimulation({
+  postMessage, pulseVolume, raster, residual, totalVolume, ventEasting, ventNorthing
+}: LavaSimulationParameters) {
   const startTime = Date.now();
 
   // Set up simulation
   let pulseCount = 0;
   const grid = createGrid(raster);
-  ventX = convertEastingToX(ventEasting, raster);
-  ventY = convertNorthingToY(ventNorthing, raster);
+  const ventX = convertEastingToX(ventEasting, raster);
+  const ventY = convertNorthingToY(ventNorthing, raster);
+  const ventCell = grid[ventY][ventX];
   const cellArea = raster.header.cellsize ** 2;
   let currentTotalVolume = totalVolume;
 
@@ -135,10 +131,10 @@ export async function runSimulation(raster: AsciiRaster, postMessage: (message: 
     const currentPulseVolume = Math.min(currentTotalVolume, pulseVolume);
     currentTotalVolume -= currentPulseVolume;
     const pulseHeight = currentPulseVolume / cellArea;
-    getVentCell(grid).lavaElevation += pulseHeight;
+    ventCell.lavaElevation += pulseHeight;
 
     // Spread the lava
-    const activeCells = [getVentCell(grid)];
+    const activeCells = [ventCell];
     const visitedCells = new Set<GridCell>();
     for (let count = 0; count < pulseIterations; count++) {
       for (const currentCell of activeCells) {

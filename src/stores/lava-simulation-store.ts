@@ -25,6 +25,11 @@ export const LavaSimulationStore = types
     residual: 5,
     ventEasting: 232214,
     ventNorthing: 2158722,
+    // Other useful vent location for testing:
+    // ventEasting: 242214,
+    // ventNorthing: 2168722,
+    // ventEasting: 237214,
+    // ventNorthing: 2173722,
     totalVolume: 200000000,
     pulseVolume: 100000, // Standard for small eruption
     pulseCount: 0,
@@ -68,7 +73,15 @@ export const LavaSimulationStore = types
         }
       };
   
-      self.worker.postMessage({ type: "start", raster: self.raster });
+      const parameters = {
+        pulseVolume: self.pulseVolume,
+        raster: self.raster,
+        residual: self.residual,
+        totalVolume: self.totalVolume,
+        ventEasting: self.ventEasting,
+        ventNorthing: self.ventNorthing
+      };
+      self.worker.postMessage({ type: "start", parameters });
   
       return () => {
         self.worker?.terminate();

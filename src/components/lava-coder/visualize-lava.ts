@@ -1,5 +1,5 @@
+import { lavaSimulation } from "../../stores/lava-simulation-store";
 import { AsciiRaster } from "./parse-ascii-raster";
-import { residual } from "./molasses";
 
 const canvas = document.createElement("canvas");
 const ctx = canvas.getContext("2d");
@@ -8,6 +8,8 @@ export function visualizeLava(raster: AsciiRaster, grid: number[][]) {
   if (!ctx) {
     throw new Error("Failed to get canvas context");
   }
+
+  const { residual } = lavaSimulation;
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
