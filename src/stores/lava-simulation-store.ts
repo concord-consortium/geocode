@@ -2,6 +2,10 @@ import { applySnapshot, types } from "mobx-state-tree";
 import MolassesWorker from "../components/lava-coder/molasses.worker";
 import { AsciiRaster } from "../components/lava-coder/parse-ascii-raster";
 
+// Saving the lava elevations in the MST model is very slow, so we save it separately.
+// But that means that when this is updated, another observable feature (like coveredCells or pulseCount) needs to be
+// updated to trigger reactions. And if we need to save the lava elevations for save/load or some other purpose,
+// this variable should be saved in the MST model.
 export let lavaElevations: number[][] | undefined;
 
 function countCoveredCells(_lavaElevations: number[][]) {
@@ -54,9 +58,7 @@ export const LavaSimulationStore = types
       self.worker.onmessage = (e) => {
         try {
           const { status } = e.data;
-          if (status === "runningSimulation") {
-            console.log(`Running simulation...`);
-          } else if (status === "updatedGrid") {
+          if (status === "updatedGrid") {
             self.setPulseCount(e.data.pulseCount);
             lavaElevations = e.data.grid;
             self.countCoveredCells(e.data.grid);
