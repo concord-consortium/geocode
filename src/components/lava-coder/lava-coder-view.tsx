@@ -11,13 +11,15 @@ interface IProps {
   margin: string;
 }
 
+const kNormalElevation = 1;
+// The vertical exaggeration factor for the terrain. This is used to make the terrain more visually distinct.
 const kVerticalExaggeration = 3;
 
 export function LavaCoderView({ width, height, margin }: IProps) {
   const [lavaCoderElt, setLavaCoderElt] = useState<HTMLDivElement | null>(null);
   const [showLabels, setShowLabels] = useState(false);
   const [showHazardZones, setShowHazardZones] = useState(false);
-  const [verticalExaggeration, setVerticalExaggeration] = useState(1.0);
+  const [verticalExaggeration, setVerticalExaggeration] = useState(kNormalElevation);
 
   const { hazardZones, widget } = useCesiumViewer(lavaCoderElt);
 
@@ -49,7 +51,7 @@ export function LavaCoderView({ width, height, margin }: IProps) {
   }, [hazardZones, showHazardZones]);
 
   function toggleVerticalExaggeration() {
-    setVerticalExaggeration(prev => prev === 1 ? kVerticalExaggeration : 1);
+    setVerticalExaggeration(prev => prev === kNormalElevation ? kVerticalExaggeration : kNormalElevation);
   }
 
   useEffect(() => {
@@ -68,7 +70,9 @@ export function LavaCoderView({ width, height, margin }: IProps) {
 
   const showLabelsLabel = showLabels ? "Hide Labels" : "Show Labels";
   const hazardZonesLabel = showHazardZones ? "Hide Hazard Zones" : "Show Hazard Zones";
-  const exaggerateLabel = verticalExaggeration === 1 ? "Exaggerate Elevation (3x)" : "Normal Elevation (1x)";
+  const exaggerateLabel = verticalExaggeration === kNormalElevation
+                            ? `Exaggerate Elevation (${kVerticalExaggeration}x)`
+                            : `Normal Elevation (${kNormalElevation}x)`;
 
   return (
     <div className="lava-coder-view" style={containerStyle}>
