@@ -1,8 +1,9 @@
 import {
-  Cartesian3, CesiumWidget, Math as CSMath, ImageryLayer, Ion, KmlDataSource, Rectangle, SingleTileImageryProvider
+  Cartesian3, CesiumWidget, createWorldTerrainAsync, Math as CSMath, ImageryLayer, Ion, KmlDataSource, Rectangle,
+  SingleTileImageryProvider, TerrainProvider
 } from "@cesium/engine";
 import { autorun } from "mobx";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import hazardZonesKml from "../../assets/Volcano_Lava_Flow_Hazard_Zones.kml";
 import { lavaElevations, lavaSimulation } from "../../stores/lava-simulation-store";
 import { maxLat, maxLong, minLat, minLong } from "./lava-constants";
@@ -18,6 +19,7 @@ const kDefaultZHeight = 132000;
 
 export function useCesiumViewer(container: Element | null) {
   const widget = useRef<CesiumWidget | null>(null);
+  const [terrainProvider, setTerrainProvider] = useState<TerrainProvider | null>(null);
   const hazardZones = useRef<KmlDataSource | null>(null);
   const lavaLayerRef = useRef<ImageryLayer | null>(null);
   // Two layers are displayed to avoid flickering. A layer is only removed when it is the third oldest.
@@ -25,9 +27,17 @@ export function useCesiumViewer(container: Element | null) {
   const oldLavaLayerRef = useRef<ImageryLayer | null>(null);
 
   useEffect(() => {
-    if (container && !widget.current) {
+    // Add Cesium World Terrain
+    createWorldTerrainAsync({ requestVertexNormals: true }).then((provider) => {
+      setTerrainProvider(provider);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (container && terrainProvider && !widget.current) {
       widget.current = new CesiumWidget(container, {
-        shouldAnimate: true
+        shouldAnimate: true,
+        terrainProvider
       });
 
       // Fly the camera to Hawaii at the given longitude, latitude, and height.
@@ -42,16 +52,16 @@ export function useCesiumViewer(container: Element | null) {
       });
 
       // Load and overlay the KML file
-      KmlDataSource.load(hazardZonesKml).then((dataSource: any) => {
+      KmlDataSource.load(hazardZonesKml, { clampToGround: true }).then((dataSource) => {
         hazardZones.current = dataSource;
         dataSource.show = false; // Initially hide the KML data
         widget.current?.dataSources.add(dataSource);
-      }).catch((error: any) => {
+      }).catch((error) => {
         console.error("Failed to load KML file:", error);
       });
     }
     return () => widget.current?.destroy();
-  }, [container]);
+  }, [container, terrainProvider]);
   
   // Update the lava display
   useEffect(() => {
