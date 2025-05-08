@@ -1,7 +1,8 @@
 import { makeObservable, observable } from "mobx";
-import { IInterpreterController, makeInterpreterController } from "./interpreter";
+import { lavaSimulation } from "../stores/lava-simulation-store";
 import { IStore } from "../stores/stores";
 import { DEFORMATION_SIMULATION_WARNING } from "../strings/blockly-controller";
+import { IInterpreterController, makeInterpreterController } from "./interpreter";
 
 interface Workspace {
   highlightBlock: (id: string|null) => void;
@@ -43,6 +44,12 @@ export class BlocklyController {
   };
 
   public run = () => {
+    // TODO: Remove this special case when we implement a block for the lava simulation.
+    if (this.stores.unit.name === "LavaCoder") {
+      lavaSimulation.runSimulation();
+      return;
+    }
+
     // counting 'run from year...' blocks for deformation graph
     // if more than 3 blocks are being used, need to alert user and not run code
     const numberOfLoops = this.workspace.getBlocksByType("run-from-year-loop");
@@ -61,7 +68,7 @@ export class BlocklyController {
       this.stores.chartsStore.reset();
       this.stores.samplesCollectionsStore.reset();
       this.stores.blocklyStore.runClicked();
-  }
+    }
   };
 
   public reset = () => {

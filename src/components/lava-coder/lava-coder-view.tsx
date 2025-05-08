@@ -1,6 +1,9 @@
+
 import { createWorldImageryAsync, ImageryLayer, IonWorldImageryStyle } from "@cesium/engine";
 import { useEffect, useState } from "react";
+import { lavaSimulation } from "../../stores/lava-simulation-store";
 import IconButton from "../buttons/icon-button";
+import RasterWorker from "./raster.worker";
 import { useCesiumViewer } from "./use-cesium-viewer";
 
 import "./lava-coder-view.css";
@@ -33,12 +36,41 @@ export function LavaCoderView({ width, height, margin }: IProps) {
         ? IonWorldImageryStyle.AERIAL_WITH_LABELS
         : IonWorldImageryStyle.AERIAL;
       createWorldImageryAsync({ style }).then((imageryProvider) => {
-        const imageryLayer = new ImageryLayer(imageryProvider);
-        widget.imageryLayers.removeAll();
-        widget.imageryLayers.add(imageryLayer);
+        // Remove the old base layer
+        const oldBaseLayer = widget.imageryLayers.get(0);
+        if (oldBaseLayer) {
+          widget.imageryLayers.remove(oldBaseLayer);
+        }
+        const newBaseLayer = new ImageryLayer(imageryProvider);
+        // Add the new base layer at the bottom of the layer stack
+        widget.imageryLayers.add(newBaseLayer, 0);
       });
     }
   }, [showLabels, widget]);
+
+  // Load the elevation data
+  useEffect(() => {
+    if (lavaSimulation.raster) return;
+
+    const rasterWorker = new RasterWorker();
+    rasterWorker.onmessage = (e) => {
+      try {
+        const { status } = e.data;
+        if (status === "rasterParsed") {
+          lavaSimulation.setRaster(e.data.raster);
+          rasterWorker.terminate();
+        }
+      } catch (error) {
+        console.error("Error handling worker message:", error, e);
+      }
+    };
+
+    rasterWorker.postMessage({ type: "start" });
+
+    return () => {
+      rasterWorker.terminate();
+    };
+  }, []);
 
   function toggleHazardZones() {
     setShowHazardZones(prev => !prev);
