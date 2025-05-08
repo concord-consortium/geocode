@@ -2,9 +2,10 @@
 
 import { AsciiRaster } from "./parse-ascii-raster";
 
-const trueParents = true;
 const millisecondsPerFrame = 200;
 const diagonalScale = 1 / Math.sqrt(2);
+// The Molasses algorithm spreads for three iterations, which seems to be completely arbitrary
+const pulseIterations = 3;
 
 const ventEasting = 232214; // Suggested location
 const ventNorthing = 2158722; // Suggested location
@@ -78,7 +79,9 @@ function getLowerNeighbors(cell: GridCell, grid: GridCell[][]) {
       // Only add the neighbor if it's within the grid bounds
       if (newY >= 0 && newY < grid.length && newX >= 0 && newX < grid[newY].length) {
         const neighbor = grid[newY][newX];
-        if (trueParents && cell.parents.has(neighbor)) return;
+        // Do not send lava back to a cell that already sent lava to you
+        if (cell.parents.has(neighbor)) return;
+
         const scale = (dx === 0 || dy === 0) ? 1 : diagonalScale;
         const elevationDifference = scale * (getTotalElevation(cell) - getTotalElevation(neighbor));
         // Only add the neighbor if it has a lower elevation
@@ -113,13 +116,16 @@ function getLavaElevationGrid(grid: GridCell[][]) {
 }
 
 export async function runSimulation(raster: AsciiRaster, postMessage: (message: any) => void) {
-  let pulseCount = 0;
   const startTime = Date.now();
+
+  // Set up simulation
+  let pulseCount = 0;
   const grid = createGrid(raster);
   ventX = convertEastingToX(ventEasting, raster);
   ventY = convertNorthingToY(ventNorthing, raster);
   const cellArea = raster.header.cellsize ** 2;
   let currentTotalVolume = totalVolume;
+
   const sendUpdateMessage = () => {
     postMessage({ status: "updatedGrid", grid: getLavaElevationGrid(grid), pulseCount });
   };
@@ -135,8 +141,7 @@ export async function runSimulation(raster: AsciiRaster, postMessage: (message: 
     // Spread the lava
     const activeCells = [getVentCell(grid)];
     const visitedCells = new Set<GridCell>();
-    // The Molasses algorithm spreads for three iterations, which seems to be completely arbitrary
-    for (let count = 0; count < 3; count++) {
+    for (let count = 0; count < pulseIterations; count++) {
       for (const currentCell of activeCells) {
         visitedCells.add(currentCell);
         if (currentCell.lavaElevation > residual) {
