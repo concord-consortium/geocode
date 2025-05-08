@@ -1,6 +1,8 @@
 // This worker reads an ASCII raster file and returns its parsed content in a message.
 import { AsciiRaster, parseAsciiRaster } from "./parse-ascii-raster";
 
+const dataFile = "/data/data-half.asc";
+
 let asciiRaster: AsciiRaster | undefined;
 
 self.onmessage = (e) => {
@@ -11,11 +13,10 @@ self.onmessage = (e) => {
     if (typeof content === "string") {
       asciiRaster = parseAsciiRaster(content);
       postMessage({ status: "rasterParsed", raster: asciiRaster });
-      console.log(`--- raster`, asciiRaster);
     }
   };
 
-  fetch("/data/data-half.asc")
+  fetch(dataFile)
     .then(response => response.blob())
     .then(blob => reader.readAsText(blob));
 };
