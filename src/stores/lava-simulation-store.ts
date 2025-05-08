@@ -23,13 +23,18 @@ function countCoveredCells(_lavaElevations: number[][]) {
 export const LavaSimulationStore = types
   .model("lavaSimulation", {
     residual: 5,
+    // Recommended vent
     ventEasting: 232214,
     ventNorthing: 2158722,
-    // Other useful vent location for testing:
-    // ventEasting: 242214,
-    // ventNorthing: 2168722,
+    // Vent in the main crater
+    // ventEasting: 227500,
+    // ventNorthing: 2153500,
+    // Vent near the north, quickly hitting a wall and splitting
     // ventEasting: 237214,
     // ventNorthing: 2173722,
+    // Vent near the north east corner of the current map, quickly falling into the ocean
+    // ventEasting: 279000,
+    // ventNorthing: 2181000,
     totalVolume: 200000000,
     pulseVolume: 100000, // Standard for small eruption
     pulseCount: 0,

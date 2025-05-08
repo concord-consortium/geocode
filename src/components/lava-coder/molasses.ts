@@ -156,7 +156,9 @@ export async function runSimulation({
               const elevationPercent = neighbor.elevationDifference / totalElevationDifference;
               const lavaToTransfer = elevationPercent * lavaToSpread;
               currentCell.lavaElevation -= lavaToTransfer;
-              neighbor.lavaElevation += lavaToTransfer;
+              // Only actually spread the lava to land above sea level.
+              // If we're at or below sea level, remove the lava from the simulation.
+              if (neighbor.baseElevation > 0) neighbor.lavaElevation += lavaToTransfer;
 
               if (!visitedCells.has(neighbor) && neighbor.lavaElevation > residual) {
                 activeCells.push(neighbor);
