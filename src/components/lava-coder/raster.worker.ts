@@ -1,7 +1,7 @@
 // This worker reads an ASCII raster file and returns its parsed content in a message.
 import { AsciiRaster, parseAsciiRaster } from "./parse-ascii-raster";
 
-const dataFile = "/data/data-half.asc";
+const dataFile = "/data/MaunaLoa_60m_UTM5N.asc";
 
 let asciiRaster: AsciiRaster | undefined;
 
