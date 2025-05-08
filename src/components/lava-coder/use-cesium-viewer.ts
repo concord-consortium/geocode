@@ -1,5 +1,7 @@
-import { Cartesian3, CesiumWidget, Math as CSMath, Ion, KmlDataSource } from "@cesium/engine";
-import { useEffect, useRef } from "react";
+import {
+  Cartesian3, CesiumWidget, createWorldTerrainAsync, Math as CSMath, Ion, KmlDataSource, TerrainProvider
+} from "@cesium/engine";
+import { useEffect, useRef, useState } from "react";
 import hazardZonesKml from "../../assets/Volcano_Lava_Flow_Hazard_Zones.kml";
 
 import "@cesium/engine/Source/Widget/CesiumWidget.css";
@@ -12,12 +14,21 @@ const kDefaultZHeight = 132000;
 
 export function useCesiumViewer(container: Element | null) {
   const widget = useRef<CesiumWidget | null>(null);
+  const [terrainProvider, setTerrainProvider] = useState<TerrainProvider | null>(null);
   const hazardZones = useRef<KmlDataSource | null>(null);
 
   useEffect(() => {
-    if (container && !widget.current) {
+    // Add Cesium World Terrain
+    createWorldTerrainAsync({ requestVertexNormals: true }).then((provider) => {
+      setTerrainProvider(provider);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (container && terrainProvider && !widget.current) {
       widget.current = new CesiumWidget(container, {
-        shouldAnimate: true
+        shouldAnimate: true,
+        terrainProvider
       });
 
       // Fly the camera to Hawaii at the given longitude, latitude, and height.
@@ -32,16 +43,16 @@ export function useCesiumViewer(container: Element | null) {
       });
 
       // Load and overlay the KML file
-      KmlDataSource.load(hazardZonesKml).then((dataSource: any) => {
+      KmlDataSource.load(hazardZonesKml, { clampToGround: true }).then((dataSource) => {
         hazardZones.current = dataSource;
         dataSource.show = false; // Initially hide the KML data
         widget.current?.dataSources.add(dataSource);
-      }).catch((error: any) => {
+      }).catch((error) => {
         console.error("Failed to load KML file:", error);
       });
     }
     return () => widget.current?.destroy();
-  }, [container]);
+  }, [container, terrainProvider]);
 
   return { widget: widget.current, hazardZones: hazardZones.current };
 }

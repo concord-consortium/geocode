@@ -11,10 +11,13 @@ interface IProps {
   margin: string;
 }
 
+const kVerticalExaggeration = 3;
+
 export function LavaCoderView({ width, height, margin }: IProps) {
   const [lavaCoderElt, setLavaCoderElt] = useState<HTMLDivElement | null>(null);
   const [showLabels, setShowLabels] = useState(false);
   const [showHazardZones, setShowHazardZones] = useState(false);
+  const [verticalExaggeration, setVerticalExaggeration] = useState(1.0);
 
   const { hazardZones, widget } = useCesiumViewer(lavaCoderElt);
 
@@ -45,10 +48,27 @@ export function LavaCoderView({ width, height, margin }: IProps) {
     }
   }, [hazardZones, showHazardZones]);
 
+  function toggleVerticalExaggeration() {
+    setVerticalExaggeration(prev => prev === 1 ? kVerticalExaggeration : 1);
+  }
+
+  useEffect(() => {
+    if (widget) {
+      widget.scene.verticalExaggeration = verticalExaggeration;
+
+      // update hazard zones overlay when vertical exaggeration is changed
+      widget.dataSources.removeAll();
+      if (hazardZones) {
+        widget.dataSources.add(hazardZones);
+      }
+    }
+  }, [hazardZones, verticalExaggeration, widget]);
+
   const containerStyle: React.CSSProperties = { width, height, margin };
 
   const showLabelsLabel = showLabels ? "Hide Labels" : "Show Labels";
   const hazardZonesLabel = showHazardZones ? "Hide Hazard Zones" : "Show Hazard Zones";
+  const exaggerateLabel = verticalExaggeration === 1 ? "Exaggerate Elevation (3x)" : "Normal Elevation (1x)";
 
   return (
     <div className="lava-coder-view" style={containerStyle}>
@@ -56,6 +76,7 @@ export function LavaCoderView({ width, height, margin }: IProps) {
       <div className="lava-overlay-controls">
         <IconButton className="show-labels-button" label={showLabelsLabel} onClick={() => toggleShowLabels()} />
         <IconButton className="show-hazard-zones-button" label={hazardZonesLabel} onClick={() => toggleHazardZones()} />
+        <IconButton className="exaggerate-elevation-button" label={exaggerateLabel} onClick={() => toggleVerticalExaggeration()} />
       </div>
     </div>
   );
