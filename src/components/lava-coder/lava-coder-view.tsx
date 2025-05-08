@@ -1,6 +1,6 @@
 
 import { createWorldImageryAsync, ImageryLayer, IonWorldImageryStyle } from "@cesium/engine";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { lavaSimulation } from "../../stores/lava-simulation-store";
 import IconButton from "../buttons/icon-button";
 import RasterWorker from "./raster.worker";
@@ -31,9 +31,14 @@ export function LavaCoderView({ width, height, margin }: IProps) {
         ? IonWorldImageryStyle.AERIAL_WITH_LABELS
         : IonWorldImageryStyle.AERIAL;
       createWorldImageryAsync({ style }).then((imageryProvider) => {
-        const imageryLayer = new ImageryLayer(imageryProvider);
-        widget.imageryLayers.removeAll();
-        widget.imageryLayers.add(imageryLayer);
+        // Remove the old base layer
+        const oldBaseLayer = widget.imageryLayers.get(0);
+        if (oldBaseLayer) {
+          widget.imageryLayers.remove(oldBaseLayer);
+        }
+        const newBaseLayer = new ImageryLayer(imageryProvider);
+        // Add the new base layer at the bottom of the layer stack
+        widget.imageryLayers.add(newBaseLayer, 0);
       });
     }
   }, [showLabels, widget]);
