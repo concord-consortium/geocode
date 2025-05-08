@@ -1,27 +1,15 @@
 import { AsciiRaster } from "./parse-ascii-raster";
 import { residual } from "./molasses";
 
-const maxHeight = 13670;
-
-function containerElement() {
-  return document.getElementById("lava-map") || document.body;
-}
-
 const canvas = document.createElement("canvas");
 const ctx = canvas.getContext("2d");
-let addedCanvas = false;
 
 export function visualizeLava(raster: AsciiRaster, grid: number[][]) {
   if (!ctx) {
     throw new Error("Failed to get canvas context");
   }
 
-  if (!addedCanvas) {
-    containerElement().appendChild(canvas);
-    addedCanvas = true;
-  } else {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-  }
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   const width = raster.header.ncols;
   const height = raster.header.nrows;
@@ -35,23 +23,18 @@ export function visualizeLava(raster: AsciiRaster, grid: number[][]) {
     for (let x = 0; x < width && x < grid[y].length; x++) {
       const lavaElevation = grid[y][x];
       const index = (y * width + x) * 4;
-      const elevationColor = Math.max(0, Math.min(1, raster.values[y][x] / maxHeight)) * 255;
-      data[index] = elevationColor; // Red
-      data[index + 1] = elevationColor; // Green
-      data[index + 2] = elevationColor; // Blue
-      data[index + 3] = 0; // Alpha
       if (lavaElevation > 0) {
-        if (lavaElevation <= residual) {
-          data[index] = 255 * lavaElevation / residual;
-          data[index + 1] = 0;
-          data[index + 2] = 0;
-        } else {
-          const value = 255 * Math.min(1, (lavaElevation - residual) / (residual));
-          data[index] = 255;
-          data[index + 1] = value;
-          data[index + 2] = 0;
-        }
+        // Black -> Red up to residual, Red -> Yellow up to 2 * residual or greater
+        data[index] = 255 * lavaElevation / residual;
+        data[index + 1] = 255 * Math.max(0, Math.min(1, (lavaElevation - residual) / residual));
+        data[index + 2] = 0;
         data[index + 3] = 255; // Alpha
+      } else {
+        // Transparent
+        data[index] = 255; // Red
+        data[index + 1] = 255; // Green
+        data[index + 2] = 255; // Blue
+        data[index + 3] = 0; // Alpha
       }
     }
   }

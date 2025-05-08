@@ -18,7 +18,6 @@ let ventY = -1;
 export const residual = 5;
 const totalVolume = 200000000;
 const pulseVolume = 100000; // Standard for small eruption
-// const pulseVolume = 500000;
 
 export interface GridCell {
   baseElevation: number;
