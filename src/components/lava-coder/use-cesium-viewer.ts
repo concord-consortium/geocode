@@ -1,8 +1,6 @@
-import {
-  Cartesian3, CesiumWidget, createWorldTerrainAsync, Math as CSMath, Ion, KmlDataSource, TerrainProvider
-} from "@cesium/engine";
+import { Cartesian3, CesiumWidget, Math as CSMath, Ion } from "@cesium/engine";
 import { useEffect, useRef, useState } from "react";
-import hazardZonesKml from "../../assets/Volcano_Lava_Flow_Hazard_Zones.kml";
+import { useTerrainProvider } from "./use-terrain-provider";
 
 import "@cesium/engine/Source/Widget/CesiumWidget.css";
 
@@ -13,26 +11,20 @@ const kDefaultYLat = 19.150;
 const kDefaultZHeight = 132000;
 
 export function useCesiumViewer(container: Element | null) {
-  const widget = useRef<CesiumWidget | null>(null);
-  const [terrainProvider, setTerrainProvider] = useState<TerrainProvider | null>(null);
-  const hazardZones = useRef<KmlDataSource | null>(null);
+  const viewer = useRef<CesiumWidget | null>(null);
+  const [ , forceRefresh] = useState(false);
+  const terrainProvider = useTerrainProvider();
 
   useEffect(() => {
-    // Add Cesium World Terrain
-    createWorldTerrainAsync({ requestVertexNormals: true }).then((provider) => {
-      setTerrainProvider(provider);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (container && terrainProvider && !widget.current) {
-      widget.current = new CesiumWidget(container, {
+    if (container && terrainProvider && !viewer.current) {
+      viewer.current = new CesiumWidget(container, {
         shouldAnimate: true,
         terrainProvider
       });
+      forceRefresh(prev => !prev);
 
       // Fly the camera to Hawaii at the given longitude, latitude, and height.
-      widget.current.camera.flyTo({
+      viewer.current.camera.flyTo({
         destination: Cartesian3.fromDegrees(kDefaultXLng, kDefaultYLat, kDefaultZHeight),
         orientation: {
           heading: CSMath.toRadians(0.0),
@@ -41,18 +33,9 @@ export function useCesiumViewer(container: Element | null) {
         // move instantaneously to the destination
         easingFunction: () => 1
       });
-
-      // Load and overlay the KML file
-      KmlDataSource.load(hazardZonesKml, { clampToGround: true }).then((dataSource) => {
-        hazardZones.current = dataSource;
-        dataSource.show = false; // Initially hide the KML data
-        widget.current?.dataSources.add(dataSource);
-      }).catch((error) => {
-        console.error("Failed to load KML file:", error);
-      });
     }
-    return () => widget.current?.destroy();
+    return () => viewer.current?.destroy();
   }, [container, terrainProvider]);
 
-  return { widget: widget.current, hazardZones: hazardZones.current };
+  return viewer.current;
 }
