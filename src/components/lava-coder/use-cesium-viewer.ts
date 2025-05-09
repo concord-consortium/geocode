@@ -18,30 +18,21 @@ const kDefaultYLat = 19.150;
 const kDefaultZHeight = 132000;
 
 export function useCesiumViewer(container: Element | null) {
-  const widget = useRef<CesiumWidget | null>(null);
-  const [terrainProvider, setTerrainProvider] = useState<TerrainProvider | null>(null);
-  const hazardZones = useRef<KmlDataSource | null>(null);
+  const viewer = useRef<CesiumWidget | null>(null);
+  const [ , forceRefresh] = useState(false);
+  const terrainProvider = useTerrainProvider();
   const lavaLayerRef = useRef<ImageryLayer | null>(null);
-  // Two layers are displayed to avoid flickering. A layer is only removed when it is the third oldest.
-  // This works as long as the lava always expands. If it ever contracts, this will display incorrectly.
-  const oldLavaLayerRef = useRef<ImageryLayer | null>(null);
 
   useEffect(() => {
-    // Add Cesium World Terrain
-    createWorldTerrainAsync({ requestVertexNormals: true }).then((provider) => {
-      setTerrainProvider(provider);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (container && terrainProvider && !widget.current) {
-      widget.current = new CesiumWidget(container, {
+    if (container && terrainProvider && !viewer.current) {
+      viewer.current = new CesiumWidget(container, {
         shouldAnimate: true,
         terrainProvider
       });
+      forceRefresh(prev => !prev);
 
       // Fly the camera to Hawaii at the given longitude, latitude, and height.
-      widget.current.camera.flyTo({
+      viewer.current.camera.flyTo({
         destination: Cartesian3.fromDegrees(kDefaultXLng, kDefaultYLat, kDefaultZHeight),
         orientation: {
           heading: CSMath.toRadians(0.0),
@@ -50,17 +41,8 @@ export function useCesiumViewer(container: Element | null) {
         // move instantaneously to the destination
         easingFunction: () => 1
       });
-
-      // Load and overlay the KML file
-      KmlDataSource.load(hazardZonesKml, { clampToGround: true }).then((dataSource) => {
-        hazardZones.current = dataSource;
-        dataSource.show = false; // Initially hide the KML data
-        widget.current?.dataSources.add(dataSource);
-      }).catch((error) => {
-        console.error("Failed to load KML file:", error);
-      });
     }
-    return () => widget.current?.destroy();
+    return () => viewer.current?.destroy();
   }, [container, terrainProvider]);
   
   // Update the lava display
@@ -84,5 +66,5 @@ export function useCesiumViewer(container: Element | null) {
     });
   }, []);
 
-  return { widget: widget.current, hazardZones: hazardZones.current };
+  return viewer.current;
 }
