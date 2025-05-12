@@ -1,10 +1,9 @@
 
 import { createWorldImageryAsync, ImageryLayer, IonWorldImageryStyle } from "@cesium/engine";
 import { useEffect, useState } from "react";
-import { lavaSimulation } from "../../stores/lava-simulation-store";
 import IconButton from "../buttons/icon-button";
-import RasterWorker from "./raster.worker";
 import { useCesiumViewer } from "./use-cesium-viewer";
+import { useElevationData } from "./use-elevation-data";
 
 import "./lava-coder-view.css";
 
@@ -48,29 +47,7 @@ export function LavaCoderView({ width, height, margin }: IProps) {
     }
   }, [showLabels, widget]);
 
-  // Load the elevation data
-  useEffect(() => {
-    if (lavaSimulation.raster) return;
-
-    const rasterWorker = new RasterWorker();
-    rasterWorker.onmessage = (e) => {
-      try {
-        const { status } = e.data;
-        if (status === "rasterParsed") {
-          lavaSimulation.setRaster(e.data.raster);
-          rasterWorker.terminate();
-        }
-      } catch (error) {
-        console.error("Error handling worker message:", error, e);
-      }
-    };
-
-    rasterWorker.postMessage({ type: "start" });
-
-    return () => {
-      rasterWorker.terminate();
-    };
-  }, []);
+  useElevationData();
 
   function toggleHazardZones() {
     setShowHazardZones(prev => !prev);
