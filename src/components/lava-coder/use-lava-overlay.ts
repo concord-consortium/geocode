@@ -2,8 +2,8 @@ import { CesiumWidget, ImageryLayer, Rectangle, SingleTileImageryProvider } from
 import { autorun } from "mobx";
 import { useEffect, useRef } from "react";
 import { lavaElevations, lavaSimulation } from "../../stores/lava-simulation-store";
-import { visualizeLava } from "./visualize-lava";
 import { maxLat, maxLong, minLat, minLong } from "./lava-constants";
+import { visualizeLava } from "./visualize-lava";
 
 export function useLavaOverlay(viewer: CesiumWidget | null) {
   const lavaLayerRef = useRef<ImageryLayer | null>(null);

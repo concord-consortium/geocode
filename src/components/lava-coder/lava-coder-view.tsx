@@ -6,7 +6,7 @@ import { useCesiumViewer } from "./use-cesium-viewer";
 import { useElevationData } from "./use-elevation-data";
 import { useHazardZones } from "./use-hazard-zones";
 import { useLavaOverlay } from "./use-lava-overlay";
-import { useVerticalExaggeration } from "./use-vertical-exaggeration";
+import { kNormalElevation, kVerticalExaggeration, useVerticalExaggeration } from "./use-vertical-exaggeration";
 import { useWorldImagery } from "./use-world-imagery";
 
 import "./lava-coder-view.scss";
@@ -16,10 +16,6 @@ interface IProps {
   height: number;
   margin: string;
 }
-
-const kNormalElevation = 1;
-// The vertical exaggeration factor for the terrain. This is used to make the terrain more visually distinct.
-const kVerticalExaggeration = 3;
 
 const round6 = (value: number) => Math.round(value * 1000000) / 1000000;
 
