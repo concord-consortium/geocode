@@ -1,9 +1,11 @@
+
 import { createWorldImageryAsync, ImageryLayer, IonWorldImageryStyle } from "@cesium/engine";
 import { useEffect, useState } from "react";
 import IconButton from "../buttons/icon-button";
 import { useCesiumViewer } from "./use-cesium-viewer";
+import { useElevationData } from "./use-elevation-data";
 
-import "./lava-coder-view.css";
+import "./lava-coder-view.scss";
 
 interface IProps {
   width: number;
@@ -33,12 +35,19 @@ export function LavaCoderView({ width, height, margin }: IProps) {
         ? IonWorldImageryStyle.AERIAL_WITH_LABELS
         : IonWorldImageryStyle.AERIAL;
       createWorldImageryAsync({ style }).then((imageryProvider) => {
-        const imageryLayer = new ImageryLayer(imageryProvider);
-        widget.imageryLayers.removeAll();
-        widget.imageryLayers.add(imageryLayer);
+        // Remove the old base layer
+        const oldBaseLayer = widget.imageryLayers.get(0);
+        if (oldBaseLayer) {
+          widget.imageryLayers.remove(oldBaseLayer);
+        }
+        const newBaseLayer = new ImageryLayer(imageryProvider);
+        // Add the new base layer at the bottom of the layer stack
+        widget.imageryLayers.add(newBaseLayer, 0);
       });
     }
   }, [showLabels, widget]);
+
+  useElevationData();
 
   function toggleHazardZones() {
     setShowHazardZones(prev => !prev);

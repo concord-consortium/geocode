@@ -37,13 +37,28 @@ module.exports = (env, argv) => {
     module: {
       rules: [
         {
+          test: /\.worker\.ts$/,
+          use: [
+            {
+              loader: 'worker-loader',
+              options: {
+                filename: '[name].[contenthash].worker.js'
+              }
+            },
+            {
+              loader: 'ts-loader'
+            }
+          ]
+        },
+        {
           test: /\.tsx?$/,
           loader: 'ts-loader'
         },
         {
-          test: /\.css$/,
+          test: /\.(css|scss)$/,
           use: [
-            devMode ? 'style-loader' : MiniCssExtractPlugin.loader, "css-loader"
+            devMode ? 'style-loader' : MiniCssExtractPlugin.loader, "css-loader",
+            'sass-loader'
           ]
         },
         {

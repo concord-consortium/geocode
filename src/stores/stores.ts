@@ -1,4 +1,5 @@
 
+import { lavaSimulation, LavaSimulationModelType } from "./lava-simulation-store";
 import { tephraSimulation, TephraSimulationModelType } from "./tephra-simulation-store";
 import { seismicSimulation, SeismicSimulationModelType } from "./seismic-simulation-store";
 import { uiStore, UIModelType } from "./ui-store";
@@ -11,6 +12,7 @@ import { CURRENT_SERIALIZATION_VERSION, migrate } from "../utilities/migrate-sta
 export interface IStore {
   unit: UnitStoreType;
   blocklyStore: BlocklyStoreModelType;
+  lavaSimulation: LavaSimulationModelType;
   tephraSimulation: TephraSimulationModelType;
   seismicSimulation: SeismicSimulationModelType;
   uiStore: UIModelType;
@@ -32,6 +34,7 @@ export interface UnmigratedSerializedState {version: number; state: any; }
 export const stores: IStore = {
   unit: unitStore,
   blocklyStore,
+  lavaSimulation,
   tephraSimulation,
   seismicSimulation,
   uiStore,
