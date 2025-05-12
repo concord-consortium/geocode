@@ -1,11 +1,13 @@
 
-import { createWorldImageryAsync, ImageryLayer, IonWorldImageryStyle } from "@cesium/engine";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import IconButton from "../buttons/icon-button";
 import { useCesiumClickEvent } from "./use-cesium-click-event";
 import { useCesiumViewer } from "./use-cesium-viewer";
 import { useElevationData } from "./use-elevation-data";
 import { useHazardZones } from "./use-hazard-zones";
+import { useLavaOverlay } from "./use-lava-overlay";
+import { useVerticalExaggeration } from "./use-vertical-exaggeration";
+import { useWorldImagery } from "./use-world-imagery";
 
 import "./lava-coder-view.scss";
 
@@ -24,11 +26,19 @@ const round6 = (value: number) => Math.round(value * 1000000) / 1000000;
 export function LavaCoderView({ width, height, margin }: IProps) {
   const [lavaCoderElt, setLavaCoderElt] = useState<HTMLDivElement | null>(null);
   const [showLabels, setShowLabels] = useState(false);
-  const hazardZones = useHazardZones();
   const [showHazardZones, setShowHazardZones] = useState(false);
-  const [verticalExaggeration, setVerticalExaggeration] = useState(kNormalElevation);
 
   const viewer = useCesiumViewer(lavaCoderElt);
+
+  useWorldImagery(viewer, showLabels);
+
+  const { toggleVerticalExaggeration, verticalExaggeration } = useVerticalExaggeration(viewer);
+
+  useHazardZones(viewer, showHazardZones, verticalExaggeration);
+
+  useElevationData();
+
+  useLavaOverlay(viewer);
 
   useCesiumClickEvent(viewer, (latitude, longitude, elevation) => {
     const elevationFeet = Math.round(elevation * 3.28084);
@@ -41,51 +51,9 @@ export function LavaCoderView({ width, height, margin }: IProps) {
     setShowLabels(prev => !prev);
   }
 
-  useEffect(() => {
-    if (viewer) {
-      const style: IonWorldImageryStyle = showLabels
-        ? IonWorldImageryStyle.AERIAL_WITH_LABELS
-        : IonWorldImageryStyle.AERIAL;
-      createWorldImageryAsync({ style }).then((imageryProvider) => {
-        // Remove the old base layer
-        const oldBaseLayer = widget.imageryLayers.get(0);
-        if (oldBaseLayer) {
-          widget.imageryLayers.remove(oldBaseLayer);
-        }
-        const newBaseLayer = new ImageryLayer(imageryProvider);
-        // Add the new base layer at the bottom of the layer stack
-        widget.imageryLayers.add(newBaseLayer, 0);
-      });
-    }
-  }, [showLabels, viewer]);
-
-  useElevationData();
-
   function toggleHazardZones() {
     setShowHazardZones(prev => !prev);
   }
-
-  useEffect(() => {
-    if (hazardZones) {
-      hazardZones.show = showHazardZones;
-    }
-  }, [hazardZones, showHazardZones]);
-
-  function toggleVerticalExaggeration() {
-    setVerticalExaggeration(prev => prev === kNormalElevation ? kVerticalExaggeration : kNormalElevation);
-  }
-
-  useEffect(() => {
-    if (viewer) {
-      viewer.scene.verticalExaggeration = verticalExaggeration;
-
-      // update hazard zones overlay when vertical exaggeration is changed
-      viewer.dataSources.removeAll();
-      if (hazardZones) {
-        viewer.dataSources.add(hazardZones);
-      }
-    }
-  }, [hazardZones, verticalExaggeration, viewer]);
 
   const containerStyle: React.CSSProperties = { width, height, margin };
 
