@@ -38,10 +38,10 @@ export const LavaSimulationStore = types
     totalVolume: 200000000,
     pulseVolume: 100000, // Standard for small eruption
     pulseCount: 0,
-    raster: types.maybeNull(types.frozen()), // AsciiRaster
   })
   .volatile((self) => ({
     coveredCells: 0,
+    raster: null as AsciiRaster | null, // AsciiRaster
     worker: null as Worker | null
   }))
   .actions((self) => ({
