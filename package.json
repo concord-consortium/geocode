@@ -182,6 +182,8 @@
     "react-syntax-highlighter": "^15.6.1",
     "react-tabs": "^4.3.0",
     "recharts": "^2.15.3",
+    "sass": "^1.88.0",
+    "sass-loader": "^16.0.5",
     "screenfull": "^6.0.2",
     "semver": "^7.7.1",
     "styled-components": "^5.3.11",

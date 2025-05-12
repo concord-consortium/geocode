@@ -5,7 +5,7 @@ import IconButton from "../buttons/icon-button";
 import { useCesiumViewer } from "./use-cesium-viewer";
 import { useElevationData } from "./use-elevation-data";
 
-import "./lava-coder-view.css";
+import "./lava-coder-view.scss";
 
 interface IProps {
   width: number;
