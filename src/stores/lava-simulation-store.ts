@@ -1,4 +1,4 @@
-import { applySnapshot, types } from "mobx-state-tree";
+import { types } from "mobx-state-tree";
 import MolassesWorker from "../components/lava-coder/molasses.worker";
 import { AsciiRaster } from "../components/lava-coder/parse-ascii-raster";
 
@@ -38,7 +38,6 @@ export const LavaSimulationStore = types
     totalVolume: 200000000,
     pulseVolume: 100000, // Standard for small eruption
     pulseCount: 0,
-    lavaElevations: types.array(types.array(types.number)),
     raster: types.maybeNull(types.frozen()), // AsciiRaster
   })
   .volatile((self) => ({
@@ -46,10 +45,6 @@ export const LavaSimulationStore = types
     worker: null as Worker | null
   }))
   .actions((self) => ({
-    // FIXME: Set the MST lava elevations when saving. It is too slow to do it frequently.
-    setLavaElevations(_lavaElevations: number[][]) {
-      applySnapshot(self.lavaElevations, _lavaElevations);
-    },
     setPulseCount(pulseCount: number) {
       self.pulseCount = pulseCount;
     },
