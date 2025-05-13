@@ -1,13 +1,25 @@
-import { CesiumWidget, createWorldImageryAsync, ImageryLayer, IonWorldImageryStyle } from "@cesium/engine";
+import {
+  CesiumWidget, createWorldImageryAsync, ImageryLayer, ImageryProvider, IonWorldImageryStyle,
+  OpenStreetMapImageryProvider
+} from "@cesium/engine";
 import { useEffect } from "react";
 
-export function useWorldImagery(viewer: CesiumWidget | null, showLabels: boolean) {
+export type BaseLayerType = "aerial" | "aerialWithLabels" | "osm";
+
+export function useWorldImagery(viewer: CesiumWidget | null, type: BaseLayerType) {
   useEffect(() => {
     if (viewer) {
-      const style: IonWorldImageryStyle = showLabels
-        ? IonWorldImageryStyle.AERIAL_WITH_LABELS
-        : IonWorldImageryStyle.AERIAL;
-      createWorldImageryAsync({ style }).then((imageryProvider) => {
+      let imageryProviderPromise: Promise<ImageryProvider>;
+      if (type === "osm") {
+        imageryProviderPromise = Promise.resolve(new OpenStreetMapImageryProvider({}));
+      } else {
+        const style: IonWorldImageryStyle = type === "aerialWithLabels"
+          ? IonWorldImageryStyle.AERIAL_WITH_LABELS
+          : IonWorldImageryStyle.AERIAL;
+        imageryProviderPromise = createWorldImageryAsync({ style });
+      }
+
+      imageryProviderPromise.then((imageryProvider) => {
         // Remove the old base layer
         const oldBaseLayer = viewer.imageryLayers.get(0);
         if (oldBaseLayer) {
@@ -18,5 +30,5 @@ export function useWorldImagery(viewer: CesiumWidget | null, showLabels: boolean
         viewer.imageryLayers.add(newBaseLayer, 0);
       });
     }
-  }, [showLabels, viewer]);
+  }, [type, viewer]);
 }
