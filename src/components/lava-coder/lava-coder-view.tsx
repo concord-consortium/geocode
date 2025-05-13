@@ -37,7 +37,8 @@ export function LavaCoderView({ width, height, margin }: IProps) {
   useLavaOverlay(viewer);
 
   useCesiumClickEvent(viewer, (latitude, longitude, elevation) => {
-    const elevationFeet = Math.round(elevation * 3.28084);
+    const kFeetPerMeter = 3.28084;
+    const elevationFeet = Math.round(elevation * kFeetPerMeter);
     // eslint-disable-next-line no-console
     console.log("Clicked at latitude:", round6(latitude), "longitude:", round6(longitude),
                 "elevation:", `${Math.round(elevation)}m = ${elevationFeet}ft`);
