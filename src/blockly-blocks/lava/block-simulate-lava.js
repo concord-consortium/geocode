@@ -40,6 +40,28 @@ Blockly.Blocks.simulate_lava = {
   }
 };
 
+Blockly.Blocks.simulate_lava_eruption_volume = {
+  init() {
+    basicInit(this);
+    appendEruptionVolume(this);
+  }
+};
+
+Blockly.Blocks.simulate_lava_front = {
+  init() {
+    basicInit(this);
+    appendLavaFront(this);
+  }
+};
+
+Blockly.Blocks.simulate_lava_lat_long = {
+  init() {
+    basicInit(this);
+    appendVentLat(this);
+    appendVentLong(this);
+  }
+};
+
 function setCodeVariable(variableName, block, setFunction) {
   const value = Blockly.JavaScript.valueToCode(block, variableName, Blockly.JavaScript.ORDER_ATOMIC);
   return `
@@ -68,6 +90,36 @@ Blockly.JavaScript.simulate_lava = function(block) {
 
   code += `
   this.runMolassesSimulation();`;
-  console.log(`--- code`, code);
+  return code;
+};
+
+Blockly.JavaScript.simulate_lava_eruption_volume = function(block) {
+  let code = "";
+
+  code += setEruptionVolume(block);
+
+  code += `
+  this.runMolassesSimulation();`;
+  return code;
+};
+
+Blockly.JavaScript.simulate_lava_front = function(block) {
+  let code = "";
+
+  code += setLavaFront(block);
+
+  code += `
+  this.runMolassesSimulation();`;
+  return code;
+};
+
+Blockly.JavaScript.simulate_lava_lat_long = function(block) {
+  let code = "";
+
+  code += setVentLat(block);
+  code += setVentLong(block);
+
+  code += `
+  this.runMolassesSimulation();`;
   return code;
 };
