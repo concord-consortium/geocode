@@ -1,5 +1,6 @@
 // Based on the molasses algorithm https://github.com/geoscience-community-codes/MOLASSES
 
+import { maxLat, maxLong, minLat, minLong } from "./lava-constants";
 import { AsciiRaster } from "./parse-ascii-raster";
 
 const millisecondsPerFrame = 200;
@@ -37,6 +38,18 @@ function createGrid(raster: AsciiRaster) {
     grid.push(gridRow);
   });
   return grid;
+}
+
+function convertLongitudeToX(raster: AsciiRaster, longitude?: number) {
+  if (longitude == null) return;
+  
+  return Math.floor((longitude - minLong) / (maxLong - minLong) * raster.header.ncols);
+}
+
+function convertLatitudeToY(raster: AsciiRaster, latitude?: number) {
+  if (latitude == null) return;
+  
+  return raster.header.nrows - Math.floor((latitude - minLat) / (maxLat - minLat) * raster.header.nrows);
 }
 
 function convertEastingToX(easting: number, raster: AsciiRaster) {
@@ -106,17 +119,20 @@ export interface LavaSimulationParameters {
   totalVolume: number;
   ventEasting: number;
   ventNorthing: number;
+  ventLatitude?: number;
+  ventLongitude?: number;
 }
 export async function runSimulation({
-  postMessage, pulseVolume, raster, residual, totalVolume, ventEasting, ventNorthing
+  postMessage, pulseVolume, raster, residual, totalVolume, ventEasting, ventNorthing, ventLatitude, ventLongitude
 }: LavaSimulationParameters) {
   const startTime = Date.now();
 
   // Set up simulation
   let pulseCount = 0;
   const grid = createGrid(raster);
-  const ventX = convertEastingToX(ventEasting, raster);
-  const ventY = convertNorthingToY(ventNorthing, raster);
+  // Use latitude and longitude if provided.
+  const ventX = convertLongitudeToX(raster, ventLongitude) ?? convertEastingToX(ventEasting, raster);
+  const ventY = convertLatitudeToY(raster, ventLatitude) ?? convertNorthingToY(ventNorthing, raster);
   const ventCell = grid[ventY][ventX];
   const cellArea = raster.header.cellsize ** 2;
   let currentTotalVolume = totalVolume;

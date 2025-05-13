@@ -35,6 +35,8 @@ export const LavaSimulationStore = types
     // Vent near the north east corner of the current map, quickly falling into the ocean
     // ventEasting: 279000,
     // ventNorthing: 2181000,
+    ventLatitude: types.maybe(types.number),
+    ventLongitude: types.maybe(types.number),
     totalVolume: 200000000,
     pulseVolume: 100000, // Standard for small eruption
     pulseCount: 0,
@@ -45,14 +47,26 @@ export const LavaSimulationStore = types
     worker: null as Worker | null
   }))
   .actions((self) => ({
+    countCoveredCells(grid: number[][]) {
+      self.coveredCells = countCoveredCells(grid);
+    },
     setPulseCount(pulseCount: number) {
       self.pulseCount = pulseCount;
     },
     setRaster(raster: AsciiRaster) {
       self.raster = raster;
     },
-    countCoveredCells(grid: number[][]) {
-      self.coveredCells = countCoveredCells(grid);
+    setResidual(residual: number) {
+      self.residual = residual;
+    },
+    setTotalVolume(totalVolume: number) {
+      self.totalVolume = totalVolume;
+    },
+    setVentLatitude(ventLatitude: number) {
+      self.ventLatitude = ventLatitude;
+    },
+    setVentLongitude(ventLongitude: number) {
+      self.ventLongitude = ventLongitude;
     }
   }))
   .actions((self) => ({
@@ -79,7 +93,9 @@ export const LavaSimulationStore = types
         residual: self.residual,
         totalVolume: self.totalVolume,
         ventEasting: self.ventEasting,
-        ventNorthing: self.ventNorthing
+        ventNorthing: self.ventNorthing,
+        ventLatitude: self.ventLatitude,
+        ventLongitude: self.ventLongitude
       };
       self.worker.postMessage({ type: "start", parameters });
   

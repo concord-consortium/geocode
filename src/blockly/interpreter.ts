@@ -1,4 +1,5 @@
 import Interpreter from "js-interpreter";
+import { lavaSimulation } from "../stores/lava-simulation-store";
 import { ITephraModelParams } from "../stores/tephra-simulation-store";
 import { BlocklyController } from "./blockly-controller";
 import { IBlocklyWorkspace } from "../interfaces";
@@ -46,6 +47,29 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       const wrapped = interpreter.createNativeFunction(unwrappingFunction);
       addVar(name, wrapped);
     };
+
+    /** ==== Molasses simulation functions ==== */
+
+    addFunc("setMolassesEruptionVolume", (volume: number) => {
+      console.log(` -- setMolassesEruptionVolume: ${volume}`);
+      lavaSimulation.setTotalVolume(volume);
+    });
+    addFunc("setMolassesLavaFront", (height: number) => {
+      console.log(` -- setMolassesLavaFront: ${height}`);
+      lavaSimulation.setResidual(height);
+    });
+    addFunc("setMolassesVentLat", (lat: number) => {
+      console.log(` -- setMolassesVentLat: ${lat}`);
+      lavaSimulation.setVentLatitude(lat);
+    });
+    addFunc("setMolassesVentLong", (long: number) => {
+      console.log(` -- setMolassesVentLong: ${long}`);
+      lavaSimulation.setVentLongitude(long);
+    });
+
+    addFunc("runMolassesSimulation", () => {
+      lavaSimulation.runSimulation();
+    });
 
     /** ==== Tephra simulation model setters ==== */
 

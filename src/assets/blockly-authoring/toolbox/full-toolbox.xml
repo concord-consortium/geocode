@@ -27,6 +27,31 @@
     <!-- <block type="redrawMap"></block> -->
   </category>
 
+  <category name="Molasses" colour="#FF0000">
+    <block type="simulate_lava">
+      <value name="molasses_eruption_volume">
+        <shadow type="math_number">
+          <field name="NUM">200000000</field>
+        </shadow>
+      </value>
+      <value name="molasses_lava_front">
+        <shadow type="math_number">
+          <field name="NUM">5</field>
+        </shadow>
+      </value>
+      <value name="molasses_vent_lat">
+        <shadow type="math_number">
+          <field name="NUM">19.5</field>
+        </shadow>
+      </value>
+      <value name="molasses_vent_long">
+        <shadow type="math_number">
+          <field name="NUM">-155.565</field>
+        </shadow>
+      </value>
+    </block>
+  </category>
+
   <category name="Wind data" colour="#B35F00">
     <block type="graph_speed_date_wind_data"></block>
     <block type="graph_speed_direction_wind_data"></block>
