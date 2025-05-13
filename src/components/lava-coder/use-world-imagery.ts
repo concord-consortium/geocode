@@ -1,5 +1,6 @@
 import {
-  CesiumWidget, createWorldImageryAsync, ImageryLayer, IonWorldImageryStyle, OpenStreetMapImageryProvider
+  CesiumWidget, createWorldImageryAsync, ImageryLayer, ImageryProvider, IonWorldImageryStyle,
+  OpenStreetMapImageryProvider
 } from "@cesium/engine";
 import { useEffect } from "react";
 
@@ -8,7 +9,7 @@ export type BaseLayerType = "aerial" | "aerialWithLabels" | "osm";
 export function useWorldImagery(viewer: CesiumWidget | null, type: BaseLayerType) {
   useEffect(() => {
     if (viewer) {
-      let imageryProviderPromise: Promise<any>;
+      let imageryProviderPromise: Promise<ImageryProvider>;
       if (type === "osm") {
         imageryProviderPromise = Promise.resolve(new OpenStreetMapImageryProvider({}));
       } else {

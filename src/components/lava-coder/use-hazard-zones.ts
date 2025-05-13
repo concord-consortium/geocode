@@ -34,7 +34,7 @@ export function useHazardZones(viewer: CesiumWidget | null, showHazardZones: boo
     for (const entity of hazardZoneEntities) {
       if (entity.polygon?.hierarchy) {
         const hierarchy = entity.polygon.hierarchy.getValue();
-        // hierarchy.positions is an array of Cartographic positions
+        // hierarchy.positions is an array of Cartesian positions
         if (pointInPolygon(latitudeRadians, longitudeRadians, hierarchy.positions)) {
           return true;
         }
