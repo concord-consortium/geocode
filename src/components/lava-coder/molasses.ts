@@ -82,7 +82,7 @@ function getLowerNeighbors(cell: GridCell, grid: GridCell[][]) {
     const j = Math.floor(Math.random() * (i + 1));
     [neighbors[i], neighbors[j]] = [neighbors[j], neighbors[i]];
   }
-  
+
   return neighbors;
 }
 
@@ -141,7 +141,7 @@ export async function runSimulation({
         visitedCells.add(currentCell);
         if (currentCell.lavaElevation > residual) {
           const lavaToSpread = currentCell.lavaElevation - residual;
-          
+
           // Find neighbors that can receive lava
           const neighbors = getLowerNeighbors(currentCell, grid);
 
@@ -180,5 +180,6 @@ export async function runSimulation({
   sendUpdateMessage();
 
   const endTime = Date.now();
+  // eslint-disable-next-line no-console
   console.log(`  - Simulation completed in ${endTime - startTime} ms`);
 }
