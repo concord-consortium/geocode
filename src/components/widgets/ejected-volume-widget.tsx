@@ -5,6 +5,7 @@ import BoxFrontIcon from "../../assets/widget-icons/ejected-volume-box-front.svg
 import BoxTopIcon from "../../assets/widget-icons/ejected-volume-box-top.svg";
 import { ValueContainer, ValueOutput, IconContainer } from "../styled-containers";
 import { WidgetPanelTypes, kWidgetPanelInfo } from "../../utilities/widget";
+import { maxEruptionVolume, minEruptionVolume } from "../lava-coder/lava-constants";
 
 interface BoxProps {
   height?: number;
@@ -47,23 +48,22 @@ const AbsoluteIconTop = styled(Icon)`
 `;
 
 interface IProps {
+  mode: "tephra" | "molasses";
   type: WidgetPanelTypes;
-  unit?: "m" | "km";
-  volumeInKilometersCubed: number;
+  eruptionVolume: number; // in km^3 for tephra, m^3 for lava
 }
 
-export default function EjectedVolumeWidget({ type, unit, volumeInKilometersCubed }: IProps) {
-  const _unit = unit ?? "km";
-  const unitFactor = _unit === "m" ? 1000 : 1;
-  const minVolume = .0001 * unitFactor;
-  const maxVolume = 1000 * unitFactor;
-  const constrainedVolume = Math.min(Math.max(volumeInKilometersCubed, minVolume), maxVolume);
-  const index = Math.round(Math.log(volumeInKilometersCubed * unitFactor) / Math.LN10);
-  const constrainedIndex = Math.round(Math.log(constrainedVolume / unitFactor) / Math.LN10);
+export default function EjectedVolumeWidget({ mode, type, eruptionVolume }: IProps) {
+  const unit = mode === "tephra" ? "km" : "m";
+  const minVolume = mode === "tephra" ? .0001 : minEruptionVolume;
+  const maxVolume = mode === "tephra" ? 1000 : maxEruptionVolume;
+  const constrainedVolume = Math.min(Math.max(eruptionVolume, minVolume), maxVolume);
+  const index = Math.round(Math.log(eruptionVolume) / Math.LN10);
+  const constrainedIndex = Math.round(Math.log(constrainedVolume) / Math.LN10);
   const maxBoxGrowth = 33;
   const minBoxHeight = 1;
-  const indexOffset = 4;
-  const maxIndex = 7;
+  const indexOffset = mode === "tephra" ? 4 : -6;
+  const maxIndex = mode === "tephra" ? 7 : 4;
   const boxHeight = minBoxHeight + maxBoxGrowth
                     * (Math.pow(2, constrainedIndex + indexOffset) / Math.pow(2, maxIndex));
   const topOffset = 25;
@@ -101,7 +101,7 @@ export default function EjectedVolumeWidget({ type, unit, volumeInKilometersCube
         <div data-test="info"
           // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={
-            {__html: `10<sup>${index}</sup> ${_unit}<sup>3</sup>`}
+            {__html: `10<sup>${index}</sup> ${unit}<sup>3</sup>`}
         } />
       </ValueOutput>
     </ValueContainer>

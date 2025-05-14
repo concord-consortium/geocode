@@ -82,17 +82,18 @@ export default class WidgetPanel extends BaseComponent<IProps, IState> {
           <WidgetContainer data-test="ejected-volume-widget">
             <WidgetTitle>Ejected Volume</WidgetTitle>
             <EjectedVolumeWidget
+              mode="tephra"
               type={WidgetPanelTypes.RIGHT}
-              volumeInKilometersCubed={mass / Math.pow(10, 12)}
+              eruptionVolume={mass / Math.pow(10, 12)}
             />
           </WidgetContainer> }
         { showVolumeOfLava &&
           <WidgetContainer data-test="volume-of-lava-widget">
             <WidgetTitle>Volume of Lava</WidgetTitle>
             <EjectedVolumeWidget
+              mode="molasses"
               type={WidgetPanelTypes.RIGHT}
-              unit="m"
-              volumeInKilometersCubed={totalVolume}
+              eruptionVolume={totalVolume}
             />
           </WidgetContainer> }
         { showColumnHeight &&

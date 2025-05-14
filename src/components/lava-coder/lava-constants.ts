@@ -6,6 +6,9 @@ export const defaultResidual = 5;
 export const defaultVentLatitude = 19.5;
 export const defaultVentLongitude = -155.565;
 
+export const minEruptionVolume = 1000000;
+export const maxEruptionVolume = 10000000000;
+
 // Bounds of the elevation map in latitude and longitude
 export const maxLong = -155.008440;
 export const minLong = -155.673766;

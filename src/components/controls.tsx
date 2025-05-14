@@ -165,8 +165,9 @@ export class Controls extends BaseComponent<IProps, IState> {
                   </HorizontalContainer>
                 </VerticalContainer>
                 <EjectedVolumeWidget
+                  mode="tephra"
                   type={WidgetPanelTypes.LEFT}
-                  volumeInKilometersCubed={stagingMass / Math.pow(10, 12)}
+                  eruptionVolume={stagingMass / Math.pow(10, 12)}
                 />
               </HorizontalContainer>
             </ControlContainer>}
