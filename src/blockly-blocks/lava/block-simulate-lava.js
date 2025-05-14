@@ -30,7 +30,7 @@ function appendVentLong(block) {
   appendValueInput(block, "molasses_vent_long", strings.VENT_LONG);
 }
 
-Blockly.Blocks.molasses_simulation = {
+Blockly.Blocks.molasses_simulation_all_params = {
   init() {
     basicInit(this);
     appendEruptionVolume(this);
@@ -47,7 +47,7 @@ Blockly.Blocks.molasses_simulation_eruption_volume = {
   }
 };
 
-Blockly.Blocks.molasses_simulation_front = {
+Blockly.Blocks.molasses_simulation_lava_front = {
   init() {
     basicInit(this);
     appendLavaFront(this);
@@ -85,7 +85,7 @@ function runMolassesSimulation() {
   this.runMolassesSimulation();`;
 }
 
-Blockly.JavaScript.molasses_simulation = function(block) {
+Blockly.JavaScript.molasses_simulation_all_params = function(block) {
   let code = setEruptionVolume(block);
   code += setLavaFront(block);
   code += setVentLat(block);
@@ -102,7 +102,7 @@ Blockly.JavaScript.molasses_simulation_eruption_volume = function(block) {
   return code;
 };
 
-Blockly.JavaScript.molasses_simulation_front = function(block) {
+Blockly.JavaScript.molasses_simulation_lava_front = function(block) {
   let code = setLavaFront(block);
 
   code += runMolassesSimulation();

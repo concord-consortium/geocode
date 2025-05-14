@@ -28,7 +28,7 @@
   </category>
 
   <category name="Molasses" colour="#FF0000">
-    <block type="molasses_simulation">
+    <block type="molasses_simulation_all_params">
       <value name="molasses_eruption_volume">
         <shadow type="math_number">
           <field name="NUM">200000000</field>
@@ -57,7 +57,7 @@
         </shadow>
       </value>
     </block>
-    <block type="molasses_simulation_front">
+    <block type="molasses_simulation_lava_front">
       <value name="molasses_lava_front">
         <shadow type="math_number">
           <field name="NUM">5</field>
