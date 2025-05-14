@@ -1,3 +1,4 @@
+import "./lava/block-simulate-lava.js";
 import "./tephra/block-fill-cell.js";
 import "./tephra/block-run-simulation.js";
 import "./tephra/block-thickness.js";
