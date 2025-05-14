@@ -30,7 +30,7 @@ function appendVentLong(block) {
   appendValueInput(block, "molasses_vent_long", strings.VENT_LONG);
 }
 
-Blockly.Blocks.simulate_lava = {
+Blockly.Blocks.molasses_simulation = {
   init() {
     basicInit(this);
     appendEruptionVolume(this);
@@ -40,21 +40,21 @@ Blockly.Blocks.simulate_lava = {
   }
 };
 
-Blockly.Blocks.simulate_lava_eruption_volume = {
+Blockly.Blocks.molasses_simulation_eruption_volume = {
   init() {
     basicInit(this);
     appendEruptionVolume(this);
   }
 };
 
-Blockly.Blocks.simulate_lava_front = {
+Blockly.Blocks.molasses_simulation_front = {
   init() {
     basicInit(this);
     appendLavaFront(this);
   }
 };
 
-Blockly.Blocks.simulate_lava_lat_long = {
+Blockly.Blocks.molasses_simulation_lat_long = {
   init() {
     basicInit(this);
     appendVentLat(this);
@@ -80,7 +80,7 @@ function setVentLong(block) {
   return setCodeVariable("molasses_vent_long", block, "setMolassesVentLong");
 }
 
-Blockly.JavaScript.simulate_lava = function(block) {
+Blockly.JavaScript.molasses_simulation = function(block) {
   let code = "";
 
   code += setEruptionVolume(block);
@@ -93,7 +93,7 @@ Blockly.JavaScript.simulate_lava = function(block) {
   return code;
 };
 
-Blockly.JavaScript.simulate_lava_eruption_volume = function(block) {
+Blockly.JavaScript.molasses_simulation_eruption_volume = function(block) {
   let code = "";
 
   code += setEruptionVolume(block);
@@ -103,7 +103,7 @@ Blockly.JavaScript.simulate_lava_eruption_volume = function(block) {
   return code;
 };
 
-Blockly.JavaScript.simulate_lava_front = function(block) {
+Blockly.JavaScript.molasses_simulation_front = function(block) {
   let code = "";
 
   code += setLavaFront(block);
@@ -113,7 +113,7 @@ Blockly.JavaScript.simulate_lava_front = function(block) {
   return code;
 };
 
-Blockly.JavaScript.simulate_lava_lat_long = function(block) {
+Blockly.JavaScript.molasses_simulation_lat_long = function(block) {
   let code = "";
 
   code += setVentLat(block);

@@ -28,7 +28,7 @@
   </category>
 
   <category name="Molasses" colour="#FF0000">
-    <block type="simulate_lava">
+    <block type="molasses_simulation">
       <value name="molasses_eruption_volume">
         <shadow type="math_number">
           <field name="NUM">200000000</field>
@@ -50,21 +50,21 @@
         </shadow>
       </value>
     </block>
-    <block type="simulate_lava_eruption_volume">
+    <block type="molasses_simulation_eruption_volume">
       <value name="molasses_eruption_volume">
         <shadow type="math_number">
           <field name="NUM">200000000</field>
         </shadow>
       </value>
     </block>
-    <block type="simulate_lava_front">
+    <block type="molasses_simulation_front">
       <value name="molasses_lava_front">
         <shadow type="math_number">
           <field name="NUM">5</field>
         </shadow>
       </value>
     </block>
-    <block type="simulate_lava_lat_long">
+    <block type="molasses_simulation_lat_long">
       <value name="molasses_vent_lat">
         <shadow type="math_number">
           <field name="NUM">19.5</field>
