@@ -1,5 +1,6 @@
 // Based on the molasses algorithm https://github.com/geoscience-community-codes/MOLASSES
 
+import { minLat, minLong, rangeLat, rangeLong } from "./lava-constants";
 import { AsciiRaster } from "./parse-ascii-raster";
 
 const millisecondsPerFrame = 200;
@@ -39,12 +40,12 @@ function createGrid(raster: AsciiRaster) {
   return grid;
 }
 
-function convertEastingToX(easting: number, raster: AsciiRaster) {
-  return Math.floor((easting - raster.header.xllcorner) / raster.header.cellsize);
+function convertLongitudeToX(longitude: number, raster: AsciiRaster) {
+  return Math.floor((longitude - minLong) / rangeLong * raster.header.ncols);
 }
 
-function convertNorthingToY(northing: number, raster: AsciiRaster) {
-  return raster.header.nrows - Math.floor((northing - raster.header.yllcorner) / raster.header.cellsize);
+function convertLatitudeToY(latitude: number, raster: AsciiRaster) {
+  return raster.header.nrows - Math.floor((latitude - minLat) / rangeLat * raster.header.nrows);
 }
 
 function getTotalElevation(cell: GridCell) {
@@ -104,19 +105,19 @@ export interface LavaSimulationParameters {
   raster: AsciiRaster;
   residual: number;
   totalVolume: number;
-  ventEasting: number;
-  ventNorthing: number;
+  ventLatitude: number;
+  ventLongitude: number;
 }
 export async function runSimulation({
-  postMessage, pulseVolume, raster, residual, totalVolume, ventEasting, ventNorthing
+  postMessage, pulseVolume, raster, residual, totalVolume, ventLatitude, ventLongitude
 }: LavaSimulationParameters) {
   const startTime = Date.now();
 
   // Set up simulation
   let pulseCount = 0;
   const grid = createGrid(raster);
-  const ventX = convertEastingToX(ventEasting, raster);
-  const ventY = convertNorthingToY(ventNorthing, raster);
+  const ventX = convertLongitudeToX(ventLongitude, raster);
+  const ventY = convertLatitudeToY(ventLatitude, raster);
   const ventCell = grid[ventY][ventX];
   const cellArea = raster.header.cellsize ** 2;
   let currentTotalVolume = totalVolume;
