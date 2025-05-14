@@ -51,19 +51,15 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     /** ==== Molasses simulation functions ==== */
 
     addFunc("setMolassesEruptionVolume", (volume: number) => {
-      console.log(` -- setMolassesEruptionVolume: ${volume}`);
-      lavaSimulation.setTotalVolume(volume);
+      lavaSimulation.setTotalVolumeAndUpdatePulseVolume(volume);
     });
     addFunc("setMolassesLavaFront", (height: number) => {
-      console.log(` -- setMolassesLavaFront: ${height}`);
       lavaSimulation.setResidual(height);
     });
     addFunc("setMolassesVentLat", (lat: number) => {
-      console.log(` -- setMolassesVentLat: ${lat}`);
       lavaSimulation.setVentLatitude(lat);
     });
     addFunc("setMolassesVentLong", (long: number) => {
-      console.log(` -- setMolassesVentLong: ${long}`);
       lavaSimulation.setVentLongitude(long);
     });
 

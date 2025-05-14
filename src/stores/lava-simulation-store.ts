@@ -51,6 +51,11 @@ export const LavaSimulationStore = types
     setTotalVolume(totalVolume: number) {
       self.totalVolume = totalVolume;
     },
+    setTotalVolumeAndUpdatePulseVolume(totalVolume: number) {
+      self.totalVolume = totalVolume;
+      // Update pulse volume to be proportional to the total volume
+      self.pulseVolume = totalVolume * defaultPulseVolume / defaultEruptionVolume;
+    },
     setVentLatitude(ventLatitude: number) {
       self.ventLatitude = ventLatitude;
     },
