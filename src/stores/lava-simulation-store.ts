@@ -1,6 +1,7 @@
 import { types } from "mobx-state-tree";
 import MolassesWorker from "../components/lava-coder/molasses.worker";
 import { AsciiRaster } from "../components/lava-coder/parse-ascii-raster";
+import { defaultEruptionVolume, defaultPulseVolume, defaultResidual, defaultVentLatitude, defaultVentLongitude } from "../components/lava-coder/lava-constants";
 
 // Saving the lava elevations in the MST model is very slow, so we save it separately.
 // But that means that when this is updated, another observable feature (like coveredCells or pulseCount) needs to be
@@ -22,23 +23,11 @@ function countCoveredCells(_lavaElevations: number[][]) {
 
 export const LavaSimulationStore = types
   .model("lavaSimulation", {
-    residual: 5,
-    // Recommended vent
-    ventEasting: 232214,
-    ventNorthing: 2158722,
-    // Vent in the main crater
-    // ventEasting: 227500,
-    // ventNorthing: 2153500,
-    // Vent near the north, quickly hitting a wall and splitting
-    // ventEasting: 237214,
-    // ventNorthing: 2173722,
-    // Vent near the north east corner of the current map, quickly falling into the ocean
-    // ventEasting: 279000,
-    // ventNorthing: 2181000,
-    ventLatitude: types.maybe(types.number),
-    ventLongitude: types.maybe(types.number),
-    totalVolume: 200000000,
-    pulseVolume: 100000, // Standard for small eruption
+    residual: defaultResidual,
+    ventLatitude: defaultVentLatitude,
+    ventLongitude: defaultVentLongitude,
+    totalVolume: defaultEruptionVolume,
+    pulseVolume: defaultPulseVolume, // Standard for small eruption
     pulseCount: 0,
   })
   .volatile((self) => ({
@@ -92,8 +81,6 @@ export const LavaSimulationStore = types
         raster: self.raster,
         residual: self.residual,
         totalVolume: self.totalVolume,
-        ventEasting: self.ventEasting,
-        ventNorthing: self.ventNorthing,
         ventLatitude: self.ventLatitude,
         ventLongitude: self.ventLongitude
       };

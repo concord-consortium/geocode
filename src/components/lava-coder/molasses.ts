@@ -40,24 +40,12 @@ function createGrid(raster: AsciiRaster) {
   return grid;
 }
 
-function convertLongitudeToX(raster: AsciiRaster, longitude?: number) {
-  if (longitude == null) return;
-  
+function convertLongitudeToX(longitude: number, raster: AsciiRaster) {
   return Math.floor((longitude - minLong) / (maxLong - minLong) * raster.header.ncols);
 }
 
-function convertLatitudeToY(raster: AsciiRaster, latitude?: number) {
-  if (latitude == null) return;
-  
+function convertLatitudeToY(latitude: number, raster: AsciiRaster) {
   return raster.header.nrows - Math.floor((latitude - minLat) / (maxLat - minLat) * raster.header.nrows);
-}
-
-function convertEastingToX(easting: number, raster: AsciiRaster) {
-  return Math.floor((easting - raster.header.xllcorner) / raster.header.cellsize);
-}
-
-function convertNorthingToY(northing: number, raster: AsciiRaster) {
-  return raster.header.nrows - Math.floor((northing - raster.header.yllcorner) / raster.header.cellsize);
 }
 
 function getTotalElevation(cell: GridCell) {
@@ -117,13 +105,11 @@ export interface LavaSimulationParameters {
   raster: AsciiRaster;
   residual: number;
   totalVolume: number;
-  ventEasting: number;
-  ventNorthing: number;
-  ventLatitude?: number;
-  ventLongitude?: number;
+  ventLatitude: number;
+  ventLongitude: number;
 }
 export async function runSimulation({
-  postMessage, pulseVolume, raster, residual, totalVolume, ventEasting, ventNorthing, ventLatitude, ventLongitude
+  postMessage, pulseVolume, raster, residual, totalVolume, ventLatitude, ventLongitude
 }: LavaSimulationParameters) {
   const startTime = Date.now();
 
@@ -131,8 +117,8 @@ export async function runSimulation({
   let pulseCount = 0;
   const grid = createGrid(raster);
   // Use latitude and longitude if provided.
-  const ventX = convertLongitudeToX(raster, ventLongitude) ?? convertEastingToX(ventEasting, raster);
-  const ventY = convertLatitudeToY(raster, ventLatitude) ?? convertNorthingToY(ventNorthing, raster);
+  const ventX = convertLongitudeToX(ventLongitude, raster);
+  const ventY = convertLatitudeToY(ventLatitude, raster);
   const ventCell = grid[ventY][ventX];
   const cellArea = raster.header.cellsize ** 2;
   let currentTotalVolume = totalVolume;
