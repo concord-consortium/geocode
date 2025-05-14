@@ -1,7 +1,9 @@
 import { types } from "mobx-state-tree";
 import MolassesWorker from "../components/lava-coder/molasses.worker";
 import { AsciiRaster } from "../components/lava-coder/parse-ascii-raster";
-import { defaultEruptionVolume, defaultPulseVolume, defaultResidual, defaultVentLatitude, defaultVentLongitude } from "../components/lava-coder/lava-constants";
+import {
+  defaultEruptionVolume, defaultPulseVolume, defaultResidual, defaultVentLatitude, defaultVentLongitude
+} from "../components/lava-coder/lava-constants";
 
 // Saving the lava elevations in the MST model is very slow, so we save it separately.
 // But that means that when this is updated, another observable feature (like coveredCells or pulseCount) needs to be

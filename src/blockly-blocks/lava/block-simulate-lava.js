@@ -81,9 +81,7 @@ function setVentLong(block) {
 }
 
 Blockly.JavaScript.molasses_simulation = function(block) {
-  let code = "";
-
-  code += setEruptionVolume(block);
+  let code = setEruptionVolume(block);
   code += setLavaFront(block);
   code += setVentLat(block);
   code += setVentLong(block);
@@ -94,9 +92,7 @@ Blockly.JavaScript.molasses_simulation = function(block) {
 };
 
 Blockly.JavaScript.molasses_simulation_eruption_volume = function(block) {
-  let code = "";
-
-  code += setEruptionVolume(block);
+  let code = setEruptionVolume(block);
 
   code += `
   this.runMolassesSimulation();`;
@@ -104,9 +100,7 @@ Blockly.JavaScript.molasses_simulation_eruption_volume = function(block) {
 };
 
 Blockly.JavaScript.molasses_simulation_front = function(block) {
-  let code = "";
-
-  code += setLavaFront(block);
+  let code = setLavaFront(block);
 
   code += `
   this.runMolassesSimulation();`;
@@ -114,9 +108,7 @@ Blockly.JavaScript.molasses_simulation_front = function(block) {
 };
 
 Blockly.JavaScript.molasses_simulation_lat_long = function(block) {
-  let code = "";
-
-  code += setVentLat(block);
+  let code = setVentLat(block);
   code += setVentLong(block);
 
   code += `

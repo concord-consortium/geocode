@@ -1,5 +1,4 @@
 import { makeObservable, observable } from "mobx";
-import { lavaSimulation } from "../stores/lava-simulation-store";
 import { IStore } from "../stores/stores";
 import { DEFORMATION_SIMULATION_WARNING } from "../strings/blockly-controller";
 import { IInterpreterController, makeInterpreterController } from "./interpreter";

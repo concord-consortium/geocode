@@ -1,6 +1,6 @@
 // Based on the molasses algorithm https://github.com/geoscience-community-codes/MOLASSES
 
-import { maxLat, maxLong, minLat, minLong } from "./lava-constants";
+import { minLat, minLong, rangeLat, rangeLong } from "./lava-constants";
 import { AsciiRaster } from "./parse-ascii-raster";
 
 const millisecondsPerFrame = 200;
@@ -41,11 +41,11 @@ function createGrid(raster: AsciiRaster) {
 }
 
 function convertLongitudeToX(longitude: number, raster: AsciiRaster) {
-  return Math.floor((longitude - minLong) / (maxLong - minLong) * raster.header.ncols);
+  return Math.floor((longitude - minLong) / rangeLong * raster.header.ncols);
 }
 
 function convertLatitudeToY(latitude: number, raster: AsciiRaster) {
-  return raster.header.nrows - Math.floor((latitude - minLat) / (maxLat - minLat) * raster.header.nrows);
+  return raster.header.nrows - Math.floor((latitude - minLat) / rangeLat * raster.header.nrows);
 }
 
 function getTotalElevation(cell: GridCell) {
@@ -116,7 +116,6 @@ export async function runSimulation({
   // Set up simulation
   let pulseCount = 0;
   const grid = createGrid(raster);
-  // Use latitude and longitude if provided.
   const ventX = convertLongitudeToX(ventLongitude, raster);
   const ventY = convertLatitudeToY(ventLatitude, raster);
   const ventCell = grid[ventY][ventX];
