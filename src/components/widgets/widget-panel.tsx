@@ -31,29 +31,30 @@ const WidgetTitle = styled.div`
   margin-bottom: 5px;
 `;
 
-interface IProps {}
+interface IProps {
+  showColumnHeight?: boolean;
+  showEjectedVolume?: boolean;
+  showVEI?: boolean;
+  showVolumeOfLava?: boolean;
+  showWindDirection?: boolean;
+  showWindSpeed?: boolean;
+}
 
 interface IState {}
 
 @inject("stores")
 @observer
 export default class WidgetPanel extends BaseComponent<IProps, IState> {
-  public static defaultProps = {
-    showWindSpeed: true,
-    showWindDirection: true,
-    showColumnHeight: true,
-    showEjectedVolume: true,
-    showVEI: true,
-    windSpeed: 1,
-    windDirection: 0,
-    columnHeight: 1,
-    vei: 1,
-    mass: 1,
-  };
-
   public render() {
-    const { showVEI, showEjectedVolume, showColumnHeight, showWindSpeed, showWindDirection } = this.stores.uiStore;
+    const showColumnHeight = this.props.showColumnHeight ?? this.stores.uiStore.showColumnHeight;
+    const showEjectedVolume = this.props.showEjectedVolume ?? this.stores.uiStore.showEjectedVolume;
+    const showVEI = this.props.showVEI ?? this.stores.uiStore.showVEI;
+    const showVolumeOfLava = this.props.showVolumeOfLava ?? this.stores.uiStore.showVolumeOfLava;
+    const showWindDirection = this.props.showWindDirection ?? this.stores.uiStore.showWindDirection;
+    const showWindSpeed = this.props.showWindSpeed ?? this.stores.uiStore.showWindSpeed;
     const { vei, mass, colHeight, windDirection, windSpeed } = this.stores.tephraSimulation;
+    const { totalVolume } = this.stores.lavaSimulation;
+
     return (
       <WidgetBar>
         { (showWindSpeed || showWindDirection) &&
@@ -83,6 +84,15 @@ export default class WidgetPanel extends BaseComponent<IProps, IState> {
             <EjectedVolumeWidget
               type={WidgetPanelTypes.RIGHT}
               volumeInKilometersCubed={mass / Math.pow(10, 12)}
+            />
+          </WidgetContainer> }
+        { showVolumeOfLava &&
+          <WidgetContainer data-test="volume-of-lava-widget">
+            <WidgetTitle>Volume of Lava</WidgetTitle>
+            <EjectedVolumeWidget
+              type={WidgetPanelTypes.RIGHT}
+              unit="m"
+              volumeInKilometersCubed={totalVolume}
             />
           </WidgetContainer> }
         { showColumnHeight &&

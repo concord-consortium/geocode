@@ -1,4 +1,3 @@
-import { PureComponent } from "react";
 import styled from "styled-components";
 import { Icon } from "../icon";
 import BoxBackIcon from "../../assets/widget-icons/ejected-volume-box-back.svg";
@@ -49,69 +48,62 @@ const AbsoluteIconTop = styled(Icon)`
 
 interface IProps {
   type: WidgetPanelTypes;
+  unit?: "m" | "km";
   volumeInKilometersCubed: number;
 }
 
-interface IState {}
+export default function EjectedVolumeWidget({ type, unit, volumeInKilometersCubed }: IProps) {
+  const _unit = unit ?? "km";
+  const unitFactor = _unit === "m" ? 1000 : 1;
+  const minVolume = .0001 * unitFactor;
+  const maxVolume = 1000 * unitFactor;
+  const constrainedVolume = Math.min(Math.max(volumeInKilometersCubed, minVolume), maxVolume);
+  const index = Math.round(Math.log(volumeInKilometersCubed * unitFactor) / Math.LN10);
+  const constrainedIndex = Math.round(Math.log(constrainedVolume / unitFactor) / Math.LN10);
+  const maxBoxGrowth = 33;
+  const minBoxHeight = 1;
+  const indexOffset = 4;
+  const maxIndex = 7;
+  const boxHeight = minBoxHeight + maxBoxGrowth
+                    * (Math.pow(2, constrainedIndex + indexOffset) / Math.pow(2, maxIndex));
+  const topOffset = 25;
 
-export default class EjectedVolumeWidget extends PureComponent<IProps, IState> {
-  public static defaultProps = {
-    type: WidgetPanelTypes.LEFT,
-    volumeInKilometersCubed: 1,
-  };
-
-  public render() {
-    const { type, volumeInKilometersCubed } = this.props;
-    const minVolume = .0001;
-    const maxVolume = 1000;
-    const constrainedVolume = Math.min(Math.max(volumeInKilometersCubed, minVolume), maxVolume);
-    const index = Math.round(Math.log(volumeInKilometersCubed) / Math.LN10);
-    const constrainedIndex = Math.round(Math.log(constrainedVolume) / Math.LN10);
-    const maxBoxGrowth = 33;
-    const minBoxHeight = 1;
-    const indexOffset = 4;
-    const maxIndex = 7;
-    const boxHeight = minBoxHeight + maxBoxGrowth
-                      * (Math.pow(2, constrainedIndex + indexOffset) / Math.pow(2, maxIndex));
-    const topOffset = 25;
-    return (
-      <ValueContainer backgroundColor={kWidgetPanelInfo[type].backgroundColor}>
-        <RelativeIconContainer>
-          <AbsoluteIcon
-            width={54}
-            height={48}
-            fill={kWidgetPanelInfo[type].highlightColor}
-            data-test="ejected-volume-height-visual"
-          >
-            <BoxBackIcon/>
-          </AbsoluteIcon>
-          <BoxLeft height={boxHeight} />
-          <BoxRight height={boxHeight} />
-          <AbsoluteIconTop
-            width={54}
-            height={48}
-            fill={"black"}
-            bottom={boxHeight - topOffset}
-          >
-            <BoxTopIcon/>
-          </AbsoluteIconTop>
-          <AbsoluteIcon
-            width={54}
-            height={48}
-            fill={kWidgetPanelInfo[type].highlightColor}
-          >
-            <BoxFrontIcon/>
-          </AbsoluteIcon>
-        </RelativeIconContainer>
-        <ValueOutput>
-          <div data-test="info"
-            // eslint-disable-next-line react/no-danger
-            dangerouslySetInnerHTML={
-              {__html: `10<sup>${index}</sup> km<sup>3</sup>`}
-          } />
-        </ValueOutput>
-      </ValueContainer>
-    );
-  }
-
+  return (
+    <ValueContainer backgroundColor={kWidgetPanelInfo[type].backgroundColor}>
+      <RelativeIconContainer>
+        <AbsoluteIcon
+          width={54}
+          height={48}
+          fill={kWidgetPanelInfo[type].highlightColor}
+          data-test="ejected-volume-height-visual"
+        >
+          <BoxBackIcon/>
+        </AbsoluteIcon>
+        <BoxLeft height={boxHeight} />
+        <BoxRight height={boxHeight} />
+        <AbsoluteIconTop
+          width={54}
+          height={48}
+          fill={"black"}
+          bottom={boxHeight - topOffset}
+        >
+          <BoxTopIcon/>
+        </AbsoluteIconTop>
+        <AbsoluteIcon
+          width={54}
+          height={48}
+          fill={kWidgetPanelInfo[type].highlightColor}
+        >
+          <BoxFrontIcon/>
+        </AbsoluteIcon>
+      </RelativeIconContainer>
+      <ValueOutput>
+        <div data-test="info"
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={
+            {__html: `10<sup>${index}</sup> ${_unit}<sup>3</sup>`}
+        } />
+      </ValueOutput>
+    </ValueContainer>
+  );
 }
