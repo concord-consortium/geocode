@@ -1,6 +1,6 @@
 import { Cartesian3, Cartographic, CesiumWidget } from "@cesium/engine";
 import { useCallback, useEffect, useState } from "react";
-import ventLocationMarkerIcon from "../../assets/lava-coder/location-marker.png";
+import VentLocationMarkerIcon from "../../assets/lava-coder/location-marker.png";
 
 const kVentLocationMarkerId = "vent-location-marker";
 
@@ -22,7 +22,7 @@ export function useVentLocationMarker(viewer: CesiumWidget | null) {
         id: kVentLocationMarkerId,
         position: ventLocationCartesian,
         billboard: {
-          image: ventLocationMarkerIcon,
+          image: VentLocationMarkerIcon,
           verticalOrigin: 1, // Cesium.VerticalOrigin.BOTTOM
           scale: 1.0,
         }

@@ -1,10 +1,11 @@
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import VentLocationMarkerIcon from "../../assets/lava-coder/location-marker.png";
 import MapStreetIcon from "../../assets/lava-coder/map-street-icon.png";
 import MapTerrainIcon from "../../assets/lava-coder/map-terrain-icon.png";
 import PlaceVentMarkerIcon from "../../assets/lava-coder/place-vent-marker-icon.png";
 import IconButton from "../buttons/icon-button";
-import { useCesiumClickEvent } from "./use-cesium-click-event";
+import { useCesiumMouseEvents } from "./use-cesium-mouse-events";
 import { useCesiumViewer } from "./use-cesium-viewer";
 import { useElevationData } from "./use-elevation-data";
 import { useHazardZones } from "./use-hazard-zones";
@@ -32,6 +33,7 @@ export function LavaCoderView({ width, height, margin }: IProps) {
     osm: "Street"
   };
   const [isPlaceVentMode, setIsPlaceVentMode] = useState(false);
+  const [cursor, setCursor] = useState("auto");
 
   const viewer = useCesiumViewer(lavaCoderElt);
 
@@ -47,7 +49,18 @@ export function LavaCoderView({ width, height, margin }: IProps) {
 
   useLavaOverlay(viewer);
 
-  useCesiumClickEvent(viewer, (latitude, longitude, elevation) => {
+  const handleMouseMove = useCallback((latitude, longitude) => {
+    // handle mouse move event
+    const isInHazardZone = isPointInHazardZone(latitude, longitude);
+    const kVentLocationCursorHotSpot = "13 36";
+    setCursor(isPlaceVentMode
+                ? isInHazardZone
+                    ? `url(${VentLocationMarkerIcon}) ${kVentLocationCursorHotSpot}, auto`
+                    : "not-allowed"
+                : "auto");
+  }, [isPlaceVentMode, isPointInHazardZone]);
+
+  const handleClick = useCallback((latitude, longitude, elevation) => {
     const isInHazardZone = isPointInHazardZone(latitude, longitude);
     const kFeetPerMeter = 3.28084;
     const elevationFeet = Math.round(elevation * kFeetPerMeter);
@@ -59,7 +72,10 @@ export function LavaCoderView({ width, height, margin }: IProps) {
       setVentLocation(latitude, longitude, elevation);
     }
     setIsPlaceVentMode(false);
-  });
+    setCursor("auto");
+  }, [isPlaceVentMode, isPointInHazardZone, setVentLocation]);
+
+  useCesiumMouseEvents(viewer, handleMouseMove, handleClick);
 
   function toggleShowLabels() {
     const nextMapType: Record<BaseLayerType, BaseLayerType> = {
@@ -74,7 +90,8 @@ export function LavaCoderView({ width, height, margin }: IProps) {
     setIsPlaceVentMode(prev => !prev);
   }
 
-  const containerStyle: React.CSSProperties = { width, height, margin };
+  // place hot spot for vent location cursor at point of marker
+  const containerStyle: React.CSSProperties = { width, height, margin, cursor };
   const borderColor = "#3baa1d";
   const iconStyle: React.CSSProperties = { marginTop: 4, marginRight: 2 };
 
