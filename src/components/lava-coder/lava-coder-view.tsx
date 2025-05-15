@@ -5,6 +5,7 @@ import MapStreetIcon from "../../assets/lava-coder/map-street-icon.png";
 import MapTerrainIcon from "../../assets/lava-coder/map-terrain-icon.png";
 import PlaceVentMarkerIcon from "../../assets/lava-coder/place-vent-marker-icon.png";
 import IconButton from "../buttons/icon-button";
+import { kFeetPerMeter } from "./lava-constants";
 import { useCesiumMouseEvents } from "./use-cesium-mouse-events";
 import { useCesiumViewer } from "./use-cesium-viewer";
 import { useElevationData } from "./use-elevation-data";
@@ -62,7 +63,6 @@ export function LavaCoderView({ width, height, margin }: IProps) {
 
   const handleClick = useCallback((latitude, longitude, elevation) => {
     const isInHazardZone = isPointInHazardZone(latitude, longitude);
-    const kFeetPerMeter = 3.28084;
     const elevationFeet = Math.round(elevation * kFeetPerMeter);
     // eslint-disable-next-line no-console
     console.log("Clicked at latitude:", round6(latitude), "longitude:", round6(longitude),
