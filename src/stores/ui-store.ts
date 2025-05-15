@@ -25,6 +25,7 @@ const UIStore = types.model("UI", {
   showWindDirection: true,
   showEjectedVolume: true,
   showColumnHeight: true,
+  showLavaFrontHeight: true,
   showVEI: true,
   showVolumeOfLava: true,
   // chart demo buttons

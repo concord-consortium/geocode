@@ -6,6 +6,7 @@ import { WidgetPanelTypes } from "../../utilities/widget";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import { BaseComponent } from "../base";
+import { LavaFrontHeightWidget } from "./lava-front-height-widget";
 
 const WidgetBar = styled.div`
   display: flex;
@@ -34,6 +35,7 @@ const WidgetTitle = styled.div`
 interface IProps {
   showColumnHeight?: boolean;
   showEjectedVolume?: boolean;
+  showLavaFrontHeight?: boolean;
   showVEI?: boolean;
   showVolumeOfLava?: boolean;
   showWindDirection?: boolean;
@@ -48,12 +50,13 @@ export default class WidgetPanel extends BaseComponent<IProps, IState> {
   public render() {
     const showColumnHeight = this.props.showColumnHeight ?? this.stores.uiStore.showColumnHeight;
     const showEjectedVolume = this.props.showEjectedVolume ?? this.stores.uiStore.showEjectedVolume;
+    const showLavaFrontHeight = this.props.showLavaFrontHeight ?? this.stores.uiStore.showLavaFrontHeight;
     const showVEI = this.props.showVEI ?? this.stores.uiStore.showVEI;
     const showVolumeOfLava = this.props.showVolumeOfLava ?? this.stores.uiStore.showVolumeOfLava;
     const showWindDirection = this.props.showWindDirection ?? this.stores.uiStore.showWindDirection;
     const showWindSpeed = this.props.showWindSpeed ?? this.stores.uiStore.showWindSpeed;
     const { vei, mass, colHeight, windDirection, windSpeed } = this.stores.tephraSimulation;
-    const { totalVolume } = this.stores.lavaSimulation;
+    const { residual, totalVolume } = this.stores.lavaSimulation;
 
     return (
       <WidgetBar>
@@ -86,6 +89,11 @@ export default class WidgetPanel extends BaseComponent<IProps, IState> {
               type={WidgetPanelTypes.RIGHT}
               eruptionVolume={mass / Math.pow(10, 12)}
             />
+          </WidgetContainer> }
+        { showLavaFrontHeight &&
+          <WidgetContainer data-test="lava-front-height-widget">
+            <WidgetTitle>Lava Front Height</WidgetTitle>
+            <LavaFrontHeightWidget lavaFrontHeight={residual} />
           </WidgetContainer> }
         { showVolumeOfLava &&
           <WidgetContainer data-test="volume-of-lava-widget">

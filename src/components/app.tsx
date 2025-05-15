@@ -527,6 +527,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                     <WidgetPanel
                       showColumnHeight={isTephra}
                       showEjectedVolume={isTephra}
+                      showLavaFrontHeight={isLavaCoder}
                       showVEI={isTephra}
                       showWindDirection={isTephra}
                       showWindSpeed={isTephra}
