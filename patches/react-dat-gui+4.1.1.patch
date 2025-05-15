@@ -1,0 +1,26 @@
+diff --git a/node_modules/react-dat-gui/dist/index.cjs.js b/node_modules/react-dat-gui/dist/index.cjs.js
+index e6bf87d..fe131c6 100644
+--- a/node_modules/react-dat-gui/dist/index.cjs.js
++++ b/node_modules/react-dat-gui/dist/index.cjs.js
+@@ -508,7 +508,7 @@ var DatBoolean = /*#__PURE__*/function (_Component) {
+       var _this$props2 = this.props,
+           path = _this$props2.path,
+           label = _this$props2.label,
+-          labelWidth = _this$props2.labelWidth,
++          labelWidth = "80%", // [CC] _this$props2.labelWidth,
+           className = _this$props2.className,
+           style = _this$props2.style;
+       var labelText = isString__default['default'](label) ? label : path;
+diff --git a/node_modules/react-dat-gui/dist/index.es.js b/node_modules/react-dat-gui/dist/index.es.js
+index 1e8fecd..a520f53 100644
+--- a/node_modules/react-dat-gui/dist/index.es.js
++++ b/node_modules/react-dat-gui/dist/index.es.js
+@@ -482,7 +482,7 @@ var DatBoolean = /*#__PURE__*/function (_Component) {
+       var _this$props2 = this.props,
+           path = _this$props2.path,
+           label = _this$props2.label,
+-          labelWidth = _this$props2.labelWidth,
++          labelWidth = "80%", // [CC] _this$props2.labelWidth,
+           className = _this$props2.className,
+           style = _this$props2.style;
+       var labelText = isString(label) ? label : path;

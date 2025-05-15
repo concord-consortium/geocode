@@ -3,17 +3,16 @@ import {
   OpenStreetMapImageryProvider
 } from "@cesium/engine";
 import { useEffect } from "react";
+import { LavaMapType } from "../../stores/ui-store";
 
-export type BaseLayerType = "aerial" | "aerialWithLabels" | "osm";
-
-export function useWorldImagery(viewer: CesiumWidget | null, type: BaseLayerType) {
+export function useWorldImagery(viewer: CesiumWidget | null, type: LavaMapType) {
   useEffect(() => {
     if (viewer) {
       let imageryProviderPromise: Promise<ImageryProvider>;
-      if (type === "osm") {
+      if (type === "street") {
         imageryProviderPromise = Promise.resolve(new OpenStreetMapImageryProvider({}));
       } else {
-        const style: IonWorldImageryStyle = type === "aerialWithLabels"
+        const style: IonWorldImageryStyle = type === "terrainWithLabels"
           ? IonWorldImageryStyle.AERIAL_WITH_LABELS
           : IonWorldImageryStyle.AERIAL;
         imageryProviderPromise = createWorldImageryAsync({ style });

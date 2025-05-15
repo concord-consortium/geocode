@@ -1,9 +1,10 @@
-
+import { observer } from "mobx-react";
 import { useCallback, useState } from "react";
 import VentLocationMarkerIcon from "../../assets/lava-coder/location-marker.png";
 import MapStreetIcon from "../../assets/lava-coder/map-street-icon.png";
 import MapTerrainIcon from "../../assets/lava-coder/map-terrain-icon.png";
 import PlaceVentMarkerIcon from "../../assets/lava-coder/place-vent-marker-icon.png";
+import { LavaMapType, LavaMapTypes, uiStore } from "../../stores/ui-store";
 import IconButton from "../buttons/icon-button";
 import { kFeetPerMeter } from "./lava-constants";
 import { useCesiumMouseEvents } from "./use-cesium-mouse-events";
@@ -12,8 +13,8 @@ import { useElevationData } from "./use-elevation-data";
 import { useHazardZones } from "./use-hazard-zones";
 import { useLavaOverlay } from "./use-lava-overlay";
 import { useVentLocationMarker } from "./use-vent-location-marker";
-import { kNormalElevation, useVerticalExaggeration } from "./use-vertical-exaggeration";
-import { BaseLayerType, useWorldImagery } from "./use-world-imagery";
+import { useVerticalExaggeration } from "./use-vertical-exaggeration";
+import { useWorldImagery } from "./use-world-imagery";
 
 import "./lava-coder-view.scss";
 
@@ -25,13 +26,16 @@ interface IProps {
 
 const round6 = (value: number) => Math.round(value * 1000000) / 1000000;
 
-export function LavaCoderView({ width, height, margin }: IProps) {
+export const LavaCoderView = observer(function LavaCoderView({ width, height, margin }: IProps) {
+  const {
+    showPlaceVent, showMapType, showMapTypeTerrain, showMapTypeLabeledTerrain, showMapTypeStreet, mapType,
+    verticalExaggeration
+  } = uiStore;
   const [lavaCoderElt, setLavaCoderElt] = useState<HTMLDivElement | null>(null);
-  const [mapType, setMapType] = useState<BaseLayerType>("aerial");
-  const mapLabels: Record<BaseLayerType, string> = {
-    aerial: "Terrain",
-    aerialWithLabels: "Labeled",
-    osm: "Street"
+  const mapLabels: Record<LavaMapType, string> = {
+    terrain: "Terrain",
+    terrainWithLabels: "Labeled",
+    street: "Street"
   };
   const [isPlaceVentMode, setIsPlaceVentMode] = useState(false);
   const [cursor, setCursor] = useState("auto");
@@ -40,7 +44,7 @@ export function LavaCoderView({ width, height, margin }: IProps) {
 
   useWorldImagery(viewer, mapType);
 
-  const { toggleVerticalExaggeration, verticalExaggeration } = useVerticalExaggeration(viewer);
+  useVerticalExaggeration(viewer, verticalExaggeration);
 
   const { isPointInHazardZone } = useHazardZones(viewer, isPlaceVentMode, verticalExaggeration);
 
@@ -77,13 +81,16 @@ export function LavaCoderView({ width, height, margin }: IProps) {
 
   useCesiumMouseEvents(viewer, handleMouseMove, handleClick);
 
-  function toggleShowLabels() {
-    const nextMapType: Record<BaseLayerType, BaseLayerType> = {
-      aerial: "aerialWithLabels",
-      aerialWithLabels: "osm",
-      osm: "aerial"
-    };
-    setMapType(prev => nextMapType[prev]);
+  function toggleMapType() {
+    const availableMapTypes = LavaMapTypes.filter(type => {
+      if (type === "terrain" && !showMapTypeTerrain) return false;
+      if (type === "terrainWithLabels" && !showMapTypeLabeledTerrain) return false;
+      if (type === "street" && !showMapTypeStreet) return false;
+      return true;
+    });
+    const currMapIndex = availableMapTypes.indexOf(mapType);
+    const nextMapType = availableMapTypes[(currMapIndex + 1) % availableMapTypes.length];
+    uiStore.setMapType(nextMapType);
   }
 
   function togglePlaceVentMode() {
@@ -95,29 +102,28 @@ export function LavaCoderView({ width, height, margin }: IProps) {
   const borderColor = "#3baa1d";
   const iconStyle: React.CSSProperties = { marginTop: 4, marginRight: 2 };
 
-  const mapButtonIcon = mapType === "osm" ? MapStreetIcon : MapTerrainIcon;
+  const mapButtonIcon = mapType === "street" ? MapStreetIcon : MapTerrainIcon;
   const mapButtonLabel = `Map Type: ${mapLabels[mapType]}`;
-  const exaggerateLabel = verticalExaggeration === kNormalElevation
-                            ? `Normal Elevation (${verticalExaggeration}x)`
-                            : `Exaggerated Elevation (${verticalExaggeration}x)`;
 
   return (
     <div className="lava-coder-view" style={containerStyle}>
       <div ref={elt => setLavaCoderElt(elt)} className="lava-coder-simulation" />
       <div className="lava-overlay-controls-left">
-        <IconButton className="place-vent-button" label={"Place Vent"}
-                    borderColor={borderColor} onClick={() => togglePlaceVentMode()}>
-          <img src={PlaceVentMarkerIcon} style={iconStyle} alt="Place Vent" />
-        </IconButton>
+        {showPlaceVent && (
+          <IconButton className="place-vent-button" label={"Place Vent"}
+                      borderColor={borderColor} onClick={() => togglePlaceVentMode()}>
+            <img src={PlaceVentMarkerIcon} style={iconStyle} alt="Place Vent" />
+          </IconButton>
+        )}
       </div>
       <div className="lava-overlay-controls-right">
-        <IconButton className="show-labels-button" label={mapButtonLabel}
-                    borderColor={borderColor} onClick={() => toggleShowLabels()}>
-          <img src={mapButtonIcon} style={iconStyle} alt="Map Type" />
-        </IconButton>
-        <IconButton className="exaggerate-elevation-button" label={exaggerateLabel}
-                    borderColor={borderColor} onClick={() => toggleVerticalExaggeration()} />
+        {showMapType && (
+          <IconButton className="map-type-button" label={mapButtonLabel}
+                      borderColor={borderColor} onClick={() => toggleMapType()}>
+            <img src={mapButtonIcon} style={iconStyle} alt="Map Type" />
+          </IconButton>
+        )}
       </div>
     </div>
   );
-}
+});

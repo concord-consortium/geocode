@@ -52,6 +52,7 @@ const migrate02to03: Migration = (oldState) => {
         },
         tephraSimulation,
         seismicSimulation,
+        lavaSimulation: {},
         uiStore,
       }
     };
