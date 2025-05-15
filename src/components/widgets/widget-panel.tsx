@@ -35,9 +35,9 @@ const WidgetTitle = styled.div`
 interface IProps {
   showColumnHeight?: boolean;
   showEjectedVolume?: boolean;
+  showEruptedVolume?: boolean;
   showLavaFrontHeight?: boolean;
   showVEI?: boolean;
-  showVolumeOfLava?: boolean;
   showWindDirection?: boolean;
   showWindSpeed?: boolean;
 }
@@ -52,7 +52,7 @@ export default class WidgetPanel extends BaseComponent<IProps, IState> {
     const showEjectedVolume = this.props.showEjectedVolume && this.stores.uiStore.showEjectedVolume;
     const showLavaFrontHeight = this.props.showLavaFrontHeight && this.stores.uiStore.showLavaFrontHeight;
     const showVEI = this.props.showVEI && this.stores.uiStore.showVEI;
-    const showVolumeOfLava = this.props.showVolumeOfLava && this.stores.uiStore.showVolumeOfLava;
+    const showEruptedVolume = this.props.showEruptedVolume && this.stores.uiStore.showEruptedVolume;
     const showWindDirection = this.props.showWindDirection && this.stores.uiStore.showWindDirection;
     const showWindSpeed = this.props.showWindSpeed && this.stores.uiStore.showWindSpeed;
     const { vei, mass, colHeight, windDirection, windSpeed } = this.stores.tephraSimulation;
@@ -95,7 +95,7 @@ export default class WidgetPanel extends BaseComponent<IProps, IState> {
             <WidgetTitle>Lava Front Height</WidgetTitle>
             <LavaFrontHeightWidget lavaFrontHeight={residual} />
           </WidgetContainer> }
-        { showVolumeOfLava &&
+        { showEruptedVolume &&
           <WidgetContainer data-test="volume-of-lava-widget">
             <WidgetTitle>Volume of Lava</WidgetTitle>
             <EjectedVolumeWidget
