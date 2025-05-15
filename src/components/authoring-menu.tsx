@@ -4,9 +4,10 @@ import DatGui, { DatBoolean, DatButton, DatSelect, DatFolder, DatNumber } from "
 import Scenarios from "../assets/maps/scenarios.json";
 import { BlocklyAuthoring } from "../assets/blockly-authoring";
 import { IStoreish } from "../stores/stores.js";
+import { LavaMapTypeStrings } from "../stores/ui-store";
+import * as strings from "../strings/components/authoring-menu";
 
 import "../css/dat-gui.css";
-import * as strings from "../strings/components/authoring-menu";
 
 interface IProps {
   options: IStoreish;
@@ -118,9 +119,26 @@ const AuthoringMenu: React.FC<IProps> = (props) => {
 
           <DatFolder title={strings.LEFT_TABS} key="leftTabsFolder" closed={false}>
             <DatBoolean path="uiStore.showBlocks" label={strings.SHOW_BLOCKS} key="showBlocks" />
-            {/* <DatBoolean path="uiStore.showCode" label={strings.SHOW_CODE} key="showCode" /> */}
             <DatBoolean path="uiStore.showData" label={strings.SHOW_DATA} key="showData" />
           </DatFolder>,
+
+          <DatFolder title={strings.MAP_FEATURES} key="mapFeaturesFolder" closed={false}>
+            <DatBoolean path="uiStore.showPlaceVent" label={strings.SHOW_PLACE_VENT} key="showPlaceVent" />
+            <DatBoolean path="uiStore.showMapType" label={strings.SHOW_MAP_TYPE} key="showMapType" />
+            <DatBoolean path="uiStore.showMapTypeTerrain" label={strings.SHOW_MAP_TYPE_TERRAIN} key="showMapTypeTerrain" />
+            <DatBoolean path="uiStore.showMapTypeLabeledTerrain" label={strings.SHOW_MAP_TYPE_LABELED_TERRAIN} key="showMapTypeLabeledTerrain" />
+            <DatBoolean path="uiStore.showMapTypeStreet" label={strings.SHOW_MAP_TYPE_STREET} key="showMapTypeStreet" />
+            <DatSelect path="uiStore.mapType" label={strings.INITIAL_MAP_TYPE} key="initialMapType"
+              options={LavaMapTypeStrings} />
+            <DatNumber path="uiStore.verticalExaggeration" label={strings.VERTICAL_EXAGGERATION} key="verticalExaggeration"
+              min={1} max={5} step={1}/>
+          </DatFolder>,
+
+          <DatFolder title={strings.CONDITIONS_OPTIONS} key="conditionsFolder" closed={false}>
+            <DatBoolean path="uiStore.showEruptedVolume" label={strings.SHOW_ERUPTED_VOLUME} key="showEruptedVolume" />
+            <DatBoolean path="uiStore.showLavaFrontHeight" label={strings.SHOW_LAVA_FRONT_HEIGHT} key="showLavaFrontHeight" />
+            <DatBoolean path="uiStore.showVentLocation" label={strings.SHOW_VENT_LOCATION} key="showVentLocation" />
+          </DatFolder>
         ]
       }
       {

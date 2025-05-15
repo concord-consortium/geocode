@@ -4,6 +4,7 @@ import { AsciiRaster } from "../components/lava-coder/parse-ascii-raster";
 import {
   defaultEruptionVolume, defaultPulseVolume, defaultResidual, defaultVentLatitude, defaultVentLongitude
 } from "../components/lava-coder/lava-constants";
+import { LavaSimulationAuthorSettings, LavaSimulationAuthorSettingsProps } from "./stores";
 
 // Saving the lava elevations in the MST model is very slow, so we save it separately.
 // But that means that when this is updated, another observable feature (like coveredCells or pulseCount) needs to be
@@ -65,10 +66,21 @@ export const LavaSimulationStore = types
       self.ventLongitude = ventLongitude;
     }
   }))
+  .actions((self) => {
+    return {
+      loadAuthorSettingsData: (data: LavaSimulationAuthorSettings) => {
+        Object.keys(data).forEach((key: LavaSimulationAuthorSettingsProps) => {
+          // annoying `as any ... as any` is needed because we're mixing bool and non-bool props, which combine to never
+          // see https://github.com/microsoft/TypeScript/issues/31663
+          (self[key] as any) = data[key] as any;
+        });
+      },
+    };
+  })
   .actions((self) => ({
     runSimulation() {
       if (!self.raster) return;
-      
+
       self.worker = new MolassesWorker();
       self.worker.onmessage = (e) => {
         try {
@@ -82,7 +94,7 @@ export const LavaSimulationStore = types
           console.error("Error handling worker message:", error, e);
         }
       };
-  
+
       const parameters = {
         pulseVolume: self.pulseVolume,
         raster: self.raster,
@@ -92,7 +104,7 @@ export const LavaSimulationStore = types
         ventLongitude: self.ventLongitude
       };
       self.worker.postMessage({ type: "start", parameters });
-  
+
       return () => {
         self.worker?.terminate();
       };

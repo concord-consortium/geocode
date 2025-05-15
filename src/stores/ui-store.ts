@@ -1,6 +1,10 @@
 import { types } from "mobx-state-tree";
 import { UIAuthorSettings, UIAuthorSettingsProps } from "./stores";
 
+export const LavaMapTypes = ["terrain", "terrainWithLabels", "street"] as const;
+export const LavaMapTypeStrings = LavaMapTypes.map((type) => type.toString());
+export type LavaMapType = typeof LavaMapTypes[number];
+
 const UIStore = types.model("UI", {
   showOptionsDialog: true,
   // left tabs
@@ -11,7 +15,7 @@ const UIStore = types.model("UI", {
   showConditions: true,
   showCrossSection: false,
   showMonteCarlo: true,
-  showData: true,
+  showData: true, // left tabs for LavaCoder
   showDeformation: true,
   // other ui
   showDeformationGraph: false,
@@ -29,6 +33,29 @@ const UIStore = types.model("UI", {
   // chart demo buttons
   showDemoCharts: false,
   currentHistogramTab: 0,
+  /*
+   * LavaCoder map options
+   */
+  // whether to show the Place Vent button
+  showPlaceVent: true,
+  // whether to show the Map Type button
+  showMapType: true,
+  // whether to include terrain in the map type options
+  showMapTypeTerrain: true,
+  // whether to include labeled terrain in the map type options
+  showMapTypeLabeledTerrain: true,
+  // whether to include street in the map type options
+  showMapTypeStreet: true,
+  // current map type
+  mapType: types.optional(types.enumeration(LavaMapTypes), "terrain"),
+  // vertical exaggeration (1 = normal, 2 = 2x, 3 = 3x, etc)
+  verticalExaggeration: 1,
+  // show the erupted volume widget
+  showEruptedVolume: true,
+  // show the lava front height (residual) widget
+  showLavaFrontHeight: true,
+  // show the vent location widget
+  showVentLocation: true,
   // hide toolbar in reports mode
   hideBlocklyToolbox: false,
   leftTabIndex: 0,
@@ -40,6 +67,9 @@ const UIStore = types.model("UI", {
   },
   setHideBlocklyToolbox(show: boolean) {
     self.hideBlocklyToolbox = show;
+  },
+  setMapType(mapType: LavaMapType) {
+    self.mapType = mapType;
   },
   setLeftTabIndex(index: number) {
     self.leftTabIndex = index;

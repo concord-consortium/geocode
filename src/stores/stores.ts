@@ -25,6 +25,7 @@ export interface IStoreish {
   blocklyStore: any;
   tephraSimulation: any;
   seismicSimulation: any;
+  lavaSimulation: any;
   uiStore: any;
 }
 
@@ -88,6 +89,19 @@ export type SeismicSimulationAuthorSettings = {
 };
 
 // props settable from authoring menu
+const lavaSimulationAuthorSettingsProps = tuple(
+);
+
+// additional props directly from current model that author will save
+const lavaSimulationAuthorStateProps = (lavaSimulationAuthorSettingsProps as string[]).concat(tuple());
+
+export type LavaSimulationAuthorSettingsProps = typeof lavaSimulationAuthorSettingsProps[number];
+
+export type LavaSimulationAuthorSettings = {
+  [key in LavaSimulationAuthorSettingsProps]?: any;
+};
+
+// props settable from authoring menu
 const blocklyAuthorSettingsProps = tuple(
   "toolbox",
   "initialCodeTitle",
@@ -128,6 +142,16 @@ const uiAuthorSettingsProps = tuple(
   "showLog",
   "showDemoCharts",
   "showRiskDiamonds",
+  "showPlaceVent",
+  "showMapType",
+  "showMapTypeTerrain",
+  "showMapTypeLabeledTerrain",
+  "showMapTypeStreet",
+  "mapType",
+  "verticalExaggeration",
+  "showEruptedVolume",
+  "showLavaFrontHeight",
+  "showVentLocation",
   "leftTabIndex",
   "rightTabIndex"
 );
@@ -143,13 +167,14 @@ const pick = (keys: string[]) => (o: any) => keys.reduce((a, e) => ({ ...a, [e]:
 
 // returns a selection of the properties of the store
 function getStoreSubstate(blocklyStoreProps: string[], tephraSimulationProps: string[],
-                          seismicSimulationProps: string[], uiProps: string[]) {
+                          seismicSimulationProps: string[], lavaSimulationProps: string[], uiProps: string[]) {
   return (): IStoreish => {
     return {
       unit: { name: stores.unit.name },
       blocklyStore: pick(blocklyStoreProps)(blocklyStore),
       tephraSimulation: pick(tephraSimulationProps)(tephraSimulation),
       seismicSimulation: pick(seismicSimulationProps)(seismicSimulation),
+      lavaSimulation: pick(lavaSimulationProps)(lavaSimulation),
       uiStore: pick(uiProps)(uiStore)
     };
   };
@@ -158,15 +183,15 @@ function getStoreSubstate(blocklyStoreProps: string[], tephraSimulationProps: st
 // gets the current stores state in a version appropriate for the authoring menu
 export const getAuthorableSettings =
   getStoreSubstate(blocklyAuthorSettingsProps, tephraSimulationAuthorSettingsProps,
-    seismicSimulationAuthorSettingsProps, uiAuthorSettingsProps);
+    seismicSimulationAuthorSettingsProps, lavaSimulationAuthorSettingsProps, uiAuthorSettingsProps);
 // gets the current store state to be saved by an author
 export const getSavableStateAuthor =
   getStoreSubstate(blocklyAuthorStateProps, tephraSimulationAuthorStateProps,
-    seismicSimulationAuthorSettingsProps, uiAuthorSettingsProps);
+    seismicSimulationAuthorSettingsProps, lavaSimulationAuthorStateProps, uiAuthorSettingsProps);
 // gets the current store state to be saved by a student (the above, plus anything like run state or tab state)
 export const getSavableStateStudent =
   getStoreSubstate(blocklyStudentStateProps, tephraSimulationAuthorStateProps,
-    seismicSimulationAuthorSettingsProps, uiAuthorSettingsProps);
+    seismicSimulationAuthorSettingsProps, lavaSimulationAuthorStateProps, uiAuthorSettingsProps);
 
 // makes state appropriate for saving to e.g. LARA. Changes keys or values as needed. Adds a version number
 export const serializeState = (state: IStoreish): SerializedState => {
@@ -190,7 +215,7 @@ export const deserializeState = (serializedState: UnmigratedSerializedState | {}
   } else {
     return {
       unit: { name: "Tephra" },
-      blocklyStore: {}, tephraSimulation: {}, seismicSimulation: {}, uiStore: {}
+      blocklyStore: {}, tephraSimulation: {}, seismicSimulation: {}, lavaSimulation: {}, uiStore: {}
     };
   }
 };
@@ -202,12 +227,15 @@ export function updateStores(state: IStoreish, forceBlocklyRefresh = false) {
     pick(tephraSimulationAuthorStateProps)(state.tephraSimulation);
   const seismicSimulationStoreSettings: SeismicSimulationAuthorSettings =
     pick(seismicSimulationAuthorSettingsProps)(state.seismicSimulation);
+  const lavaSimulationStoreSettings: LavaSimulationAuthorSettings =
+    pick(lavaSimulationAuthorSettingsProps)(state.lavaSimulation);
   const uiStoreSettings: UIAuthorSettings = pick(uiAuthorSettingsProps)(state.uiStore);
 
   unitStore.setUnit(state.unit.name);
   blocklyStore.loadAuthorSettingsData(blocklyStoreSettings);
   tephraSimulation.loadAuthorSettingsData(tephraSimulationStoreSettings);
   seismicSimulation.loadAuthorSettingsData(seismicSimulationStoreSettings);
+  lavaSimulation.loadAuthorSettingsData(lavaSimulationStoreSettings);
   uiStore.loadAuthorSettingsData(uiStoreSettings);
 
   if (forceBlocklyRefresh) {
