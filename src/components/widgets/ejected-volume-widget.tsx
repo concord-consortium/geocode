@@ -12,7 +12,6 @@ interface BoxProps {
 }
 const BoxLeft = styled.div<BoxProps>`
   position: absolute;
-  background-color: #B9B9B9;
   height: ${(p: BoxProps) => `${p.height ? `${p.height}px` : "0px"}`};
   width: 25px;
   -ms-transform: skewY(13deg); /* IE 9 */
@@ -23,7 +22,6 @@ const BoxLeft = styled.div<BoxProps>`
 `;
 const BoxRight = styled.div<BoxProps>`
   position: absolute;
-  background-color: #B9B9B9;
   height: ${(p: BoxProps) => `${p.height ? `${p.height}px` : "0px"}`};
   width: 25px;
   -ms-transform: skewY(-13deg); /* IE 9 */
@@ -67,6 +65,9 @@ export default function EjectedVolumeWidget({ mode, type, eruptionVolume }: IPro
   const boxHeight = minBoxHeight + maxBoxGrowth
                     * (Math.pow(2, constrainedIndex + indexOffset) / Math.pow(2, maxIndex));
   const topOffset = 25;
+  const boxLeftBackgroundColor = mode === "tephra" ? "#B9B9B9" : "#f09546";
+  const boxRightBackgroundColor = mode === "tephra" ? "#B9B9B9" : "#e07d32";
+  const boxTopColor = mode === "tephra" ? "#bebebe" : "#f4b77d";
 
   return (
     <ValueContainer backgroundColor={kWidgetPanelInfo[type].backgroundColor}>
@@ -79,15 +80,15 @@ export default function EjectedVolumeWidget({ mode, type, eruptionVolume }: IPro
         >
           <BoxBackIcon/>
         </AbsoluteIcon>
-        <BoxLeft height={boxHeight} />
-        <BoxRight height={boxHeight} />
+        <BoxLeft style={{ backgroundColor: boxLeftBackgroundColor }} height={boxHeight} />
+        <BoxRight style={{ backgroundColor: boxRightBackgroundColor }} height={boxHeight} />
         <AbsoluteIconTop
           width={54}
           height={48}
           fill={"black"}
           bottom={boxHeight - topOffset}
         >
-          <BoxTopIcon/>
+          <BoxTopIcon color={boxTopColor} />
         </AbsoluteIconTop>
         <AbsoluteIcon
           width={54}
