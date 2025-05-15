@@ -66,3 +66,17 @@ export const HIGH_FRICTION = "Max displ. High friction";
 export const HIGHLIGHT_BOXES = "Highlighted boxes?";
 export const FAULT_ANGLE = "Fault Angle (º)";
 export const EARTHQUAKES = "Earthquakes";
+
+// lava simulation options
+export const MAP_FEATURES = "Map Features";
+export const SHOW_PLACE_VENT = "Show place vent?";
+export const SHOW_MAP_TYPE = "Show map type?";
+export const SHOW_MAP_TYPE_TERRAIN = "Show terrain map type?";
+export const SHOW_MAP_TYPE_LABELED_TERRAIN = "Show labeled terrain map type?";
+export const SHOW_MAP_TYPE_STREET = "Show street map type?";
+export const INITIAL_MAP_TYPE = "Initial map type";
+export const VERTICAL_EXAGGERATION = "Vertical exaggeration";
+export const CONDITIONS_OPTIONS = "Conditions Options";
+export const SHOW_ERUPTED_VOLUME = "Show erupted volume?";
+export const SHOW_LAVA_FRONT_HEIGHT = "Show lava front height?";
+export const SHOW_VENT_LOCATION = "Show vent location?";

@@ -23,3 +23,11 @@
 .react-dat-gui .number input {
   width: 30%!important;
 }
+
+/* give more space to the label for numeric values */
+.react-dat-gui .cr.number .label-text {
+  flex: 0 0 50%;
+}
+.react-dat-gui .cr.number .label-text + span{
+  flex: 1;
+}
