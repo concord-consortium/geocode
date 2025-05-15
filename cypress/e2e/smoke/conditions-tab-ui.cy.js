@@ -34,6 +34,7 @@ context("Conditions panel", () => {
             map.getMapKeyToggle().should('contain','Show Tephra');
         });
         it('verity LavaCoder shows correct elements',()=>{
+            // TODO Use url params to set the correct unit rather than using the model options menu
             modelOptions.getModelOptionsMenu().click();
             modelOptions.selectUnitOption('LavaCoder');
             conditionsTab.getLavaFrontHeightWidget().should('be.visible');

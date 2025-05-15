@@ -36,7 +36,7 @@ export function LavaFrontHeightWidget({ lavaFrontHeight }: LavaFrontHeightWidget
   return (
     <ValueContainer backgroundColor={kWidgetPanelInfo.right.backgroundColor}>
       <RelativeIconContainer>
-        <img src={lavaFrontIcon} />
+        <img src={lavaFrontIcon} alt={`Lava front height: ${lavaFrontHeight}m`} />
       </RelativeIconContainer>
       <ValueOutput>
         <div data-test="info">{lavaFrontHeight} m</div>
