@@ -5,6 +5,12 @@ class ModelOptions {
     getModelOptionsList(){
         return cy.get('.dg.main li');
     }
+    getUnitSelection(){
+        return cy.get('.label-text').contains('Unit', { matchCase: false }).siblings('select');
+    }
+    selectUnitOption(unit){
+        return this.getUnitSelection().select(unit);
+    }
     getRequireEruptionOption(){
         return cy.get('.label-text').contains('Require eruption?').siblings('.checkbox-container').find('input');
     }

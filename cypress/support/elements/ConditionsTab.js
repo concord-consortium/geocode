@@ -26,6 +26,12 @@ class ConditionsTab {
     getTephra(){
         return cy.get('.leaflet-zoom-animated .leaflet-interactive');
     }
+    getLavaFrontHeightWidget(){
+        return cy.get('[data-test=lava-front-height-widget]');
+    }
+    getVolumeOfLavaWidget(){
+        return cy.get('[data-test=volume-of-lava-widget]');
+    }
 }
 
 export default ConditionsTab;
