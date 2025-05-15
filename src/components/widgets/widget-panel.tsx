@@ -48,13 +48,13 @@ interface IState {}
 @observer
 export default class WidgetPanel extends BaseComponent<IProps, IState> {
   public render() {
-    const showColumnHeight = this.props.showColumnHeight ?? this.stores.uiStore.showColumnHeight;
-    const showEjectedVolume = this.props.showEjectedVolume ?? this.stores.uiStore.showEjectedVolume;
-    const showLavaFrontHeight = this.props.showLavaFrontHeight ?? this.stores.uiStore.showLavaFrontHeight;
-    const showVEI = this.props.showVEI ?? this.stores.uiStore.showVEI;
-    const showVolumeOfLava = this.props.showVolumeOfLava ?? this.stores.uiStore.showVolumeOfLava;
-    const showWindDirection = this.props.showWindDirection ?? this.stores.uiStore.showWindDirection;
-    const showWindSpeed = this.props.showWindSpeed ?? this.stores.uiStore.showWindSpeed;
+    const showColumnHeight = this.props.showColumnHeight && this.stores.uiStore.showColumnHeight;
+    const showEjectedVolume = this.props.showEjectedVolume && this.stores.uiStore.showEjectedVolume;
+    const showLavaFrontHeight = this.props.showLavaFrontHeight && this.stores.uiStore.showLavaFrontHeight;
+    const showVEI = this.props.showVEI && this.stores.uiStore.showVEI;
+    const showVolumeOfLava = this.props.showVolumeOfLava && this.stores.uiStore.showVolumeOfLava;
+    const showWindDirection = this.props.showWindDirection && this.stores.uiStore.showWindDirection;
+    const showWindSpeed = this.props.showWindSpeed && this.stores.uiStore.showWindSpeed;
     const { vei, mass, colHeight, windDirection, windSpeed } = this.stores.tephraSimulation;
     const { residual, totalVolume } = this.stores.lavaSimulation;
 
