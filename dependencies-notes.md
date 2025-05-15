@@ -24,7 +24,7 @@ Notes on dependencies, particularly reasons for not updating to their latest ver
 |mathjs              |12.4.3      |14.3.1  |v13 requires ES2020 browsers; would require polyfills.                                    |
 |pixi.js             |7.4.3       |8.9.1   |v8 requires non-trivial migration                                                         |
 |react               |17.0.2      |19.1.0  |React 18/19                                                                               |
-|react-dat-gui       |4.1.1       |4.1.1   |No longer maintained (abandoned) as of May 2022.                                          |
+|react-dat-gui       |4.1.1       |4.1.1   |No longer maintained as of May 2022; react-dat-gui-x is a slightly newer fork.            |
 |react-dom           |17.0.2      |19.1.0  |React 18/19                                                                               |
 |react-leaflet       |2.8.0       |5.0.0   |v3 requires non-trivial migration; newer versions require React 18/19.                    |
 |react-tabs          |4.3.0       |6.1.0   |React 18/19                                                                               |
