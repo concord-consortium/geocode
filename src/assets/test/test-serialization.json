@@ -60,6 +60,7 @@
             "stagingColHeight": 20000
           },
           "seismicSimulation": {},
+          "lavaSimulation": {},
           "uiStore": {
             "showBlocks": true,
             "showCode": false,
