@@ -41,7 +41,7 @@ const migrate01to02: PartialMigration = (oldState) => {
  */
 const migrate02to03: Migration = (oldState) => {
   if (oldState.version < 3) {
-    const {unit, blocklyStore, tephraSimulation, seismicSimulation, lavaSimulation, uiStore} = oldState.state;
+    const {unit, blocklyStore, tephraSimulation, seismicSimulation, lavaSimulation = {}, uiStore} = oldState.state;
     return {
       version: 3,
       state: {
