@@ -1,0 +1,54 @@
+$control-label-color: #434343;
+
+.vent-location-popup-background {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.01);
+  width: 100vw;
+  height: 100vh;
+}
+
+.vent-location-popup {
+  display: grid;
+  grid-template-columns: 45px 90px 42px;
+  position: absolute;
+  color: $control-label-color;
+  background-color: white;
+  padding: 2px 2px 2px 4px;
+  border-radius: 2px;
+  box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.35);
+
+  .latitude.label {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .latitude.value {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .longitude.label {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .longitude.value {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  .value {
+    width: calc(100% - 6px);
+    text-align: right;
+  }
+
+  .copy-button {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+    min-width: 34px;
+    margin-top: 4px;
+
+    img {
+      margin-top: 4px;
+      margin-left: 7px;
+    }
+  }
+}
