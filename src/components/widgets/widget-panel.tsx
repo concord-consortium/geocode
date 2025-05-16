@@ -6,6 +6,7 @@ import { WidgetPanelTypes } from "../../utilities/widget";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import { BaseComponent } from "../base";
+import { LavaFrontHeightWidget } from "./lava-front-height-widget";
 
 const WidgetBar = styled.div`
   display: flex;
@@ -31,29 +32,32 @@ const WidgetTitle = styled.div`
   margin-bottom: 5px;
 `;
 
-interface IProps {}
+interface IProps {
+  showColumnHeight?: boolean;
+  showEjectedVolume?: boolean;
+  showEruptedVolume?: boolean;
+  showLavaFrontHeight?: boolean;
+  showVEI?: boolean;
+  showWindDirection?: boolean;
+  showWindSpeed?: boolean;
+}
 
 interface IState {}
 
 @inject("stores")
 @observer
 export default class WidgetPanel extends BaseComponent<IProps, IState> {
-  public static defaultProps = {
-    showWindSpeed: true,
-    showWindDirection: true,
-    showColumnHeight: true,
-    showEjectedVolume: true,
-    showVEI: true,
-    windSpeed: 1,
-    windDirection: 0,
-    columnHeight: 1,
-    vei: 1,
-    mass: 1,
-  };
-
   public render() {
-    const { showVEI, showEjectedVolume, showColumnHeight, showWindSpeed, showWindDirection } = this.stores.uiStore;
+    const showColumnHeight = this.props.showColumnHeight && this.stores.uiStore.showColumnHeight;
+    const showEjectedVolume = this.props.showEjectedVolume && this.stores.uiStore.showEjectedVolume;
+    const showLavaFrontHeight = this.props.showLavaFrontHeight && this.stores.uiStore.showLavaFrontHeight;
+    const showVEI = this.props.showVEI && this.stores.uiStore.showVEI;
+    const showEruptedVolume = this.props.showEruptedVolume && this.stores.uiStore.showEruptedVolume;
+    const showWindDirection = this.props.showWindDirection && this.stores.uiStore.showWindDirection;
+    const showWindSpeed = this.props.showWindSpeed && this.stores.uiStore.showWindSpeed;
     const { vei, mass, colHeight, windDirection, windSpeed } = this.stores.tephraSimulation;
+    const { residual, totalVolume } = this.stores.lavaSimulation;
+
     return (
       <WidgetBar>
         { (showWindSpeed || showWindDirection) &&
@@ -81,8 +85,23 @@ export default class WidgetPanel extends BaseComponent<IProps, IState> {
           <WidgetContainer data-test="ejected-volume-widget">
             <WidgetTitle>Ejected Volume</WidgetTitle>
             <EjectedVolumeWidget
+              mode="tephra"
               type={WidgetPanelTypes.RIGHT}
-              volumeInKilometersCubed={mass / Math.pow(10, 12)}
+              eruptionVolume={mass / Math.pow(10, 12)}
+            />
+          </WidgetContainer> }
+        { showLavaFrontHeight &&
+          <WidgetContainer data-test="lava-front-height-widget">
+            <WidgetTitle>Lava Front Height</WidgetTitle>
+            <LavaFrontHeightWidget lavaFrontHeight={residual} />
+          </WidgetContainer> }
+        { showEruptedVolume &&
+          <WidgetContainer data-test="volume-of-lava-widget">
+            <WidgetTitle>Volume of Lava</WidgetTitle>
+            <EjectedVolumeWidget
+              mode="molasses"
+              type={WidgetPanelTypes.RIGHT}
+              eruptionVolume={totalVolume}
             />
           </WidgetContainer> }
         { showColumnHeight &&

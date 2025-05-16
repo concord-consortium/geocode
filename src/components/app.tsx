@@ -523,8 +523,16 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                     <LavaCoderView width={mapWidth - 2 * simMargin.x} height={mapHeight} margin={simMarginStr} />
                   }
                   {
-                    isTephra &&
-                    <WidgetPanel />
+                    (isTephra || isLavaCoder) &&
+                    <WidgetPanel
+                      showColumnHeight={isTephra}
+                      showEjectedVolume={isTephra}
+                      showEruptedVolume={isLavaCoder}
+                      showLavaFrontHeight={isLavaCoder}
+                      showVEI={isTephra}
+                      showWindDirection={isTephra}
+                      showWindSpeed={isTephra}
+                    />
                   }
                   {
                     isSeismic &&
