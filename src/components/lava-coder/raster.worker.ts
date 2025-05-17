@@ -10,8 +10,10 @@ self.onmessage = (e) => {
 
   reader.onload = () => {
     const content = reader.result;
+    console.log(`>>> content`, content);
     if (typeof content === "string") {
       asciiRaster = parseAsciiRaster(content);
+      console.log(` >> raster`, asciiRaster);
       postMessage({ status: "rasterParsed", raster: asciiRaster });
     }
   };
