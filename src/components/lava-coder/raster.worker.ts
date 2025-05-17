@@ -21,6 +21,7 @@ self.onmessage = (e) => {
   fetch(dataFile)
     .then(response => {
       console.log(`>>> response`, response);
+      console.log(` >> blob`, response.blob());
       return response.blob();
     })
     .then(blob => reader.readAsText(blob));
