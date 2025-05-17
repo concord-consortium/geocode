@@ -115,6 +115,7 @@ export async function runSimulation({
 
   // Set up simulation
   let pulseCount = 0;
+  console.log(`--- raster`, raster);
   const grid = createGrid(raster);
   const ventX = convertLongitudeToX(ventLongitude, raster);
   const ventY = convertLatitudeToY(ventLatitude, raster);
