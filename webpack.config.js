@@ -122,7 +122,7 @@ module.exports = (env, argv) => {
           type: 'asset/source'  // Exports the raw source code of the file
         },
         {
-          test: /\.(kml|kmz|xml)$/i,
+          test: /\.(asc|kml|kmz|xml)$/i,
           type: 'asset/resource', // Emits a separate file and exports the URL
           generator: {
             filename: 'assets/[name].[contenthash:8][ext]' // Specify the output filename here
