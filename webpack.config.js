@@ -62,7 +62,7 @@ module.exports = (env, argv) => {
           ]
         },
         {
-          test: /\.(png|woff|woff2|asc|eot|ttf)$/,
+          test: /\.(png|woff|woff2|eot|ttf)$/,
           type: 'asset',
           generator: {
             filename: 'assets/[name].[contenthash:8][ext]' // Specify the output filename here
