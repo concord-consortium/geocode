@@ -15,6 +15,7 @@ import { useLavaOverlay } from "./use-lava-overlay";
 import { useVentLocationMarker } from "./use-vent-location-marker";
 import { useVerticalExaggeration } from "./use-vertical-exaggeration";
 import { useWorldImagery } from "./use-world-imagery";
+import { VentLocationPopup } from "./vent-location-popup";
 
 import "./lava-coder-view.scss";
 
@@ -38,6 +39,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
     street: "Street"
   };
   const [isPlaceVentMode, setIsPlaceVentMode] = useState(false);
+  const [showVentLocationPopup, setShowVentLocationPopup] = useState(false);
   const [cursor, setCursor] = useState("auto");
 
   const viewer = useCesiumViewer(lavaCoderElt);
@@ -48,7 +50,16 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
 
   const { isPointInHazardZone } = useHazardZones(viewer, isPlaceVentMode, verticalExaggeration);
 
-  const { setVentLocation } = useVentLocationMarker(viewer);
+  const handleOpenVentLocationPopup = useCallback(() => {
+    setShowVentLocationPopup(true);
+  }, []);
+
+  const handleCloseVentLocationPopup = useCallback(() => {
+    setShowVentLocationPopup(false);
+  }, []);
+
+  const { ventLocation, setVentLocation } =
+    useVentLocationMarker(viewer, verticalExaggeration, handleOpenVentLocationPopup);
 
   useElevationData();
 
@@ -73,11 +84,12 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
                 "elevation:", `${Math.round(elevation)}m = ${elevationFeet}ft`,
                 "in hazard zone:", isInHazardZone);
     if (isPlaceVentMode && isInHazardZone) {
-      setVentLocation(latitude, longitude, elevation);
+      setVentLocation(latitude, longitude, elevation / verticalExaggeration);
+      setShowVentLocationPopup(true);
     }
     setIsPlaceVentMode(false);
     setCursor("auto");
-  }, [isPlaceVentMode, isPointInHazardZone, setVentLocation]);
+  }, [isPlaceVentMode, isPointInHazardZone, setVentLocation, verticalExaggeration]);
 
   useCesiumMouseEvents(viewer, handleMouseMove, handleClick);
 
@@ -124,6 +136,8 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
           </IconButton>
         )}
       </div>
+      <VentLocationPopup viewer={viewer} ventLocation={ventLocation} verticalExaggeration={verticalExaggeration}
+                        show={showVentLocationPopup} onClose={handleCloseVentLocationPopup}/>
     </div>
   );
 });
