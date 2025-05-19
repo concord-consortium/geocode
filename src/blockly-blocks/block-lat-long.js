@@ -20,14 +20,15 @@ Blockly.JavaScript.lat_long = function (block) {
 
     // TODO: Handle lat/long ranges
     if (isNaN(lat) || isNaN(long)) {
-      console.error("Latitude and longitude values must be numbers");
+      block.setWarningText("Latitude and longitude values must be numbers");
+      // console.error("Latitude and longitude values must be numbers");
       return failCode;
     }
 
     // have to wrap in parens or the parser doesn't like it as a fragment
     const code = `({lat: ${lat}, long: ${long}})`;
-    // TODO: Change ORDER_NONE to the correct strength.
-    return [code, Blockly.JavaScript.ORDER_NONE];
+    block.setWarningText(null);
+    return [code, Blockly.JavaScript.ORDER_ATOMIC];
   } catch (e) {
     console.error("Error parsing lat_long:", e);
     return failCode;
