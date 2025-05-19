@@ -56,11 +56,13 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     addFunc("setMolassesLavaFront", (height: number) => {
       lavaSimulation.setResidual(height);
     });
-    addFunc("setMolassesVentLat", (lat: number) => {
-      lavaSimulation.setVentLatitude(lat);
-    });
-    addFunc("setMolassesVentLong", (long: number) => {
-      lavaSimulation.setVentLongitude(long);
+    addFunc("setMolassesVentLocation", (params: {lat: number, long: number}) => {
+      if (params.lat == null || params.long == null) {
+        blocklyController.throwError("You must set a latitude and longitude for the vent location.");
+        return;
+      }
+      lavaSimulation.setVentLatitude(params.lat);
+      lavaSimulation.setVentLongitude(params.long);
     });
 
     addFunc("runMolassesSimulation", () => {

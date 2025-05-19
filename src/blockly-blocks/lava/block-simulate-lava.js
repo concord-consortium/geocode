@@ -10,9 +10,9 @@ function basicInit(block) {
   block.setHelpUrl("");
 }
 
-function appendValueInput(block, name, field) {
+function appendValueInput(block, name, field, check="Number") {
   block.appendValueInput(name)
-    .setCheck("Number")
+    .setCheck(check)
     .setAlign(Blockly.ALIGN_RIGHT)
     .appendField(field);
 }
@@ -23,11 +23,8 @@ function appendEruptionVolume(block) {
 function appendLavaFront(block) {
   appendValueInput(block, "molasses_lava_front", strings.LAVA_FRONT_HEIGHT);
 }
-function appendVentLat(block) {
-  appendValueInput(block, "molasses_vent_lat", strings.VENT_LAT);
-}
-function appendVentLong(block) {
-  appendValueInput(block, "molasses_vent_long", strings.VENT_LONG);
+function appendVentLocation(block) {
+  appendValueInput(block, "molasses_vent_location", strings.VENT_LOCATION, "lat_long");
 }
 
 Blockly.Blocks.molasses_simulation_all_params = {
@@ -35,8 +32,7 @@ Blockly.Blocks.molasses_simulation_all_params = {
     basicInit(this);
     appendEruptionVolume(this);
     appendLavaFront(this);
-    appendVentLat(this);
-    appendVentLong(this);
+    appendVentLocation(this);
   }
 };
 
@@ -57,8 +53,7 @@ Blockly.Blocks.molasses_simulation_lava_front = {
 Blockly.Blocks.molasses_simulation_lat_long = {
   init() {
     basicInit(this);
-    appendVentLat(this);
-    appendVentLong(this);
+    appendVentLocation(this);
   }
 };
 
@@ -73,11 +68,8 @@ function setEruptionVolume(block) {
 function setLavaFront(block) {
   return setCodeVariable("molasses_lava_front", block, "setMolassesLavaFront");
 }
-function setVentLat(block) {
-  return setCodeVariable("molasses_vent_lat", block, "setMolassesVentLat");
-}
-function setVentLong(block) {
-  return setCodeVariable("molasses_vent_long", block, "setMolassesVentLong");
+function setVentLocation(block) {
+  return setCodeVariable("molasses_vent_location", block, "setMolassesVentLocation");
 }
 
 function runMolassesSimulation() {
@@ -88,8 +80,7 @@ function runMolassesSimulation() {
 Blockly.JavaScript.molasses_simulation_all_params = function(block) {
   let code = setEruptionVolume(block);
   code += setLavaFront(block);
-  code += setVentLat(block);
-  code += setVentLong(block);
+  code += setVentLocation(block);
 
   code += runMolassesSimulation();
   return code;
@@ -110,8 +101,7 @@ Blockly.JavaScript.molasses_simulation_lava_front = function(block) {
 };
 
 Blockly.JavaScript.molasses_simulation_lat_long = function(block) {
-  let code = setVentLat(block);
-  code += setVentLong(block);
+  let code = setVentLocation(block);
 
   code += runMolassesSimulation();
   return code;

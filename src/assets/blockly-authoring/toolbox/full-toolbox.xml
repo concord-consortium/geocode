@@ -39,14 +39,9 @@
           <field name="NUM">5</field>
         </shadow>
       </value>
-      <value name="molasses_vent_lat">
-        <shadow type="math_number">
-          <field name="NUM">19.5</field>
-        </shadow>
-      </value>
-      <value name="molasses_vent_long">
-        <shadow type="math_number">
-          <field name="NUM">-155.565</field>
+      <value name="molasses_vent_location">
+        <shadow type="lat_long">
+          <field name="lat_long">19.5, -155.565</field>
         </shadow>
       </value>
     </block>
@@ -65,14 +60,9 @@
       </value>
     </block>
     <block type="molasses_simulation_lat_long">
-      <value name="molasses_vent_lat">
-        <shadow type="math_number">
-          <field name="NUM">19.5</field>
-        </shadow>
-      </value>
-      <value name="molasses_vent_long">
-        <shadow type="math_number">
-          <field name="NUM">-155.565</field>
+      <value name="molasses_vent_location">
+        <shadow type="lat_long">
+          <field name="lat_long">19.5, -155.565</field>
         </shadow>
       </value>
     </block>
