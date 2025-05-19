@@ -17,9 +17,7 @@ self.onmessage = (e) => {
   };
 
   fetch(dataFile)
-    .then(response => {
-      return response.blob();
-    })
+    .then(response => response.blob())
     .then(blob => reader.readAsText(blob));
 };
 
