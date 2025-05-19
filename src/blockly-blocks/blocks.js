@@ -4,6 +4,7 @@ import "./tephra/block-run-simulation.js";
 import "./tephra/block-thickness.js";
 import "./block-x-y.js";
 import "./block-console-logger";
+import "./block-lat-long";
 import "./block-logprint";
 import "./block-stringconcat";
 import "./block-clear";

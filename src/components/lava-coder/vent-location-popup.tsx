@@ -21,7 +21,7 @@ const kVerticalOffset = 48;
 const kBorderColor = "#3baa1d";
 
 function radToDegStr(value: number) {
-  return `${CSMath.toDegrees(value).toFixed(4)}°`;
+  return `${CSMath.toDegrees(value).toFixed(4)}`;
 }
 
 export function VentLocationPopup({ viewer, ventLocation, verticalExaggeration, show, onClose }: IProps) {
@@ -86,9 +86,9 @@ export function VentLocationPopup({ viewer, ventLocation, verticalExaggeration, 
         aria-hidden="true" role="presentation" tabIndex={-1} />
       <div className="vent-location-popup" style={popupStyle}>
         <div className="latitude label">Lat:</div>
-        <div className="latitude value">{`${radToDegStr(latitude)}`}</div>
+        <div className="latitude value">{`${radToDegStr(latitude)}°`}</div>
         <div className="longitude label">Long:</div>
-        <div className="longitude value">{`${radToDegStr(longitude)}`}</div>
+        <div className="longitude value">{`${radToDegStr(longitude)}°`}</div>
         <IconButton className="copy-button" borderColor={kBorderColor} onClick={copyLocation}>
           <img src={imgIcon} alt={imgAlt} />
         </IconButton>

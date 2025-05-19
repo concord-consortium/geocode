@@ -1,3 +1,4 @@
+import { maxLat, maxLong, minLat, minLong } from "../../components/lava-coder/lava-constants";
 import * as strings from "../../strings/blockly-blocks/lava/simulate-lava";
 
 function basicInit(block) {
@@ -10,9 +11,9 @@ function basicInit(block) {
   block.setHelpUrl("");
 }
 
-function appendValueInput(block, name, field) {
+function appendValueInput(block, name, field, check="Number") {
   block.appendValueInput(name)
-    .setCheck("Number")
+    .setCheck(check)
     .setAlign(Blockly.ALIGN_RIGHT)
     .appendField(field);
 }
@@ -23,11 +24,8 @@ function appendEruptionVolume(block) {
 function appendLavaFront(block) {
   appendValueInput(block, "molasses_lava_front", strings.LAVA_FRONT_HEIGHT);
 }
-function appendVentLat(block) {
-  appendValueInput(block, "molasses_vent_lat", strings.VENT_LAT);
-}
-function appendVentLong(block) {
-  appendValueInput(block, "molasses_vent_long", strings.VENT_LONG);
+function appendVentLocation(block) {
+  appendValueInput(block, "molasses_vent_location", strings.VENT_LOCATION, "lat_long");
 }
 
 Blockly.Blocks.molasses_simulation_all_params = {
@@ -35,8 +33,7 @@ Blockly.Blocks.molasses_simulation_all_params = {
     basicInit(this);
     appendEruptionVolume(this);
     appendLavaFront(this);
-    appendVentLat(this);
-    appendVentLong(this);
+    appendVentLocation(this);
   }
 };
 
@@ -57,27 +54,74 @@ Blockly.Blocks.molasses_simulation_lava_front = {
 Blockly.Blocks.molasses_simulation_lat_long = {
   init() {
     basicInit(this);
-    appendVentLat(this);
-    appendVentLong(this);
+    appendVentLocation(this);
   }
 };
 
-function setCodeVariable(variableName, block, setFunction) {
+// interface SetCodeVariableParameters {
+//   block: Blockly.Block;
+//   setFunction: string;
+//   validateFunction?: (value: string, block: Blockly.Block) => boolean;
+//   variableName: string;
+// }
+function setCodeVariable({ block, setFunction, validateFunction, variableName }) {
   const value = Blockly.JavaScript.valueToCode(block, variableName, Blockly.JavaScript.ORDER_ATOMIC);
+
+  if (validateFunction && !validateFunction(value, block)) {
+    return null;
+  }
+
   return `
   this.${setFunction}(${value});`;
 }
 function setEruptionVolume(block) {
-  return setCodeVariable("molasses_eruption_volume", block, "setMolassesEruptionVolume");
+  return setCodeVariable({
+    variableName: "molasses_eruption_volume",
+    block,
+    setFunction: "setMolassesEruptionVolume"
+  });
 }
 function setLavaFront(block) {
-  return setCodeVariable("molasses_lava_front", block, "setMolassesLavaFront");
+  return setCodeVariable({
+    variableName: "molasses_lava_front",
+    block,
+    setFunction: "setMolassesLavaFront"
+  });
 }
-function setVentLat(block) {
-  return setCodeVariable("molasses_vent_lat", block, "setMolassesVentLat");
-}
-function setVentLong(block) {
-  return setCodeVariable("molasses_vent_long", block, "setMolassesVentLong");
+function setVentLocation(block) {
+  return setCodeVariable({
+    variableName: "molasses_vent_location",
+    block,
+    setFunction: "setMolassesVentLocation",
+    validateFunction: (value, _block) => {
+      // The value is a string in the form of ({lat: number, long: number})
+      const regex = /^\(\{lat:\s*(-?\d+(\.\d+)?),\s*long:\s*(-?\d+(\.\d+)?)\}\)$/;
+      const match = value.match(regex);
+
+      if (!match) {
+        _block.setWarningText("Latitude and longitude values must be specified");
+        return false;
+      }
+
+      const lat = parseFloat(match[1]);
+      const long = parseFloat(match[3]);
+
+      if (lat == null || isNaN(lat) || long == null || isNaN(long)) {
+        _block.setWarningText("Latitude and longitude values must be numbers");
+        return false;
+      }
+      if (lat < minLat || lat > maxLat) {
+        _block.setWarningText(`Latitude values must be between ${minLat} and ${maxLat}`);
+        return false;
+      }
+      if (long < minLong || long > maxLong) {
+        _block.setWarningText(`Longitude values must be between ${minLong} and ${maxLong}`);
+        return false;
+      }
+
+      return true;
+    }
+  });
 }
 
 function runMolassesSimulation() {
@@ -86,33 +130,47 @@ function runMolassesSimulation() {
 }
 
 Blockly.JavaScript.molasses_simulation_all_params = function(block) {
-  let code = setEruptionVolume(block);
-  code += setLavaFront(block);
-  code += setVentLat(block);
-  code += setVentLong(block);
+  const volumeCode = setEruptionVolume(block);
+  const residualCode = setLavaFront(block);
+  const ventCode = setVentLocation(block);
 
-  code += runMolassesSimulation();
-  return code;
+  if (volumeCode && residualCode && ventCode) {
+    block.setWarningText(null);
+    return volumeCode + residualCode + ventCode + runMolassesSimulation();
+  }
+
+  return "";
 };
 
 Blockly.JavaScript.molasses_simulation_eruption_volume = function(block) {
-  let code = setEruptionVolume(block);
+  const volumeCode = setEruptionVolume(block);
 
-  code += runMolassesSimulation();
-  return code;
+  if (volumeCode) {
+    block.setWarningText(null);
+    return volumeCode + runMolassesSimulation();
+  }
+
+  return "";
 };
 
 Blockly.JavaScript.molasses_simulation_lava_front = function(block) {
-  let code = setLavaFront(block);
+  const residualCode = setLavaFront(block);
 
-  code += runMolassesSimulation();
-  return code;
+  if (residualCode) {
+    block.setWarningText(null);
+    return residualCode + runMolassesSimulation();
+  }
+
+  return "";
 };
 
 Blockly.JavaScript.molasses_simulation_lat_long = function(block) {
-  let code = setVentLat(block);
-  code += setVentLong(block);
+  const ventCode = setVentLocation(block);
 
-  code += runMolassesSimulation();
-  return code;
+  if (ventCode) {
+    block.setWarningText(null);
+    return ventCode + runMolassesSimulation();
+  }
+
+  return "";
 };
