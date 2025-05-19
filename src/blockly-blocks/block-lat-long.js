@@ -18,10 +18,8 @@ Blockly.JavaScript.lat_long = function (block) {
   try {
     const [lat, long] = lat_long.split(",").map(str => str.trim()).map(Number);
 
-    // TODO: Handle lat/long ranges
     if (isNaN(lat) || isNaN(long)) {
       block.setWarningText("Latitude and longitude values must be numbers");
-      // console.error("Latitude and longitude values must be numbers");
       return failCode;
     }
 
@@ -29,8 +27,8 @@ Blockly.JavaScript.lat_long = function (block) {
     const code = `({lat: ${lat}, long: ${long}})`;
     block.setWarningText(null);
     return [code, Blockly.JavaScript.ORDER_ATOMIC];
-  } catch (e) {
-    console.error("Error parsing lat_long:", e);
+  } catch {
+    block.setWarningText("Error parsing latitude and longitude input");
     return failCode;
   }
 };
