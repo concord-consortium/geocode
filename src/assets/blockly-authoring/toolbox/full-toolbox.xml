@@ -129,6 +129,7 @@
     <block type="controls_forEach"></block>
     <block type="controls_flow_statements"></block>
   </category>
+
   <category name="Data" colour="%{BKY_MATH_HUE}">
     <block type="text">
       <field name="TEXT">Name</field>
@@ -137,8 +138,11 @@
       <field name="NUM">4</field>
     </block>
     <block type="input_range"></block>
+    <block type="lat_long"></block>
   </category>
+
   <category name="Variables" colour="%{BKY_VARIABLES_HUE}" custom="VARIABLE"></category>
+
   <category name="Functions" colour="%{BKY_PROCEDURES_HUE}" custom="PROCEDURE"></category>
   <!-- <category name="Logging" colour="260">
     <block type="logprint"></block>
