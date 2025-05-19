@@ -207,7 +207,7 @@ context ('Authoring Options',()=>{
             });
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(2).text().then((text)=>{
               expect(removeNBSP(text)).to.containIgnoreCase("and direction");
-          });
+            });
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(3).text().then((text)=>{
                 expect(removeNBSP(text)).to.containIgnoreCase("Graph Wind Data");
             });
@@ -255,7 +255,7 @@ context ('Authoring Options',()=>{
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 5);
             //Data
             blocksTab.getTag(DataRegEx).click();
-            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 3);
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 4);
             //variables
             blocksTab.getTag('Variables').click();
             blocksTab.getFlyout().find(blocksTab.getFlyoutButtonEl()).should('have.length', 1).and('contain','Create variable...');
