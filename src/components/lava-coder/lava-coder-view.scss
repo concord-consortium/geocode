@@ -13,21 +13,47 @@
     position: absolute;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    bottom: 30px;
+    justify-content: center;
+    align-items: stretch;
+    top: 10px;
     left: 10px;
-    width: 136px;
-    height: 40px;
+    width: 36px;
+    height: 650px;
+
+    .zoom-in-button, .zoom-out-button {
+      display: block;
+      width: 100%;
+      min-width: 100% !important;
+      margin: 0 !important;
+
+      img {
+        margin-top: -2px;
+        margin-left: -2px;
+      }
+    }
   }
 
-  .lava-overlay-controls-right {
+  .lava-overlay-controls-bottom {
     position: absolute;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     bottom: 30px;
-    right: 10px;
-    width: 220px;
     height: 40px;
+
+    &.bottom-left-controls {
+      left: 10px;
+      width: 136px;
+    }
+
+    &.bottom-right-controls {
+      right: 10px;
+      width: 220px;
+    }
+
+    img {
+      margin-top: 4px;
+      margin-right: 2px;
+    }
   }
 }
