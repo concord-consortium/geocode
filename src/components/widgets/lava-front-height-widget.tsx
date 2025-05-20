@@ -1,6 +1,5 @@
-import styled from "styled-components";
 import { minResidual, rangeResidual } from "../lava-coder/lava-constants";
-import { ValueContainer, ValueOutput, IconContainer } from "../styled-containers";
+import { RelativeIconContainer, ValueContainer, ValueOutput } from "../styled-containers";
 import { kWidgetPanelInfo } from "../../utilities/widget";
 
 import LavaFront1 from "../../assets/lava-coder/widget-lava-front-height-1@3x.png";
@@ -18,13 +17,6 @@ const lavaFrontIcons = [
   LavaFront1, LavaFront2, LavaFront3, LavaFront4, LavaFront5,
   LavaFront6, LavaFront7, LavaFront8, LavaFront9, LavaFront10
 ];
-
-const RelativeIconContainer = styled(IconContainer)`
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  position: relative;
-`;
 
 interface LavaFrontHeightWidgetProps {
   lavaFrontHeight: number;

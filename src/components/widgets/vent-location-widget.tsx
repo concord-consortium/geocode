@@ -1,15 +1,8 @@
 import styled from "styled-components";
 import { kWidgetPanelInfo } from "../../utilities/widget";
-import { IconContainer, ValueContainer, ValueOutput } from "../styled-containers";
+import { RelativeIconContainer, ValueContainer, ValueOutput } from "../styled-containers";
 
 import VentLocationIcon from "../../assets/lava-coder/widget-vent-location@3x.png";
-
-const RelativeIconContainer = styled(IconContainer)`
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  position: relative;
-`;
 
 export const VerticalValueOutput = styled(ValueOutput)`
   flex-direction: column;

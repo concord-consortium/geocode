@@ -2,7 +2,7 @@ import { PureComponent } from "react";
 import styled from "styled-components";
 import { Icon } from "../icon";
 import ColumnHeightIcon from "../../assets/widget-icons/column-height.svg";
-import { ValueContainer, ValueOutput, IconContainer } from "../styled-containers";
+import { RelativeIconContainer, ValueContainer, ValueOutput } from "../styled-containers";
 import { WidgetPanelTypes, kWidgetPanelInfo } from "../../utilities/widget";
 
 interface CoverProps {
@@ -32,8 +32,7 @@ const Guage = styled.div<GuageProps>`
   bottom: 7px;
 `;
 
-const RelativeIconContainer = styled(IconContainer)`
-  position: relative;
+const FixedHeightIconContainer = styled(RelativeIconContainer)`
   height: 60px;
 `;
 
@@ -61,7 +60,7 @@ export default class ColumnHeightWidget extends PureComponent<IProps, IState> {
     const coverHeight = maxCoverHeight - (maxCoverHeight * constrainedColumnHeight / maxColumnHeight);
     return (
       <ValueContainer backgroundColor={kWidgetPanelInfo[type].backgroundColor}>
-        <RelativeIconContainer>
+        <FixedHeightIconContainer>
           <Icon
             width={37}
             height={55}
@@ -71,7 +70,7 @@ export default class ColumnHeightWidget extends PureComponent<IProps, IState> {
           </Icon>
           <Cover height={coverHeight} backgroundColor={kWidgetPanelInfo[type].backgroundColor} />
           <Guage height={guageHeight} color={kWidgetPanelInfo[type].highlightColor} data-test="column-height-visual"/>
-        </RelativeIconContainer>
+        </FixedHeightIconContainer>
         <ValueOutput  data-test="info">
           {columnHeightInKilometers} km
         </ValueOutput>
