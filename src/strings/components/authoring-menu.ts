@@ -76,6 +76,7 @@ export const SHOW_MAP_TYPE_LABELED_TERRAIN = "Show labeled terrain map type?";
 export const SHOW_MAP_TYPE_STREET = "Show street map type?";
 export const INITIAL_MAP_TYPE = "Initial map type";
 export const VERTICAL_EXAGGERATION = "Vertical exaggeration";
+export const PULSES_PER_ERUPTION = "Hundreds of pulses per eruption";
 export const CONDITIONS_OPTIONS = "Conditions Options";
 export const SHOW_ERUPTED_VOLUME = "Show erupted volume?";
 export const SHOW_LAVA_FRONT_HEIGHT = "Show lava front height?";

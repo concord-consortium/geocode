@@ -50,6 +50,8 @@ const UIStore = types.model("UI", {
   mapType: types.optional(types.enumeration(LavaMapTypes), "terrain"),
   // vertical exaggeration (1 = normal, 2 = 2x, 3 = 3x, etc)
   verticalExaggeration: 1,
+  // number of pulses for each eruption. The actual number is 100x this one.
+  pulsesPerEruption: 20,
   // show the erupted volume widget
   showEruptedVolume: true,
   // show the lava front height (residual) widget
