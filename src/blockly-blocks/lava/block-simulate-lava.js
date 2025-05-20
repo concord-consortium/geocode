@@ -61,7 +61,7 @@ Blockly.Blocks.molasses_simulation_lat_long = {
 // interface SetCodeVariableParameters {
 //   block: Blockly.Block;
 //   setFunction: string;
-//   validateFunction?: (value: string, block: Blockly.Block) => boolean;
+//   validateFunction?: (value: string, block: Blockly.Block) => boolean; // block.setWarningText if validation fails
 //   variableName: string;
 // }
 function setCodeVariable({ block, setFunction, validateFunction, variableName }) {
@@ -74,25 +74,28 @@ function setCodeVariable({ block, setFunction, validateFunction, variableName })
   return `
   this.${setFunction}(${value});`;
 }
+
+function getNumberValidationFunction(min, max, parameterName) {
+  return (value, block) => {
+    const numberValue = parseFloat(value);
+    if (isNaN(numberValue)) {
+      block.setWarningText(`${parameterName} must be a number`);
+      return false;
+    }
+    if (numberValue < min || numberValue > max) {
+      block.setWarningText(`${parameterName} must be between ${min} and ${max}`);
+      return false;
+    }
+    return true;
+  };
+}
+
 function setEruptionVolume(block) {
   return setCodeVariable({
     variableName: "molasses_eruption_volume",
     block,
     setFunction: "setMolassesEruptionVolume",
-    validateFunction: (value, _block) => {
-      const numberValue = parseFloat(value);
-
-      if (isNaN(numberValue)) {
-        _block.setWarningText("Eruption volume must be a number");
-        return false;
-      }
-      if (numberValue < minEruptionVolume || numberValue > maxEruptionVolume) {
-        _block.setWarningText(`Eruption volume must be between ${minEruptionVolume} and ${maxEruptionVolume}`);
-        return false;
-      }
-
-      return true;
-    }
+    validateFunction: getNumberValidationFunction(minEruptionVolume, maxEruptionVolume, "Eruption volume")
   });
 }
 function setLavaFront(block) {
@@ -100,20 +103,7 @@ function setLavaFront(block) {
     variableName: "molasses_lava_front",
     block,
     setFunction: "setMolassesLavaFront",
-    validateFunction: (value, _block) => {
-      const numberValue = parseFloat(value);
-
-      if (isNaN(numberValue)) {
-        _block.setWarningText("Lava front height must be a number");
-        return false;
-      }
-      if (numberValue < minResidual || numberValue > maxResidual) {
-        _block.setWarningText(`Lava front height must be between ${minResidual} and ${maxResidual}`);
-        return false;
-      }
-
-      return true;
-    }
+    validateFunction: getNumberValidationFunction(minResidual, maxResidual, "Lava front height")
   });
 }
 function setVentLocation(block) {
