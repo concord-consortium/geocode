@@ -4,9 +4,12 @@ import VentLocationMarkerIcon from "../../assets/lava-coder/location-marker.png"
 import MapStreetIcon from "../../assets/lava-coder/map-street-icon.png";
 import MapTerrainIcon from "../../assets/lava-coder/map-terrain-icon.png";
 import PlaceVentMarkerIcon from "../../assets/lava-coder/place-vent-marker-icon.png";
+import ZoomInIcon from "../../assets/lava-coder/zoom-in-icon.png";
+import ZoomOutIcon from "../../assets/lava-coder/zoom-out-icon.png";
 import { LavaMapType, LavaMapTypes, uiStore } from "../../stores/ui-store";
 import IconButton from "../buttons/icon-button";
 import { kFeetPerMeter } from "./lava-constants";
+import { useCameraControls } from "./use-camera-controls";
 import { useCesiumMouseEvents } from "./use-cesium-mouse-events";
 import { useCesiumViewer } from "./use-cesium-viewer";
 import { useElevationData } from "./use-elevation-data";
@@ -43,6 +46,8 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
   const [cursor, setCursor] = useState("auto");
 
   const viewer = useCesiumViewer(lavaCoderElt);
+
+  const { zoomIn, zoomOut } = useCameraControls(viewer, verticalExaggeration);
 
   useWorldImagery(viewer, mapType);
 
@@ -112,7 +117,6 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
   // place hot spot for vent location cursor at point of marker
   const containerStyle: React.CSSProperties = { width, height, margin, cursor };
   const borderColor = "#3baa1d";
-  const iconStyle: React.CSSProperties = { marginTop: 4, marginRight: 2 };
 
   const mapButtonIcon = mapType === "street" ? MapStreetIcon : MapTerrainIcon;
   const mapButtonLabel = `Map Type: ${mapLabels[mapType]}`;
@@ -121,18 +125,30 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
     <div className="lava-coder-view" style={containerStyle}>
       <div ref={elt => setLavaCoderElt(elt)} className="lava-coder-simulation" />
       <div className="lava-overlay-controls-left">
+        <div className="zoom-controls">
+          <IconButton className="zoom-in-button" width={34} height={34}
+                      borderColor={borderColor} onClick={() => zoomIn()}>
+            <img src={ZoomInIcon} alt="Zoom In" />
+          </IconButton>
+          <IconButton className="zoom-out-button" width={34} height={34}
+                      borderColor={borderColor} onClick={() => zoomOut()}>
+            <img src={ZoomOutIcon} alt="Zoom Out" />
+          </IconButton>
+        </div>
+      </div>
+      <div className="lava-overlay-controls-bottom bottom-left-controls">
         {showPlaceVent && (
           <IconButton className="place-vent-button" label={"Place Vent"}
                       borderColor={borderColor} onClick={() => togglePlaceVentMode()}>
-            <img src={PlaceVentMarkerIcon} style={iconStyle} alt="Place Vent" />
+            <img src={PlaceVentMarkerIcon} alt="Place Vent" />
           </IconButton>
         )}
       </div>
-      <div className="lava-overlay-controls-right">
+      <div className="lava-overlay-controls-bottom bottom-right-controls">
         {showMapType && (
           <IconButton className="map-type-button" label={mapButtonLabel}
                       borderColor={borderColor} onClick={() => toggleMapType()}>
-            <img src={mapButtonIcon} style={iconStyle} alt="Map Type" />
+            <img src={mapButtonIcon} alt="Map Type" />
           </IconButton>
         )}
       </div>
