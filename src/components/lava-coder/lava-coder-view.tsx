@@ -117,8 +117,6 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
   // place hot spot for vent location cursor at point of marker
   const containerStyle: React.CSSProperties = { width, height, margin, cursor };
   const borderColor = "#3baa1d";
-  const unlabeledIconStyle: React.CSSProperties = { marginTop: -2, marginLeft: -2 };
-  const labeledIconStyle: React.CSSProperties = { marginTop: 4, marginRight: 2 };
 
   const mapButtonIcon = mapType === "street" ? MapStreetIcon : MapTerrainIcon;
   const mapButtonLabel = `Map Type: ${mapLabels[mapType]}`;
@@ -130,27 +128,27 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
         <div className="zoom-controls">
           <IconButton className="zoom-in-button" width={34} height={34}
                       borderColor={borderColor} onClick={() => zoomIn()}>
-            <img src={ZoomInIcon} style={unlabeledIconStyle} alt="Zoom In" />
+            <img src={ZoomInIcon} alt="Zoom In" />
           </IconButton>
           <IconButton className="zoom-out-button" width={34} height={34}
                       borderColor={borderColor} onClick={() => zoomOut()}>
-            <img src={ZoomOutIcon} style={unlabeledIconStyle} alt="Zoom Out" />
+            <img src={ZoomOutIcon} alt="Zoom Out" />
           </IconButton>
         </div>
       </div>
-      <div className="lava-overlay-controls-bottom-left">
+      <div className="lava-overlay-controls-bottom bottom-left-controls">
         {showPlaceVent && (
           <IconButton className="place-vent-button" label={"Place Vent"}
                       borderColor={borderColor} onClick={() => togglePlaceVentMode()}>
-            <img src={PlaceVentMarkerIcon} style={labeledIconStyle} alt="Place Vent" />
+            <img src={PlaceVentMarkerIcon} alt="Place Vent" />
           </IconButton>
         )}
       </div>
-      <div className="lava-overlay-controls-bottom-right">
+      <div className="lava-overlay-controls-bottom bottom-right-controls">
         {showMapType && (
           <IconButton className="map-type-button" label={mapButtonLabel}
                       borderColor={borderColor} onClick={() => toggleMapType()}>
-            <img src={mapButtonIcon} style={labeledIconStyle} alt="Map Type" />
+            <img src={mapButtonIcon} alt="Map Type" />
           </IconButton>
         )}
       </div>

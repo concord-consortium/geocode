@@ -25,28 +25,35 @@
       width: 100%;
       min-width: 100% !important;
       margin: 0 !important;
+
+      img {
+        margin-top: -2px;
+        margin-left: -2px;
+      }
     }
   }
 
-  .lava-overlay-controls-bottom-left {
+  .lava-overlay-controls-bottom {
     position: absolute;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     bottom: 30px;
-    left: 10px;
-    width: 136px;
     height: 40px;
-  }
 
-  .lava-overlay-controls-bottom-right {
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    bottom: 30px;
-    right: 10px;
-    width: 220px;
-    height: 40px;
+    &.bottom-left-controls {
+      left: 10px;
+      width: 136px;
+    }
+
+    &.bottom-right-controls {
+      right: 10px;
+      width: 220px;
+    }
+
+    img {
+      margin-top: 4px;
+      margin-right: 2px;
+    }
   }
 }
