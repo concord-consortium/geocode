@@ -1,4 +1,4 @@
-import { maxLat, maxLong, minLat, minLong } from "../../components/lava-coder/lava-constants";
+import { maxEruptionVolume, maxLat, maxLong, maxResidual, minEruptionVolume, minLat, minLong, minResidual } from "../../components/lava-coder/lava-constants";
 import * as strings from "../../strings/blockly-blocks/lava/simulate-lava";
 
 function basicInit(block) {
@@ -78,14 +78,42 @@ function setEruptionVolume(block) {
   return setCodeVariable({
     variableName: "molasses_eruption_volume",
     block,
-    setFunction: "setMolassesEruptionVolume"
+    setFunction: "setMolassesEruptionVolume",
+    validateFunction: (value, _block) => {
+      const numberValue = parseFloat(value);
+
+      if (isNaN(numberValue)) {
+        _block.setWarningText("Eruption volume must be a number");
+        return false;
+      }
+      if (numberValue < minEruptionVolume || numberValue > maxEruptionVolume) {
+        _block.setWarningText(`Eruption volume must be between ${minEruptionVolume} and ${maxEruptionVolume}`);
+        return false;
+      }
+
+      return true;
+    }
   });
 }
 function setLavaFront(block) {
   return setCodeVariable({
     variableName: "molasses_lava_front",
     block,
-    setFunction: "setMolassesLavaFront"
+    setFunction: "setMolassesLavaFront",
+    validateFunction: (value, _block) => {
+      const numberValue = parseFloat(value);
+
+      if (isNaN(numberValue)) {
+        _block.setWarningText("Lava front height must be a number");
+        return false;
+      }
+      if (numberValue < minResidual || numberValue > maxResidual) {
+        _block.setWarningText(`Lava front height must be between ${minResidual} and ${maxResidual}`);
+        return false;
+      }
+
+      return true;
+    }
   });
 }
 function setVentLocation(block) {
