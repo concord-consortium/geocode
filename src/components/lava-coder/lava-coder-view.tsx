@@ -47,7 +47,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
 
   const viewer = useCesiumViewer(lavaCoderElt);
 
-  const { zoomIn, zoomOut } = useCameraControls(viewer);
+  const { zoomIn, zoomOut } = useCameraControls(viewer, verticalExaggeration);
 
   useWorldImagery(viewer, mapType);
 

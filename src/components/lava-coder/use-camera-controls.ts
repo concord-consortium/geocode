@@ -6,7 +6,7 @@ const kDefaultYLat = 19.150;
 const kMinDistanceAboveTerrain = 500;
 const kMaxDistanceAboveTerrain = 130000;
 
-export function useCameraControls(viewer: CesiumWidget | null) {
+export function useCameraControls(viewer: CesiumWidget | null, verticalExaggeration: number) {
 
   function cameraMoveRate() {
     if (!viewer) return;
@@ -27,7 +27,7 @@ export function useCameraControls(viewer: CesiumWidget | null) {
     const [sampled] = await sampleTerrainMostDetailed(terrainProvider, [
       new Cartographic(cameraPos.longitude, cameraPos.latitude)
     ]);
-    const terrainHeight = sampled.height ?? 0;
+    const terrainHeight = (sampled.height ?? 0) * verticalExaggeration;
 
     moveDist = Math.max(0, Math.min(moveDist, cameraPos.height - (terrainHeight + kMinDistanceAboveTerrain)));
     viewer.camera.moveForward(moveDist);
