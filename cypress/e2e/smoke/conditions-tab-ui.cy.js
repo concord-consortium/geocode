@@ -31,7 +31,7 @@ context("Conditions panel", () => {
             map.getKeyContainer().should('contain','Risk Level');
             map.getMapKeyToggle().should('contain','Show Tephra');
         });
-        it('verity LavaCoder shows correct elements',()=>{
+        it('verify LavaCoder shows correct elements',()=>{
             cy.visit("?unit=LavaCoder");
             conditionsTab.getVentLocationWidget().should('be.visible');
             conditionsTab.getLavaFrontHeightWidget().should('be.visible');
