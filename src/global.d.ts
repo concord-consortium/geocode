@@ -3,6 +3,7 @@ declare module "*.svg" {
   export default content;
 }
 
+declare module "*.asc";
 declare module "*.csv";
 declare module "*.kml";
 declare module "*.png";
