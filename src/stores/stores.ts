@@ -149,7 +149,7 @@ const uiAuthorSettingsProps = tuple(
   "showMapTypeStreet",
   "mapType",
   "verticalExaggeration",
-  "pulsesPerEruption",
+  "hundredsOfPulsesPerEruption",
   "showEruptedVolume",
   "showLavaFrontHeight",
   "showVentLocation",

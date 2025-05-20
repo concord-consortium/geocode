@@ -132,8 +132,14 @@ const AuthoringMenu: React.FC<IProps> = (props) => {
               options={LavaMapTypeStrings} />
             <DatNumber path="uiStore.verticalExaggeration" label={strings.VERTICAL_EXAGGERATION} key="verticalExaggeration"
               min={1} max={5} step={1}/>
-            <DatNumber path="uiStore.pulsesPerEruption" label={strings.PULSES_PER_ERUPTION} key="pulsesPerEruption"
-              min={1} max={100} step={1}/>
+            <DatNumber
+              path="uiStore.hundredsOfPulsesPerEruption"
+              label={strings.PULSES_PER_ERUPTION}
+              key="pulsesPerEruption"
+              min={1}
+              max={100}
+              step={1}
+            />
           </DatFolder>,
 
           <DatFolder title={strings.CONDITIONS_OPTIONS} key="conditionsFolder" closed={false}>
