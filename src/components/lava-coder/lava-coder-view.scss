@@ -13,6 +13,25 @@
     position: absolute;
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    top: 10px;
+    left: 10px;
+    width: 36px;
+    height: 650px;
+
+    .zoom-in-button, .zoom-out-button {
+      display: block;
+      width: 100%;
+      min-width: 100% !important;
+      margin: 0 !important;
+    }
+  }
+
+  .lava-overlay-controls-bottom-left {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
     justify-content: space-between;
     bottom: 30px;
     left: 10px;
@@ -20,7 +39,7 @@
     height: 40px;
   }
 
-  .lava-overlay-controls-right {
+  .lava-overlay-controls-bottom-right {
     position: absolute;
     display: flex;
     flex-direction: column;
