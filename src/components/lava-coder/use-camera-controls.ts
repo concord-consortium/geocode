@@ -29,7 +29,7 @@ export function useCameraControls(viewer: CesiumWidget | null) {
     ]);
     const terrainHeight = sampled.height ?? 0;
 
-    moveDist = Math.min(moveDist, cameraPos.height - (terrainHeight + kMinDistanceAboveTerrain));
+    moveDist = Math.max(0, Math.min(moveDist, cameraPos.height - (terrainHeight + kMinDistanceAboveTerrain)));
     viewer.camera.moveForward(moveDist);
   }
 
