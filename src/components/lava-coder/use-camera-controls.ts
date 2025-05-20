@@ -46,7 +46,7 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
     if (viewer) {
       const camera = viewer.camera;
 
-      // Fly the camera to Hawaii at the given longitude, latitude, and height.
+      // Fly the camera to Hawaii at the initial longitude, latitude, and height when the simulation first loads.
       camera.flyTo({
         destination: Cartesian3.fromDegrees(kDefaultXLng, kDefaultYLat, kMaxDistanceAboveTerrain),
         orientation: {
