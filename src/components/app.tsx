@@ -530,6 +530,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                       showEruptedVolume={isLavaCoder}
                       showLavaFrontHeight={isLavaCoder}
                       showVEI={isTephra}
+                      showVentLocation={isLavaCoder}
                       showWindDirection={isTephra}
                       showWindSpeed={isTephra}
                     />
