@@ -62,7 +62,8 @@ Blockly.Blocks.molasses_simulation_lat_long = {
 // interface SetCodeVariableParameters {
 //   block: Blockly.Block;
 //   setFunction: string;
-//   validateFunction?: (value: string, block: Blockly.Block) => boolean; // block.setWarningText if validation fails
+//   // If validation fails, call block.setWarningText with the error message
+//   validateFunction?: (value: string, block: Blockly.Block) => boolean;
 //   variableName: string;
 // }
 function setCodeVariable({ block, setFunction, validateFunction, variableName }) {
