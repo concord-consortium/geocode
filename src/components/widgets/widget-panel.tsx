@@ -7,6 +7,7 @@ import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import { BaseComponent } from "../base";
 import { LavaFrontHeightWidget } from "./lava-front-height-widget";
+import { VentLocationWidget } from "./vent-location-widget";
 
 const WidgetBar = styled.div`
   display: flex;
@@ -38,6 +39,7 @@ interface IProps {
   showEruptedVolume?: boolean;
   showLavaFrontHeight?: boolean;
   showVEI?: boolean;
+  showVentLocation?: boolean;
   showWindDirection?: boolean;
   showWindSpeed?: boolean;
 }
@@ -52,6 +54,7 @@ export default class WidgetPanel extends BaseComponent<IProps, IState> {
     const showEjectedVolume = this.props.showEjectedVolume && this.stores.uiStore.showEjectedVolume;
     const showLavaFrontHeight = this.props.showLavaFrontHeight && this.stores.uiStore.showLavaFrontHeight;
     const showVEI = this.props.showVEI && this.stores.uiStore.showVEI;
+    const showVentLocation = this.props.showVentLocation && this.stores.uiStore.showVentLocation;
     const showEruptedVolume = this.props.showEruptedVolume && this.stores.uiStore.showEruptedVolume;
     const showWindDirection = this.props.showWindDirection && this.stores.uiStore.showWindDirection;
     const showWindSpeed = this.props.showWindSpeed && this.stores.uiStore.showWindSpeed;
@@ -88,6 +91,14 @@ export default class WidgetPanel extends BaseComponent<IProps, IState> {
               mode="tephra"
               type={WidgetPanelTypes.RIGHT}
               eruptionVolume={mass / Math.pow(10, 12)}
+            />
+          </WidgetContainer> }
+        { showVentLocation &&
+          <WidgetContainer data-test="vent-location-widget">
+            <WidgetTitle>Vent Location</WidgetTitle>
+            <VentLocationWidget
+              latitude={this.stores.lavaSimulation.ventLatitude}
+              longitude={this.stores.lavaSimulation.ventLongitude}
             />
           </WidgetContainer> }
         { showLavaFrontHeight &&

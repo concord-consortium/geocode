@@ -229,6 +229,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       blocklyStore.setToolbox(BlocklyAuthoring.seismicToolboxes[0]);
       unitStore.setUnit(unit);
       hideModelOptions = true;
+    } else if (unit === "LavaCoder") {
+      unitStore.setUnit(unit);
     }
     uiStore.setShowOptionsDialog(!hideModelOptions);
   }
@@ -530,6 +532,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                       showEruptedVolume={isLavaCoder}
                       showLavaFrontHeight={isLavaCoder}
                       showVEI={isTephra}
+                      showVentLocation={isLavaCoder}
                       showWindDirection={isTephra}
                       showWindSpeed={isTephra}
                     />

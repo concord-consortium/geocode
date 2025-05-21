@@ -67,6 +67,10 @@ export const IconContainer = styled.div`
   margin: 0 10px 0 10px;
 `;
 
+export const RelativeIconContainer = styled(IconContainer)`
+  position: relative;
+`;
+
 export const TabContent = styled.div`
   display: flex;
   flex-direction: column;
