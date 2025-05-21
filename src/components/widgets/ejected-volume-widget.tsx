@@ -1,11 +1,11 @@
 import styled from "styled-components";
+import { uiStore } from "../../stores/ui-store";
 import { Icon } from "../icon";
 import BoxBackIcon from "../../assets/widget-icons/ejected-volume-box-back.svg";
 import BoxFrontIcon from "../../assets/widget-icons/ejected-volume-box-front.svg";
 import BoxTopIcon from "../../assets/widget-icons/ejected-volume-box-top.svg";
 import { RelativeIconContainer, ValueContainer, ValueOutput } from "../styled-containers";
 import { WidgetPanelTypes, kWidgetPanelInfo } from "../../utilities/widget";
-import { maxEruptionVolume, minEruptionVolume } from "../lava-coder/lava-constants";
 
 interface BoxProps {
   height?: number;
@@ -50,8 +50,8 @@ interface IProps {
 
 export default function EjectedVolumeWidget({ mode, type, eruptionVolume }: IProps) {
   const unit = mode === "tephra" ? "km" : "m";
-  const minVolume = mode === "tephra" ? .0001 : minEruptionVolume;
-  const maxVolume = mode === "tephra" ? 1000 : maxEruptionVolume;
+  const minVolume = mode === "tephra" ? .0001 : uiStore.minEruptionVolume;
+  const maxVolume = mode === "tephra" ? 1000 : uiStore.maxEruptionVolume;
   const constrainedVolume = Math.min(Math.max(eruptionVolume, minVolume), maxVolume);
   const index = Math.round(Math.log(eruptionVolume) / Math.LN10);
   const constrainedIndex = Math.round(Math.log(constrainedVolume) / Math.LN10);

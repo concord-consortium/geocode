@@ -1,4 +1,5 @@
-import { maxEruptionVolume, maxLat, maxLong, maxResidual, minEruptionVolume, minLat, minLong, minResidual } from "../../components/lava-coder/lava-constants";
+import { maxLat, maxLong, minLat, minLong } from "../../components/lava-coder/lava-constants";
+import { uiStore } from "../../stores/ui-store";
 import * as strings from "../../strings/blockly-blocks/lava/simulate-lava";
 
 function basicInit(block) {
@@ -95,7 +96,8 @@ function setEruptionVolume(block) {
     variableName: "molasses_eruption_volume",
     block,
     setFunction: "setMolassesEruptionVolume",
-    validateFunction: getNumberValidationFunction(minEruptionVolume, maxEruptionVolume, "Eruption volume")
+    validateFunction:
+      getNumberValidationFunction(uiStore.minEruptionVolume, uiStore.maxEruptionVolume, "Eruption volume")
   });
 }
 function setLavaFront(block) {
@@ -103,7 +105,8 @@ function setLavaFront(block) {
     variableName: "molasses_lava_front",
     block,
     setFunction: "setMolassesLavaFront",
-    validateFunction: getNumberValidationFunction(minResidual, maxResidual, "Lava front height")
+    validateFunction:
+      getNumberValidationFunction(uiStore.minLavaFrontHeight, uiStore.maxLavaFrontHeight, "Lava front height")
   });
 }
 function setVentLocation(block) {

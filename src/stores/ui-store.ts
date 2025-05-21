@@ -52,6 +52,12 @@ const UIStore = types.model("UI", {
   verticalExaggeration: 1,
   // number of hundreds of pulses for each eruption. The actual number of pulses will be 100x this one.
   hundredsOfPulsesPerEruption: 20,
+  // minimum and maximum eruption volume in km^3
+  minEruptionVolumeInKM: 1,
+  maxEruptionVolumeInKM: 10000,
+  // minimum and maximum lava front height in meters
+  minLavaFrontHeight: 2,
+  maxLavaFrontHeight: 50,
   // show the erupted volume widget
   showEruptedVolume: true,
   // show the lava front height (residual) widget
@@ -66,6 +72,12 @@ const UIStore = types.model("UI", {
 .views((self) => ({
   get pulsesPerEruption() {
     return self.hundredsOfPulsesPerEruption * 100;
+  },
+  get minEruptionVolume() {
+    return self.minEruptionVolumeInKM * 1000000;
+  },
+  get maxEruptionVolume() {
+    return self.maxEruptionVolumeInKM * 1000000;
   }
 }))
 .actions((self) => ({
