@@ -2,9 +2,10 @@ import { types } from "mobx-state-tree";
 import MolassesWorker from "../components/lava-coder/molasses.worker";
 import { AsciiRaster } from "../components/lava-coder/parse-ascii-raster";
 import {
-  defaultEruptionVolume, defaultPulseVolume, defaultResidual, defaultVentLatitude, defaultVentLongitude
+  defaultEruptionVolume, defaultResidual, defaultVentLatitude, defaultVentLongitude
 } from "../components/lava-coder/lava-constants";
 import { LavaSimulationAuthorSettings, LavaSimulationAuthorSettingsProps } from "./stores";
+import { uiStore } from "./ui-store";
 
 // Saving the lava elevations in the MST model is very slow, so we save it separately.
 // But that means that when this is updated, another observable feature (like coveredCells or pulseCount) needs to be
@@ -30,7 +31,6 @@ export const LavaSimulationStore = types
     ventLatitude: defaultVentLatitude,
     ventLongitude: defaultVentLongitude,
     totalVolume: defaultEruptionVolume,
-    pulseVolume: defaultPulseVolume, // Standard for small eruption
     pulseCount: 0,
   })
   .volatile((self) => ({
@@ -53,11 +53,6 @@ export const LavaSimulationStore = types
     },
     setTotalVolume(totalVolume: number) {
       self.totalVolume = totalVolume;
-    },
-    setTotalVolumeAndUpdatePulseVolume(totalVolume: number) {
-      self.totalVolume = totalVolume;
-      // Update pulse volume to be proportional to the total volume
-      self.pulseVolume = totalVolume * defaultPulseVolume / defaultEruptionVolume;
     },
     setVentLatitude(ventLatitude: number) {
       self.ventLatitude = ventLatitude;
@@ -96,7 +91,7 @@ export const LavaSimulationStore = types
       };
 
       const parameters = {
-        pulseVolume: self.pulseVolume,
+        pulseVolume: self.totalVolume / uiStore.pulsesPerEruption,
         raster: self.raster,
         residual: self.residual,
         totalVolume: self.totalVolume,
