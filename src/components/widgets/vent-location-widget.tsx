@@ -22,7 +22,7 @@ export function VentLocationWidget({ latitude, longitude }: VentLocationWidgetPr
         <img
           src={VentLocationIcon}
           alt={`Vent latitude: ${latitude}, longitude: ${longitude}`}
-          style={{ height: "28px", width: "28px" }}
+          style={{ height: 28, width: 28 }}
         />
       </RelativeIconContainer>
       <VerticalValueOutput>

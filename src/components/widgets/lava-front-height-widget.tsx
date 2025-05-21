@@ -31,7 +31,7 @@ export function LavaFrontHeightWidget({ lavaFrontHeight }: LavaFrontHeightWidget
         <img
           src={lavaFrontIcon}
           alt={`Lava front height: ${lavaFrontHeight}m`}
-          style={{ height: "49px", width: "90px" }}
+          style={{ height: 49, width: 90 }}
         />
       </RelativeIconContainer>
       <ValueOutput>
