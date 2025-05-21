@@ -24,7 +24,8 @@ interface LavaFrontHeightWidgetProps {
 export function LavaFrontHeightWidget({ lavaFrontHeight }: LavaFrontHeightWidgetProps) {
   const { minLavaFrontHeight, maxLavaFrontHeight } = uiStore;
   const lavaFrontHeightRange = maxLavaFrontHeight - minLavaFrontHeight;
-  const iconIndex = Math.floor((lavaFrontHeight - minLavaFrontHeight) / lavaFrontHeightRange * lavaFrontIcons.length);
+  const iconIndex = lavaFrontHeight === 0 ? 0
+    : Math.floor((lavaFrontHeight - minLavaFrontHeight) / lavaFrontHeightRange * lavaFrontIcons.length);
   const lavaFrontIcon = lavaFrontIcons[Math.max(0, Math.min(iconIndex, lavaFrontIcons.length - 1))];
 
   return (
