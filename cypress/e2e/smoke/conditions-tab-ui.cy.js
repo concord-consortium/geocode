@@ -1,12 +1,10 @@
 import RightPanel from "../../support/elements/RightPanel";
 import ConditionsTab from "../../support/elements/ConditionsTab";
 import Map from "../../support/elements/Map";
-import ModelOptions from "../../support/elements/ModelOptionPanel";
 
 const rightPanel = new RightPanel;
 const conditionsTab = new ConditionsTab;
 const map = new Map;
-const modelOptions = new ModelOptions;
 
 context("Conditions panel", () => {
     before(() => {
@@ -33,10 +31,9 @@ context("Conditions panel", () => {
             map.getKeyContainer().should('contain','Risk Level');
             map.getMapKeyToggle().should('contain','Show Tephra');
         });
-        it('verity LavaCoder shows correct elements',()=>{
-            // TODO Use url params to set the correct unit rather than using the model options menu
-            modelOptions.getModelOptionsMenu().click();
-            modelOptions.selectUnitOption('LavaCoder');
+        it('verify LavaCoder shows correct elements',()=>{
+            cy.visit("?unit=LavaCoder");
+            conditionsTab.getVentLocationWidget().should('be.visible');
             conditionsTab.getLavaFrontHeightWidget().should('be.visible');
             conditionsTab.getVolumeOfLavaWidget().should('be.visible');
         });

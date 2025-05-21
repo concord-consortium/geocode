@@ -50,6 +50,8 @@ const UIStore = types.model("UI", {
   mapType: types.optional(types.enumeration(LavaMapTypes), "terrain"),
   // vertical exaggeration (1 = normal, 2 = 2x, 3 = 3x, etc)
   verticalExaggeration: 1,
+  // number of hundreds of pulses for each eruption. The actual number of pulses will be 100x this one.
+  hundredsOfPulsesPerEruption: 20,
   // show the erupted volume widget
   showEruptedVolume: true,
   // show the lava front height (residual) widget
@@ -61,6 +63,11 @@ const UIStore = types.model("UI", {
   leftTabIndex: 0,
   rightTabIndex: 0,
 })
+.views((self) => ({
+  get pulsesPerEruption() {
+    return self.hundredsOfPulsesPerEruption * 100;
+  }
+}))
 .actions((self) => ({
   setShowOptionsDialog(show: boolean) {
     self.showOptionsDialog = show;

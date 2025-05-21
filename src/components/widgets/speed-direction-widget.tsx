@@ -4,7 +4,7 @@ import { Icon } from "../icon";
 import WindWSDIcon from "../../assets/widget-icons/wind-speed-and-direction.svg";
 import WindSymbolOrangeIcon from "../../assets/widget-icons/wind-symbol-orange.svg";
 import WindSymbolBlueIcon from "../../assets/widget-icons/wind-symbol-blue.svg";
-import { HorizontalContainer, ValueContainer, ValueOutput, IconContainer } from "../styled-containers";
+import { HorizontalContainer, RelativeIconContainer, ValueContainer, ValueOutput } from "../styled-containers";
 import { WidgetPanelTypes, kWidgetPanelInfo, round } from "../../utilities/widget";
 
 interface ValueDividerProps {
@@ -15,10 +15,6 @@ const ValueDivider = styled.div`
   height: 21px;
   margin: 0 5px 0 5px;
   background-color: ${(p: ValueDividerProps) => `${p.backgroundColor || "#FFDBAC"}`};
-`;
-
-const RelativeIconContainer = styled(IconContainer)`
-  position: relative;
 `;
 
 interface RotateProps {

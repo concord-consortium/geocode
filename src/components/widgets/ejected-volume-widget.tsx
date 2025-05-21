@@ -3,7 +3,7 @@ import { Icon } from "../icon";
 import BoxBackIcon from "../../assets/widget-icons/ejected-volume-box-back.svg";
 import BoxFrontIcon from "../../assets/widget-icons/ejected-volume-box-front.svg";
 import BoxTopIcon from "../../assets/widget-icons/ejected-volume-box-top.svg";
-import { ValueContainer, ValueOutput, IconContainer } from "../styled-containers";
+import { RelativeIconContainer, ValueContainer, ValueOutput } from "../styled-containers";
 import { WidgetPanelTypes, kWidgetPanelInfo } from "../../utilities/widget";
 import { maxEruptionVolume, minEruptionVolume } from "../lava-coder/lava-constants";
 
@@ -31,9 +31,6 @@ const BoxRight = styled.div<BoxProps>`
   bottom: 10px;
 `;
 
-const RelativeIconContainer = styled(IconContainer)`
-  position: relative;
-`;
 const AbsoluteIcon = styled(Icon)`
   position: absolute;
 `;

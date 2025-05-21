@@ -51,7 +51,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     /** ==== Molasses simulation functions ==== */
 
     addFunc("setMolassesEruptionVolume", (volume: number) => {
-      lavaSimulation.setTotalVolumeAndUpdatePulseVolume(volume);
+      lavaSimulation.setTotalVolume(volume);
     });
     addFunc("setMolassesLavaFront", (height: number) => {
       lavaSimulation.setResidual(height);

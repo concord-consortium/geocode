@@ -26,6 +26,9 @@ class ConditionsTab {
     getTephra(){
         return cy.get('.leaflet-zoom-animated .leaflet-interactive');
     }
+    getVentLocationWidget(){
+        return cy.get('[data-test=vent-location-widget]');
+    }
     getLavaFrontHeightWidget(){
         return cy.get('[data-test=lava-front-height-widget]');
     }
