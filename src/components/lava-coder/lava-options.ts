@@ -5,4 +5,4 @@ export const useLargeMap = true;
 
 // Set this to true to render the full elevation map extent when the eruption starts.
 // This does not impact the simulation, but it's helpful for visualizing what is and is not included in the map.
-export const renderMapExtent = true;
+export const renderMapExtent = false;
