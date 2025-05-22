@@ -10,6 +10,7 @@ import SeismicGPS from "./toolbox/seismic-gps-toolbox.xml";
 import SeismicGPSGraph from "./toolbox/seismic-gps-graph-toolbox.xml";
 import SeismicGPSDeformation from "./toolbox/seismic-gps-deformation-toolbox.xml";
 import SeismicGPSEarthquakes from "./toolbox/seismic-gps-deformation-earthquakes-toolbox.xml";
+import Molasses from "./toolbox/molasses-toolbox.xml";
 
 import Basic from "./code/basic-setup.xml";
 import NestedLoops from "./code/nested-loops.xml";
@@ -23,6 +24,7 @@ interface IBlocklyAuthoring {
   code: Record<string, string>;
   tephraToolboxes: string[];
   seismicToolboxes: string[];
+  molassesToolboxes: string[];
 }
 
 export const BlocklyAuthoring: IBlocklyAuthoring = {
@@ -38,7 +40,8 @@ export const BlocklyAuthoring: IBlocklyAuthoring = {
     "Seismic: GPS": SeismicGPS,
     "Seismic: GPS & Graph": SeismicGPSGraph,
     "Seismic: GPS & Deformation": SeismicGPSDeformation,
-    "Seismic: GPS & Earthquakes": SeismicGPSEarthquakes
+    "Seismic: GPS & Earthquakes": SeismicGPSEarthquakes,
+    Molasses
   },
   code: {
     Basic,
@@ -63,5 +66,8 @@ export const BlocklyAuthoring: IBlocklyAuthoring = {
     "Seismic: GPS & Graph",
     "Seismic: GPS & Deformation",
     "Seismic: GPS & Earthquakes"
+  ],
+  molassesToolboxes: [
+    "Molasses"
   ]
 };

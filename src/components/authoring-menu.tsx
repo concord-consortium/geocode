@@ -112,10 +112,10 @@ const AuthoringMenu: React.FC<IProps> = (props) => {
 
       { (props.expandOptionsDialog && props.options.unit.name === strings.LAVA_CODER) &&
         [
-          // <DatSelect path="blocklyStore.toolbox" label={strings.CODE_TOOLBOX}
-          //   options={BlocklyAuthoring.seismicToolboxes} key="toolbox" />,
-          // <DatSelect path="blocklyStore.initialCodeTitle" label={strings.INITIAL_CODE}
-          //   options={Object.keys(BlocklyAuthoring.code)} key="code" />,
+          <DatSelect path="blocklyStore.toolbox" label={strings.CODE_TOOLBOX}
+            options={BlocklyAuthoring.molassesToolboxes} key="toolbox" />,
+          <DatSelect path="blocklyStore.initialCodeTitle" label={strings.INITIAL_CODE}
+            options={Object.keys(BlocklyAuthoring.code)} key="code" />,
 
           <DatFolder title={strings.LEFT_TABS} key="leftTabsFolder" closed={false}>
             <DatBoolean path="uiStore.showBlocks" label={strings.SHOW_BLOCKS} key="showBlocks" />
