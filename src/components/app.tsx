@@ -230,6 +230,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       unitStore.setUnit(unit);
       hideModelOptions = true;
     } else if (unit === "LavaCoder") {
+      blocklyStore.setToolbox(BlocklyAuthoring.molassesToolboxes[0]);
       unitStore.setUnit(unit);
     }
     uiStore.setShowOptionsDialog(!hideModelOptions);
@@ -304,8 +305,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     const showMonteCarlo = _showMonteCarlo && isTephra;
     const showBottomTabs = isTephra || isSeismic;
 
-    const toolboxPath = (BlocklyAuthoring.toolbox as {[key: string]: string})[toolbox];
-    const codePath = (BlocklyAuthoring.code as {[key: string]: string})[initialCodeTitle];
+    const toolboxPath = BlocklyAuthoring.toolbox[toolbox];
+    const codePath = BlocklyAuthoring.code[initialCodeTitle];
 
     const {width, height} = this.state.dimensions;
     const blocklyMargin = 3;
@@ -848,6 +849,9 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     } else if (authorMenuState.unit.name === "Seismic"
         && !BlocklyAuthoring.seismicToolboxes.includes(authorMenuState.blocklyStore.toolbox)) {
       authorMenuState.blocklyStore.toolbox = BlocklyAuthoring.seismicToolboxes[0];
+    } else if (authorMenuState.unit.name === "LavaCoder"
+        && !BlocklyAuthoring.molassesToolboxes.includes(authorMenuState.blocklyStore.toolbox)) {
+      authorMenuState.blocklyStore.toolbox = BlocklyAuthoring.molassesToolboxes[0];
     }
 
     // update the apparent year scale to a default value if the earthquake mode changes

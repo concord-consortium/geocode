@@ -10,13 +10,6 @@ export const defaultResidual = 5;
 export const defaultVentLatitude = 19.5;
 export const defaultVentLongitude = -155.565;
 
-export const minEruptionVolume = 1000000;
-export const maxEruptionVolume = 10000000000;
-
-export const minResidual = 2;
-export const maxResidual = 50;
-export const rangeResidual = maxResidual - minResidual;
-
 // Bounds of the elevation map in latitude and longitude
 // Larger map from Leslie
 export let minLong = -156;
