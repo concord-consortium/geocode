@@ -1,5 +1,5 @@
 // Based on a suggestion from ChatGPT
-import { kMetersPerFoot } from "./lava-constants";
+import { kMetersPerFoot, useLargeMap } from "./lava-constants";
 
 export interface AsciiRaster {
   header: Record<string, number>;
@@ -23,9 +23,10 @@ export function parseAsciiRaster(content: string) {
   }
 
   // Parse raster values
+  // The small DEM values are in feet above sea level, but the Molasses algorithm requires elevation in meters
+  const scale = useLargeMap ? 1 : kMetersPerFoot;
   const values = lines.slice(dataStartIndex).map(line =>
-    // The DEM values are in feet above sea level, but the Molasses algorithm requires elevation in meters
-    line.trim().split(/\s+/).map(value => Number(value) * kMetersPerFoot)
+    line.trim().split(/\s+/).map(value => Number(value) * scale)
   );
 
   return {

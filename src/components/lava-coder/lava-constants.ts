@@ -1,3 +1,5 @@
+export const useLargeMap = true;
+
 export const kFeetPerMeter = 3.28084;
 export const kMetersPerFoot = 1 / kFeetPerMeter;
 
@@ -16,9 +18,19 @@ export const maxResidual = 50;
 export const rangeResidual = maxResidual - minResidual;
 
 // Bounds of the elevation map in latitude and longitude
-export const maxLong = -155.008440;
-export const minLong = -155.673766;
-export const rangeLong = maxLong - minLong;
-export const minLat = 19.370473;
-export const maxLat = 19.819655;
-export const rangeLat = maxLat - minLat;
+// Larger map from Leslie
+export let minLong = -156;
+export let rangeLong = 1;
+export let maxLong = minLong + rangeLong;
+export let minLat = 19;
+export let rangeLat = 1;
+export let maxLat = minLat + rangeLat;
+// Smaller map from Lis
+if (!useLargeMap) {
+  maxLong = -155.008440;
+  minLong = -155.673766;
+  rangeLong = maxLong - minLong;
+  minLat = 19.370473;
+  maxLat = 19.819655;
+  rangeLat = maxLat - minLat;
+}

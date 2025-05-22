@@ -5,6 +5,11 @@ import { lavaElevations, lavaSimulation } from "../../stores/lava-simulation-sto
 import { maxLat, maxLong, minLat, minLong } from "./lava-constants";
 import { visualizeLava } from "./visualize-lava";
 
+import ElevationDisplay from "../../assets/lava-coder/elevation-maps/elevation_from_asc_transparent_ocean.png";
+
+const renderMapExtent = false;
+let loggedLayer = false;
+
 export function useLavaOverlay(viewer: CesiumWidget | null) {
   const lavaLayerRef = useRef<ImageryLayer | null>(null);
   // Two layers are displayed to avoid flickering. A layer is only removed when it is the third oldest.
@@ -18,6 +23,19 @@ export function useLavaOverlay(viewer: CesiumWidget | null) {
 
       if (!coveredCells || !lavaElevations || !raster || !viewer) return;
 
+      if (renderMapExtent && !loggedLayer) {
+        loggedLayer = true;
+        const elevationLayer = ImageryLayer.fromProviderAsync(
+          SingleTileImageryProvider.fromUrl(ElevationDisplay, {
+            rectangle: Rectangle.fromDegrees(minLong, minLat, minLong + 1, minLat + 1)
+          })
+        );
+        if (elevationLayer) {
+          elevationLayer.alpha = 0.8;
+          viewer?.imageryLayers.add(elevationLayer);
+        }
+      }
+
       const oldLayer = oldLavaLayerRef.current;
       oldLavaLayerRef.current = lavaLayerRef.current;
 
@@ -27,6 +45,7 @@ export function useLavaOverlay(viewer: CesiumWidget | null) {
           rectangle: Rectangle.fromDegrees(minLong, minLat, maxLong, maxLat)
         })
       );
+
       if (lavaLayerRef.current) viewer.imageryLayers.add(lavaLayerRef.current);
       if (oldLayer) viewer.imageryLayers.remove(oldLayer, true);
     });
