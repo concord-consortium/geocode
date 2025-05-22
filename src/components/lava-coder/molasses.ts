@@ -122,8 +122,8 @@ export async function runSimulation({
   const cellArea = raster.header.cellsize ** 2;
   let currentTotalVolume = totalVolume;
 
-  const sendUpdateMessage = (finished: boolean) => {
-    postMessage({ status: "updatedGrid", finished, grid: getLavaElevationGrid(grid), pulseCount });
+  const sendUpdateMessage = () => {
+    postMessage({ status: "updatedGrid", grid: getLavaElevationGrid(grid), pulseCount });
   };
 
   let lastFrameTime = Date.now();
@@ -172,13 +172,13 @@ export async function runSimulation({
 
     pulseCount++;
     if (Date.now() - lastFrameTime >= millisecondsPerFrame) {
-      sendUpdateMessage(false);
+      sendUpdateMessage();
       lastFrameTime = Date.now();
     }
   }
 
   // Send a final update
-  sendUpdateMessage(true);
+  sendUpdateMessage();
 
   const endTime = Date.now();
   // eslint-disable-next-line no-console

@@ -86,9 +86,6 @@ export const LavaSimulationStore = types
             self.setPulseCount(e.data.pulseCount);
             lavaElevations = e.data.grid;
             self.countCoveredCells(e.data.grid);
-            if (e.data.finished) {
-              self.worker?.terminate();
-            }
           }
         } catch (error) {
           console.error("Error handling worker message:", error, e);
