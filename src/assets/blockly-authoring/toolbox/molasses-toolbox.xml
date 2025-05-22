@@ -83,8 +83,4 @@
   <category name="Variables" colour="%{BKY_VARIABLES_HUE}" custom="VARIABLE"></category>
 
   <category name="Functions" colour="%{BKY_PROCEDURES_HUE}" custom="PROCEDURE"></category>
-  <!-- <category name="Logging" colour="260">
-    <block type="logprint"></block>
-    <block type="stringconcat"></block>
-  </category> -->
 </xml>
