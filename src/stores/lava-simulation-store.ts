@@ -36,6 +36,7 @@ export const LavaSimulationStore = types
   .volatile((self) => ({
     coveredCells: 0,
     raster: null as AsciiRaster | null, // AsciiRaster
+    running: false,
     worker: null as Worker | null
   }))
   .actions((self) => ({
@@ -50,6 +51,9 @@ export const LavaSimulationStore = types
     },
     setResidual(residual: number) {
       self.residual = residual;
+    },
+    setRunning(running: boolean) {
+      self.running = running;
     },
     setTotalVolume(totalVolume: number) {
       self.totalVolume = totalVolume;
@@ -74,8 +78,9 @@ export const LavaSimulationStore = types
   })
   .actions((self) => ({
     runSimulation() {
-      if (!self.raster) return;
+      if (!self.raster || self.running) return;
 
+      self.running = true;
       self.worker = new MolassesWorker();
       self.worker.onmessage = (e) => {
         try {
@@ -84,6 +89,10 @@ export const LavaSimulationStore = types
             self.setPulseCount(e.data.pulseCount);
             lavaElevations = e.data.grid;
             self.countCoveredCells(e.data.grid);
+            if (e.data.finished) {
+              self.setRunning(false);
+              self.worker?.terminate();
+            }
           }
         } catch (error) {
           console.error("Error handling worker message:", error, e);
