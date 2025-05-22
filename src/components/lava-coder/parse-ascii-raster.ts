@@ -1,5 +1,6 @@
 // Based on a suggestion from ChatGPT
-import { kMetersPerFoot, useLargeMap } from "./lava-constants";
+import { kMetersPerFoot } from "./lava-constants";
+import { useLargeMap } from "./lava-options";
 
 export interface AsciiRaster {
   header: Record<string, number>;

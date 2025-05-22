@@ -1,4 +1,4 @@
-export const useLargeMap = true;
+import { useLargeMap } from './lava-options';
 
 export const kFeetPerMeter = 3.28084;
 export const kMetersPerFoot = 1 / kFeetPerMeter;

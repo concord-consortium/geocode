@@ -3,13 +3,12 @@ import { autorun } from "mobx";
 import { useEffect, useRef } from "react";
 import { lavaElevations, lavaSimulation } from "../../stores/lava-simulation-store";
 import { maxLat, maxLong, minLat, minLong } from "./lava-constants";
+import { renderMapExtent } from "./lava-options";
 import { visualizeLava } from "./visualize-lava";
 
 import ElevationDisplay from "../../assets/lava-coder/elevation-maps/elevation_from_asc_transparent_ocean.png";
 
-// Set this to true to render the full elevation map extent when the eruption starts.
-// This does not impact the simulation, but it's helpful for visualizing what is and is not included in the map.
-let renderMapExtent = false;
+let renderedExtent = false;
 
 export function useLavaOverlay(viewer: CesiumWidget | null) {
   const lavaLayerRef = useRef<ImageryLayer | null>(null);
@@ -24,8 +23,8 @@ export function useLavaOverlay(viewer: CesiumWidget | null) {
 
       if (!coveredCells || !lavaElevations || !raster || !viewer) return;
 
-      if (renderMapExtent) {
-        renderMapExtent = false;
+      if (renderMapExtent && !renderedExtent) {
+        renderedExtent = true;
         const elevationLayer = ImageryLayer.fromProviderAsync(
           SingleTileImageryProvider.fromUrl(ElevationDisplay, {
             rectangle: Rectangle.fromDegrees(minLong, minLat, minLong + 1, minLat + 1)
