@@ -1,4 +1,5 @@
 import { maxLat, maxLong, minLat, minLong } from "../../components/lava-coder/lava-constants";
+import { uiStore } from "../../stores/ui-store";
 import * as strings from "../../strings/blockly-blocks/lava/simulate-lava";
 
 function basicInit(block) {
@@ -61,6 +62,7 @@ Blockly.Blocks.molasses_simulation_lat_long = {
 // interface SetCodeVariableParameters {
 //   block: Blockly.Block;
 //   setFunction: string;
+//   // If validation fails, call block.setWarningText with the error message
 //   validateFunction?: (value: string, block: Blockly.Block) => boolean;
 //   variableName: string;
 // }
@@ -74,18 +76,38 @@ function setCodeVariable({ block, setFunction, validateFunction, variableName })
   return `
   this.${setFunction}(${value});`;
 }
+
+function getNumberValidationFunction(min, max, parameterName) {
+  return (value, block) => {
+    const numberValue = parseFloat(value);
+    if (isNaN(numberValue)) {
+      block.setWarningText(`${parameterName} must be a number`);
+      return false;
+    }
+    if (numberValue < min || numberValue > max) {
+      block.setWarningText(`${parameterName} must be between ${min} and ${max}`);
+      return false;
+    }
+    return true;
+  };
+}
+
 function setEruptionVolume(block) {
   return setCodeVariable({
     variableName: "molasses_eruption_volume",
     block,
-    setFunction: "setMolassesEruptionVolume"
+    setFunction: "setMolassesEruptionVolume",
+    validateFunction:
+      getNumberValidationFunction(uiStore.minEruptionVolume, uiStore.maxEruptionVolume, "Eruption volume")
   });
 }
 function setLavaFront(block) {
   return setCodeVariable({
     variableName: "molasses_lava_front",
     block,
-    setFunction: "setMolassesLavaFront"
+    setFunction: "setMolassesLavaFront",
+    validateFunction:
+      getNumberValidationFunction(uiStore.minLavaFrontHeight, uiStore.maxLavaFrontHeight, "Lava front height")
   });
 }
 function setVentLocation(block) {

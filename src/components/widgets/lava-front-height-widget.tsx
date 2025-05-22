@@ -1,6 +1,6 @@
-import { minResidual, rangeResidual } from "../lava-coder/lava-constants";
-import { RelativeIconContainer, ValueContainer, ValueOutput } from "../styled-containers";
+import { uiStore } from "../../stores/ui-store";
 import { kWidgetPanelInfo } from "../../utilities/widget";
+import { RelativeIconContainer, ValueContainer, ValueOutput } from "../styled-containers";
 
 import LavaFront1 from "../../assets/lava-coder/widget-lava-front-height-1@3x.png";
 import LavaFront2 from "../../assets/lava-coder/widget-lava-front-height-2@3x.png";
@@ -22,7 +22,10 @@ interface LavaFrontHeightWidgetProps {
   lavaFrontHeight: number;
 }
 export function LavaFrontHeightWidget({ lavaFrontHeight }: LavaFrontHeightWidgetProps) {
-  const iconIndex = Math.floor((lavaFrontHeight - minResidual) / rangeResidual * lavaFrontIcons.length);
+  const { minLavaFrontHeight, maxLavaFrontHeight } = uiStore;
+  const lavaFrontHeightRange = maxLavaFrontHeight - minLavaFrontHeight;
+  const iconIndex = lavaFrontHeight === 0 ? 0
+    : Math.floor((lavaFrontHeight - minLavaFrontHeight) / lavaFrontHeightRange * lavaFrontIcons.length);
   const lavaFrontIcon = lavaFrontIcons[Math.max(0, Math.min(iconIndex, lavaFrontIcons.length - 1))];
 
   return (

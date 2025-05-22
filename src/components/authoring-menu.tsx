@@ -4,7 +4,7 @@ import DatGui, { DatBoolean, DatButton, DatSelect, DatFolder, DatNumber } from "
 import Scenarios from "../assets/maps/scenarios.json";
 import { BlocklyAuthoring } from "../assets/blockly-authoring";
 import { IStoreish } from "../stores/stores.js";
-import { LavaMapTypeStrings } from "../stores/ui-store";
+import { LavaMapTypeStrings, uiStore } from "../stores/ui-store";
 import * as strings from "../strings/components/authoring-menu";
 
 import "../css/dat-gui.css";
@@ -137,6 +137,38 @@ const AuthoringMenu: React.FC<IProps> = (props) => {
               label={strings.PULSES_PER_ERUPTION}
               key="pulsesPerEruption"
               min={1}
+              max={100}
+              step={1}
+            />
+            <DatNumber
+              path="uiStore.minEruptionVolumeInKM"
+              label={strings.MIN_ERUPTION_VOLUME}
+              key="minEruptionVolume"
+              min={1}
+              max={uiStore.maxEruptionVolumeInKM}
+              step={10}
+            />
+            <DatNumber
+              path="uiStore.maxEruptionVolumeInKM"
+              label={strings.MAX_ERUPTION_VOLUME}
+              key="maxEruptionVolume"
+              min={uiStore.minEruptionVolumeInKM}
+              max={100000}
+              step={10}
+            />
+            <DatNumber
+              path="uiStore.minLavaFrontHeight"
+              label={strings.MIN_LAVA_FRONT_HEIGHT}
+              key="minLavaFrontHeight"
+              min={1}
+              max={uiStore.maxLavaFrontHeight}
+              step={1}
+            />
+            <DatNumber
+              path="uiStore.maxLavaFrontHeight"
+              label={strings.MAX_LAVA_FRONT_HEIGHT}
+              key="maxLavaFrontHeight"
+              min={uiStore.minLavaFrontHeight}
               max={100}
               step={1}
             />

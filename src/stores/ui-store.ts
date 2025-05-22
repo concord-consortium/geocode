@@ -1,6 +1,8 @@
 import { types } from "mobx-state-tree";
 import { UIAuthorSettings, UIAuthorSettingsProps } from "./stores";
 
+const km3ToM3 = 1000000; // 1 km^3 = 1000000 m^3
+
 export const LavaMapTypes = ["terrain", "terrainWithLabels", "street"] as const;
 export const LavaMapTypeStrings = LavaMapTypes.map((type) => type.toString());
 export type LavaMapType = typeof LavaMapTypes[number];
@@ -52,6 +54,12 @@ const UIStore = types.model("UI", {
   verticalExaggeration: 1,
   // number of hundreds of pulses for each eruption. The actual number of pulses will be 100x this one.
   hundredsOfPulsesPerEruption: 20,
+  // minimum and maximum eruption volume in km^3
+  minEruptionVolumeInKM: 1,
+  maxEruptionVolumeInKM: 10000,
+  // minimum and maximum lava front height in meters
+  minLavaFrontHeight: 2,
+  maxLavaFrontHeight: 50,
   // show the erupted volume widget
   showEruptedVolume: true,
   // show the lava front height (residual) widget
@@ -66,6 +74,12 @@ const UIStore = types.model("UI", {
 .views((self) => ({
   get pulsesPerEruption() {
     return self.hundredsOfPulsesPerEruption * 100;
+  },
+  get minEruptionVolume() {
+    return self.minEruptionVolumeInKM * km3ToM3;
+  },
+  get maxEruptionVolume() {
+    return self.maxEruptionVolumeInKM * km3ToM3;
   }
 }))
 .actions((self) => ({
