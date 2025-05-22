@@ -27,7 +27,7 @@ export function useLavaOverlay(viewer: CesiumWidget | null) {
         renderedExtent = true;
         const elevationLayer = ImageryLayer.fromProviderAsync(
           SingleTileImageryProvider.fromUrl(ElevationDisplay, {
-            rectangle: Rectangle.fromDegrees(minLong, minLat, minLong + 1, minLat + 1)
+            rectangle: Rectangle.fromDegrees(minLong, minLat, maxLong, maxLat)
           })
         );
         if (elevationLayer) {
