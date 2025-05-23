@@ -76,6 +76,8 @@ export const LavaSimulationStore = types
     runSimulation() {
       if (!self.raster) return;
 
+      if (self.worker) self.worker.terminate();
+
       self.worker = new MolassesWorker();
       self.worker.onmessage = (e) => {
         try {
@@ -99,10 +101,6 @@ export const LavaSimulationStore = types
         ventLongitude: self.ventLongitude
       };
       self.worker.postMessage({ type: "start", parameters });
-
-      return () => {
-        self.worker?.terminate();
-      };
     }
   }));
 export const lavaSimulation = LavaSimulationStore.create({});

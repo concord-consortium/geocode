@@ -1,5 +1,5 @@
 import { CesiumWidget, ImageryLayer, Rectangle, SingleTileImageryProvider } from "@cesium/engine";
-import { autorun } from "mobx";
+import { autorun, reaction } from "mobx";
 import { useEffect, useRef } from "react";
 import { lavaElevations, lavaSimulation } from "../../stores/lava-simulation-store";
 import { maxLat, maxLong, minLat, minLong } from "./lava-constants";
@@ -49,5 +49,17 @@ export function useLavaOverlay(viewer: CesiumWidget | null) {
       if (lavaLayerRef.current) viewer.imageryLayers.add(lavaLayerRef.current);
       if (oldLayer) viewer.imageryLayers.remove(oldLayer, true);
     });
+  }, [viewer]);
+
+  // Remove the old lava layers when a new simulation starts (indicated by a new worker)
+  useEffect(() => {
+    return reaction(
+      () => lavaSimulation.worker,
+      () => {
+        if (!viewer) return;
+        if (lavaLayerRef.current) viewer.imageryLayers.remove(lavaLayerRef.current, true);
+        if (oldLavaLayerRef.current) viewer.imageryLayers.remove(oldLavaLayerRef.current, true);
+      }
+    );
   }, [viewer]);
 }
