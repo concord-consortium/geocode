@@ -1,0 +1,26 @@
+.progress-bar {
+  background-color: #eef6ff;
+  bottom: 85px;
+  height: 300px;
+  position: absolute;
+  right: 18px;
+  width: 24px;
+
+  .fill {
+    background-color: #ff8f2e;
+    bottom: 0;
+    position: absolute;
+    transition: height 0.1s ease-in-out;
+    width: 100%;
+  }
+
+  .outline {
+    border: 3px solid #4691ff;
+    border-radius: 8px;
+    height: 100%;
+    left: -3px;
+    position: absolute;
+    top: -3px;
+    width: 100%;
+  }
+}
