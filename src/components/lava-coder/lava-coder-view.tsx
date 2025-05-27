@@ -9,6 +9,7 @@ import ZoomOutIcon from "../../assets/lava-coder/zoom-out-icon.png";
 import { LavaMapType, LavaMapTypes, uiStore } from "../../stores/ui-store";
 import IconButton from "../buttons/icon-button";
 import { kFeetPerMeter } from "./lava-constants";
+import { ProgressBar } from "./progress-bar";
 import { useCameraControls } from "./use-camera-controls";
 import { useCesiumMouseEvents } from "./use-cesium-mouse-events";
 import { useCesiumViewer } from "./use-cesium-viewer";
@@ -21,6 +22,7 @@ import { useWorldImagery } from "./use-world-imagery";
 import { VentLocationPopup } from "./vent-location-popup";
 
 import "./lava-coder-view.scss";
+import { lavaSimulation } from "../../stores/lava-simulation-store";
 
 interface IProps {
   width: number;
@@ -152,6 +154,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
           </IconButton>
         )}
       </div>
+      <ProgressBar pulseCount={lavaSimulation.pulseCount} pulses={uiStore.pulsesPerEruption} />
       <VentLocationPopup viewer={viewer} ventLocation={ventLocation} verticalExaggeration={verticalExaggeration}
                         show={showVentLocationPopup} onClose={handleCloseVentLocationPopup}/>
     </div>

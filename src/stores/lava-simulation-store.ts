@@ -76,7 +76,10 @@ export const LavaSimulationStore = types
     runSimulation() {
       if (!self.raster) return;
 
-      if (self.worker) self.worker.terminate();
+      if (self.worker) {
+        self.setPulseCount(0);
+        self.worker.terminate();
+      }
 
       self.worker = new MolassesWorker();
       self.worker.onmessage = (e) => {
