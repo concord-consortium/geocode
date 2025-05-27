@@ -1,6 +1,6 @@
 // Based on the molasses algorithm https://github.com/geoscience-community-codes/MOLASSES
 
-import { minLat, minLong, rangeLat, rangeLong } from "./lava-constants";
+import { maxLat, minLat, minLong, rangeLat, rangeLong } from "./lava-constants";
 import { AsciiRaster } from "./parse-ascii-raster";
 
 const millisecondsPerFrame = 200;
@@ -87,18 +87,6 @@ function getLowerNeighbors(cell: GridCell, grid: GridCell[][]) {
   return neighbors;
 }
 
-function getLavaElevationGrid(grid: GridCell[][]) {
-  const lavaElevationGrid: number[][] = [];
-  grid.forEach(row => {
-    const lavaRow: number[] = [];
-    row.forEach(cell => {
-      lavaRow.push(cell.lavaElevation);
-    });
-    lavaElevationGrid.push(lavaRow);
-  });
-  return lavaElevationGrid;
-}
-
 export interface LavaSimulationParameters {
   postMessage: (message: any) => void;
   pulseVolume: number;
@@ -121,9 +109,41 @@ export async function runSimulation({
   const ventCell = grid[ventY][ventX];
   const cellArea = raster.header.cellsize ** 2;
   let currentTotalVolume = totalVolume;
+  // The range of the rectangle containing active cells.
+  // Note that north is lower than south in the grid.
+  const lavaRange = {
+    east: -Infinity,
+    north: Infinity,
+    south: -Infinity,
+    west: Infinity
+  };
+
+  function getLavaElevationGrid() {
+    const lavaElevationGrid: number[][] = [];
+    for (let y = lavaRange.north; y <= lavaRange.south; y++) {
+      if (y < 0 || y >= grid.length) continue; // Skip rows outside the grid bounds
+      const lavaRow: number[] = [];
+      for (let x = lavaRange.west; x <= lavaRange.east; x++) {
+        if (x < 0 || x >= grid[y].length) continue; // Skip columns outside the grid bounds
+        lavaRow.push(grid[y][x].lavaElevation);
+      }
+      lavaElevationGrid.push(lavaRow);
+    }
+    return lavaElevationGrid;
+  }
 
   const sendUpdateMessage = () => {
-    postMessage({ status: "updatedGrid", grid: getLavaElevationGrid(grid), pulseCount });
+    postMessage({
+      status: "updatedGrid",
+      grid: getLavaElevationGrid(),
+      pulseCount,
+      gridBounds: {
+        east: (lavaRange.east + 1) / grid[0].length * rangeLong + minLong,
+        north: maxLat - (lavaRange.north) / grid.length * rangeLat,
+        south: maxLat - (lavaRange.south + 1) / grid.length * rangeLat,
+        west: (lavaRange.west) / grid[0].length * rangeLong + minLong
+      }
+    });
   };
 
   let lastFrameTime = Date.now();
@@ -163,6 +183,10 @@ export async function runSimulation({
 
               if (!visitedCells.has(neighbor) && neighbor.lavaElevation > residual) {
                 activeCells.push(neighbor);
+                lavaRange.east = Math.max(lavaRange.east, neighbor.x);
+                lavaRange.north = Math.min(lavaRange.north, neighbor.y);
+                lavaRange.south = Math.max(lavaRange.south, neighbor.y);
+                lavaRange.west = Math.min(lavaRange.west, neighbor.x);
               }
             });
           }
