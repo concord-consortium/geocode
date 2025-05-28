@@ -8,12 +8,15 @@ export type CameraMode = "pitch" | "heading" | "panning";
 
 export const kDefaultCameraMode = "panning";
 
-const kDefaultXLng = -155.470;
-const kDefaultYLat = 19.150;
-const kMinCameraPitch = CSMath.toRadians(-89); // -90 degrees pitch leads to discontinuity Cesium
+const kInitialLookAtLng = -155.5;
+const kInitialLookAtLat = 19.40;
+const kInitialCameraHeading = CSMath.toRadians(0.0); // looking north
+const kMinCameraPitch = CSMath.toRadians(-89); // -90 degrees pitch leads to discontinuity in Cesium
+const kInitialCameraPitch = CSMath.toRadians(-50.0); // pitch down
 const kMaxCameraPitch = CSMath.toRadians(-15); // -15 degrees pitch is a reasonable limit for viewing the terrain
 const kMinDistanceAboveTerrain = 1000;
-const kMaxDistanceAboveTerrain = 135000;
+const kInitialCameraRange = 130000;
+const kMaxDistanceAboveTerrain = 140000;
 
 function getAngleFromCenter(pos: Cartesian2, center: Cartesian2) {
   return Math.atan2(pos.y - center.y, pos.x - center.x);
@@ -118,15 +121,10 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
       const camera = viewer.camera;
 
       // Fly the camera to Hawaii at the initial longitude, latitude, and height when the simulation first loads.
-      camera.flyTo({
-        destination: Cartesian3.fromDegrees(kDefaultXLng, kDefaultYLat, kMaxDistanceAboveTerrain),
-        orientation: {
-          heading: CSMath.toRadians(0.0),
-          pitch: CSMath.toRadians(-75.0),
-        },
-        // move instantaneously to the destination
-        easingFunction: () => 1
-      });
+      camera.lookAt(
+        Cartesian3.fromDegrees(kInitialLookAtLng, kInitialLookAtLat),
+        new HeadingPitchRange(kInitialCameraHeading, kInitialCameraPitch, kInitialCameraRange)
+      );
 
       // Disable the default camera controls
       viewer.scene.screenSpaceCameraController.enableLook = false;
