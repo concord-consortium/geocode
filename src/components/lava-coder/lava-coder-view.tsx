@@ -11,7 +11,7 @@ import ZoomOutIcon from "../../assets/lava-coder/zoom-out-icon.png";
 import { LavaMapType, LavaMapTypes, uiStore } from "../../stores/ui-store";
 import { kFeetPerMeter } from "./lava-constants";
 import { LavaIconButton } from "./lava-icon-button";
-import { kDefaultCameraMode, useCameraControls } from "./use-camera-controls";
+import { CameraMode, kDefaultCameraMode, useCameraControls } from "./use-camera-controls";
 import { useCesiumMouseEvents } from "./use-cesium-mouse-events";
 import { useCesiumViewer } from "./use-cesium-viewer";
 import { useElevationData } from "./use-elevation-data";
@@ -100,7 +100,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
 
   useCesiumMouseEvents(viewer, handleMouseMove, handleClick);
 
-  function toggleCameraMode(mode: "heading" | "pitch" | "panning") {
+  function toggleCameraMode(mode: CameraMode) {
     setCameraMode(prev => prev === mode ? kDefaultCameraMode : mode);
   }
 

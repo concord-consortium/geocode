@@ -4,10 +4,14 @@ import {
 import { useCallback, useEffect, useState } from "react";
 import { IOnDragArgs, useCesiumDragEvents } from "./use-cesium-drag-events";
 
+export type CameraMode = "pitch" | "heading" | "panning";
+
 export const kDefaultCameraMode = "panning";
 
 const kDefaultXLng = -155.470;
 const kDefaultYLat = 19.150;
+const kMinCameraPitch = CSMath.toRadians(-89); // -90 degrees pitch leads to discontinuity Cesium
+const kMaxCameraPitch = CSMath.toRadians(-15); // -15 degrees pitch is a reasonable limit for viewing the terrain
 const kMinDistanceAboveTerrain = 1000;
 const kMaxDistanceAboveTerrain = 135000;
 
@@ -17,7 +21,7 @@ function getAngleFromCenter(pos: Cartesian2, center: Cartesian2) {
 
 export function useCameraControls(viewer: CesiumWidget | null, verticalExaggeration: number) {
 
-  const [cameraMode, setCameraMode] = useState<"pitch" | "heading" | "panning">(kDefaultCameraMode);
+  const [cameraMode, setCameraMode] = useState<CameraMode>(kDefaultCameraMode);
 
   const handlePan = useCallback(({ dx, dy }: IOnDragArgs) => {
     if (!viewer) return;
@@ -25,10 +29,10 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
     const { camera } = viewer;
 
     // Adjust the sensitivity as needed
-    const panFactor = 0.5;
+    const panFactor = 1 / 1000;
 
     // Pan the camera: moveRight and moveUp are in meters, so you may want to scale by camera height
-    const moveRate = camera.positionCartographic.height / 500 * panFactor;
+    const moveRate = camera.positionCartographic.height * panFactor;
     camera.moveRight(-dx * moveRate);
     camera.moveUp(dy * moveRate);
   }, [viewer]);
@@ -61,18 +65,17 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
     camera.lookAt(target, new HeadingPitchRange(
       initialHeading,
       // -89 to avoid discontinuity at -90 degrees pitch
-      CSMath.clamp(initialPitch - dyTotal * pitchFactor, CSMath.toRadians(-89), CSMath.toRadians(-15)),
+      CSMath.clamp(initialPitch - dyTotal * pitchFactor, kMinCameraPitch, kMaxCameraPitch),
       initialRange
     ));
   }, [viewer]);
 
-  const handleDrag = cameraMode === "panning"
-                      ? handlePan
-                      : cameraMode === "heading"
-                        ? handleRotateHeading
-                        : cameraMode === "pitch"
-                          ? handleRotatePitch
-                          : undefined;
+  const dragHandlers: Record<CameraMode, (args: IOnDragArgs) => void> = {
+    panning: handlePan,
+    heading: handleRotateHeading,
+    pitch: handleRotatePitch
+  };
+  const handleDrag = dragHandlers[cameraMode];
 
   useCesiumDragEvents(viewer, handleDrag);
 

@@ -1,7 +1,6 @@
 import IconButton, { IProps as IIconButtonProps } from "../buttons/icon-button";
 
 interface IProps extends Partial<IIconButtonProps> {
-  isActive?: boolean;
 }
 
 export function LavaIconButton(inProps: IProps) {
