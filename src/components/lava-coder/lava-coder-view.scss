@@ -20,7 +20,11 @@
     width: 36px;
     height: 650px;
 
-    .zoom-in-button, .zoom-out-button {
+    .rotate-pan-controls {
+      margin-top: 10px;
+    }
+
+    .lava-icon-button {
       display: block;
       width: 100%;
       min-width: 100% !important;
@@ -29,6 +33,12 @@
       img {
         margin-top: -2px;
         margin-left: -2px;
+      }
+    }
+
+    .rotate-pitch-button {
+      img {
+        transform: rotate(90deg);
       }
     }
   }
@@ -43,12 +53,12 @@
 
     &.bottom-left-controls {
       left: 10px;
-      width: 136px;
+      width: 144px;
     }
 
     &.bottom-right-controls {
       right: 10px;
-      width: 220px;
+      width: 200px;
     }
 
     img {

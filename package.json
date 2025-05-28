@@ -159,6 +159,7 @@
     "@cesium/engine": "^17.0.0",
     "@concord-consortium/lara-interactive-api": "^1.9.4",
     "@pixi/react": "^7.1.2",
+    "clsx": "^2.1.1",
     "color": "^4.2.3",
     "d3": "^7.9.0",
     "deepmerge": "^4.3.1",

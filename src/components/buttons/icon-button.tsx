@@ -1,3 +1,4 @@
+import { clsx } from "clsx";
 import React, { PureComponent } from "react";
 import styled from "styled-components";
 import { Icon } from "../icon";
@@ -24,7 +25,7 @@ const IconButtonContainer = styled.div`
   &:hover {
     background-color: ${(p: IconButtonContainerProps) => p.hoverColor};
   }
-  &:active {
+  &:active, &.active {
     background-color: ${(p: IconButtonContainerProps) => p.activeColor};
   }
   font-size: ${(p: IconButtonContainerProps) => p.fontSize || "16px"};
@@ -38,11 +39,12 @@ const IconButtonText = styled.div`
   opacity: ${(p: {disabled?: boolean}) => p.disabled ? ".25" : "1"};
 `;
 
-interface IProps {
+export interface IProps {
   className?: string;
   onClick: any;
   children?: React.ReactNode;
   disabled: any;
+  isActive?: boolean;
   label: string;
   backgroundColor?: string;
   borderColor?: string;
@@ -62,6 +64,7 @@ export default class IconButton extends PureComponent<IProps, IState> {
     className: undefined,
     onClick: undefined,
     disabled: undefined,
+    isActive: undefined,
     label: undefined,
     backgroundColor: undefined,
     borderColor: undefined,
@@ -78,7 +81,7 @@ export default class IconButton extends PureComponent<IProps, IState> {
             borderColor, fontSize, fill, width, height, dataTest } = this.props;
     return (
       <IconButtonContainer
-        className={className}
+        className={clsx(className, { active: this.props.isActive })}
         onClick={onClick}
         backgroundColor={backgroundColor}
         borderColor={borderColor}
