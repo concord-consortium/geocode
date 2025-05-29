@@ -26,6 +26,16 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
 
   const [cameraMode, setCameraMode] = useState<CameraMode>(kDefaultCameraMode);
 
+  const setDefaultCameraView = useCallback(() => {
+    if (!viewer) return;
+
+    const { camera } = viewer;
+    camera.lookAt(
+      Cartesian3.fromDegrees(kInitialLookAtLng, kInitialLookAtLat),
+      new HeadingPitchRange(kInitialCameraHeading, kInitialCameraPitch, kInitialCameraRange)
+    );
+  }, [viewer]);
+
   const handlePan = useCallback(({ dx, dy }: IOnDragArgs) => {
     if (!viewer) return;
 
@@ -118,13 +128,8 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
 
   useEffect(() => {
     if (viewer) {
-      const camera = viewer.camera;
-
-      // Fly the camera to Hawaii at the initial longitude, latitude, and height when the simulation first loads.
-      camera.lookAt(
-        Cartesian3.fromDegrees(kInitialLookAtLng, kInitialLookAtLat),
-        new HeadingPitchRange(kInitialCameraHeading, kInitialCameraPitch, kInitialCameraRange)
-      );
+      // Set the initial camera view
+      setDefaultCameraView();
 
       // Disable the default camera controls
       viewer.scene.screenSpaceCameraController.enableLook = false;
@@ -133,7 +138,7 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
       viewer.scene.screenSpaceCameraController.enableTranslate = false;
       viewer.scene.screenSpaceCameraController.enableZoom = false;
     }
-  }, [viewer]);
+  }, [setDefaultCameraView, viewer]);
 
-  return { cameraMode, setCameraMode, zoomIn, zoomOut };
+  return { cameraMode, setCameraMode, setDefaultCameraView, zoomIn, zoomOut };
 }
