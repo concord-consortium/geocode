@@ -8,7 +8,7 @@ import "@cesium/engine/Source/Widget/CesiumWidget.css";
 
 Ion.defaultAccessToken = process.env.CESIUM_ION_ACCESS_TOKEN;
 
-export function useCesiumViewer(container: Element | null, mapType: LavaMapType) {
+export function useCesiumViewer(container: Element | null, initialMapType: LavaMapType) {
   const viewer = useRef<CesiumWidget | null>(null);
   const [ , forceRefresh] = useState(false);
   const { createBaseLayer } = useWorldImagery();
@@ -17,11 +17,11 @@ export function useCesiumViewer(container: Element | null, mapType: LavaMapType)
 
   useEffect(() => {
     if (!baseLayer) {
-      createBaseLayer(mapType).then(layer => {
+      createBaseLayer(initialMapType).then(layer => {
         setBaseLayer(layer);
       });
     }
-  }, [baseLayer, createBaseLayer, mapType]);
+  }, [baseLayer, createBaseLayer, initialMapType]);
 
   useEffect(() => {
     if (!viewer.current && container && baseLayer && terrainProvider) {

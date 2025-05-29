@@ -11,7 +11,8 @@ function getImageryProvider(type: LavaMapType): Promise<ImageryProvider> {
   if (!imageryProviders[type]) {
     if (type === "develop") {
       // Use lower-resolution imagery for development
-      imageryProviders[type] = IonImageryProvider.fromAssetId(3954); // Sentinel-2 imagery
+      const SENTINEL_2_IMAGERY_ASSET_ID = 3954;
+      imageryProviders[type] = IonImageryProvider.fromAssetId(SENTINEL_2_IMAGERY_ASSET_ID);
     }
     else if (type === "street") {
       imageryProviders[type] = Promise.resolve(new OpenStreetMapImageryProvider({}));
