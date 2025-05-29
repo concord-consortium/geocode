@@ -20,6 +20,18 @@
     width: 36px;
     height: 650px;
 
+    .compass-heading-indicator {
+      background: white;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 2px solid #ccc;
+    }
+
+    .home-view-controls {
+      margin-top: 50px;
+    }
+
     .rotate-pan-controls, .zoom-controls {
       margin-top: 10px;
     }
