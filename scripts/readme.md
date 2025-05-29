@@ -4,7 +4,15 @@ The molasses volcano simulation requires an elevation map of the region that mig
 
 ## 1. Get raw geotiffs
 
-Download the geotiffs that cover the region you care about. Geotiffs can be found here: ***Find URL***
+Download the geotiffs that cover the region you care about. Geotiffs can be found here: [https://earthexplorer.usgs.gov/](https://earthexplorer.usgs.gov/)
+
+Here are instructions from ChatGPT which aren't perfect but are a good starting point:
+1. Search for the region: Use the map or coordinates to zoom into the Big Island.
+2. Under Data Sets, choose:
+  - Digital Elevation > SRTM, or
+  - 3DEP 1-meter DEM (Lidar-derived, higher resolution)
+3. Select the tiles that cover the island.
+4. Download in GeoTIFF format (default).
 
 ## 2. Convert geotiffs to asc files
 

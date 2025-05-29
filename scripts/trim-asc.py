@@ -1,3 +1,8 @@
+# Written by ChatGPT
+# This script removes blocks of ocean from the edges of a map.
+# A single row or column of zeros is retained at each edge.
+# xllcorner and yllcorner are adjusted correctly.
+
 import sys
 
 def trim_asc_file(input_path, output_path):

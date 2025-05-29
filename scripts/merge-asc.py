@@ -1,3 +1,9 @@
+# Written by ChatGPT
+# This script combines multiple ASC files into a single ASC file.
+# The position of each file is determined by its xllcorner and yllcorner values.
+# It assumes that all files have the same number of columns and rows and have the same cell size.
+# Any blank areas of the complete map are filled with zeros.
+
 import sys
 
 def parse_header_and_data(path):
@@ -24,8 +30,6 @@ def stitch_asc_files(input_paths, output_path):
     y_coords = [f[0]['yllcorner'] for f in files]
     width = files[0][0]['ncols'] # Assume all files have the same width
     height = files[0][0]['nrows'] # Assume all files have the same height
-    # widths = [f[0]['ncols'] for f in files]
-    # heights = [f[0]['nrows'] for f in files]
 
     x_min = min(x_coords)
     y_min = min(y_coords)
@@ -33,13 +37,9 @@ def stitch_asc_files(input_paths, output_path):
     y_max = max(y_coords)
     x_range = x_max - x_min
     y_range = y_max - y_min
-    # x_max = max(x + w * cellsize for x, w in zip(x_coords, widths))
-    # y_max = max(y + h * cellsize for y, h in zip(y_coords, heights))
 
     ncols = (x_range + 1) * width
     nrows = (y_range + 1) * height
-    # ncols = int(round((x_max - x_min) / cellsize))
-    # nrows = int(round((y_max - y_min) / cellsize))
 
     # Initialize blank grid filled with zeros
     merged = [[0.0 for _ in range(ncols)] for _ in range(nrows)]
@@ -48,8 +48,6 @@ def stitch_asc_files(input_paths, output_path):
         print(f"Filling in section at {header['xllcorner']}, {header['yllcorner']}")
         dx = (header['xllcorner'] - x_min) * width
         dy = (y_max - header['yllcorner']) * height
-        # dx = int(round((header['xllcorner'] - x_min) / cellsize))
-        # dy = int(round((y_max - header['yllcorner'] - header['nrows'] * cellsize) / cellsize))
         for row_index, row in enumerate(data):
             for col_index, value in enumerate(row):
                 merged[dy + row_index][dx + col_index] = value
