@@ -1,15 +1,20 @@
 import { observer } from "mobx-react";
 import { useCallback, useState } from "react";
-import VentLocationMarkerIcon from "../../assets/lava-coder/location-marker.png";
+import HomeViewIcon from "../../assets/lava-coder/return-to-home-view-icon.png";
 import MapStreetIcon from "../../assets/lava-coder/map-street-icon.png";
 import MapTerrainIcon from "../../assets/lava-coder/map-terrain-icon.png";
+import MoveIcon from "../../assets/lava-coder/move-icon.png";
 import PlaceVentMarkerIcon from "../../assets/lava-coder/place-vent-marker-icon.png";
+import RotateIcon from "../../assets/lava-coder/rotate-icon.png";
+import VentLocationMarkerIcon from "../../assets/lava-coder/location-marker.png";
 import ZoomInIcon from "../../assets/lava-coder/zoom-in-icon.png";
 import ZoomOutIcon from "../../assets/lava-coder/zoom-out-icon.png";
 import { LavaMapType, LavaMapTypes, uiStore } from "../../stores/ui-store";
-import IconButton from "../buttons/icon-button";
+import { CompassHeading } from "./compass-heading";
+import { ConcordAttribution } from "./concord-attribution";
 import { kFeetPerMeter } from "./lava-constants";
-import { useCameraControls } from "./use-camera-controls";
+import { LavaIconButton } from "./lava-icon-button";
+import { CameraMode, kDefaultCameraMode, useCameraControls } from "./use-camera-controls";
 import { useCesiumMouseEvents } from "./use-cesium-mouse-events";
 import { useCesiumViewer } from "./use-cesium-viewer";
 import { useElevationData } from "./use-elevation-data";
@@ -47,7 +52,8 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
 
   const viewer = useCesiumViewer(lavaCoderElt);
 
-  const { zoomIn, zoomOut } = useCameraControls(viewer, verticalExaggeration);
+  const { cameraMode, setCameraMode, setDefaultCameraView, zoomIn, zoomOut } =
+    useCameraControls(viewer, verticalExaggeration);
 
   useWorldImagery(viewer, mapType);
 
@@ -98,6 +104,10 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
 
   useCesiumMouseEvents(viewer, handleMouseMove, handleClick);
 
+  function toggleCameraMode(mode: CameraMode) {
+    setCameraMode(prev => prev === mode ? kDefaultCameraMode : mode);
+  }
+
   function toggleMapType() {
     const availableMapTypes = LavaMapTypes.filter(type => {
       if (type === "terrain" && !showMapTypeTerrain) return false;
@@ -114,9 +124,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
     setIsPlaceVentMode(prev => !prev);
   }
 
-  // place hot spot for vent location cursor at point of marker
   const containerStyle: React.CSSProperties = { width, height, margin, cursor };
-  const borderColor = "#3baa1d";
 
   const mapButtonIcon = mapType === "street" ? MapStreetIcon : MapTerrainIcon;
   const mapButtonLabel = `Map Type: ${mapLabels[mapType]}`;
@@ -125,33 +133,52 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
     <div className="lava-coder-view" style={containerStyle}>
       <div ref={elt => setLavaCoderElt(elt)} className="lava-coder-simulation" />
       <div className="lava-overlay-controls-left">
+        <div className="compass-heading-indicator">
+          <CompassHeading viewer={viewer} />
+        </div>
+        <div className="home-view-controls">
+          <LavaIconButton className="lava-icon-button home-view-button" onClick={() => setDefaultCameraView()}>
+            <img src={HomeViewIcon} alt="Home View" />
+          </LavaIconButton>
+        </div>
         <div className="zoom-controls">
-          <IconButton className="zoom-in-button" width={34} height={34}
-                      borderColor={borderColor} onClick={() => zoomIn()}>
+          <LavaIconButton className="lava-icon-button zoom-in-button" onClick={() => zoomIn()}>
             <img src={ZoomInIcon} alt="Zoom In" />
-          </IconButton>
-          <IconButton className="zoom-out-button" width={34} height={34}
-                      borderColor={borderColor} onClick={() => zoomOut()}>
+          </LavaIconButton>
+          <LavaIconButton className="lava-icon-button zoom-out-button" onClick={() => zoomOut()}>
             <img src={ZoomOutIcon} alt="Zoom Out" />
-          </IconButton>
+          </LavaIconButton>
+        </div>
+        <div className="rotate-pan-controls">
+          <LavaIconButton className="lava-icon-button rotate-pitch-button" isActive={cameraMode === "pitch"}
+                          onClick={() => toggleCameraMode("pitch")}>
+            <img src={RotateIcon} alt="Enable Camera Pitch Rotation" />
+          </LavaIconButton>
+          <LavaIconButton className="lava-icon-button rotate-heading-button" isActive={cameraMode === "heading"}
+                          onClick={() => toggleCameraMode("heading")}>
+            <img src={RotateIcon} alt="Enable Camera Heading Rotation" />
+          </LavaIconButton>
+          <LavaIconButton className="lava-icon-button panning-mode-button" isActive={cameraMode === "panning"}
+                          onClick={() => toggleCameraMode("panning")}>
+            <img src={MoveIcon} alt="Enable Camera Panning" />
+          </LavaIconButton>
         </div>
       </div>
       <div className="lava-overlay-controls-bottom bottom-left-controls">
         {showPlaceVent && (
-          <IconButton className="place-vent-button" label={"Place Vent"}
-                      borderColor={borderColor} onClick={() => togglePlaceVentMode()}>
+          <LavaIconButton className="place-vent-button" label={"Place Vent"} onClick={() => togglePlaceVentMode()}>
             <img src={PlaceVentMarkerIcon} alt="Place Vent" />
-          </IconButton>
+          </LavaIconButton>
         )}
       </div>
       <div className="lava-overlay-controls-bottom bottom-right-controls">
         {showMapType && (
-          <IconButton className="map-type-button" label={mapButtonLabel}
-                      borderColor={borderColor} onClick={() => toggleMapType()}>
+          <LavaIconButton className="map-type-button" label={mapButtonLabel} onClick={() => toggleMapType()}>
             <img src={mapButtonIcon} alt="Map Type" />
-          </IconButton>
+          </LavaIconButton>
         )}
       </div>
+      <ConcordAttribution />
       <VentLocationPopup viewer={viewer} ventLocation={ventLocation} verticalExaggeration={verticalExaggeration}
                         show={showVentLocationPopup} onClose={handleCloseVentLocationPopup}/>
     </div>
