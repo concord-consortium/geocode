@@ -6,6 +6,7 @@ import MapTerrainIcon from "../../assets/lava-coder/map-terrain-icon.png";
 import MoveIcon from "../../assets/lava-coder/move-icon.png";
 import PlaceVentMarkerIcon from "../../assets/lava-coder/place-vent-marker-icon.png";
 import RotateIcon from "../../assets/lava-coder/rotate-icon.png";
+import VentKeyIcon from "../../assets/lava-coder/key-icon@3x.png";
 import VentLocationMarkerIcon from "../../assets/lava-coder/location-marker.png";
 import ZoomInIcon from "../../assets/lava-coder/zoom-in-icon.png";
 import ZoomOutIcon from "../../assets/lava-coder/zoom-out-icon.png";
@@ -49,6 +50,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
   };
   const [isPlaceVentMode, setIsPlaceVentMode] = useState(false);
   const [showVentLocationPopup, setShowVentLocationPopup] = useState(false);
+  const [showVentKey, setShowVentKey] = useState(false);
   const [cursor, setCursor] = useState("auto");
 
   const viewer = useCesiumViewer(lavaCoderElt, mapType);
@@ -167,6 +169,14 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
           </LavaIconButton>
         </div>
       </div>
+      { isPlaceVentMode && (
+        <div className="lava-overlay-controls-top top-right-controls">
+          <LavaIconButton className="show-vent-key-button" label="Key" width={24}
+                          onClick={() => setShowVentKey(prev => !prev)}>
+            <img src={VentKeyIcon} alt="Show Vent Key" className="vent-key-icon" />
+          </LavaIconButton>
+        </div>
+      )}
       <div className="lava-overlay-controls-bottom bottom-left-controls">
         {showPlaceVent && (
           <LavaIconButton className="place-vent-button" label={"Place Vent"} onClick={() => togglePlaceVentMode()}>
