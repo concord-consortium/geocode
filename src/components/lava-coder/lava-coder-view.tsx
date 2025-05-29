@@ -42,6 +42,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
   } = uiStore;
   const [lavaCoderElt, setLavaCoderElt] = useState<HTMLDivElement | null>(null);
   const mapLabels: Record<LavaMapType, string> = {
+    develop: "Develop",
     terrain: "Terrain",
     terrainWithLabels: "Labeled",
     street: "Street"
@@ -50,12 +51,12 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
   const [showVentLocationPopup, setShowVentLocationPopup] = useState(false);
   const [cursor, setCursor] = useState("auto");
 
-  const viewer = useCesiumViewer(lavaCoderElt);
+  const viewer = useCesiumViewer(lavaCoderElt, mapType);
 
   const { cameraMode, setCameraMode, setDefaultCameraView, zoomIn, zoomOut } =
     useCameraControls(viewer, verticalExaggeration);
 
-  useWorldImagery(viewer, mapType);
+  const { replaceBaseLayer } = useWorldImagery();
 
   useVerticalExaggeration(viewer, verticalExaggeration);
 
@@ -110,6 +111,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
 
   function toggleMapType() {
     const availableMapTypes = LavaMapTypes.filter(type => {
+      if (type === "develop") return false; // development map type is not available via toggle
       if (type === "terrain" && !showMapTypeTerrain) return false;
       if (type === "terrainWithLabels" && !showMapTypeLabeledTerrain) return false;
       if (type === "street" && !showMapTypeStreet) return false;
@@ -118,6 +120,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
     const currMapIndex = availableMapTypes.indexOf(mapType);
     const nextMapType = availableMapTypes[(currMapIndex + 1) % availableMapTypes.length];
     uiStore.setMapType(nextMapType);
+    replaceBaseLayer(viewer, nextMapType);
   }
 
   function togglePlaceVentMode() {
