@@ -11,13 +11,13 @@ export const defaultVentLatitude = 19.5;
 export const defaultVentLongitude = -155.565;
 
 // Bounds of the elevation map in latitude and longitude
-// Larger map from Leslie
+// Larger map comprised of multiple maps from Leslie
 export let minLong = -156;
-export let rangeLong = 1;
-export let maxLong = minLong + rangeLong;
-export let minLat = 19;
-export let rangeLat = 1;
-export let maxLat = minLat + rangeLat;
+export let maxLong = -154.80533185226327;
+export let rangeLong = maxLong - minLong;
+export let minLat = 18.90863649;
+export let maxLat = 20.26825881713135;
+export let rangeLat = maxLat - minLat;
 // Smaller map from Lis
 if (!useLargeMap) {
   maxLong = -155.008440;
