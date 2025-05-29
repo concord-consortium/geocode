@@ -17,13 +17,17 @@ export function VentKey() {
           onClick={() => setDisplayKey(true)}
           width={27}
         >
-          <img src={VentKeyIcon} alt="Show Vent Key" className="vent-key-icon" />
+          <img src={VentKeyIcon} alt="Show Key" className="vent-key-icon" />
         </LavaIconButton>
       )}
 
       {displayKey && (
         <>
-          <button className="close-button" onClick={() => setDisplayKey(false)}>
+          <button
+            aria-label="Close Key"
+            className="close-button"
+            onClick={() => setDisplayKey(false)}
+          >
             <img src={CloseIcon} alt="Close Key" className="close-icon" />
           </button>
           <div className="vent-key">
