@@ -1,0 +1,46 @@
+.vent-key-container {
+  align-items: center;
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+  font-size: 16px;
+  height: 116px;
+  justify-content: space-evenly;
+  position: absolute;
+  right: 10px;
+  top: 11px;
+  width: 134px;
+
+  .description {
+    display: flex;
+    flex-direction: column;
+    
+    .description-line {
+      text-align: center;
+    }
+  }
+
+  .item {
+    display: flex;
+    justify-content: start;
+    width: 100%;
+
+    .item-box {
+      border: solid 1px #757575;
+      height: 20px;
+      margin-left: 14px;
+      margin-right: 8px;
+      width: 25px;
+
+      &.likely {
+        background-color: rgba(0, 228, 208, 0.75);
+      }
+
+      &.very-likely {
+        background-color: rgba(253, 255, 0, 0.75);
+      }
+    }
+  }
+}
