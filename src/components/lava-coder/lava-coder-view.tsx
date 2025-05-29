@@ -1,11 +1,12 @@
 import { observer } from "mobx-react";
 import { useCallback, useState } from "react";
-import VentLocationMarkerIcon from "../../assets/lava-coder/location-marker.png";
+import HomeViewIcon from "../../assets/lava-coder/return-to-home-view-icon.png";
 import MapStreetIcon from "../../assets/lava-coder/map-street-icon.png";
 import MapTerrainIcon from "../../assets/lava-coder/map-terrain-icon.png";
 import MoveIcon from "../../assets/lava-coder/move-icon.png";
 import PlaceVentMarkerIcon from "../../assets/lava-coder/place-vent-marker-icon.png";
 import RotateIcon from "../../assets/lava-coder/rotate-icon.png";
+import VentLocationMarkerIcon from "../../assets/lava-coder/location-marker.png";
 import ZoomInIcon from "../../assets/lava-coder/zoom-in-icon.png";
 import ZoomOutIcon from "../../assets/lava-coder/zoom-out-icon.png";
 import { LavaMapType, LavaMapTypes, uiStore } from "../../stores/ui-store";
@@ -49,7 +50,8 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
 
   const viewer = useCesiumViewer(lavaCoderElt);
 
-  const { cameraMode, setCameraMode, zoomIn, zoomOut } = useCameraControls(viewer, verticalExaggeration);
+  const { cameraMode, setCameraMode, setDefaultCameraView, zoomIn, zoomOut } =
+    useCameraControls(viewer, verticalExaggeration);
 
   useWorldImagery(viewer, mapType);
 
@@ -129,6 +131,11 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
     <div className="lava-coder-view" style={containerStyle}>
       <div ref={elt => setLavaCoderElt(elt)} className="lava-coder-simulation" />
       <div className="lava-overlay-controls-left">
+        <div className="home-view-controls">
+          <LavaIconButton className="lava-icon-button home-view-button" onClick={() => setDefaultCameraView()}>
+            <img src={HomeViewIcon} alt="Home View" />
+          </LavaIconButton>
+        </div>
         <div className="zoom-controls">
           <LavaIconButton className="lava-icon-button zoom-in-button" onClick={() => zoomIn()}>
             <img src={ZoomInIcon} alt="Zoom In" />
