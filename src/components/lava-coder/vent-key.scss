@@ -5,11 +5,11 @@
 
   .show-vent-key-button {
     justify-content: space-between;
+    min-width: 70px;
 
     .vent-key-icon {
       height: 26px;
       margin-top: 4px;
-      margin-right: -10px;
       width: 26px;
     }
   }

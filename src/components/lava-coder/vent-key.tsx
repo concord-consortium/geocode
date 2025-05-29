@@ -11,8 +11,12 @@ export function VentKey() {
   return (
     <div className="vent-key-container">
       {!displayKey && (
-        <LavaIconButton className="show-vent-key-button" label="Key" width={24}
-                        onClick={() => setDisplayKey(true)}>
+        <LavaIconButton
+          className="show-vent-key-button"
+          label="Key"
+          onClick={() => setDisplayKey(true)}
+          width={27}
+        >
           <img src={VentKeyIcon} alt="Show Vent Key" className="vent-key-icon" />
         </LavaIconButton>
       )}
