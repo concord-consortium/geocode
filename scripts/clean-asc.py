@@ -10,8 +10,8 @@ import sys
 def parse_coords_from_filename(filename):
     base = os.path.basename(filename).lower()
     parts = base.split('_')
-    north = next(p for p in parts if p.startswith('n'))
-    west = next(p for p in parts if p.startswith('w'))
+    north = next((p for p in parts if p.startswith('n')), 0)
+    west = next((p for p in parts if p.startswith('w')), 0)
     yllcorner = int(north[1:])
     xllcorner = -int(west[1:])
     return xllcorner, yllcorner

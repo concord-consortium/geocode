@@ -31,7 +31,7 @@ I wasn't able to convert geotiff files to asc locally. I believe it's necessary 
 ChatGPT will convert the files to asc, but it often makes mistakes. This script fixes several common problems:
 - Sets sea level to 0 - For some reason, sea level seems to be 32768 in these files, and a few cells have values below this. `clean-asc.py` sets all values of 32768 or lower to 0, and adjusts other values as well.
 - Sets correct xllcorner and yllcorner - The correct values are taken from the file name, which are usually like `n19_w156_1arc_v3.asc`. This step might not work for maps in the southern or eastern hemisphere, or if the file name does not follow this format.
-- Setes cellsize to 30 - This is hard coded and may not be correct for all maps.
+- Sets cellsize to 30 - This is hard coded and may not be correct for all maps.
 
 Run this script on all map files needed for the complete map.
 

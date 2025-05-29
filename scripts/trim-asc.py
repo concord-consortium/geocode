@@ -5,6 +5,8 @@
 
 import sys
 
+coordinate_scale = 1 / 108030
+
 def trim_asc_file(input_path, output_path):
     with open(input_path, 'r') as f:
         lines = f.readlines()
@@ -55,8 +57,8 @@ def trim_asc_file(input_path, output_path):
     # Update coordinates
     header["nrows"] = new_nrows
     header["ncols"] = new_ncols
-    header["xllcorner"] += (left * cellsize / 108030)
-    header["yllcorner"] += ((original_nrows - bottom) * cellsize / 108030)
+    header["xllcorner"] += left * cellsize * coordinate_scale
+    header["yllcorner"] += (original_nrows - bottom) * cellsize * coordinate_scale
 
     # Write new ASC file
     with open(output_path, "w") as f:
