@@ -10,6 +10,7 @@ import VentLocationMarkerIcon from "../../assets/lava-coder/location-marker.png"
 import ZoomInIcon from "../../assets/lava-coder/zoom-in-icon.png";
 import ZoomOutIcon from "../../assets/lava-coder/zoom-out-icon.png";
 import { LavaMapType, LavaMapTypes, uiStore } from "../../stores/ui-store";
+import { CompassHeading } from "./compass-heading";
 import { kFeetPerMeter } from "./lava-constants";
 import { LavaIconButton } from "./lava-icon-button";
 import { CameraMode, kDefaultCameraMode, useCameraControls } from "./use-camera-controls";
@@ -131,6 +132,9 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
     <div className="lava-coder-view" style={containerStyle}>
       <div ref={elt => setLavaCoderElt(elt)} className="lava-coder-simulation" />
       <div className="lava-overlay-controls-left">
+        <div className="compass-heading-indicator">
+          <CompassHeading viewer={viewer} />
+        </div>
         <div className="home-view-controls">
           <LavaIconButton className="lava-icon-button home-view-button" onClick={() => setDefaultCameraView()}>
             <img src={HomeViewIcon} alt="Home View" />
