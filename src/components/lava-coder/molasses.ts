@@ -118,7 +118,16 @@ export async function runSimulation({
     west: Infinity
   };
 
+  function validateRange() {
+    // Validate lavaRange boundaries
+    if (!isFinite(lavaRange.north) || !isFinite(lavaRange.south) || 
+        !isFinite(lavaRange.east) || !isFinite(lavaRange.west)) {
+      throw new Error("Invalid lavaRange boundaries: Ensure lavaRange is updated to finite values.");
+    }
+  }
+
   function getLavaElevationGrid() {
+    validateRange();
     const lavaElevationGrid: number[][] = [];
     for (let y = lavaRange.north; y <= lavaRange.south; y++) {
       if (y < 0 || y >= grid.length) continue; // Skip rows outside the grid bounds
@@ -133,6 +142,7 @@ export async function runSimulation({
   }
 
   const sendUpdateMessage = () => {
+    validateRange();
     postMessage({
       status: "updatedGrid",
       grid: getLavaElevationGrid(),

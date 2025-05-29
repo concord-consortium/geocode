@@ -8,6 +8,10 @@ export function visualizeLava(grid: number[][]) {
     throw new Error("Failed to get canvas context");
   }
 
+  if (!grid.length || !grid[0].length) {
+    throw new Error("Grid is empty or malformed");
+  }
+
   const { residual } = lavaSimulation;
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
