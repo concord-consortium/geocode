@@ -44,6 +44,7 @@
     "build:top-test": "cross-env DEPLOY_PATH=specific/release/ webpack --mode production --output-path top-test/specific/release && cp top-test/specific/release/index-top.html top-test/",
     "build:webpack": "webpack --mode production",
     "clean": "rimraf dist",
+    "clean:all": "npm run clean && rimraf node_modules/.cache",
     "lint": "eslint",
     "lint:build": "eslint --config eslint.build.config.mjs",
     "lint:fix": "eslint --fix",

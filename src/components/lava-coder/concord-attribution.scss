@@ -1,0 +1,32 @@
+// overlay to prevent students from navigating away from the simulation
+.cesium-attribution-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 140px;
+  height: 28px;
+  opacity: 0.01;
+}
+
+.concord-attribution {
+  position: absolute;
+  width: 220px;
+  height: 28px;
+  bottom: 0;
+  left: 140px;
+  background-color: #000020;
+  color: #ddd;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+
+  img {
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+    margin-right: 5px;
+  }
+  span {
+    vertical-align: middle;
+  }
+}
