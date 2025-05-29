@@ -3,12 +3,7 @@ import { autorun, reaction } from "mobx";
 import { useEffect, useRef } from "react";
 import { lavaElevations, lavaSimulation } from "../../stores/lava-simulation-store";
 import { maxLat, maxLong, minLat, minLong } from "./lava-constants";
-import { renderMapExtent } from "./lava-options";
 import { visualizeLava } from "./visualize-lava";
-
-import ElevationDisplay from "../../assets/lava-coder/elevation-maps/elevation_from_asc_transparent_ocean.png";
-
-let renderedExtent = false;
 
 export function useLavaOverlay(viewer: CesiumWidget | null) {
   const lavaLayerRef = useRef<ImageryLayer | null>(null);
@@ -22,19 +17,6 @@ export function useLavaOverlay(viewer: CesiumWidget | null) {
       const { coveredCells, raster } = lavaSimulation;
 
       if (!coveredCells || !lavaElevations || !raster || !viewer) return;
-
-      if (renderMapExtent && !renderedExtent) {
-        renderedExtent = true;
-        const elevationLayer = ImageryLayer.fromProviderAsync(
-          SingleTileImageryProvider.fromUrl(ElevationDisplay, {
-            rectangle: Rectangle.fromDegrees(minLong, minLat, maxLong, maxLat)
-          })
-        );
-        if (elevationLayer) {
-          elevationLayer.alpha = 0.8;
-          viewer?.imageryLayers.add(elevationLayer);
-        }
-      }
 
       const oldLayer = oldLavaLayerRef.current;
       oldLavaLayerRef.current = lavaLayerRef.current;

@@ -1,6 +1,5 @@
 // Based on a suggestion from ChatGPT
 import { kFeetPerMeter } from "./lava-constants";
-import { useLargeMap } from "./lava-options";
 
 export interface AsciiRaster {
   header: Record<string, number>;
@@ -24,10 +23,10 @@ export function parseAsciiRaster(content: string) {
   }
 
   // Parse raster values
-  // The small DEM values are in feet above sea level, while the large DEM values are in meters above sea level.
-  // Technically, we should use meters. However, the project team liked how the model runs when using feet,
-  // which has the effect of channeling the lava, so we convert to feet in both cases.
-  const scale = useLargeMap ? kFeetPerMeter : 1;
+  // The elevation data is in meters, which we should technically use.
+  // However, the project team liked how the model runs when using feet,
+  // which has the effect of channeling the lava, so we convert to feet here.
+  const scale = kFeetPerMeter;
   const values = lines.slice(dataStartIndex).map(line =>
     line.trim().split(/\s+/).map(value => Number(value) * scale)
   );
