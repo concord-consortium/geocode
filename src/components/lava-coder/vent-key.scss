@@ -1,0 +1,84 @@
+.vent-key-container {
+  position: absolute;
+  top: 11px;
+  right: 10px;
+
+  .show-vent-key-button {
+    justify-content: space-between;
+    min-width: 70px;
+
+    .vent-key-icon {
+      height: 26px;
+      margin-top: 4px;
+      width: 26px;
+    }
+  }
+
+  .close-button {
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    height: 24px;
+    justify-content: center;
+    position: absolute;
+    right: 2px;
+    top: 2px;
+    width: 24px;
+
+    &:hover {
+      background-color: #b7dcad;
+    }
+
+    .close-icon {
+      height: 24px;
+      width: 24px;
+    }
+  }
+
+  .vent-key {
+    align-items: center;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.35);
+    display: flex;
+    flex-direction: column;
+    font-size: 16px;
+    height: 116px;
+    justify-content: space-evenly;
+    width: 134px;
+
+    .description {
+      display: flex;
+      flex-direction: column;
+
+      .description-line {
+        text-align: center;
+      }
+    }
+
+    .item {
+      display: flex;
+      justify-content: start;
+      width: 100%;
+
+      .item-box {
+        border: solid 1px #757575;
+        height: 20px;
+        margin-left: 14px;
+        margin-right: 8px;
+        width: 25px;
+
+        &.likely {
+          background-color: rgba(0, 228, 208, 0.75);
+        }
+
+        &.very-likely {
+          background-color: rgba(253, 255, 0, 0.75);
+        }
+      }
+    }
+  }
+}

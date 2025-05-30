@@ -1,7 +1,5 @@
 // This worker reads an ASCII raster file and returns its parsed content in a message.
-import smallElevationMap from "../../assets/lava-coder/elevation-maps/MaunaLoa_60m_UTM5N.asc";
-import largeElevationMap from "../../assets/lava-coder/elevation-maps/n19_w156_60m_v3.asc";
-import { useLargeMap } from "./lava-options";
+import elevationMap from "../../assets/lava-coder/elevation-maps/big_island.asc";
 import { AsciiRaster, parseAsciiRaster } from "./parse-ascii-raster";
 
 let asciiRaster: AsciiRaster | undefined;
@@ -17,7 +15,7 @@ self.onmessage = (e) => {
     }
   };
 
-  fetch(useLargeMap ? largeElevationMap : smallElevationMap)
+  fetch(elevationMap)
     .then(response => response.blob())
     .then(blob => reader.readAsText(blob));
 };
