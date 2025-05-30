@@ -23,6 +23,7 @@ import { useLavaOverlay } from "./use-lava-overlay";
 import { useVentLocationMarker } from "./use-vent-location-marker";
 import { useVerticalExaggeration } from "./use-vertical-exaggeration";
 import { useWorldImagery } from "./use-world-imagery";
+import { VentKey } from "./vent-key";
 import { VentLocationPopup } from "./vent-location-popup";
 
 import "./lava-coder-view.scss";
@@ -167,6 +168,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
           </LavaIconButton>
         </div>
       </div>
+      { isPlaceVentMode && <VentKey /> }
       <div className="lava-overlay-controls-bottom bottom-left-controls">
         {showPlaceVent && (
           <LavaIconButton className="place-vent-button" label={"Place Vent"} onClick={() => togglePlaceVentMode()}>
