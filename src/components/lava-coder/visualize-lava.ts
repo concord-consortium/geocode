@@ -1,20 +1,23 @@
 import { lavaSimulation } from "../../stores/lava-simulation-store";
-import { AsciiRaster } from "./parse-ascii-raster";
 
 const canvas = document.createElement("canvas");
 const ctx = canvas.getContext("2d");
 
-export function visualizeLava(raster: AsciiRaster, grid: number[][]) {
+export function visualizeLava(grid: number[][]) {
   if (!ctx) {
     throw new Error("Failed to get canvas context");
+  }
+
+  if (!grid.length || !grid[0].length) {
+    throw new Error("Grid is empty or malformed");
   }
 
   const { residual } = lavaSimulation;
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  const width = raster.header.ncols;
-  const height = raster.header.nrows;
+  const width = grid[0].length;
+  const height = grid.length;
   canvas.width = width;
   canvas.height = height;
 
