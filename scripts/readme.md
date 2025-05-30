@@ -53,7 +53,7 @@ Run this script on all map files needed for the complete map.
 ## 7. Update the simulation
 
 Your new map should be ready now, but you'll need to make a couple of changes to the codebase to actually use the new map.
-1. Point to the new map in `raster.worker.ts`. Set `largeElevationMap` to the path to your map.
+1. Point to the new map in `raster.worker.ts`. Set `elevationMap` to the path to your map.
 2. Update map boundaries in `lava-constants.ts`.
 - `minLat` should be `yllcorner`.
 - `minLong` should be `xllcorner`.

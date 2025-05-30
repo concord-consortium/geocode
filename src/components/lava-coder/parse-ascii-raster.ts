@@ -1,6 +1,11 @@
 // Based on a suggestion from ChatGPT
 import { kFeetPerMeter } from "./lava-constants";
 
+// The elevation data is in meters, which we should technically use.
+// However, the project team liked how the model runs when using feet, which has the effect of channeling the lava.
+// Setting this flag to true converts the elevation unit from meters to feet.
+const USE_INCORRECT_ELEVATION_UNITS = true;
+
 export interface AsciiRaster {
   header: Record<string, number>;
   values: number[][];
@@ -23,10 +28,7 @@ export function parseAsciiRaster(content: string) {
   }
 
   // Parse raster values
-  // The elevation data is in meters, which we should technically use.
-  // However, the project team liked how the model runs when using feet,
-  // which has the effect of channeling the lava, so we convert to feet here.
-  const scale = kFeetPerMeter;
+  const scale = USE_INCORRECT_ELEVATION_UNITS ? kFeetPerMeter : 1;
   const values = lines.slice(dataStartIndex).map(line =>
     line.trim().split(/\s+/).map(value => Number(value) * scale)
   );
