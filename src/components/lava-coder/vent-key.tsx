@@ -1,6 +1,5 @@
 import { useState } from "react";
-import CloseIcon from "../../assets/lava-coder/close-icon@3x.png";
-import VentKeyIcon from "../../assets/lava-coder/key-icon@3x.png";
+import { CloseIcon, VentKeyIcon } from "./lava-coder-icons";
 import { LavaIconButton } from "./lava-icon-button";
 
 import "./vent-key.scss";
@@ -17,7 +16,7 @@ export function VentKey() {
           onClick={() => setDisplayKey(true)}
           width={27}
         >
-          <img src={VentKeyIcon} alt="Show Key" className="vent-key-icon" />
+          <VentKeyIcon />
         </LavaIconButton>
       )}
 
@@ -28,7 +27,7 @@ export function VentKey() {
             className="close-button"
             onClick={() => setDisplayKey(false)}
           >
-            <img src={CloseIcon} alt="Close Key" className="close-icon" />
+            <CloseIcon />
           </button>
           <div className="vent-key">
             <div className="description">

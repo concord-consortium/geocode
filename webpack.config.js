@@ -63,7 +63,7 @@ module.exports = (env, argv) => {
         },
         {
           test: /\.(png|woff|woff2|eot|ttf)$/,
-          type: 'asset',
+          type: 'asset/resource', // Emits a separate file and exports the URL
           generator: {
             filename: 'assets/[name].[contenthash:8][ext]' // Specify the output filename here
           }
