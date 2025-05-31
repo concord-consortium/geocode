@@ -1,7 +1,9 @@
 import {
   Cartesian2, Cartesian3, Cartographic, CesiumWidget, Math as CSMath, HeadingPitchRange, sampleTerrainMostDetailed
 } from "@cesium/engine";
+import { reaction } from "mobx";
 import { useCallback, useEffect, useState } from "react";
+import { lavaSimulation } from "../../stores/lava-simulation-store";
 import { IOnDragArgs, useCesiumDragEvents } from "./use-cesium-drag-events";
 
 export type CameraMode = "pitch" | "heading" | "panning";
@@ -35,6 +37,13 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
       new HeadingPitchRange(kInitialCameraHeading, kInitialCameraPitch, kInitialCameraRange)
     );
   }, [viewer]);
+
+  useEffect(() => {
+    return reaction(
+      () => lavaSimulation.resetCount,
+      () => setDefaultCameraView()
+    );
+  }, [setDefaultCameraView]);
 
   const handlePan = useCallback(({ dx, dy }: IOnDragArgs) => {
     if (!viewer) return;
