@@ -104,6 +104,11 @@ export const LavaSimulationStore = types
       self.worker.postMessage({ type: "start", parameters });
     },
     reset() {
+      // Terminate the active simulation worker if it exists
+      if (self.worker) {
+        self.worker.terminate();
+        self.worker = null;
+      }
       lavaElevations = [];
       self.setPulseCount(0);
       self.setResidual(defaultResidual);
