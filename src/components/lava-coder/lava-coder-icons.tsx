@@ -68,7 +68,7 @@ export function MoveIcon() {
 
 export function PlaceVentMarkerIcon() {
   return (
-    <img src={PlaceVentMarkerIcon1x} alt="Home View"
+    <img src={PlaceVentMarkerIcon1x} alt="Place Vent Marker"
         srcSet={iconSrcSet(PlaceVentMarkerIcon1x, PlaceVentMarkerIcon2x, PlaceVentMarkerIcon3x)} />
   );
 }
