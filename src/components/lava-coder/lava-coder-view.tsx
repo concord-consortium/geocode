@@ -1,6 +1,8 @@
+import { reaction } from "mobx";
 import { observer } from "mobx-react";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import VentLocationMarkerIcon from "../../assets/lava-coder/location-marker.png";
+import { lavaSimulation } from "../../stores/lava-simulation-store";
 import { LavaMapType, LavaMapTypes, uiStore } from "../../stores/ui-store";
 import { CompassHeading } from "./compass-heading";
 import { ConcordAttribution } from "./concord-attribution";
@@ -66,6 +68,14 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
   const handleCloseVentLocationPopup = useCallback(() => {
     setShowVentLocationPopup(false);
   }, []);
+
+  // Close the vent location popup when the worker is reset (e.g., when a new simulation starts)
+  useEffect(() => {
+    return reaction(
+      () => lavaSimulation.worker,
+      () => handleCloseVentLocationPopup()
+    );
+  }, [handleCloseVentLocationPopup]);
 
   const { ventLocation, setVentLocation } =
     useVentLocationMarker(viewer, verticalExaggeration, handleOpenVentLocationPopup);

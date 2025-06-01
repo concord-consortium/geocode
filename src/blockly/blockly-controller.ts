@@ -1,4 +1,4 @@
-import { makeObservable, observable } from "mobx";
+import { action, makeObservable, observable } from "mobx";
 import { IStore } from "../stores/stores";
 import { DEFORMATION_SIMULATION_WARNING } from "../strings/blockly-controller";
 import { IInterpreterController, makeInterpreterController } from "./interpreter";
@@ -26,6 +26,7 @@ export class BlocklyController {
     makeObservable(this);
   }
 
+  @action
   public setCode = (code: string, workspace: Workspace) => {
     this.code = code;
 
@@ -42,6 +43,7 @@ export class BlocklyController {
     this.parseVariables();
   };
 
+  @action
   public run = () => {
     // counting 'run from year...' blocks for deformation graph
     // if more than 3 blocks are being used, need to alert user and not run code
@@ -64,6 +66,7 @@ export class BlocklyController {
     }
   };
 
+  @action
   public reset = () => {
     this.setCode(this.code, this.workspace);
     this.stores.tephraSimulation.reset();
@@ -73,6 +76,7 @@ export class BlocklyController {
     this.stores.samplesCollectionsStore.reset();
   };
 
+  @action
   public stop = () => {
     if (this.interpreterController) {
       this.interpreterController.stop();
@@ -82,6 +86,7 @@ export class BlocklyController {
   };
 
   // pauses the interpreter run without setting self.running = false
+  @action
   public pause = () => {
     if (this.interpreterController) {
       this.interpreterController.pause();
@@ -91,6 +96,7 @@ export class BlocklyController {
 
   // only restarts if self.running = true. If user hit stop between `pause` and this
   // function, this won't restart the run.
+  @action
   public unpause = () => {
     if (this.interpreterController && this.running) {
       const reset = () => {
@@ -107,6 +113,7 @@ export class BlocklyController {
    * until steppingThroughBlock is false. All blocks are wrapped with code that will call endStep
    * at the end of the block's function, which will set steppingThroughBlock to false.
    */
+  @action
   public step = () => {
     const numberOfLoops = this.workspace.getBlocksByType("run-from-year-loop");
     if (numberOfLoops.length > 3) {
@@ -132,16 +139,19 @@ export class BlocklyController {
   };
 
   // called by interpreted block code
+  @action
   public startStep = () => {
     // anything we need to do at start of step (previously we turned off
     // animation before moving to next block)
   };
 
   // called by interpreted block code
+  @action
   public endStep = () => {
     this.steppingThroughBlock = false;
   };
 
+  @action
   public throwError = (errorMessage: string) => {
     this.pause();
     alert(errorMessage);
