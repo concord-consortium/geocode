@@ -239,7 +239,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     window.addEventListener("paste", this.handlePaste);
   }
 
-  public handlePaste(e: ClipboardEvent) {
+  public handlePaste = (e: ClipboardEvent) => {
     // Trigger the Enter key when pasting into Blockly HTML input fields
     if (e.target instanceof HTMLInputElement && e.target.classList.contains("blocklyHtmlInput")) {
       setTimeout(() => {
