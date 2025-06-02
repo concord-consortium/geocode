@@ -13,7 +13,7 @@ export function useCesiumViewer(container: Element | null, initialMapType: LavaM
   const [ , forceRefresh] = useState(false);
   const { createBaseLayer } = useWorldImagery();
   const [baseLayer, setBaseLayer] = useState<ImageryLayer | null>(null);
-  const terrainProvider = useTerrainProvider();
+  const { terrainProvider } = useTerrainProvider();
 
   useEffect(() => {
     if (!baseLayer) {

@@ -218,7 +218,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     this.blocklyController = new BlocklyController(this.stores);
   }
 
-  public componentDidMount() {
+  public parseQueryParams() {
     const unit = queryValue("unit");
     let hideModelOptions = queryValueBoolean("hide-model-options");
     if (unit === "Tephra") {
@@ -234,6 +234,10 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       unitStore.setUnit(unit);
     }
     uiStore.setShowOptionsDialog(!hideModelOptions);
+  }
+
+  public componentDidMount() {
+    this.parseQueryParams();
 
     // Trigger the Enter key when pasting into Blockly HTML input fields
     window.addEventListener("paste", this.handlePaste);
@@ -380,6 +384,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       // controllers, before reloading the initial application state
       reset();
       this.props.reload();
+      this.parseQueryParams();
     };
 
     const showReloadModal = () => this.setState({showingReloadModal: true});
@@ -540,7 +545,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                     />
                   }
                   { isLavaCoder &&
-                    <LavaCoderView width={mapWidth - 2 * simMargin.x} height={mapHeight} margin={simMarginStr} />
+                    <LavaCoderView width={mapWidth - 2 * simMargin.x} height={mapHeight} margin={simMarginStr} running={running} />
                   }
                   {
                     (isTephra || isLavaCoder) &&
