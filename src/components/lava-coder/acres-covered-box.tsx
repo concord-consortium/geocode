@@ -1,4 +1,4 @@
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react";
 import { lavaSimulation } from "../../stores/lava-simulation-store";
 
 import "./acres-covered-box.scss";
