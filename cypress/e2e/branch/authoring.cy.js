@@ -112,9 +112,9 @@ context ('Authoring Options',()=>{
             leftPanel.getBlocksTab().click();
             modelOptions.getModelOptionsMenu().click();
         });
-        it('verify selecting Everything shows correct toolboxes in Blocks',()=>{
+        it('verify selecting TephraFull shows correct toolboxes in Blocks',()=>{
             // Volcano, Wind data, Data Collections, Logic, Loops, Data, Variables, Functions
-            modelOptions.selectCodeToolbox('Everything');
+            modelOptions.selectCodeToolbox('TephraFull');
             cy.wait(1000);
             blocksTab.getTag('Volcano').should('be.visible');
             blocksTab.getTag('Wind data').should('be.visible');
