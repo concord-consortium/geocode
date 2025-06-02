@@ -26,7 +26,6 @@ import { VentKey } from "./vent-key";
 import { VentLocationPopup } from "./vent-location-popup";
 
 import "./lava-coder-view.scss";
-import { lavaSimulation } from "../../stores/lava-simulation-store";
 
 interface IProps {
   width: number;
