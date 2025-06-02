@@ -36,7 +36,7 @@ export const LavaSimulationStore = types
     pulseCount: 0,
   })
   .volatile((self) => ({
-    ventElevation: -1, // Used to store the vent elevation fetched from terrain
+    ventElevation: -1, // negative elevation means we haven't set it yet
     coveredCells: 0,
     raster: null as AsciiRaster | null, // AsciiRaster
     worker: null as Worker | null,
