@@ -36,10 +36,16 @@ export const LavaSimulationStore = types
     pulseCount: 0,
   })
   .volatile((self) => ({
+    ventElevation: -1, // Used to store the vent elevation fetched from terrain
     coveredCells: 0,
     raster: null as AsciiRaster | null, // AsciiRaster
     worker: null as Worker | null,
     resetCount: 0 // Used to reset the camera when the simulation is reset
+  }))
+  .views(self => ({
+    get isRunning() {
+      return self.worker != null && self.pulseCount < uiStore.pulsesPerEruption;
+    }
   }))
   .actions((self) => ({
     countCoveredCells(grid: number[][]) {
@@ -57,11 +63,13 @@ export const LavaSimulationStore = types
     setTotalVolume(totalVolume: number) {
       self.totalVolume = totalVolume;
     },
-    setVentLatitude(ventLatitude: number) {
-      self.ventLatitude = ventLatitude;
+    setVentLocation(latitude: number, longitude: number, elevation = -1) {
+      self.ventLatitude = latitude;
+      self.ventLongitude = longitude;
+      self.ventElevation = elevation;
     },
-    setVentLongitude(ventLongitude: number) {
-      self.ventLongitude = ventLongitude;
+    setVentElevation(elevation: number) {
+      self.ventElevation = elevation;
     }
   }))
   .actions((self) => {
@@ -119,8 +127,7 @@ export const LavaSimulationStore = types
       self.setPulseCount(0);
       self.setResidual(defaultResidual);
       self.setTotalVolume(defaultEruptionVolume);
-      self.setVentLatitude(defaultVentLatitude);
-      self.setVentLongitude(defaultVentLongitude);
+      self.setVentLocation(defaultVentLatitude, defaultVentLongitude);
       self.coveredCells = 0;
       ++self.resetCount;
     }
