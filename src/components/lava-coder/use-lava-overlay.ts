@@ -2,7 +2,6 @@ import { CesiumWidget, ImageryLayer, Rectangle, SingleTileImageryProvider } from
 import { autorun, reaction } from "mobx";
 import { useEffect, useRef } from "react";
 import { gridBounds, lavaElevations, lavaSimulation } from "../../stores/lava-simulation-store";
-import { maxLat, maxLong, minLat, minLong } from "./lava-constants";
 import { visualizeLava } from "./visualize-lava";
 
 export function useLavaOverlay(viewer: CesiumWidget | null) {
