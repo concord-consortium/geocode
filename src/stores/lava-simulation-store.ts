@@ -12,6 +12,8 @@ import { uiStore } from "./ui-store";
 // updated to trigger reactions. And if we need to save the lava elevations for save/load or some other purpose,
 // this variable should be saved in the MST model.
 export let lavaElevations: number[][] | undefined;
+// The latitude/longitude bounds of the rectangle containing all lava
+export let gridBounds: { east: number, north: number, south: number, west: number } | undefined;
 
 function countCoveredCells(_lavaElevations: number[][]) {
   let coveredCells = 0;
@@ -89,6 +91,7 @@ export const LavaSimulationStore = types
           if (status === "updatedGrid") {
             self.setPulseCount(e.data.pulseCount);
             lavaElevations = e.data.grid;
+            gridBounds = e.data.gridBounds;
             self.countCoveredCells(e.data.grid);
           }
         } catch (error) {

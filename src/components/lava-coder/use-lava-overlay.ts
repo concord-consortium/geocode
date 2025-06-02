@@ -1,8 +1,7 @@
 import { CesiumWidget, ImageryLayer, Rectangle, SingleTileImageryProvider } from "@cesium/engine";
 import { autorun, reaction } from "mobx";
 import { useEffect, useRef } from "react";
-import { lavaElevations, lavaSimulation } from "../../stores/lava-simulation-store";
-import { maxLat, maxLong, minLat, minLong } from "./lava-constants";
+import { gridBounds, lavaElevations, lavaSimulation } from "../../stores/lava-simulation-store";
 import { visualizeLava } from "./visualize-lava";
 
 export function useLavaOverlay(viewer: CesiumWidget | null) {
@@ -16,15 +15,15 @@ export function useLavaOverlay(viewer: CesiumWidget | null) {
     return autorun(() => {
       const { coveredCells, raster } = lavaSimulation;
 
-      if (!coveredCells || !lavaElevations || !raster || !viewer) return;
+      if (!coveredCells || !lavaElevations || !gridBounds || !raster || !viewer) return;
 
       const oldLayer = oldLavaLayerRef.current;
       oldLavaLayerRef.current = lavaLayerRef.current;
 
-      const url = visualizeLava(raster, lavaElevations);
+      const url = visualizeLava(lavaElevations);
       lavaLayerRef.current = ImageryLayer.fromProviderAsync(
         SingleTileImageryProvider.fromUrl(url, {
-          rectangle: Rectangle.fromDegrees(minLong, minLat, maxLong, maxLat)
+          rectangle: Rectangle.fromDegrees(gridBounds.west, gridBounds.south, gridBounds.east, gridBounds.north)
         })
       );
 
