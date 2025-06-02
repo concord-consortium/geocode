@@ -1,17 +1,15 @@
+import { reaction } from "mobx";
 import { observer } from "mobx-react";
-import { useCallback, useState } from "react";
-import HomeViewIcon from "../../assets/lava-coder/return-to-home-view-icon.png";
-import MapStreetIcon from "../../assets/lava-coder/map-street-icon.png";
-import MapTerrainIcon from "../../assets/lava-coder/map-terrain-icon.png";
-import MoveIcon from "../../assets/lava-coder/move-icon.png";
-import PlaceVentMarkerIcon from "../../assets/lava-coder/place-vent-marker-icon.png";
-import RotateIcon from "../../assets/lava-coder/rotate-icon.png";
+import { useCallback, useEffect, useState } from "react";
 import VentLocationMarkerIcon from "../../assets/lava-coder/location-marker.png";
-import ZoomInIcon from "../../assets/lava-coder/zoom-in-icon.png";
-import ZoomOutIcon from "../../assets/lava-coder/zoom-out-icon.png";
+import { lavaSimulation } from "../../stores/lava-simulation-store";
 import { LavaMapType, LavaMapTypes, uiStore } from "../../stores/ui-store";
 import { CompassHeading } from "./compass-heading";
 import { ConcordAttribution } from "./concord-attribution";
+import {
+  HomeViewIcon, MapButtonIcon, MoveIcon, PlaceVentMarkerIcon, RotateHeadingIcon, RotatePitchIcon,
+  ZoomInIcon, ZoomOutIcon
+} from "./lava-coder-icons";
 import { kFeetPerMeter } from "./lava-constants";
 import { LavaIconButton } from "./lava-icon-button";
 import { CameraMode, kDefaultCameraMode, useCameraControls } from "./use-camera-controls";
@@ -70,6 +68,14 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
   const handleCloseVentLocationPopup = useCallback(() => {
     setShowVentLocationPopup(false);
   }, []);
+
+  // Close the vent location popup when the worker is reset (e.g., when a new simulation starts)
+  useEffect(() => {
+    return reaction(
+      () => lavaSimulation.worker,
+      () => handleCloseVentLocationPopup()
+    );
+  }, [handleCloseVentLocationPopup]);
 
   const { ventLocation, setVentLocation } =
     useVentLocationMarker(viewer, verticalExaggeration, handleOpenVentLocationPopup);
@@ -130,7 +136,6 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
 
   const containerStyle: React.CSSProperties = { width, height, margin, cursor };
 
-  const mapButtonIcon = mapType === "street" ? MapStreetIcon : MapTerrainIcon;
   const mapButtonLabel = `Map Type: ${mapLabels[mapType]}`;
 
   return (
@@ -142,29 +147,29 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
         </div>
         <div className="home-view-controls">
           <LavaIconButton className="lava-icon-button home-view-button" onClick={() => setDefaultCameraView()}>
-            <img src={HomeViewIcon} alt="Home View" />
+            <HomeViewIcon />
           </LavaIconButton>
         </div>
         <div className="zoom-controls">
           <LavaIconButton className="lava-icon-button zoom-in-button" onClick={() => zoomIn()}>
-            <img src={ZoomInIcon} alt="Zoom In" />
+            <ZoomInIcon />
           </LavaIconButton>
           <LavaIconButton className="lava-icon-button zoom-out-button" onClick={() => zoomOut()}>
-            <img src={ZoomOutIcon} alt="Zoom Out" />
+            <ZoomOutIcon />
           </LavaIconButton>
         </div>
         <div className="rotate-pan-controls">
           <LavaIconButton className="lava-icon-button rotate-pitch-button" isActive={cameraMode === "pitch"}
                           onClick={() => toggleCameraMode("pitch")}>
-            <img src={RotateIcon} alt="Enable Camera Pitch Rotation" />
+            <RotatePitchIcon />
           </LavaIconButton>
           <LavaIconButton className="lava-icon-button rotate-heading-button" isActive={cameraMode === "heading"}
                           onClick={() => toggleCameraMode("heading")}>
-            <img src={RotateIcon} alt="Enable Camera Heading Rotation" />
+            <RotateHeadingIcon />
           </LavaIconButton>
           <LavaIconButton className="lava-icon-button panning-mode-button" isActive={cameraMode === "panning"}
                           onClick={() => toggleCameraMode("panning")}>
-            <img src={MoveIcon} alt="Enable Camera Panning" />
+            <MoveIcon />
           </LavaIconButton>
         </div>
       </div>
@@ -172,14 +177,14 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
       <div className="lava-overlay-controls-bottom bottom-left-controls">
         {showPlaceVent && (
           <LavaIconButton className="place-vent-button" label={"Place Vent"} onClick={() => togglePlaceVentMode()}>
-            <img src={PlaceVentMarkerIcon} alt="Place Vent" />
+            <PlaceVentMarkerIcon />
           </LavaIconButton>
         )}
       </div>
       <div className="lava-overlay-controls-bottom bottom-right-controls">
         {showMapType && (
           <LavaIconButton className="map-type-button" label={mapButtonLabel} onClick={() => toggleMapType()}>
-            <img src={mapButtonIcon} alt="Map Type" />
+            <MapButtonIcon mapType={mapType} />
           </LavaIconButton>
         )}
       </div>

@@ -234,6 +234,23 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       unitStore.setUnit(unit);
     }
     uiStore.setShowOptionsDialog(!hideModelOptions);
+
+    // Trigger the Enter key when pasting into Blockly HTML input fields
+    window.addEventListener("paste", this.handlePaste);
+  }
+
+  public handlePaste = (e: ClipboardEvent) => {
+    // Trigger the Enter key when pasting into Blockly HTML input fields
+    if (e.target instanceof HTMLInputElement && e.target.classList.contains("blocklyHtmlInput")) {
+      setTimeout(() => {
+        const event = new KeyboardEvent('keydown', { key: 'Enter', code: 'Enter', keyCode: 13, bubbles: true });
+        e.target?.dispatchEvent(event);
+      });
+    }
+  };
+
+  public componentWillUnmount() {
+    window.removeEventListener("paste", this.handlePaste);
   }
 
   public render() {
