@@ -12,6 +12,7 @@ export interface GridCell {
   baseElevation: number;
   elevationDifference: number;
   lavaElevation: number;
+  neighbors: GridCell[];
   parents: Set<GridCell>;
   x: number;
   y: number;
@@ -22,6 +23,7 @@ function createCell(x: number, y: number, baseElevation: number) {
     baseElevation,
     elevationDifference: 0,
     lavaElevation: 0,
+    neighbors: [],
     parents: new Set<GridCell>(),
     x,
     y,
@@ -36,6 +38,24 @@ function createGrid(raster: AsciiRaster) {
       gridRow.push(createCell(x, y, baseElevation));
     });
     grid.push(gridRow);
+  });
+  // identify neighbors
+  grid.forEach((row, y) => {
+    row.forEach((cell, x) => {
+      // Add neighbors to the cell
+      [-1, 0, 1].forEach(dy => {
+        [-1, 0, 1].forEach(dx => {
+          if (dx === 0 && dy === 0) return; // Skip the cell itself
+          const newY = y + dy;
+          const newX = x + dx;
+          // Only add the neighbor if it's within the grid bounds
+          if (newY >= 0 && newY < grid.length && newX >= 0 && newX < grid[newY].length) {
+            const neighbor = grid[newY][newX];
+            cell.neighbors.push(neighbor);
+          }
+        });
+      });
+    });
   });
   return grid;
 }
@@ -53,38 +73,32 @@ function getTotalElevation(cell: GridCell) {
 }
 
 function getLowerNeighbors(cell: GridCell, grid: GridCell[][]) {
-  const neighbors: GridCell[] = [];
-  [-1, 0, 1].forEach(dy => {
-    [-1, 0, 1].forEach(dx => {
-      if (dx === 0 && dy === 0) return; // Skip the cell itself
+  const lowerNeighbors: GridCell[] = [];
+  for (const neighbor of cell.neighbors) {
+    const dx = neighbor.x - cell.x;
+    const dy = neighbor.y - cell.y;
+    // Do not send lava back to a cell that already sent lava to you
+    if (cell.parents.has(neighbor)) {
+      continue;
+    }
 
-      const newY = cell.y + dy;
-      const newX = cell.x + dx;
-      // Only add the neighbor if it's within the grid bounds
-      if (newY >= 0 && newY < grid.length && newX >= 0 && newX < grid[newY].length) {
-        const neighbor = grid[newY][newX];
-        // Do not send lava back to a cell that already sent lava to you
-        if (cell.parents.has(neighbor)) return;
-
-        const scale = (dx === 0 || dy === 0) ? 1 : diagonalScale;
-        const elevationDifference = scale * (getTotalElevation(cell) - getTotalElevation(neighbor));
-        // Only add the neighbor if it has a lower elevation
-        if (elevationDifference > 0) {
-          neighbor.elevationDifference = elevationDifference;
-          neighbor.parents.add(cell);
-          neighbors.push(neighbor);
-        }
-      }
-    });
-  });
-
-  // Randomize the order of neighbors
-  for (let i = neighbors.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [neighbors[i], neighbors[j]] = [neighbors[j], neighbors[i]];
+    const scale = (dx === 0 || dy === 0) ? 1 : diagonalScale;
+    const elevationDifference = scale * (getTotalElevation(cell) - getTotalElevation(neighbor));
+    // Only add the neighbor if it has a lower elevation
+    if (elevationDifference > 0) {
+      neighbor.elevationDifference = elevationDifference;
+      neighbor.parents.add(cell);
+      lowerNeighbors.push(neighbor);
+    }
   }
 
-  return neighbors;
+  // Randomize the order of neighbors
+  for (let i = lowerNeighbors.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [lowerNeighbors[i], lowerNeighbors[j]] = [lowerNeighbors[j], lowerNeighbors[i]];
+  }
+
+  return lowerNeighbors;
 }
 
 export interface LavaSimulationParameters {
@@ -109,6 +123,7 @@ export async function runSimulation({
   const ventCell = grid[ventY][ventX];
   const cellArea = raster.header.cellsize ** 2;
   let currentTotalVolume = totalVolume;
+  const visitedCells = new Set<GridCell>();
   // The range of the rectangle containing active cells.
   // Note that north is lower than south in the grid.
   const lavaRange = {
@@ -166,7 +181,7 @@ export async function runSimulation({
 
     // Spread the lava
     const activeCells = [ventCell];
-    const visitedCells = new Set<GridCell>();
+    visitedCells.clear();
     for (let count = 0; count < pulseIterations; count++) {
       for (const currentCell of activeCells) {
         visitedCells.add(currentCell);
