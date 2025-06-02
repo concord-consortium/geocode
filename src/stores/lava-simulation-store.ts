@@ -36,7 +36,8 @@ export const LavaSimulationStore = types
   .volatile((self) => ({
     coveredCells: 0,
     raster: null as AsciiRaster | null, // AsciiRaster
-    worker: null as Worker | null
+    worker: null as Worker | null,
+    resetCount: 0 // Used to reset the camera when the simulation is reset
   }))
   .actions((self) => ({
     countCoveredCells(grid: number[][]) {
@@ -101,6 +102,21 @@ export const LavaSimulationStore = types
         ventLongitude: self.ventLongitude
       };
       self.worker.postMessage({ type: "start", parameters });
+    },
+    reset() {
+      // Terminate the active simulation worker if it exists
+      if (self.worker) {
+        self.worker.terminate();
+        self.worker = null;
+      }
+      lavaElevations = [];
+      self.setPulseCount(0);
+      self.setResidual(defaultResidual);
+      self.setTotalVolume(defaultEruptionVolume);
+      self.setVentLatitude(defaultVentLatitude);
+      self.setVentLongitude(defaultVentLongitude);
+      self.coveredCells = 0;
+      ++self.resetCount;
     }
   }));
 export const lavaSimulation = LavaSimulationStore.create({});
