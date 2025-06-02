@@ -13,6 +13,7 @@ import {
 } from "./lava-coder-icons";
 import { kFeetPerMeter } from "./lava-constants";
 import { LavaIconButton } from "./lava-icon-button";
+import { ProgressBar } from "./progress-bar";
 import { CameraMode, kDefaultCameraMode, useCameraControls } from "./use-camera-controls";
 import { useCesiumMouseEvents } from "./use-cesium-mouse-events";
 import { useCesiumViewer } from "./use-cesium-viewer";
@@ -190,6 +191,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
         )}
       </div>
       <AcresCovered />
+      <ProgressBar pulseCount={lavaSimulation.pulseCount} pulses={uiStore.pulsesPerEruption} />
       <ConcordAttribution />
       <VentLocationPopup viewer={viewer} ventLocation={ventLocation} verticalExaggeration={verticalExaggeration}
                         show={showVentLocationPopup} onClose={handleCloseVentLocationPopup}/>
