@@ -1,15 +1,18 @@
+import { observer } from "mobx-react-lite";
+import { lavaSimulation } from "../../stores/lava-simulation-store";
+
 import "./acres-covered-box.scss";
 
-interface AcresCoveredBoxProps {
-  acresCovered: number;
-}
-export function AcresCovered({ acresCovered }: AcresCoveredBoxProps) {
+export const AcresCovered = observer(function AcresCovered() {
+  // Only display if the simulation is running or has completed.
+  if (!lavaSimulation.worker) return null;
+
   return (
     <div className="acres-covered-box">
       <div className="acres-covered-label">Total Area Covered:</div>
       <div className="acres-covered-value">
-        {acresCovered.toLocaleString()} acres
+        {Math.round(lavaSimulation.acresCovered).toLocaleString()} acres
       </div>
     </div>
   );
-}
+});

@@ -2,7 +2,7 @@ import { types } from "mobx-state-tree";
 import MolassesWorker from "../components/lava-coder/molasses.worker";
 import { AsciiRaster } from "../components/lava-coder/parse-ascii-raster";
 import {
-  defaultEruptionVolume, defaultResidual, defaultVentLatitude, defaultVentLongitude
+  defaultEruptionVolume, defaultResidual, defaultVentLatitude, defaultVentLongitude, kSquareMetersPerAcre
 } from "../components/lava-coder/lava-constants";
 import { LavaSimulationAuthorSettings, LavaSimulationAuthorSettingsProps } from "./stores";
 import { uiStore } from "./ui-store";
@@ -38,6 +38,16 @@ export const LavaSimulationStore = types
     raster: null as AsciiRaster | null, // AsciiRaster
     worker: null as Worker | null,
     resetCount: 0 // Used to reset the camera when the simulation is reset
+  }))
+  .views((self) => ({
+    get cellArea() {
+      return (self.raster?.header.cellsize ?? 60) ** 2; // Default cell size is 60 meters
+    }
+  }))
+  .views((self) => ({
+    get acresCovered() {
+      return self.coveredCells * self.cellArea / kSquareMetersPerAcre; // Convert square meters to acres
+    }
   }))
   .actions((self) => ({
     countCoveredCells(grid: number[][]) {

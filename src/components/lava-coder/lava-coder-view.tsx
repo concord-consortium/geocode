@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import VentLocationMarkerIcon from "../../assets/lava-coder/location-marker.png";
 import { lavaSimulation } from "../../stores/lava-simulation-store";
 import { LavaMapType, LavaMapTypes, uiStore } from "../../stores/ui-store";
+import { AcresCovered } from "./acres-covered-box";
 import { CompassHeading } from "./compass-heading";
 import { ConcordAttribution } from "./concord-attribution";
 import {
@@ -188,6 +189,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
           </LavaIconButton>
         )}
       </div>
+      <AcresCovered />
       <ConcordAttribution />
       <VentLocationPopup viewer={viewer} ventLocation={ventLocation} verticalExaggeration={verticalExaggeration}
                         show={showVentLocationPopup} onClose={handleCloseVentLocationPopup}/>
