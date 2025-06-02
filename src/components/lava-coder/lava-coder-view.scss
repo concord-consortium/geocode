@@ -18,7 +18,7 @@
     top: 10px;
     left: 10px;
     width: 36px;
-    height: 650px;
+    height: 350px;
 
     .compass-heading-indicator {
       background: white;
@@ -29,7 +29,7 @@
     }
 
     .home-view-controls {
-      margin-top: 50px;
+      margin-top: 30px;
     }
 
     .rotate-pan-controls, .zoom-controls {
@@ -45,12 +45,6 @@
       img {
         margin-top: -2px;
         margin-left: -2px;
-      }
-    }
-
-    .rotate-pitch-button {
-      img {
-        transform: rotate(90deg);
       }
     }
   }
