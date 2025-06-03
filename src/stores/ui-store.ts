@@ -1,5 +1,6 @@
 import { types } from "mobx-state-tree";
 import { isLocalhost } from "../utilities/js-utils";
+import { queryValueBoolean } from "../utilities/url-query";
 import { UIAuthorSettings, UIAuthorSettingsProps } from "./stores";
 
 const km3ToM3 = 1000000; // 1 km^3 = 1000000 m^3
@@ -7,7 +8,12 @@ const km3ToM3 = 1000000; // 1 km^3 = 1000000 m^3
 export const LavaMapTypes = ["develop", "terrain", "terrainWithLabels", "street"] as const;
 export const LavaMapTypeStrings = LavaMapTypes.map((type) => type.toString());
 export type LavaMapType = typeof LavaMapTypes[number];
-const kDefaultMapType: LavaMapType = isLocalhost() ? "develop" : "terrain";
+
+function defaultMapType(): LavaMapType {
+  const isDeveloping = isLocalhost();
+  const isTesting = queryValueBoolean("testing");
+  return isDeveloping || isTesting ? "develop" : "terrain";
+}
 
 const UIStore = types.model("UI", {
   showOptionsDialog: true,
@@ -51,7 +57,7 @@ const UIStore = types.model("UI", {
   // whether to include street in the map type options
   showMapTypeStreet: true,
   // current map type
-  mapType: types.optional(types.enumeration(LavaMapTypes), kDefaultMapType),
+  mapType: types.optional(types.enumeration(LavaMapTypes), defaultMapType),
   // vertical exaggeration (1 = normal, 2 = 2x, 3 = 3x, etc)
   verticalExaggeration: 1,
   // number of hundreds of pulses for each eruption. The actual number of pulses will be 100x this one.
