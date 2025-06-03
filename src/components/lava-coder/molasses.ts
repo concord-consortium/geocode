@@ -39,24 +39,6 @@ function createGrid(raster: AsciiRaster) {
     });
     grid.push(gridRow);
   });
-  // identify neighbors
-  grid.forEach((row, y) => {
-    row.forEach((cell, x) => {
-      // Add neighbors to the cell
-      [-1, 0, 1].forEach(dy => {
-        [-1, 0, 1].forEach(dx => {
-          if (dx === 0 && dy === 0) return; // Skip the cell itself
-          const newY = y + dy;
-          const newX = x + dx;
-          // Only add the neighbor if it's within the grid bounds
-          if (newY >= 0 && newY < grid.length && newX >= 0 && newX < grid[newY].length) {
-            const neighbor = grid[newY][newX];
-            cell.neighbors.push(neighbor);
-          }
-        });
-      });
-    });
-  });
   return grid;
 }
 
@@ -74,6 +56,23 @@ function getTotalElevation(cell: GridCell) {
 
 function getLowerNeighbors(cell: GridCell, grid: GridCell[][]) {
   const lowerNeighbors: GridCell[] = [];
+
+  // Set neighbors if necessary
+  if (cell.neighbors.length === 0) {
+    [-1, 0, 1].forEach(dy => {
+      [-1, 0, 1].forEach(dx => {
+        if (dx === 0 && dy === 0) return; // Skip the cell itself
+        const newY = cell.y + dy;
+        const newX = cell.x + dx;
+        // Only add the neighbor if it's within the grid bounds
+        if (newY >= 0 && newY < grid.length && newX >= 0 && newX < grid[newY].length) {
+          const neighbor = grid[newY][newX];
+          cell.neighbors.push(neighbor);
+        }
+      });
+    });
+  }
+
   for (const neighbor of cell.neighbors) {
     const dx = neighbor.x - cell.x;
     const dy = neighbor.y - cell.y;
