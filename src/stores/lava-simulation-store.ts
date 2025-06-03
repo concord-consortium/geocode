@@ -48,6 +48,9 @@ export const LavaSimulationStore = types
     },
     get isRunning() {
       return self.worker != null && self.pulseCount < uiStore.pulsesPerEruption;
+    },
+    get isDefaultVentLocation() {
+      return self.ventLatitude === defaultVentLatitude && self.ventLongitude === defaultVentLongitude;
     }
   }))
   .views((self) => ({
