@@ -37,6 +37,7 @@ export const LavaSimulationStore = types
   })
   .volatile((self) => ({
     ventElevation: -1, // negative elevation means we haven't set it yet
+    ventLocationChanged: false, // Used to track if the vent location has changed since the last simulation run
     coveredCells: 0,
     raster: null as AsciiRaster | null, // AsciiRaster
     worker: null as Worker | null,
@@ -48,9 +49,15 @@ export const LavaSimulationStore = types
     },
     get isRunning() {
       return self.worker != null && self.pulseCount < uiStore.pulsesPerEruption;
+    },
+    get isDefaultVentLocation() {
+      return self.ventLatitude === defaultVentLatitude && self.ventLongitude === defaultVentLongitude;
     }
   }))
   .views((self) => ({
+    get showVentLocationMarker() {
+      return self.ventLocationChanged && !self.isDefaultVentLocation;
+    },
     get acresCovered() {
       return self.coveredCells * self.cellArea / kSquareMetersPerAcre; // Convert square meters to acres
     }
@@ -75,6 +82,7 @@ export const LavaSimulationStore = types
       self.ventLatitude = latitude;
       self.ventLongitude = longitude;
       self.ventElevation = elevation;
+      self.ventLocationChanged = true;
     },
     setVentElevation(elevation: number) {
       self.ventElevation = elevation;
@@ -99,6 +107,8 @@ export const LavaSimulationStore = types
         self.setPulseCount(0);
         self.worker.terminate();
       }
+
+      self.ventLocationChanged = false;
 
       self.worker = new MolassesWorker();
       self.worker.onmessage = (e) => {

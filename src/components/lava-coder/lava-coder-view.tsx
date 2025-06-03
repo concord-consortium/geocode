@@ -51,7 +51,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
     street: "Street"
   };
   const [isPlaceVentMode, setIsPlaceVentMode] = useState(false);
-  const [showVentLocationPopup, setShowVentLocationPopup] = useState(false);
+  const [_showVentLocationPopup, setShowVentLocationPopup] = useState(false);
   const [cursor, setCursor] = useState("auto");
 
   const viewer = useCesiumViewer(lavaCoderElt, mapType);
@@ -95,6 +95,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
   const isRunning = running ||
                     (lastRunningTime.current > 0 && Date.now() - lastRunningTime.current < 1000) ||
                     lavaSimulation.isRunning;
+  const showVentLocationPopup = _showVentLocationPopup && !isRunning;
   useVentLocationMarker({ viewer, verticalExaggeration, onClick: handleOpenVentLocationPopup, hide: isRunning });
 
   useElevationData();
