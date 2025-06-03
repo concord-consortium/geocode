@@ -82,12 +82,12 @@ export default class IconButton extends PureComponent<IProps, IState> {
     return (
       <IconButtonContainer
         className={clsx(className, { active: this.props.isActive })}
-        onClick={onClick}
+        onClick={!disabled ? onClick : undefined}
         backgroundColor={backgroundColor}
         borderColor={borderColor}
         fontSize={fontSize}
-        hoverColor={hoverColor}
-        activeColor={activeColor}
+        hoverColor={!disabled ? hoverColor : backgroundColor || "white"}
+        activeColor={!disabled ? activeColor : backgroundColor || "white"}
         data-test={dataTest}
       >
         { children &&

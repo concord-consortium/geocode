@@ -1,6 +1,6 @@
 import { reaction } from "mobx";
 import { observer } from "mobx-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import VentLocationMarkerIcon from "../../assets/lava-coder/location-marker.png";
 import { lavaSimulation } from "../../stores/lava-simulation-store";
 import { LavaMapType, LavaMapTypes, uiStore } from "../../stores/ui-store";
@@ -32,11 +32,13 @@ interface IProps {
   width: number;
   height: number;
   margin: string;
+  running: boolean;
 }
 
 const round6 = (value: number) => Math.round(value * 1000000) / 1000000;
 
-export const LavaCoderView = observer(function LavaCoderView({ width, height, margin }: IProps) {
+export const LavaCoderView = observer(function LavaCoderView({ width, height, margin, running }: IProps) {
+  const lastRunningTime = useRef(0);
   const {
     showPlaceVent, showMapType, showMapTypeTerrain, showMapTypeLabeledTerrain, showMapTypeStreet, mapType,
     verticalExaggeration
@@ -79,8 +81,21 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
     );
   }, [handleCloseVentLocationPopup]);
 
-  const { ventLocation, setVentLocation } =
-    useVentLocationMarker(viewer, verticalExaggeration, handleOpenVentLocationPopup);
+  useEffect(() => {
+    return reaction(
+      () => lavaSimulation.resetCount,
+      () => handleCloseVentLocationPopup()
+    );
+  }, [handleCloseVentLocationPopup]);
+
+  // Update the last running time when the running state changes
+  if (running) lastRunningTime.current = Date.now();
+  // There can be a gap between the blockly running state and the lava simulation running state, which
+  // can result in flashing the vent location marker, so we enforce a delay after blockly running.
+  const isRunning = running ||
+                    (lastRunningTime.current > 0 && Date.now() - lastRunningTime.current < 1000) ||
+                    lavaSimulation.isRunning;
+  useVentLocationMarker({ viewer, verticalExaggeration, onClick: handleOpenVentLocationPopup, hide: isRunning });
 
   useElevationData();
 
@@ -105,12 +120,12 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
                 "elevation:", `${Math.round(elevation)}m = ${elevationFeet}ft`,
                 "in hazard zone:", isInHazardZone);
     if (isPlaceVentMode && isInHazardZone) {
-      setVentLocation(latitude, longitude, elevation / verticalExaggeration);
+      lavaSimulation.setVentLocation(latitude, longitude, elevation / verticalExaggeration);
       setShowVentLocationPopup(true);
     }
     setIsPlaceVentMode(false);
     setCursor("auto");
-  }, [isPlaceVentMode, isPointInHazardZone, setVentLocation, verticalExaggeration]);
+  }, [isPlaceVentMode, isPointInHazardZone, verticalExaggeration]);
 
   useCesiumMouseEvents(viewer, handleMouseMove, handleClick);
 
@@ -178,7 +193,8 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
       { isPlaceVentMode && <VentKey /> }
       <div className="lava-overlay-controls-bottom bottom-left-controls">
         {showPlaceVent && (
-          <LavaIconButton className="place-vent-button" label={"Place Vent"} onClick={() => togglePlaceVentMode()}>
+          <LavaIconButton className="place-vent-button" label={"Place Vent"} isActive={isPlaceVentMode}
+                          onClick={() => togglePlaceVentMode()} disabled={isRunning}>
             <PlaceVentMarkerIcon />
           </LavaIconButton>
         )}
@@ -193,7 +209,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
       <AcresCovered />
       <ProgressBar pulseCount={lavaSimulation.pulseCount} pulses={uiStore.pulsesPerEruption} />
       <ConcordAttribution />
-      <VentLocationPopup viewer={viewer} ventLocation={ventLocation} verticalExaggeration={verticalExaggeration}
+      <VentLocationPopup viewer={viewer} verticalExaggeration={verticalExaggeration}
                         show={showVentLocationPopup} onClose={handleCloseVentLocationPopup}/>
     </div>
   );

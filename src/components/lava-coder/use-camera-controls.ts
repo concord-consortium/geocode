@@ -1,10 +1,9 @@
-import {
-  Cartesian2, Cartesian3, Cartographic, CesiumWidget, Math as CSMath, HeadingPitchRange, sampleTerrainMostDetailed
-} from "@cesium/engine";
+import { Cartesian2, Cartesian3, CesiumWidget, Math as CSMath, HeadingPitchRange } from "@cesium/engine";
 import { reaction } from "mobx";
 import { useCallback, useEffect, useState } from "react";
 import { lavaSimulation } from "../../stores/lava-simulation-store";
 import { IOnDragArgs, useCesiumDragEvents } from "./use-cesium-drag-events";
+import { useTerrainProvider } from "./use-terrain-provider";
 
 export type CameraMode = "pitch" | "heading" | "panning";
 
@@ -27,6 +26,8 @@ function getAngleFromCenter(pos: Cartesian2, center: Cartesian2) {
 export function useCameraControls(viewer: CesiumWidget | null, verticalExaggeration: number) {
 
   const [cameraMode, setCameraMode] = useState<CameraMode>(kDefaultCameraMode);
+
+  const { getElevation } = useTerrainProvider();
 
   const setDefaultCameraView = useCallback(() => {
     if (!viewer) return;
@@ -117,10 +118,8 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
 
     // Cesium expects an array of Cartographic
     const cameraPos = viewer.camera.positionCartographic;
-    const [sampled] = await sampleTerrainMostDetailed(terrainProvider, [
-      new Cartographic(cameraPos.longitude, cameraPos.latitude)
-    ]);
-    const terrainHeight = (sampled.height ?? 0) * verticalExaggeration;
+    const elevation = await getElevation(cameraPos.longitude, cameraPos.latitude);
+    const terrainHeight = (elevation ?? 0) * verticalExaggeration;
 
     moveDist = Math.max(0, Math.min(moveDist, cameraPos.height - (terrainHeight + kMinDistanceAboveTerrain)));
     viewer.camera.moveForward(moveDist);

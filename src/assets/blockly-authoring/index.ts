@@ -1,4 +1,5 @@
 import Everything from "./toolbox/full-toolbox.xml";
+import TephraFull from "./toolbox/tephra-full.xml";
 import Wind from "./toolbox/wind-toolbox.xml";
 import WindAndVEI from "./toolbox/wind-vei-toolbox.xml";
 import WindAndHeight from "./toolbox/wind-height-toolbox.xml";
@@ -30,6 +31,7 @@ interface IBlocklyAuthoring {
 export const BlocklyAuthoring: IBlocklyAuthoring = {
   toolbox: {
     Everything,
+    TephraFull,
     Wind,
     "Wind and VEI": WindAndVEI,
     "Wind and Height": WindAndHeight,
@@ -52,7 +54,7 @@ export const BlocklyAuthoring: IBlocklyAuthoring = {
     "Filtered Wind Data Collection": FilteredWindDataCollection
   },
   tephraToolboxes: [
-    "Everything",
+    "TephraFull",
     "Wind",
     "Wind and VEI",
     "Wind and Height",

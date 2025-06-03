@@ -1,31 +1,31 @@
-import { Cartesian3, Cartographic, CesiumWidget, Math as CSMath } from "@cesium/engine";
+import { Cartesian3, CesiumWidget } from "@cesium/engine";
 import React, { useEffect, useRef, useState } from "react";
 import CopiedButtonIcon from "../../assets/lava-coder/content-copied-icon.png";
 import CopyButtonIcon from "../../assets/lava-coder/content-copy-icon.png";
+import { lavaSimulation } from "../../stores/lava-simulation-store";
 import IconButton from "../buttons/icon-button";
 
 import "./vent-location-popup.scss";
 
 interface IProps {
   viewer: CesiumWidget | null;
-  ventLocation: Cartographic | null;
   verticalExaggeration: number;
   show: boolean;
   onClose: () => void;
 }
 
-const kWidth = 178;
+const kWidth = 168;
 const kHeight = 42;
 // The vertical offset of the popup from the bottom of the marker
 const kVerticalOffset = 48;
 const kBorderColor = "#3baa1d";
 
-function radToDegStr(value: number) {
-  return `${CSMath.toDegrees(value).toFixed(4)}`;
+function degToStr(value: number) {
+  return `${value.toFixed(3)}`;
 }
 
-export function VentLocationPopup({ viewer, ventLocation, verticalExaggeration, show, onClose }: IProps) {
-  const [copiedVentLocation, setCopiedVentLocation] = useState<Cartographic | null>(null);
+export function VentLocationPopup({ viewer, verticalExaggeration, show, onClose }: IProps) {
+  const [copiedVentLocation, setCopiedVentLocation] = useState<{ latitude: number, longitude: number } | null>(null);
   const popupRef = useRef<HTMLDivElement>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
 
@@ -41,10 +41,10 @@ export function VentLocationPopup({ viewer, ventLocation, verticalExaggeration, 
     };
   }, [show]);
 
-  if (!ventLocation || !show) return null;
+  if (!show) return null;
 
-  const { latitude, longitude, height } = ventLocation || {};
-  const cartesian = Cartesian3.fromRadians(longitude, latitude, height * verticalExaggeration);
+  const { ventLatitude: latitude, ventLongitude: longitude, ventElevation: height } = lavaSimulation;
+  const cartesian = Cartesian3.fromDegrees(longitude, latitude, height * verticalExaggeration);
   const scene = viewer?.scene;
   const screenPosition = scene?.cartesianToCanvasCoordinates(cartesian);
   if (!screenPosition) return null;
@@ -59,14 +59,12 @@ export function VentLocationPopup({ viewer, ventLocation, verticalExaggeration, 
   };
 
   function copyLocation() {
-    if (ventLocation) {
-      const latLongStr = `${radToDegStr(ventLocation.latitude)},${radToDegStr(ventLocation.longitude)}`;
-      navigator.clipboard.writeText(latLongStr)
-        .then(() => setCopiedVentLocation(ventLocation.clone()))
-        .catch((err) => {
-          console.error("Failed to copy vent location:", err);
-        });
-    }
+    const latLongStr = `${degToStr(latitude)},${degToStr(longitude)}`;
+    navigator.clipboard.writeText(latLongStr)
+      .then(() => setCopiedVentLocation( { latitude, longitude }))
+      .catch((err) => {
+        console.error("Failed to copy vent location:", err);
+      });
   }
 
   function handleClose() {
@@ -74,8 +72,8 @@ export function VentLocationPopup({ viewer, ventLocation, verticalExaggeration, 
     onClose();
   }
 
-  const isCopied = copiedVentLocation?.latitude === ventLocation.latitude &&
-                  copiedVentLocation?.longitude === ventLocation.longitude;
+  const isCopied = copiedVentLocation?.latitude === latitude &&
+                  copiedVentLocation?.longitude === longitude;
   const imgIcon = isCopied ? CopiedButtonIcon : CopyButtonIcon;
   const imgAlt = isCopied ? "Copied" : "Copy";
 
@@ -86,9 +84,9 @@ export function VentLocationPopup({ viewer, ventLocation, verticalExaggeration, 
         aria-hidden="true" role="presentation" tabIndex={-1} />
       <div className="vent-location-popup" style={popupStyle}>
         <div className="latitude label">Lat:</div>
-        <div className="latitude value">{`${radToDegStr(latitude)}°`}</div>
+        <div className="latitude value">{`${degToStr(latitude)}°`}</div>
         <div className="longitude label">Long:</div>
-        <div className="longitude value">{`${radToDegStr(longitude)}°`}</div>
+        <div className="longitude value">{`${degToStr(longitude)}°`}</div>
         <IconButton className="copy-button" borderColor={kBorderColor} onClick={copyLocation}>
           <img src={imgIcon} alt={imgAlt} />
         </IconButton>

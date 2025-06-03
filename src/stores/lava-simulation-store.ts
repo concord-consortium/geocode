@@ -36,6 +36,7 @@ export const LavaSimulationStore = types
     pulseCount: 0,
   })
   .volatile((self) => ({
+    ventElevation: -1, // negative elevation means we haven't set it yet
     coveredCells: 0,
     raster: null as AsciiRaster | null, // AsciiRaster
     worker: null as Worker | null,
@@ -44,6 +45,9 @@ export const LavaSimulationStore = types
   .views((self) => ({
     get cellArea() {
       return (self.raster?.header.cellsize ?? 60) ** 2; // Default cell size is 60 meters
+    },
+    get isRunning() {
+      return self.worker != null && self.pulseCount < uiStore.pulsesPerEruption;
     }
   }))
   .views((self) => ({
@@ -67,11 +71,13 @@ export const LavaSimulationStore = types
     setTotalVolume(totalVolume: number) {
       self.totalVolume = totalVolume;
     },
-    setVentLatitude(ventLatitude: number) {
-      self.ventLatitude = ventLatitude;
+    setVentLocation(latitude: number, longitude: number, elevation = -1) {
+      self.ventLatitude = latitude;
+      self.ventLongitude = longitude;
+      self.ventElevation = elevation;
     },
-    setVentLongitude(ventLongitude: number) {
-      self.ventLongitude = ventLongitude;
+    setVentElevation(elevation: number) {
+      self.ventElevation = elevation;
     }
   }))
   .actions((self) => {
@@ -129,8 +135,7 @@ export const LavaSimulationStore = types
       self.setPulseCount(0);
       self.setResidual(defaultResidual);
       self.setTotalVolume(defaultEruptionVolume);
-      self.setVentLatitude(defaultVentLatitude);
-      self.setVentLongitude(defaultVentLongitude);
+      self.setVentLocation(defaultVentLatitude, defaultVentLongitude);
       self.coveredCells = 0;
       ++self.resetCount;
     }

@@ -1,22 +1,36 @@
-import { Cartesian3, Cartographic, CesiumWidget, ScreenSpaceEventHandler, ScreenSpaceEventType } from "@cesium/engine";
-import { useCallback, useEffect, useState } from "react";
+import { Cartesian3, CesiumWidget, ScreenSpaceEventHandler, ScreenSpaceEventType } from "@cesium/engine";
+import { useEffect } from "react";
 import VentLocationMarkerIcon from "../../assets/lava-coder/location-marker.png";
+import { lavaSimulation } from "../../stores/lava-simulation-store";
+import { useTerrainProvider } from "./use-terrain-provider";
 
 const kVentLocationMarkerId = "vent-location-marker";
 
-export function useVentLocationMarker(viewer: CesiumWidget | null, verticalExaggeration: number, onClick?: () => void) {
-  const [ventLocationCartesian, setVentLocationCartesian] = useState<Cartesian3 | null>(null);
+interface IProps {
+  viewer: CesiumWidget | null;
+  verticalExaggeration: number;
+  hide?: boolean;
+  onClick?: () => void;
+}
 
-  const setVentLocation = useCallback((latitude: number, longitude: number, elevation: number) => {
-    setVentLocationCartesian(Cartesian3.fromDegrees(longitude, latitude, elevation));
-  }, []);
+export function useVentLocationMarker({ viewer, verticalExaggeration, hide, onClick }: IProps) {
+  const { ventLatitude, ventLongitude, ventElevation } = lavaSimulation;
+  const { getElevation, terrainProvider } = useTerrainProvider();
 
   useEffect(() => {
-    if (viewer && ventLocationCartesian) {
-      const cartographic = Cartographic.fromCartesian(ventLocationCartesian);
-      const { latitude, longitude, height } = cartographic;
-      const adjustedHeight = height * verticalExaggeration;
-      const adjustedLocation = Cartesian3.fromRadians(longitude, latitude, adjustedHeight);
+    if (terrainProvider && ventElevation < 0) {
+      getElevation(ventLongitude, ventLatitude).then(elevation => {
+        lavaSimulation.setVentElevation(elevation);
+      }).catch(error => {
+        console.error("Error fetching elevation:", error);
+      });
+    }
+  }, [getElevation, terrainProvider, ventElevation, ventLatitude, ventLongitude]);
+
+  useEffect(() => {
+    if (viewer && ventLatitude != null && ventLongitude != null && ventElevation >= 0) {
+      const adjustedHeight = ventElevation * verticalExaggeration;
+      const adjustedLocation = Cartesian3.fromDegrees(ventLongitude, ventLatitude, adjustedHeight);
 
       // Remove previous marker if it exists
       const existing = viewer.entities.getById(kVentLocationMarkerId);
@@ -40,7 +54,14 @@ export function useVentLocationMarker(viewer: CesiumWidget | null, verticalExagg
         if (existing) viewer.entities.remove(existing);
       }
     };
-  }, [viewer, ventLocationCartesian, verticalExaggeration]);
+  }, [hide, ventElevation, ventLatitude, ventLongitude, verticalExaggeration, viewer]);
+
+  useEffect(() => {
+    if (viewer) {
+      const marker = viewer.entities.getById(kVentLocationMarkerId);
+      if (marker) marker.show = !hide;
+    }
+  });
 
   useEffect(() => {
     if (!viewer) return;
@@ -59,7 +80,4 @@ export function useVentLocationMarker(viewer: CesiumWidget | null, verticalExagg
       handler.destroy();
     };
   }, [onClick, viewer]);
-
-  const ventLocation = ventLocationCartesian ? Cartographic.fromCartesian(ventLocationCartesian) : null;
-  return { ventLocation, setVentLocation };
 }

@@ -61,8 +61,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
         blocklyController.throwError("You must set a latitude and longitude for the vent location.");
         return;
       }
-      lavaSimulation.setVentLatitude(params.lat);
-      lavaSimulation.setVentLongitude(params.long);
+      lavaSimulation.setVentLocation(params.lat, params.long);
     });
 
     addFunc("runMolassesSimulation", () => {
