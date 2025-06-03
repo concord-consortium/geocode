@@ -1,0 +1,23 @@
+.acres-covered-box {
+  align-items: center;
+  background-color: #ddedff;
+  border: solid 2px white;
+  border-radius: 5px;
+  bottom: 80px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  height: 47px;
+  justify-content: center;
+  position: absolute;
+  right: 15px;
+  width: 169px;
+
+  .acres-covered-label {
+    font-size: 16px;
+  }
+
+  .acres-covered-value {
+    font-size: 14px;
+  }
+}

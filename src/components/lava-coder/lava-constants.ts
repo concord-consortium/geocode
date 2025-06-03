@@ -1,5 +1,6 @@
 export const kFeetPerMeter = 3.28084;
 export const kMetersPerFoot = 1 / kFeetPerMeter;
+export const kSquareMetersPerAcre = 4046.86;
 
 // Default eruption values
 // These values are hardcoded in full-toolbox.xml and possibly other toolboxes and should be kept in sync
