@@ -14,7 +14,7 @@ interface IProps {
 }
 
 export function useVentLocationMarker({ viewer, verticalExaggeration, hide, onClick }: IProps) {
-  const { showVentLocationMarker, ventLatitude, ventLongitude, ventElevation } = lavaSimulation;
+  const { showPin, ventLatitude, ventLongitude, ventElevation } = lavaSimulation;
   const { getElevation, terrainProvider } = useTerrainProvider();
 
   useEffect(() => {
@@ -37,7 +37,7 @@ export function useVentLocationMarker({ viewer, verticalExaggeration, hide, onCl
       if (existing) viewer.entities.remove(existing);
 
       // Add new marker
-      if (showVentLocationMarker) {
+      if (showPin) {
         viewer.entities.add({
           id: kVentLocationMarkerId,
           position: adjustedLocation,
@@ -56,7 +56,7 @@ export function useVentLocationMarker({ viewer, verticalExaggeration, hide, onCl
         if (existing) viewer.entities.remove(existing);
       }
     };
-  }, [showVentLocationMarker, ventElevation, ventLatitude, ventLongitude, verticalExaggeration, viewer]);
+  }, [showPin, ventElevation, ventLatitude, ventLongitude, verticalExaggeration, viewer]);
 
   useEffect(() => {
     if (viewer) {
