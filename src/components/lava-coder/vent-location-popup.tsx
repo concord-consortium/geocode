@@ -43,7 +43,7 @@ export function VentLocationPopup({ viewer, verticalExaggeration, show, onClose 
 
   if (!show) return null;
 
-  const { ventLatitude: latitude, ventLongitude: longitude, ventElevation: height } = lavaSimulation;
+  const { pinLatitude: latitude, pinLongitude: longitude, pinElevation: height } = lavaSimulation;
   const cartesian = Cartesian3.fromDegrees(longitude, latitude, height * verticalExaggeration);
   const scene = viewer?.scene;
   const screenPosition = scene?.cartesianToCanvasCoordinates(cartesian);

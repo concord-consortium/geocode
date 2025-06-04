@@ -121,7 +121,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
                 "elevation:", `${Math.round(elevation)}m = ${elevationFeet}ft`,
                 "in hazard zone:", isInHazardZone);
     if (isPlaceVentMode && isInHazardZone) {
-      lavaSimulation.setVentLocation(latitude, longitude, elevation / verticalExaggeration);
+      lavaSimulation.setPinLocation(latitude, longitude, elevation / verticalExaggeration);
       lavaSimulation.setShowPin(true);
       setShowVentLocationPopup(true);
     }
