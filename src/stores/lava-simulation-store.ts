@@ -36,8 +36,11 @@ export const LavaSimulationStore = types
     pulseCount: 0,
   })
   .volatile((self) => ({
-    ventElevation: -1, // negative elevation means we haven't set it yet
-    ventLocationChanged: false, // Used to track if the vent location has changed since the last simulation run
+    // TODO: Pin information should be removed from this store and added to a UI store instead.
+    pinLatitude: 0,
+    pinLongitude: 0,
+    pinElevation: -1, // negative elevation means we haven't set it yet
+    showPin: false,
     coveredCells: 0,
     raster: null as AsciiRaster | null, // AsciiRaster
     worker: null as Worker | null,
@@ -49,15 +52,9 @@ export const LavaSimulationStore = types
     },
     get isRunning() {
       return self.worker != null && self.pulseCount < uiStore.pulsesPerEruption;
-    },
-    get isDefaultVentLocation() {
-      return self.ventLatitude === defaultVentLatitude && self.ventLongitude === defaultVentLongitude;
     }
   }))
   .views((self) => ({
-    get showVentLocationMarker() {
-      return self.ventLocationChanged && !self.isDefaultVentLocation;
-    },
     get acresCovered() {
       return self.coveredCells * self.cellArea / kSquareMetersPerAcre; // Convert square meters to acres
     }
@@ -75,17 +72,23 @@ export const LavaSimulationStore = types
     setResidual(residual: number) {
       self.residual = residual;
     },
+    setShowPin(showPin: boolean) {
+      self.showPin = showPin;
+    },
     setTotalVolume(totalVolume: number) {
       self.totalVolume = totalVolume;
     },
-    setVentLocation(latitude: number, longitude: number, elevation = -1) {
+    setVentLocation(latitude: number, longitude: number) {
       self.ventLatitude = latitude;
       self.ventLongitude = longitude;
-      self.ventElevation = elevation;
-      self.ventLocationChanged = true;
     },
-    setVentElevation(elevation: number) {
-      self.ventElevation = elevation;
+    setPinLocation(latitude: number, longitude: number, elevation = -1) {
+      self.pinLatitude = latitude;
+      self.pinLongitude = longitude;
+      self.pinElevation = elevation;
+    },
+    setPinElevation(elevation: number) {
+      self.pinElevation = elevation;
     }
   }))
   .actions((self) => {
@@ -108,7 +111,7 @@ export const LavaSimulationStore = types
         self.worker.terminate();
       }
 
-      self.ventLocationChanged = false;
+      self.setShowPin(false);
 
       self.worker = new MolassesWorker();
       self.worker.onmessage = (e) => {

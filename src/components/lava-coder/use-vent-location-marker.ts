@@ -14,30 +14,30 @@ interface IProps {
 }
 
 export function useVentLocationMarker({ viewer, verticalExaggeration, hide, onClick }: IProps) {
-  const { showVentLocationMarker, ventLatitude, ventLongitude, ventElevation } = lavaSimulation;
+  const { showPin, pinLatitude, pinLongitude, pinElevation } = lavaSimulation;
   const { getElevation, terrainProvider } = useTerrainProvider();
 
   useEffect(() => {
-    if (terrainProvider && ventElevation < 0) {
-      getElevation(ventLongitude, ventLatitude).then(elevation => {
-        lavaSimulation.setVentElevation(elevation);
+    if (terrainProvider && pinElevation < 0) {
+      getElevation(pinLongitude, pinLatitude).then(elevation => {
+        lavaSimulation.setPinElevation(elevation);
       }).catch(error => {
         console.error("Error fetching elevation:", error);
       });
     }
-  }, [getElevation, terrainProvider, ventElevation, ventLatitude, ventLongitude]);
+  }, [getElevation, terrainProvider, pinElevation, pinLatitude, pinLongitude]);
 
   useEffect(() => {
-    if (viewer && ventLatitude != null && ventLongitude != null && ventElevation >= 0) {
-      const adjustedHeight = ventElevation * verticalExaggeration;
-      const adjustedLocation = Cartesian3.fromDegrees(ventLongitude, ventLatitude, adjustedHeight);
+    if (viewer && pinLatitude != null && pinLongitude != null && pinElevation >= 0) {
+      const adjustedHeight = pinElevation * verticalExaggeration;
+      const adjustedLocation = Cartesian3.fromDegrees(pinLongitude, pinLatitude, adjustedHeight);
 
       // Remove previous marker if it exists
       const existing = viewer.entities.getById(kVentLocationMarkerId);
       if (existing) viewer.entities.remove(existing);
 
       // Add new marker
-      if (showVentLocationMarker) {
+      if (showPin) {
         viewer.entities.add({
           id: kVentLocationMarkerId,
           position: adjustedLocation,
@@ -56,7 +56,7 @@ export function useVentLocationMarker({ viewer, verticalExaggeration, hide, onCl
         if (existing) viewer.entities.remove(existing);
       }
     };
-  }, [showVentLocationMarker, ventElevation, ventLatitude, ventLongitude, verticalExaggeration, viewer]);
+  }, [showPin, pinElevation, pinLatitude, pinLongitude, verticalExaggeration, viewer]);
 
   useEffect(() => {
     if (viewer) {
