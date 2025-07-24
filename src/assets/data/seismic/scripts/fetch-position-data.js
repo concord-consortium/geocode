@@ -134,6 +134,10 @@ function createExportFile() {
     "};",
     "",
     "export default RawPositionTimeData;",
+    "export const positionStationNames = " + JSON.stringify(stationIds) + ";",
+    "export const filterStationByPositionData = (station) => {",
+    "  return positionStationNames.indexOf(station.id) > -1;",
+    "}",
   ];
 
   fs.writeFile(exportFile, textArray.join('\n'), err => {

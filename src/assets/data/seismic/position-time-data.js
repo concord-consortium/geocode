@@ -94,3 +94,7 @@ const RawPositionTimeData = {
 };
 
 export default RawPositionTimeData;
+export const positionStationNames = ["HARV","P513","FGST","P519","P518","P521","P535","P537","CRGG","P522","P541","P543","BVPP","P544","P563","P558","P565","P567","P570","P571","P573","P093","P094","P092","CRAM","MIG1","P256","P273","P306","P309","P557","P781","CMOD","P097","P128","P142","P177","P223","P225","P229","P230","P248","P275","P276","P310"]
+export const filterStationByPositionData = (station) => {
+  return positionStationNames.indexOf(station.id) > -1;
+}
