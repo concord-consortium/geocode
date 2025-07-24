@@ -41,9 +41,11 @@ cleaned to remove all the additional rows for any given station.
 The position files, which includes the east and west delta position by date for a set of 25 GPS Stations, can
 be found at data/seismic/position.[station-id].cwu.nam14.csv.
 
-We get the data from ftp://data-out.unavco.org/pub/products/position/[station-id]/[station-id].cwu.nam14.csv
+We get the data from https://data.earthscope.org/archive/gnss/products/position/[station-id]/[station-id].cwu.nam14.csv
 
 This is fetched and cleaned using the `fetch-position-data.js` script.
+
+Data endpoint requires Bearer token. Token can be obtained using EarthScopes CLI from https://pypi.org/project/earthscope-cli/. Registration is onetime and free.
 
 See also: https://www.unavco.org/data/web-services/documentation/documentation.html#!/GNSS47GPS/getPositionByStationId
 
