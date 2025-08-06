@@ -4,10 +4,10 @@ const path = require('path');
 require('dotenv').config(); // load .env if needed
 
 const host = "https://gage-data.earthscope.org";
-const token = process.env.BEARER_TOKEN;
+const token = process.env.EARTHSCOPE_BEARER_TOKEN;
 
 if (!token) {
-  console.error("❌ Missing BEARER_TOKEN in environment.");
+  console.error("❌ Missing EARTHSCOPE_BEARER_TOKEN in environment.");
   process.exit(1);
 }
 
