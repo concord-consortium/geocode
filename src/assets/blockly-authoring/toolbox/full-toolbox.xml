@@ -66,6 +66,16 @@
         </shadow>
       </value>
     </block>
+    <block type="molasses_eruption_volume">
+      <value name="molasses_eruption_volume">
+        <field name="NUM"/>
+      </value>
+    </block>
+    <block type="molasses_lava_front">
+      <value name="molasses_lava_front">
+        <field name="NUM"/>
+      </value>
+    </block>
   </category>
 
   <category name="Wind data" colour="#B35F00">
