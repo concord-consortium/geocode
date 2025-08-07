@@ -53,7 +53,9 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
 
     const checkNumber = (value: number, variableName: string, min: number, max: number) => {
       if (typeof value !== "number" || isNaN(value) || value < min || value > max) {
-        blocklyController.throwError(`Values for ${variableName} must be between ${min} and ${max}.`);
+        const errorPart1 = `The value for ${variableName} is outside of the acceptable range. `;
+        const errorPart2 = `You must set a value between ${min} and ${max}.`;
+        blocklyController.throwError(`${errorPart1}${errorPart2}`);
         return false;
       }
       return true;
