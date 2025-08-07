@@ -46,8 +46,8 @@ const UIStore = types.model("UI", {
   /*
    * LavaCoder map options
    */
-  // whether to show the Place Vent button
-  showPlaceVent: true,
+  // whether to show the Lat/Long button
+  showLatLongButton: true,
   // whether to show the Map Type button
   showMapType: true,
   // whether to include terrain in the map type options
@@ -78,6 +78,10 @@ const UIStore = types.model("UI", {
   hideBlocklyToolbox: false,
   leftTabIndex: 0,
   rightTabIndex: 0,
+  // position of point selected with Lat/Long button
+  pointLatitude: types.maybe(types.number),
+  pointLongitude: types.maybe(types.number),
+  pointElevation: types.maybe(types.number)
 })
 .views((self) => ({
   get pulsesPerEruption() {
@@ -105,6 +109,16 @@ const UIStore = types.model("UI", {
   },
   setRightTabIndex(index: number) {
     self.rightTabIndex = index;
+  },
+  setPointLocation(latitude: number, longitude: number, elevation: number) {
+    self.pointLatitude = latitude;
+    self.pointLongitude = longitude;
+    self.pointElevation = elevation;
+  },
+  clearPointLocation() {
+    self.pointLatitude = undefined;
+    self.pointLongitude = undefined;
+    self.pointElevation = undefined;
   }
 }))
 .actions((self) => {
