@@ -117,7 +117,7 @@ export function LatLongPopup({ viewer, verticalExaggeration, mode }: IProps) {
     navigator.clipboard.writeText(latLongStr)
       .then(() => setCopiedLatLong( { latitude, longitude }))
       .catch((err) => {
-        console.error("Failed to copy vent location:", err);
+        console.error("Failed to copy lat/long coordinates:", err);
       });
   }
 
