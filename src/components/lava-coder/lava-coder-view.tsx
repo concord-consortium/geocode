@@ -103,13 +103,14 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
 
   const handleClick = useCallback((latitude, longitude, elevation) => {
     const isInHazardZone = isPointInHazardZone(latitude, longitude);
+    elevation /= verticalExaggeration; // Adjust elevation for vertical exaggeration
     const elevationFeet = Math.round(elevation * kFeetPerMeter);
     // eslint-disable-next-line no-console
     console.log("Clicked at latitude:", round6(latitude), "longitude:", round6(longitude),
                 "elevation:", `${Math.round(elevation)}m = ${elevationFeet}ft`,
                 "in hazard zone:", isInHazardZone);
     if (isLatLongMode) {
-      uiStore.setPointLocation(latitude, longitude, elevation / verticalExaggeration);
+      uiStore.setPointLocation(latitude, longitude, elevation);
     }
     setIsLatLongMode(false);
     setCursor("auto");
