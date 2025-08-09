@@ -4,6 +4,9 @@ import CloseIcon3x from "../../assets/lava-coder/close-icon@3x.png";
 import HomeViewIcon1x from "../../assets/lava-coder/return-to-home-view-icon.png";
 import HomeViewIcon2x from "../../assets/lava-coder/return-to-home-view-icon@2x.png";
 import HomeViewIcon3x from "../../assets/lava-coder/return-to-home-view-icon@3x.png";
+import LatLongIcon1x from "../../assets/lava-coder/lat-long-icon.png";
+import LatLongIcon2x from "../../assets/lava-coder/lat-long-icon@2x.png";
+import LatLongIcon3x from "../../assets/lava-coder/lat-long-icon@3x.png";
 import MapStreetIcon1x from "../../assets/lava-coder/map-street-icon.png";
 import MapStreetIcon2x from "../../assets/lava-coder/map-street-icon@2x.png";
 import MapStreetIcon3x from "../../assets/lava-coder/map-street-icon@3x.png";
@@ -13,9 +16,6 @@ import MapTerrainIcon3x from "../../assets/lava-coder/map-terrain-icon@3x.png";
 import MoveIcon1x from "../../assets/lava-coder/move-icon.png";
 import MoveIcon2x from "../../assets/lava-coder/move-icon@2x.png";
 import MoveIcon3x from "../../assets/lava-coder/move-icon@3x.png";
-import PlaceVentMarkerIcon1x from "../../assets/lava-coder/place-vent-marker-icon.png";
-import PlaceVentMarkerIcon2x from "../../assets/lava-coder/place-vent-marker-icon@2x.png";
-import PlaceVentMarkerIcon3x from "../../assets/lava-coder/place-vent-marker-icon@3x.png";
 import RotateIcon1x from "../../assets/lava-coder/rotate-icon.png";
 import RotateIcon2x from "../../assets/lava-coder/rotate-icon@2x.png";
 import RotateIcon3x from "../../assets/lava-coder/rotate-icon@3x.png";
@@ -47,6 +47,12 @@ export function HomeViewIcon() {
   );
 }
 
+export function LatLongIcon() {
+  return (
+    <img src={LatLongIcon1x} srcSet={iconSrcSet(LatLongIcon1x, LatLongIcon2x, LatLongIcon3x)} alt="Lat Long" />
+  );
+}
+
 interface IMapButtonIconProps {
   mapType: LavaMapType;
 }
@@ -63,13 +69,6 @@ export function MapButtonIcon({ mapType }: IMapButtonIconProps) {
 export function MoveIcon() {
   return (
     <img src={MoveIcon1x} srcSet={iconSrcSet(MoveIcon1x, MoveIcon2x, MoveIcon3x)} alt="Enable Camera Panning" />
-  );
-}
-
-export function PlaceVentMarkerIcon() {
-  return (
-    <img src={PlaceVentMarkerIcon1x} alt="Place Vent Marker"
-        srcSet={iconSrcSet(PlaceVentMarkerIcon1x, PlaceVentMarkerIcon2x, PlaceVentMarkerIcon3x)} />
   );
 }
 
