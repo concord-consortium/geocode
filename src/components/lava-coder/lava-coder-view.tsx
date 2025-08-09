@@ -182,7 +182,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
       { isLatLongMode && <VentKey /> }
       <div className="lava-overlay-controls-bottom bottom-left-controls">
         {showLatLongButton && (
-          <LavaIconButton className="place-vent-button" width={26} label={"Lat/Long"} isActive={isLatLongMode}
+          <LavaIconButton className="lat-long-button" width={26} label={"Lat/Long"} isActive={isLatLongMode}
                           onClick={() => toggleLatLongMode()} disabled={isRunning}>
             <LatLongIcon />
           </LavaIconButton>

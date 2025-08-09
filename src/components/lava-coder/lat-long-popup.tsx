@@ -102,12 +102,10 @@ export function LatLongPopup({ viewer, verticalExaggeration, mode }: IProps) {
   }
 
   const popupStyle: React.CSSProperties = {
-    position: "absolute",
     left: popupLeft,
     top: popupTop,
     width: mode === "static" ? kWidthWithCopy : kWidthWithoutCopy,
-    height: kPopupHeight,
-    backgroundColor: "white"
+    height: kPopupHeight
   };
 
   function copyLocation() {
@@ -115,7 +113,7 @@ export function LatLongPopup({ viewer, verticalExaggeration, mode }: IProps) {
     // Copy the latitude and longitude to the clipboard
     const latLongStr = `${degToStr(latitude)},${degToStr(longitude)}`;
     navigator.clipboard.writeText(latLongStr)
-      .then(() => setCopiedLatLong( { latitude, longitude }))
+      .then(() => setCopiedLatLong({ latitude, longitude }))
       .catch((err) => {
         console.error("Failed to copy lat/long coordinates:", err);
       });
