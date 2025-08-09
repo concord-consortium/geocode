@@ -17,64 +17,24 @@ function appendValueInput(block, name, field, check="Number") {
     .appendField(field);
 }
 
-function appendEruptionVolume(block, label=strings.ERUPTION_VOLUME) {
-  appendValueInput(block, "molasses_eruption_volume", label);
-}
-function appendLavaFront(block, label=strings.LAVA_FRONT_HEIGHT) {
-  appendValueInput(block, "molasses_lava_front", label);
-}
-function appendVentLocation(block, label=strings.VENT_LOCATION) {
-  appendValueInput(block, "molasses_vent_location", label, "lat_long");
-}
-
-Blockly.Blocks.molasses_simulation_all_params = {
-  init() {
-    basicInit(this, strings.COMPUTE_LAVA);
-    appendEruptionVolume(this);
-    appendLavaFront(this);
-    appendVentLocation(this);
-  }
-};
-
-Blockly.Blocks.molasses_simulation_eruption_volume = {
-  init() {
-    basicInit(this, strings.COMPUTE_LAVA);
-    appendEruptionVolume(this);
-  }
-};
-
-Blockly.Blocks.molasses_simulation_lava_front = {
-  init() {
-    basicInit(this, strings.COMPUTE_LAVA);
-    appendLavaFront(this);
-  }
-};
-
-Blockly.Blocks.molasses_simulation_lat_long = {
-  init() {
-    basicInit(this, strings.COMPUTE_LAVA);
-    appendVentLocation(this);
-  }
-};
-
 Blockly.Blocks.molasses_eruption_volume = {
   init() {
     basicInit(this);
-    appendEruptionVolume(this, strings.SET_ERUPTION_VOLUME);
+    appendValueInput(this, "molasses_eruption_volume", strings.SET_ERUPTION_VOLUME);
   }
 };
 
 Blockly.Blocks.molasses_lava_front = {
   init() {
     basicInit(this);
-    appendLavaFront(this, strings.SET_LAVA_FRONT_HEIGHT);
+    appendValueInput(this, "molasses_lava_front", strings.SET_LAVA_FRONT_HEIGHT);
   }
 };
 
 Blockly.Blocks.molasses_vent_location = {
   init() {
     basicInit(this);
-    appendVentLocation(this, strings.SET_VENT_LOCATION);
+    appendValueInput(this, "molasses_vent_location", strings.SET_VENT_LOCATION, "lat_long");
   }
 };
 
@@ -107,22 +67,38 @@ const setEruptionVolumeFunction = "setMolassesEruptionVolume";
 const setLavaFrontFunction = "setMolassesLavaFront";
 const setVentLocationFunction = "setMolassesVentLocation";
 
-function setEruptionVolume(block) {
-  return setCodeVariable({
+Blockly.JavaScript.molasses_eruption_volume = function(block) {
+  const residualCode = setCodeVariable({
     variableName: "molasses_eruption_volume",
     block,
     setFunction: setEruptionVolumeFunction
   });
-}
-function setLavaFront(block) {
-  return setCodeVariable({
+
+  if (residualCode) {
+    block.setWarningText(null);
+    return residualCode;
+  }
+
+  return "";
+};
+
+Blockly.JavaScript.molasses_lava_front = function(block) {
+  const residualCode = setCodeVariable({
     variableName: "molasses_lava_front",
     block,
     setFunction: setLavaFrontFunction
   });
-}
-function setVentLocation(block) {
-  return setCodeVariable({
+
+  if (residualCode) {
+    block.setWarningText(null);
+    return residualCode;
+  }
+
+  return "";
+};
+
+Blockly.JavaScript.molasses_vent_location = function(block) {
+  const ventCode = setCodeVariable({
     variableName: "molasses_vent_location",
     block,
     setFunction: setVentLocationFunction,
@@ -155,83 +131,6 @@ function setVentLocation(block) {
       return true;
     }
   });
-}
-
-function runMolassesSimulation() {
-  return `
-  this.runMolassesSimulation();`;
-}
-
-Blockly.JavaScript.molasses_simulation_all_params = function(block) {
-  const volumeCode = setEruptionVolume(block);
-  const residualCode = setLavaFront(block);
-  const ventCode = setVentLocation(block);
-
-  if (volumeCode && residualCode && ventCode) {
-    block.setWarningText(null);
-    return volumeCode + residualCode + ventCode + runMolassesSimulation();
-  }
-
-  return "";
-};
-
-Blockly.JavaScript.molasses_simulation_eruption_volume = function(block) {
-  const volumeCode = setEruptionVolume(block);
-
-  if (volumeCode) {
-    block.setWarningText(null);
-    return volumeCode + runMolassesSimulation();
-  }
-
-  return "";
-};
-
-Blockly.JavaScript.molasses_simulation_lava_front = function(block) {
-  const residualCode = setLavaFront(block);
-
-  if (residualCode) {
-    block.setWarningText(null);
-    return residualCode + runMolassesSimulation();
-  }
-
-  return "";
-};
-
-Blockly.JavaScript.molasses_simulation_lat_long = function(block) {
-  const ventCode = setVentLocation(block);
-
-  if (ventCode) {
-    block.setWarningText(null);
-    return ventCode + runMolassesSimulation();
-  }
-
-  return "";
-};
-
-Blockly.JavaScript.molasses_eruption_volume = function(block) {
-  const residualCode = setEruptionVolume(block);
-
-  if (residualCode) {
-    block.setWarningText(null);
-    return residualCode;
-  }
-
-  return "";
-};
-
-Blockly.JavaScript.molasses_lava_front = function(block) {
-  const residualCode = setLavaFront(block);
-
-  if (residualCode) {
-    block.setWarningText(null);
-    return residualCode;
-  }
-
-  return "";
-};
-
-Blockly.JavaScript.molasses_vent_location = function(block) {
-  const ventCode = setVentLocation(block);
 
   if (ventCode) {
     block.setWarningText(null);
