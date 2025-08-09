@@ -63,7 +63,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
 
   useVerticalExaggeration(viewer, verticalExaggeration);
 
-  const { isPointInHazardZone } = useHazardZones(viewer, isPlaceVentMode, verticalExaggeration);
+  useHazardZones(viewer, isPlaceVentMode, verticalExaggeration);
 
   const handleOpenVentLocationPopup = useCallback(() => {
     setShowVentLocationPopup(true);
@@ -104,17 +104,17 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
 
   const handleMouseMove = useCallback((latitude, longitude) => {
     // handle mouse move event
-    const isInHazardZone = isPointInHazardZone(latitude, longitude);
+    const isInHazardZone = lavaSimulation.isPointInHazardZone(latitude, longitude);
     const kVentLocationCursorHotSpot = "13 36";
     setCursor(isPlaceVentMode
                 ? isInHazardZone
                     ? `url(${VentLocationMarkerIcon}) ${kVentLocationCursorHotSpot}, auto`
                     : "not-allowed"
                 : "auto");
-  }, [isPlaceVentMode, isPointInHazardZone]);
+  }, [isPlaceVentMode]);
 
   const handleClick = useCallback((latitude, longitude, elevation) => {
-    const isInHazardZone = isPointInHazardZone(latitude, longitude);
+    const isInHazardZone = lavaSimulation.isPointInHazardZone(latitude, longitude);
     const elevationFeet = Math.round(elevation * kFeetPerMeter);
     // eslint-disable-next-line no-console
     console.log("Clicked at latitude:", round6(latitude), "longitude:", round6(longitude),
@@ -127,7 +127,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
     }
     setIsPlaceVentMode(false);
     setCursor("auto");
-  }, [isPlaceVentMode, isPointInHazardZone, verticalExaggeration]);
+  }, [isPlaceVentMode, verticalExaggeration]);
 
   useCesiumMouseEvents(viewer, handleMouseMove, handleClick);
 

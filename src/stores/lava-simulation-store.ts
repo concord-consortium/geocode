@@ -1,9 +1,11 @@
+import { KmlDataSource, Math as CSMath } from "@cesium/engine";
 import { types } from "mobx-state-tree";
 import MolassesWorker from "../components/lava-coder/molasses.worker";
 import { AsciiRaster } from "../components/lava-coder/parse-ascii-raster";
 import {
   defaultEruptionVolume, defaultResidual, defaultVentLatitude, defaultVentLongitude, kSquareMetersPerAcre
 } from "../components/lava-coder/lava-constants";
+import { pointInPolygon } from "../utilities/geometry-utils";
 import { LavaSimulationAuthorSettings, LavaSimulationAuthorSettingsProps } from "./stores";
 import { uiStore } from "./ui-store";
 
@@ -44,7 +46,8 @@ export const LavaSimulationStore = types
     coveredCells: 0,
     raster: null as AsciiRaster | null, // AsciiRaster
     worker: null as Worker | null,
-    resetCount: 0 // Used to reset the camera when the simulation is reset
+    resetCount: 0, // Used to reset the camera when the simulation is reset
+    hazardZones: null as KmlDataSource | null
   }))
   .views((self) => ({
     get cellArea() {
@@ -52,6 +55,23 @@ export const LavaSimulationStore = types
     },
     get isRunning() {
       return self.worker != null && self.pulseCount < uiStore.pulsesPerEruption;
+    },
+    isPointInHazardZone(latitude: number, longitude: number) {
+      if (!self.hazardZones) return false;
+  
+      const latitudeRadians = CSMath.toRadians(latitude);
+      const longitudeRadians = CSMath.toRadians(longitude);
+      const hazardZoneEntities = self.hazardZones.entities.values;
+      for (const entity of hazardZoneEntities) {
+        if (entity.polygon?.hierarchy) {
+          const hierarchy = entity.polygon.hierarchy.getValue();
+          // hierarchy.positions is an array of Cartesian positions
+          if (pointInPolygon(latitudeRadians, longitudeRadians, hierarchy.positions)) {
+            return true;
+          }
+        }
+      }
+      return false;
     }
   }))
   .views((self) => ({
@@ -81,6 +101,9 @@ export const LavaSimulationStore = types
     setVentLocation(latitude: number, longitude: number) {
       self.ventLatitude = latitude;
       self.ventLongitude = longitude;
+    },
+    setHazardZones(hazardZones: KmlDataSource) {
+      self.hazardZones = hazardZones;
     },
     setPinLocation(latitude: number, longitude: number, elevation = -1) {
       self.pinLatitude = latitude;
