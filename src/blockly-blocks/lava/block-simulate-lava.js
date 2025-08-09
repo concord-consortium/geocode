@@ -78,6 +78,13 @@ Blockly.Blocks.molasses_vent_location = {
   }
 };
 
+Blockly.Blocks.molasses_run_simulation = {
+  init() {
+    basicInit(this, strings.RUN_SIMULATION);
+    this.appendStatementInput("setters");
+  }
+};
+
 // interface SetCodeVariableParameters {
 //   block: Blockly.Block;
 //   setFunction: string;
@@ -96,25 +103,29 @@ function setCodeVariable({ block, setFunction, validateFunction, variableName })
   this.${setFunction}(${value});`;
 }
 
+const setEruptionVolumeFunction = "setMolassesEruptionVolume";
+const setLavaFrontFunction = "setMolassesLavaFront";
+const setVentLocationFunction = "setMolassesVentLocation";
+
 function setEruptionVolume(block) {
   return setCodeVariable({
     variableName: "molasses_eruption_volume",
     block,
-    setFunction: "setMolassesEruptionVolume"
+    setFunction: setEruptionVolumeFunction
   });
 }
 function setLavaFront(block) {
   return setCodeVariable({
     variableName: "molasses_lava_front",
     block,
-    setFunction: "setMolassesLavaFront"
+    setFunction: setLavaFrontFunction
   });
 }
 function setVentLocation(block) {
   return setCodeVariable({
     variableName: "molasses_vent_location",
     block,
-    setFunction: "setMolassesVentLocation",
+    setFunction: setVentLocationFunction,
     validateFunction: (value, _block) => {
       // The value is a string in the form of ({lat: number, long: number})
       const regex = /^\(\{lat:\s*(-?\d+(\.\d+)?),\s*long:\s*(-?\d+(\.\d+)?)\}\)$/;
@@ -228,4 +239,22 @@ Blockly.JavaScript.molasses_vent_location = function(block) {
   }
 
   return "";
+};
+
+Blockly.JavaScript.molasses_run_simulation = function(block) {
+  const contents = Blockly.JavaScript.statementToCode(block, "setters");
+  if (
+    !contents.includes(setEruptionVolumeFunction) && !contents.includes(setLavaFrontFunction) &&
+    !contents.includes(setVentLocationFunction)
+  ) {
+    block.setWarningText("You must set at least one parameter before running the simulation.");
+    return "";
+  } else {
+    block.setWarningText(null);
+  }
+
+  return `
+  this.resetSimulation();
+  ${contents}
+  this.runMolassesSimulation();\n`;
 };

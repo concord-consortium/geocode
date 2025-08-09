@@ -46,6 +46,11 @@
         <field name="lat_long"/>
       </value>
     </block>
+    <block type="molasses_run_simulation">
+      <value name="molasses_run_simulation">
+        <field name="setters"/>
+      </value>
+    </block>
   </category>
 
   <category name="Logic" colour="%{BKY_LOGIC_HUE}">

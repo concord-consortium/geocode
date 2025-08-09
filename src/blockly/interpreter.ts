@@ -77,6 +77,9 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       lavaSimulation.setVentLocation(params.lat, params.long);
     });
 
+    addFunc("resetSimulation", () => {
+      lavaSimulation.resetDefaults();
+    });
     addFunc("runMolassesSimulation", () => {
       lavaSimulation.runSimulation();
     });

@@ -100,6 +100,11 @@ export const LavaSimulationStore = types
           (self[key] as any) = data[key] as any;
         });
       },
+      resetDefaults: () => {
+        self.setResidual(defaultResidual);
+        self.setTotalVolume(defaultEruptionVolume);
+        self.setVentLocation(defaultVentLatitude, defaultVentLongitude);
+      }
     };
   })
   .actions((self) => ({
@@ -146,9 +151,7 @@ export const LavaSimulationStore = types
       }
       lavaElevations = [];
       self.setPulseCount(0);
-      self.setResidual(defaultResidual);
-      self.setTotalVolume(defaultEruptionVolume);
-      self.setVentLocation(defaultVentLatitude, defaultVentLongitude);
+      self.resetDefaults();
       self.coveredCells = 0;
       ++self.resetCount;
     }
