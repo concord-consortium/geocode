@@ -38,11 +38,6 @@ export const LavaSimulationStore = types
     pulseCount: 0,
   })
   .volatile((self) => ({
-    // TODO: Pin information should be removed from this store and added to a UI store instead.
-    pinLatitude: 0,
-    pinLongitude: 0,
-    pinElevation: -1, // negative elevation means we haven't set it yet
-    showPin: false,
     coveredCells: 0,
     raster: null as AsciiRaster | null, // AsciiRaster
     worker: null as Worker | null,
@@ -92,9 +87,6 @@ export const LavaSimulationStore = types
     setResidual(residual: number) {
       self.residual = residual;
     },
-    setShowPin(showPin: boolean) {
-      self.showPin = showPin;
-    },
     setTotalVolume(totalVolume: number) {
       self.totalVolume = totalVolume;
     },
@@ -104,14 +96,6 @@ export const LavaSimulationStore = types
     },
     setHazardZones(hazardZones: KmlDataSource) {
       self.hazardZones = hazardZones;
-    },
-    setPinLocation(latitude: number, longitude: number, elevation = -1) {
-      self.pinLatitude = latitude;
-      self.pinLongitude = longitude;
-      self.pinElevation = elevation;
-    },
-    setPinElevation(elevation: number) {
-      self.pinElevation = elevation;
     }
   }))
   .actions((self) => {
@@ -133,8 +117,6 @@ export const LavaSimulationStore = types
         self.setPulseCount(0);
         self.worker.terminate();
       }
-
-      self.setShowPin(false);
 
       self.worker = new MolassesWorker();
       self.worker.onmessage = (e) => {
