@@ -20,6 +20,11 @@
         <field name="lat_long"/>
       </value>
     </block>
+    <block type="molasses_set_flag_location">
+      <value name="flag_label">
+        <field name="flag_label"/>
+      </value>
+    </block>
   </category>
 
   <category name="Logic" colour="%{BKY_LOGIC_HUE}">

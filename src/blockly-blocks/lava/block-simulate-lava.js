@@ -45,6 +45,15 @@ Blockly.Blocks.molasses_run_simulation = {
   }
 };
 
+Blockly.Blocks.molasses_set_flag_location = {
+  init() {
+    basicInit(this, strings.SET_FLAG_LOCATION);
+    this.appendDummyInput()
+      .appendField("named")
+      .appendField(new Blockly.FieldTextInput(""), "flag_label");
+  }
+};
+
 // interface SetCodeVariableParameters {
 //   block: Blockly.Block;
 //   setFunction: string;
@@ -156,4 +165,17 @@ Blockly.JavaScript.molasses_run_simulation = function(block) {
   this.resetSimulation();
   ${contents}
   this.runMolassesSimulation();\n`;
+};
+
+Blockly.JavaScript.molasses_set_flag_location = function(block) {
+  const flagLabel = block.getFieldValue('flag_label');
+  if (flagLabel && flagLabel.length > 15) {
+    block.setWarningText("Flag name cannot be more than 15 characters.");
+    return "";
+  }
+  block.setWarningText(null);
+
+  return "";
+  // return `
+  // this.setMolassesFlagLocation(${flagLabel});\n`;
 };
