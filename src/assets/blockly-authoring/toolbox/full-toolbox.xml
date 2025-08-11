@@ -52,6 +52,9 @@
       <value name="flag_label">
         <field name="flag_label"/>
       </value>
+      <value name="flag_color">
+        <field name="flag_color"/>
+      </value>
     </block>
   </category>
 

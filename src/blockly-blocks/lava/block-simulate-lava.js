@@ -1,4 +1,4 @@
-import { maxLat, maxLong, minLat, minLong } from "../../components/lava-coder/lava-constants";
+import { flagColors, maxLat, maxLong, minLat, minLong } from "../../components/lava-coder/lava-constants";
 import * as strings from "../../strings/blockly-blocks/lava/simulate-lava";
 
 function basicInit(block, title) {
@@ -51,8 +51,22 @@ Blockly.Blocks.molasses_set_flag_location = {
     this.appendDummyInput()
       .appendField("named")
       .appendField(new Blockly.FieldTextInput(""), "flag_label");
+    this.appendDummyInput()
+      .appendField("color")
+      .appendField(new Blockly.FieldDropdown(flagColors.map(color => [color, color])), "flag_color");
+    appendValueInput(this, "molasses_flag_location", "location", "lat_long");
   }
 };
+
+function getAndValidateValue({ block, validateFunction, variableName }) {
+  const value = Blockly.JavaScript.valueToCode(block, variableName, Blockly.JavaScript.ORDER_ATOMIC);
+
+  if (validateFunction && !validateFunction(value, block)) {
+    return null;
+  }
+
+  return value;
+}
 
 // interface SetCodeVariableParameters {
 //   block: Blockly.Block;
@@ -62,11 +76,9 @@ Blockly.Blocks.molasses_set_flag_location = {
 //   variableName: string;
 // }
 function setCodeVariable({ block, setFunction, validateFunction, variableName }) {
-  const value = Blockly.JavaScript.valueToCode(block, variableName, Blockly.JavaScript.ORDER_ATOMIC);
+  const value = getAndValidateValue({ block, validateFunction, variableName });
 
-  if (validateFunction && !validateFunction(value, block)) {
-    return null;
-  }
+  if (value == null) return null;
 
   return `
   this.${setFunction}(${value});`;
@@ -106,39 +118,41 @@ Blockly.JavaScript.molasses_lava_front = function(block) {
   return "";
 };
 
+function validateLatLong(value, _block) {
+  // The value is a string in the form of ({lat: number, long: number})
+  const regex = /^\(\{lat:\s*(-?\d+(\.\d+)?),\s*long:\s*(-?\d+(\.\d+)?)\}\)$/;
+  const match = value.match(regex);
+
+  if (!match) {
+    _block.setWarningText("Latitude and longitude values must be specified");
+    return false;
+  }
+
+  const lat = parseFloat(match[1]);
+  const long = parseFloat(match[3]);
+
+  if (lat == null || isNaN(lat) || long == null || isNaN(long)) {
+    _block.setWarningText("Latitude and longitude values must be numbers");
+    return false;
+  }
+  if (lat < minLat || lat > maxLat) {
+    _block.setWarningText(`Latitude values must be between ${minLat} and ${maxLat}`);
+    return false;
+  }
+  if (long < minLong || long > maxLong) {
+    _block.setWarningText(`Longitude values must be between ${minLong} and ${maxLong}`);
+    return false;
+  }
+
+  return true;
+}
+
 Blockly.JavaScript.molasses_vent_location = function(block) {
   const setVentLocationCode = setCodeVariable({
     variableName: "molasses_vent_location",
     block,
     setFunction: setVentLocationFunction,
-    validateFunction: (value, _block) => {
-      // The value is a string in the form of ({lat: number, long: number})
-      const regex = /^\(\{lat:\s*(-?\d+(\.\d+)?),\s*long:\s*(-?\d+(\.\d+)?)\}\)$/;
-      const match = value.match(regex);
-
-      if (!match) {
-        _block.setWarningText("Latitude and longitude values must be specified");
-        return false;
-      }
-
-      const lat = parseFloat(match[1]);
-      const long = parseFloat(match[3]);
-
-      if (lat == null || isNaN(lat) || long == null || isNaN(long)) {
-        _block.setWarningText("Latitude and longitude values must be numbers");
-        return false;
-      }
-      if (lat < minLat || lat > maxLat) {
-        _block.setWarningText(`Latitude values must be between ${minLat} and ${maxLat}`);
-        return false;
-      }
-      if (long < minLong || long > maxLong) {
-        _block.setWarningText(`Longitude values must be between ${minLong} and ${maxLong}`);
-        return false;
-      }
-
-      return true;
-    }
+    validateFunction: validateLatLong
   });
 
   if (setVentLocationCode) {
@@ -173,7 +187,16 @@ Blockly.JavaScript.molasses_set_flag_location = function(block) {
     block.setWarningText("Flag name cannot be more than 15 characters.");
     return "";
   }
+  const flagColor = block.getFieldValue('flag_color') || "green";
+  const position = getAndValidateValue({
+    variableName: "molasses_flag_location",
+    block,
+    validateFunction: validateLatLong
+  });
+  if (!position) return "";
   block.setWarningText(null);
+
+  console.log(`--- flag`, flagLabel, flagColor, position);
 
   return "";
   // return `
