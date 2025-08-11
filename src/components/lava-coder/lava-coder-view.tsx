@@ -6,7 +6,7 @@ import { LavaMapType, LavaMapTypes, uiStore } from "../../stores/ui-store";
 import { AcresCovered } from "./acres-covered-box";
 import { CompassHeading } from "./compass-heading";
 import { ConcordAttribution } from "./concord-attribution";
-import { LatLongPopup } from "./lat-long-popup";
+import { ILatLongElevation, LatLongPopup } from "./lat-long-popup";
 import {
   HomeViewIcon, LatLongIcon, MapButtonIcon, MoveIcon, RotateHeadingIcon, RotatePitchIcon,
   ZoomInIcon, ZoomOutIcon
@@ -64,7 +64,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
 
   const clearLatLong = useCallback(() => {
     setIsLatLongMode(false);
-    uiStore.clearPointLocation();
+    uiStore.clearLatLongPoint();
   }, []);
 
   // Close the lat/long popup when the worker is reset (e.g., when a new simulation starts)
@@ -101,6 +101,10 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
     setCursor(isLatLongMode ? "crosshair" : "auto");
   }, [isLatLongMode]);
 
+  const setLatLongPoint = useCallback((latLong: ILatLongElevation) => {
+    uiStore.setLatLongPoint(latLong.latitude, latLong.longitude, latLong.elevation);
+  }, []);
+
   const handleClick = useCallback((latitude, longitude, elevation) => {
     const isInHazardZone = isPointInHazardZone(latitude, longitude);
     elevation /= verticalExaggeration; // Adjust elevation for vertical exaggeration
@@ -110,7 +114,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
                 "elevation:", `${Math.round(elevation)}m = ${elevationFeet}ft`,
                 "in hazard zone:", isInHazardZone);
     if (isLatLongMode) {
-      uiStore.setPointLocation(latitude, longitude, elevation);
+      uiStore.setLatLongPoint(latitude, longitude, elevation);
     }
     setIsLatLongMode(false);
     setCursor("auto");
@@ -199,7 +203,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
       <ProgressBar pulseCount={lavaSimulation.pulseCount} pulses={uiStore.pulsesPerEruption} />
       <ConcordAttribution />
       <LatLongPopup viewer={viewer} verticalExaggeration={verticalExaggeration}
-                    mode={latLongPopupMode} />
+                    mode={latLongPopupMode} onSetLatLongPoint={setLatLongPoint} />
     </div>
   );
 });
