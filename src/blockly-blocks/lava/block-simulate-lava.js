@@ -68,37 +68,37 @@ const setLavaFrontFunction = "setMolassesLavaFront";
 const setVentLocationFunction = "setMolassesVentLocation";
 
 Blockly.JavaScript.molasses_eruption_volume = function(block) {
-  const residualCode = setCodeVariable({
+  const setEruptionVolumeCode = setCodeVariable({
     variableName: "molasses_eruption_volume",
     block,
     setFunction: setEruptionVolumeFunction
   });
 
-  if (residualCode) {
+  if (setEruptionVolumeCode) {
     block.setWarningText(null);
-    return residualCode;
+    return setEruptionVolumeCode;
   }
 
   return "";
 };
 
 Blockly.JavaScript.molasses_lava_front = function(block) {
-  const residualCode = setCodeVariable({
+  const setLavaFrontCode = setCodeVariable({
     variableName: "molasses_lava_front",
     block,
     setFunction: setLavaFrontFunction
   });
 
-  if (residualCode) {
+  if (setLavaFrontCode) {
     block.setWarningText(null);
-    return residualCode;
+    return setLavaFrontCode;
   }
 
   return "";
 };
 
 Blockly.JavaScript.molasses_vent_location = function(block) {
-  const ventCode = setCodeVariable({
+  const setVentLocationCode = setCodeVariable({
     variableName: "molasses_vent_location",
     block,
     setFunction: setVentLocationFunction,
@@ -132,9 +132,9 @@ Blockly.JavaScript.molasses_vent_location = function(block) {
     }
   });
 
-  if (ventCode) {
+  if (setVentLocationCode) {
     block.setWarningText(null);
-    return ventCode;
+    return setVentLocationCode;
   }
 
   return "";
