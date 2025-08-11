@@ -17,11 +17,7 @@ export const minLat = 18.90863649;
 export const maxLat = 20.26825881713135;
 export const rangeLat = maxLat - minLat;
 
-// Flag colors
+// Flag location constants
 export const maxFlags = 4;
-export const flagGreen = "green";
-export const flagBlue = "blue";
-export const flagOrange = "orange";
-export const flagPurple = "purple";
-export const flagColors = [flagGreen, flagBlue, flagOrange, flagPurple] as const;
+export const flagColors = ["green", "blue", "orange", "purple"] as const;
 export type FlagColor = typeof flagColors[number];

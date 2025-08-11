@@ -86,19 +86,17 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     });
 
     addFunc("addFlagLocation", (args) => {
-      const { location, color, name } = args;
-      const { lat: latitude, long: longitude } = location;
-
-      if (latitude == null || longitude == null) {
-        blocklyController.throwError("You must set a latitude and longitude for the flag location.");
-        return;
-      }
-
       if (lavaSimulation.flagLocations.length >= maxFlags) {
         blocklyController.throwError(`You cannot add more than ${maxFlags} flag locations.`);
         return;
       }
 
+      const { location, color, name } = args;
+      const { lat: latitude, long: longitude } = location;
+      if (latitude == null || longitude == null) {
+        blocklyController.throwError("You must set a latitude and longitude for the flag location.");
+        return;
+      }
       if (!lavaSimulation.isPointOnIsland(latitude, longitude)) {
         blocklyController.throwError("The flag location must be on the island.");
         return;
