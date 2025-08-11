@@ -1,5 +1,5 @@
 import Interpreter from "js-interpreter";
-import { BlocklyController } from "./blockly-controller";
+import { maxFlags } from "../components/lava-coder/lava-constants";
 import { StationData } from "../deformation";
 import { IBlocklyWorkspace } from "../interfaces";
 import { Datasets, Dataset, Filter, ProtoTimeRange, TimeRange } from "../stores/data-sets";
@@ -8,6 +8,7 @@ import { ColorMethod } from "../stores/seismic-simulation-store";
 import { IStore } from "../stores/stores";
 import { ITephraModelParams } from "../stores/tephra-simulation-store";
 import { uiStore } from "../stores/ui-store";
+import { BlocklyController } from "./blockly-controller";
 
 const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore,
                              workspace: IBlocklyWorkspace) => {
@@ -82,6 +83,28 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     });
     addFunc("runMolassesSimulation", () => {
       lavaSimulation.runSimulation();
+    });
+
+    addFunc("addFlagLocation", (args) => {
+      const { location, color, label } = args;
+      const { lat: latitude, long: longitude } = location;
+
+      if (latitude == null || longitude == null) {
+        blocklyController.throwError("You must set a latitude and longitude for the flag location.");
+        return;
+      }
+
+      if (lavaSimulation.flags.length >= maxFlags) {
+        blocklyController.throwError(`You cannot add more than ${maxFlags} flag locations.`);
+        return;
+      }
+
+      if (!lavaSimulation.isPointOnIsland(latitude, longitude)) {
+        blocklyController.throwError("The flag location must be on the island.");
+        return;
+      }
+
+      lavaSimulation.addFlagLocation({ color, label, latitude, longitude });
     });
 
     /** ==== Tephra simulation model setters ==== */

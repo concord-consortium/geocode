@@ -2,8 +2,10 @@ import { types } from "mobx-state-tree";
 import MolassesWorker from "../components/lava-coder/molasses.worker";
 import { AsciiRaster } from "../components/lava-coder/parse-ascii-raster";
 import {
-  defaultEruptionVolume, defaultResidual, defaultVentLatitude, defaultVentLongitude, kSquareMetersPerAcre
+  defaultEruptionVolume, defaultResidual, defaultVentLatitude, defaultVentLongitude, FlagColor, kSquareMetersPerAcre,
+  maxFlags
 } from "../components/lava-coder/lava-constants";
+import { isPointOnIsland } from "../utilities/molasses-utils";
 import { LavaSimulationAuthorSettings, LavaSimulationAuthorSettingsProps } from "./stores";
 import { uiStore } from "./ui-store";
 
@@ -27,6 +29,13 @@ function countCoveredCells(_lavaElevations: number[][]) {
   return coveredCells;
 }
 
+interface FlagLocation {
+  color: FlagColor;
+  label?: string;
+  latitude: number;
+  longitude: number;
+}
+
 export const LavaSimulationStore = types
   .model("lavaSimulation", {
     residual: defaultResidual,
@@ -37,6 +46,7 @@ export const LavaSimulationStore = types
   })
   .volatile((self) => ({
     coveredCells: 0,
+    flags: [] as FlagLocation[],
     raster: null as AsciiRaster | null, // AsciiRaster
     worker: null as Worker | null,
     resetCount: 0 // Used to reset the camera when the simulation is reset
@@ -44,6 +54,10 @@ export const LavaSimulationStore = types
   .views((self) => ({
     get cellArea() {
       return (self.raster?.header.cellsize ?? 60) ** 2; // Default cell size is 60 meters
+    },
+    isPointOnIsland(latitude: number, longitude: number) {
+      if (!self.raster) return false;
+      return isPointOnIsland(latitude, longitude, self.raster);
     },
     get isRunning() {
       return self.worker != null && self.pulseCount < uiStore.pulsesPerEruption;
@@ -55,6 +69,14 @@ export const LavaSimulationStore = types
     }
   }))
   .actions((self) => ({
+    addFlagLocation(flag: FlagLocation) {
+      if (self.flags.length < maxFlags) {
+        self.flags.push(flag);
+      }
+    },
+    clearFlagPositions() {
+      self.flags = [];
+    },
     countCoveredCells(grid: number[][]) {
       self.coveredCells = countCoveredCells(grid);
     },
