@@ -1,3 +1,4 @@
+import { observable } from "mobx";
 import { types } from "mobx-state-tree";
 import MolassesWorker from "../components/lava-coder/molasses.worker";
 import { AsciiRaster } from "../components/lava-coder/parse-ascii-raster";
@@ -46,7 +47,7 @@ export const LavaSimulationStore = types
   })
   .volatile((self) => ({
     coveredCells: 0,
-    flagLocations: [] as FlagLocation[],
+    flagLocations: observable.array<FlagLocation>([]),
     raster: null as AsciiRaster | null, // AsciiRaster
     worker: null as Worker | null,
     resetCount: 0 // Used to reset the camera when the simulation is reset
@@ -75,7 +76,7 @@ export const LavaSimulationStore = types
       }
     },
     clearFlagPositions() {
-      self.flagLocations = [];
+      self.flagLocations.clear();
     },
     countCoveredCells(grid: number[][]) {
       self.coveredCells = countCoveredCells(grid);
