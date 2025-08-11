@@ -1,10 +1,8 @@
 import { maxLat, maxLong, minLat, minLong } from "../../components/lava-coder/lava-constants";
-import { uiStore } from "../../stores/ui-store";
 import * as strings from "../../strings/blockly-blocks/lava/simulate-lava";
 
-function basicInit(block) {
-  block.appendDummyInput()
-    .appendField(strings.COMPUTE_LAVA);
+function basicInit(block, title) {
+  if (title) block.appendDummyInput().appendField(title);
   block.setPreviousStatement(true, null);
   block.setNextStatement(true, null);
   block.setColour("#EB0000");
@@ -19,43 +17,31 @@ function appendValueInput(block, name, field, check="Number") {
     .appendField(field);
 }
 
-function appendEruptionVolume(block) {
-  appendValueInput(block, "molasses_eruption_volume", strings.ERUPTION_VOLUME);
-}
-function appendLavaFront(block) {
-  appendValueInput(block, "molasses_lava_front", strings.LAVA_FRONT_HEIGHT);
-}
-function appendVentLocation(block) {
-  appendValueInput(block, "molasses_vent_location", strings.VENT_LOCATION, "lat_long");
-}
-
-Blockly.Blocks.molasses_simulation_all_params = {
+Blockly.Blocks.molasses_eruption_volume = {
   init() {
     basicInit(this);
-    appendEruptionVolume(this);
-    appendLavaFront(this);
-    appendVentLocation(this);
+    appendValueInput(this, "molasses_eruption_volume", strings.SET_ERUPTION_VOLUME);
   }
 };
 
-Blockly.Blocks.molasses_simulation_eruption_volume = {
+Blockly.Blocks.molasses_lava_front = {
   init() {
     basicInit(this);
-    appendEruptionVolume(this);
+    appendValueInput(this, "molasses_lava_front", strings.SET_LAVA_FRONT_HEIGHT);
   }
 };
 
-Blockly.Blocks.molasses_simulation_lava_front = {
+Blockly.Blocks.molasses_vent_location = {
   init() {
     basicInit(this);
-    appendLavaFront(this);
+    appendValueInput(this, "molasses_vent_location", strings.SET_VENT_LOCATION, "lat_long");
   }
 };
 
-Blockly.Blocks.molasses_simulation_lat_long = {
+Blockly.Blocks.molasses_run_simulation = {
   init() {
-    basicInit(this);
-    appendVentLocation(this);
+    basicInit(this, strings.RUN_SIMULATION);
+    this.appendStatementInput("setters");
   }
 };
 
@@ -77,44 +63,45 @@ function setCodeVariable({ block, setFunction, validateFunction, variableName })
   this.${setFunction}(${value});`;
 }
 
-function getNumberValidationFunction(min, max, parameterName) {
-  return (value, block) => {
-    const numberValue = parseFloat(value);
-    if (isNaN(numberValue)) {
-      block.setWarningText(`${parameterName} must be a number`);
-      return false;
-    }
-    if (numberValue < min || numberValue > max) {
-      block.setWarningText(`${parameterName} must be between ${min} and ${max}`);
-      return false;
-    }
-    return true;
-  };
-}
+const setEruptionVolumeFunction = "setMolassesEruptionVolume";
+const setLavaFrontFunction = "setMolassesLavaFront";
+const setVentLocationFunction = "setMolassesVentLocation";
 
-function setEruptionVolume(block) {
-  return setCodeVariable({
+Blockly.JavaScript.molasses_eruption_volume = function(block) {
+  const setEruptionVolumeCode = setCodeVariable({
     variableName: "molasses_eruption_volume",
     block,
-    setFunction: "setMolassesEruptionVolume",
-    validateFunction:
-      getNumberValidationFunction(uiStore.minEruptionVolume, uiStore.maxEruptionVolume, "Eruption volume")
+    setFunction: setEruptionVolumeFunction
   });
-}
-function setLavaFront(block) {
-  return setCodeVariable({
+
+  if (setEruptionVolumeCode) {
+    block.setWarningText(null);
+    return setEruptionVolumeCode;
+  }
+
+  return "";
+};
+
+Blockly.JavaScript.molasses_lava_front = function(block) {
+  const setLavaFrontCode = setCodeVariable({
     variableName: "molasses_lava_front",
     block,
-    setFunction: "setMolassesLavaFront",
-    validateFunction:
-      getNumberValidationFunction(uiStore.minLavaFrontHeight, uiStore.maxLavaFrontHeight, "Lava front height")
+    setFunction: setLavaFrontFunction
   });
-}
-function setVentLocation(block) {
-  return setCodeVariable({
+
+  if (setLavaFrontCode) {
+    block.setWarningText(null);
+    return setLavaFrontCode;
+  }
+
+  return "";
+};
+
+Blockly.JavaScript.molasses_vent_location = function(block) {
+  const setVentLocationCode = setCodeVariable({
     variableName: "molasses_vent_location",
     block,
-    setFunction: "setMolassesVentLocation",
+    setFunction: setVentLocationFunction,
     validateFunction: (value, _block) => {
       // The value is a string in the form of ({lat: number, long: number})
       const regex = /^\(\{lat:\s*(-?\d+(\.\d+)?),\s*long:\s*(-?\d+(\.\d+)?)\}\)$/;
@@ -144,55 +131,29 @@ function setVentLocation(block) {
       return true;
     }
   });
-}
 
-function runMolassesSimulation() {
+  if (setVentLocationCode) {
+    block.setWarningText(null);
+    return setVentLocationCode;
+  }
+
+  return "";
+};
+
+Blockly.JavaScript.molasses_run_simulation = function(block) {
+  const contents = Blockly.JavaScript.statementToCode(block, "setters");
+  if (
+    !contents.includes(setEruptionVolumeFunction) && !contents.includes(setLavaFrontFunction) &&
+    !contents.includes(setVentLocationFunction)
+  ) {
+    block.setWarningText("You must set at least one parameter before running the simulation.");
+    return "";
+  } else {
+    block.setWarningText(null);
+  }
+
   return `
-  this.runMolassesSimulation();`;
-}
-
-Blockly.JavaScript.molasses_simulation_all_params = function(block) {
-  const volumeCode = setEruptionVolume(block);
-  const residualCode = setLavaFront(block);
-  const ventCode = setVentLocation(block);
-
-  if (volumeCode && residualCode && ventCode) {
-    block.setWarningText(null);
-    return volumeCode + residualCode + ventCode + runMolassesSimulation();
-  }
-
-  return "";
-};
-
-Blockly.JavaScript.molasses_simulation_eruption_volume = function(block) {
-  const volumeCode = setEruptionVolume(block);
-
-  if (volumeCode) {
-    block.setWarningText(null);
-    return volumeCode + runMolassesSimulation();
-  }
-
-  return "";
-};
-
-Blockly.JavaScript.molasses_simulation_lava_front = function(block) {
-  const residualCode = setLavaFront(block);
-
-  if (residualCode) {
-    block.setWarningText(null);
-    return residualCode + runMolassesSimulation();
-  }
-
-  return "";
-};
-
-Blockly.JavaScript.molasses_simulation_lat_long = function(block) {
-  const ventCode = setVentLocation(block);
-
-  if (ventCode) {
-    block.setWarningText(null);
-    return ventCode + runMolassesSimulation();
-  }
-
-  return "";
+  this.resetSimulation();
+  ${contents}
+  this.runMolassesSimulation();\n`;
 };

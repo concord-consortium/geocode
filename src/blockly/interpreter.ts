@@ -1,12 +1,13 @@
 import Interpreter from "js-interpreter";
-import { lavaSimulation } from "../stores/lava-simulation-store";
-import { ITephraModelParams } from "../stores/tephra-simulation-store";
 import { BlocklyController } from "./blockly-controller";
-import { IBlocklyWorkspace } from "../interfaces";
-import { IStore } from "../stores/stores";
-import { Datasets, Dataset, Filter, ProtoTimeRange, TimeRange } from "../stores/data-sets";
 import { StationData } from "../deformation";
+import { IBlocklyWorkspace } from "../interfaces";
+import { Datasets, Dataset, Filter, ProtoTimeRange, TimeRange } from "../stores/data-sets";
+import { lavaSimulation } from "../stores/lava-simulation-store";
 import { ColorMethod } from "../stores/seismic-simulation-store";
+import { IStore } from "../stores/stores";
+import { ITephraModelParams } from "../stores/tephra-simulation-store";
+import { uiStore } from "../stores/ui-store";
 
 const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore,
                              workspace: IBlocklyWorkspace) => {
@@ -50,10 +51,22 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
 
     /** ==== Molasses simulation functions ==== */
 
+    const checkNumber = (value: number, variableName: string, min: number, max: number) => {
+      if (typeof value !== "number" || isNaN(value) || value < min || value > max) {
+        const errorPart1 = `The value for ${variableName} is outside of the acceptable range. `;
+        const errorPart2 = `You must set a value between ${min} and ${max}.`;
+        blocklyController.throwError(`${errorPart1}${errorPart2}`);
+        return false;
+      }
+      return true;
+    };
+
     addFunc("setMolassesEruptionVolume", (volume: number) => {
+      if (!checkNumber(volume, "eruption volume", uiStore.minEruptionVolume, uiStore.maxEruptionVolume)) return;
       lavaSimulation.setTotalVolume(volume);
     });
     addFunc("setMolassesLavaFront", (height: number) => {
+      if (!checkNumber(height, "lava front height", uiStore.minLavaFrontHeight, uiStore.maxLavaFrontHeight)) return;
       lavaSimulation.setResidual(height);
     });
     addFunc("setMolassesVentLocation", (params: {lat: number, long: number}) => {
@@ -64,6 +77,9 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       lavaSimulation.setVentLocation(params.lat, params.long);
     });
 
+    addFunc("resetSimulation", () => {
+      lavaSimulation.resetDefaults();
+    });
     addFunc("runMolassesSimulation", () => {
       lavaSimulation.runSimulation();
     });
