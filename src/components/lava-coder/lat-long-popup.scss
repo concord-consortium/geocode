@@ -1,13 +1,6 @@
 $control-label-color: #434343;
 
-.vent-location-popup-background {
-  position: absolute;
-  background-color: rgba(0, 0, 0, 0.01);
-  width: 100vw;
-  height: 100vh;
-}
-
-.vent-location-popup {
+.lat-long-popup {
   display: grid;
   grid-template-columns: 45px 80px 42px;
   position: absolute;
@@ -50,5 +43,11 @@ $control-label-color: #434343;
       margin-top: 4px;
       margin-left: 7px;
     }
+  }
+
+  .lat-long-icon {
+    position: absolute;
+    left: -13px;
+    top: 33px;
   }
 }
