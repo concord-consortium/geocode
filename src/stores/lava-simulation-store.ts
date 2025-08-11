@@ -31,7 +31,7 @@ function countCoveredCells(_lavaElevations: number[][]) {
 
 interface FlagLocation {
   color: FlagColor;
-  label?: string;
+  name: string;
   latitude: number;
   longitude: number;
 }
@@ -46,7 +46,7 @@ export const LavaSimulationStore = types
   })
   .volatile((self) => ({
     coveredCells: 0,
-    flags: [] as FlagLocation[],
+    flagLocations: [] as FlagLocation[],
     raster: null as AsciiRaster | null, // AsciiRaster
     worker: null as Worker | null,
     resetCount: 0 // Used to reset the camera when the simulation is reset
@@ -70,12 +70,12 @@ export const LavaSimulationStore = types
   }))
   .actions((self) => ({
     addFlagLocation(flag: FlagLocation) {
-      if (self.flags.length < maxFlags) {
-        self.flags.push(flag);
+      if (self.flagLocations.length < maxFlags) {
+        self.flagLocations.push(flag);
       }
     },
     clearFlagPositions() {
-      self.flags = [];
+      self.flagLocations = [];
     },
     countCoveredCells(grid: number[][]) {
       self.coveredCells = countCoveredCells(grid);

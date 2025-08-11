@@ -86,7 +86,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     });
 
     addFunc("addFlagLocation", (args) => {
-      const { location, color, label } = args;
+      const { location, color, name } = args;
       const { lat: latitude, long: longitude } = location;
 
       if (latitude == null || longitude == null) {
@@ -94,7 +94,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
         return;
       }
 
-      if (lavaSimulation.flags.length >= maxFlags) {
+      if (lavaSimulation.flagLocations.length >= maxFlags) {
         blocklyController.throwError(`You cannot add more than ${maxFlags} flag locations.`);
         return;
       }
@@ -104,7 +104,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
         return;
       }
 
-      lavaSimulation.addFlagLocation({ color, label, latitude, longitude });
+      lavaSimulation.addFlagLocation({ color, name, latitude, longitude });
     });
 
     /** ==== Tephra simulation model setters ==== */

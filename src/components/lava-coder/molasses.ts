@@ -1,6 +1,7 @@
 // Based on the molasses algorithm https://github.com/geoscience-community-codes/MOLASSES
 
-import { maxLat, minLat, minLong, rangeLat, rangeLong } from "./lava-constants";
+import { convertLatitudeToY, convertLongitudeToX } from "../../utilities/molasses-utils";
+import { maxLat, minLong, rangeLat, rangeLong } from "./lava-constants";
 import { AsciiRaster } from "./parse-ascii-raster";
 
 const millisecondsPerFrame = 200;
@@ -40,14 +41,6 @@ function createGrid(raster: AsciiRaster) {
     grid.push(gridRow);
   });
   return grid;
-}
-
-function convertLongitudeToX(longitude: number, raster: AsciiRaster) {
-  return Math.floor((longitude - minLong) / rangeLong * raster.header.ncols);
-}
-
-function convertLatitudeToY(latitude: number, raster: AsciiRaster) {
-  return raster.header.nrows - Math.floor((latitude - minLat) / rangeLat * raster.header.nrows);
 }
 
 function getTotalElevation(cell: GridCell) {

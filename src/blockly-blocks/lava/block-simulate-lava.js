@@ -50,14 +50,22 @@ Blockly.Blocks.molasses_set_flag_location = {
     basicInit(this, strings.SET_FLAG_LOCATION);
     this.appendDummyInput()
       .appendField("named")
-      .appendField(new Blockly.FieldTextInput(""), "flag_label");
+      .appendField(new Blockly.FieldTextInput(""), "name");
     this.appendDummyInput()
       .appendField("color")
-      .appendField(new Blockly.FieldDropdown(flagColors.map(color => [color, color])), "flag_color");
-    appendValueInput(this, "molasses_flag_location", "location", "lat_long");
+      .appendField(new Blockly.FieldDropdown(flagColors.map(color => [color, color])), "color");
+    appendValueInput(this, "location", "location", "lat_long");
   }
 };
 
+// interface for getAndValidateValue and setCodeVariable parameters:
+// {
+//   block: Blockly.Block;
+//   setFunction: string;
+//   // If validation fails, call block.setWarningText with the error message
+//   validateFunction?: (value: string, block: Blockly.Block) => boolean;
+//   variableName: string;
+// }
 function getAndValidateValue({ block, validateFunction, variableName }) {
   const value = Blockly.JavaScript.valueToCode(block, variableName, Blockly.JavaScript.ORDER_ATOMIC);
 
@@ -68,13 +76,6 @@ function getAndValidateValue({ block, validateFunction, variableName }) {
   return value;
 }
 
-// interface SetCodeVariableParameters {
-//   block: Blockly.Block;
-//   setFunction: string;
-//   // If validation fails, call block.setWarningText with the error message
-//   validateFunction?: (value: string, block: Blockly.Block) => boolean;
-//   variableName: string;
-// }
 function setCodeVariable({ block, setFunction, validateFunction, variableName }) {
   const value = getAndValidateValue({ block, validateFunction, variableName });
 
@@ -118,13 +119,13 @@ Blockly.JavaScript.molasses_lava_front = function(block) {
   return "";
 };
 
-function validateLatLong(value, _block) {
+function validateLatLong(value, block) {
   // The value is a string in the form of ({lat: number, long: number})
   const regex = /^\(\{lat:\s*(-?\d+(\.\d+)?),\s*long:\s*(-?\d+(\.\d+)?)\}\)$/;
   const match = value.match(regex);
 
   if (!match) {
-    _block.setWarningText("Latitude and longitude values must be specified");
+    block.setWarningText("Latitude and longitude values must be specified");
     return false;
   }
 
@@ -132,15 +133,15 @@ function validateLatLong(value, _block) {
   const long = parseFloat(match[3]);
 
   if (lat == null || isNaN(lat) || long == null || isNaN(long)) {
-    _block.setWarningText("Latitude and longitude values must be numbers");
+    block.setWarningText("Latitude and longitude values must be numbers");
     return false;
   }
   if (lat < minLat || lat > maxLat) {
-    _block.setWarningText(`Latitude values must be between ${minLat} and ${maxLat}`);
+    block.setWarningText(`Latitude values must be between ${minLat} and ${maxLat}`);
     return false;
   }
   if (long < minLong || long > maxLong) {
-    _block.setWarningText(`Longitude values must be between ${minLong} and ${maxLong}`);
+    block.setWarningText(`Longitude values must be between ${minLong} and ${maxLong}`);
     return false;
   }
 
@@ -182,14 +183,14 @@ Blockly.JavaScript.molasses_run_simulation = function(block) {
 };
 
 Blockly.JavaScript.molasses_set_flag_location = function(block) {
-  const flagLabel = block.getFieldValue('flag_label') ?? "";
-  if (flagLabel && flagLabel.length > 15) {
+  const flagName = block.getFieldValue("name") ?? "";
+  if (flagName && flagName.length > 15) {
     block.setWarningText("Flag name cannot be more than 15 characters.");
     return "";
   }
-  const flagColor = block.getFieldValue('flag_color') || "green";
+  const flagColor = block.getFieldValue("color") || "green";
   const position = getAndValidateValue({
-    variableName: "molasses_flag_location",
+    variableName: "location",
     block,
     validateFunction: validateLatLong
   });
@@ -197,5 +198,5 @@ Blockly.JavaScript.molasses_set_flag_location = function(block) {
   block.setWarningText(null);
 
   return `
-  this.addFlagLocation({ location: ${position}, color: "${flagColor}", label: "${flagLabel}" });\n`;
+  this.addFlagLocation({ location: ${position}, color: "${flagColor}", name: "${flagName}" });\n`;
 };
