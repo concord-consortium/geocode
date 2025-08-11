@@ -156,6 +156,7 @@ export const LavaSimulationStore = types
       lavaElevations = [];
       self.setPulseCount(0);
       self.resetDefaults();
+      self.clearFlagPositions();
       self.coveredCells = 0;
       ++self.resetCount;
     }

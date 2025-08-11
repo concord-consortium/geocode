@@ -53,6 +53,7 @@ export class BlocklyController {
       this.stop();
     } else {
       this.stores.seismicSimulation.reset();
+      this.stores.lavaSimulation.reset();
       const reset = () => {
         this.setCode(this.code, this.workspace);
       };
