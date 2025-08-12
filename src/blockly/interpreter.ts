@@ -70,11 +70,18 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       lavaSimulation.setResidual(height);
     });
     addFunc("setMolassesVentLocation", (params: {lat: number, long: number}) => {
-      if (params.lat == null || params.long == null) {
+      const { lat, long } = params;
+      if (lat == null || typeof lat !== "number" || long == null || typeof long !== "number") {
         blocklyController.throwError("You must set a latitude and longitude for the vent location.");
         return;
       }
-      lavaSimulation.setVentLocation(params.lat, params.long);
+      if (!lavaSimulation.isPointInHazardZone(lat, long)) {
+        const error1 = "The vent location must be in a hazard zone.";
+        const error2 = "Use the Lat/Long tool to select a location in a yellow or green hazard zone.";
+        blocklyController.throwError(`${error1} ${error2}`);
+        return;
+      }
+      lavaSimulation.setVentLocation(lat, long);
     });
 
     addFunc("resetSimulation", () => {

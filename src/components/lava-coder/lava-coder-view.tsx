@@ -60,7 +60,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
 
   useVerticalExaggeration(viewer, verticalExaggeration);
 
-  const { isPointInHazardZone } = useHazardZones(viewer, isLatLongMode, verticalExaggeration);
+  useHazardZones(viewer, isLatLongMode, verticalExaggeration);
 
   const clearLatLong = useCallback(() => {
     setIsLatLongMode(false);
@@ -102,7 +102,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
   }, [isLatLongMode]);
 
   const handleClick = useCallback((latitude, longitude, elevation) => {
-    const isInHazardZone = isPointInHazardZone(latitude, longitude);
+    const isInHazardZone = lavaSimulation.isPointInHazardZone(latitude, longitude);
     elevation /= verticalExaggeration; // Adjust elevation for vertical exaggeration
     const elevationFeet = Math.round(elevation * kFeetPerMeter);
     // eslint-disable-next-line no-console
@@ -114,7 +114,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
     }
     setIsLatLongMode(false);
     setCursor("auto");
-  }, [isLatLongMode, isPointInHazardZone, verticalExaggeration]);
+  }, [isLatLongMode, verticalExaggeration]);
 
   useCesiumMouseEvents(viewer, handleMouseMove, handleClick);
 
