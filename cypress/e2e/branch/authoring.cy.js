@@ -252,7 +252,8 @@ context ('Authoring Options',()=>{
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 5);
             //Loops
             blocksTab.getTag('Loops').click();
-            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 5);
+            // There are 5 loop blocks, but they contain 4 number blocks, for a total of 9
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 9);
             //Data
             blocksTab.getTag(DataRegEx).click();
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 4);
@@ -288,7 +289,8 @@ context ('Authoring Options',()=>{
             });
 
             blocksTab.getTag('Loops').click();
-            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2);
+            // There are 2 loop blocks, but they contain 4 number blocks, for a total of 6
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 6);
 
             blocksTab.getTag('Data').click();
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2);
@@ -322,7 +324,8 @@ context ('Authoring Options',()=>{
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(3).should('contain','VEI');
 
             blocksTab.getTag('Loops').click();
-            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2);
+            // There are 2 loop blocks, but they contain 4 number blocks, for a total of 6
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 6);
 
             blocksTab.getTag('Data').click();
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2);
@@ -359,7 +362,8 @@ context ('Authoring Options',()=>{
             });
 
             blocksTab.getTag('Loops').click();
-            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2);
+            // There are 2 loop blocks, but they contain 4 number blocks, for a total of 6
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 6);
 
             blocksTab.getTag('Data').click();
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2);
@@ -397,7 +401,8 @@ context ('Authoring Options',()=>{
                 expect(removeNBSP(text)).to.contain("ejected volume (km³)");
             });
             blocksTab.getTag('Loops').click();
-            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2);
+            // There are 2 loop blocks, but they contain 4 number blocks, for a total of 6
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 6);
 
             blocksTab.getTag('Data').click();
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2);
@@ -428,7 +433,8 @@ context ('Authoring Options',()=>{
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 1);
 
             blocksTab.getTag('Loops').click();
-            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2);
+            // There are 2 loop blocks, but they contain 4 number blocks, for a total of 6
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 6);
 
             blocksTab.getTag(DataRegEx).click();
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 3);
@@ -459,7 +465,8 @@ context ('Authoring Options',()=>{
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2);
 
             blocksTab.getTag('Loops').click();
-            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2);
+            // There are 2 loop blocks, but they contain 4 number blocks, for a total of 6
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 6);
 
             blocksTab.getTag(DataRegEx).click();
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 3);
@@ -720,7 +727,8 @@ context ('Authoring Options',()=>{
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(3).should('contain','VEI');
 
             blocksTab.getTag('Loops').click();
-            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2);
+            // There are 2 loop blocks, but they contain 4 number blocks, for a total of 6
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 6);
 
             blocksTab.getTag('Data').click();
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2);
@@ -747,6 +755,7 @@ context ('Authoring Options',()=>{
             modelOptions.getShowCrossSectionOption().click();
             rightPanel.getCrossSectionTab().should('be.visible');
             modelOptions.getShowEjectedVolumeOption().click();
+            leftPanel.getControlsTab().click();
             controlsTab.getEjectedVolumeContainer().should('be.visible');
 
             //restore
@@ -777,7 +786,8 @@ context ('Authoring Options',()=>{
             blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(3).should('contain','VEI');
 
             blocksTab.getTag('Loops').click();
-            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2);
+            // There are 2 loop blocks, but they contain 4 number blocks, for a total of 6
+            blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 6);
 
             blocksTab.getTag('Data').click();
             blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 2);

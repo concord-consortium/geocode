@@ -4,7 +4,7 @@ class BlocksTab{
         return cy.get('[data-test=Blocks-panel]');
      }
     getTag(tagName){ //tagName=['Volcano','Wind data','Samples Collections',Logic','Loops','Data','Variables','Functions']
-        return cy.get('.blocklyTreeLabel').contains(tagName);
+        return cy.get('.blocklyToolboxCategory').contains(tagName).closest('.blocklyToolboxCategory');
     }
     getFlyout(){
         return cy.get('.blocklyFlyout');
