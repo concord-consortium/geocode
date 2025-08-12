@@ -1,3 +1,4 @@
+import * as Blockly from "blockly";
 import { types } from "mobx-state-tree";
 import { BlocklyStoreAuthorSettings, BlocklyStoreAuthorSettingsProps } from "./stores";
 

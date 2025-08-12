@@ -1,3 +1,5 @@
+import * as Blockly from "blockly/core";
+import { javascriptGenerator } from "blockly/javascript";
 import * as strings from '../../strings/blockly-blocks/tephra/calculate-tephra-vei-wind';
 
 Blockly.Blocks.calculate_tephra_vei_wind = {
@@ -44,13 +46,13 @@ Blockly.Blocks.calculate_tephra_vei_wind = {
   }
 };
 
-Blockly.JavaScript.calculate_tephra_vei_wind = function(block) {
-    const location = block.getFieldValue('locations');
-    const wind_samples = Blockly.JavaScript.valueToCode(block, 'wind samples', Blockly.JavaScript.ORDER_ATOMIC) || "null";
-    const value_vei = Blockly.JavaScript.valueToCode(block, 'vei', Blockly.JavaScript.ORDER_ATOMIC) || "undefined";
-    const collection = block.getFieldValue('collections');
+javascriptGenerator.forBlock.calculate_tephra_vei_wind = function(block) {
+  const location = block.getFieldValue('locations');
+  const wind_samples = javascriptGenerator.valueToCode(block, 'wind samples', javascriptGenerator.ORDER_ATOMIC) || "null";
+  const value_vei = javascriptGenerator.valueToCode(block, 'vei', javascriptGenerator.ORDER_ATOMIC) || "undefined";
+  const collection = block.getFieldValue('collections');
 
-    const code = `computeTephra({location: "${location}", windSamples: ${wind_samples}, vei: ${value_vei}, collection: "${collection}"});`;
+  const code = `computeTephra({location: "${location}", windSamples: ${wind_samples}, vei: ${value_vei}, collection: "${collection}"});`;
 
-    return code;
-  };
+  return code;
+};

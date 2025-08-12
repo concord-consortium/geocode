@@ -1,3 +1,5 @@
+import * as Blockly from "blockly/core";
+import { javascriptGenerator } from "blockly/javascript";
 import * as strings from '../../strings/blockly-blocks/seismic/seismic-gps-stations';
 
 Blockly.Blocks.seismic_all_gps_stations = {
@@ -10,11 +12,11 @@ Blockly.Blocks.seismic_all_gps_stations = {
     this.setHelpUrl('');
   }
 };
-Blockly.JavaScript.seismic_all_gps_stations = function (block) {
+javascriptGenerator.forBlock.seismic_all_gps_stations = function (block) {
   // TODO: Assemble JavaScript into code variable.
   const code = 'getAllGPSStations()';
   // TODO: Change ORDER_NONE to the correct strength.
-  return [code, Blockly.JavaScript.ORDER_NONE];
+  return [code, javascriptGenerator.ORDER_NONE];
 };
 
 Blockly.Blocks.seismic_show_gps_stations = {
@@ -34,8 +36,8 @@ Blockly.Blocks.seismic_show_gps_stations = {
     this.setHelpUrl('');
   }
 };
-Blockly.JavaScript.seismic_show_gps_stations = function (block) {
-  const value_stations = Blockly.JavaScript.valueToCode(block, 'stations', Blockly.JavaScript.ORDER_ATOMIC);
+javascriptGenerator.forBlock.seismic_show_gps_stations = function (block) {
+  const value_stations = javascriptGenerator.valueToCode(block, 'stations', javascriptGenerator.ORDER_ATOMIC);
   const value_velocities = block.getFieldValue('velocities') === "TRUE";
 
   const code = `showGPSStations(${value_stations});\nshowGPSStationVelocities(${value_velocities});\n`;
@@ -58,13 +60,13 @@ Blockly.Blocks.seismic_sample_data = {
     this.setHelpUrl('');
   }
 };
-Blockly.JavaScript.seismic_sample_data = function (block) {
+javascriptGenerator.forBlock.seismic_sample_data = function (block) {
   const sampleSize = block.getFieldValue('sample_size');
-  const dataset = Blockly.JavaScript.valueToCode(block, 'count', Blockly.JavaScript.ORDER_ATOMIC) || "null";
+  const dataset = javascriptGenerator.valueToCode(block, 'count', javascriptGenerator.ORDER_ATOMIC) || "null";
   // TODO: Assemble JavaScript into code variable.
   const code = `sampleDataset({dataset: ${dataset}, sampleSize: ${sampleSize}})`;
   // TODO: Change ORDER_NONE to the correct strength.
-  return [code, Blockly.JavaScript.ORDER_NONE];
+  return [code, javascriptGenerator.ORDER_NONE];
 };
 
 Blockly.Blocks.seismic_filter_data = {
@@ -118,21 +120,20 @@ Blockly.Blocks.seismic_filter_data = {
     this.setHelpUrl('');
   }
 };
-Blockly.JavaScript.seismic_filter_data = function (block) {
-
+javascriptGenerator.forBlock.seismic_filter_data = function (block) {
   function num(n) {
     // Blockly adds parentheses around negatives, so we have to strip them first
     return parseFloat(n.replace(/[\(\)]/g, ""));
   }
-  const dataset = Blockly.JavaScript.valueToCode(block, 'source', Blockly.JavaScript.ORDER_ATOMIC) || "null";
-  const value_lat_1 = num(Blockly.JavaScript.valueToCode(block, 'lat_1', Blockly.JavaScript.ORDER_ATOMIC));
-  const value_lng_1 = num(Blockly.JavaScript.valueToCode(block, 'lng_1', Blockly.JavaScript.ORDER_ATOMIC));
-  const value_lat_2 = num(Blockly.JavaScript.valueToCode(block, 'lat_2', Blockly.JavaScript.ORDER_ATOMIC));
-  const value_lng_2 = num(Blockly.JavaScript.valueToCode(block, 'lng_2', Blockly.JavaScript.ORDER_ATOMIC));
-  const value_min_speed = num(Blockly.JavaScript.valueToCode(block, 'min_speed', Blockly.JavaScript.ORDER_ATOMIC));
-  const value_max_speed = num(Blockly.JavaScript.valueToCode(block, 'max_speed', Blockly.JavaScript.ORDER_ATOMIC));
-  const value_min_dir = num(Blockly.JavaScript.valueToCode(block, 'min_dir', Blockly.JavaScript.ORDER_ATOMIC));
-  const value_max_dir = num(Blockly.JavaScript.valueToCode(block, 'max_dir', Blockly.JavaScript.ORDER_ATOMIC));
+  const dataset = javascriptGenerator.valueToCode(block, 'source', javascriptGenerator.ORDER_ATOMIC) || "null";
+  const value_lat_1 = num(javascriptGenerator.valueToCode(block, 'lat_1', javascriptGenerator.ORDER_ATOMIC));
+  const value_lng_1 = num(javascriptGenerator.valueToCode(block, 'lng_1', javascriptGenerator.ORDER_ATOMIC));
+  const value_lat_2 = num(javascriptGenerator.valueToCode(block, 'lat_2', javascriptGenerator.ORDER_ATOMIC));
+  const value_lng_2 = num(javascriptGenerator.valueToCode(block, 'lng_2', javascriptGenerator.ORDER_ATOMIC));
+  const value_min_speed = num(javascriptGenerator.valueToCode(block, 'min_speed', javascriptGenerator.ORDER_ATOMIC));
+  const value_max_speed = num(javascriptGenerator.valueToCode(block, 'max_speed', javascriptGenerator.ORDER_ATOMIC));
+  const value_min_dir = num(javascriptGenerator.valueToCode(block, 'min_dir', javascriptGenerator.ORDER_ATOMIC));
+  const value_max_dir = num(javascriptGenerator.valueToCode(block, 'max_dir', javascriptGenerator.ORDER_ATOMIC));
   const value_position_history = block.getFieldValue('position_history') === "TRUE";
 
   const filter = {
@@ -169,5 +170,5 @@ Blockly.JavaScript.seismic_filter_data = function (block) {
 
   const code = `filter({dataset: ${dataset}, filter: ${filterObj}, useDirectionTo: ${true}})`;
   // TODO: Change ORDER_NONE to the correct strength.
-  return [code, Blockly.JavaScript.ORDER_NONE];
+  return [code, javascriptGenerator.ORDER_NONE];
 };

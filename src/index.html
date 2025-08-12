@@ -12,10 +12,6 @@
     <style>
       .hidden { display: none; }
     </style>
-    <script src="<%= htmlWebpackPlugin.files.publicPath %>blockly/blockly_compressed.js"></script>
-    <script src="<%= htmlWebpackPlugin.files.publicPath %>blockly/blocks_compressed.js"></script>
-    <script src="<%= htmlWebpackPlugin.files.publicPath %>blockly/javascript_compressed.js"></script>
-    <script src="<%= htmlWebpackPlugin.files.publicPath %>blockly/en.js"></script>
     <script>
       // Set the CESIUM_BASE_URL on the window object
       window.CESIUM_BASE_URL = "<%= htmlWebpackPlugin.options.templateParameters.CESIUM_BASE_URL %>";

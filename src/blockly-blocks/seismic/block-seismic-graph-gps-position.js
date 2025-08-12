@@ -1,3 +1,5 @@
+import * as Blockly from "blockly/core";
+import { javascriptGenerator } from "blockly/javascript";
 import * as strings from '../../strings/blockly-blocks/seismic/seismic-graph';
 import {positionStationNames} from '../../assets/data/seismic/position-time-data';
 
@@ -31,11 +33,11 @@ Blockly.Blocks.graph_gps_position = {
     this.setHelpUrl('');
   }
 };
-Blockly.JavaScript.graph_gps_position = function (block) {
+javascriptGenerator.forBlock.graph_gps_position = function (block) {
   const value_station = block.getFieldValue('station');
-  let value_from = Blockly.JavaScript.valueToCode(block, 'from', Blockly.JavaScript.ORDER_ATOMIC) || "";
-  let value_to = Blockly.JavaScript.valueToCode(block, 'to', Blockly.JavaScript.ORDER_ATOMIC) || "";
-  let raw_duration = Blockly.JavaScript.valueToCode(block, 'duration', Blockly.JavaScript.ORDER_ATOMIC);
+  let value_from = javascriptGenerator.valueToCode(block, 'from', javascriptGenerator.ORDER_ATOMIC) || "";
+  let value_to = javascriptGenerator.valueToCode(block, 'to', javascriptGenerator.ORDER_ATOMIC) || "";
+  let raw_duration = javascriptGenerator.valueToCode(block, 'duration', javascriptGenerator.ORDER_ATOMIC);
 
   if (typeof value_from === "number") {
     value_from = "" + value_from;
