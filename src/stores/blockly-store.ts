@@ -11,6 +11,10 @@ export const BlocklyStore = types
     hasRunOnce: false,
     blocklyRefreshCount: 0,
   })
+  .volatile(self => ({
+    sampleLocations: [] as string[][],
+    sampleCollections: [] as string[][]
+  }))
   .actions((self) => ({
     setBlocklyCode(code: string, workspace: any) {
       self.xmlCode = Blockly.Xml.domToPrettyText(Blockly.Xml.workspaceToDom(workspace));
@@ -23,6 +27,12 @@ export const BlocklyStore = types
     },
     forceBlocklyRefresh() {
       self.blocklyRefreshCount++;
+    },
+    setSampleLocations(locations: string[][]) {
+      self.sampleLocations = locations;
+    },
+    setSampleCollections(collections: string[][]) {
+      self.sampleCollections = collections;
     }
   }))
   .actions((self) => {

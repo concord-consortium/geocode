@@ -1,6 +1,7 @@
 import * as Blockly from "blockly/core";
 import { javascriptGenerator } from "blockly/javascript";
 import * as strings from '../../strings/blockly-blocks/tephra/calculate-tephra-vei-wind';
+import { blocklyStore } from "../../stores/blockly-store";
 
 Blockly.Blocks.calculate_tephra_vei_wind = {
   init() {
@@ -30,16 +31,18 @@ Blockly.Blocks.calculate_tephra_vei_wind = {
   },
 
   generateOptionsLoc() {
-    if (Blockly.sampleLocations && Blockly.sampleLocations.length > 0) {
-      return Blockly.sampleLocations;
+    const { sampleLocations } = blocklyStore;
+    if (sampleLocations && sampleLocations.length > 0) {
+      return sampleLocations;
     } else {
       return [[strings.CREATE_LOCATION,""]];
     }
   },
 
   generateOptionsCol() {
-    if (Blockly.sampleCollections && Blockly.sampleCollections.length > 0) {
-      return Blockly.sampleCollections;
+    const { sampleCollections } = blocklyStore;
+    if (sampleCollections && sampleCollections.length > 0) {
+      return sampleCollections;
     } else {
       return [[strings.CREATE_LOCATION,""]];
     }
