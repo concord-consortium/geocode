@@ -40,7 +40,7 @@ class BlocksTab{
         return '.blocklyDraggable .blocklyText';
     }
     getEditableTextEl(){
-        return '.blocklyEditableText';
+        return '.blocklyFieldText';
     }
     setSpeedControl(speed){
         switch (speed) {
@@ -58,6 +58,7 @@ class BlocksTab{
         return cy.get(this.getEditableTextEl());
     }
     editText(text, whichOne=0){
+        this.getTextBlock().eq(whichOne).click();
         cy.get('.blocklyWidgetDiv').find('.blocklyHtmlInput').eq(whichOne).type('{backspace}'+text+'{enter}');
     }
 
