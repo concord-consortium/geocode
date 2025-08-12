@@ -50,6 +50,13 @@ $control-label-color: #434343;
     min-width: 34px;
     margin-top: 4px;
 
+    &:hover {
+      background-color: vars.$green-2-hover;
+    }
+    &:active {
+      background-color: vars.$green-1-select;
+    }
+
     img {
       margin-top: 4px;
       margin-left: 7px;
@@ -66,14 +73,18 @@ $control-label-color: #434343;
 
       &:hover {
         fill: vars.$green-2-hover;
-        cursor: pointer;
       }
     }
 
-    &.hover {
+    &:hover, &.hover {
       .interior {
         fill: vars.$green-2-hover;
-        cursor: pointer;
+      }
+
+      cursor: pointer;
+
+      &.drag {
+        cursor: grabbing;
       }
     }
   }

@@ -92,6 +92,9 @@ const UIStore = types.model("UI", {
   },
   get maxEruptionVolume() {
     return self.maxEruptionVolumeInKM * km3ToM3;
+  },
+  get hasLatLongPoint() {
+    return self.pointLatitude != null && self.pointLongitude != null;
   }
 }))
 .actions((self) => ({

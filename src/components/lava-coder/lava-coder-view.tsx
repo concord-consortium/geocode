@@ -89,16 +89,16 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
   const isRunning = running ||
                     (lastRunningTime.current > 0 && Date.now() - lastRunningTime.current < 1000) ||
                     lavaSimulation.isRunning;
-  const latLongPopupMode = isRunning
-                            ? undefined
-                            : isLatLongMode ? "dynamic" : "static";
+  const latLongPopupMode = isLatLongMode && !isRunning
+                            ? uiStore.hasLatLongPoint ? "static" : "dynamic"
+                            : undefined;
 
   useElevationData();
 
   useLavaOverlay(viewer);
 
   const handleMouseMove = useCallback(() => {
-    setCursor(isLatLongMode ? "crosshair" : "auto");
+    setCursor(isLatLongMode && !uiStore.hasLatLongPoint ? "crosshair" : "auto");
   }, [isLatLongMode]);
 
   const setLatLongPoint = useCallback((latLong: ILatLongElevation) => {
@@ -113,10 +113,9 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
     console.log("Clicked at latitude:", round6(latitude), "longitude:", round6(longitude),
                 "elevation:", `${Math.round(elevation)}m = ${elevationFeet}ft`,
                 "in hazard zone:", isInHazardZone);
-    if (isLatLongMode) {
+    if (isLatLongMode && !uiStore.hasLatLongPoint) {
       uiStore.setLatLongPoint(latitude, longitude, elevation);
     }
-    setIsLatLongMode(false);
     setCursor("auto");
   }, [isLatLongMode, isPointInHazardZone, verticalExaggeration]);
 
@@ -142,6 +141,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
 
   function toggleLatLongMode() {
     setIsLatLongMode(prev => !prev);
+    uiStore.clearLatLongPoint();
   }
 
   const containerStyle: React.CSSProperties = { width, height, margin, cursor };
@@ -151,6 +151,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
   return (
     <div className="lava-coder-view" style={containerStyle}>
       <div ref={elt => setLavaCoderElt(elt)} className="lava-coder-simulation" />
+      <ProgressBar pulseCount={lavaSimulation.pulseCount} pulses={uiStore.pulsesPerEruption} />
       <div className="lava-overlay-controls-left">
         <div className="compass-heading-indicator">
           <CompassHeading viewer={viewer} />
@@ -200,7 +201,6 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
         )}
       </div>
       <AcresCovered />
-      <ProgressBar pulseCount={lavaSimulation.pulseCount} pulses={uiStore.pulsesPerEruption} />
       <ConcordAttribution />
       <LatLongPopup viewer={viewer} verticalExaggeration={verticalExaggeration}
                     mode={latLongPopupMode} onSetLatLongPoint={setLatLongPoint} />

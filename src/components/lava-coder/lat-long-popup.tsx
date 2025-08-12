@@ -237,7 +237,7 @@ export function LatLongPopup({ viewer, verticalExaggeration, mode, onSetLatLongP
               <img src={imgIcon} alt={imgAlt} />
             </IconButton>
           )}
-          <div className={clsx("lat-long-icon", { hover })} onPointerDown={handlePointerDown}>
+          <div className={clsx("lat-long-icon", { hover, drag })} onPointerDown={handlePointerDown}>
             <LatLongIconNoShadow />
           </div>
         </>
