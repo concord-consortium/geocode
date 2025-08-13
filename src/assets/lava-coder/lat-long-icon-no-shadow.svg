@@ -3,7 +3,7 @@
         <path d="M0 0h26v26H0z"/>
         <g fill-rule="nonzero">
             <path d="M13 7.5a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11z" fill="#949494"/>
-            <path d="M13 9.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z" fill="#FFF"/>
+            <path class="interior" d="M13 9.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z" />
         </g>
     </g>
 </svg>

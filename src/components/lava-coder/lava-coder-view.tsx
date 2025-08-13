@@ -6,7 +6,7 @@ import { LavaMapType, LavaMapTypes, uiStore } from "../../stores/ui-store";
 import { AcresCovered } from "./acres-covered-box";
 import { CompassHeading } from "./compass-heading";
 import { ConcordAttribution } from "./concord-attribution";
-import { LatLongPopup } from "./lat-long-popup";
+import { ILatLongElevation, LatLongPopup } from "./lat-long-popup";
 import {
   HomeViewIcon, LatLongIcon, MapButtonIcon, MoveIcon, RotateHeadingIcon, RotatePitchIcon,
   ZoomInIcon, ZoomOutIcon
@@ -64,7 +64,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
 
   const clearLatLong = useCallback(() => {
     setIsLatLongMode(false);
-    uiStore.clearPointLocation();
+    uiStore.clearLatLongPoint();
   }, []);
 
   // Close the lat/long popup when the worker is reset (e.g., when a new simulation starts)
@@ -89,17 +89,21 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
   const isRunning = running ||
                     (lastRunningTime.current > 0 && Date.now() - lastRunningTime.current < 1000) ||
                     lavaSimulation.isRunning;
-  const latLongPopupMode = isRunning
-                            ? undefined
-                            : isLatLongMode ? "dynamic" : "static";
+  const latLongPopupMode = isLatLongMode && !isRunning
+                            ? uiStore.hasLatLongPoint ? "static" : "dynamic"
+                            : undefined;
 
   useElevationData();
 
   useLavaOverlay(viewer);
 
   const handleMouseMove = useCallback(() => {
-    setCursor(isLatLongMode ? "crosshair" : "auto");
+    setCursor(isLatLongMode && !uiStore.hasLatLongPoint ? "crosshair" : "auto");
   }, [isLatLongMode]);
+
+  const setLatLongPoint = useCallback((latLong: ILatLongElevation) => {
+    uiStore.setLatLongPoint(latLong.latitude, latLong.longitude, latLong.elevation);
+  }, []);
 
   const handleClick = useCallback((latitude, longitude, elevation) => {
     const isInHazardZone = lavaSimulation.isPointInHazardZone(latitude, longitude);
@@ -109,10 +113,9 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
     console.log("Clicked at latitude:", round6(latitude), "longitude:", round6(longitude),
                 "elevation:", `${Math.round(elevation)}m = ${elevationFeet}ft`,
                 "in hazard zone:", isInHazardZone);
-    if (isLatLongMode) {
-      uiStore.setPointLocation(latitude, longitude, elevation);
+    if (isLatLongMode && !uiStore.hasLatLongPoint) {
+      uiStore.setLatLongPoint(latitude, longitude, elevation);
     }
-    setIsLatLongMode(false);
     setCursor("auto");
   }, [isLatLongMode, verticalExaggeration]);
 
@@ -138,6 +141,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
 
   function toggleLatLongMode() {
     setIsLatLongMode(prev => !prev);
+    uiStore.clearLatLongPoint();
   }
 
   const containerStyle: React.CSSProperties = { width, height, margin, cursor };
@@ -147,6 +151,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
   return (
     <div className="lava-coder-view" style={containerStyle}>
       <div ref={elt => setLavaCoderElt(elt)} className="lava-coder-simulation" />
+      <ProgressBar pulseCount={lavaSimulation.pulseCount} pulses={uiStore.pulsesPerEruption} />
       <div className="lava-overlay-controls-left">
         <div className="compass-heading-indicator">
           <CompassHeading viewer={viewer} />
@@ -196,10 +201,9 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
         )}
       </div>
       <AcresCovered />
-      <ProgressBar pulseCount={lavaSimulation.pulseCount} pulses={uiStore.pulsesPerEruption} />
       <ConcordAttribution />
       <LatLongPopup viewer={viewer} verticalExaggeration={verticalExaggeration}
-                    mode={latLongPopupMode} />
+                    mode={latLongPopupMode} onSetLatLongPoint={setLatLongPoint} />
     </div>
   );
 });
