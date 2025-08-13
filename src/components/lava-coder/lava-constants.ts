@@ -21,3 +21,4 @@ export const rangeLat = maxLat - minLat;
 export const maxFlags = 4;
 export const flagColors = ["green", "blue", "orange", "purple"] as const;
 export type FlagColor = typeof flagColors[number];
+export const flagLabels = ["A", "B", "C", "D"];
