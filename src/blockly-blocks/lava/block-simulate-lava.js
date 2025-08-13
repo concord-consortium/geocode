@@ -185,7 +185,7 @@ javascriptGenerator.forBlock.molasses_run_simulation = function(block) {
   this.runMolassesSimulation();\n`;
 };
 
-Blockly.JavaScript.molasses_set_flag_location = function(block) {
+javascriptGenerator.forBlock.molasses_set_flag_location = function(block) {
   const flagName = block.getFieldValue("name") ?? "";
   if (flagName && flagName.length > 15) {
     block.setWarningText("Flag name cannot be more than 15 characters.");
