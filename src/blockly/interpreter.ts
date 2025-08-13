@@ -1,5 +1,5 @@
 import Interpreter from "js-interpreter";
-import { BlocklyController } from "./blockly-controller";
+import { maxFlags } from "../components/lava-coder/lava-constants";
 import { StationData } from "../deformation";
 import { IBlocklyWorkspace } from "../interfaces";
 import { Datasets, Dataset, Filter, ProtoTimeRange, TimeRange } from "../stores/data-sets";
@@ -8,6 +8,7 @@ import { ColorMethod } from "../stores/seismic-simulation-store";
 import { IStore } from "../stores/stores";
 import { ITephraModelParams } from "../stores/tephra-simulation-store";
 import { uiStore } from "../stores/ui-store";
+import { BlocklyController } from "./blockly-controller";
 
 const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore,
                              workspace: IBlocklyWorkspace) => {
@@ -70,11 +71,18 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       lavaSimulation.setResidual(height);
     });
     addFunc("setMolassesVentLocation", (params: {lat: number, long: number}) => {
-      if (params.lat == null || params.long == null) {
+      const { lat, long } = params;
+      if (lat == null || typeof lat !== "number" || long == null || typeof long !== "number") {
         blocklyController.throwError("You must set a latitude and longitude for the vent location.");
         return;
       }
-      lavaSimulation.setVentLocation(params.lat, params.long);
+      if (!lavaSimulation.isPointInHazardZone(lat, long)) {
+        const error1 = "The vent location must be in a hazard zone.";
+        const error2 = "Use the Lat/Long tool to select a location in a yellow or green hazard zone.";
+        blocklyController.throwError(`${error1} ${error2}`);
+        return;
+      }
+      lavaSimulation.setVentLocation(lat, long);
     });
 
     addFunc("resetSimulation", () => {
@@ -82,6 +90,26 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     });
     addFunc("runMolassesSimulation", () => {
       lavaSimulation.runSimulation();
+    });
+
+    addFunc("addFlagLocation", (args) => {
+      if (lavaSimulation.flagLocations.length >= maxFlags) {
+        blocklyController.throwError(`You cannot add more than ${maxFlags} flag locations.`);
+        return;
+      }
+
+      const { location, color, name } = args;
+      const { lat: latitude, long: longitude } = location;
+      if (latitude == null || longitude == null) {
+        blocklyController.throwError("You must set a latitude and longitude for the flag location.");
+        return;
+      }
+      if (!lavaSimulation.isPointOnIsland(latitude, longitude)) {
+        blocklyController.throwError("The flag location must be on the island.");
+        return;
+      }
+
+      lavaSimulation.addFlagLocation({ color, name, latitude, longitude });
     });
 
     /** ==== Tephra simulation model setters ==== */
