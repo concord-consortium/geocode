@@ -211,5 +211,12 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
 
     const xml = Blockly.utils.xml.textToDom(`${codeString}`);
     Blockly.Xml.domToWorkspace(xml, this.workSpace);
+    
+    // We apply the xml a second time so sampleLocations and sampleCollections are populated correctly.
+    // "Compute Tephra thickness" blocks will not have values specified in xml otherwise.
+    setTimeout(() => {
+      this.workSpace.clear();
+      Blockly.Xml.domToWorkspace(xml, this.workSpace);
+    }, 10);
   };
 }
