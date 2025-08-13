@@ -1,25 +1,10 @@
 <xml id="toolbox" style="display: none">
   <category name="Volcano" colour="#EB0000">
-    <block type="molasses_run_simulation">
-      <value name="molasses_run_simulation">
-        <field name="setters"/>
-      </value>
-    </block>
-    <block type="molasses_eruption_volume">
-      <value name="molasses_eruption_volume">
-        <field name="NUM"/>
-      </value>
-    </block>
-    <block type="molasses_lava_front">
-      <value name="molasses_lava_front">
-        <field name="NUM"/>
-      </value>
-    </block>
-    <block type="molasses_vent_location">
-      <value name="molasses_vent_location">
-        <field name="lat_long"/>
-      </value>
-    </block>
+    <block type="molasses_run_simulation" />
+    <block type="molasses_eruption_volume" />
+    <block type="molasses_lava_front" />
+    <block type="molasses_vent_location" />
+    <block type="molasses_set_flag_location" />
   </category>
 
   <category name="Logic" colour="%{BKY_LOGIC_HUE}">
