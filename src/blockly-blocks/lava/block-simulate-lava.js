@@ -188,7 +188,7 @@ Blockly.JavaScript.molasses_set_flag_location = function(block) {
     block.setWarningText("Flag name cannot be more than 15 characters.");
     return "";
   }
-  const flagColor = block.getFieldValue("color") || "green";
+  const flagColor = block.getFieldValue("color") || flagColors[0];
   const position = getAndValidateValue({
     variableName: "location",
     block,
