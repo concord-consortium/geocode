@@ -18,7 +18,6 @@ Notes on dependencies, particularly reasons for not updating to their latest ver
 |Dependency          |Current     |Latest  |Notes                                                                                     |
 |--------------------|------------|--------|------------------------------------------------------------------------------------------|
 |@pixi/react         |7.1.2       |8.0.1   |Requires pixi.js v8, React 19, and non-trivial migration                                  |
-|blockly             |1.20190419.0|11.2.2  |[April 2019](https://github.com/google/blockly/releases/tag/1.20190419.0) release.        |
 |color               |4.2.3       |5.0.0   |Compilation errors with v5                                                                |
 |js-interpreter      |1.4.6       |6.0.1   |v1.4.6 is deprecated; cypress test failures or compilation errors with newer versions.    |
 |mathjs              |12.4.3      |14.3.1  |v13 requires ES2020 browsers; would require polyfills.                                    |

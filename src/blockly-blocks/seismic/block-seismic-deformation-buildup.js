@@ -1,3 +1,5 @@
+import * as Blockly from "blockly/core";
+import { javascriptGenerator } from "blockly/javascript";
 import * as strings from '../../strings/blockly-blocks/seismic/seismic-deformation';
 
 Blockly.Blocks.seismic_compute_deformation = {
@@ -15,8 +17,8 @@ Blockly.Blocks.seismic_compute_deformation = {
     this.setHelpUrl('');
   }
 };
-Blockly.JavaScript.seismic_compute_deformation = function (block) {
-  const value_stations = Blockly.JavaScript.valueToCode(block, 'stations', Blockly.JavaScript.ORDER_ATOMIC);
+javascriptGenerator.forBlock.seismic_compute_deformation = function (block) {
+  const value_stations = javascriptGenerator.valueToCode(block, 'stations', javascriptGenerator.ORDER_ATOMIC);
   // const value_velocities = block.getFieldValue('velocities') === "TRUE";
 
   const code = `computeDeformationBuildup(${value_stations});`;
@@ -34,11 +36,11 @@ Blockly.Blocks.seismic_logarithmic = {
     this.setHelpUrl('');
   }
 };
-Blockly.JavaScript.seismic_logarithmic = function (block) {
+javascriptGenerator.forBlock.seismic_logarithmic = function (block) {
   // TODO: Assemble JavaScript into code variable.
   const code = '"logarithmic"';
   // TODO: Change ORDER_NONE to the correct strength.
-  return [code, Blockly.JavaScript.ORDER_NONE];
+  return [code, javascriptGenerator.ORDER_NONE];
 };
 
 Blockly.Blocks.seismic_equal_interval = {
@@ -51,11 +53,11 @@ Blockly.Blocks.seismic_equal_interval = {
     this.setHelpUrl('');
   }
 };
-Blockly.JavaScript.seismic_equal_interval = function (block) {
+javascriptGenerator.forBlock.seismic_equal_interval = function (block) {
   // TODO: Assemble JavaScript into code variable.
   const code = '"equalInterval"';
   // TODO: Change ORDER_NONE to the correct strength.
-  return [code, Blockly.JavaScript.ORDER_NONE];
+  return [code, javascriptGenerator.ORDER_NONE];
 };
 
 Blockly.Blocks.seismic_render_deformation_triangles = {
@@ -71,8 +73,7 @@ Blockly.Blocks.seismic_render_deformation_triangles = {
     this.setHelpUrl('');
   }
 };
-Blockly.JavaScript.seismic_render_deformation_triangles = function (block) {
-
+javascriptGenerator.forBlock.seismic_render_deformation_triangles = function (block) {
   return  "renderDeformationBuildup();";
 };
 
@@ -88,7 +89,7 @@ Blockly.Blocks.seismic_render_deformation_labels = {
     this.setHelpUrl('');
   }
 };
-Blockly.JavaScript.seismic_render_deformation_labels = function (block) {
+javascriptGenerator.forBlock.seismic_render_deformation_labels = function (block) {
   const code = "renderDeformationBuildupLabels();";
   return code;
 };

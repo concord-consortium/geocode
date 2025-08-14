@@ -1,3 +1,5 @@
+import * as Blockly from "blockly/core";
+import { javascriptGenerator } from "blockly/javascript";
 import * as strings from "../../strings/blockly-blocks/wind-data/wind-data";
 
 Blockly.Blocks.graph_speed_date_wind_data = {
@@ -12,8 +14,8 @@ Blockly.Blocks.graph_speed_date_wind_data = {
     this.setHelpUrl('');
   }
 };
-Blockly.JavaScript.graph_speed_date_wind_data = function (block) {
-  const value_wind_data = Blockly.JavaScript.valueToCode(block, 'wind data', Blockly.JavaScript.ORDER_ATOMIC);
+javascriptGenerator.forBlock.graph_speed_date_wind_data = function (block) {
+  const value_wind_data = javascriptGenerator.valueToCode(block, 'wind data', javascriptGenerator.ORDER_ATOMIC);
 
   const code = `graphSpeedDateScatterPlot(${value_wind_data});\n`;
   return code;
@@ -34,8 +36,8 @@ Blockly.Blocks.graph_speed_direction_wind_data = {
     this.setHelpUrl('');
   }
 };
-Blockly.JavaScript.graph_speed_direction_wind_data = function (block) {
-  const value_wind_data = Blockly.JavaScript.valueToCode(block, 'wind data', Blockly.JavaScript.ORDER_ATOMIC);
+javascriptGenerator.forBlock.graph_speed_direction_wind_data = function (block) {
+  const value_wind_data = javascriptGenerator.valueToCode(block, 'wind data', javascriptGenerator.ORDER_ATOMIC);
 
   const code = `graphSpeedDirectionRadialPlot(${value_wind_data});\n`;
   return code;
@@ -48,19 +50,19 @@ Blockly.Blocks.graph_any_wind_data = {
     this.appendValueInput('wind data')
       .setCheck('Dataset')
       .appendField(new Blockly.FieldDropdown([
-          ['speed', 'speed'],
-          ['direction', 'direction'],
+        ['speed', 'speed'],
+        ['direction', 'direction'],
       ]), 'yAxis')
       .appendField('against')
       .appendField(new Blockly.FieldDropdown([
-          ['date', 'date'],
-          ['time of year', 'timeOfYear'],
-          ['month', 'month'],
-          ['year', 'year'],
-          ['hour', 'hour'],
-          ['elevation', 'elevation'],
-          ['speed', 'speed'],
-          ['direction', 'direction'],
+        ['date', 'date'],
+        ['time of year', 'timeOfYear'],
+        ['month', 'month'],
+        ['year', 'year'],
+        ['hour', 'hour'],
+        ['elevation', 'elevation'],
+        ['speed', 'speed'],
+        ['direction', 'direction'],
       ]), 'xAxis');
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
@@ -69,8 +71,8 @@ Blockly.Blocks.graph_any_wind_data = {
     this.setHelpUrl('');
   }
 };
-Blockly.JavaScript.graph_any_wind_data = function (block) {
-  const value_wind_data = Blockly.JavaScript.valueToCode(block, 'wind data', Blockly.JavaScript.ORDER_ATOMIC) || null;
+javascriptGenerator.forBlock.graph_any_wind_data = function (block) {
+  const value_wind_data = javascriptGenerator.valueToCode(block, 'wind data', javascriptGenerator.ORDER_ATOMIC) || null;
   const value_x_axis = block.getFieldValue('xAxis');
   const value_y_axis = block.getFieldValue('yAxis');
 

@@ -1,4 +1,5 @@
 import { action, makeObservable, observable } from "mobx";
+import { blocklyStore } from "../stores/blockly-store";
 import { IStore } from "../stores/stores";
 import { DEFORMATION_SIMULATION_WARNING } from "../strings/blockly-controller";
 import { IInterpreterController, makeInterpreterController } from "./interpreter";
@@ -185,7 +186,7 @@ export class BlocklyController {
       return results;
     };
 
-    (Blockly as any).sampleLocations = findValues(sampleLocationsRegex);
-    (Blockly as any).sampleCollections = findValues(sampleCollectionsRegex);
+    blocklyStore.setSampleLocations(findValues(sampleLocationsRegex));
+    blocklyStore.setSampleCollections(findValues(sampleCollectionsRegex));
   }
 }
