@@ -1,25 +1,27 @@
+import * as Blockly from "blockly/core";
+import { javascriptGenerator } from "blockly/javascript";
 import * as strings from "../../strings/blockly-blocks/tephra/simulate-wind";
 
 Blockly.Blocks.simulate_wind_2 = {
   init() {
     this.appendDummyInput()
-        .appendField(strings.COMPUTE_TEPHRA);
+      .appendField(strings.COMPUTE_TEPHRA);
     this.appendValueInput("wspeed")
-        .setCheck("Number")
-        .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField(strings.WIND_SPEED);
+      .setCheck("Number")
+      .setAlign(Blockly.ALIGN_RIGHT)
+      .appendField(strings.WIND_SPEED);
     this.appendValueInput("wdirection")
-        .setCheck("Number")
-        .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField(strings.WIND_DIRECTION);
+      .setCheck("Number")
+      .setAlign(Blockly.ALIGN_RIGHT)
+      .appendField(strings.WIND_DIRECTION);
     this.appendValueInput("columnheight")
-        .setCheck("Number")
-        .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField(strings.COLUMN_HEIGHT);
+      .setCheck("Number")
+      .setAlign(Blockly.ALIGN_RIGHT)
+      .appendField(strings.COLUMN_HEIGHT);
     this.appendValueInput("ejectedvolume")
-        .setCheck("Number")
-        .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField(strings.EJECTED_VOLUME);
+      .setCheck("Number")
+      .setAlign(Blockly.ALIGN_RIGHT)
+      .appendField(strings.EJECTED_VOLUME);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour("#EB0000");
@@ -28,14 +30,11 @@ Blockly.Blocks.simulate_wind_2 = {
   }
 };
 
-Blockly.JavaScript.simulate_wind_2 = function(block) {
-  const value_wspeed = Blockly.JavaScript.valueToCode(block, 'wspeed', Blockly.JavaScript.ORDER_ATOMIC);
-
-  const value_wdirection = Blockly.JavaScript.valueToCode(block, 'wdirection', Blockly.JavaScript.ORDER_ATOMIC);
-
-  const value_columnheight = Blockly.JavaScript.valueToCode(block, 'columnheight', Blockly.JavaScript.ORDER_ATOMIC);
-
-  const value_ejectedvolume = Blockly.JavaScript.valueToCode(block, 'ejectedvolume', Blockly.JavaScript.ORDER_ATOMIC);
+javascriptGenerator.forBlock.simulate_wind_2 = function(block) {
+  const value_wspeed = javascriptGenerator.valueToCode(block, 'wspeed', javascriptGenerator.ORDER_ATOMIC);
+  const value_wdirection = javascriptGenerator.valueToCode(block, 'wdirection', javascriptGenerator.ORDER_ATOMIC);
+  const value_columnheight = javascriptGenerator.valueToCode(block, 'columnheight', javascriptGenerator.ORDER_ATOMIC);
+  const value_ejectedvolume = javascriptGenerator.valueToCode(block, 'ejectedvolume', javascriptGenerator.ORDER_ATOMIC);
 
   const code = `
   this.setWindspeed(${value_wspeed});
@@ -45,5 +44,5 @@ Blockly.JavaScript.simulate_wind_2 = function(block) {
   this.erupt();
   this.paintMap();
 `;
-return code;
+  return code;
 };

@@ -1,15 +1,17 @@
+import * as Blockly from "blockly/core";
+import { javascriptGenerator } from "blockly/javascript";
 import * as strings from "../strings/blockly-blocks/deformation/deformation";
 
 Blockly.Blocks['run-from-year-loop'] = {
   init() {
     this.appendDummyInput()
-        .appendField(strings.RUN_FROM_YEAR_1)
-        .appendField(new Blockly.FieldNumber(500, 0, 500), "max_year")
-        .appendField(strings.BY)
-        .appendField(new Blockly.FieldDropdown([["1","1"], ["10","10"], ["20","20"]]), "year_step")
-        .appendField(strings.YEARS);
+      .appendField(strings.RUN_FROM_YEAR_1)
+      .appendField(new Blockly.FieldNumber(500, 0, 500), "max_year")
+      .appendField(strings.BY)
+      .appendField(new Blockly.FieldDropdown([["1","1"], ["10","10"], ["20","20"]]), "year_step")
+      .appendField(strings.YEARS);
     this.appendStatementInput("DO")
-        .setCheck(null);
+      .setCheck(null);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour("%{BKY_LOGIC_HUE}");
@@ -18,11 +20,11 @@ Blockly.Blocks['run-from-year-loop'] = {
   }
 };
 
-Blockly.JavaScript['run-from-year-loop'] = function(block) {
+javascriptGenerator.forBlock['run-from-year-loop'] = function(block) {
   const number_max_year = block.getFieldValue('max_year');
 
   const dropdown_year_step = block.getFieldValue('year_step');
-  const branch = Blockly.JavaScript.statementToCode(block, 'DO');
+  const branch = javascriptGenerator.statementToCode(block, 'DO');
 
   let code = 'createNewRun();\n';
 

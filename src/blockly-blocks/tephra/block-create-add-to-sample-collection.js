@@ -1,3 +1,5 @@
+import * as Blockly from "blockly/core";
+import { javascriptGenerator } from "blockly/javascript";
 import * as strings from '../../strings/blockly-blocks/tephra/create-add-to-sample-collection';
 
 Blockly.Blocks.create_sample_location = {
@@ -28,7 +30,7 @@ Blockly.Blocks.create_sample_location = {
   }
 };
 
-Blockly.JavaScript.create_sample_location = function (block) {
+javascriptGenerator.forBlock.create_sample_location = function (block) {
   const value_name = block.getFieldValue('name');
   const value_x = block.getFieldValue('x');
   const value_y = block.getFieldValue('y');
@@ -59,7 +61,7 @@ Blockly.Blocks.create_sample_collection = {
   }
 };
 
-Blockly.JavaScript.create_sample_collection = function (block) {
+javascriptGenerator.forBlock.create_sample_collection = function (block) {
   const value_name = block.getFieldValue('name');
   const value_threshold = block.getFieldValue('threshold');
 

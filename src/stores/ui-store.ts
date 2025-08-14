@@ -79,9 +79,9 @@ const UIStore = types.model("UI", {
   leftTabIndex: 0,
   rightTabIndex: 0,
   // position of point selected with Lat/Long button
-  pointLatitude: types.maybe(types.number),
-  pointLongitude: types.maybe(types.number),
-  pointElevation: types.maybe(types.number)
+  pointLatitude: types.maybe(types.number),   // latitude in degrees
+  pointLongitude: types.maybe(types.number),  // longitude in degrees
+  pointElevation: types.maybe(types.number)   // elevation in meters
 })
 .views((self) => ({
   get pulsesPerEruption() {
@@ -92,6 +92,9 @@ const UIStore = types.model("UI", {
   },
   get maxEruptionVolume() {
     return self.maxEruptionVolumeInKM * km3ToM3;
+  },
+  get hasLatLongPoint() {
+    return self.pointLatitude != null && self.pointLongitude != null;
   }
 }))
 .actions((self) => ({
@@ -110,12 +113,12 @@ const UIStore = types.model("UI", {
   setRightTabIndex(index: number) {
     self.rightTabIndex = index;
   },
-  setPointLocation(latitude: number, longitude: number, elevation: number) {
+  setLatLongPoint(latitude: number, longitude: number, elevation = 0) {
     self.pointLatitude = latitude;
     self.pointLongitude = longitude;
     self.pointElevation = elevation;
   },
-  clearPointLocation() {
+  clearLatLongPoint() {
     self.pointLatitude = undefined;
     self.pointLongitude = undefined;
     self.pointElevation = undefined;

@@ -110,9 +110,9 @@ Whether using the Block Factory or copying and modifying an existing block, each
 
 Each existing GeoCode block has UI and code generation methods defined in its JavaScript module. Therefore, we must also define UI and code generation methods for our new block in the newly created JavaScript module that we added to `src\blockly-blocks` and imported in `blocks.js`. If you are using the Blockly Developer Tools Block Factory, take the Block Definition JavaScript and the Generator stub JavaScript and add it to your new block's JavaScript module. If copying and modifying an existing block, then be sure to make changes to both of these sections.
 
- The UI generation for the new block is defined in the `Blockly.Blocks` global object. This is done in the block's JavaScript module. Blocks register themselves in this object using a unique key (the block `name` field if you are using the Block Factory), such as `Blockly.Blocks['print']`.
+The UI generation for the new block is defined in the `Blockly.Blocks`, which you can access by adding `import * as Blockly from "blockly/core";` to the top of the file. This is done in the block's JavaScript module. Blocks register themselves in this object using a unique key (the block `name` field if you are using the Block Factory), such as `Blockly.Blocks.print`.
 
-Similarly, the code generation for the new block is defined in the block's JavaScript module in a global variable named `Blockly.JavaScript`.
+Similarly, the code generation for the new block is defined in the block's JavaScript module in `javascriptGenerator.forBlock`. Add `import { javascriptGenerator } from "blockly/javascript";` to the top of your file.
 
 Any custom functions added to a block's code generation must be defined in `interpreter.js` in the function named
 `makeInterpreterFunc`.  Look at an example to see how the function is registered:

@@ -1,3 +1,6 @@
+
+import * as Blockly from "blockly/core";
+import { javascriptGenerator } from "blockly/javascript";
 import { flagColors, maxLat, maxLong, minLat, minLong } from "../../components/lava-coder/lava-constants";
 import * as strings from "../../strings/blockly-blocks/lava/simulate-lava";
 
@@ -67,7 +70,7 @@ Blockly.Blocks.molasses_set_flag_location = {
 //   variableName: string;
 // }
 function getAndValidateValue({ block, validateFunction, variableName }) {
-  const value = Blockly.JavaScript.valueToCode(block, variableName, Blockly.JavaScript.ORDER_ATOMIC);
+  const value = javascriptGenerator.valueToCode(block, variableName, javascriptGenerator.ORDER_ATOMIC);
 
   if (validateFunction && !validateFunction(value, block)) {
     return null;
@@ -89,7 +92,7 @@ const setEruptionVolumeFunction = "setMolassesEruptionVolume";
 const setLavaFrontFunction = "setMolassesLavaFront";
 const setVentLocationFunction = "setMolassesVentLocation";
 
-Blockly.JavaScript.molasses_eruption_volume = function(block) {
+javascriptGenerator.forBlock.molasses_eruption_volume = function(block) {
   const setEruptionVolumeCode = setCodeVariable({
     variableName: "molasses_eruption_volume",
     block,
@@ -104,7 +107,7 @@ Blockly.JavaScript.molasses_eruption_volume = function(block) {
   return "";
 };
 
-Blockly.JavaScript.molasses_lava_front = function(block) {
+javascriptGenerator.forBlock.molasses_lava_front = function(block) {
   const setLavaFrontCode = setCodeVariable({
     variableName: "molasses_lava_front",
     block,
@@ -148,7 +151,7 @@ function validateLatLong(value, block) {
   return true;
 }
 
-Blockly.JavaScript.molasses_vent_location = function(block) {
+javascriptGenerator.forBlock.molasses_vent_location = function(block) {
   const setVentLocationCode = setCodeVariable({
     variableName: "molasses_vent_location",
     block,
@@ -164,8 +167,8 @@ Blockly.JavaScript.molasses_vent_location = function(block) {
   return "";
 };
 
-Blockly.JavaScript.molasses_run_simulation = function(block) {
-  const contents = Blockly.JavaScript.statementToCode(block, "setters");
+javascriptGenerator.forBlock.molasses_run_simulation = function(block) {
+  const contents = javascriptGenerator.statementToCode(block, "setters");
   if (
     !contents.includes(setEruptionVolumeFunction) && !contents.includes(setLavaFrontFunction) &&
     !contents.includes(setVentLocationFunction)
@@ -182,7 +185,7 @@ Blockly.JavaScript.molasses_run_simulation = function(block) {
   this.runMolassesSimulation();\n`;
 };
 
-Blockly.JavaScript.molasses_set_flag_location = function(block) {
+javascriptGenerator.forBlock.molasses_set_flag_location = function(block) {
   const flagName = block.getFieldValue("name") ?? "";
   if (flagName && flagName.length > 15) {
     block.setWarningText("Flag name cannot be more than 15 characters.");
