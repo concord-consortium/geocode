@@ -46,8 +46,8 @@ const UIStore = types.model("UI", {
   /*
    * LavaCoder map options
    */
-  // whether to show the Place Vent button
-  showPlaceVent: true,
+  // whether to show the Lat/Long button
+  showLatLongButton: true,
   // whether to show the Map Type button
   showMapType: true,
   // whether to include terrain in the map type options
@@ -59,9 +59,9 @@ const UIStore = types.model("UI", {
   // current map type
   mapType: types.optional(types.enumeration(LavaMapTypes), defaultMapType),
   // vertical exaggeration (1 = normal, 2 = 2x, 3 = 3x, etc)
-  verticalExaggeration: 1,
+  verticalExaggeration: 3,
   // number of hundreds of pulses for each eruption. The actual number of pulses will be 100x this one.
-  hundredsOfPulsesPerEruption: 20,
+  hundredsOfPulsesPerEruption: 3,
   // minimum and maximum eruption volume in km^3
   minEruptionVolumeInKM: 1,
   maxEruptionVolumeInKM: 10000,
@@ -78,6 +78,10 @@ const UIStore = types.model("UI", {
   hideBlocklyToolbox: false,
   leftTabIndex: 0,
   rightTabIndex: 0,
+  // position of point selected with Lat/Long button
+  pointLatitude: types.maybe(types.number),   // latitude in degrees
+  pointLongitude: types.maybe(types.number),  // longitude in degrees
+  pointElevation: types.maybe(types.number)   // elevation in meters
 })
 .views((self) => ({
   get pulsesPerEruption() {
@@ -88,6 +92,9 @@ const UIStore = types.model("UI", {
   },
   get maxEruptionVolume() {
     return self.maxEruptionVolumeInKM * km3ToM3;
+  },
+  get hasLatLongPoint() {
+    return self.pointLatitude != null && self.pointLongitude != null;
   }
 }))
 .actions((self) => ({
@@ -105,6 +112,16 @@ const UIStore = types.model("UI", {
   },
   setRightTabIndex(index: number) {
     self.rightTabIndex = index;
+  },
+  setLatLongPoint(latitude: number, longitude: number, elevation = 0) {
+    self.pointLatitude = latitude;
+    self.pointLongitude = longitude;
+    self.pointElevation = elevation;
+  },
+  clearLatLongPoint() {
+    self.pointLatitude = undefined;
+    self.pointLongitude = undefined;
+    self.pointElevation = undefined;
   }
 }))
 .actions((self) => {

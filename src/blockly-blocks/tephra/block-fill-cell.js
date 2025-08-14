@@ -1,3 +1,5 @@
+import * as Blockly from "blockly/core";
+import { javascriptGenerator } from "blockly/javascript";
 import { HUE, SATURATION, VALUE, ALPHA } from '../../strings/blockly-blocks/tephra/fill-cell';
 
 Blockly.Blocks.fill_cell = {
@@ -25,12 +27,12 @@ Blockly.Blocks.fill_cell = {
    this.setHelpUrl("");
     }
   };
-  
-  Blockly.JavaScript.fill_cell = function(block) {
-    const hue = Blockly.JavaScript.valueToCode(block, 'hue', Blockly.JavaScript.ORDER_ATOMIC);
-    const sat = Blockly.JavaScript.valueToCode(block, 'sat', Blockly.JavaScript.ORDER_ATOMIC);
-    const value = Blockly.JavaScript.valueToCode(block, 'value', Blockly.JavaScript.ORDER_ATOMIC);
-    const alpha = Blockly.JavaScript.valueToCode(block, 'alpha', Blockly.JavaScript.ORDER_ATOMIC);
+
+  javascriptGenerator.forBlock.fill_cell = function(block) {
+    const hue = javascriptGenerator.valueToCode(block, 'hue', javascriptGenerator.ORDER_ATOMIC);
+    const sat = javascriptGenerator.valueToCode(block, 'sat', javascriptGenerator.ORDER_ATOMIC);
+    const value = javascriptGenerator.valueToCode(block, 'value', javascriptGenerator.ORDER_ATOMIC);
+    const alpha = javascriptGenerator.valueToCode(block, 'alpha', javascriptGenerator.ORDER_ATOMIC);
     // TODO: Assemble JavaScript into code variable.
     const code = `
       this.fill && this.fill( ${hue || 1}, ${sat || 50}, ${value || 50}, ${alpha || 10 });

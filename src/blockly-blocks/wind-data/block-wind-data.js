@@ -1,3 +1,5 @@
+import * as Blockly from "blockly/core";
+import { javascriptGenerator } from "blockly/javascript";
 import * as strings from "../../strings/blockly-blocks/wind-data/wind-data";
 
 Blockly.Blocks.all_wind_data = {
@@ -10,11 +12,11 @@ Blockly.Blocks.all_wind_data = {
     this.setHelpUrl('');
   }
 };
-Blockly.JavaScript.all_wind_data = function (block) {
+javascriptGenerator.forBlock.all_wind_data = function (block) {
   // TODO: Assemble JavaScript into code variable.
   const code = 'getAllWindData()';
   // TODO: Change ORDER_NONE to the correct strength.
-  return [code, Blockly.JavaScript.ORDER_NONE];
+  return [code, javascriptGenerator.ORDER_NONE];
 };
 
 Blockly.Blocks.sample_data = {
@@ -33,13 +35,13 @@ Blockly.Blocks.sample_data = {
     this.setHelpUrl('');
   }
 };
-Blockly.JavaScript.sample_data = function (block) {
+javascriptGenerator.forBlock.sample_data = function (block) {
   const sampleSize = block.getFieldValue('sample_size');
-  const dataset = Blockly.JavaScript.valueToCode(block, 'count', Blockly.JavaScript.ORDER_ATOMIC) || "null";
+  const dataset = javascriptGenerator.valueToCode(block, 'count', javascriptGenerator.ORDER_ATOMIC) || "null";
   // TODO: Assemble JavaScript into code variable.
   const code = `sampleDataset({dataset: ${dataset}, sampleSize: ${sampleSize}})`;
   // TODO: Change ORDER_NONE to the correct strength.
-  return [code, Blockly.JavaScript.ORDER_NONE];
+  return [code, javascriptGenerator.ORDER_NONE];
 };
 
 Blockly.Blocks.filter_data = {
@@ -77,13 +79,13 @@ Blockly.Blocks.filter_data = {
     this.setHelpUrl('');
   }
 };
-Blockly.JavaScript.filter_data = function (block) {
-  const dataset = Blockly.JavaScript.valueToCode(block, 'source', Blockly.JavaScript.ORDER_ATOMIC) || "null";
-  const value_day = Blockly.JavaScript.valueToCode(block, 'day', Blockly.JavaScript.ORDER_ATOMIC);
-  const value_month = Blockly.JavaScript.valueToCode(block, 'month', Blockly.JavaScript.ORDER_ATOMIC);
-  const value_year = Blockly.JavaScript.valueToCode(block, 'year', Blockly.JavaScript.ORDER_ATOMIC);
-  const value_direction = Blockly.JavaScript.valueToCode(block, 'direction', Blockly.JavaScript.ORDER_ATOMIC);
-  const value_speed = Blockly.JavaScript.valueToCode(block, 'speed', Blockly.JavaScript.ORDER_ATOMIC);
+javascriptGenerator.forBlock.filter_data = function (block) {
+  const dataset = javascriptGenerator.valueToCode(block, 'source', javascriptGenerator.ORDER_ATOMIC) || "null";
+  const value_day = javascriptGenerator.valueToCode(block, 'day', javascriptGenerator.ORDER_ATOMIC);
+  const value_month = javascriptGenerator.valueToCode(block, 'month', javascriptGenerator.ORDER_ATOMIC);
+  const value_year = javascriptGenerator.valueToCode(block, 'year', javascriptGenerator.ORDER_ATOMIC);
+  const value_direction = javascriptGenerator.valueToCode(block, 'direction', javascriptGenerator.ORDER_ATOMIC);
+  const value_speed = javascriptGenerator.valueToCode(block, 'speed', javascriptGenerator.ORDER_ATOMIC);
 
   const filter = {
     day: value_day,
@@ -102,5 +104,5 @@ Blockly.JavaScript.filter_data = function (block) {
   filterObj = filterObj.replace(/\"/g, "");
   const code = `filter({dataset: ${dataset}, filter: ${filterObj}})`;
   // TODO: Change ORDER_NONE to the correct strength.
-  return [code, Blockly.JavaScript.ORDER_NONE];
+  return [code, javascriptGenerator.ORDER_NONE];
 };

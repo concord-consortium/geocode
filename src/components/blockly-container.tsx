@@ -1,3 +1,5 @@
+import * as Blockly from "blockly/core";
+import { javascriptGenerator } from "blockly/javascript";
 import React from "react";
 import styled from "styled-components";
 import "../blockly-blocks/blocks.js";
@@ -86,9 +88,9 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
   private initializeBlockly = () => {
     const {setBlocklyCode, hideToolbox} = this.props;
 
-    Blockly.JavaScript.STATEMENT_PREFIX = "startStep(%1);\n";
-    Blockly.JavaScript.STATEMENT_SUFFIX = "endStep();\n";
-    Blockly.JavaScript.addReservedWords("highlightBlock");
+    javascriptGenerator.STATEMENT_PREFIX = "startStep(%1);\n";
+    javascriptGenerator.STATEMENT_SUFFIX = "endStep();\n";
+    javascriptGenerator.addReservedWords("highlightBlock");
 
     // initialize blockly with options.
     // note: we need to pass in a toolbox, and it has to have categories, otherwise blockly
@@ -120,10 +122,12 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
     (Blockly as any).Msg.VARIABLES_HUE = "#0472e7";
     (Blockly as any).Msg.PROCEDURES_HUE = "#304ffd";
 
-    this.workSpace = Blockly.inject(this.workSpaceRef.current, blockOpts);
+    if (this.workSpaceRef.current) {
+      this.workSpace = Blockly.inject(this.workSpaceRef.current, blockOpts);
+    }
 
     const myUpdateFunction = (event: any) => {
-      const code = Blockly.JavaScript.workspaceToCode(this.workSpace);
+      const code = javascriptGenerator.workspaceToCode(this.workSpace);
       setBlocklyCode(code, this.workSpace);
     };
 
@@ -205,7 +209,19 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
       this.workSpace.updateToolbox(toolbox);
     }
 
-    const xml = Blockly.Xml.textToDom(`${codeString}`);
+    const xml = Blockly.utils.xml.textToDom(`${codeString}`);
     Blockly.Xml.domToWorkspace(xml, this.workSpace);
+    
+    // We apply the xml a second time so sampleLocations and sampleCollections are populated correctly.
+    // In BlocklyController.parseVariables(), sampleLocations and sampleCollections are populated, which are in turn
+    // used for dropdowns in "Compute Tephra thickness" blocks. When loading blocks from xml, initial values for these
+    // dropdowns specified in the xml will not exist yet, so the dropdown values will revert to options that do exist.
+    // Previous versions of blockly seem to be less picky about values of dropdowns, allowing for values that don't
+    // actually exist as options, but later versions do not allow this. So the first application of the xml populates
+    // the dropdowns with options, and the second application sets the specified initial dropdown values correctly.
+    setTimeout(() => {
+      this.workSpace.clear();
+      Blockly.Xml.domToWorkspace(xml, this.workSpace);
+    }, 10);
   };
 }

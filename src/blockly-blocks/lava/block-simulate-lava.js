@@ -1,10 +1,11 @@
-import { maxLat, maxLong, minLat, minLong } from "../../components/lava-coder/lava-constants";
-import { uiStore } from "../../stores/ui-store";
+
+import * as Blockly from "blockly/core";
+import { javascriptGenerator } from "blockly/javascript";
+import { flagColors, maxLat, maxLong, minLat, minLong } from "../../components/lava-coder/lava-constants";
 import * as strings from "../../strings/blockly-blocks/lava/simulate-lava";
 
-function basicInit(block) {
-  block.appendDummyInput()
-    .appendField(strings.COMPUTE_LAVA);
+function basicInit(block, title) {
+  if (title) block.appendDummyInput().appendField(title);
   block.setPreviousStatement(true, null);
   block.setNextStatement(true, null);
   block.setColour("#EB0000");
@@ -19,180 +20,186 @@ function appendValueInput(block, name, field, check="Number") {
     .appendField(field);
 }
 
-function appendEruptionVolume(block) {
-  appendValueInput(block, "molasses_eruption_volume", strings.ERUPTION_VOLUME);
-}
-function appendLavaFront(block) {
-  appendValueInput(block, "molasses_lava_front", strings.LAVA_FRONT_HEIGHT);
-}
-function appendVentLocation(block) {
-  appendValueInput(block, "molasses_vent_location", strings.VENT_LOCATION, "lat_long");
-}
-
-Blockly.Blocks.molasses_simulation_all_params = {
+Blockly.Blocks.molasses_eruption_volume = {
   init() {
     basicInit(this);
-    appendEruptionVolume(this);
-    appendLavaFront(this);
-    appendVentLocation(this);
+    appendValueInput(this, "molasses_eruption_volume", strings.SET_ERUPTION_VOLUME);
   }
 };
 
-Blockly.Blocks.molasses_simulation_eruption_volume = {
+Blockly.Blocks.molasses_lava_front = {
   init() {
     basicInit(this);
-    appendEruptionVolume(this);
+    appendValueInput(this, "molasses_lava_front", strings.SET_LAVA_FRONT_HEIGHT);
   }
 };
 
-Blockly.Blocks.molasses_simulation_lava_front = {
+Blockly.Blocks.molasses_vent_location = {
   init() {
     basicInit(this);
-    appendLavaFront(this);
+    appendValueInput(this, "molasses_vent_location", strings.SET_VENT_LOCATION, "lat_long");
   }
 };
 
-Blockly.Blocks.molasses_simulation_lat_long = {
+Blockly.Blocks.molasses_run_simulation = {
   init() {
-    basicInit(this);
-    appendVentLocation(this);
+    basicInit(this, strings.RUN_SIMULATION);
+    this.appendStatementInput("setters");
   }
 };
 
-// interface SetCodeVariableParameters {
+Blockly.Blocks.molasses_set_flag_location = {
+  init() {
+    basicInit(this, strings.SET_FLAG_LOCATION);
+    this.appendDummyInput()
+      .appendField("named")
+      .appendField(new Blockly.FieldTextInput(""), "name");
+    this.appendDummyInput()
+      .appendField("color")
+      .appendField(new Blockly.FieldDropdown(flagColors.map(color => [color, color])), "color");
+    appendValueInput(this, "location", "location", "lat_long");
+  }
+};
+
+// interface for getAndValidateValue and setCodeVariable parameters:
+// {
 //   block: Blockly.Block;
 //   setFunction: string;
 //   // If validation fails, call block.setWarningText with the error message
 //   validateFunction?: (value: string, block: Blockly.Block) => boolean;
 //   variableName: string;
 // }
-function setCodeVariable({ block, setFunction, validateFunction, variableName }) {
-  const value = Blockly.JavaScript.valueToCode(block, variableName, Blockly.JavaScript.ORDER_ATOMIC);
+function getAndValidateValue({ block, validateFunction, variableName }) {
+  const value = javascriptGenerator.valueToCode(block, variableName, javascriptGenerator.ORDER_ATOMIC);
 
   if (validateFunction && !validateFunction(value, block)) {
     return null;
   }
 
+  return value;
+}
+
+function setCodeVariable({ block, setFunction, validateFunction, variableName }) {
+  const value = getAndValidateValue({ block, validateFunction, variableName });
+
+  if (value == null) return null;
+
   return `
   this.${setFunction}(${value});`;
 }
 
-function getNumberValidationFunction(min, max, parameterName) {
-  return (value, block) => {
-    const numberValue = parseFloat(value);
-    if (isNaN(numberValue)) {
-      block.setWarningText(`${parameterName} must be a number`);
-      return false;
-    }
-    if (numberValue < min || numberValue > max) {
-      block.setWarningText(`${parameterName} must be between ${min} and ${max}`);
-      return false;
-    }
-    return true;
-  };
-}
+const setEruptionVolumeFunction = "setMolassesEruptionVolume";
+const setLavaFrontFunction = "setMolassesLavaFront";
+const setVentLocationFunction = "setMolassesVentLocation";
 
-function setEruptionVolume(block) {
-  return setCodeVariable({
+javascriptGenerator.forBlock.molasses_eruption_volume = function(block) {
+  const setEruptionVolumeCode = setCodeVariable({
     variableName: "molasses_eruption_volume",
     block,
-    setFunction: "setMolassesEruptionVolume",
-    validateFunction:
-      getNumberValidationFunction(uiStore.minEruptionVolume, uiStore.maxEruptionVolume, "Eruption volume")
+    setFunction: setEruptionVolumeFunction
   });
-}
-function setLavaFront(block) {
-  return setCodeVariable({
+
+  if (setEruptionVolumeCode) {
+    block.setWarningText(null);
+    return setEruptionVolumeCode;
+  }
+
+  return "";
+};
+
+javascriptGenerator.forBlock.molasses_lava_front = function(block) {
+  const setLavaFrontCode = setCodeVariable({
     variableName: "molasses_lava_front",
     block,
-    setFunction: "setMolassesLavaFront",
-    validateFunction:
-      getNumberValidationFunction(uiStore.minLavaFrontHeight, uiStore.maxLavaFrontHeight, "Lava front height")
+    setFunction: setLavaFrontFunction
   });
+
+  if (setLavaFrontCode) {
+    block.setWarningText(null);
+    return setLavaFrontCode;
+  }
+
+  return "";
+};
+
+function validateLatLong(value, block) {
+  // The value is a string in the form of ({lat: number, long: number})
+  const regex = /^\(\{lat:\s*(-?\d+(\.\d+)?),\s*long:\s*(-?\d+(\.\d+)?)\}\)$/;
+  const match = value.match(regex);
+
+  if (!match) {
+    block.setWarningText("Latitude and longitude values must be specified");
+    return false;
+  }
+
+  const lat = parseFloat(match[1]);
+  const long = parseFloat(match[3]);
+
+  if (lat == null || isNaN(lat) || long == null || isNaN(long)) {
+    block.setWarningText("Latitude and longitude values must be numbers");
+    return false;
+  }
+  if (lat < minLat || lat > maxLat) {
+    block.setWarningText(`Latitude values must be between ${minLat} and ${maxLat}`);
+    return false;
+  }
+  if (long < minLong || long > maxLong) {
+    block.setWarningText(`Longitude values must be between ${minLong} and ${maxLong}`);
+    return false;
+  }
+
+  return true;
 }
-function setVentLocation(block) {
-  return setCodeVariable({
+
+javascriptGenerator.forBlock.molasses_vent_location = function(block) {
+  const setVentLocationCode = setCodeVariable({
     variableName: "molasses_vent_location",
     block,
-    setFunction: "setMolassesVentLocation",
-    validateFunction: (value, _block) => {
-      // The value is a string in the form of ({lat: number, long: number})
-      const regex = /^\(\{lat:\s*(-?\d+(\.\d+)?),\s*long:\s*(-?\d+(\.\d+)?)\}\)$/;
-      const match = value.match(regex);
-
-      if (!match) {
-        _block.setWarningText("Latitude and longitude values must be specified");
-        return false;
-      }
-
-      const lat = parseFloat(match[1]);
-      const long = parseFloat(match[3]);
-
-      if (lat == null || isNaN(lat) || long == null || isNaN(long)) {
-        _block.setWarningText("Latitude and longitude values must be numbers");
-        return false;
-      }
-      if (lat < minLat || lat > maxLat) {
-        _block.setWarningText(`Latitude values must be between ${minLat} and ${maxLat}`);
-        return false;
-      }
-      if (long < minLong || long > maxLong) {
-        _block.setWarningText(`Longitude values must be between ${minLong} and ${maxLong}`);
-        return false;
-      }
-
-      return true;
-    }
+    setFunction: setVentLocationFunction,
+    validateFunction: validateLatLong
   });
-}
 
-function runMolassesSimulation() {
+  if (setVentLocationCode) {
+    block.setWarningText(null);
+    return setVentLocationCode;
+  }
+
+  return "";
+};
+
+javascriptGenerator.forBlock.molasses_run_simulation = function(block) {
+  const contents = javascriptGenerator.statementToCode(block, "setters");
+  if (
+    !contents.includes(setEruptionVolumeFunction) && !contents.includes(setLavaFrontFunction) &&
+    !contents.includes(setVentLocationFunction)
+  ) {
+    block.setWarningText("You must set at least one parameter before running the simulation.");
+    return "";
+  } else {
+    block.setWarningText(null);
+  }
+
   return `
-  this.runMolassesSimulation();`;
-}
-
-Blockly.JavaScript.molasses_simulation_all_params = function(block) {
-  const volumeCode = setEruptionVolume(block);
-  const residualCode = setLavaFront(block);
-  const ventCode = setVentLocation(block);
-
-  if (volumeCode && residualCode && ventCode) {
-    block.setWarningText(null);
-    return volumeCode + residualCode + ventCode + runMolassesSimulation();
-  }
-
-  return "";
+  this.resetSimulation();
+  ${contents}
+  this.runMolassesSimulation();\n`;
 };
 
-Blockly.JavaScript.molasses_simulation_eruption_volume = function(block) {
-  const volumeCode = setEruptionVolume(block);
-
-  if (volumeCode) {
-    block.setWarningText(null);
-    return volumeCode + runMolassesSimulation();
+javascriptGenerator.forBlock.molasses_set_flag_location = function(block) {
+  const flagName = block.getFieldValue("name") ?? "";
+  if (flagName && flagName.length > 15) {
+    block.setWarningText("Flag name cannot be more than 15 characters.");
+    return "";
   }
+  const flagColor = block.getFieldValue("color") || flagColors[0];
+  const position = getAndValidateValue({
+    variableName: "location",
+    block,
+    validateFunction: validateLatLong
+  });
+  if (!position) return "";
+  block.setWarningText(null);
 
-  return "";
-};
-
-Blockly.JavaScript.molasses_simulation_lava_front = function(block) {
-  const residualCode = setLavaFront(block);
-
-  if (residualCode) {
-    block.setWarningText(null);
-    return residualCode + runMolassesSimulation();
-  }
-
-  return "";
-};
-
-Blockly.JavaScript.molasses_simulation_lat_long = function(block) {
-  const ventCode = setVentLocation(block);
-
-  if (ventCode) {
-    block.setWarningText(null);
-    return ventCode + runMolassesSimulation();
-  }
-
-  return "";
+  return `
+  this.addFlagLocation({ location: ${position}, color: "${flagColor}", name: "${flagName}" });\n`;
 };

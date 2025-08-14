@@ -1,3 +1,5 @@
+import * as Blockly from "blockly/core";
+import { javascriptGenerator } from "blockly/javascript";
 import * as strings from "../../strings/blockly-blocks/tephra/risk-level";
 
 Blockly.Blocks.show_risk = {
@@ -28,7 +30,8 @@ Blockly.Blocks.show_risk = {
     }
   }
 };
-Blockly.JavaScript.show_risk = function (block) {
+
+javascriptGenerator.forBlock.show_risk = function (block) {
   const collection = block.getFieldValue(strings.COLLECTIONS);
   const threshold = block.getFieldValue(strings.THRESHOLD);
 

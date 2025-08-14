@@ -4,7 +4,7 @@ class BlocksTab{
         return cy.get('[data-test=Blocks-panel]');
      }
     getTag(tagName){ //tagName=['Volcano','Wind data','Samples Collections',Logic','Loops','Data','Variables','Functions']
-        return cy.get('.blocklyTreeLabel').contains(tagName);
+        return cy.get('.blocklyToolboxCategory').contains(tagName).closest('.blocklyToolboxCategory');
     }
     getFlyout(){
         return cy.get('.blocklyFlyout');
@@ -40,7 +40,7 @@ class BlocksTab{
         return '.blocklyDraggable .blocklyText';
     }
     getEditableTextEl(){
-        return '.blocklyEditableText';
+        return '.blocklyFieldText';
     }
     setSpeedControl(speed){
         switch (speed) {
@@ -58,6 +58,7 @@ class BlocksTab{
         return cy.get(this.getEditableTextEl());
     }
     editText(text, whichOne=0){
+        this.getTextBlock().eq(whichOne).click();
         cy.get('.blocklyWidgetDiv').find('.blocklyHtmlInput').eq(whichOne).type('{backspace}'+text+'{enter}');
     }
 

@@ -1,9 +1,14 @@
+import { KmlDataSource, Math as CSMath } from "@cesium/engine";
+import { observable } from "mobx";
 import { types } from "mobx-state-tree";
 import MolassesWorker from "../components/lava-coder/molasses.worker";
 import { AsciiRaster } from "../components/lava-coder/parse-ascii-raster";
 import {
-  defaultEruptionVolume, defaultResidual, defaultVentLatitude, defaultVentLongitude, kSquareMetersPerAcre
+  defaultEruptionVolume, defaultResidual, defaultVentLatitude, defaultVentLongitude, FlagColor, kSquareMetersPerAcre,
+  maxFlags
 } from "../components/lava-coder/lava-constants";
+import { pointInPolygon } from "../utilities/geometry-utils";
+import { isPointOnIsland } from "../utilities/molasses-utils";
 import { LavaSimulationAuthorSettings, LavaSimulationAuthorSettingsProps } from "./stores";
 import { uiStore } from "./ui-store";
 
@@ -27,6 +32,13 @@ function countCoveredCells(_lavaElevations: number[][]) {
   return coveredCells;
 }
 
+interface FlagLocation {
+  color: FlagColor;
+  name: string;
+  latitude: number;
+  longitude: number;
+}
+
 export const LavaSimulationStore = types
   .model("lavaSimulation", {
     residual: defaultResidual,
@@ -36,22 +48,40 @@ export const LavaSimulationStore = types
     pulseCount: 0,
   })
   .volatile((self) => ({
-    // TODO: Pin information should be removed from this store and added to a UI store instead.
-    pinLatitude: 0,
-    pinLongitude: 0,
-    pinElevation: -1, // negative elevation means we haven't set it yet
-    showPin: false,
     coveredCells: 0,
+    flagLocations: observable.array<FlagLocation>([]),
     raster: null as AsciiRaster | null, // AsciiRaster
     worker: null as Worker | null,
-    resetCount: 0 // Used to reset the camera when the simulation is reset
+    resetCount: 0, // Used to reset the camera when the simulation is reset
+    hazardZones: null as KmlDataSource | null
   }))
   .views((self) => ({
     get cellArea() {
       return (self.raster?.header.cellsize ?? 60) ** 2; // Default cell size is 60 meters
     },
+    isPointOnIsland(latitude: number, longitude: number) {
+      if (!self.raster) return false;
+      return isPointOnIsland(latitude, longitude, self.raster);
+    },
     get isRunning() {
       return self.worker != null && self.pulseCount < uiStore.pulsesPerEruption;
+    },
+    isPointInHazardZone(latitude: number, longitude: number) {
+      if (!self.hazardZones) return false;
+  
+      const latitudeRadians = CSMath.toRadians(latitude);
+      const longitudeRadians = CSMath.toRadians(longitude);
+      const hazardZoneEntities = self.hazardZones.entities.values;
+      for (const entity of hazardZoneEntities) {
+        if (entity.polygon?.hierarchy) {
+          const hierarchy = entity.polygon.hierarchy.getValue();
+          // hierarchy.positions is an array of Cartesian positions
+          if (pointInPolygon(latitudeRadians, longitudeRadians, hierarchy.positions)) {
+            return true;
+          }
+        }
+      }
+      return false;
     }
   }))
   .views((self) => ({
@@ -60,6 +90,14 @@ export const LavaSimulationStore = types
     }
   }))
   .actions((self) => ({
+    addFlagLocation(flag: FlagLocation) {
+      if (self.flagLocations.length < maxFlags) {
+        self.flagLocations.push(flag);
+      }
+    },
+    clearFlagPositions() {
+      self.flagLocations.clear();
+    },
     countCoveredCells(grid: number[][]) {
       self.coveredCells = countCoveredCells(grid);
     },
@@ -72,9 +110,6 @@ export const LavaSimulationStore = types
     setResidual(residual: number) {
       self.residual = residual;
     },
-    setShowPin(showPin: boolean) {
-      self.showPin = showPin;
-    },
     setTotalVolume(totalVolume: number) {
       self.totalVolume = totalVolume;
     },
@@ -82,13 +117,8 @@ export const LavaSimulationStore = types
       self.ventLatitude = latitude;
       self.ventLongitude = longitude;
     },
-    setPinLocation(latitude: number, longitude: number, elevation = -1) {
-      self.pinLatitude = latitude;
-      self.pinLongitude = longitude;
-      self.pinElevation = elevation;
-    },
-    setPinElevation(elevation: number) {
-      self.pinElevation = elevation;
+    setHazardZones(hazardZones: KmlDataSource) {
+      self.hazardZones = hazardZones;
     }
   }))
   .actions((self) => {
@@ -100,6 +130,11 @@ export const LavaSimulationStore = types
           (self[key] as any) = data[key] as any;
         });
       },
+      resetDefaults: () => {
+        self.setResidual(defaultResidual);
+        self.setTotalVolume(defaultEruptionVolume);
+        self.setVentLocation(defaultVentLatitude, defaultVentLongitude);
+      }
     };
   })
   .actions((self) => ({
@@ -110,8 +145,6 @@ export const LavaSimulationStore = types
         self.setPulseCount(0);
         self.worker.terminate();
       }
-
-      self.setShowPin(false);
 
       self.worker = new MolassesWorker();
       self.worker.onmessage = (e) => {
@@ -146,9 +179,8 @@ export const LavaSimulationStore = types
       }
       lavaElevations = [];
       self.setPulseCount(0);
-      self.setResidual(defaultResidual);
-      self.setTotalVolume(defaultEruptionVolume);
-      self.setVentLocation(defaultVentLatitude, defaultVentLongitude);
+      self.resetDefaults();
+      self.clearFlagPositions();
       self.coveredCells = 0;
       ++self.resetCount;
     }

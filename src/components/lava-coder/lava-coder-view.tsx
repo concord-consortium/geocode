@@ -1,14 +1,14 @@
 import { reaction } from "mobx";
 import { observer } from "mobx-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import VentLocationMarkerIcon from "../../assets/lava-coder/location-marker.png";
 import { lavaSimulation } from "../../stores/lava-simulation-store";
 import { LavaMapType, LavaMapTypes, uiStore } from "../../stores/ui-store";
 import { AcresCovered } from "./acres-covered-box";
 import { CompassHeading } from "./compass-heading";
 import { ConcordAttribution } from "./concord-attribution";
+import { ILatLongElevation, LatLongPopup } from "./lat-long-popup";
 import {
-  HomeViewIcon, MapButtonIcon, MoveIcon, PlaceVentMarkerIcon, RotateHeadingIcon, RotatePitchIcon,
+  HomeViewIcon, LatLongIcon, MapButtonIcon, MoveIcon, RotateHeadingIcon, RotatePitchIcon,
   ZoomInIcon, ZoomOutIcon
 } from "./lava-coder-icons";
 import { kFeetPerMeter } from "./lava-constants";
@@ -20,11 +20,9 @@ import { useCesiumViewer } from "./use-cesium-viewer";
 import { useElevationData } from "./use-elevation-data";
 import { useHazardZones } from "./use-hazard-zones";
 import { useLavaOverlay } from "./use-lava-overlay";
-import { useVentLocationMarker } from "./use-vent-location-marker";
 import { useVerticalExaggeration } from "./use-vertical-exaggeration";
 import { useWorldImagery } from "./use-world-imagery";
 import { VentKey } from "./vent-key";
-import { VentLocationPopup } from "./vent-location-popup";
 
 import "./lava-coder-view.scss";
 
@@ -40,7 +38,7 @@ const round6 = (value: number) => Math.round(value * 1000000) / 1000000;
 export const LavaCoderView = observer(function LavaCoderView({ width, height, margin, running }: IProps) {
   const lastRunningTime = useRef(0);
   const {
-    showPlaceVent, showMapType, showMapTypeTerrain, showMapTypeLabeledTerrain, showMapTypeStreet, mapType,
+    showLatLongButton, showMapType, showMapTypeTerrain, showMapTypeLabeledTerrain, showMapTypeStreet, mapType,
     verticalExaggeration
   } = uiStore;
   const [lavaCoderElt, setLavaCoderElt] = useState<HTMLDivElement | null>(null);
@@ -50,9 +48,8 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
     terrainWithLabels: "Labeled",
     street: "Street"
   };
-  const [isPlaceVentMode, setIsPlaceVentMode] = useState(false);
-  const [_showVentLocationPopup, setShowVentLocationPopup] = useState(false);
-  const [cursor, setCursor] = useState("auto");
+  const [isLatLongMode, setIsLatLongMode] = useState(false);
+  const [cursor, setCursor] = useState<"auto" | "crosshair">("auto");
 
   const viewer = useCesiumViewer(lavaCoderElt, mapType);
 
@@ -63,30 +60,27 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
 
   useVerticalExaggeration(viewer, verticalExaggeration);
 
-  const { isPointInHazardZone } = useHazardZones(viewer, isPlaceVentMode, verticalExaggeration);
+  useHazardZones(viewer, isLatLongMode, verticalExaggeration);
 
-  const handleOpenVentLocationPopup = useCallback(() => {
-    setShowVentLocationPopup(true);
+  const clearLatLong = useCallback(() => {
+    setIsLatLongMode(false);
+    uiStore.clearLatLongPoint();
   }, []);
 
-  const handleCloseVentLocationPopup = useCallback(() => {
-    setShowVentLocationPopup(false);
-  }, []);
-
-  // Close the vent location popup when the worker is reset (e.g., when a new simulation starts)
+  // Close the lat/long popup when the worker is reset (e.g., when a new simulation starts)
   useEffect(() => {
     return reaction(
       () => lavaSimulation.worker,
-      () => handleCloseVentLocationPopup()
+      () => clearLatLong()
     );
-  }, [handleCloseVentLocationPopup]);
+  }, [clearLatLong]);
 
   useEffect(() => {
     return reaction(
       () => lavaSimulation.resetCount,
-      () => handleCloseVentLocationPopup()
+      () => clearLatLong()
     );
-  }, [handleCloseVentLocationPopup]);
+  }, [clearLatLong]);
 
   // Update the last running time when the running state changes
   if (running) lastRunningTime.current = Date.now();
@@ -95,39 +89,35 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
   const isRunning = running ||
                     (lastRunningTime.current > 0 && Date.now() - lastRunningTime.current < 1000) ||
                     lavaSimulation.isRunning;
-  const showVentLocationPopup = _showVentLocationPopup && !isRunning;
-  useVentLocationMarker({ viewer, verticalExaggeration, onClick: handleOpenVentLocationPopup, hide: isRunning });
+  const latLongPopupMode = isLatLongMode && !isRunning
+                            ? uiStore.hasLatLongPoint ? "static" : "dynamic"
+                            : undefined;
 
   useElevationData();
 
   useLavaOverlay(viewer);
 
-  const handleMouseMove = useCallback((latitude, longitude) => {
-    // handle mouse move event
-    const isInHazardZone = isPointInHazardZone(latitude, longitude);
-    const kVentLocationCursorHotSpot = "13 36";
-    setCursor(isPlaceVentMode
-                ? isInHazardZone
-                    ? `url(${VentLocationMarkerIcon}) ${kVentLocationCursorHotSpot}, auto`
-                    : "not-allowed"
-                : "auto");
-  }, [isPlaceVentMode, isPointInHazardZone]);
+  const handleMouseMove = useCallback(() => {
+    setCursor(isLatLongMode && !uiStore.hasLatLongPoint ? "crosshair" : "auto");
+  }, [isLatLongMode]);
+
+  const setLatLongPoint = useCallback((latLong: ILatLongElevation) => {
+    uiStore.setLatLongPoint(latLong.latitude, latLong.longitude, latLong.elevation);
+  }, []);
 
   const handleClick = useCallback((latitude, longitude, elevation) => {
-    const isInHazardZone = isPointInHazardZone(latitude, longitude);
+    const isInHazardZone = lavaSimulation.isPointInHazardZone(latitude, longitude);
+    elevation /= verticalExaggeration; // Adjust elevation for vertical exaggeration
     const elevationFeet = Math.round(elevation * kFeetPerMeter);
     // eslint-disable-next-line no-console
     console.log("Clicked at latitude:", round6(latitude), "longitude:", round6(longitude),
                 "elevation:", `${Math.round(elevation)}m = ${elevationFeet}ft`,
                 "in hazard zone:", isInHazardZone);
-    if (isPlaceVentMode && isInHazardZone) {
-      lavaSimulation.setPinLocation(latitude, longitude, elevation / verticalExaggeration);
-      lavaSimulation.setShowPin(true);
-      setShowVentLocationPopup(true);
+    if (isLatLongMode && !uiStore.hasLatLongPoint) {
+      uiStore.setLatLongPoint(latitude, longitude, elevation);
     }
-    setIsPlaceVentMode(false);
     setCursor("auto");
-  }, [isPlaceVentMode, isPointInHazardZone, verticalExaggeration]);
+  }, [isLatLongMode, verticalExaggeration]);
 
   useCesiumMouseEvents(viewer, handleMouseMove, handleClick);
 
@@ -149,8 +139,9 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
     replaceBaseLayer(viewer, nextMapType);
   }
 
-  function togglePlaceVentMode() {
-    setIsPlaceVentMode(prev => !prev);
+  function toggleLatLongMode() {
+    setIsLatLongMode(prev => !prev);
+    uiStore.clearLatLongPoint();
   }
 
   const containerStyle: React.CSSProperties = { width, height, margin, cursor };
@@ -160,6 +151,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
   return (
     <div className="lava-coder-view" style={containerStyle}>
       <div ref={elt => setLavaCoderElt(elt)} className="lava-coder-simulation" />
+      <ProgressBar pulseCount={lavaSimulation.pulseCount} pulses={uiStore.pulsesPerEruption} />
       <div className="lava-overlay-controls-left">
         <div className="compass-heading-indicator">
           <CompassHeading viewer={viewer} />
@@ -192,12 +184,12 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
           </LavaIconButton>
         </div>
       </div>
-      { isPlaceVentMode && <VentKey /> }
+      { isLatLongMode && <VentKey /> }
       <div className="lava-overlay-controls-bottom bottom-left-controls">
-        {showPlaceVent && (
-          <LavaIconButton className="place-vent-button" label={"Place Vent"} isActive={isPlaceVentMode}
-                          onClick={() => togglePlaceVentMode()} disabled={isRunning}>
-            <PlaceVentMarkerIcon />
+        {showLatLongButton && (
+          <LavaIconButton className="lat-long-button" width={26} label={"Lat/Long"} isActive={isLatLongMode}
+                          onClick={() => toggleLatLongMode()} disabled={isRunning}>
+            <LatLongIcon />
           </LavaIconButton>
         )}
       </div>
@@ -209,10 +201,9 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
         )}
       </div>
       <AcresCovered />
-      <ProgressBar pulseCount={lavaSimulation.pulseCount} pulses={uiStore.pulsesPerEruption} />
       <ConcordAttribution />
-      <VentLocationPopup viewer={viewer} verticalExaggeration={verticalExaggeration}
-                        show={showVentLocationPopup} onClose={handleCloseVentLocationPopup}/>
+      <LatLongPopup viewer={viewer} verticalExaggeration={verticalExaggeration}
+                    mode={latLongPopupMode} onSetLatLongPoint={setLatLongPoint} />
     </div>
   );
 });
