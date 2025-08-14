@@ -19,6 +19,7 @@ import MonteCarloCode from "./code/monte-carlo.xml";
 import MonteCarlo3Locs from "./code/monte-carlo-3-locs.xml";
 import WindDataCollection from "./code/wind-data-collection.xml";
 import FilteredWindDataCollection from "./code/filter-wind-data-collection.xml";
+import MolassesLocation from "./code/molasses-location.xml";
 
 interface IBlocklyAuthoring {
   toolbox: Record<string, string>;
@@ -51,7 +52,8 @@ export const BlocklyAuthoring: IBlocklyAuthoring = {
     "Monte Carlo": MonteCarloCode,
     "Monte Carlo (3 locs)": MonteCarlo3Locs,
     "Wind Data Collection": WindDataCollection,
-    "Filtered Wind Data Collection": FilteredWindDataCollection
+    "Filtered Wind Data Collection": FilteredWindDataCollection,
+    "Molasses Location": MolassesLocation
   },
   tephraToolboxes: [
     "TephraFull",

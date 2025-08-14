@@ -1,0 +1,24 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+  <block type="molasses_set_flag_location" id="/v?+pzt_.hKc(.rQ)dr/" x="105" y="176">
+    <field name="name">test</field>
+    <field name="color">green</field>
+    <value name="location">
+      <block type="lat_long" id="L(1YW187Em[K)yK;Q4m~">
+        <field name="lat_long">19.131,-155.623</field>
+      </block>
+    </value>
+    <next>
+      <block type="molasses_run_simulation" id="bIjG2)~K%-s0~0{5oaS|">
+        <statement name="setters">
+          <block type="molasses_lava_front" id="e]5S2t+{mK$OQv@cLO^t">
+            <value name="molasses_lava_front">
+              <block type="math_number" id=",b?)ZY24Ctp.#l6H#EG8">
+                <field name="NUM">4</field>
+              </block>
+            </value>
+          </block>
+        </statement>
+      </block>
+    </next>
+  </block>
+</xml>
