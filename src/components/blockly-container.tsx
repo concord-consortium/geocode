@@ -213,7 +213,12 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
     Blockly.Xml.domToWorkspace(xml, this.workSpace);
     
     // We apply the xml a second time so sampleLocations and sampleCollections are populated correctly.
-    // "Compute Tephra thickness" blocks will not have values specified in xml otherwise.
+    // In BlocklyController.parseVariables(), sampleLocations and sampleCollections are populated, which are in turn
+    // used for dropdowns in "Compute Tephra thickness" blocks. When loading blocks from xml, initial values for these
+    // dropdowns specified in the xml will not exist yet, so the dropdown values will revert to options that do exist.
+    // Previous versions of blockly seem to be less picky about values of dropdowns, allowing for values that don't
+    // actually exist as options, but later versions do not allow this. So the first application of the xml populates
+    // the dropdowns with options, and the second application sets the specified initial dropdown values correctly.
     setTimeout(() => {
       this.workSpace.clear();
       Blockly.Xml.domToWorkspace(xml, this.workSpace);
