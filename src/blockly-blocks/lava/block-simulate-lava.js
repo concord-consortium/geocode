@@ -155,8 +155,7 @@ javascriptGenerator.forBlock.molasses_vent_location = function(block) {
   const setVentLocationCode = setCodeVariable({
     variableName: "molasses_vent_location",
     block,
-    setFunction: setVentLocationFunction,
-    validateFunction: validateLatLong
+    setFunction: setVentLocationFunction
   });
 
   if (setVentLocationCode) {
