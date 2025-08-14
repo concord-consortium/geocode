@@ -28,9 +28,14 @@ const dataTab = new DataTab;
       });
       describe('Direction v elevation graph',()=>{ //had to make this separate because of scrolling issues for three graphs
         before(() => {
+          cy.log("Opening model options menu");
           modelOptions.getModelOptionsMenu().click();
+          cy.log("Selecting initial code");
           modelOptions.selectInitialCode('Filtered Wind Data Collection');
+          cy.wait(500);
+          cy.log("Closing model options menu");
           modelOptions.getModelOptionsMenu().click();
+          cy.log("Running program");
           blocksTab.runProgram();
           cy.wait(2000);
           rightPanel.getDataTab().click();
