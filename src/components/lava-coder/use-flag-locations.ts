@@ -2,7 +2,7 @@ import { Cartesian2, Cartesian3, CesiumWidget, Color, VerticalOrigin } from "@ce
 import { autorun } from "mobx";
 import { useEffect } from "react";
 import { lavaSimulation } from "../../stores/lava-simulation-store";
-import { flagLabels } from "./lava-constants";
+import { flagColorInfo, flagLabels } from "./lava-constants";
 import { useTerrainProvider } from "./use-terrain-provider";
 
 const locationMarkerSvgText = `<svg width="23" height="33" viewBox="0 0 23 33" xmlns="http://www.w3.org/2000/svg">
@@ -46,7 +46,8 @@ export function useFlagLocations({ verticalExaggeration, viewer }: IUseFlagLocat
           if (pinElevation >= 0) {
             const adjustedHeight = pinElevation * verticalExaggeration;
             const adjustedLocation = Cartesian3.fromDegrees(longitude, latitude, adjustedHeight);
-            const locationSvg = locationMarkerSvgText.replace("replace_with_color", color);
+            const locationSvg = locationMarkerSvgText
+              .replace("replace_with_color", flagColorInfo[color].color ?? "#000");
 
             viewer.entities.add({
               id: flagId(label),

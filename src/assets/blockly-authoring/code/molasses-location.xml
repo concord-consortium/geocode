@@ -1,23 +1,56 @@
 <xml xmlns="http://www.w3.org/1999/xhtml">
-  <block type="molasses_set_flag_location" id="/v?+pzt_.hKc(.rQ)dr/" x="105" y="176">
-    <field name="name">test</field>
+  <block type="molasses_set_flag_location" id="8;*pScQpoom{Zt~L.)F$" x="51" y="222">
+    <field name="name">test2</field>
     <field name="color">green</field>
     <value name="location">
-      <block type="lat_long" id="L(1YW187Em[K)yK;Q4m~">
-        <field name="lat_long">19.131,-155.623</field>
+      <block type="lat_long" id="?~?w9pY3`-0uHjK6)zoi">
+        <field name="lat_long">19.411,-155.407</field>
       </block>
     </value>
     <next>
-      <block type="molasses_run_simulation" id="bIjG2)~K%-s0~0{5oaS|">
-        <statement name="setters">
-          <block type="molasses_lava_front" id="e]5S2t+{mK$OQv@cLO^t">
-            <value name="molasses_lava_front">
-              <block type="math_number" id=",b?)ZY24Ctp.#l6H#EG8">
-                <field name="NUM">4</field>
+      <block type="molasses_set_flag_location" id="xk#GrS8w*/;?!_)L`!-[">
+        <field name="name">test3</field>
+        <field name="color">blue</field>
+        <value name="location">
+          <block type="lat_long" id="g1^3E^/gBeb;2A)o,p].">
+            <field name="lat_long">19.689,-155.661</field>
+          </block>
+        </value>
+        <next>
+          <block type="molasses_set_flag_location" id="F(i({(FRTv7omcA*ghMp">
+            <field name="name">test4</field>
+            <field name="color">orange</field>
+            <value name="location">
+              <block type="lat_long" id="Hzt/Z@yu#e%-G61W!w(Y">
+                <field name="lat_long">19.379,-155.797</field>
               </block>
             </value>
+            <next>
+              <block type="molasses_set_flag_location" id="/v?+pzt_.hKc(.rQ)dr/">
+                <field name="name">test</field>
+                <field name="color">purple</field>
+                <value name="location">
+                  <block type="lat_long" id="L(1YW187Em[K)yK;Q4m~">
+                    <field name="lat_long">19.131,-155.623</field>
+                  </block>
+                </value>
+                <next>
+                  <block type="molasses_run_simulation" id="bIjG2)~K%-s0~0{5oaS|">
+                    <statement name="setters">
+                      <block type="molasses_lava_front" id="e]5S2t+{mK$OQv@cLO^t">
+                        <value name="molasses_lava_front">
+                          <block type="math_number" id=",b?)ZY24Ctp.#l6H#EG8">
+                            <field name="NUM">4</field>
+                          </block>
+                        </value>
+                      </block>
+                    </statement>
+                  </block>
+                </next>
+              </block>
+            </next>
           </block>
-        </statement>
+        </next>
       </block>
     </next>
   </block>
