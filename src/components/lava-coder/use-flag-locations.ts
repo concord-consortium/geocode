@@ -1,4 +1,4 @@
-import { Cartesian2, Cartesian3, CesiumWidget, Color, HorizontalOrigin, VerticalOrigin } from "@cesium/engine";
+import { Cartesian2, Cartesian3, CesiumWidget, Color, VerticalOrigin } from "@cesium/engine";
 import { autorun } from "mobx";
 import { useEffect } from "react";
 import { lavaSimulation } from "../../stores/lava-simulation-store";
