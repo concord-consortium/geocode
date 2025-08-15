@@ -70,7 +70,7 @@ const kRightTabInfo: RightTabInfo = {
   conditions: {
     name: "Conditions",
     unitDisplayName: {
-      LavaCoder: "LavaCoder",
+      LavaCoder: "Map",
       Tephra: "Conditions",
       Seismic: "Map"
     },
