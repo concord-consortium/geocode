@@ -287,7 +287,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
         showCode,
         showControls,
         showConditions,
-        showCrossSection,
+        showCrossSection: _showCrossSection,
         showData,
         showMonteCarlo: _showMonteCarlo,
         showDeformation,
@@ -322,6 +322,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     const isLavaCoder = unitName === "LavaCoder";
 
     const showMonteCarlo = _showMonteCarlo && isTephra;
+    const showCrossSection = _showCrossSection && isTephra;
 
     const toolboxPath = BlocklyAuthoring.toolbox[toolbox];
     const codePath = BlocklyAuthoring.code[initialCodeTitle];
