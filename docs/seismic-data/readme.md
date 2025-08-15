@@ -2,10 +2,9 @@
 
 ## Current position and velocity data
 
-The velocity file, which includes the location for every GPS station, can be found at data/seismic/cwu.final_nam14.vel
+The velocity file, which includes the location for every GPS station, can be found at `data/seismic/cwu.final_nam14.vel`.
 
-This data is from ftp://data-out.unavco.org/pub/products/velocity/cwu.final_nam14.vel, and fetched and cleaned
-using the `fetch-velocity-data.js` script.
+This data is from `ftp://data-out.unavco.org/pub/products/velocity/cwu.final_nam14.vel`, and fetched and cleaned using the `fetch-velocity-data.js` script. Note that this server [has been deprecated](https://www.unavco.org/data/gps-gnss/file-server/file-server-transition-notice.html) and so this section will need to be updated to accommodate more recent data. The `Position over time data` section has already been updated to use the new server.
 
 ### Notes:
 
@@ -23,7 +22,7 @@ date of the location data, and (2) the velocity is calculated between the first 
 But these are both clearly wrong, because we have different locations for the same ref_epoch, and same speeds
 for different first_ and last_epochs.
 
-I found a description of this file here: https://www.unavco.org/data/gps-gnss/derived-products/docs/GAGE_GPS_Analysis_Plan_20170912.pdf
+I found a description of this file here: https://www.unavco.org/data/gps-gnss/derived-products/docs/GAGE_GPS_Analysis_Plan_20170912.pdf.
 
 > A given station may have more than one entry in a given velocity file, for example if the station is near a
 > large earthquake and is affected by postseismic deformation. In this case, there will be multiple velocity
@@ -32,22 +31,24 @@ I found a description of this file here: https://www.unavco.org/data/gps-gnss/de
 
 ...but that doesn't really explain it for me.
 
-In any case, since we are using the file for non-milimeter position data (displaying all stations on the map)
+In any case, since we are using the file for non-millimeter position data (displaying all stations on the map)
 and velocity data (which are the same on every row), this doesn't see super-important. Therefore, the file is
 cleaned to remove all the additional rows for any given station.
 
 ## Position over time data
 
-The position files, which includes the east and west delta position by date for a set of 25 GPS Stations, can
-be found at data/seismic/position.[station-id].cwu.nam14.csv.
+The position files, which includes the east and west delta position by date for a set of 25 GPS Stations, can be found at data/seismic/position.[station-id].cwu.nam14.csv.
 
-We get the data from https://data.earthscope.org/archive/gnss/products/position/[station-id]/[station-id].cwu.nam14.csv
+We get the data from https://data.earthscope.org/archive/gnss/products/position/[station-id]/[station-id].cwu.nam14.csv.
 
 This is fetched and cleaned using the `fetch-position-data.js` script.
 
-Data endpoint requires Bearer token. Token can be obtained using EarthScopes CLI from https://pypi.org/project/earthscope-cli/. Registration is onetime and free.
+Data endpoint requires a Bearer token. Token can be obtained by registering for a free account at https://www.earthscope.org. The bearer token for the CC developer account is available in 1Password. The token should be placed in a local `.env` file (which should _not_ be committed to GitHub):
+```
+EARTHSCOPE_BEARER_TOKEN="...your token here..."
+```
 
-See also: https://www.unavco.org/data/web-services/documentation/documentation.html#!/GNSS47GPS/getPositionByStationId
+See also: https://www.unavco.org/data/web-services/documentation/documentation.html#!/GNSS47GPS/getPositionByStationId.
 
 ## Useful links
 
