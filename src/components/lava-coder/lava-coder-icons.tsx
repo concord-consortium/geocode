@@ -36,7 +36,7 @@ function iconSrcSet( icon1x: string, icon2x: string, icon3x: string) {
 
 export function CloseIcon() {
   return (
-    <img src={CloseIcon1x} className="close-icon" alt="Close Vent Key"
+    <img src={CloseIcon1x} className="close-icon" alt="Close Vent Key" draggable="false"
         srcSet={iconSrcSet(CloseIcon1x, CloseIcon2x, CloseIcon3x)} />
   );
 }

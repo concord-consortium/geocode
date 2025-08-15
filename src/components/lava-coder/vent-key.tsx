@@ -31,16 +31,13 @@ export function VentKey() {
           </button>
           <div className="vent-key">
             <div className="description">
-              <div className="description-line">Likelihood</div>
-              <div className="description-line">of Vent Location</div>
+              <div className="description-line">Hazard Zones</div>
             </div>
-            <div className="item">
+            <div className="item-grid">
               <div className="item-box very-likely" />
-              <div className="item-label">Very Likely</div>
-            </div>
-            <div className="item">
+              <div className="item-label very-likely">Extremely High Hazard</div>
               <div className="item-box likely" />
-              <div className="item-label">Likely</div>
+              <div className="item-label likely">Very High Hazard</div>
             </div>
           </div>
         </>
