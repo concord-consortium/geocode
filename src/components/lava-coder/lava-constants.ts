@@ -28,3 +28,9 @@ export const flagColorInfo = {
   [flagColors[3]]: { color: "#e270e6" },
 };
 export const flagLabels = ["A", "B", "C", "D"];
+export const flagLabelInfo = {
+  [flagLabels[0]]: { xOffset: .5, yOffset: -22 },
+  [flagLabels[1]]: { xOffset: 1.5, yOffset: -21 },
+  [flagLabels[2]]: { xOffset: 0, yOffset: -21 },
+  [flagLabels[3]]: { xOffset: 1.5, yOffset: -21 },
+};

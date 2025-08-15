@@ -1,8 +1,8 @@
-import { Cartesian2, Cartesian3, CesiumWidget, Color, VerticalOrigin } from "@cesium/engine";
+import { Cartesian2, Cartesian3, CesiumWidget, Color, HorizontalOrigin, VerticalOrigin } from "@cesium/engine";
 import { autorun } from "mobx";
 import { useEffect } from "react";
 import { lavaSimulation } from "../../stores/lava-simulation-store";
-import { flagColorInfo, flagLabels } from "./lava-constants";
+import { flagColorInfo, flagLabelInfo, flagLabels } from "./lava-constants";
 import { useTerrainProvider } from "./use-terrain-provider";
 
 const locationMarkerSvgText = `<svg width="23" height="33" viewBox="0 0 23 33" xmlns="http://www.w3.org/2000/svg">
@@ -49,6 +49,7 @@ export function useFlagLocations({ verticalExaggeration, viewer }: IUseFlagLocat
             const locationSvg = locationMarkerSvgText
               .replace("replace_with_color", flagColorInfo[color].color ?? "#000");
 
+            const { xOffset, yOffset } = flagLabelInfo[label] || { xOffset: 0, yOffset: 0 };
             viewer.entities.add({
               id: flagId(label),
               position: adjustedLocation,
@@ -61,7 +62,7 @@ export function useFlagLocations({ verticalExaggeration, viewer }: IUseFlagLocat
                 eyeOffset: new Cartesian3(0, 0, -1),
                 fillColor: Color.BLACK,
                 font: "14px Lato-Bold, Lato, sans-serif",
-                pixelOffset: new Cartesian2(0, -22),
+                pixelOffset: new Cartesian2(xOffset, yOffset),
                 text: label,
               }
             });
