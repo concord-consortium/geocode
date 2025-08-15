@@ -1,3 +1,5 @@
+@use "./lava-vars.scss" as vars;
+
 .vent-key-container {
   position: absolute;
   top: 11px;
@@ -29,7 +31,11 @@
     width: 24px;
 
     &:hover {
-      background-color: #b7dcad;
+      background-color: vars.$green-2-hover;
+    }
+
+    &:active {
+      background-color: vars.$green-1-select;
     }
 
     .close-icon {
@@ -39,6 +45,8 @@
   }
 
   .vent-key {
+    width: 162px;
+    height: 134px;
     align-items: center;
     background-color: white;
     border-radius: 5px;
@@ -46,9 +54,7 @@
     display: flex;
     flex-direction: column;
     font-size: 16px;
-    height: 116px;
     justify-content: space-evenly;
-    width: 134px;
 
     .description {
       display: flex;
@@ -59,25 +65,30 @@
       }
     }
 
-    .item {
-      display: flex;
-      justify-content: start;
-      width: 100%;
+    .item-grid {
+      display: grid;
+      grid-template-columns: 25px 109px;
+      grid-template-rows: repeat(2, 38px);
+      column-gap: 8px;
+      row-gap: 8px;
 
       .item-box {
-        border: solid 1px #757575;
-        height: 20px;
-        margin-left: 14px;
-        margin-right: 8px;
+        grid-column: 1;
         width: 25px;
-
-        &.likely {
-          background-color: rgba(0, 228, 208, 0.75);
-        }
+        height: 20px;
+        border: solid 1px #757575;
 
         &.very-likely {
           background-color: rgba(253, 255, 0, 0.75);
         }
+
+        &.likely {
+          background-color: rgba(0, 228, 208, 0.75);
+        }
+      }
+
+      .item-label {
+        grid-column: 2;
       }
     }
   }
