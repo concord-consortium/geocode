@@ -14,9 +14,10 @@ export function CompassHeading({ viewer }: IProps) {
   };
 
   useEffect(() => {
-    viewer?.camera?.changed.addEventListener(handleCameraChange);
+    const changedEvent = viewer?.camera?.changed;
+    changedEvent?.addEventListener(handleCameraChange);
     return () => {
-      viewer?.camera?.changed.removeEventListener(handleCameraChange);
+      changedEvent?.removeEventListener(handleCameraChange);
     };
   }, [viewer]);
 
