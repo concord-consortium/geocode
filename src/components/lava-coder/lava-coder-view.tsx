@@ -18,6 +18,7 @@ import { CameraMode, kDefaultCameraMode, useCameraControls } from "./use-camera-
 import { useCesiumMouseEvents } from "./use-cesium-mouse-events";
 import { useCesiumViewer } from "./use-cesium-viewer";
 import { useElevationData } from "./use-elevation-data";
+import { useFlagLocations } from "./use-flag-locations";
 import { useHazardZones } from "./use-hazard-zones";
 import { useLavaOverlay } from "./use-lava-overlay";
 import { useVerticalExaggeration } from "./use-vertical-exaggeration";
@@ -58,6 +59,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
 
   const { replaceBaseLayer } = useWorldImagery();
 
+  useFlagLocations({ viewer, verticalExaggeration });
   useVerticalExaggeration(viewer, verticalExaggeration);
 
   useHazardZones(viewer, isLatLongMode, verticalExaggeration);

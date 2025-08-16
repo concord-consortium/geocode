@@ -21,3 +21,17 @@ export const rangeLat = maxLat - minLat;
 export const maxFlags = 4;
 export const flagColors = ["green", "blue", "orange", "purple"] as const;
 export type FlagColor = typeof flagColors[number];
+export const flagColorInfo = {
+  [flagColors[0]]: { color: "#80e62e" },
+  [flagColors[1]]: { color: "#22c7ff" },
+  [flagColors[2]]: { color: "#fb8d34" },
+  [flagColors[3]]: { color: "#e270e6" },
+};
+export const flagLabels = ["A", "B", "C", "D"];
+// Used to center the labels
+export const flagLabelInfo = {
+  [flagLabels[0]]: { xOffset: .5, yOffset: -22 },
+  [flagLabels[1]]: { xOffset: 2, yOffset: -21 },
+  [flagLabels[2]]: { xOffset: 0, yOffset: -21 },
+  [flagLabels[3]]: { xOffset: 1.5, yOffset: -21 },
+};
