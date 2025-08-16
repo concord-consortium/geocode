@@ -25,7 +25,7 @@ const UIStore = types.model("UI", {
   showConditions: true,
   showCrossSection: false,
   showMonteCarlo: true,
-  showData: true, // left tabs for LavaCoder
+  showData: true,
   showDeformation: true,
   // other ui
   showDeformationGraph: false,

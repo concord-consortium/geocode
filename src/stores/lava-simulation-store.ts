@@ -4,8 +4,8 @@ import { types } from "mobx-state-tree";
 import MolassesWorker from "../components/lava-coder/molasses.worker";
 import { AsciiRaster } from "../components/lava-coder/parse-ascii-raster";
 import {
-  defaultEruptionVolume, defaultResidual, defaultVentLatitude, defaultVentLongitude, FlagColor, kSquareMetersPerAcre,
-  maxFlags
+  defaultEruptionVolume, defaultResidual, defaultVentLatitude, defaultVentLongitude, FlagColor, flagLabels,
+  kSquareMetersPerAcre, maxFlags
 } from "../components/lava-coder/lava-constants";
 import { pointInPolygon } from "../utilities/geometry-utils";
 import { isPointOnIsland } from "../utilities/molasses-utils";
@@ -35,6 +35,7 @@ function countCoveredCells(_lavaElevations: number[][]) {
 interface FlagLocation {
   color: FlagColor;
   name: string;
+  label?: string;
   latitude: number;
   longitude: number;
 }
@@ -92,7 +93,7 @@ export const LavaSimulationStore = types
   .actions((self) => ({
     addFlagLocation(flag: FlagLocation) {
       if (self.flagLocations.length < maxFlags) {
-        self.flagLocations.push(flag);
+        self.flagLocations.push({ label: flagLabels[self.flagLocations.length], ...flag });
       }
     },
     clearFlagPositions() {
