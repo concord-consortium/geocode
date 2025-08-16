@@ -72,9 +72,8 @@ Blockly.Blocks.molasses_set_flag_location = {
 function getAndValidateValue({ block, validateFunction, variableName }) {
   const value = javascriptGenerator.valueToCode(block, variableName, javascriptGenerator.ORDER_ATOMIC);
 
-  if (validateFunction && !validateFunction(value, block)) {
-    return null;
-  }
+  block.setWarningText(null);
+  validateFunction?.(value, block);
 
   return value;
 }
@@ -152,18 +151,12 @@ function validateLatLong(value, block) {
 }
 
 javascriptGenerator.forBlock.molasses_vent_location = function(block) {
-  const setVentLocationCode = setCodeVariable({
+  return setCodeVariable({
     variableName: "molasses_vent_location",
     block,
-    setFunction: setVentLocationFunction
+    setFunction: setVentLocationFunction,
+    validateFunction: validateLatLong
   });
-
-  if (setVentLocationCode) {
-    block.setWarningText(null);
-    return setVentLocationCode;
-  }
-
-  return "";
 };
 
 javascriptGenerator.forBlock.molasses_run_simulation = function(block) {
