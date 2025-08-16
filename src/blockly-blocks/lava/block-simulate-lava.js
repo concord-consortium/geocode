@@ -99,6 +99,7 @@ function getNumberValidationFunction(fieldName, min, max) {
     }
 
     const numberValue = parseFloat(value);
+    // If numberValue is NaN, it might be a variable containing a number, so we don't know if it's invalid.
     if (!isNaN(numberValue) && (numberValue < min || numberValue > max)) {
       block.setWarningText(`${fieldName} must be between ${min} and ${max}`);
       return false;
