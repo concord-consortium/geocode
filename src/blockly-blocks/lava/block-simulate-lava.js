@@ -2,6 +2,7 @@
 import * as Blockly from "blockly/core";
 import { javascriptGenerator } from "blockly/javascript";
 import { flagColors, maxLat, maxLong, minLat, minLong } from "../../components/lava-coder/lava-constants";
+import { uiStore } from "../../stores/ui-store";
 import * as strings from "../../strings/blockly-blocks/lava/simulate-lava";
 
 function basicInit(block, title) {
@@ -72,7 +73,6 @@ Blockly.Blocks.molasses_set_flag_location = {
 function getAndValidateValue({ block, validateFunction, variableName }) {
   const value = javascriptGenerator.valueToCode(block, variableName, javascriptGenerator.ORDER_ATOMIC);
 
-  block.setWarningText(null);
   validateFunction?.(value, block);
 
   return value;
@@ -91,34 +91,42 @@ const setEruptionVolumeFunction = "setMolassesEruptionVolume";
 const setLavaFrontFunction = "setMolassesLavaFront";
 const setVentLocationFunction = "setMolassesVentLocation";
 
+function getNumberValidationFunction(fieldName, min, max) {
+  return (value, block) => {
+    if (value == null || value === "") {
+      block.setWarningText(`${fieldName} must be specified`);
+      return false;
+    }
+
+    const numberValue = parseFloat(value);
+    if (!isNaN(numberValue) && (numberValue < min || numberValue > max)) {
+      block.setWarningText(`${fieldName} must be between ${min} and ${max}`);
+      return false;
+    }
+
+    block.setWarningText(null);
+    return true;
+  };
+}
+
 javascriptGenerator.forBlock.molasses_eruption_volume = function(block) {
-  const setEruptionVolumeCode = setCodeVariable({
+  return setCodeVariable({
     variableName: "molasses_eruption_volume",
     block,
-    setFunction: setEruptionVolumeFunction
+    setFunction: setEruptionVolumeFunction,
+    validateFunction:
+      getNumberValidationFunction("Eruption volume", uiStore.minEruptionVolume, uiStore.maxEruptionVolume)
   });
-
-  if (setEruptionVolumeCode) {
-    block.setWarningText(null);
-    return setEruptionVolumeCode;
-  }
-
-  return "";
 };
 
 javascriptGenerator.forBlock.molasses_lava_front = function(block) {
-  const setLavaFrontCode = setCodeVariable({
+  return setCodeVariable({
     variableName: "molasses_lava_front",
     block,
-    setFunction: setLavaFrontFunction
+    setFunction: setLavaFrontFunction,
+    validateFunction:
+      getNumberValidationFunction("Lava front height", uiStore.minLavaFrontHeight, uiStore.maxLavaFrontHeight)
   });
-
-  if (setLavaFrontCode) {
-    block.setWarningText(null);
-    return setLavaFrontCode;
-  }
-
-  return "";
 };
 
 function validateLatLong(value, block) {
@@ -147,6 +155,7 @@ function validateLatLong(value, block) {
     return false;
   }
 
+  block.setWarningText(null);
   return true;
 }
 
