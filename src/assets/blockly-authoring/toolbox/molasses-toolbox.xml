@@ -52,6 +52,7 @@
     </block>
     <block type="input_range"></block>
     <block type="lat_long"></block>
+    <block type="math_arithmetic"></block>
   </category>
 
   <category name="Variables" colour="%{BKY_VARIABLES_HUE}" custom="VARIABLE"></category>
