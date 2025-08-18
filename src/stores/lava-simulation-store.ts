@@ -139,7 +139,7 @@ export const LavaSimulationStore = types
     };
   })
   .actions((self) => ({
-    runSimulation() {
+    runSimulation(onFinish?: () => void) {
       if (!self.raster) return;
 
       if (self.worker) {
@@ -156,6 +156,8 @@ export const LavaSimulationStore = types
             lavaElevations = e.data.grid;
             gridBounds = e.data.gridBounds;
             self.countCoveredCells(e.data.grid);
+
+            if (self.pulseCount >= uiStore.pulsesPerEruption) onFinish?.();
           }
         } catch (error) {
           console.error("Error handling worker message:", error, e);

@@ -88,9 +88,11 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     addFunc("resetSimulation", () => {
       lavaSimulation.resetDefaults();
     });
-    addFunc("runMolassesSimulation", () => {
-      lavaSimulation.runSimulation();
-    });
+
+    // We use createAsyncFunction for runSimulation so the blockly program will wait for the simulation to complete
+    // before continuing execution
+    const runSimulationWrapper = (callback: () => void) => lavaSimulation.runSimulation(callback);
+    interpreter.setProperty(scope, "runMolassesSimulation", interpreter.createAsyncFunction(runSimulationWrapper));
 
     addFunc("addFlagLocation", (args) => {
       if (lavaSimulation.flagLocations.length >= maxFlags) {
