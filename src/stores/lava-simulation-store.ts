@@ -150,14 +150,14 @@ export const LavaSimulationStore = types
       self.worker = new MolassesWorker();
       self.worker.onmessage = (e) => {
         try {
-          const { status } = e.data;
+          const { complete, status } = e.data;
           if (status === "updatedGrid") {
             self.setPulseCount(e.data.pulseCount);
             lavaElevations = e.data.grid;
             gridBounds = e.data.gridBounds;
             self.countCoveredCells(e.data.grid);
 
-            if (self.pulseCount >= uiStore.pulsesPerEruption) onFinish?.();
+            if (complete) onFinish?.();
           }
         } catch (error) {
           console.error("Error handling worker message:", error, e);
