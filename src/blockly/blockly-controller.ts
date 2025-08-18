@@ -44,28 +44,36 @@ export class BlocklyController {
     this.parseVariables();
   };
 
-  @action
-  public run = () => {
+  private validateLoops = () => {
     // counting 'run from year...' blocks for deformation graph
     // if more than 3 blocks are being used, need to alert user and not run code
     const numberOfLoops = this.workspace.getBlocksByType("run-from-year-loop");
     if (numberOfLoops.length > 3) {
       this.throwError(DEFORMATION_SIMULATION_WARNING);
       this.stop();
-    } else {
-      this.stores.seismicSimulation.reset();
-      this.stores.lavaSimulation.reset();
-      const reset = () => {
-        this.setCode(this.code, this.workspace);
-      };
-      if (this.interpreterController) {
-        this.interpreterController.run(reset);
-        this.running = true;
-      }
-      this.stores.chartsStore.reset();
-      this.stores.samplesCollectionsStore.reset();
-      this.stores.blocklyStore.runClicked();
+      return false;
     }
+    return true;
+  };
+
+  @action
+  public run = () => {
+    if (!this.validateLoops()) return;
+    
+    this.stores.seismicSimulation.reset();
+    this.stores.lavaSimulation.reset();
+
+    const reset = () => {
+      this.setCode(this.code, this.workspace);
+    };
+    if (this.interpreterController && this.code) {
+      this.interpreterController.run(reset);
+      this.running = true;
+    }
+
+    this.stores.chartsStore.reset();
+    this.stores.samplesCollectionsStore.reset();
+    this.stores.blocklyStore.runClicked();
   };
 
   @action
@@ -117,11 +125,8 @@ export class BlocklyController {
    */
   @action
   public step = () => {
-    const numberOfLoops = this.workspace.getBlocksByType("run-from-year-loop");
-    if (numberOfLoops.length > 3) {
-      this.throwError(DEFORMATION_SIMULATION_WARNING);
-      this.stop();
-    } else {
+    if (!this.validateLoops()) return;
+
     this.steppingThroughBlock = true;
 
     // guard against infinite loops or a block failing to call endStep
@@ -137,7 +142,6 @@ export class BlocklyController {
       }
     };
     stepAsync();
-    }
   };
 
   // called by interpreted block code
