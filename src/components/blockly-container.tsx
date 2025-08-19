@@ -92,11 +92,41 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
     javascriptGenerator.STATEMENT_SUFFIX = "endStep();\n";
     javascriptGenerator.addReservedWords("highlightBlock");
 
+    // update default colors
+    const logicHue = "#017a39";
+    const loopHue = "#068477";
+    const mathHue = "#006f95";
+    const dataHue = "#006f95";
+    const variableHue = "#0472e7";
+    const functionHue = "#304ffd";
+    Blockly.Msg.LOGIC_HUE = logicHue;
+    Blockly.Msg.LOOPS_HUE = loopHue;
+    Blockly.Msg.MATH_HUE = mathHue;
+    Blockly.Msg.TEXTS_HUE = dataHue;
+    Blockly.Msg.VARIABLES_HUE = variableHue;
+    Blockly.Msg.PROCEDURES_HUE = functionHue;
+
+    // Update the theme with the custom colors.
+    // Note that some block types are placed under unusual categories in our toolboxes.
+    const customTheme = Blockly.Theme.defineTheme('customTheme', {
+      name: "customTheme",
+      base: Blockly.Themes.Classic,
+      blockStyles: {
+        logic_blocks: { colourPrimary: logicHue },
+        procedure_blocks: { colourPrimary: functionHue },
+        loop_blocks: { colourPrimary: loopHue },
+        math_blocks: { colourPrimary: dataHue },
+        text_blocks: { colourPrimary: dataHue },
+        variable_blocks: { colourPrimary: variableHue }
+      }
+    });
+
     // initialize blockly with options.
     // note: we need to pass in a toolbox, and it has to have categories, otherwise blockly
     // won't let us update the toolbox later with another def that includes categories
     const blockOpts = {
       media: `${__webpack_public_path__}blockly/media/`,
+      theme: customTheme,
       toolbox: `
       <xml id="toolbox" style="display: none">
         <category name="Loading...">
@@ -114,13 +144,6 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
     if (hideToolbox) {
       delete (blockOpts as Partial<typeof blockOpts>).toolbox;
     }
-    // update default colors
-    (Blockly as any).Msg.LOGIC_HUE = "#017a39";
-    (Blockly as any).Msg.LOOPS_HUE = "#068477";
-    (Blockly as any).Msg.MATH_HUE = "#006f95";
-    (Blockly as any).Msg.TEXTS_HUE = "#006f95";
-    (Blockly as any).Msg.VARIABLES_HUE = "#0472e7";
-    (Blockly as any).Msg.PROCEDURES_HUE = "#304ffd";
 
     if (this.workSpaceRef.current) {
       this.workSpace = Blockly.inject(this.workSpaceRef.current, blockOpts);
