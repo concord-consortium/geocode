@@ -83,6 +83,17 @@ export const LavaSimulationStore = types
         }
       }
       return false;
+    },
+    lavaDepthAtPoint(latitude: number, longitude: number) {
+      if (!lavaElevations || !gridBounds) return 0;
+
+      const { east, north, south, west } = gridBounds;
+      const column = Math.floor((longitude - west) / (east - west) * lavaElevations[0].length);
+      const row = Math.floor((north - latitude) / (north - south) * lavaElevations.length);
+      if (row < 0 || row >= lavaElevations.length || column < 0 || column >= lavaElevations[0].length) {
+        return 0;
+      }
+      return lavaElevations[row][column];
     }
   }))
   .views((self) => ({
@@ -158,6 +169,15 @@ export const LavaSimulationStore = types
             self.countCoveredCells(e.data.grid);
 
             if (complete) onFinish?.();
+
+            // TODO: Remove this once researchers have had a chance to play with it
+            const locationData: Record<string, { depth: number, name: string }> = {};
+            self.flagLocations.forEach(flag => {
+              const depth = self.lavaDepthAtPoint(flag.latitude, flag.longitude);
+              const { label, name } = flag;
+              locationData[label ?? "?"] = { depth, name };
+            });
+            console.table(locationData);
           }
         } catch (error) {
           console.error("Error handling worker message:", error, e);
