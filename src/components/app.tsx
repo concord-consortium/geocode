@@ -597,9 +597,14 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 rightpanel={"true"}
                 data-test={this.getRightTabName(RightSectionTypes.DATA) + "-panel"}
               >
-                <div>
-                  <ChartPanel width={mapWidth} />
-                </div>
+                { isLavaCoder &&
+                  <LavaCoderView width={mapWidth - 2 * simMargin.x} height={mapHeight} margin={simMarginStr} running={running} />
+                }
+                { (isTephra || isSeismic) && (
+                  <div>
+                    <ChartPanel width={mapWidth} />
+                  </div>
+                )}
               </TabPanel>
             }
             {
