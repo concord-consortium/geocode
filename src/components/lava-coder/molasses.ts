@@ -148,10 +148,11 @@ export async function runSimulation({
     return lavaElevationGrid;
   }
 
-  const sendUpdateMessage = () => {
+  const sendUpdateMessage = (complete = false) => {
     validateRange();
     postMessage({
       status: "updatedGrid",
+      complete,
       grid: getLavaElevationGrid(),
       pulseCount,
       gridBounds: {
@@ -219,7 +220,7 @@ export async function runSimulation({
   }
 
   // Send a final update
-  sendUpdateMessage();
+  sendUpdateMessage(true);
 
   const endTime = Date.now();
   // eslint-disable-next-line no-console
