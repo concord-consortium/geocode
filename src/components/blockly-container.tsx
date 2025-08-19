@@ -105,7 +105,9 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
     Blockly.Msg.TEXTS_HUE = dataHue;
     Blockly.Msg.VARIABLES_HUE = variableHue;
     Blockly.Msg.PROCEDURES_HUE = functionHue;
-    
+
+    // Update the theme with the custom colors.
+    // Note that some block types are placed under unusual categories in our toolboxes.
     const customTheme = Blockly.Theme.defineTheme('customTheme', {
       name: "customTheme",
       base: Blockly.Themes.Classic,
