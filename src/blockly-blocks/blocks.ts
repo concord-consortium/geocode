@@ -34,5 +34,5 @@ import "./tephra/block-risk-level.js";
 import "./seismic/block-seismic-gps-stations.js";
 import "./seismic/block-seismic-graph-gps-position.js";
 import "./seismic/block-seismic-deformation-buildup.js";
-import "./deformation/block-deformation-create-sim.js";
+import "./deformation/block-deformation-create-sim";
 import "./block-run-from-year";

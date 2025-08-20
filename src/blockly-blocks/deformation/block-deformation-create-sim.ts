@@ -1,6 +1,8 @@
 import * as Blockly from "blockly/core";
-import { javascriptGenerator } from "blockly/javascript";
+import { javascriptGenerator, Order } from "blockly/javascript";
 import * as strings from "../../strings/blockly-blocks/deformation/deformation";
+
+const { RIGHT } = Blockly.inputs.Align;
 
 Blockly.Blocks["deformation-create-sim"] = {
   init () {
@@ -9,21 +11,21 @@ Blockly.Blocks["deformation-create-sim"] = {
     this.appendDummyInput()
       .appendField(strings.SET_VELOCITY_OF_PLATE_1_WITH);
     this.appendValueInput('speed1')
-      .setAlign(Blockly.ALIGN_RIGHT)
+      .setAlign(RIGHT)
       .appendField(strings.SPEED_MM_YR)
       .setCheck(['Number']);
     this.appendValueInput('direction1')
-      .setAlign(Blockly.ALIGN_RIGHT)
+      .setAlign(RIGHT)
       .appendField(strings.DIRECTION_DEGREES)
       .setCheck(['Number', 'String']);
     this.appendDummyInput()
       .appendField(strings.SET_VELOCITY_OF_PLATE_2_WITH);
     this.appendValueInput('speed2')
-      .setAlign(Blockly.ALIGN_RIGHT)
+      .setAlign(RIGHT)
       .appendField(strings.SPEED_MM_YR)
       .setCheck(['Number']);
     this.appendValueInput('direction2')
-      .setAlign(Blockly.ALIGN_RIGHT)
+      .setAlign(RIGHT)
       .appendField(strings.DIRECTION_DEGREES)
       .setCheck(['Number', 'String']);
     this.setColour("#B35F00");
@@ -33,10 +35,10 @@ Blockly.Blocks["deformation-create-sim"] = {
 };
 
 javascriptGenerator.forBlock['deformation-create-sim'] = function(plate) {
-  const value_speed_1 = javascriptGenerator.valueToCode(plate, 'speed1', javascriptGenerator.ORDER_ATOMIC) || 0;
-  const value_direction_1 = javascriptGenerator.valueToCode(plate, 'direction1', javascriptGenerator.ORDER_ATOMIC) || 0;
-  const value_speed_2 = javascriptGenerator.valueToCode(plate, 'speed2', javascriptGenerator.ORDER_ATOMIC) || 0;
-  const value_direction_2 = javascriptGenerator.valueToCode(plate, 'direction2', javascriptGenerator.ORDER_ATOMIC) || 0;
+  const value_speed_1 = javascriptGenerator.valueToCode(plate, 'speed1', Order.ATOMIC) || 0;
+  const value_direction_1 = javascriptGenerator.valueToCode(plate, 'direction1', Order.ATOMIC) || 0;
+  const value_speed_2 = javascriptGenerator.valueToCode(plate, 'speed2', Order.ATOMIC) || 0;
+  const value_direction_2 = javascriptGenerator.valueToCode(plate, 'direction2', Order.ATOMIC) || 0;
 
 
   let code = `setPlateVelocity({plate: 1, speed: ${value_speed_1}, direction: ${value_direction_1}});\n`;
@@ -68,17 +70,17 @@ Blockly.Blocks['deformation-model-step'] = {
         .appendField(strings.CALCULATED_BASED_ON);
     this.appendValueInput("speed1")
         .setCheck("Number")
-        .setAlign(Blockly.ALIGN_RIGHT)
+        .setAlign(RIGHT)
         .appendField(strings.PLATE1_SPEED);
     this.appendDummyInput()
-        .setAlign(Blockly.ALIGN_RIGHT)
+        .setAlign(RIGHT)
         .appendField(strings.DIRECTION_MODEL_1);
     this.appendValueInput("speed2")
         .setCheck("Number")
-        .setAlign(Blockly.ALIGN_RIGHT)
+        .setAlign(RIGHT)
         .appendField(strings.PLATE2_SPEED);
     this.appendDummyInput()
-        .setAlign(Blockly.ALIGN_RIGHT)
+        .setAlign(RIGHT)
         .appendField(strings.DIRECTION_MODEL_2);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
@@ -89,9 +91,9 @@ Blockly.Blocks['deformation-model-step'] = {
 };
 
 javascriptGenerator.forBlock['deformation-model-step'] = function(block) {
-  const value_speed1 = javascriptGenerator.valueToCode(block, 'speed1', javascriptGenerator.ORDER_ATOMIC) || 0;
+  const value_speed1 = javascriptGenerator.valueToCode(block, 'speed1', Order.ATOMIC) || 0;
 
-  const value_speed2 = javascriptGenerator.valueToCode(block, 'speed2', javascriptGenerator.ORDER_ATOMIC) || 0;
+  const value_speed2 = javascriptGenerator.valueToCode(block, 'speed2', Order.ATOMIC) || 0;
 
   const code = `
     stepDeformationModel({year: year, plate_1_speed: ${value_speed1}, plate_2_speed: ${value_speed2}});
@@ -133,7 +135,7 @@ Blockly.Blocks['deformation-model-get-deformation'] = {
 
 javascriptGenerator.forBlock['deformation-model-get-deformation'] = function(block) {
   const code = `getDeformation()`;
-  return [code, javascriptGenerator.ORDER_NONE];
+  return [code, Order.NONE];
 };
 
 
@@ -155,7 +157,7 @@ Blockly.Blocks['deformation-model-get-max-deformation'] = {
 javascriptGenerator.forBlock['deformation-model-get-max-deformation'] = function(block) {
   const friction = block.getFieldValue('friction');
   const code = `getMaxDeformation("${friction}")`;
-  return [code, javascriptGenerator.ORDER_NONE];
+  return [code, Order.NONE];
 };
 
 Blockly.Blocks['deformation-plot-data'] = {
@@ -175,7 +177,7 @@ javascriptGenerator.forBlock['deformation-plot-data'] = function(block) {
 Blockly.Blocks['deformation-boundary-orientation'] = {
   init () {
     this.appendValueInput('orientation')
-      .setAlign(Blockly.ALIGN_RIGHT)
+      .setAlign(RIGHT)
       .appendField(strings.SET_BOUNDARY)
       .setCheck(['Number']);
     this.setColour("#B35F00");
@@ -185,7 +187,7 @@ Blockly.Blocks['deformation-boundary-orientation'] = {
 };
 
 javascriptGenerator.forBlock['deformation-boundary-orientation'] = function(plate) {
-  const value_orientation = javascriptGenerator.valueToCode(plate, 'orientation', javascriptGenerator.ORDER_ATOMIC) || 0;
+  const value_orientation = javascriptGenerator.valueToCode(plate, 'orientation', Order.ATOMIC) || 0;
 
   const code = `setBoundaryOrientation(${value_orientation});\n`;
   return code;
