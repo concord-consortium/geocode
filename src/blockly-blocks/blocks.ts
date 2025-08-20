@@ -34,5 +34,5 @@ import "./tephra/block-simulate-wind-height";
 import "./tephra/block-simulate-wind-sample-vei";
 import "./tephra/block-simulate-wind-vei";
 import "./tephra/block-thickness";
-import "./wind-data/block-graph-data.js";
-import "./wind-data/block-wind-data.js";
+import "./wind-data/block-graph-data";
+import "./wind-data/block-wind-data";
