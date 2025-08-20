@@ -6,7 +6,7 @@ Blockly.Blocks.clear = {
   init() {
     this.appendValueInput("logString")
       .setCheck("String")
-      .setAlign(Blockly.ALIGN_RIGHT)
+      .setAlign(Blockly.inputs.Align.RIGHT)
       .appendField(CLEAR);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);

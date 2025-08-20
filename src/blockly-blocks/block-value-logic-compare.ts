@@ -1,5 +1,5 @@
 import * as Blockly from "blockly/core";
-import { javascriptGenerator } from "blockly/javascript";
+import { javascriptGenerator, Order } from "blockly/javascript";
 
 // This is another version of the built-in logic_compare block which allows us to pass in blocks that return code.
 // The value_compare block doesn't handle this well, because of the way our interpreter wraps the results of
@@ -11,7 +11,7 @@ Blockly.Blocks['value-logic-compare'] = {
   init() {
     this.appendValueInput("x")
       .setCheck("Number")
-      .setAlign(Blockly.ALIGN_RIGHT);
+      .setAlign(Blockly.inputs.Align.RIGHT);
     this.appendDummyInput()
       .appendField(new Blockly.FieldDropdown([
         ["=", "equals"],
@@ -22,7 +22,7 @@ Blockly.Blocks['value-logic-compare'] = {
         ["\u2265", "greaterThanOrEqual"]]), "OP");
     this.appendValueInput("y")
       .setCheck("Number")
-      .setAlign(Blockly.ALIGN_RIGHT);
+      .setAlign(Blockly.inputs.Align.RIGHT);
     this.setInputsInline(true);
 
     this.setOutput(true, 'Boolean');
@@ -38,17 +38,17 @@ javascriptGenerator.forBlock['value-logic-compare'] = function(block) {
   try {
     x = javascriptGenerator.statementToCode(block, 'x');
   } catch {
-    x = javascriptGenerator.valueToCode(block, 'x', javascriptGenerator.ORDER_ATOMIC) || null;
+    x = javascriptGenerator.valueToCode(block, 'x', Order.ATOMIC) || null;
   }
   try {
     y = javascriptGenerator.statementToCode(block, 'y');
   } catch {
-    y = javascriptGenerator.valueToCode(block, 'y', javascriptGenerator.ORDER_ATOMIC) || null;
+    y = javascriptGenerator.valueToCode(block, 'y', Order.ATOMIC) || null;
   }
 
   if (x === undefined || x === null || x === "") x = "null";
   if (y === undefined || y === null || y === "") y= "null";
   const operation = block.getFieldValue('OP');
   const code = `${operation}({left: ${x}, right: ${y}})`;
-  return [code, javascriptGenerator.ORDER_NONE];
+  return [code, Order.NONE];
 };

@@ -2,7 +2,7 @@ import * as Blockly from "blockly/core";
 import { javascriptGenerator } from "blockly/javascript";
 import React from "react";
 import styled from "styled-components";
-import "../blockly-blocks/blocks.js";
+import "../blockly-blocks/blocks";
 import { dataHue, functionHue, logicHue, loopHue, mathHue, variableHue } from "../constants"; 
 
 declare const __webpack_public_path__: string;

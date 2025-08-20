@@ -1,5 +1,5 @@
 import * as Blockly from "blockly/core";
-import { javascriptGenerator } from "blockly/javascript";
+import { javascriptGenerator, Order } from "blockly/javascript";
 
 Blockly.Blocks.x = {
   init() {
@@ -15,8 +15,8 @@ Blockly.Blocks.x = {
 javascriptGenerator.forBlock.x = function(block) {
   // TODO: Assemble JavaScript into code variable.
   const code = `(this.x)`;
-  // TODO: Change ORDER_NONE to the correct strength.
-  return [code, javascriptGenerator.ORDER_NONE];
+  // TODO: Change Order.NONE to the correct strength.
+  return [code, Order.NONE];
 };
 
 Blockly.Blocks.y = {
@@ -33,6 +33,6 @@ Blockly.Blocks.y = {
 javascriptGenerator.forBlock.y = function(block) {
   // TODO: Assemble JavaScript into code variable.
   const code = `(this.y)`;
-  // TODO: Change ORDER_NONE to the correct strength.
-  return [code, javascriptGenerator.ORDER_NONE];
+  // TODO: Change Order.NONE to the correct strength.
+  return [code, Order.NONE];
 };

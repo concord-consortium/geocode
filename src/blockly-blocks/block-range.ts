@@ -1,5 +1,5 @@
 import * as Blockly from "blockly/core";
-import { javascriptGenerator } from "blockly/javascript";
+import { javascriptGenerator, Order } from "blockly/javascript";
 import { RANGE_FROM } from "../strings/blockly-blocks/all-other-blocks";
 
 Blockly.Blocks.input_range = {
@@ -22,5 +22,5 @@ javascriptGenerator.forBlock.input_range = function (block) {
   // have to wrap in parens or the parser doesn't like it as a fragment
   const code = `({min: ${number_min}, max: ${number_max}})`;
   // TODO: Change ORDER_NONE to the correct strength.
-  return [code, javascriptGenerator.ORDER_NONE];
+  return [code, Order.NONE];
 };

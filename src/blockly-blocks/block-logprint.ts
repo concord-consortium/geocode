@@ -1,6 +1,6 @@
 import * as Blockly from "blockly/core";
-import { javascriptGenerator } from "blockly/javascript";
-import { PRINT, TO_LOG, PRINT_TOOLTIP } from "..";
+import { javascriptGenerator, Order } from "blockly/javascript";
+import { PRINT, TO_LOG, PRINT_TOOLTIP } from "../strings/blockly-blocks/all-other-blocks";
 
 Blockly.Blocks.logprint = {
   init() {
@@ -20,7 +20,7 @@ Blockly.Blocks.logprint = {
 };
 
 javascriptGenerator.forBlock.logprint = function(block) {
-  const value_data = javascriptGenerator.valueToCode(block, 'data', javascriptGenerator.ORDER_ATOMIC);
+  const value_data = javascriptGenerator.valueToCode(block, 'data', Order.ATOMIC);
   const code = `logInfo(${value_data});`;
   return code;
 };

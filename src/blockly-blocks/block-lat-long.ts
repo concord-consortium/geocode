@@ -1,5 +1,5 @@
 import * as Blockly from "blockly/core";
-import { javascriptGenerator } from "blockly/javascript";
+import { javascriptGenerator, Order } from "blockly/javascript";
 
 Blockly.Blocks.lat_long = {
   init() {
@@ -13,10 +13,11 @@ Blockly.Blocks.lat_long = {
   }
 };
 
-const failCode = [`({lat: null, long: null})`, javascriptGenerator.ORDER_NONE];
+const failCode: [string, number] = [`({lat: null, long: null})`, Order.NONE];
 
 javascriptGenerator.forBlock.lat_long = function (block) {
   const lat_long = block.getFieldValue('lat_long');
+  if (typeof lat_long !== "string") return failCode;
 
   try {
     const [lat, long] = lat_long.split(",").map(str => str.trim()).map(Number);
@@ -29,7 +30,7 @@ javascriptGenerator.forBlock.lat_long = function (block) {
     // have to wrap in parens or the parser doesn't like it as a fragment
     const code = `({lat: ${lat}, long: ${long}})`;
     block.setWarningText(null);
-    return [code, javascriptGenerator.ORDER_ATOMIC];
+    return [code, Order.ATOMIC];
   } catch {
     block.setWarningText("Error parsing latitude and longitude input");
     return failCode;
