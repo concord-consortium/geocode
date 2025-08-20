@@ -1,12 +1,12 @@
 
 import * as Blockly from "blockly/core";
-import { javascriptGenerator } from "blockly/javascript";
+import { javascriptGenerator, Order } from "blockly/javascript";
 import { flagColors, maxLat, maxLong, minLat, minLong } from "../../components/lava-coder/lava-constants";
 import { dataHue } from "../../constants";
 import { uiStore } from "../../stores/ui-store";
 import * as strings from "../../strings/blockly-blocks/lava/simulate-lava";
 
-function basicInit(block, title, color="#EB0000") {
+function basicInit(block: Blockly.Block, title?: string, color="#EB0000") {
   if (title) block.appendDummyInput().appendField(title);
   block.setPreviousStatement(true, null);
   block.setNextStatement(true, null);
@@ -15,10 +15,10 @@ function basicInit(block, title, color="#EB0000") {
   block.setHelpUrl("");
 }
 
-function appendValueInput(block, name, field, check="Number") {
+function appendValueInput(block: Blockly.Block, name: string, field: string, check="Number") {
   block.appendValueInput(name)
     .setCheck(check)
-    .setAlign(Blockly.ALIGN_RIGHT)
+    .setAlign(Blockly.inputs.Align.RIGHT)
     .appendField(field);
 }
 
@@ -70,22 +70,24 @@ Blockly.Blocks.molasses_create_table = {
 };
 
 // interface for getAndValidateValue and setCodeVariable parameters:
-// {
-//   block: Blockly.Block;
-//   setFunction: string;
-//   // If validation fails, call block.setWarningText with the error message
-//   validateFunction?: (value: string, block: Blockly.Block) => boolean;
-//   variableName: string;
-// }
-function getAndValidateValue({ block, validateFunction, variableName }) {
-  const value = javascriptGenerator.valueToCode(block, variableName, javascriptGenerator.ORDER_ATOMIC);
+interface GetAndValidateValueParams {
+  block: Blockly.Block;
+  // If validation fails, call block.setWarningText with the error message. Otherwise, call it with null.
+  validateFunction?: (value: string, block: Blockly.Block) => boolean;
+  variableName: string;
+}
+function getAndValidateValue({ block, validateFunction, variableName }: GetAndValidateValueParams) {
+  const value = javascriptGenerator.valueToCode(block, variableName, Order.ATOMIC);
 
   validateFunction?.(value, block);
 
   return value;
 }
 
-function setCodeVariable({ block, setFunction, validateFunction, variableName }) {
+interface SetCodeVariableParams extends GetAndValidateValueParams {
+  setFunction: string;
+}
+function setCodeVariable({ block, setFunction, validateFunction, variableName }: SetCodeVariableParams) {
   const value = getAndValidateValue({ block, validateFunction, variableName });
 
   if (value == null) return null;
@@ -98,8 +100,8 @@ const setEruptionVolumeFunction = "setMolassesEruptionVolume";
 const setLavaFrontFunction = "setMolassesLavaFront";
 const setVentLocationFunction = "setMolassesVentLocation";
 
-function getNumberValidationFunction(fieldName, min, max) {
-  return (value, block) => {
+function getNumberValidationFunction(fieldName: string, min: number, max: number) {
+  return (value: string, block: Blockly.Block) => {
     if (value == null || value === "") {
       block.setWarningText(`${fieldName} must be specified`);
       return false;
@@ -137,7 +139,7 @@ javascriptGenerator.forBlock.molasses_lava_front = function(block) {
   });
 };
 
-function validateLatLong(value, block) {
+function validateLatLong(value: string, block: Blockly.Block) {
   // The value is a string in the form of ({lat: number, long: number})
   const regex = /^\(\{lat:\s*(-?\d+(\.\d+)?),\s*long:\s*(-?\d+(\.\d+)?)\}\)$/;
   const match = value.match(regex);
