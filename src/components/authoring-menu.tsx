@@ -119,6 +119,9 @@ const AuthoringMenu: React.FC<IProps> = (props) => {
 
           <DatFolder title={strings.LEFT_TABS} key="leftTabsFolder" closed={false}>
             <DatBoolean path="uiStore.showBlocks" label={strings.SHOW_BLOCKS} key="showBlocks" />
+          </DatFolder>,
+          <DatFolder title={strings.RIGHT_TABS} key="rightTabsFolder" closed={false}>
+            <DatBoolean path="uiStore.showConditions" label={strings.SHOW_MAP} key="showMap" />
             <DatBoolean path="uiStore.showData" label={strings.SHOW_DATA} key="showData" />
           </DatFolder>,
 
