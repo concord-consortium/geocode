@@ -1,5 +1,5 @@
 import * as Blockly from "blockly/core";
-import { javascriptGenerator } from "blockly/javascript";
+import { javascriptGenerator, Order } from "blockly/javascript";
 import * as strings from '../../strings/blockly-blocks/seismic/seismic-deformation';
 
 Blockly.Blocks.seismic_compute_deformation = {
@@ -7,7 +7,7 @@ Blockly.Blocks.seismic_compute_deformation = {
     this.appendDummyInput()
       .appendField(strings.COMPUTE_DEFORMATION_BUILDUP);
     this.appendValueInput('stations')
-      .setAlign(Blockly.ALIGN_RIGHT)
+      .setAlign(Blockly.inputs.Align.RIGHT)
       .setCheck(['GPS_Station', 'String'])
       .appendField(strings.SHOW_STATIONS);
     this.setPreviousStatement(true, null);
@@ -18,7 +18,7 @@ Blockly.Blocks.seismic_compute_deformation = {
   }
 };
 javascriptGenerator.forBlock.seismic_compute_deformation = function (block) {
-  const value_stations = javascriptGenerator.valueToCode(block, 'stations', javascriptGenerator.ORDER_ATOMIC);
+  const value_stations = javascriptGenerator.valueToCode(block, 'stations', Order.ATOMIC);
   // const value_velocities = block.getFieldValue('velocities') === "TRUE";
 
   const code = `computeDeformationBuildup(${value_stations});`;
@@ -40,7 +40,7 @@ javascriptGenerator.forBlock.seismic_logarithmic = function (block) {
   // TODO: Assemble JavaScript into code variable.
   const code = '"logarithmic"';
   // TODO: Change ORDER_NONE to the correct strength.
-  return [code, javascriptGenerator.ORDER_NONE];
+  return [code, Order.NONE];
 };
 
 Blockly.Blocks.seismic_equal_interval = {
@@ -57,7 +57,7 @@ javascriptGenerator.forBlock.seismic_equal_interval = function (block) {
   // TODO: Assemble JavaScript into code variable.
   const code = '"equalInterval"';
   // TODO: Change ORDER_NONE to the correct strength.
-  return [code, javascriptGenerator.ORDER_NONE];
+  return [code, Order.NONE];
 };
 
 Blockly.Blocks.seismic_render_deformation_triangles = {
