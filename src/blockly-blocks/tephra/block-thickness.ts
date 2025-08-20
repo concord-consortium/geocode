@@ -1,5 +1,5 @@
 import * as Blockly from "blockly/core";
-import { javascriptGenerator } from "blockly/javascript";
+import { javascriptGenerator, Order } from "blockly/javascript";
 import { THICKNESS } from "../../strings/blockly-blocks/tephra/thickness";
 
 Blockly.Blocks.thickness = {
@@ -17,5 +17,5 @@ javascriptGenerator.forBlock.thickness = function(block) {
   // TODO: Assemble JavaScript into code variable.
   const code = `(this.thickness)`;
   // TODO: Change ORDER_NONE to the correct strength.
-  return [code, javascriptGenerator.ORDER_NONE];
+  return [code, Order.NONE];
 };

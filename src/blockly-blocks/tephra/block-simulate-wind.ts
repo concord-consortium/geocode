@@ -1,5 +1,5 @@
 import * as Blockly from "blockly/core";
-import { javascriptGenerator } from "blockly/javascript";
+import { javascriptGenerator, Order } from "blockly/javascript";
 import * as strings from "../../strings/blockly-blocks/tephra/simulate-wind";
 
 Blockly.Blocks.simulate_wind = {
@@ -8,11 +8,11 @@ Blockly.Blocks.simulate_wind = {
       .appendField(strings.COMPUTE_TEPHRA);
     this.appendValueInput("wspeed")
       .setCheck("Number")
-      .setAlign(Blockly.ALIGN_RIGHT)
+      .setAlign(Blockly.inputs.Align.RIGHT)
       .appendField(strings.WIND_SPEED);
     this.appendValueInput("wdirection")
       .setCheck("Number")
-      .setAlign(Blockly.ALIGN_RIGHT)
+      .setAlign(Blockly.inputs.Align.RIGHT)
       .appendField(strings.WIND_DIRECTION);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
@@ -23,8 +23,8 @@ Blockly.Blocks.simulate_wind = {
 };
 
 javascriptGenerator.forBlock.simulate_wind = function(block) {
-  const value_wspeed = javascriptGenerator.valueToCode(block, 'wspeed', javascriptGenerator.ORDER_ATOMIC);
-  const value_wdirection = javascriptGenerator.valueToCode(block, 'wdirection', javascriptGenerator.ORDER_ATOMIC);
+  const value_wspeed = javascriptGenerator.valueToCode(block, 'wspeed', Order.ATOMIC);
+  const value_wdirection = javascriptGenerator.valueToCode(block, 'wdirection', Order.ATOMIC);
 
   const code = `
   this.setWindspeed(${value_wspeed});

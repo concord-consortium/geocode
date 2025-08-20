@@ -1,26 +1,28 @@
 import * as Blockly from "blockly/core";
-import { javascriptGenerator } from "blockly/javascript";
+import { javascriptGenerator, Order } from "blockly/javascript";
 import * as strings from '../../strings/blockly-blocks/tephra/calculate-tephra-vei-wind';
 import { blocklyStore } from "../../stores/blockly-store";
+
+const { RIGHT } = Blockly.inputs.Align;
 
 Blockly.Blocks.calculate_tephra_vei_wind = {
   init() {
     this.appendDummyInput()
         .appendField(strings.COMPUTE_TEPHRA);
     this.appendDummyInput()
-        .setAlign(Blockly.ALIGN_RIGHT)
+        .setAlign(RIGHT)
         .appendField(strings.AT_LOCATION)
         .appendField(new Blockly.FieldDropdown(this.generateOptionsLoc), "locations");
     this.appendValueInput("wind samples")
         .setCheck("Dataset")
-        .setAlign(Blockly.ALIGN_RIGHT)
+        .setAlign(RIGHT)
         .appendField(strings.RANDOM_WIND_SAMPLE);
     this.appendValueInput("vei")
         .setCheck("Number")
-        .setAlign(Blockly.ALIGN_RIGHT)
+        .setAlign(RIGHT)
         .appendField(strings.VEI);
     this.appendDummyInput()
-        .setAlign(Blockly.ALIGN_RIGHT)
+        .setAlign(RIGHT)
         .appendField(strings.ADD_TO_COLLECTION)
         .appendField(new Blockly.FieldDropdown(this.generateOptionsCol), "collections");
     this.setPreviousStatement(true, null);
@@ -51,8 +53,8 @@ Blockly.Blocks.calculate_tephra_vei_wind = {
 
 javascriptGenerator.forBlock.calculate_tephra_vei_wind = function(block) {
   const location = block.getFieldValue('locations');
-  const wind_samples = javascriptGenerator.valueToCode(block, 'wind samples', javascriptGenerator.ORDER_ATOMIC) || "null";
-  const value_vei = javascriptGenerator.valueToCode(block, 'vei', javascriptGenerator.ORDER_ATOMIC) || "undefined";
+  const wind_samples = javascriptGenerator.valueToCode(block, 'wind samples', Order.ATOMIC) || "null";
+  const value_vei = javascriptGenerator.valueToCode(block, 'vei', Order.ATOMIC) || "undefined";
   const collection = block.getFieldValue('collections');
 
   const code = `computeTephra({location: "${location}", windSamples: ${wind_samples}, vei: ${value_vei}, collection: "${collection}"});`;

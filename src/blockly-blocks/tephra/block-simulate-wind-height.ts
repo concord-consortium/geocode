@@ -1,6 +1,8 @@
 import * as Blockly from "blockly/core";
-import { javascriptGenerator } from "blockly/javascript";
+import { javascriptGenerator, Order } from "blockly/javascript";
 import * as strings from "../../strings/blockly-blocks/tephra/simulate-wind";
+
+const { RIGHT } = Blockly.inputs.Align;
 
 Blockly.Blocks.simulate_wind_height = {
   init() {
@@ -8,15 +10,15 @@ Blockly.Blocks.simulate_wind_height = {
       .appendField(strings.COMPUTE_TEPHRA);
     this.appendValueInput("wspeed")
       .setCheck("Number")
-      .setAlign(Blockly.ALIGN_RIGHT)
+      .setAlign(RIGHT)
       .appendField(strings.WIND_SPEED);
     this.appendValueInput("wdirection")
       .setCheck("Number")
-      .setAlign(Blockly.ALIGN_RIGHT)
+      .setAlign(RIGHT)
       .appendField(strings.WIND_DIRECTION);
     this.appendValueInput("columnheight")
       .setCheck("Number")
-      .setAlign(Blockly.ALIGN_RIGHT)
+      .setAlign(RIGHT)
       .appendField(strings.COLUMN_HEIGHT);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
@@ -27,9 +29,9 @@ Blockly.Blocks.simulate_wind_height = {
 };
 
 javascriptGenerator.forBlock.simulate_wind_height = function(block) {
-  const value_wspeed = javascriptGenerator.valueToCode(block, 'wspeed', javascriptGenerator.ORDER_ATOMIC);
-  const value_wdirection = javascriptGenerator.valueToCode(block, 'wdirection', javascriptGenerator.ORDER_ATOMIC);
-  const value_columnheight = javascriptGenerator.valueToCode(block, 'columnheight', javascriptGenerator.ORDER_ATOMIC);
+  const value_wspeed = javascriptGenerator.valueToCode(block, 'wspeed', Order.ATOMIC);
+  const value_wdirection = javascriptGenerator.valueToCode(block, 'wdirection', Order.ATOMIC);
+  const value_columnheight = javascriptGenerator.valueToCode(block, 'columnheight', Order.ATOMIC);
 
   const code = `
   this.setWindspeed(${value_wspeed});

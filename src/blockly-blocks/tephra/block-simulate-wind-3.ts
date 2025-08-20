@@ -1,6 +1,8 @@
 import * as Blockly from "blockly/core";
-import { javascriptGenerator } from "blockly/javascript";
+import { javascriptGenerator, Order } from "blockly/javascript";
 import * as strings from "../../strings/blockly-blocks/tephra/simulate-wind";
+
+const { RIGHT } = Blockly.inputs.Align;
 
 Blockly.Blocks.simulate_wind_3 = {
   init() {
@@ -8,23 +10,23 @@ Blockly.Blocks.simulate_wind_3 = {
       .appendField(strings.COMPUTE_TEPHRA);
     this.appendValueInput("wspeed")
       .setCheck("Number")
-      .setAlign(Blockly.ALIGN_RIGHT)
+      .setAlign(RIGHT)
       .appendField(strings.WIND_SPEED);
     this.appendValueInput("wdirection")
       .setCheck("Number")
-      .setAlign(Blockly.ALIGN_RIGHT)
+      .setAlign(RIGHT)
       .appendField(strings.WIND_DIRECTION);
     this.appendValueInput("columnheight")
       .setCheck("Number")
-      .setAlign(Blockly.ALIGN_RIGHT)
+      .setAlign(RIGHT)
       .appendField(strings.COLUMN_HEIGHT);
     this.appendValueInput("ejectedvolume")
       .setCheck("Number")
-      .setAlign(Blockly.ALIGN_RIGHT)
+      .setAlign(RIGHT)
       .appendField(strings.EJECTED_VOLUME);
     this.appendValueInput("vei")
       .setCheck("Number")
-      .setAlign(Blockly.ALIGN_RIGHT)
+      .setAlign(RIGHT)
       .appendField(strings.VEI);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
@@ -35,11 +37,11 @@ Blockly.Blocks.simulate_wind_3 = {
 };
 
 javascriptGenerator.forBlock.simulate_wind_3 = function(block) {
-  const value_wspeed = javascriptGenerator.valueToCode(block, 'wspeed', javascriptGenerator.ORDER_ATOMIC);
-  const value_wdirection = javascriptGenerator.valueToCode(block, 'wdirection', javascriptGenerator.ORDER_ATOMIC);
-  const value_columnheight = javascriptGenerator.valueToCode(block, 'columnheight', javascriptGenerator.ORDER_ATOMIC);
-  const value_ejectedvolume = javascriptGenerator.valueToCode(block, 'ejectedvolume', javascriptGenerator.ORDER_ATOMIC);
-  const value_vei = javascriptGenerator.valueToCode(block, 'vei', javascriptGenerator.ORDER_ATOMIC);
+  const value_wspeed = javascriptGenerator.valueToCode(block, 'wspeed', Order.ATOMIC);
+  const value_wdirection = javascriptGenerator.valueToCode(block, 'wdirection', Order.ATOMIC);
+  const value_columnheight = javascriptGenerator.valueToCode(block, 'columnheight', Order.ATOMIC);
+  const value_ejectedvolume = javascriptGenerator.valueToCode(block, 'ejectedvolume', Order.ATOMIC);
+  const value_vei = javascriptGenerator.valueToCode(block, 'vei', Order.ATOMIC);
 
   const code = `
   this.setWindspeed(${value_wspeed});

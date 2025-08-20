@@ -1,5 +1,6 @@
 import * as Blockly from "blockly/core";
 import { javascriptGenerator } from "blockly/javascript";
+import { blocklyStore } from "../../stores/blockly-store";
 import * as strings from "../../strings/blockly-blocks/tephra/risk-level";
 
 Blockly.Blocks.show_risk = {
@@ -7,11 +8,11 @@ Blockly.Blocks.show_risk = {
     this.appendDummyInput()
         .appendField(strings.SHOW_RISK);
     this.appendDummyInput()
-        .setAlign(Blockly.ALIGN_RIGHT)
+        .setAlign(Blockly.inputs.Align.RIGHT)
         .appendField(strings.DATA_COLLECTION)
         .appendField(new Blockly.FieldDropdown(this.generateOptions), strings.COLLECTIONS);
     this.appendDummyInput()
-        .setAlign(Blockly.ALIGN_RIGHT)
+        .setAlign(Blockly.inputs.Align.RIGHT)
         .appendField(strings.ABOVE_THRESHOLD)
         .appendField(new Blockly.FieldNumber(200), strings.THRESHOLD)
         .appendField(strings.MM);
@@ -23,8 +24,8 @@ Blockly.Blocks.show_risk = {
   },
 
   generateOptions() {
-    if (Blockly.sampleCollections && Blockly.sampleCollections.length > 0) {
-      return Blockly.sampleCollections;
+    if (blocklyStore.sampleCollections && blocklyStore.sampleCollections.length > 0) {
+      return blocklyStore.sampleCollections;
     } else {
       return [[strings.CREATE_COLLECTION,""]];
     }

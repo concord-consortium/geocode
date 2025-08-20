@@ -2,22 +2,24 @@ import * as Blockly from "blockly/core";
 import { javascriptGenerator } from "blockly/javascript";
 import * as strings from '../../strings/blockly-blocks/tephra/create-add-to-sample-collection';
 
+const { RIGHT } = Blockly.inputs.Align;
+
 Blockly.Blocks.create_sample_location = {
   init() {
     this.appendDummyInput()
         .appendField(strings.CREATE_LOCATION);
     this.appendDummyInput()
-        .setAlign(Blockly.ALIGN_RIGHT)
+        .setAlign(RIGHT)
         .appendField(strings.AT_X)
         .appendField(new Blockly.FieldNumber(0), "x")
         .appendField(strings.KM);
     this.appendDummyInput()
-        .setAlign(Blockly.ALIGN_RIGHT)
+        .setAlign(RIGHT)
         .appendField(strings.Y)
         .appendField(new Blockly.FieldNumber(0), "y")
         .appendField(strings.KM);
     this.appendDummyInput()
-        .setAlign(Blockly.ALIGN_RIGHT)
+        .setAlign(RIGHT)
         .appendField(strings.NAMED)
         .appendField(new Blockly.FieldTextInput(strings.LOCATION), "name");
     this.appendDummyInput()
@@ -45,11 +47,11 @@ Blockly.Blocks.create_sample_collection = {
     this.appendDummyInput()
         .appendField(strings.CREATE_COLLECTION);
     this.appendDummyInput()
-        .setAlign(Blockly.ALIGN_RIGHT)
+        .setAlign(RIGHT)
         .appendField(strings.NAMED)
         .appendField(new Blockly.FieldTextInput("Name"), "name");
     this.appendDummyInput()
-        .setAlign(Blockly.ALIGN_RIGHT)
+        .setAlign(RIGHT)
         .appendField(strings.SET_THRESHOLD)
         .appendField(new Blockly.FieldNumber(200), "threshold")
         .appendField(strings.MM);

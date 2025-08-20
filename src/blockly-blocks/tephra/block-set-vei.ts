@@ -1,12 +1,12 @@
 import * as Blockly from "blockly/core";
-import { javascriptGenerator } from "blockly/javascript";
+import { javascriptGenerator, Order } from "blockly/javascript";
 import { SET_VEI, VEI_EXPLAINED } from "../../strings/blockly-blocks/tephra/controls-panel";
 
 Blockly.Blocks.setVEI = {
   init() {
     this.appendValueInput("vei")
       .setCheck("Number")
-      .setAlign(Blockly.ALIGN_RIGHT)
+      .setAlign(Blockly.inputs.Align.RIGHT)
       .appendField(SET_VEI);
     this.appendDummyInput();
     this.setInputsInline(true);
@@ -18,12 +18,11 @@ Blockly.Blocks.setVEI = {
   }
 };
 
-javascriptGenerator.forBlock.setFoo = function(block) {
-  const foo = javascriptGenerator.valueToCode(block, 'foo', javascriptGenerator.ORDER_ATOMIC);
+javascriptGenerator.forBlock.setVei = function(block) {
+  const vei = javascriptGenerator.valueToCode(block, 'vei', Order.ATOMIC);
 
-  if (foo === "") {
-    window.blocklyErrorMessage = "You are missing an input for 'Foo'";
-  }
-
-  // [...]
+  const code = `
+    setVei(${vei});
+  `;
+  return code;
 };

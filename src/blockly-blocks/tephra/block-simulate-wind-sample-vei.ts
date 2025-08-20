@@ -1,6 +1,8 @@
 import * as Blockly from "blockly/core";
-import { javascriptGenerator } from "blockly/javascript";
+import { javascriptGenerator, Order } from "blockly/javascript";
 import * as strings from "../../strings/blockly-blocks/tephra/simulate-wind";
+
+const { RIGHT } = Blockly.inputs.Align;
 
 // frst one was misnamed (it doesn't take vei as an input) but is already in authors' data
 Blockly.Blocks.simulate_wind_sample_vei = {
@@ -9,7 +11,7 @@ Blockly.Blocks.simulate_wind_sample_vei = {
       .appendField(strings.COMPUTE_TEPHRA);
     this.appendValueInput("wind samples")
       .setCheck("Dataset")
-      .setAlign(Blockly.ALIGN_RIGHT)
+      .setAlign(RIGHT)
       .appendField(strings.RANDOM_WIND_SAMPLE);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
@@ -20,11 +22,7 @@ Blockly.Blocks.simulate_wind_sample_vei = {
 };
 
 javascriptGenerator.forBlock.simulate_wind_sample_vei = function(block) {
-  const dataset = javascriptGenerator.valueToCode(block, 'wind samples', javascriptGenerator.ORDER_ATOMIC) || "null";
-
-  if (dataset === "null") {
-    window.blocklyErrorMessage = "null";
-  }
+  const dataset = javascriptGenerator.valueToCode(block, 'wind samples', Order.ATOMIC) || "null";
 
   const code = `
     var windSample = getSingleSample(${dataset});
@@ -42,11 +40,11 @@ Blockly.Blocks.simulate_wind_sample_vei_2 = {
       .appendField("Compute and visualize tephra with");
     this.appendValueInput("wind samples")
       .setCheck("Dataset")
-      .setAlign(Blockly.ALIGN_RIGHT)
+      .setAlign(RIGHT)
       .appendField("a random wind sample from");
     this.appendValueInput("vei")
       .setCheck("Number")
-      .setAlign(Blockly.ALIGN_RIGHT)
+      .setAlign(RIGHT)
       .appendField("VEI");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
@@ -57,12 +55,8 @@ Blockly.Blocks.simulate_wind_sample_vei_2 = {
 };
 
 javascriptGenerator.forBlock.simulate_wind_sample_vei_2 = function(block) {
-  const dataset = javascriptGenerator.valueToCode(block, 'wind samples', javascriptGenerator.ORDER_ATOMIC) || "null";
-  const value_vei = javascriptGenerator.valueToCode(block, 'vei', javascriptGenerator.ORDER_ATOMIC);
-
-  if (dataset === "null") {
-    window.blocklyErrorMessage = "null";
-  }
+  const dataset = javascriptGenerator.valueToCode(block, 'wind samples', Order.ATOMIC) || "null";
+  const value_vei = javascriptGenerator.valueToCode(block, 'vei', Order.ATOMIC);
 
   const code = `
     var windSample = getSingleSample(${dataset});

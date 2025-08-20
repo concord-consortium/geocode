@@ -1,12 +1,12 @@
 import * as Blockly from "blockly/core";
-import { javascriptGenerator } from "blockly/javascript";
+import { javascriptGenerator, Order } from "blockly/javascript";
 import { SET_COLUMN_HEIGHT, KM } from "../../strings/blockly-blocks/tephra/controls-panel";
 
 Blockly.Blocks.setEruptionHeight = {
   init() {
     this.appendValueInput("columnHeight")
         .setCheck("Number")
-        .setAlign(Blockly.ALIGN_RIGHT)
+        .setAlign(Blockly.inputs.Align.RIGHT)
         .appendField(SET_COLUMN_HEIGHT);
     this.appendDummyInput()
         .appendField(KM);
@@ -20,7 +20,7 @@ Blockly.Blocks.setEruptionHeight = {
 };
 
 javascriptGenerator.forBlock.setEruptionHeight = function(block) {
-  const value_columnHeight = javascriptGenerator.valueToCode(block, 'columnHeight', javascriptGenerator.ORDER_ATOMIC);
+  const value_columnHeight = javascriptGenerator.valueToCode(block, 'columnHeight', Order.ATOMIC);
   // TODO: Assemble JavaScript into code variable.
   const code = `
     setColumnHeight(${value_columnHeight});
