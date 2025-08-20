@@ -2,14 +2,15 @@
 import * as Blockly from "blockly/core";
 import { javascriptGenerator } from "blockly/javascript";
 import { flagColors, maxLat, maxLong, minLat, minLong } from "../../components/lava-coder/lava-constants";
+import { dataHue } from "../../constants";
 import { uiStore } from "../../stores/ui-store";
 import * as strings from "../../strings/blockly-blocks/lava/simulate-lava";
 
-function basicInit(block, title) {
+function basicInit(block, title, color="#EB0000") {
   if (title) block.appendDummyInput().appendField(title);
   block.setPreviousStatement(true, null);
   block.setNextStatement(true, null);
-  block.setColour("#EB0000");
+  block.setColour(color);
   block.setTooltip("");
   block.setHelpUrl("");
 }
@@ -59,6 +60,12 @@ Blockly.Blocks.molasses_set_flag_location = {
       .appendField("color")
       .appendField(new Blockly.FieldDropdown(flagColors.map(color => [color, color])), "color");
     appendValueInput(this, "location", "location", "lat_long");
+  }
+};
+
+Blockly.Blocks.molasses_create_table = {
+  init() {
+    basicInit(this, strings.CREATE_TABLE, dataHue);
   }
 };
 
@@ -204,4 +211,10 @@ javascriptGenerator.forBlock.molasses_set_flag_location = function(block) {
 
   return `
   this.addFlagLocation({ location: ${position}, color: "${flagColor}", name: "${flagName}" });\n`;
+};
+
+javascriptGenerator.forBlock.molasses_create_table = function(block) {
+  return `
+  this.createTable();
+  `;
 };

@@ -50,6 +50,7 @@ export const LavaSimulationStore = types
   })
   .volatile((self) => ({
     coveredCells: 0,
+    displayTable: false,
     flagLocations: observable.array<FlagLocation>([]),
     raster: null as AsciiRaster | null, // AsciiRaster
     worker: null as Worker | null,
@@ -101,6 +102,9 @@ export const LavaSimulationStore = types
     },
     countCoveredCells(grid: number[][]) {
       self.coveredCells = countCoveredCells(grid);
+    },
+    setDisplayTable(display = false) {
+      self.displayTable = display;
     },
     setPulseCount(pulseCount: number) {
       self.pulseCount = pulseCount;
@@ -184,6 +188,7 @@ export const LavaSimulationStore = types
       self.setPulseCount(0);
       self.resetDefaults();
       self.clearFlagPositions();
+      self.setDisplayTable(false);
       self.coveredCells = 0;
       ++self.resetCount;
     }

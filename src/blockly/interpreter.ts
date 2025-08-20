@@ -114,6 +114,15 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       lavaSimulation.addFlagLocation({ color, name, latitude, longitude });
     });
 
+    addFunc("createTable", () => {
+      if (lavaSimulation.displayTable) {
+        blocklyController.throwError("There cannot be more than one data table in the LavaCoder.");
+        return;
+      }
+
+      lavaSimulation.setDisplayTable(true);
+    });
+
     /** ==== Tephra simulation model setters ==== */
 
     addFunc("setModelParams", (params: ITephraModelParams) => {

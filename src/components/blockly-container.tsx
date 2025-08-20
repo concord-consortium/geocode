@@ -3,6 +3,7 @@ import { javascriptGenerator } from "blockly/javascript";
 import React from "react";
 import styled from "styled-components";
 import "../blockly-blocks/blocks.js";
+import { dataHue, functionHue, logicHue, loopHue, mathHue, variableHue } from "../constants"; 
 
 declare const __webpack_public_path__: string;
 
@@ -93,12 +94,6 @@ export default class BlocklyContainer extends React.Component<IProps, IState> {
     javascriptGenerator.addReservedWords("highlightBlock");
 
     // update default colors
-    const logicHue = "#017a39";
-    const loopHue = "#068477";
-    const mathHue = "#006f95";
-    const dataHue = "#006f95";
-    const variableHue = "#0472e7";
-    const functionHue = "#304ffd";
     Blockly.Msg.LOGIC_HUE = logicHue;
     Blockly.Msg.LOOPS_HUE = loopHue;
     Blockly.Msg.MATH_HUE = mathHue;
