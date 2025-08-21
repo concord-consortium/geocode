@@ -332,6 +332,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     const tabWidth = Math.floor(width * .5);
     const mapWidth = Math.floor(width * .5);
     const mapHeight = height - 190;
+    const tableHeight = 203;
     const blocklyWidth = tabWidth - (blocklyMargin * 2);
     const logWidth = Math.floor(tabWidth * 0.95);
     const logHeight = Math.floor(height * .2);
@@ -339,6 +340,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     const scenarioData = (Scenarios as {[key: string]: Scenario})[scenario];
     const simMargin = { x: 28, y: 25 };
     const simMarginStr = `${simMargin.y}px ${simMargin.x}px 0 ${simMargin.y}px`;
+    const lavaCoderWidth = mapWidth - 2 * simMargin.x;
 
     if (isTephra) {
       this.stores.tephraSimulation.setVolcano(scenarioData.centerLat, scenarioData.centerLng);
@@ -522,7 +524,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                     />
                   }
                   { isLavaCoder &&
-                    <LavaCoderView width={mapWidth - 2 * simMargin.x} height={mapHeight} margin={simMarginStr} running={running} />
+                    <LavaCoderView width={lavaCoderWidth} height={mapHeight} margin={simMarginStr} running={running} />
                   }
                   {
                     (isTephra || isLavaCoder) &&
@@ -597,9 +599,19 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 rightpanel={"true"}
                 data-test={this.getRightTabName(RightSectionTypes.DATA) + "-panel"}
               >
-                <div>
-                  <ChartPanel width={mapWidth} />
-                </div>
+                { isLavaCoder &&
+                  <LavaCoderView
+                    height={mapHeight - tableHeight}
+                    margin={simMarginStr}
+                    running={running}
+                    width={lavaCoderWidth}
+                  />
+                }
+                { (isTephra || isSeismic) && (
+                  <div>
+                    <ChartPanel width={mapWidth} />
+                  </div>
+                )}
               </TabPanel>
             }
             {
