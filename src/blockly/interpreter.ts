@@ -115,12 +115,12 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     });
 
     addFunc("createTable", () => {
-      if (lavaSimulation.displayTable) {
+      if (lavaSimulation.dataTable) {
         blocklyController.throwError("There cannot be more than one data table in the LavaCoder.");
         return;
       }
 
-      lavaSimulation.setDisplayTable(true);
+      lavaSimulation.newDataTable();
     });
 
     /** ==== Tephra simulation model setters ==== */

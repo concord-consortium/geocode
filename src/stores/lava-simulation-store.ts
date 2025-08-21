@@ -7,6 +7,7 @@ import {
   defaultEruptionVolume, defaultResidual, defaultVentLatitude, defaultVentLongitude, FlagColor, flagLabels,
   kSquareMetersPerAcre, maxFlags
 } from "../components/lava-coder/lava-constants";
+import { DataTable, DataTableType } from "../models/data-table";
 import { pointInPolygon } from "../utilities/geometry-utils";
 import { isPointOnIsland } from "../utilities/molasses-utils";
 import { LavaSimulationAuthorSettings, LavaSimulationAuthorSettingsProps } from "./stores";
@@ -50,7 +51,7 @@ export const LavaSimulationStore = types
   })
   .volatile((self) => ({
     coveredCells: 0,
-    displayTable: false,
+    dataTable: undefined as DataTableType | undefined,
     flagLocations: observable.array<FlagLocation>([]),
     raster: null as AsciiRaster | null, // AsciiRaster
     worker: null as Worker | null,
@@ -97,14 +98,17 @@ export const LavaSimulationStore = types
         self.flagLocations.push({ label: flagLabels[self.flagLocations.length], ...flag });
       }
     },
+    clearDataTable() {
+      self.dataTable = undefined;
+    },
     clearFlagPositions() {
       self.flagLocations.clear();
     },
     countCoveredCells(grid: number[][]) {
       self.coveredCells = countCoveredCells(grid);
     },
-    setDisplayTable(display = false) {
-      self.displayTable = display;
+    newDataTable() {
+      self.dataTable = DataTable.create();
     },
     setPulseCount(pulseCount: number) {
       self.pulseCount = pulseCount;
@@ -188,7 +192,7 @@ export const LavaSimulationStore = types
       self.setPulseCount(0);
       self.resetDefaults();
       self.clearFlagPositions();
-      self.setDisplayTable(false);
+      self.clearDataTable();
       self.coveredCells = 0;
       ++self.resetCount;
     }
