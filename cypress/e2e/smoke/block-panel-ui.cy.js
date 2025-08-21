@@ -1,8 +1,10 @@
 import LeftPanel from "../../support/elements/LeftPanel";
 import BlocksTab from "../../support/elements/BlocksTab";
+import ModelOptions from "../../support/elements/ModelOptionPanel";
 
 const leftPanel = new LeftPanel;
 const blocksTab = new BlocksTab;
+const modelOptions = new ModelOptions;
 
 context("Blocks panel", () => {
     before(() => {
@@ -24,10 +26,13 @@ context("Blocks panel", () => {
         blocksTab.getResetButton().should('be.visible');
       });
       it('verify Run button switches to Pause after click and vice versa',()=>{
-          blocksTab.getRunButton().click();
-          blocksTab.getPauseButton().should('be.visible');
-          blocksTab.getPauseButton().click();
-          blocksTab.getRunButton().should('be.visible');
+        modelOptions.getModelOptionsMenu().click();
+        modelOptions.selectInitialCode("Nested loops");
+        cy.wait(100);
+        blocksTab.getRunButton().click();
+        blocksTab.getPauseButton().should('be.visible');
+        blocksTab.getPauseButton().click();
+        blocksTab.getRunButton().should('be.visible');
       });
     });
   });

@@ -1,6 +1,6 @@
 import { reaction } from "mobx";
 import { observer } from "mobx-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { lavaSimulation } from "../../stores/lava-simulation-store";
 import { LavaMapType, LavaMapTypes, uiStore } from "../../stores/ui-store";
 import { AcresCovered } from "./acres-covered-box";
@@ -37,7 +37,6 @@ interface IProps {
 const round6 = (value: number) => Math.round(value * 1000000) / 1000000;
 
 export const LavaCoderView = observer(function LavaCoderView({ width, height, margin, running }: IProps) {
-  const lastRunningTime = useRef(0);
   const {
     showLatLongButton, showMapType, showMapTypeTerrain, showMapTypeLabeledTerrain, showMapTypeStreet, mapType,
     verticalExaggeration
@@ -84,14 +83,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
     );
   }, [clearLatLong]);
 
-  // Update the last running time when the running state changes
-  if (running) lastRunningTime.current = Date.now();
-  // There can be a gap between the blockly running state and the lava simulation running state, which
-  // can result in flashing the vent location marker, so we enforce a delay after blockly running.
-  const isRunning = running ||
-                    (lastRunningTime.current > 0 && Date.now() - lastRunningTime.current < 1000) ||
-                    lavaSimulation.isRunning;
-  const latLongPopupMode = isLatLongMode && !isRunning
+  const latLongPopupMode = isLatLongMode && !running
                             ? uiStore.hasLatLongPoint ? "static" : "dynamic"
                             : undefined;
 
@@ -190,7 +182,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
       <div className="lava-overlay-controls-bottom bottom-left-controls">
         {showLatLongButton && (
           <LavaIconButton className="lat-long-button" width={26} label={"Lat/Long"} isActive={isLatLongMode}
-                          onClick={() => toggleLatLongMode()} disabled={isRunning}>
+                          onClick={() => toggleLatLongMode()} disabled={running}>
             <LatLongIcon />
           </LavaIconButton>
         )}
