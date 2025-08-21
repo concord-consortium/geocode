@@ -69,7 +69,6 @@ Blockly.Blocks.molasses_create_table = {
   }
 };
 
-// interface for getAndValidateValue and setCodeVariable parameters:
 interface GetAndValidateValueParams {
   block: Blockly.Block;
   // If validation fails, call block.setWarningText with the error message. Otherwise, call it with null.
