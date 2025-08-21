@@ -21,6 +21,7 @@ export const SHOW_CONTROLS = "Show controls?";
 export const RIGHT_TABS = "Right Tabs";
 export const SHOW_CONDITIONS = "Show conditions?";
 export const SHOW_DATA = "Show data?";
+export const SHOW_MAP = "Show map?";
 
 // shared additional options
 export const SHOW_SPEED_CONTROLS = "Show Speed Controls?";
@@ -51,7 +52,6 @@ export const SHOW_DEMO_CHARTS = "Show Demo Charts?";
 export const SHOW_RISK_DIAMONDS = "Show Risk Diamonds?";
 
 // seismic right tab options
-export const SHOW_MAP = "Show map?";
 export const SHOW_DEFORMATION_Q = "Show deformation?";
 
 // deformation model options
