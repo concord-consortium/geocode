@@ -13,7 +13,7 @@ export function useTerrainProvider() {
 
   const getElevation = useCallback(async (longitude: number, latitude: number): Promise<number> => {
     if (!terrainProvider) {
-      throw new Error("Terrain provider is not initialized");
+      return 0;
     }
 
     const cartographic = Cartographic.fromDegrees(longitude, latitude);
