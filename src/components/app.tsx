@@ -36,8 +36,9 @@ import { DeformationModel } from "./deformation/deformation-model";
 import { LavaCoderView } from "./lava-coder/lava-coder-view";
 import { queryValue, queryValueBoolean } from "../utilities/url-query";
 import IconButton from "./buttons/icon-button";
+import { DataTable } from "./lava-coder/data-table";
 
-import "./app.css";
+import "./app.scss";
 
 interface IProps extends IBaseProps {
   reload: () => void;
@@ -332,14 +333,17 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     const tabWidth = Math.floor(width * .5);
     const mapWidth = Math.floor(width * .5);
     const mapHeight = height - 190;
-    const tableHeight = 203;
     const blocklyWidth = tabWidth - (blocklyMargin * 2);
     const logWidth = Math.floor(tabWidth * 0.95);
     const logHeight = Math.floor(height * .2);
     const blocklyHeight = Math.floor(height - 90 - (showLog ? logHeight : 0));
     const scenarioData = (Scenarios as {[key: string]: Scenario})[scenario];
-    const simMargin = { x: 28, y: 25 };
+    const simMargin = { x: 5, y: 5 };
     const simMarginStr = `${simMargin.y}px ${simMargin.x}px 0 ${simMargin.y}px`;
+    const lavaCoderHeight = mapHeight - 2 * simMargin.y;
+    const tabHeight = height - 30; // Excludes tab button height
+    const tableHeight = tabHeight * 0.35;
+    const dataLavaCoderHeight = tabHeight - simMargin.y - tableHeight;
     const lavaCoderWidth = mapWidth - 2 * simMargin.x;
 
     if (isTephra) {
@@ -524,7 +528,12 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                     />
                   }
                   { isLavaCoder &&
-                    <LavaCoderView width={lavaCoderWidth} height={mapHeight} margin={simMarginStr} running={running} />
+                    <LavaCoderView
+                      width={lavaCoderWidth}
+                      height={lavaCoderHeight}
+                      margin={simMarginStr}
+                      running={running}
+                    />
                   }
                   {
                     (isTephra || isLavaCoder) &&
@@ -600,12 +609,19 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 data-test={this.getRightTabName(RightSectionTypes.DATA) + "-panel"}
               >
                 { isLavaCoder &&
-                  <LavaCoderView
-                    height={mapHeight - tableHeight}
-                    margin={simMarginStr}
-                    running={running}
-                    width={lavaCoderWidth}
-                  />
+                  <div className="data-container">
+                    <div className="data-map-container">
+                      <LavaCoderView
+                        height={dataLavaCoderHeight}
+                        margin={simMarginStr}
+                        running={running}
+                        width={lavaCoderWidth}
+                      />
+                    </div>
+                    <div className="data-table-container">
+                      <DataTable dataTable={this.stores.lavaSimulation.dataTable} />
+                    </div>
+                  </div>
                 }
                 { (isTephra || isSeismic) && (
                   <div>

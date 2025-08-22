@@ -1,0 +1,41 @@
+.data-table {
+  background-color: white;
+  border-left: 1px solid #3baa1d;
+  border-top: 1px solid #3baa1d;
+  border-collapse: collapse;
+  box-sizing: border-box;
+  margin: 5px;
+  table-layout: fixed;
+  width: calc(100% - 10px);
+
+  tr {
+    width: 100%;
+  }
+
+  th, td {
+    border-bottom: 1px solid #3baa1d;
+    border-right: 1px solid #3baa1d;
+  }
+
+  th {
+    background-color: #f0f0f0;
+    height: 47px;
+
+    &.flag {
+      width: 10%;
+    }
+    &.name {
+      width: 40%;
+    }
+    &.lat-long {
+      width: 30%;
+    }
+    &.lava {
+      width: 20%;
+    }
+  }
+
+  td {
+    height: 36px;
+  }
+}

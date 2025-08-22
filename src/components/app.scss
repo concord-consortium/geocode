@@ -1,0 +1,27 @@
+.fullscreenOpen {
+  background-image: url("../assets/fullscreen-exit.svg");
+}
+.fullscreenOpen:hover {
+  background-image: url("../assets/fullscreen-exit-dark.svg");
+}
+.fullscreenClosed {
+  background-image: url("../assets/fullscreen.svg");
+}
+.fullscreenClosed:hover {
+  background-image: url("../assets/fullscreen-dark.svg");
+}
+
+.data-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+
+  .data-map-container {
+    height: 65%;
+  }
+
+  .data-table-container {
+    height: 35%;
+  }
+}
