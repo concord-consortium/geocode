@@ -45,8 +45,20 @@
       padding-left: 8px;
     }
 
-    .location-marker {
+    .location-marker-container {
+      align-items: center;
+      display: flex;
+      justify-content: center;
       padding-top: 3px;
+      position: relative;
+
+      .location-marker-label {
+        font-family: Lato-Bold, Lato, sans-serif;
+        font-size: 14px;
+        font-weight: bold;
+        margin-bottom: 11px;
+        position: absolute;
+      }
     }
   }
 }

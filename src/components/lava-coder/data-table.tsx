@@ -19,7 +19,12 @@ function DataTableRow({ row }: IDataTableRowProps) {
   return (
     <tr>
       <td className="td-center">
-        {row && <img src={getLocationMarkerSvg(color, label)} className="location-marker" alt={label} />}
+        {row && (
+          <div className="location-marker-container">
+            <img src={getLocationMarkerSvg(color)} alt={label} />
+            <div className="location-marker-label">{label}</div>
+          </div>
+        )}
       </td>
       <td className="td-left">{row?.name ?? ""}</td>
       <td className="td-center">{latLong}</td>
