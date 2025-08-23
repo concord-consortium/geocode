@@ -12,8 +12,9 @@ export const BlocklyStore = types
     blocklyRefreshCount: 0,
   })
   .volatile(self => ({
-    sampleLocations: [] as string[][],
-    sampleCollections: [] as string[][]
+    flagLocations: [] as [string, string][],
+    sampleLocations: [] as [string, string][],
+    sampleCollections: [] as [string, string][],
   }))
   .actions((self) => ({
     setBlocklyCode(code: string, workspace: any) {
@@ -28,10 +29,13 @@ export const BlocklyStore = types
     forceBlocklyRefresh() {
       self.blocklyRefreshCount++;
     },
-    setSampleLocations(locations: string[][]) {
+    setFlagLocations(flagLocations: [string, string][]) {
+      self.flagLocations = flagLocations;
+    },
+    setSampleLocations(locations: [string, string][]) {
       self.sampleLocations = locations;
     },
-    setSampleCollections(collections: string[][]) {
+    setSampleCollections(collections: [string, string][]) {
       self.sampleCollections = collections;
     }
   }))

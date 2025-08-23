@@ -177,11 +177,12 @@ export class BlocklyController {
    * when the code is actually run.
    */
   private parseVariables() {
+    const flagLocationsRegex = /addFlagLocation\(\s*{[\s\S]*?name:\s*"([^"]+)"[\s\S]*?}\s*\)/g;
     const sampleLocationsRegex = /createSampleLocation\({name: "([^"]*)"/gm;
     const sampleCollectionsRegex = /createSampleCollection\({name: "([^"]*)"/gm;
 
     const findValues = (regex: RegExp) => {
-      const results = [];
+      const results: [string, string][] = [];
       let match;
       while ((match = regex.exec(this.code)) !== null) {
         const value = match[1];
@@ -190,6 +191,7 @@ export class BlocklyController {
       return results;
     };
 
+    blocklyStore.setFlagLocations(findValues(flagLocationsRegex));
     blocklyStore.setSampleLocations(findValues(sampleLocationsRegex));
     blocklyStore.setSampleCollections(findValues(sampleCollectionsRegex));
   }

@@ -7,7 +7,7 @@ import {
   defaultEruptionVolume, defaultResidual, defaultVentLatitude, defaultVentLongitude, FlagColor, flagLabels,
   kSquareMetersPerAcre, maxFlags
 } from "../components/lava-coder/lava-constants";
-import { DataTable, DataTableType } from "../models/data-table";
+import { DataRow, DataTable, DataTableType } from "../models/data-table";
 import { pointInPolygon } from "../utilities/geometry-utils";
 import { isPointOnIsland } from "../utilities/molasses-utils";
 import { LavaSimulationAuthorSettings, LavaSimulationAuthorSettingsProps } from "./stores";
@@ -97,6 +97,9 @@ export const LavaSimulationStore = types
       if (self.flagLocations.length < maxFlags) {
         self.flagLocations.push({ label: flagLabels[self.flagLocations.length], ...flag });
       }
+    },
+    addRowToTable(flag: FlagLocation) {
+      self.dataTable?.addRow(DataRow.create({ label: "", ...flag }));
     },
     clearDataTable() {
       self.dataTable = undefined;

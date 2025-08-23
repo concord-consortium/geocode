@@ -123,6 +123,26 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       lavaSimulation.newDataTable();
     });
 
+    addFunc("addRowToTable", (flagName: string) => {
+      if (!lavaSimulation.dataTable) {
+        blocklyController.throwError("You must create a data table before adding rows.");
+        return;
+      }
+
+      if (!flagName) {
+        blocklyController.throwError("You must select a flag.");
+        return;
+      }
+
+      const flag = lavaSimulation.flagLocations.find(f => f.name === flagName);
+      if (!flag) {
+        blocklyController.throwError(`Flag "${flagName}" not found.`);
+        return;
+      }
+
+      lavaSimulation.addRowToTable(flag);
+    });
+
     /** ==== Tephra simulation model setters ==== */
 
     addFunc("setModelParams", (params: ITephraModelParams) => {

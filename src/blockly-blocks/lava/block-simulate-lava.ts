@@ -5,6 +5,9 @@ import { flagColors, maxLat, maxLong, minLat, minLong } from "../../components/l
 import { dataHue } from "../../constants";
 import { uiStore } from "../../stores/ui-store";
 import * as strings from "../../strings/blockly-blocks/lava/simulate-lava";
+import { blocklyStore } from "../../stores/blockly-store";
+
+const { RIGHT } = Blockly.inputs.Align;
 
 function basicInit(block: Blockly.Block, title?: string, color="#EB0000") {
   if (title) block.appendDummyInput().appendField(title);
@@ -18,7 +21,7 @@ function basicInit(block: Blockly.Block, title?: string, color="#EB0000") {
 function appendValueInput(block: Blockly.Block, name: string, field: string, check="Number") {
   block.appendValueInput(name)
     .setCheck(check)
-    .setAlign(Blockly.inputs.Align.RIGHT)
+    .setAlign(RIGHT)
     .appendField(field);
 }
 
@@ -66,6 +69,21 @@ Blockly.Blocks.molasses_set_flag_location = {
 Blockly.Blocks.molasses_create_table = {
   init() {
     basicInit(this, strings.CREATE_TABLE, dataHue);
+  }
+};
+
+function getFlagOptions() {
+  const options: [string, string][] = [[strings.SELECT_LOCATION, ""], ...blocklyStore.flagLocations];
+  return options;
+}
+
+Blockly.Blocks.molasses_add_row = {
+  init() {
+    basicInit(this, strings.ADD_ROW, dataHue);
+    this.appendDummyInput()
+      .setAlign(RIGHT)
+      .appendField(strings.FOR_FLAG)
+      .appendField(new Blockly.FieldDropdown(getFlagOptions), "flag");
   }
 };
 
@@ -217,5 +235,12 @@ javascriptGenerator.forBlock.molasses_set_flag_location = function(block) {
 javascriptGenerator.forBlock.molasses_create_table = function(block) {
   return `
   this.createTable();
+  `;
+};
+
+javascriptGenerator.forBlock.molasses_add_row = function(block) {
+  const flag = block.getFieldValue('flag');
+  return `
+  this.addRowToTable("${flag}");
   `;
 };

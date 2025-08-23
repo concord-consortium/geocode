@@ -4,3 +4,6 @@ export const SET_LAVA_FRONT_HEIGHT = "Set lava front height (m)";
 export const SET_VENT_LOCATION = "Set vent location";
 export const SET_FLAG_LOCATION = "Set flag location";
 export const CREATE_TABLE = "Create a data table";
+export const ADD_ROW = "Create row in data table";
+export const FOR_FLAG = "For flag";
+export const SELECT_LOCATION = "<Select location>";
