@@ -37,5 +37,16 @@
 
   td {
     height: 36px;
+
+    &.td-center {
+      text-align: center;
+    }
+    &.td-left {
+      padding-left: 8px;
+    }
+
+    .location-marker {
+      padding-top: 3px;
+    }
   }
 }

@@ -45,6 +45,20 @@
                         </value>
                       </block>
                     </statement>
+                    <next>
+                      <block type="molasses_create_table" id="molasses_create_table">
+                        <next>
+                          <block type="molasses_add_row" id="molasses_add_row1">
+                            <field name="flag">test</field>
+                            <next>
+                              <block type="molasses_add_row" id="molasses_add_row2">
+                                <field name="flag">test2</field>
+                              </block>
+                            </next>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
                   </block>
                 </next>
               </block>

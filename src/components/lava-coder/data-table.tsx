@@ -1,5 +1,7 @@
 import { observer } from "mobx-react";
 import { DataRowType, DataTableType } from "../../models/data-table";
+import { flagColorInfo } from "./lava-constants";
+import { getLocationMarkerSvg } from "./location-markers";
 
 import "./data-table.scss";
 
@@ -7,15 +9,21 @@ interface IDataTableRowProps {
   row?: DataRowType;
 }
 function DataTableRow({ row }: IDataTableRowProps) {
-  const latLong = row ? `${row.latitude ?? ""}, ${row.longitude ?? ""}` : "";
-  const lavaImpact = row ? "No" : "";
+  const color = row ? flagColorInfo[row.color ?? ""]?.color ?? "#000" : "#000";
+  const label = row?.label ?? "";
+  const latLong = row ? `${row.latitude ?? ""}°, ${row.longitude ?? ""}°` : "";
+  const lavaImpact = row?.lavaDepth
+    ? row.lavaDepth > 0 ? "Yes" : "No"
+    : "";
 
   return (
     <tr>
-      <td>{row?.label ?? ""}</td>
-      <td>{row?.name ?? ""}</td>
-      <td>{latLong}</td>
-      <td>{lavaImpact}</td>
+      <td className="td-center">
+        {row && <img src={getLocationMarkerSvg(color, label)} className="location-marker" alt={label} />}
+      </td>
+      <td className="td-left">{row?.name ?? ""}</td>
+      <td className="td-center">{latLong}</td>
+      <td className="td-center">{lavaImpact}</td>
     </tr>
   );
 }
