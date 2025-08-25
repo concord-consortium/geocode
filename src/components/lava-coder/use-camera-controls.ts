@@ -139,12 +139,17 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
       // Set the initial camera view
       setDefaultCameraView();
 
-      // Disable the default camera controls
-      viewer.scene.screenSpaceCameraController.enableLook = false;
-      viewer.scene.screenSpaceCameraController.enableRotate = false;
-      viewer.scene.screenSpaceCameraController.enableTilt = false;
-      viewer.scene.screenSpaceCameraController.enableTranslate = false;
-      viewer.scene.screenSpaceCameraController.enableZoom = false;
+      const controller = viewer.scene.screenSpaceCameraController;
+
+      // Disable the default camera controls...
+      controller.enableLook = false;
+      controller.enableRotate = false;
+      controller.enableTilt = false;
+      controller.enableTranslate = false;
+      // ...except for zoom, which we enable and constrain
+      controller.enableZoom = true;
+      controller.minimumZoomDistance = kMinDistanceAboveTerrain;
+      controller.maximumZoomDistance = kMaxDistanceAboveTerrain;
     }
   }, [setDefaultCameraView, viewer]);
 
