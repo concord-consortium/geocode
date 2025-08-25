@@ -340,7 +340,9 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     const scenarioData = (Scenarios as {[key: string]: Scenario})[scenario];
     const simMargin = { x: 5, y: 5 };
     const simMarginStr = `${simMargin.y}px ${simMargin.x}px 0 ${simMargin.y}px`;
-    const lavaCoderHeight = mapHeight - 2 * simMargin.y;
+    // for now, the widgets panel has been removed from LavaCoder
+    const kWidgetsPanelHeight = 160;
+    const lavaCoderHeight = mapHeight + kWidgetsPanelHeight - 2 * simMargin.y;
     const tabHeight = height - 30; // Excludes tab button height
     const tableHeight = tabHeight * 0.35;
     const dataLavaCoderHeight = tabHeight - simMargin.y - tableHeight;
@@ -536,14 +538,14 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                     />
                   }
                   {
-                    (isTephra || isLavaCoder) &&
+                    isTephra &&
                     <WidgetPanel
                       showColumnHeight={isTephra}
                       showEjectedVolume={isTephra}
-                      showEruptedVolume={isLavaCoder}
-                      showLavaFrontHeight={isLavaCoder}
+                      showEruptedVolume={false}
+                      showLavaFrontHeight={false}
                       showVEI={isTephra}
-                      showVentLocation={isLavaCoder}
+                      showVentLocation={false}
                       showWindDirection={isTephra}
                       showWindSpeed={isTephra}
                     />

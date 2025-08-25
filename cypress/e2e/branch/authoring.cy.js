@@ -66,7 +66,7 @@ context ('Authoring Options',()=>{
             //verify is in new location north of volcano
             map.getTephra().last().invoke("attr", "d").should("contain", "M249 98L260 110L260 198L255 204L255 217L249 223L249 229L246 232L240 232L234 239L216 239L201 223L201 179L207 173L207 167L213 160L213 135L219 129L219 123L225 116L225 110L234 101L240 101L246 94z");
 
-            //reset state for nexxt test
+            //reset state for next test
             controlsTab.resetModel();
             modelOptions.getModelOptionsMenu().click();
         });
@@ -372,7 +372,7 @@ context ('Authoring Options',()=>{
             blocksTab.getFlyout().find(blocksTab.getFlyoutButtonEl()).should('have.length', 1).and('contain','Create variable...');
         });
         it('verify selecting Wind + 2 shows correct toolboxes in Blocks',()=>{
-            // Volcano, Loops, Data, Variables. Volcano only has Create town and Wind + height + ejected volumn block
+            // Volcano, Loops, Data, Variables. Volcano only has Create town and Wind + height + ejected volume block
             modelOptions.selectCodeToolbox('Wind + 2');
             cy.wait(1000);
 
@@ -475,7 +475,7 @@ context ('Authoring Options',()=>{
             blocksTab.getFlyout().find(blocksTab.getFlyoutButtonEl()).should('have.length', 1).and('contain','Create variable...');
         });
         after(()=>{
-            modelOptions.getModelOptionsMenu().click(); //close Toption Menu to clean up
+            modelOptions.getModelOptionsMenu().click(); //close option Menu to clean up
         });
     });
     // describe('Initial Code authoring shows the correct blocks',()=>{
@@ -529,7 +529,7 @@ context ('Authoring Options',()=>{
             leftPanel.getCodeTab().should('be.visible');
         });
         after(()=>{
-            modelOptions.getModelOptionsMenu().click(); //close Toption Menu to clean up
+            modelOptions.getModelOptionsMenu().click(); //close option Menu to clean up
         });
     });
     describe('Right tabs options',()=>{
@@ -671,7 +671,7 @@ context ('Authoring Options',()=>{
         it.skip('verify Show Demo Charts checked shows demo charts',()=>{
             // TODO don't know what it is supposed to do
         });
-        it.skip('verify Show log umchecked hides log area', ()=>{
+        it.skip('verify Show log unchecked hides log area', ()=>{
             // TODO don't know what it is supposed to do
         });
         it.skip('verify Show Demo Charts unchecked does not show demo charts',()=>{
@@ -684,7 +684,7 @@ context ('Authoring Options',()=>{
     describe('authoring save and restore state',()=>{
         before(()=>{
             modelOptions.getModelOptionsMenu().click(); //Open Option Panel
-            //Eruption off, painting on, scenarion Mount Pinatubo, Toolbox Wind and VEI
+            //Eruption off, painting on, scenario Mount Pinatubo, Toolbox Wind and VEI
             modelOptions.getRequireEruptionOption().click();
             modelOptions.selectMapScenario('Mount Pinatubo');
             modelOptions.selectCodeToolbox('Wind and VEI');
