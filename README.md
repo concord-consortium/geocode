@@ -95,7 +95,7 @@ We use D3.js to create graphs and charts representing data from simulations. D3 
 ### Developing new Blockly code blocks
 
 The Blockly configurations and blocks are specified in the GeoCode project in the following locations:
-* `src/blockly-blocks/blocks.js` Imports the files used for the custom blocks. Individual files are located in `src/blockly-blocks` (e.g., `src/blockly-blocks/block-add-town.js`, `src/blockly-blocks/block-add-volcano.js`, etc.).
+* `src/blockly-blocks/blocks.ts` Imports the files used for the custom blocks. Individual files are located in `src/blockly-blocks` (e.g., `src/blockly-blocks/block-add-town.ts`, `src/blockly-blocks/block-add-volcano.ts`, etc.).
 * `src/assets/blockly-authoring/code/basic-setup.xml` and `src/assets/blockly-authoring/code/nested-loops.xml` These are the two default programs that are loaded in the Blocks panel (which file is used depends on settings).
 * `src/assets/blockly-authoring/toolbox/first-toolbox.xml` and `src/assets/blockly-authoring/toolbox/full-toolbox.xml` These are the list of blocks available in the toolbox (which file is used depends on settings).
 
@@ -104,17 +104,17 @@ You can create new blocks using the Blockly Developer Tools [block factory](http
 
 If using the Block Factory, use the browser interface to create your new block.
 
-If copying and modifying an existing block, start with one of the blocks located in `src/blockly-blocks` (e.g., `src/blockly-blocks/block-add-town.js`, `src/blockly-blocks/block-add-volcano.js`, etc.). Make a copy of one of the block files, and then make any needed changes or additions.
+If copying and modifying an existing block, start with one of the blocks located in `src/blockly-blocks` (e.g., `src/blockly-blocks/block-add-town.ts`, `src/blockly-blocks/block-add-volcano.ts`, etc.). Make a copy of one of the block files, and then make any needed changes or additions.
 
-Whether using the Block Factory or copying and modifying an existing block, each new block must be added to the GeoCode project. To add a block to the project, create a new JavaScript module containing the block's UI and code generation methods. Name the new JavaScript module using kebab-case (e.g., `block-my-example-block.js`). Add the new JavaScript module to `src\blockly-blocks`, and add an import for the new JavaScript module in `blocks.js`. A new block must have a unique camelCase key (e.g., `myExampleBlock`).
+Whether using the Block Factory or copying and modifying an existing block, each new block must be added to the GeoCode project. To add a block to the project, create a new JavaScript module containing the block's UI and code generation methods. Name the new JavaScript module using kebab-case (e.g., `block-my-example-block.ts`). Add the new JavaScript module to `src\blockly-blocks`, and add an import for the new JavaScript module in `blocks.ts`. A new block must have a unique camelCase key (e.g., `myExampleBlock`).
 
-Each existing GeoCode block has UI and code generation methods defined in its JavaScript module. Therefore, we must also define UI and code generation methods for our new block in the newly created JavaScript module that we added to `src\blockly-blocks` and imported in `blocks.js`. If you are using the Blockly Developer Tools Block Factory, take the Block Definition JavaScript and the Generator stub JavaScript and add it to your new block's JavaScript module. If copying and modifying an existing block, then be sure to make changes to both of these sections.
+Each existing GeoCode block has UI and code generation methods defined in its JavaScript module. Therefore, we must also define UI and code generation methods for our new block in the newly created JavaScript module that we added to `src\blockly-blocks` and imported in `blocks.ts`. If you are using the Blockly Developer Tools Block Factory, take the Block Definition JavaScript and the Generator stub JavaScript and add it to your new block's JavaScript module. If copying and modifying an existing block, then be sure to make changes to both of these sections.
 
 The UI generation for the new block is defined in the `Blockly.Blocks`, which you can access by adding `import * as Blockly from "blockly/core";` to the top of the file. This is done in the block's JavaScript module. Blocks register themselves in this object using a unique key (the block `name` field if you are using the Block Factory), such as `Blockly.Blocks.print`.
 
 Similarly, the code generation for the new block is defined in the block's JavaScript module in `javascriptGenerator.forBlock`. Add `import { javascriptGenerator } from "blockly/javascript";` to the top of your file.
 
-Any custom functions added to a block's code generation must be defined in `interpreter.js` in the function named
+Any custom functions added to a block's code generation must be defined in `interpreter.ts` in the function named
 `makeInterpreterFunc`.  Look at an example to see how the function is registered:
 
 ```

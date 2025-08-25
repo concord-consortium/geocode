@@ -53,6 +53,8 @@
     <block type="input_range"></block>
     <block type="lat_long"></block>
     <block type="math_arithmetic"></block>
+    <block type="molasses_create_table"></block>
+    <block type="molasses_add_row"></block>
   </category>
 
   <category name="Variables" colour="%{BKY_VARIABLES_HUE}" custom="VARIABLE"></category>

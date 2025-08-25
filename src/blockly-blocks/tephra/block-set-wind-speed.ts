@@ -1,0 +1,30 @@
+import * as Blockly from "blockly/core";
+import { javascriptGenerator, Order } from "blockly/javascript";
+import { SET_WIND_SPEED, MS, WIND_SPEED_TOOLTIP } from "../../strings/blockly-blocks/tephra/controls-panel";
+
+Blockly.Blocks.setWindSpeed = {
+  init() {
+    this.appendValueInput("windSpeed")
+      .setCheck("Number")
+      .setAlign(Blockly.inputs.Align.RIGHT)
+      .appendField(SET_WIND_SPEED);
+    this.appendDummyInput()
+      .appendField(MS);
+    this.setInputsInline(true);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(32);
+    this.setTooltip(WIND_SPEED_TOOLTIP);
+    this.setHelpUrl(WIND_SPEED_TOOLTIP);
+  }
+};
+
+javascriptGenerator.forBlock.setWindSpeed = function(block) {
+  const value_wind_speed = javascriptGenerator.valueToCode(block, 'windSpeed', Order.ATOMIC);
+  // TODO: Assemble JavaScript into code variable.
+  const code = `
+    setWindspeed(${value_wind_speed});
+
+  `;
+  return code;
+};
