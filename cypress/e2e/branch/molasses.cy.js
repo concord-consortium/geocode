@@ -33,27 +33,14 @@ context("Molasses Simulation", () => {
       blocksTab.getTag('Volcano').click();
       blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 7);
       blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length', 17);
-      // blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(0).text().then((text) => {
-      //     expect(removeNBSP(text)).to.containIgnoreCase("Compute and visualize lava flow with...");
-      // });
-    //   blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(1).text().then((text) => {
-    //       expect(removeNBSP(text)).to.containIgnoreCase("Set eruption volume");
-    //   });
-    //   blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(2).text().then((text) => {
-    //       expect(removeNBSP(text)).to.containIgnoreCase("Set lava front height");
-    //   });
-    //   blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(3).text().then((text) => {
-    //       expect(removeNBSP(text)).to.containIgnoreCase("Set vent location");
-    //   });
-    //   blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(4).text().then((text) => {
-    //       expect(removeNBSP(text)).to.containIgnoreCase("Set flag location");
-    //   });
-    //   blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(10).text().then((text) => {
-    //       expect(removeNBSP(text)).to.containIgnoreCase("Compute lava flow impact");
-    //   });
-    //   blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(13).text().then((text) => {
-    //       expect(removeNBSP(text)).to.containIgnoreCase("Add data from flag");
-    //   });
+      blocksTab.getFlyout().find(blocksTab.getBlockTextEl())
+        .contains("Compute and visualize lava flow with...").should("exist");
+      blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).contains("Set eruption volume").should("exist");
+      blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).contains("Set lava front height").should("exist");
+      blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).contains("Set vent location").should("exist");
+      blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).contains("Set flag location").should("exist");
+      blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).contains("Compute lava flow impact").should("exist");
+      blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).contains("Add data from flag").should("exist");
 
     //   blocksTab.getTag('Data').click();
     //   blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 7);
