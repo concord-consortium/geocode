@@ -9,7 +9,7 @@ export type CameraMode = "pitch" | "heading" | "panning";
 
 export const kDefaultCameraMode = "panning";
 
-const kInitialLookAtLng = -155.5;
+const kInitialLookAtLng = -155.45;
 const kInitialLookAtLat = 19.40;
 const kInitialCameraHeading = CSMath.toRadians(0.0); // looking north
 const kMinCameraPitch = CSMath.toRadians(-89); // -90 degrees pitch leads to discontinuity in Cesium
