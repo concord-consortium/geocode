@@ -17,18 +17,18 @@ context("Molasses Simulation", () => {
     cy.visit("");
     modelOptions.getModelOptionsMenu().click();
     modelOptions.selectUnitOption('LavaCoder');
-    // modelOptions.selectInitialCode('Molasses Location');
-    // modelOptions.getModelOptionsMenu().click();
+    modelOptions.selectInitialCode('Molasses Location');
+    modelOptions.getModelOptionsMenu().click();
   });
 
   describe('blocks', () => {
     it('verify correct blocks are present', () => {
       blocksTab.getTag('Volcano').should('be.visible');
-    //   blocksTab.getTag('Logic').should('be.visible');
-    //   blocksTab.getTag('Loops').should('be.visible');
-    //   blocksTab.getTag('Data').should('be.visible');
-    //   blocksTab.getTag('Variables').should('be.visible');
-    //   blocksTab.getTag('Functions').should('be.visible');
+      blocksTab.getTag('Logic').should('be.visible');
+      blocksTab.getTag('Loops').should('be.visible');
+      blocksTab.getTag('Data').should('be.visible');
+      blocksTab.getTag('Variables').should('be.visible');
+      blocksTab.getTag('Functions').should('be.visible');
 
     //   blocksTab.getTag('Volcano').click();
     //   blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 7);
