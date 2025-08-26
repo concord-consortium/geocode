@@ -3,9 +3,7 @@ import { types } from "mobx-state-tree";
 export const DataRow = types.model("DataRow", {
   color: types.string,
   label: types.string,
-  latitude: types.number,
   lavaDepth: types.maybe(types.number),
-  longitude: types.number,
   name: types.string,
 })
 .actions(self => ({

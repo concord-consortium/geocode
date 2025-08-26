@@ -11,7 +11,6 @@ interface IDataTableRowProps {
 function DataTableRow({ row }: IDataTableRowProps) {
   const color = row ? flagColorInfo[row.color ?? ""]?.color ?? "#000" : "#000";
   const label = row?.label ?? "";
-  const latLong = row ? `${row.latitude ?? ""}°, ${row.longitude ?? ""}°` : "";
   const lavaImpact = row?.lavaDepth
     ? row.lavaDepth > 0 ? "Yes" : "No"
     : "";
@@ -27,7 +26,6 @@ function DataTableRow({ row }: IDataTableRowProps) {
         )}
       </td>
       <td className="td-left">{row?.name ?? ""}</td>
-      <td className="td-center">{latLong}</td>
       <td className="td-center">{lavaImpact}</td>
     </tr>
   );
@@ -46,7 +44,6 @@ export const DataTable = observer(function DataTable({ dataTable }: IDataTablePr
           <tr>
             <th className="flag">Flag</th>
             <th className="name">Flag Name</th>
-            <th className="lat-long">Lat/Long</th>
             <th className="lava">Lava Impact?</th>
           </tr>
         </thead>
