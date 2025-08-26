@@ -7,10 +7,10 @@ const modelOptions = new ModelOptions();
 
 // need to convert Blockly strings because they have &nbsp; in the DOM
 // but when run thru Cypress, Cypress converts it so `contain` never matches
-// function removeNBSP(text){
-//     const re = new RegExp(String.fromCharCode(160), "g");
-//     return text.replace(re, " ");
-// }
+function removeNBSP(text){
+    const re = new RegExp(String.fromCharCode(160), "g");
+    return text.replace(re, " ");
+}
 
 context("Molasses Simulation", () => {
   beforeEach(() => {
@@ -30,12 +30,12 @@ context("Molasses Simulation", () => {
       blocksTab.getTag('Variables').should('be.visible');
       blocksTab.getTag('Functions').should('be.visible');
 
-    //   blocksTab.getTag('Volcano').click();
-    //   blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 7);
-    //   blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length', 17);
-    //   blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(0).text().then((text) => {
-    //       expect(removeNBSP(text)).to.containIgnoreCase("Compute and visualize lava flow with...");
-    //   });
+      blocksTab.getTag('Volcano').click();
+      blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 7);
+      blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length', 17);
+      blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(0).text().then((text) => {
+          expect(removeNBSP(text)).to.containIgnoreCase("Compute and visualize lava flow with...");
+      });
     //   blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).eq(1).text().then((text) => {
     //       expect(removeNBSP(text)).to.containIgnoreCase("Set eruption volume");
     //   });
