@@ -340,7 +340,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     const scenarioData = (Scenarios as {[key: string]: Scenario})[scenario];
     const simMargin = { x: 5, y: 5 };
     const simMarginStr = `${simMargin.y}px ${simMargin.x}px 0 ${simMargin.y}px`;
-    // for now, the widgets panel has been removed from LavaCoder
+    // the widgets panel has been removed from LavaCoder, so the map expands to fill the space
     const kWidgetsPanelHeight = 160;
     const lavaCoderHeight = mapHeight + kWidgetsPanelHeight - 2 * simMargin.y;
     const tabHeight = height - 30; // Excludes tab button height
