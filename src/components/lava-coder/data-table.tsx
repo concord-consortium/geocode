@@ -8,10 +8,10 @@ import "./data-table.scss";
 interface IDataTableRowProps {
   row?: DataRowType;
 }
-function DataTableRow({ row }: IDataTableRowProps) {
+const DataTableRow = observer(function DataTableRow({ row }: IDataTableRowProps) {
   const color = row ? flagColorInfo[row.color ?? ""]?.color ?? "#000" : "#000";
   const label = row?.label ?? "";
-  const lavaImpact = row?.lavaDepth
+  const lavaImpact = row?.displayLava && row.lavaDepth != null
     ? row.lavaDepth > 0 ? "Yes" : "No"
     : "";
 
@@ -29,7 +29,7 @@ function DataTableRow({ row }: IDataTableRowProps) {
       <td className="td-center">{lavaImpact}</td>
     </tr>
   );
-}
+});
 
 interface IDataTableProps {
   dataTable?: DataTableType;

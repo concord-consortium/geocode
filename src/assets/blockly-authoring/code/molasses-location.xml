@@ -62,6 +62,26 @@
                             <next>
                               <block type="molasses_add_row" id="molasses_add_row2">
                                 <field name="flag">test4</field>
+                                <next>
+                                  <block type="molasses_compute_lava" id="molasses_compute_lava1">
+                                    <field name="flag">test4</field>
+                                    <next>
+                                      <block type="molasses_add_data" id="molasses_add_data1">
+                                        <field name="flag">test4</field>
+                                        <next>
+                                          <block type="molasses_compute_lava" id="molasses_compute_lava2">
+                                            <field name="flag">test</field>
+                                            <next>
+                                              <block type="molasses_add_data" id="molasses_add_data2">
+                                                <field name="flag">test</field>
+                                              </block>
+                                            </next>
+                                          </block>
+                                        </next>
+                                      </block>
+                                    </next>
+                                  </block>
+                                </next>
                               </block>
                             </next>
                           </block>

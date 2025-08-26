@@ -97,6 +97,14 @@ Blockly.Blocks.molasses_compute_lava = {
   }
 };
 
+Blockly.Blocks.molasses_add_data = {
+  init() {
+    basicInit(this, strings.ADD_DATA);
+    addFlagOptions(this, strings.AT_LOCATION);
+    this.appendDummyInput().appendField(strings.TO_TABLE);
+  }
+};
+
 interface GetAndValidateValueParams {
   block: Blockly.Block;
   // If validation fails, call block.setWarningText with the error message. Otherwise, call it with null.
@@ -258,6 +266,13 @@ javascriptGenerator.forBlock.molasses_add_row = function(block) {
 javascriptGenerator.forBlock.molasses_compute_lava = function(block) {
   const flag = block.getFieldValue('flag');
   return `
-  this.computeLavaFlow("${flag}");
+  this.computeLava("${flag}");
+  `;
+};
+
+javascriptGenerator.forBlock.molasses_add_data = function(block) {
+  const flag = block.getFieldValue('flag');
+  return `
+  this.addData("${flag}");
   `;
 };
