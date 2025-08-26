@@ -177,11 +177,11 @@ const AuthoringMenu: React.FC<IProps> = (props) => {
             />
           </DatFolder>,
 
-          <DatFolder title={strings.CONDITIONS_OPTIONS} key="conditionsFolder" closed={false}>
-            <DatBoolean path="uiStore.showEruptedVolume" label={strings.SHOW_ERUPTED_VOLUME} key="showEruptedVolume" />
-            <DatBoolean path="uiStore.showLavaFrontHeight" label={strings.SHOW_LAVA_FRONT_HEIGHT} key="showLavaFrontHeight" />
-            <DatBoolean path="uiStore.showVentLocation" label={strings.SHOW_VENT_LOCATION} key="showVentLocation" />
-          </DatFolder>
+          // <DatFolder title={strings.CONDITIONS_OPTIONS} key="conditionsFolder" closed={false}>
+          //   <DatBoolean path="uiStore.showEruptedVolume" label={strings.SHOW_ERUPTED_VOLUME} key="showEruptedVolume" />
+          //   <DatBoolean path="uiStore.showLavaFrontHeight" label={strings.SHOW_LAVA_FRONT_HEIGHT} key="showLavaFrontHeight" />
+          //   <DatBoolean path="uiStore.showVentLocation" label={strings.SHOW_VENT_LOCATION} key="showVentLocation" />
+          // </DatFolder>
         ]
       }
       {

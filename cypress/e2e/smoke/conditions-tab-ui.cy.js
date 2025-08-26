@@ -11,7 +11,7 @@ context("Conditions panel", () => {
       cy.visit("");
       rightPanel.getConditionsTab().should('be.visible').click();
     });
-  
+
     describe("conditions panel ui", () => {
         it('verify Conditions tab shows correct elements',()=>{
             conditionsTab.getConditionsPanel().should('be.visible');
@@ -30,12 +30,6 @@ context("Conditions panel", () => {
             map.getMapKeyToggle().click();
             map.getKeyContainer().should('contain','Risk Level');
             map.getMapKeyToggle().should('contain','Show Tephra');
-        });
-        it('verify LavaCoder shows correct elements',()=>{
-            cy.visit("?unit=LavaCoder");
-            conditionsTab.getVentLocationWidget().should('be.visible');
-            conditionsTab.getLavaFrontHeightWidget().should('be.visible');
-            conditionsTab.getVolumeOfLavaWidget().should('be.visible');
         });
     });
   });
