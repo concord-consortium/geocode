@@ -85,6 +85,17 @@ export const LavaSimulationStore = types
         }
       }
       return false;
+    },
+    lavaDepthAtPoint(latitude: number, longitude: number) {
+      if (!lavaElevations || !gridBounds) return 0;
+
+      const { east, north, south, west } = gridBounds;
+      const column = Math.floor((longitude - west) / (east - west) * lavaElevations[0].length);
+      const row = Math.floor((north - latitude) / (north - south) * lavaElevations.length);
+      if (row < 0 || row >= lavaElevations.length || column < 0 || column >= lavaElevations[0].length) {
+        return 0;
+      }
+      return lavaElevations[row][column];
     }
   }))
   .views((self) => ({

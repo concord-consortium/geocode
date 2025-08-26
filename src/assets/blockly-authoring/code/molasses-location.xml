@@ -43,6 +43,15 @@
                             <field name="NUM">4</field>
                           </block>
                         </value>
+                        <next>
+                          <block type="molasses_vent_location" id="molasses_vent_location">
+                            <value name="molasses_vent_location">
+                              <block type="lat_long" id="vent_lat_long">
+                                <field name="lat_long">19.366,-155.740</field>
+                              </block>
+                            </value>
+                          </block>
+                        </next>
                       </block>
                     </statement>
                     <next>
@@ -52,7 +61,7 @@
                             <field name="flag">test</field>
                             <next>
                               <block type="molasses_add_row" id="molasses_add_row2">
-                                <field name="flag">test2</field>
+                                <field name="flag">test4</field>
                               </block>
                             </next>
                           </block>

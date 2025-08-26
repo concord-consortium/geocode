@@ -6,4 +6,6 @@ export const SET_FLAG_LOCATION = "Set flag location";
 export const CREATE_TABLE = "Create a data table";
 export const ADD_ROW = "Create row in data table";
 export const FOR_FLAG = "For flag";
+export const COMPUTE_LAVA = "Compute lava flow impact";
+export const AT_FLAG = "At flag";
 export const SELECT_LOCATION = "<Select location>";

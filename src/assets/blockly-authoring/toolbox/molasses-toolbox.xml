@@ -5,6 +5,7 @@
     <block type="molasses_lava_front" />
     <block type="molasses_vent_location" />
     <block type="molasses_set_flag_location" />
+    <block type="molasses_compute_lava" />
   </category>
 
   <category name="Logic" colour="%{BKY_LOGIC_HUE}">
