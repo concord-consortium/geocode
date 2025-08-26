@@ -1,9 +1,13 @@
 
 import BlocksTab from "../../support/elements/BlocksTab";
+import DataTab from "../../support/elements/DataTab";
 import ModelOptions from "../../support/elements/ModelOptionPanel";
+import RightPanel from "../../support/elements/RightPanel";
 
 const blocksTab = new BlocksTab();
+const dataTab = new DataTab();
 const modelOptions = new ModelOptions();
+const rightPanel = new RightPanel();
 
 context("Molasses Simulation", () => {
   beforeEach(() => {
@@ -45,6 +49,18 @@ context("Molasses Simulation", () => {
       blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).contains("+").should("exist");
       blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).contains("Create a data table").should("exist");
       blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).contains("Create row in data table").should("exist");
+    });
+
+    it('running the simulation updates the table', () => {
+      rightPanel.getDataTab().click();
+      cy.wait(10000);
+      blocksTab.runProgram();
+      blocksTab.getRunButton().contains("Run").should("exist");
+      dataTab.getDataTable().should("exist");
+      dataTab.getDataTableRows().should('have.length', 2);
+      dataTab.getDataTableContents().should('have.length', 6);
+      dataTab.getDataTableContents().eq(2).should("contain.text", "No");
+      dataTab.getDataTableContents().eq(5).should("contain.text", "Yes");
     });
   });
 });

@@ -42,7 +42,7 @@
                           <block type="molasses_lava_front" id="e]5S2t+{mK$OQv@cLO^t">
                             <value name="molasses_lava_front">
                               <block type="math_number" id=",b?)ZY24Ctp.#l6H#EG8">
-                                <field name="NUM">4</field>
+                                <field name="NUM">10</field>
                               </block>
                             </value>
                             <next>
