@@ -10,17 +10,24 @@ const modelOptions = new ModelOptions();
 const rightPanel = new RightPanel();
 
 context("Molasses Simulation", () => {
-  beforeEach(() => {
-    cy.visit("");
-    modelOptions.getModelOptionsMenu().click();
-    modelOptions.selectUnitOption('LavaCoder');
-    cy.wait(10000);
-    modelOptions.selectInitialCode('Molasses Location');
-    modelOptions.getModelOptionsMenu().click();
-  });
+  // beforeEach(() => {
+  //   cy.visit("");
+  //   modelOptions.getModelOptionsMenu().click();
+  //   modelOptions.selectUnitOption('LavaCoder');
+  //   cy.wait(10000);
+  //   modelOptions.selectInitialCode('Molasses Location');
+  //   modelOptions.getModelOptionsMenu().click();
+  // });
 
   describe('blocks', () => {
     it('verify correct blocks are present', () => {
+      cy.visit("");
+      modelOptions.getModelOptionsMenu().click();
+      modelOptions.selectUnitOption('LavaCoder');
+      cy.wait(10000);
+      modelOptions.selectInitialCode('Molasses Location');
+      modelOptions.getModelOptionsMenu().click();
+
       blocksTab.getTag('Volcano').should('be.visible');
       blocksTab.getTag('Logic').should('be.visible');
       blocksTab.getTag('Loops').should('be.visible');
