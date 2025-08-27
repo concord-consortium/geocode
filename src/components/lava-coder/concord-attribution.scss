@@ -1,3 +1,12 @@
+// disable links on data attribution overlay so users aren't tempted to navigate away
+.cesium-credit-lightbox {
+  .cesium-credit-wrapper {
+    a {
+      pointer-events: none !important;
+    }
+  }
+}
+
 // overlay to prevent students from navigating away from the simulation
 .cesium-attribution-overlay {
   position: absolute;
@@ -14,7 +23,7 @@
   width: 220px;
   height: 28px;
   bottom: 0;
-  left: 140px;
+  left: 212px;
   background: rgba(255, 255, 255, 0.01); /* semi-transparent background */
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px); /* for Safari */
