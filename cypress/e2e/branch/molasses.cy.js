@@ -1,4 +1,3 @@
-
 import BlocksTab from "../../support/elements/BlocksTab";
 import DataTab from "../../support/elements/DataTab";
 import ModelOptions from "../../support/elements/ModelOptionPanel";
