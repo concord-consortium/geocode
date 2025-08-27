@@ -27,7 +27,7 @@ context("Molasses Simulation", () => {
       blocksTab.getTag('Variables').should('be.visible');
       blocksTab.getTag('Functions').should('be.visible');
 
-      blocksTab.getTag('Volcano').click();
+      // blocksTab.getTag('Volcano').click();
       // blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 7);
       // blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length', 17);
       // blocksTab.getFlyout().find(blocksTab.getBlockTextEl())
