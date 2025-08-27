@@ -14,6 +14,7 @@ context("Molasses Simulation", () => {
     cy.visit("");
     modelOptions.getModelOptionsMenu().click();
     modelOptions.selectUnitOption('LavaCoder');
+    cy.wait(10000);
     modelOptions.selectInitialCode('Molasses Location');
     modelOptions.getModelOptionsMenu().click();
   });
@@ -28,7 +29,7 @@ context("Molasses Simulation", () => {
       blocksTab.getTag('Functions').should('be.visible');
 
       blocksTab.getTag('Volcano').click();
-      // blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 7);
+      blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 7);
       // blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).should('have.length', 17);
       // blocksTab.getFlyout().find(blocksTab.getBlockTextEl())
       //   .contains("Compute and visualize lava flow with...").should("exist");
