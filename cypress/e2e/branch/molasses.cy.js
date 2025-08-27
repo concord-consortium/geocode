@@ -20,12 +20,12 @@ context("Molasses Simulation", () => {
 
   describe('blocks', () => {
     it('verify correct blocks are present', () => {
-      // blocksTab.getTag('Volcano').should('be.visible');
+      blocksTab.getTag('Volcano').should('be.visible');
       blocksTab.getTag('Logic').should('be.visible');
-      // blocksTab.getTag('Loops').should('be.visible');
-      // blocksTab.getTag('Data').should('be.visible');
-      // blocksTab.getTag('Variables').should('be.visible');
-      // blocksTab.getTag('Functions').should('be.visible');
+      blocksTab.getTag('Loops').should('be.visible');
+      blocksTab.getTag('Data').should('be.visible');
+      blocksTab.getTag('Variables').should('be.visible');
+      blocksTab.getTag('Functions').should('be.visible');
 
       // blocksTab.getTag('Volcano').click();
       // blocksTab.getFlyout().find(blocksTab.getBlockEl()).should('have.length', 7);
