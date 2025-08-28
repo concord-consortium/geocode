@@ -1,5 +1,7 @@
 # GeoCode Scaffolded Visual Programming platform
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/concord-consortium/geocode)
+
 ## About
 
 The goal of GeoCode is to get students exploring geological threats using
