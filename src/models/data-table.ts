@@ -2,6 +2,7 @@ import { types } from "mobx-state-tree";
 
 export const DataRow = types.model("DataRow", {
   color: types.string,
+  displayLava: types.optional(types.boolean, false),
   label: types.string,
   latitude: types.number,
   lavaDepth: types.maybe(types.number),
@@ -9,6 +10,9 @@ export const DataRow = types.model("DataRow", {
   name: types.string,
 })
 .actions(self => ({
+  setDisplayLava(display: boolean) {
+    self.displayLava = display;
+  },
   setLavaDepth(depth: number) {
     self.lavaDepth = depth;
   }

@@ -77,13 +77,31 @@ function getFlagOptions() {
   return options;
 }
 
+function addFlagOptions(block: Blockly.Block, label: string) {
+  block.appendDummyInput()
+    .appendField(label)
+    .appendField(new Blockly.FieldDropdown(getFlagOptions), "flag");
+}
+
 Blockly.Blocks.molasses_add_row = {
   init() {
     basicInit(this, strings.ADD_ROW, dataHue);
-    this.appendDummyInput()
-      .setAlign(RIGHT)
-      .appendField(strings.FOR_FLAG)
-      .appendField(new Blockly.FieldDropdown(getFlagOptions), "flag");
+    addFlagOptions(this, strings.FOR_FLAG);
+  }
+};
+
+Blockly.Blocks.molasses_compute_lava = {
+  init() {
+    basicInit(this, strings.COMPUTE_LAVA);
+    addFlagOptions(this, strings.AT_FLAG);
+  }
+};
+
+Blockly.Blocks.molasses_add_data = {
+  init() {
+    basicInit(this, strings.ADD_DATA);
+    addFlagOptions(this, strings.AT_LOCATION);
+    this.appendDummyInput().appendField(strings.TO_TABLE);
   }
 };
 
@@ -242,5 +260,19 @@ javascriptGenerator.forBlock.molasses_add_row = function(block) {
   const flag = block.getFieldValue('flag');
   return `
   this.addRowToTable("${flag}");
+  `;
+};
+
+javascriptGenerator.forBlock.molasses_compute_lava = function(block) {
+  const flag = block.getFieldValue('flag');
+  return `
+  this.computeLava("${flag}");
+  `;
+};
+
+javascriptGenerator.forBlock.molasses_add_data = function(block) {
+  const flag = block.getFieldValue('flag');
+  return `
+  this.addData("${flag}");
   `;
 };

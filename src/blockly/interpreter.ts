@@ -143,6 +143,36 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       lavaSimulation.addRowToTable(flag);
     });
 
+    addFunc("computeLava", (flagName: string) => {
+      if (!flagName) {
+        blocklyController.throwError("You must select a flag.");
+        return;
+      }
+
+      const row = lavaSimulation.dataTable?.rows.find(r => r.name === flagName);
+      if (!row) {
+        blocklyController.throwError(`You must add a row for "${flagName}" before you can compute its lava flow.`);
+        return;
+      }
+
+      row.setLavaDepth(lavaSimulation.lavaDepthAtPoint(row.latitude, row.longitude));
+    });
+
+    addFunc("addData", (flagName: string) => {
+      if (!flagName) {
+        blocklyController.throwError("You must select a flag.");
+        return;
+      }
+
+      const row = lavaSimulation.dataTable?.rows.find(r => r.name === flagName);
+      if (!row) {
+        blocklyController.throwError(`You must add a row for "${flagName}" before you can display its lava impact.`);
+        return;
+      }
+
+      row.setDisplayLava(true);
+    });
+
     /** ==== Tephra simulation model setters ==== */
 
     addFunc("setModelParams", (params: ITephraModelParams) => {

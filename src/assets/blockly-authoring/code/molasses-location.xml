@@ -35,24 +35,53 @@
                   </block>
                 </value>
                 <next>
-                  <block type="molasses_run_simulation" id="bIjG2)~K%-s0~0{5oaS|">
-                    <statement name="setters">
-                      <block type="molasses_lava_front" id="e]5S2t+{mK$OQv@cLO^t">
-                        <value name="molasses_lava_front">
-                          <block type="math_number" id=",b?)ZY24Ctp.#l6H#EG8">
-                            <field name="NUM">4</field>
-                          </block>
-                        </value>
-                      </block>
-                    </statement>
+                  <block type="molasses_create_table" id="molasses_create_table">
                     <next>
-                      <block type="molasses_create_table" id="molasses_create_table">
+                      <block type="molasses_run_simulation" id="bIjG2)~K%-s0~0{5oaS|">
+                        <statement name="setters">
+                          <block type="molasses_lava_front" id="e]5S2t+{mK$OQv@cLO^t">
+                            <value name="molasses_lava_front">
+                              <block type="math_number" id=",b?)ZY24Ctp.#l6H#EG8">
+                                <field name="NUM">10</field>
+                              </block>
+                            </value>
+                            <next>
+                              <block type="molasses_vent_location" id="molasses_vent_location">
+                                <value name="molasses_vent_location">
+                                  <block type="lat_long" id="vent_lat_long">
+                                    <field name="lat_long">19.366,-155.740</field>
+                                  </block>
+                                </value>
+                              </block>
+                            </next>
+                          </block>
+                        </statement>
                         <next>
                           <block type="molasses_add_row" id="molasses_add_row1">
                             <field name="flag">test</field>
                             <next>
                               <block type="molasses_add_row" id="molasses_add_row2">
-                                <field name="flag">test2</field>
+                                <field name="flag">test4</field>
+                                <next>
+                                  <block type="molasses_compute_lava" id="molasses_compute_lava1">
+                                    <field name="flag">test4</field>
+                                    <next>
+                                      <block type="molasses_add_data" id="molasses_add_data1">
+                                        <field name="flag">test4</field>
+                                        <next>
+                                          <block type="molasses_compute_lava" id="molasses_compute_lava2">
+                                            <field name="flag">test</field>
+                                            <next>
+                                              <block type="molasses_add_data" id="molasses_add_data2">
+                                                <field name="flag">test</field>
+                                              </block>
+                                            </next>
+                                          </block>
+                                        </next>
+                                      </block>
+                                    </next>
+                                  </block>
+                                </next>
                               </block>
                             </next>
                           </block>
