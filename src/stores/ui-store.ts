@@ -48,6 +48,8 @@ const UIStore = types.model("UI", {
    */
   // whether to show the Lat/Long button
   showLatLongButton: true,
+  // whether to show the Ruler button
+  showRulerButton: true,
   // whether to show the Map Type button
   showMapType: true,
   // whether to include terrain in the map type options
@@ -83,7 +85,13 @@ const UIStore = types.model("UI", {
   pointLongitude: types.maybe(types.number),  // longitude in degrees
   pointElevation: types.maybe(types.number)   // elevation in meters
 })
+.volatile(self => ({
+  tempVerticalExaggeration: undefined as number | undefined
+}))
 .views((self) => ({
+  get currVerticalExaggeration() {
+    return self.tempVerticalExaggeration ?? self.verticalExaggeration;
+  },
   get pulsesPerEruption() {
     return self.hundredsOfPulsesPerEruption * 100;
   },
@@ -112,6 +120,9 @@ const UIStore = types.model("UI", {
   },
   setRightTabIndex(index: number) {
     self.rightTabIndex = index;
+  },
+  setTempVerticalExaggeration(value: number | undefined) {
+    self.tempVerticalExaggeration = value;
   },
   setLatLongPoint(latitude: number, longitude: number, elevation = 0) {
     self.pointLatitude = latitude;

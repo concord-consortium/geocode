@@ -19,6 +19,9 @@ import MoveIcon3x from "../../assets/lava-coder/move-icon@3x.png";
 import RotateIcon1x from "../../assets/lava-coder/rotate-icon.png";
 import RotateIcon2x from "../../assets/lava-coder/rotate-icon@2x.png";
 import RotateIcon3x from "../../assets/lava-coder/rotate-icon@3x.png";
+import RulerIcon1x from "../../assets/lava-coder/ruler-icon.png";
+import RulerIcon2x from "../../assets/lava-coder/ruler-icon@2x.png";
+import RulerIcon3x from "../../assets/lava-coder/ruler-icon@3x.png";
 import VentKeyIcon1x from "../../assets/lava-coder/key-icon.png";
 import VentKeyIcon2x from "../../assets/lava-coder/key-icon@2x.png";
 import VentKeyIcon3x from "../../assets/lava-coder/key-icon@3x.png";
@@ -50,6 +53,12 @@ export function HomeViewIcon() {
 export function LatLongIcon() {
   return (
     <img src={LatLongIcon1x} srcSet={iconSrcSet(LatLongIcon1x, LatLongIcon2x, LatLongIcon3x)} alt="Lat Long" />
+  );
+}
+
+export function RulerIcon() {
+  return (
+    <img src={RulerIcon1x} srcSet={iconSrcSet(RulerIcon1x, RulerIcon2x, RulerIcon3x)} alt="Ruler" />
   );
 }
 

@@ -70,7 +70,7 @@ module.exports = (env, argv) => {
         },
         {
           test: /\.svg$/i,
-          exclude: /\.nosvgo\.svg$/i,
+          exclude: /\.(asset|nosvgo)\.svg$/i,
           oneOf: [
             {
               // Do not apply SVGR import in CSS files.
@@ -110,6 +110,13 @@ module.exports = (env, argv) => {
               }
             }
           ]
+        },
+        {
+          test: /\.asset\.svg$/i,
+          type: 'asset/resource',
+          generator: {
+            filename: 'assets/[name].[contenthash:8][ext]' // Specify the output filename here
+          }
         },
         {
           test: /\.csv$/,

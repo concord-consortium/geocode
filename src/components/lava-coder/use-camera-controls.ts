@@ -2,6 +2,8 @@ import { Cartesian2, Cartesian3, CesiumWidget, Math as CSMath, HeadingPitchRange
 import { reaction } from "mobx";
 import { useCallback, useEffect, useState } from "react";
 import { lavaSimulation } from "../../stores/lava-simulation-store";
+import { uiStore } from "../../stores/ui-store";
+import { getCameraState } from "./cesium-utils";
 import { IOnDragArgs, useCesiumDragEvents } from "./use-cesium-drag-events";
 import { useTerrainProvider } from "./use-terrain-provider";
 
@@ -12,8 +14,8 @@ export const kDefaultCameraMode = "panning";
 const kInitialLookAtLng = -155.45;
 const kInitialLookAtLat = 19.40;
 const kInitialCameraHeading = CSMath.toRadians(0.0); // looking north
-const kMinCameraPitch = CSMath.toRadians(-89); // -90 degrees pitch leads to discontinuity in Cesium
-const kInitialCameraPitch = CSMath.toRadians(-50.0); // pitch down
+export const kMinCameraPitch = CSMath.toRadians(-89.9); // -90 degrees pitch leads to discontinuity in Cesium
+export const kInitialCameraPitch = CSMath.toRadians(-50.0); // pitch down
 const kMaxCameraPitch = CSMath.toRadians(-15); // -15 degrees pitch is a reasonable limit for viewing the terrain
 const kMinDistanceAboveTerrain = 1000;
 const kInitialCameraRange = 130000;
@@ -37,6 +39,40 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
       Cartesian3.fromDegrees(kInitialLookAtLng, kInitialLookAtLat),
       new HeadingPitchRange(kInitialCameraHeading, kInitialCameraPitch, kInitialCameraRange)
     );
+  }, [viewer]);
+
+  const animateToCameraPitch = useCallback((pitch: number, exaggeration: number) => {
+    if (!viewer) return;
+
+    const kAnimationSteps = 20;
+    const kAnimationFrame = 30; // ms per frame
+
+    const { target, initialHeading, initialPitch, initialRange } = getCameraState(viewer) || {};
+    if (target == null || initialHeading == null || initialPitch == null || initialRange == null) return;
+
+    let currentPitch = initialPitch;
+    const deltaPitch = (pitch - initialPitch) / kAnimationSteps;
+
+    let currentExaggeration = uiStore.currVerticalExaggeration;
+    const deltaExaggeration = (exaggeration - currentExaggeration) / kAnimationSteps;
+
+    const interval = setInterval(() => {
+      currentPitch += deltaPitch;
+      currentExaggeration += deltaExaggeration;
+      if (Math.abs(currentPitch - pitch) < 0.01) {
+        clearInterval(interval);
+        currentPitch = pitch;
+        uiStore.setTempVerticalExaggeration(exaggeration === 1 ? exaggeration : undefined);
+      }
+      else {
+        uiStore.setTempVerticalExaggeration(currentExaggeration);
+      }
+      viewer.camera.lookAt(target, new HeadingPitchRange(
+        initialHeading,
+        currentPitch,
+        initialRange
+      ));
+    }, kAnimationFrame);
   }, [viewer]);
 
   useEffect(() => {
@@ -153,5 +189,5 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
     }
   }, [setDefaultCameraView, viewer]);
 
-  return { cameraMode, setCameraMode, setDefaultCameraView, zoomIn, zoomOut };
+  return { cameraMode, animateToCameraPitch, setCameraMode, setDefaultCameraView, zoomIn, zoomOut };
 }
