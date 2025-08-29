@@ -10,6 +10,7 @@ export function useVog(viewer: CesiumWidget | null, verticalExaggeration = 1) {
   useEffect(() => {
     if (viewer && !cloudsRef.current) {
       cloudsRef.current = viewer.scene.primitives.add(new CloudCollection({ noiseDetail: 32 }));
+      viewer.scene.globe.depthTestAgainstTerrain = true;
     }
   }, [viewer]);
 
