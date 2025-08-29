@@ -1,6 +1,6 @@
 import { Cartesian2, Cartesian3, CesiumWidget, Math as CSMath, HeadingPitchRange } from "@cesium/engine";
 import { reaction } from "mobx";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { lavaSimulation } from "../../stores/lava-simulation-store";
 import { uiStore } from "../../stores/ui-store";
 import { getCameraState } from "./cesium-utils";
@@ -28,6 +28,7 @@ function getAngleFromCenter(pos: Cartesian2, center: Cartesian2) {
 export function useCameraControls(viewer: CesiumWidget | null, verticalExaggeration: number) {
 
   const [cameraMode, setCameraMode] = useState<CameraMode>(kDefaultCameraMode);
+  const animationInterval = useRef<number | null>(null);
 
   const { getElevation } = useTerrainProvider();
 
@@ -56,11 +57,17 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
     let currentExaggeration = uiStore.currVerticalExaggeration;
     const deltaExaggeration = (exaggeration - currentExaggeration) / kAnimationSteps;
 
-    const interval = setInterval(() => {
+    if (animationInterval.current) {
+      window.clearInterval(animationInterval.current);
+      animationInterval.current = null;
+    }
+
+    const interval = animationInterval.current = window.setInterval(() => {
       currentPitch += deltaPitch;
       currentExaggeration += deltaExaggeration;
       if (Math.abs(currentPitch - pitch) < 0.01) {
-        clearInterval(interval);
+        window.clearInterval(interval);
+        animationInterval.current = null;
         currentPitch = pitch;
         uiStore.setTempVerticalExaggeration(exaggeration === 1 ? exaggeration : undefined);
       }
@@ -74,6 +81,15 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
       ));
     }, kAnimationFrame);
   }, [viewer]);
+
+  useEffect(() => {
+    return () => {
+      if (animationInterval.current) {
+        window.clearInterval(animationInterval.current);
+        animationInterval.current = null;
+      }
+    };
+  }, []);
 
   useEffect(() => {
     return reaction(
