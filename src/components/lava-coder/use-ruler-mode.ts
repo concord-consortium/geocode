@@ -1,4 +1,6 @@
-import { CallbackPositionProperty, CallbackProperty, Cartesian3, CesiumWidget, Color, Entity } from "@cesium/engine";
+import {
+  CallbackPositionProperty, CallbackProperty, Cartesian3, CesiumWidget, Color, Entity
+} from "@cesium/engine";
 import { useCallback, useEffect, useRef, useState } from "react";
 import PointIcon from "../../assets/lava-coder/point-icon.asset.svg";
 import { uiStore } from "../../stores/ui-store";
@@ -142,6 +144,23 @@ export function useRulerMode({ viewer, verticalExaggeration, animateToCameraPitc
       viewer.entities.remove(connectingLineEntity.current);
       connectingLineEntity.current = null;
     }
+  });
+
+  useEffect(() => {
+    const point1 = firstPointStatic.current;
+    const point2 = secondPointStatic.current || secondPointCursor.current;
+    if (!viewer || !point1 || !point2) {
+      uiStore.setRulerLine(undefined);
+      return;
+    }
+
+    uiStore.setRulerLine({
+      points: [
+        viewer.scene.cartesianToCanvasCoordinates(point1),
+        viewer.scene.cartesianToCanvasCoordinates(point2)
+      ],
+      distance: Cartesian3.distance(point1, point2)
+    });
   });
 
   return { isRulerMode, getCursor, handleClick, handleMouseMove, toggleRulerMode };

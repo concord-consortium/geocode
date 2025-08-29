@@ -1,5 +1,6 @@
 export const kFeetPerMeter = 3.28084;
 export const kMetersPerFoot = 1 / kFeetPerMeter;
+export const kMetersPerMile = 1609.344;
 export const kSquareMetersPerAcre = 4046.86;
 
 // Default eruption values

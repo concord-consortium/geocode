@@ -15,6 +15,7 @@ import { ILatLongElevation } from "./lava-coder-types";
 import { kFeetPerMeter } from "./lava-constants";
 import { LavaIconButton } from "./lava-icon-button";
 import { ProgressBar } from "./progress-bar";
+import { RulerLineLabel } from "./ruler-line-label";
 import { CameraMode, kDefaultCameraMode, useCameraControls } from "./use-camera-controls";
 import { useCesiumMouseEvents } from "./use-cesium-mouse-events";
 import { useCesiumViewer } from "./use-cesium-viewer";
@@ -221,6 +222,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
       <ConcordAttribution />
       <LatLongPopup viewer={viewer} verticalExaggeration={verticalExaggeration}
                     mode={latLongPopupMode} onSetLatLongPoint={setLatLongPoint} />
+      {isRulerMode && <RulerLineLabel />}
     </div>
   );
 });

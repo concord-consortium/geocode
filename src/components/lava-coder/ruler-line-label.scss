@@ -1,0 +1,12 @@
+@use "./lava-vars.scss" as vars;
+
+.ruler-line-label {
+  position: absolute;
+  background-color: white;
+  border-radius: 2px;
+  box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.35);
+  padding: 1px 5px 3px;
+  font: 16px Lato, sans-serif;
+  color: vars.$control-label;
+  white-space: nowrap;
+}

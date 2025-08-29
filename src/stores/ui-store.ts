@@ -1,3 +1,4 @@
+import { Cartesian2 } from "@cesium/engine";
 import { types } from "mobx-state-tree";
 import { isLocalhost } from "../utilities/js-utils";
 import { queryValueBoolean } from "../utilities/url-query";
@@ -13,6 +14,11 @@ function defaultMapType(): LavaMapType {
   const isDeveloping = isLocalhost();
   const isTesting = queryValueBoolean("testing");
   return isDeveloping || isTesting ? "develop" : "terrain";
+}
+
+interface ILavaCoderRulerLine {
+  points: [Cartesian2, Cartesian2];
+  distance: number;
 }
 
 const UIStore = types.model("UI", {
@@ -86,7 +92,8 @@ const UIStore = types.model("UI", {
   pointElevation: types.maybe(types.number)   // elevation in meters
 })
 .volatile(self => ({
-  tempVerticalExaggeration: undefined as number | undefined
+  tempVerticalExaggeration: undefined as number | undefined,
+  rulerLine: undefined as ILavaCoderRulerLine | undefined
 }))
 .views((self) => ({
   get currVerticalExaggeration() {
@@ -123,6 +130,14 @@ const UIStore = types.model("UI", {
   },
   setTempVerticalExaggeration(value: number | undefined) {
     self.tempVerticalExaggeration = value;
+  },
+  setRulerLine(line: ILavaCoderRulerLine | undefined) {
+    if (!line ||
+        !line.points[0].equals(self.rulerLine?.points[0]) ||
+        !line.points[1].equals(self.rulerLine?.points[1]) ||
+        line.distance !== self.rulerLine?.distance) {
+      self.rulerLine = line;
+    }
   },
   setLatLongPoint(latitude: number, longitude: number, elevation = 0) {
     self.pointLatitude = latitude;
