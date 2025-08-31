@@ -35,7 +35,7 @@ export function useCesiumMouseEvents(
         screenSpaceHandlers.handleMouseMove.setInputAction((event: ScreenSpaceEventHandler.MotionEvent) => {
           const { latitude, longitude, elevation } = fromCartesian2(viewer, event.endPosition);
           if (latitude != null && longitude != null && elevation != null) {
-            onMouseMove(latitude, longitude, elevation);
+            onMouseMove({ latitude, longitude, elevation, position: event.endPosition });
           }
         }, ScreenSpaceEventType.MOUSE_MOVE);
       }
@@ -44,7 +44,7 @@ export function useCesiumMouseEvents(
         screenSpaceHandlers.handleClick.setInputAction((event: ScreenSpaceEventHandler.PositionedEvent) => {
           const { latitude, longitude, elevation } = fromCartesian2(viewer, event.position);
           if (latitude != null && longitude != null && elevation != null) {
-            onClick(latitude, longitude, elevation);
+            onClick({ latitude, longitude, elevation, position: event.position });
           }
         }, ScreenSpaceEventType.LEFT_CLICK);
       }
