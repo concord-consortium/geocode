@@ -1,3 +1,4 @@
+import { CesiumWidget } from "@cesium/engine";
 import { observer } from "mobx-react";
 import { useRef } from "react";
 import { uiStore } from "../../stores/ui-store";
@@ -5,9 +6,15 @@ import { kMetersPerMile } from "./lava-constants";
 
 import "./ruler-line-label.scss";
 
-export const RulerLineLabel = observer(function RulerLineLabel() {
+interface IProps {
+  viewer: CesiumWidget | null;
+  listenToCameraChange: (callback: () => void) => (() => void);
+}
+
+export const RulerLineLabel = observer(function RulerLineLabel({ viewer, listenToCameraChange }: IProps) {
   const labelRef = useRef<HTMLDivElement>(null);
   const { rulerLine } = uiStore;
+
   if (!rulerLine) return null;
 
   const kDefaultLabelHeight = 25;

@@ -56,7 +56,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
 
   const viewer = useCesiumViewer(lavaCoderElt, mapType);
 
-  const { cameraMode, animateToCameraPitch, setCameraMode, setDefaultCameraView, zoomIn, zoomOut } =
+  const { cameraMode, animateToCameraPitch, listenToCameraChange, setCameraMode, setDefaultCameraView, zoomIn, zoomOut } =
     useCameraControls(viewer, verticalExaggeration);
 
   const { replaceBaseLayer } = useWorldImagery();
@@ -97,7 +97,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
   const {
     isRulerMode, getCursor: getRulerModeCursor, handleClick: handleRulerModeClick,
     handleMouseMove: handleRulerModeMouseMove, toggleRulerMode
-  } = useRulerMode({ viewer, verticalExaggeration, animateToCameraPitch });
+  } = useRulerMode({ viewer, verticalExaggeration, animateToCameraPitch, listenToCameraChange });
 
   const handleMouseMove: CartographicEventCallback = useCallback(({ latitude, longitude, elevation, position }) => {
     let _cursor = "auto";
@@ -222,7 +222,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
       <ConcordAttribution />
       <LatLongPopup viewer={viewer} verticalExaggeration={verticalExaggeration}
                     mode={latLongPopupMode} onSetLatLongPoint={setLatLongPoint} />
-      {isRulerMode && <RulerLineLabel viewer={viewer} />}
+      {isRulerMode && <RulerLineLabel viewer={viewer} listenToCameraChange={listenToCameraChange} />}
     </div>
   );
 });

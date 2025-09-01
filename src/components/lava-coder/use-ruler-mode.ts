@@ -14,6 +14,7 @@ interface IProps {
   viewer: CesiumWidget | null;
   verticalExaggeration: number;
   animateToCameraPitch: (pitch: number, exaggeration: number) => void;
+  listenToCameraChange: (callback: () => void) => (() => void);
 }
 
 const kFirstPointId = "rulerFirstPoint";
@@ -22,7 +23,7 @@ type RulerPointId = typeof kFirstPointId | typeof kSecondPointId;
 const isRulerPointId = (id?: string): id is RulerPointId => id === kFirstPointId || id === kSecondPointId;
 const kConnectingLineId = "rulerConnectingLine";
 
-export function useRulerMode({ viewer, verticalExaggeration, animateToCameraPitch }: IProps) {
+export function useRulerMode({ viewer, verticalExaggeration, animateToCameraPitch, listenToCameraChange }: IProps) {
   const initialRulerModePitch = useRef<number | null>(null);
   const [isRulerMode, setIsRulerMode] = useState(false);
   const [ , setChangeCount] = useState(0);
@@ -176,6 +177,10 @@ export function useRulerMode({ viewer, verticalExaggeration, animateToCameraPitc
       connectingLineEntity.current = null;
     }
   });
+
+  useEffect(() => {
+    return listenToCameraChange(() => setChangeCount(c => c + 1));
+  }, [listenToCameraChange]);
 
   useEffect(() => {
     const point1 = firstPointStatic.current;
