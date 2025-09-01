@@ -48,6 +48,7 @@ export function useRulerMode({ viewer, verticalExaggeration, animateToCameraPitc
     setIsRulerMode(prev => !prev);
   }
 
+  // animate to top view when entering ruler mode and animate back to original pitch when exiting
   useEffect(() => {
     if (isRulerMode) {
       const { initialPitch } = getCameraState(viewer) || {};
@@ -84,6 +85,7 @@ export function useRulerMode({ viewer, verticalExaggeration, animateToCameraPitc
     return "auto";
   }, [isRulerMode, viewer]);
 
+  // second point follows cursor if second point not set
   const handleMouseMove: CartographicEventCallback = useCallback(({ latitude, longitude, elevation }) => {
     elevation /= verticalExaggeration; // Adjust elevation for vertical exaggeration
     if (firstPointStatic.current && !secondPointStatic.current) {
@@ -93,6 +95,7 @@ export function useRulerMode({ viewer, verticalExaggeration, animateToCameraPitc
     }
   }, [verticalExaggeration]);
 
+  // clicks set ruler point positions
   const handleClick: CartographicEventCallback = useCallback(({ latitude, longitude, elevation, position }) => {
     elevation /= verticalExaggeration; // Adjust elevation for vertical exaggeration
     if (!firstPointStatic.current) {
@@ -105,6 +108,7 @@ export function useRulerMode({ viewer, verticalExaggeration, animateToCameraPitc
     }
   }, [verticalExaggeration]);
 
+  // create/destroy cesium entity for first point
   useEffect(() => {
     if (!viewer) return;
 
@@ -132,6 +136,7 @@ export function useRulerMode({ viewer, verticalExaggeration, animateToCameraPitc
     }
   });
 
+  // create/destroy cesium entity for second point
   useEffect(() => {
     if (!viewer) return;
 
@@ -159,6 +164,7 @@ export function useRulerMode({ viewer, verticalExaggeration, animateToCameraPitc
     }
   });
 
+  // create/destroy cesium entity for connecting line
   useEffect(() => {
     if (!viewer) return;
 
@@ -178,10 +184,12 @@ export function useRulerMode({ viewer, verticalExaggeration, animateToCameraPitc
     }
   });
 
+  // camera changes trigger re-renders
   useEffect(() => {
     return listenToCameraChange(() => setChangeCount(c => c + 1));
   }, [listenToCameraChange]);
 
+  // update coordinates of connecting line
   useEffect(() => {
     const point1 = firstPointStatic.current;
     const point2 = secondPointStatic.current || secondPointCursor.current;
@@ -199,6 +207,11 @@ export function useRulerMode({ viewer, verticalExaggeration, animateToCameraPitc
     });
   });
 
+  // Support dragging of points on the map. Implementation note: I originally implemented dragging
+  // using cesium event handlers, but point dragging interacted poorly with map panning, so I
+  // switched to an implementation based on browser pointer events and capturing the pointer.
+  // I believe it would have been possible to implement dragging using cesium's built-in events
+  // by disabling our event handlers in `useCameraControls()`, but I opted to keep this approach.
   useEffect(() => {
     if (!viewer) return;
 
