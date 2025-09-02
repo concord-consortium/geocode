@@ -56,8 +56,9 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
 
   const viewer = useCesiumViewer(lavaCoderElt, mapType);
 
-  const { cameraMode, animateToCameraPitch, listenToCameraChange, setCameraMode, setDefaultCameraView, zoomIn, zoomOut } =
-    useCameraControls(viewer, verticalExaggeration);
+  const {
+    cameraMode, isAnimating, animateToCameraPitch, listenToCameraChange, setCameraMode, setDefaultCameraView, zoomIn, zoomOut
+    } = useCameraControls(viewer, verticalExaggeration);
 
   const { replaceBaseLayer } = useWorldImagery();
 
@@ -206,7 +207,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
         )}
         {showRulerButton && (
           <LavaIconButton className="ruler-button" width={26} label={"Ruler"} isActive={isRulerMode}
-                          onClick={() => toggleRulerMode()} disabled={isLatLongMode || running}>
+                          onClick={() => toggleRulerMode()} disabled={isLatLongMode || isAnimating || running}>
             <RulerIcon />
           </LavaIconButton>
         )}

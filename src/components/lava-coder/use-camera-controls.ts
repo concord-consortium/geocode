@@ -244,6 +244,7 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
   }, [setDefaultCameraView, viewer]);
 
   return {
-    cameraMode, animateToCameraPitch, listenToCameraChange, setCameraMode, setDefaultCameraView, zoomIn, zoomOut
+    cameraMode, isAnimating: !!animationInterval.current, animateToCameraPitch,
+    listenToCameraChange, setCameraMode, setDefaultCameraView, zoomIn, zoomOut
   };
 }
