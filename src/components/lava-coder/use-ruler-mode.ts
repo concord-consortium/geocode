@@ -125,6 +125,7 @@ export function useRulerMode({
       }, false);
       firstPointEntity.current = viewer.entities.add({
         id: kFirstPointId,
+        // entity only exists when `getFirstPoint()` is defined
         position: new CallbackPositionProperty(() => getFirstPoint()!, false),
         billboard: {
           image,
@@ -153,6 +154,7 @@ export function useRulerMode({
       }, false);
       secondPointEntity.current = viewer.entities.add({
         id: kSecondPointId,
+        // entity only exists when `getSecondPoint()` is defined
         position: new CallbackPositionProperty(() => getSecondPoint()!, false),
         billboard: {
           image,
@@ -175,6 +177,7 @@ export function useRulerMode({
       connectingLineEntity.current = viewer.entities.add({
         id: kConnectingLineId,
         polyline: {
+          // entity only exists when `getFirstPoint()` and `getSecondPoint()` are defined
           positions: new CallbackProperty(() => [getFirstPoint()!, getSecondPoint()!], false),
           width: 3,
           material: Color.fromCssColorString("#b263f7")
