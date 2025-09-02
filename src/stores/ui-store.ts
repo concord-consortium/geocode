@@ -21,6 +21,10 @@ interface ILavaCoderRulerLine {
   distance: number;
 }
 
+const renamedKeys: Record<string, UIAuthorSettingsProps> = {
+  verticalExaggeration: "_verticalExaggeration" as UIAuthorSettingsProps
+};
+
 const UIStore = types.model("UI", {
   showOptionsDialog: true,
   // left tabs
@@ -154,7 +158,11 @@ const UIStore = types.model("UI", {
   return {
     loadAuthorSettingsData: (data: UIAuthorSettings) => {
       Object.keys(data).forEach((key: UIAuthorSettingsProps) => {
-        (self[key] as any) = data[key] as any;
+        if (renamedKeys[key]) {
+          (self[renamedKeys[key]] as any) = data[key] as any;
+        } else {
+          (self[key] as any) = data[key] as any;
+        }
       });
 
       // if author is showing fast speed, set model to fast initially

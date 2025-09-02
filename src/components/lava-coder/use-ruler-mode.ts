@@ -13,7 +13,7 @@ import { kInitialCameraPitch, kMinCameraPitch } from "./use-camera-controls";
 interface IProps {
   viewer: CesiumWidget | null;
   verticalExaggeration: number;
-  animateToCameraPitch: (pitch: number, exaggeration: number) => void;
+  animateToCameraPitch: (pitch: number, exaggeration: number, isTemporary: boolean) => void;
   listenToCameraChange: (callback: () => void) => (() => void);
   setCursor: (cursor: string) => void
 }
@@ -57,11 +57,11 @@ export function useRulerMode({
       const { initialPitch } = getCameraState(viewer) || {};
       initialRulerModePitch.current = initialPitch ?? kInitialCameraPitch;
       // switch to overhead view and flatten the vertical exaggeration
-      animateToCameraPitch(kMinCameraPitch, 1);
+      animateToCameraPitch(kMinCameraPitch, 1, true);
     }
     else if (!isRulerMode) {
       // restore the original pitch and vertical exaggeration
-      animateToCameraPitch(initialRulerModePitch.current ?? kInitialCameraPitch, uiStore.verticalExaggeration);
+      animateToCameraPitch(initialRulerModePitch.current ?? kInitialCameraPitch, uiStore.verticalExaggeration, false);
       initialRulerModePitch.current = null;
       firstPointStatic.current = null;
       secondPointCursor.current = null;

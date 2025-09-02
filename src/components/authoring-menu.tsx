@@ -134,7 +134,7 @@ const AuthoringMenu: React.FC<IProps> = (props) => {
             <DatBoolean path="uiStore.showMapTypeStreet" label={strings.SHOW_MAP_TYPE_STREET} key="showMapTypeStreet" />
             <DatSelect path="uiStore.mapType" label={strings.INITIAL_MAP_TYPE} key="initialMapType"
               options={LavaMapTypeStrings} />
-            <DatNumber path="uiStore.verticalExaggeration" label={strings.VERTICAL_EXAGGERATION} key="verticalExaggeration"
+            <DatNumber path="uiStore._verticalExaggeration" label={strings.VERTICAL_EXAGGERATION} key="verticalExaggeration"
               min={1} max={5} step={1}/>
             <DatNumber
               path="uiStore.hundredsOfPulsesPerEruption"

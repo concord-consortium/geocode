@@ -74,7 +74,7 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
     notifyCameraChange();
   }, [notifyCameraChange, viewer]);
 
-  const animateToCameraPitch = useCallback((pitch: number, exaggeration: number) => {
+  const animateToCameraPitch = useCallback((pitch: number, exaggeration: number, isTemporary: boolean) => {
     if (!viewer) return;
 
     const kAnimationSteps = 20;
@@ -101,7 +101,7 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
         window.clearInterval(interval);
         animationInterval.current = null;
         currentPitch = pitch;
-        uiStore.setTempVerticalExaggeration(exaggeration === 1 ? exaggeration : undefined);
+        uiStore.setTempVerticalExaggeration(isTemporary ? exaggeration : undefined);
       }
       else {
         uiStore.setTempVerticalExaggeration(currentExaggeration);
