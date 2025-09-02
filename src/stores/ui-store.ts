@@ -67,7 +67,7 @@ const UIStore = types.model("UI", {
   // current map type
   mapType: types.optional(types.enumeration(LavaMapTypes), defaultMapType),
   // vertical exaggeration (1 = normal, 2 = 2x, 3 = 3x, etc)
-  verticalExaggeration: 3,
+  _verticalExaggeration: 3,
   // number of hundreds of pulses for each eruption. The actual number of pulses will be 100x this one.
   hundredsOfPulsesPerEruption: 3,
   // minimum and maximum eruption volume in km^3
@@ -96,8 +96,8 @@ const UIStore = types.model("UI", {
   rulerLine: undefined as ILavaCoderRulerLine | undefined
 }))
 .views((self) => ({
-  get currVerticalExaggeration() {
-    return self.tempVerticalExaggeration ?? self.verticalExaggeration;
+  get verticalExaggeration() {
+    return self.tempVerticalExaggeration ?? self._verticalExaggeration;
   },
   get pulsesPerEruption() {
     return self.hundredsOfPulsesPerEruption * 100;

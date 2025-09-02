@@ -86,7 +86,7 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
     let currentPitch = initialPitch;
     const deltaPitch = (pitch - initialPitch) / kAnimationSteps;
 
-    let currentExaggeration = uiStore.currVerticalExaggeration;
+    let currentExaggeration = uiStore.verticalExaggeration;
     const deltaExaggeration = (exaggeration - currentExaggeration) / kAnimationSteps;
 
     if (animationInterval.current) {

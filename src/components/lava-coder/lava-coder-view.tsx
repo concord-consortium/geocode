@@ -41,7 +41,7 @@ const round6 = (value: number) => Math.round(value * 1000000) / 1000000;
 
 export const LavaCoderView = observer(function LavaCoderView({ width, height, margin, running }: IProps) {
   const {
-    showLatLongButton, showRulerButton, currVerticalExaggeration: verticalExaggeration,
+    showLatLongButton, showRulerButton, verticalExaggeration,
     showMapType, showMapTypeTerrain, showMapTypeLabeledTerrain, showMapTypeStreet, mapType
   } = uiStore;
   const [lavaCoderElt, setLavaCoderElt] = useState<HTMLDivElement | null>(null);
