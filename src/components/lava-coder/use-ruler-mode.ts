@@ -15,6 +15,7 @@ interface IProps {
   verticalExaggeration: number;
   animateToCameraPitch: (pitch: number, exaggeration: number) => void;
   listenToCameraChange: (callback: () => void) => (() => void);
+  setCursor: (cursor: string) => void
 }
 
 const kFirstPointId = "rulerFirstPoint";
@@ -23,7 +24,9 @@ type RulerPointId = typeof kFirstPointId | typeof kSecondPointId;
 const isRulerPointId = (id?: string): id is RulerPointId => id === kFirstPointId || id === kSecondPointId;
 const kConnectingLineId = "rulerConnectingLine";
 
-export function useRulerMode({ viewer, verticalExaggeration, animateToCameraPitch, listenToCameraChange }: IProps) {
+export function useRulerMode({
+  viewer, verticalExaggeration, animateToCameraPitch, listenToCameraChange, setCursor
+}: IProps) {
   const initialRulerModePitch = useRef<number | null>(null);
   const [isRulerMode, setIsRulerMode] = useState(false);
   const [ , setChangeCount] = useState(0);
@@ -249,6 +252,8 @@ export function useRulerMode({ viewer, verticalExaggeration, animateToCameraPitc
         canvas.removeEventListener("pointerup", handlePointerUp, { capture: true });
 
         dragPoint.current = null;
+
+        setCursor("pointer");
       }
     }
 
@@ -272,6 +277,8 @@ export function useRulerMode({ viewer, verticalExaggeration, animateToCameraPitc
 
         dragPoint.current = pickedObject.id.id as RulerPointId;
 
+        setCursor("grabbing");
+
         canvas.setPointerCapture(pointerId);
 
         canvas.addEventListener("pointermove", handlePointerMove, { capture: true });
@@ -280,7 +287,7 @@ export function useRulerMode({ viewer, verticalExaggeration, animateToCameraPitc
     }
 
     canvas.addEventListener("pointerdown", handlePointerDown, { capture: true });
-  }, [viewer]);
+  }, [setCursor, viewer]);
 
   return { isRulerMode, getCursor, handleClick, handleMouseMove, toggleRulerMode };
 }

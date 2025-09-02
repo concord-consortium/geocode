@@ -97,7 +97,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
   const {
     isRulerMode, getCursor: getRulerModeCursor, handleClick: handleRulerModeClick,
     handleMouseMove: handleRulerModeMouseMove, toggleRulerMode
-  } = useRulerMode({ viewer, verticalExaggeration, animateToCameraPitch, listenToCameraChange });
+  } = useRulerMode({ viewer, verticalExaggeration, animateToCameraPitch, listenToCameraChange, setCursor });
 
   const handleMouseMove: CartographicEventCallback = useCallback(({ latitude, longitude, elevation, position }) => {
     let _cursor = "auto";
