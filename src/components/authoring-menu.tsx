@@ -126,7 +126,8 @@ const AuthoringMenu: React.FC<IProps> = (props) => {
           </DatFolder>,
 
           <DatFolder title={strings.MAP_FEATURES} key="mapFeaturesFolder" closed={false}>
-            <DatBoolean path="uiStore.showPlaceVent" label={strings.SHOW_PLACE_VENT} key="showPlaceVent" />
+            <DatBoolean path="uiStore.showLatLongButton" label={strings.SHOW_LAT_LONG_BUTTON} key="showLatLongButton" />
+            <DatBoolean path="uiStore.showRulerButton" label={strings.SHOW_RULER_BUTTON} key="showRulerButton" />
             <DatBoolean path="uiStore.showMapType" label={strings.SHOW_MAP_TYPE} key="showMapType" />
             <DatBoolean path="uiStore.showMapTypeTerrain" label={strings.SHOW_MAP_TYPE_TERRAIN} key="showMapTypeTerrain" />
             <DatBoolean path="uiStore.showMapTypeLabeledTerrain" label={strings.SHOW_MAP_TYPE_LABELED_TERRAIN} key="showMapTypeLabeledTerrain" />

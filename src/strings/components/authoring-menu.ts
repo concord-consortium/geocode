@@ -69,11 +69,12 @@ export const EARTHQUAKES = "Earthquakes";
 
 // lava simulation options
 export const MAP_FEATURES = "Map Features";
-export const SHOW_PLACE_VENT = "Show place vent?";
-export const SHOW_MAP_TYPE = "Show map type?";
-export const SHOW_MAP_TYPE_TERRAIN = "Show terrain map type?";
-export const SHOW_MAP_TYPE_LABELED_TERRAIN = "Show labeled terrain map type?";
-export const SHOW_MAP_TYPE_STREET = "Show street map type?";
+export const SHOW_LAT_LONG_BUTTON = "Show Lat/Long button?";
+export const SHOW_RULER_BUTTON = "Show Ruler button?";
+export const SHOW_MAP_TYPE = "Show Map Type button?";
+export const SHOW_MAP_TYPE_TERRAIN = "Show Terrain map type?";
+export const SHOW_MAP_TYPE_LABELED_TERRAIN = "Show Labeled Terrain map type?";
+export const SHOW_MAP_TYPE_STREET = "Show Street map type?";
 export const INITIAL_MAP_TYPE = "Initial map type";
 export const VERTICAL_EXAGGERATION = "Vertical exaggeration";
 export const PULSES_PER_ERUPTION = "Hundreds of pulses per eruption";

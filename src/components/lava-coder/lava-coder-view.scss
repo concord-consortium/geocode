@@ -53,14 +53,14 @@
   .lava-overlay-controls-bottom {
     position: absolute;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: space-between;
     bottom: 30px;
     height: 40px;
 
     &.bottom-left-controls {
       left: 10px;
-      width: 120px;
+      width: 210px;
     }
 
     &.bottom-right-controls {
