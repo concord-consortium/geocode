@@ -1,6 +1,7 @@
 import { Cartesian2, Cartesian3, CesiumWidget, Math as CSMath, HeadingPitchRange } from "@cesium/engine";
 import { reaction } from "mobx";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { v4 as uuid } from "uuid";
 import { lavaSimulation } from "../../stores/lava-simulation-store";
 import { uiStore } from "../../stores/ui-store";
 import { getCameraState } from "./cesium-utils";
@@ -29,8 +30,38 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
 
   const [cameraMode, setCameraMode] = useState<CameraMode>(kDefaultCameraMode);
   const animationInterval = useRef<number | null>(null);
+  const cameraChangeReceivers = useRef<Map<string, () => void>>(new Map());
 
   const { getElevation } = useTerrainProvider();
+
+  // Cesium doesn't always send a camera changed event for client-triggered changes,
+  // so we provide our own mechanism to listen for camera changes.
+  const listenToCameraChange = useCallback((callback: () => void) => {
+    const id = uuid();
+    cameraChangeReceivers.current.set(id, callback);
+
+    return () => {
+      cameraChangeReceivers.current.delete(id);
+    };
+  }, []);
+
+  const notifyCameraChange = useCallback(() => {
+    cameraChangeReceivers.current.forEach(cb => cb());
+  }, []);
+
+  useEffect(() => {
+    if (!viewer) return;
+
+    function handleCameraChanged() {
+      notifyCameraChange();
+    }
+
+    viewer.camera.changed.addEventListener(handleCameraChanged);
+
+    return () => {
+      viewer.camera.changed.removeEventListener(handleCameraChanged);
+    };
+  }, [notifyCameraChange, viewer]);
 
   const setDefaultCameraView = useCallback(() => {
     if (!viewer) return;
@@ -40,9 +71,10 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
       Cartesian3.fromDegrees(kInitialLookAtLng, kInitialLookAtLat),
       new HeadingPitchRange(kInitialCameraHeading, kInitialCameraPitch, kInitialCameraRange)
     );
-  }, [viewer]);
+    notifyCameraChange();
+  }, [notifyCameraChange, viewer]);
 
-  const animateToCameraPitch = useCallback((pitch: number, exaggeration: number) => {
+  const animateToCameraPitch = useCallback((pitch: number, exaggeration: number, isTemporary: boolean) => {
     if (!viewer) return;
 
     const kAnimationSteps = 20;
@@ -54,7 +86,7 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
     let currentPitch = initialPitch;
     const deltaPitch = (pitch - initialPitch) / kAnimationSteps;
 
-    let currentExaggeration = uiStore.currVerticalExaggeration;
+    let currentExaggeration = uiStore.verticalExaggeration;
     const deltaExaggeration = (exaggeration - currentExaggeration) / kAnimationSteps;
 
     if (animationInterval.current) {
@@ -69,7 +101,7 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
         window.clearInterval(interval);
         animationInterval.current = null;
         currentPitch = pitch;
-        uiStore.setTempVerticalExaggeration(exaggeration === 1 ? exaggeration : undefined);
+        uiStore.setTempVerticalExaggeration(isTemporary ? exaggeration : undefined);
       }
       else {
         uiStore.setTempVerticalExaggeration(currentExaggeration);
@@ -79,8 +111,9 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
         currentPitch,
         initialRange
       ));
+      notifyCameraChange();
     }, kAnimationFrame);
-  }, [viewer]);
+  }, [notifyCameraChange, viewer]);
 
   useEffect(() => {
     return () => {
@@ -110,7 +143,8 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
     const moveRate = camera.positionCartographic.height * panFactor;
     camera.moveRight(-dx * moveRate);
     camera.moveUp(dy * moveRate);
-  }, [viewer]);
+    notifyCameraChange();
+  }, [notifyCameraChange, viewer]);
 
   const handleRotateHeading = useCallback(({ startPosition, position, initialCameraState }: IOnDragArgs) => {
     if (!viewer) return;
@@ -127,7 +161,8 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
       initialPitch,
       initialRange
     ));
-  }, [viewer]);
+    notifyCameraChange();
+  }, [notifyCameraChange, viewer]);
 
   const handleRotatePitch = useCallback(({ dyTotal, initialCameraState }: IOnDragArgs) => {
     if (!viewer) return;
@@ -143,7 +178,8 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
       CSMath.clamp(initialPitch - dyTotal * pitchFactor, kMinCameraPitch, kMaxCameraPitch),
       initialRange
     ));
-  }, [viewer]);
+    notifyCameraChange();
+  }, [notifyCameraChange, viewer]);
 
   const dragHandlers: Record<CameraMode, (args: IOnDragArgs) => void> = {
     panning: handlePan,
@@ -175,6 +211,7 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
 
     moveDist = Math.max(0, Math.min(moveDist, cameraPos.height - (terrainHeight + kMinDistanceAboveTerrain)));
     viewer.camera.moveForward(moveDist);
+    notifyCameraChange();
   }
 
   function zoomOut() {
@@ -184,6 +221,7 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
     const cameraPos = viewer.camera.positionCartographic;
     moveDist = Math.min(moveDist, kMaxDistanceAboveTerrain - cameraPos.height);
     viewer.camera.moveBackward(moveDist);
+    notifyCameraChange();
   }
 
   useEffect(() => {
@@ -205,5 +243,8 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
     }
   }, [setDefaultCameraView, viewer]);
 
-  return { cameraMode, animateToCameraPitch, setCameraMode, setDefaultCameraView, zoomIn, zoomOut };
+  return {
+    cameraMode, isAnimating: !!animationInterval.current, animateToCameraPitch,
+    listenToCameraChange, setCameraMode, setDefaultCameraView, zoomIn, zoomOut
+  };
 }

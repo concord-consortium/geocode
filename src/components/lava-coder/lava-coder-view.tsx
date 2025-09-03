@@ -11,7 +11,7 @@ import {
   HomeViewIcon, LatLongIcon, MapButtonIcon, MoveIcon, RotateHeadingIcon, RotatePitchIcon, RulerIcon,
   ZoomInIcon, ZoomOutIcon
 } from "./lava-coder-icons";
-import { ILatLongElevation } from "./lava-coder-types";
+import { CartographicEventCallback, ILatLongElevation } from "./lava-coder-types";
 import { kFeetPerMeter } from "./lava-constants";
 import { LavaIconButton } from "./lava-icon-button";
 import { ProgressBar } from "./progress-bar";
@@ -41,7 +41,7 @@ const round6 = (value: number) => Math.round(value * 1000000) / 1000000;
 
 export const LavaCoderView = observer(function LavaCoderView({ width, height, margin, running }: IProps) {
   const {
-    showLatLongButton, showRulerButton, currVerticalExaggeration: verticalExaggeration,
+    showLatLongButton, showRulerButton, verticalExaggeration,
     showMapType, showMapTypeTerrain, showMapTypeLabeledTerrain, showMapTypeStreet, mapType
   } = uiStore;
   const [lavaCoderElt, setLavaCoderElt] = useState<HTMLDivElement | null>(null);
@@ -56,8 +56,9 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
 
   const viewer = useCesiumViewer(lavaCoderElt, mapType);
 
-  const { cameraMode, animateToCameraPitch, setCameraMode, setDefaultCameraView, zoomIn, zoomOut } =
-    useCameraControls(viewer, verticalExaggeration);
+  const {
+    cameraMode, isAnimating, animateToCameraPitch, listenToCameraChange, setCameraMode, setDefaultCameraView, zoomIn, zoomOut
+    } = useCameraControls(viewer, verticalExaggeration);
 
   const { replaceBaseLayer } = useWorldImagery();
 
@@ -97,14 +98,14 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
   const {
     isRulerMode, getCursor: getRulerModeCursor, handleClick: handleRulerModeClick,
     handleMouseMove: handleRulerModeMouseMove, toggleRulerMode
-  } = useRulerMode({ viewer, verticalExaggeration, animateToCameraPitch });
+  } = useRulerMode({ viewer, verticalExaggeration, animateToCameraPitch, listenToCameraChange, setCursor });
 
-  const handleMouseMove = useCallback((latitude, longitude, elevation) => {
+  const handleMouseMove: CartographicEventCallback = useCallback(({ latitude, longitude, elevation, position }) => {
     let _cursor = "auto";
     if (isLatLongMode && !uiStore.hasLatLongPoint) _cursor = "crosshair";
     if (isRulerMode) {
-      _cursor = getRulerModeCursor();
-      handleRulerModeMouseMove(latitude, longitude, elevation);
+      _cursor = getRulerModeCursor(position);
+      handleRulerModeMouseMove({ latitude, longitude, elevation, position });
     }
     setCursor(_cursor);
   }, [getRulerModeCursor, handleRulerModeMouseMove, isLatLongMode, isRulerMode]);
@@ -113,7 +114,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
     uiStore.setLatLongPoint(latLong.latitude, latLong.longitude, latLong.elevation);
   }, []);
 
-  const handleClick = useCallback((latitude, longitude, elevation) => {
+  const handleClick: CartographicEventCallback = useCallback(({ latitude, longitude, elevation, position }) => {
     const isInHazardZone = lavaSimulation.isPointInHazardZone(latitude, longitude);
     elevation /= verticalExaggeration; // Adjust elevation for vertical exaggeration
     const elevationFeet = Math.round(elevation * kFeetPerMeter);
@@ -126,8 +127,8 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
       setCursor("auto");
     }
     if (isRulerMode) {
-      handleRulerModeClick(latitude, longitude, elevation);
-      setCursor(getRulerModeCursor());
+      handleRulerModeClick({ latitude, longitude, elevation, position });
+      setCursor(getRulerModeCursor(position));
     }
   }, [getRulerModeCursor, handleRulerModeClick, isLatLongMode, isRulerMode, verticalExaggeration]);
 
@@ -206,7 +207,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
         )}
         {showRulerButton && (
           <LavaIconButton className="ruler-button" width={26} label={"Ruler"} isActive={isRulerMode}
-                          onClick={() => toggleRulerMode()} disabled={isLatLongMode || running}>
+                          onClick={() => toggleRulerMode()} disabled={isLatLongMode || isAnimating || running}>
             <RulerIcon />
           </LavaIconButton>
         )}
@@ -222,7 +223,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
       <ConcordAttribution />
       <LatLongPopup viewer={viewer} verticalExaggeration={verticalExaggeration}
                     mode={latLongPopupMode} onSetLatLongPoint={setLatLongPoint} />
-      {isRulerMode && <RulerLineLabel />}
+      {isRulerMode && <RulerLineLabel viewer={viewer} listenToCameraChange={listenToCameraChange} />}
     </div>
   );
 });
