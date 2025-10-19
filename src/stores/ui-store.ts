@@ -77,13 +77,13 @@ const UIStore = types.model("UI", {
   // minimum and maximum eruption volume in km^3
   minEruptionVolumeInKM: 1,
   maxEruptionVolumeInKM: 10000,
-  // minimum and maximum lava front height in meters
-  minLavaFrontHeight: 2,
-  maxLavaFrontHeight: 50,
+  // minimum and maximum lava thickness in meters
+  minLavaThickness: 2,
+  maxLavaThickness: 50,
   // show the erupted volume widget
   showEruptedVolume: true,
-  // show the lava front height (residual) widget
-  showLavaFrontHeight: true,
+  // show the lava thickness (residual) widget
+  showLavaThickness: true,
   // show the vent location widget
   showVentLocation: true,
   // hide toolbar in reports mode

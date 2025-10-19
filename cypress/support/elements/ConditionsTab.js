@@ -29,8 +29,8 @@ class ConditionsTab {
     getVentLocationWidget(){
         return cy.get('[data-test=vent-location-widget]');
     }
-    getLavaFrontHeightWidget(){
-        return cy.get('[data-test=lava-front-height-widget]');
+    getLavaThicknessWidget(){
+        return cy.get('[data-test=lava-thickness-widget]');
     }
     getVolumeOfLavaWidget(){
         return cy.get('[data-test=volume-of-lava-widget]');

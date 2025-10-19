@@ -6,7 +6,7 @@ import { WidgetPanelTypes } from "../../utilities/widget";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import { BaseComponent } from "../base";
-import { LavaFrontHeightWidget } from "./lava-front-height-widget";
+import { LavaThicknessWidget } from "./lava-thickness-widget";
 import { VentLocationWidget } from "./vent-location-widget";
 
 const WidgetBar = styled.div`
@@ -37,7 +37,7 @@ interface IProps {
   showColumnHeight?: boolean;
   showEjectedVolume?: boolean;
   showEruptedVolume?: boolean;
-  showLavaFrontHeight?: boolean;
+  showLavaThickness?: boolean;
   showVEI?: boolean;
   showVentLocation?: boolean;
   showWindDirection?: boolean;
@@ -52,7 +52,7 @@ export default class WidgetPanel extends BaseComponent<IProps, IState> {
   public render() {
     const showColumnHeight = this.props.showColumnHeight && this.stores.uiStore.showColumnHeight;
     const showEjectedVolume = this.props.showEjectedVolume && this.stores.uiStore.showEjectedVolume;
-    const showLavaFrontHeight = this.props.showLavaFrontHeight && this.stores.uiStore.showLavaFrontHeight;
+    const showLavaThickness = this.props.showLavaThickness && this.stores.uiStore.showLavaThickness;
     const showVEI = this.props.showVEI && this.stores.uiStore.showVEI;
     const showVentLocation = this.props.showVentLocation && this.stores.uiStore.showVentLocation;
     const showEruptedVolume = this.props.showEruptedVolume && this.stores.uiStore.showEruptedVolume;
@@ -101,10 +101,10 @@ export default class WidgetPanel extends BaseComponent<IProps, IState> {
               longitude={this.stores.lavaSimulation.ventLongitude}
             />
           </WidgetContainer> }
-        { showLavaFrontHeight &&
-          <WidgetContainer data-test="lava-front-height-widget">
-            <WidgetTitle>Lava Front Height</WidgetTitle>
-            <LavaFrontHeightWidget lavaFrontHeight={residual} />
+        { showLavaThickness &&
+          <WidgetContainer data-test="lava-thickness-widget">
+            <WidgetTitle>Lava Thickness</WidgetTitle>
+            <LavaThicknessWidget lavaThickness={residual} />
           </WidgetContainer> }
         { showEruptedVolume &&
           <WidgetContainer data-test="volume-of-lava-widget">

@@ -161,18 +161,18 @@ const AuthoringMenu: React.FC<IProps> = (props) => {
               step={10}
             />
             <DatNumber
-              path="uiStore.minLavaFrontHeight"
-              label={strings.MIN_LAVA_FRONT_HEIGHT}
-              key="minLavaFrontHeight"
+              path="uiStore.minLavaThickness"
+              label={strings.MIN_LAVA_THICKNESS}
+              key="minLavaThickness"
               min={1}
-              max={uiStore.maxLavaFrontHeight}
+              max={uiStore.maxLavaThickness}
               step={1}
             />
             <DatNumber
-              path="uiStore.maxLavaFrontHeight"
-              label={strings.MAX_LAVA_FRONT_HEIGHT}
-              key="maxLavaFrontHeight"
-              min={uiStore.minLavaFrontHeight}
+              path="uiStore.maxLavaThickness"
+              label={strings.MAX_LAVA_THICKNESS}
+              key="maxLavaThickness"
+              min={uiStore.minLavaThickness}
               max={100}
               step={1}
             />
@@ -180,7 +180,7 @@ const AuthoringMenu: React.FC<IProps> = (props) => {
 
           // <DatFolder title={strings.CONDITIONS_OPTIONS} key="conditionsFolder" closed={false}>
           //   <DatBoolean path="uiStore.showEruptedVolume" label={strings.SHOW_ERUPTED_VOLUME} key="showEruptedVolume" />
-          //   <DatBoolean path="uiStore.showLavaFrontHeight" label={strings.SHOW_LAVA_FRONT_HEIGHT} key="showLavaFrontHeight" />
+          //   <DatBoolean path="uiStore.showLavaThickness" label={strings.SHOW_LAVA_THICKNESS} key="showLavaThickness" />
           //   <DatBoolean path="uiStore.showVentLocation" label={strings.SHOW_VENT_LOCATION} key="showVentLocation" />
           // </DatFolder>
         ]

@@ -30,7 +30,7 @@
   <category name="Molasses" colour="#FF0000">
     <block type="molasses_run_simulation" />
     <block type="molasses_eruption_volume" />
-    <block type="molasses_lava_front" />
+    <block type="molasses_lava_thickness" />
     <block type="molasses_vent_location" />
     <block type="molasses_set_flag_location" />
   </category>

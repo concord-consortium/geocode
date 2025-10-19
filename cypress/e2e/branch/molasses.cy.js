@@ -31,7 +31,7 @@ context("Molasses Simulation", () => {
       blocksTab.getFlyout().find(blocksTab.getBlockTextEl())
         .contains("Compute and visualize lava flow with...").should("exist");
       blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).contains("Set eruption volume").should("exist");
-      blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).contains("Set lava front height").should("exist");
+      blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).contains("Set lava thickness").should("exist");
       blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).contains("Set vent location").should("exist");
       blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).contains("Set flag location").should("exist");
       blocksTab.getFlyout().find(blocksTab.getBlockTextEl()).contains("Compute lava flow impact").should("exist");
