@@ -66,8 +66,8 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       if (!checkNumber(volume, "eruption volume", uiStore.minEruptionVolume, uiStore.maxEruptionVolume)) return;
       lavaSimulation.setTotalVolume(volume);
     });
-    addFunc("setMolassesLavaFront", (height: number) => {
-      if (!checkNumber(height, "lava front height", uiStore.minLavaFrontHeight, uiStore.maxLavaFrontHeight)) return;
+    addFunc("setMolassesLavaThickness", (height: number) => {
+      if (!checkNumber(height, "lava thickness", uiStore.minLavaThickness, uiStore.maxLavaThickness)) return;
       lavaSimulation.setResidual(height);
     });
     addFunc("setMolassesVentLocation", (params: {lat: number, long: number}) => {

@@ -541,7 +541,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                       showColumnHeight={isTephra}
                       showEjectedVolume={isTephra}
                       showEruptedVolume={false}
-                      showLavaFrontHeight={false}
+                      showLavaThickness={false}
                       showVEI={isTephra}
                       showVentLocation={false}
                       showWindDirection={isTephra}

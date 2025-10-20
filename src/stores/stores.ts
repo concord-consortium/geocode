@@ -152,10 +152,10 @@ const uiAuthorSettingsProps = tuple(
   "hundredsOfPulsesPerEruption",
   "minEruptionVolumeInKM",
   "maxEruptionVolumeInKM",
-  "minLavaFrontHeight",
-  "maxLavaFrontHeight",
+  "minLavaThickness",
+  "maxLavaThickness",
   "showEruptedVolume",
-  "showLavaFrontHeight",
+  "showLavaThickness",
   "showVentLocation",
   "leftTabIndex",
   "rightTabIndex"

@@ -32,10 +32,10 @@ Blockly.Blocks.molasses_eruption_volume = {
   }
 };
 
-Blockly.Blocks.molasses_lava_front = {
+Blockly.Blocks.molasses_lava_thickness = {
   init() {
     basicInit(this);
-    appendValueInput(this, "molasses_lava_front", strings.SET_LAVA_FRONT_HEIGHT);
+    appendValueInput(this, "molasses_lava_thickness", strings.SET_LAVA_THICKNESS);
   }
 };
 
@@ -132,7 +132,7 @@ function setCodeVariable({ block, setFunction, validateFunction, variableName }:
 }
 
 const setEruptionVolumeFunction = "setMolassesEruptionVolume";
-const setLavaFrontFunction = "setMolassesLavaFront";
+const setLavaThicknessFunction = "setMolassesLavaThickness";
 const setVentLocationFunction = "setMolassesVentLocation";
 
 function getNumberValidationFunction(fieldName: string, min: number, max: number) {
@@ -164,13 +164,13 @@ javascriptGenerator.forBlock.molasses_eruption_volume = function(block) {
   });
 };
 
-javascriptGenerator.forBlock.molasses_lava_front = function(block) {
+javascriptGenerator.forBlock.molasses_lava_thickness = function(block) {
   return setCodeVariable({
-    variableName: "molasses_lava_front",
+    variableName: "molasses_lava_thickness",
     block,
-    setFunction: setLavaFrontFunction,
+    setFunction: setLavaThicknessFunction,
     validateFunction:
-      getNumberValidationFunction("Lava front height", uiStore.minLavaFrontHeight, uiStore.maxLavaFrontHeight)
+      getNumberValidationFunction("Lava thickness", uiStore.minLavaThickness, uiStore.maxLavaThickness)
   });
 };
 
@@ -216,7 +216,7 @@ javascriptGenerator.forBlock.molasses_vent_location = function(block) {
 javascriptGenerator.forBlock.molasses_run_simulation = function(block) {
   const contents = javascriptGenerator.statementToCode(block, "setters");
   if (
-    !contents.includes(setEruptionVolumeFunction) && !contents.includes(setLavaFrontFunction) &&
+    !contents.includes(setEruptionVolumeFunction) && !contents.includes(setLavaThicknessFunction) &&
     !contents.includes(setVentLocationFunction)
   ) {
     block.setWarningText("You must set at least one parameter before running the simulation.");
