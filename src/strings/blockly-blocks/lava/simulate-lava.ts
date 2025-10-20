@@ -1,4 +1,4 @@
-export const RUN_SIMULATION = "Compute and visualize lava flow with...";
+export const RUN_SIMULATION = "Compute and visualize lava flow";
 export const SET_ERUPTION_VOLUME = "Set eruption volume (m³)";
 export const SET_LAVA_THICKNESS = "Set lava thickness (m)";
 export const SET_VENT_LOCATION = "Set vent location";

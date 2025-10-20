@@ -49,7 +49,6 @@ Blockly.Blocks.molasses_vent_location = {
 Blockly.Blocks.molasses_run_simulation = {
   init() {
     basicInit(this, strings.RUN_SIMULATION);
-    this.appendStatementInput("setters");
   }
 };
 
@@ -214,20 +213,8 @@ javascriptGenerator.forBlock.molasses_vent_location = function(block) {
 };
 
 javascriptGenerator.forBlock.molasses_run_simulation = function(block) {
-  const contents = javascriptGenerator.statementToCode(block, "setters");
-  if (
-    !contents.includes(setEruptionVolumeFunction) && !contents.includes(setLavaThicknessFunction) &&
-    !contents.includes(setVentLocationFunction)
-  ) {
-    block.setWarningText("You must set at least one parameter before running the simulation.");
-    return "";
-  } else {
-    block.setWarningText(null);
-  }
-
   return `
-  this.resetSimulation();
-  ${contents}
+  this.checkDefaultParameters();
   this.runMolassesSimulation();\n`;
 };
 
