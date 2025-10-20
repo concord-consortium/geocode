@@ -85,8 +85,11 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       lavaSimulation.setVentLocation(lat, long);
     });
 
-    addFunc("resetSimulation", () => {
-      lavaSimulation.resetDefaults();
+    addFunc("checkDefaultParameters", () => {
+      if (lavaSimulation.hasOnlyDefaultParameters) {
+        const error = "You must set at least one lava simulation parameter before running the simulation.";
+        blocklyController.throwError(error);
+      }
     });
 
     // We use createAsyncFunction for runSimulation so the blockly program will wait for the simulation to complete

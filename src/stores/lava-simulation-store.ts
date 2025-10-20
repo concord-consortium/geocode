@@ -62,6 +62,10 @@ export const LavaSimulationStore = types
     get cellArea() {
       return (self.raster?.header.cellsize ?? 60) ** 2; // Default cell size is 60 meters
     },
+    get hasOnlyDefaultParameters() {
+      return self.residual === defaultResidual && self.totalVolume === defaultEruptionVolume &&
+        self.ventLatitude === defaultVentLatitude && self.ventLongitude === defaultVentLongitude;
+    },
     isPointOnIsland(latitude: number, longitude: number) {
       if (!self.raster) return false;
       return isPointOnIsland(latitude, longitude, self.raster);
