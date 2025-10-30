@@ -52,8 +52,10 @@ Blockly.Blocks.vog_wind_pattern = {
     this.appendDummyInput()
       .appendField(strings.SET_WIND_PATTERN)
       .appendField(new Blockly.FieldDropdown([
-        ["Trade Winds", "trade"],
-        ["Kona Winds", "kona"]
+        // \u00A0 is used to supress blockly suffix matching
+        // See https://developers.google.com/blockly/guides/create-custom-blocks/fields/built-in-fields/dropdown
+        ["Trade\u00A0Winds", "trade"],
+        ["Kona\u00A0Winds", "kona"]
       ]), "wind_pattern");
   }
 };

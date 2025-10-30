@@ -3,9 +3,10 @@ import { observable } from "mobx";
 import { types } from "mobx-state-tree";
 import MolassesWorker from "../components/lava-coder/molasses.worker";
 import { AsciiRaster } from "../components/lava-coder/parse-ascii-raster";
+import { WindPattern } from "../components/lava-coder/lava-coder-types";
 import {
-  defaultEruptionVolume, defaultResidual, defaultVentLatitude, defaultVentLongitude, FlagColor, flagLabels,
-  kSquareMetersPerAcre, maxFlags
+  defaultEruptionVolume, defaultResidual, defaultVentLatitude, defaultVentLongitude, defaultWindPattern, FlagColor,
+  flagLabels, kSquareMetersPerAcre, maxFlags
 } from "../components/lava-coder/lava-constants";
 import VogWorker from "../components/lava-coder/vog.worker";
 import { DataRow, DataTable, DataTableType } from "../models/data-table";
@@ -52,7 +53,7 @@ export const LavaSimulationStore = types
     ventLongitude: defaultVentLongitude,
     totalVolume: defaultEruptionVolume,
     pulseCount: 0,
-    windPattern: "trade"
+    windPattern: defaultWindPattern
   })
   .volatile((self) => ({
     coveredCells: 0,
@@ -157,7 +158,7 @@ export const LavaSimulationStore = types
     setHazardZones(hazardZones: KmlDataSource) {
       self.hazardZones = hazardZones;
     },
-    setWindPattern(pattern: "trade" | "kona") {
+    setWindPattern(pattern: WindPattern) {
       self.windPattern = pattern;
     }
   }))
@@ -174,6 +175,7 @@ export const LavaSimulationStore = types
         self.setResidual(defaultResidual);
         self.setTotalVolume(defaultEruptionVolume);
         self.setVentLocation(defaultVentLatitude, defaultVentLongitude);
+        self.setWindPattern(defaultWindPattern);
       }
     };
   })
@@ -238,6 +240,7 @@ export const LavaSimulationStore = types
 
       const parameters = {
         pulses: uiStore.pulsesPerEruption,
+        pulseVolume: self.totalVolume / uiStore.pulsesPerEruption,
         raster: self.raster,
         ventLatitude: self.ventLatitude,
         ventLongitude: self.ventLongitude,

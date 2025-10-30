@@ -1,4 +1,5 @@
 import Interpreter from "js-interpreter";
+import { WindPattern } from "../components/lava-coder/lava-coder-types";
 import { maxFlags } from "../components/lava-coder/lava-constants";
 import { StationData } from "../deformation";
 import { IBlocklyWorkspace } from "../interfaces";
@@ -84,7 +85,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       }
       lavaSimulation.setVentLocation(lat, long);
     });
-    addFunc("setWindPattern", (pattern: "trade" | "kona") => {
+    addFunc("setWindPattern", (pattern: WindPattern) => {
       lavaSimulation.setWindPattern(pattern);
     });
 
