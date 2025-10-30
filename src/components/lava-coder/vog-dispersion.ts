@@ -142,13 +142,15 @@ export function disperseVog({
       windVelocities[`${uWind}, ${vWind}`] = true;
       const selfDU = particle.u * timePerPulse;
       const selfDV = particle.v * timePerPulse;
-      const projectedLat = particle.latitude + (vWind * timePerPulse) + selfDU;
-      const projectedLong = particle.longitude + (uWind * timePerPulse) + selfDV;
+      const projectedLat = particle.latitude + (vWind * timePerPulse) + selfDV;
+      const projectedLong = particle.longitude + (uWind * timePerPulse) + selfDU;
 
       // Use average wind at current and projected location to determine actual new position
       const [projectedU, projectedV] = getWindAt(projectedLat, projectedLong);
-      const newLatitude = particle.latitude + (.5 * (vWind + projectedV) * timePerPulse) + selfDU;
-      const newLongitude = particle.longitude + (.5 * (uWind + projectedU) * timePerPulse) + selfDV;
+      const averageU = (uWind + projectedU) / 2;
+      const averageV = (vWind + projectedV) / 2;
+      const newLatitude = particle.latitude + (averageV * timePerPulse) + selfDV;
+      const newLongitude = particle.longitude + (averageU * timePerPulse) + selfDU;
 
       // Remove particle from old position in concentration grid
       updateVogGrid(-1, particle.latitude, particle.longitude);
