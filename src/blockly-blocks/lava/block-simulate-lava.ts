@@ -46,6 +46,18 @@ Blockly.Blocks.molasses_vent_location = {
   }
 };
 
+Blockly.Blocks.vog_wind_pattern = {
+  init() {
+    basicInit(this);
+    this.appendDummyInput()
+      .appendField(strings.SET_WIND_PATTERN)
+      .appendField(new Blockly.FieldDropdown([
+        ["Trade Winds", "trade"],
+        ["Kona Winds", "kona"]
+      ]), "wind_pattern");
+  }
+};
+
 Blockly.Blocks.molasses_run_simulation = {
   init() {
     basicInit(this, strings.RUN_SIMULATION);
@@ -216,6 +228,11 @@ javascriptGenerator.forBlock.molasses_vent_location = function(block) {
     setFunction: setVentLocationFunction,
     validateFunction: validateLatLong
   });
+};
+
+javascriptGenerator.forBlock.vog_wind_pattern = function(block) {
+  const windPattern = block.getFieldValue("wind_pattern");
+  return `this.setWindPattern("${windPattern}")\n`;
 };
 
 javascriptGenerator.forBlock.molasses_run_simulation = function(block) {

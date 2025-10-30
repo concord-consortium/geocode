@@ -52,6 +52,7 @@ export const LavaSimulationStore = types
     ventLongitude: defaultVentLongitude,
     totalVolume: defaultEruptionVolume,
     pulseCount: 0,
+    windPattern: "trade"
   })
   .volatile((self) => ({
     coveredCells: 0,
@@ -155,6 +156,9 @@ export const LavaSimulationStore = types
     },
     setHazardZones(hazardZones: KmlDataSource) {
       self.hazardZones = hazardZones;
+    },
+    setWindPattern(pattern: "trade" | "kona") {
+      self.windPattern = pattern;
     }
   }))
   .actions((self) => {
@@ -236,7 +240,8 @@ export const LavaSimulationStore = types
         pulses: uiStore.pulsesPerEruption,
         raster: self.raster,
         ventLatitude: self.ventLatitude,
-        ventLongitude: self.ventLongitude
+        ventLongitude: self.ventLongitude,
+        windPattern: self.windPattern
       };
       self.vogWorker.postMessage({ type: "start", parameters });
     },

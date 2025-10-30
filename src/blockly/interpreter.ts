@@ -84,6 +84,9 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       }
       lavaSimulation.setVentLocation(lat, long);
     });
+    addFunc("setWindPattern", (pattern: "trade" | "kona") => {
+      lavaSimulation.setWindPattern(pattern);
+    });
 
     addFunc("checkDefaultParameters", () => {
       if (lavaSimulation.hasOnlyDefaultParameters) {
