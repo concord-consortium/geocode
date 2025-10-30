@@ -21,8 +21,6 @@ const windRangeLong = windMaxLong - windMinLong;
 const windLatStep = windRangeLat / (windColumns - 1);
 const windLongStep = windRangeLong / (windRows - 1);
 
-const windVelocities: Record<string, boolean> = {};
-
 function getWindAt(latitude: number, longitude: number) {
   const latIndex = Math.min(
     windColumns - 1,
@@ -138,7 +136,6 @@ export async function disperseVog({
     for (const particle of particles) {
       // Determine particle position assuming constant wind at current location's velocity
       const [uWind, vWind] = getWindAt(particle.latitude, particle.longitude);
-      windVelocities[`${uWind}, ${vWind}`] = true;
       const selfDU = particle.u * timePerPulse;
       const selfDV = particle.v * timePerPulse;
       const projectedLat = particle.latitude + (vWind * timePerPulse) + selfDV;
@@ -160,6 +157,10 @@ export async function disperseVog({
 
       // Add particle to new position in concentration grid
       updateVogGrid(1, newLatitude, newLongitude);
+
+      // Decay unique particle velocity
+      particle.u *= 0.995;
+      particle.v *= 0.995;
     }
   };
 
