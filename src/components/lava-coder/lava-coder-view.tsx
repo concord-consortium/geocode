@@ -25,6 +25,7 @@ import { useHazardZones } from "./use-hazard-zones";
 import { useLavaOverlay } from "./use-lava-overlay";
 import { useRulerMode } from "./use-ruler-mode";
 import { useVerticalExaggeration } from "./use-vertical-exaggeration";
+import { useVogOverlay } from "./use-vog-overlay";
 import { useWorldImagery } from "./use-world-imagery";
 import { VentKey } from "./vent-key";
 
@@ -94,6 +95,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
   useElevationData();
 
   useLavaOverlay(viewer);
+  useVogOverlay(viewer);
 
   const {
     isRulerMode, getCursor: getRulerModeCursor, handleClick: handleRulerModeClick,

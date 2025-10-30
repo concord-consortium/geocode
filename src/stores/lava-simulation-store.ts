@@ -7,6 +7,7 @@ import {
   defaultEruptionVolume, defaultResidual, defaultVentLatitude, defaultVentLongitude, FlagColor, flagLabels,
   kSquareMetersPerAcre, maxFlags
 } from "../components/lava-coder/lava-constants";
+import VogWorker from "../components/lava-coder/vog.worker";
 import { DataRow, DataTable, DataTableType } from "../models/data-table";
 import { pointInPolygon } from "../utilities/geometry-utils";
 import { isPointOnIsland } from "../utilities/molasses-utils";
@@ -20,6 +21,9 @@ import { uiStore } from "./ui-store";
 export let lavaElevations: number[][] | undefined;
 // The latitude/longitude bounds of the rectangle containing all lava
 export let gridBounds: { east: number, north: number, south: number, west: number } | undefined;
+
+export let vogConcentrations: number[][] | undefined;
+export let vogBounds: { east: number, north: number, south: number, west: number } | undefined;
 
 function countCoveredCells(_lavaElevations: number[][]) {
   let coveredCells = 0;
@@ -51,10 +55,12 @@ export const LavaSimulationStore = types
   })
   .volatile((self) => ({
     coveredCells: 0,
+    voggedCells: 0,
     dataTable: undefined as DataTableType | undefined,
     flagLocations: observable.array<FlagLocation>([]),
     raster: null as AsciiRaster | null, // AsciiRaster
     worker: null as Worker | null,
+    vogWorker: null as Worker | null,
     resetCount: 0, // Used to reset the camera when the simulation is reset
     hazardZones: null as KmlDataSource | null
   }))
@@ -124,6 +130,9 @@ export const LavaSimulationStore = types
     },
     countCoveredCells(grid: number[][]) {
       self.coveredCells = countCoveredCells(grid);
+    },
+    countVoggedCells(grid: number[][]) {
+      self.voggedCells = countCoveredCells(grid);
     },
     newDataTable() {
       self.dataTable = DataTable.create();
@@ -200,6 +209,37 @@ export const LavaSimulationStore = types
       };
       self.worker.postMessage({ type: "start", parameters });
     },
+    runVogSimulation(onFinish?: () => void) {
+      if (!self.raster) return;
+
+      if (self.vogWorker) {
+        self.vogWorker.terminate();
+      }
+
+      self.vogWorker = new VogWorker();
+      self.vogWorker.onmessage = (e) => {
+        try {
+          const { status } = e.data;
+          if (status === "updatedVog") {
+            vogConcentrations = e.data.grid;
+            vogBounds = e.data.gridBounds;
+            self.countVoggedCells(e.data.grid);
+
+            if (e.data.complete) onFinish?.();
+          }
+        } catch (error) {
+          console.error("Error handling vog worker message:", error, e);
+        }
+      };
+
+      const parameters = {
+        pulses: uiStore.pulsesPerEruption,
+        raster: self.raster,
+        ventLatitude: self.ventLatitude,
+        ventLongitude: self.ventLongitude
+      };
+      self.vogWorker.postMessage({ type: "start", parameters });
+    },
     reset() {
       // Terminate the active simulation worker if it exists
       if (self.worker) {
@@ -207,6 +247,7 @@ export const LavaSimulationStore = types
         self.worker = null;
       }
       lavaElevations = [];
+      vogConcentrations = [];
       self.setPulseCount(0);
       self.resetDefaults();
       self.clearFlagPositions();

@@ -1,6 +1,7 @@
 <xml id="toolbox" style="display: none">
   <category name="Volcano" colour="#EB0000">
     <block type="molasses_run_simulation" />
+    <block type="vog_run_simulation" />
     <block type="molasses_eruption_volume" />
     <block type="molasses_lava_thickness" />
     <block type="molasses_vent_location" />

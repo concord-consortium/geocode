@@ -52,6 +52,12 @@ Blockly.Blocks.molasses_run_simulation = {
   }
 };
 
+Blockly.Blocks.vog_run_simulation = {
+  init() {
+    basicInit(this, strings.RUN_VOG_SIMULATION);
+  }
+};
+
 Blockly.Blocks.molasses_set_flag_location = {
   init() {
     basicInit(this, strings.SET_FLAG_LOCATION);
@@ -216,6 +222,11 @@ javascriptGenerator.forBlock.molasses_run_simulation = function(block) {
   return `
   this.checkDefaultParameters();
   this.runMolassesSimulation();\n`;
+};
+
+javascriptGenerator.forBlock.vog_run_simulation = function(block) {
+  return `
+  this.runVogSimulation();\n`;
 };
 
 javascriptGenerator.forBlock.molasses_set_flag_location = function(block) {

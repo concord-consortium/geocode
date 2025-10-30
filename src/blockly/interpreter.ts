@@ -97,6 +97,9 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     const runSimulationWrapper = (callback: () => void) => lavaSimulation.runSimulation(callback);
     interpreter.setProperty(scope, "runMolassesSimulation", interpreter.createAsyncFunction(runSimulationWrapper));
 
+    const runVogSimulationWrapper = (callback: () => void) => lavaSimulation.runVogSimulation(callback);
+    interpreter.setProperty(scope, "runVogSimulation", interpreter.createAsyncFunction(runVogSimulationWrapper));
+
     addFunc("addFlagLocation", (args) => {
       if (lavaSimulation.flagLocations.length >= maxFlags) {
         blocklyController.throwError(`You cannot add more than ${maxFlags} flag locations.`);
