@@ -60,10 +60,9 @@ export interface VogSimulationParameters {
   ventLatitude: number;
   ventLongitude: number;
 }
-export function disperseVog({
+export async function disperseVog({
   postMessage, pulses, raster, ventLatitude, ventLongitude
 }: VogSimulationParameters) {
-  console.log(`--- vent position ${ventLatitude}, ${ventLongitude}`);
   particles = [];
   let pulseCount = 0;
   const grid = createGrid(raster);
@@ -164,16 +163,11 @@ export function disperseVog({
     }
   };
 
-  console.log(`--- total pulses`, pulses);
   while (pulseCount < pulses) {
     disperseVogStep();
     sendUpdateMessage();
     pulseCount++;
   }
-
-  console.log(`  - gridBounds`, vogGridRange);
-  console.log(`  - latLongBounds`, vogRange);
-  console.log(`  - windVelocities`, windVelocities);
 
   sendUpdateMessage(true);
 }
