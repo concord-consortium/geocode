@@ -240,8 +240,8 @@ export const LavaSimulationStore = types
 
       const parameters = {
         pulses: uiStore.pulsesPerEruption,
-        pulseVolume: self.totalVolume / uiStore.pulsesPerEruption,
         raster: self.raster,
+        totalVolume: self.totalVolume,
         ventLatitude: self.ventLatitude,
         ventLongitude: self.ventLongitude,
         windPattern: self.windPattern

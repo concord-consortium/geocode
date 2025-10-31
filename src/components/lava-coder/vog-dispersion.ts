@@ -14,21 +14,32 @@ interface VogParticle {
 
 let particles: VogParticle[] = [];
 
-const timePerPulse = .0001;
+const timePerPulse = .0003;
+const msPerStep = 30;
 
 export interface VogSimulationParameters {
   postMessage: (message: any) => void;
   pulses: number;
   raster: AsciiRaster;
+  totalVolume: number;
   ventLatitude: number;
   ventLongitude: number;
   windPattern: WindPattern;
 }
 export async function disperseVog({
-  postMessage, pulses, raster, ventLatitude, ventLongitude, windPattern
+  postMessage, pulses, raster, totalVolume, ventLatitude, ventLongitude, windPattern
 }: VogSimulationParameters) {
   particles = [];
   let pulseCount = 0;
+  // logVolume is between 6 and 10
+  const logVolume = Math.log10(totalVolume);
+  console.log(`--- logVolume`, logVolume);
+  const totalParticles = Math.floor(2000 * logVolume);
+  const particlesPerPulse = Math.max(1, Math.floor(totalParticles / pulses));
+  console.log(` -- particlesPerPulse`, particlesPerPulse);
+  const dispersionFactor = (logVolume - 2) / 4;
+  const halfDispersionFactor = dispersionFactor / 2;
+  console.log(` -- dispersionFactor`, dispersionFactor);
 
   // Set up wind data
   const windData = windPattern === "trade" ? tradeWindData : konaWindData;
@@ -125,10 +136,12 @@ export async function disperseVog({
   };
 
   const disperseVogStep = () => {
+    const stepEndTime = Date.now() + msPerStep;
+
     // Add new vog
-    for (let i = 0; i < 20; i++) {
-      const u = Math.random() - .5;
-      const v = Math.random() - .5;
+    for (let i = 0; i < particlesPerPulse; i++) {
+      const u = Math.random() * dispersionFactor - halfDispersionFactor;
+      const v = Math.random() * dispersionFactor - halfDispersionFactor;
       particles.push({ latitude: ventLatitude, longitude: ventLongitude, u, v });
       updateVogGrid(1, ventLatitude, ventLongitude);
     }
@@ -160,8 +173,12 @@ export async function disperseVog({
       updateVogGrid(1, newLatitude, newLongitude);
 
       // Decay unique particle velocity
-      particle.u *= 0.995;
-      particle.v *= 0.995;
+      // particle.u *= 0.995;
+      // particle.v *= 0.995;
+
+      while (Date.now() < stepEndTime) {
+        // Noop
+      }
     }
   };
 
