@@ -63,7 +63,24 @@ export async function disperseVog({
       windRows - 1,
       Math.max(0, Math.round((longitude - windMinLong) / windLongStep))
     );
-    return windData.grid[latIndex][longIndex];
+
+    // Interpolate between the four surrounding wind values
+    const baseWind = windData.grid[latIndex][longIndex];
+    const rightWind = windData.grid[latIndex][longIndex + 1] ?? baseWind;
+    const downWind = windData.grid[latIndex + 1]?.[longIndex] ?? baseWind;
+    const diagWind = windData.grid[latIndex + 1]?.[longIndex + 1] ?? baseWind;
+
+    const latFraction = (latitude - (windMinLat + latIndex * windLatStep)) / windLatStep;
+    const longFraction = (longitude - (windMinLong + longIndex * windLongStep)) / windLongStep;
+
+    const topU = baseWind[0] + (rightWind[0] - baseWind[0]) * longFraction;
+    const topV = baseWind[1] + (rightWind[1] - baseWind[1]) * longFraction;
+    const bottomU = downWind[0] + (diagWind[0] - downWind[0]) * longFraction;
+    const bottomV = downWind[1] + (diagWind[1] - downWind[1]) * longFraction;
+    const u = topU + (bottomU - topU) * latFraction;
+    const v = topV + (bottomV - topV) * latFraction;
+
+    return [u, v];
   }
 
   // Set up the grid
