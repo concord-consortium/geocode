@@ -1,3 +1,6 @@
+// This hook displays the area covered in vog painted directly on the terrain.
+// TODO: Remove this hook once the final vog visualization has been determined.
+
 import { CesiumWidget, ImageryLayer, Rectangle, SingleTileImageryProvider } from "@cesium/engine";
 import { autorun, reaction } from "mobx";
 import { useEffect, useRef } from "react";

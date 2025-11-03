@@ -38,6 +38,7 @@ export async function disperseVog({
   const totalParticles = Math.floor(4000 * logVolume);
   const particlesPerPulse = Math.max(1, Math.floor(totalParticles / vogPulses));
   console.log(` -- particlesPerPulse`, particlesPerPulse);
+  // dispersionFactor is between 1 and 2
   const dispersionFactor = (logVolume - 2) / 4;
   const halfDispersionFactor = dispersionFactor / 2;
   console.log(` -- dispersionFactor`, dispersionFactor);
@@ -85,6 +86,7 @@ export async function disperseVog({
   }
 
   // Set up the grid
+  // Note that the grid has the same size cells as the lava raster, which is different than the wind data
   const grid: number[][] = [];
   const latPerCell = rangeLat / raster.header.nrows;
   const longPerCell = rangeLong / raster.header.ncols;
@@ -191,9 +193,10 @@ export async function disperseVog({
       updateVogGrid(1, newLatitude, newLongitude);
 
       // Decay unique particle velocity
-      // particle.u *= 0.995;
-      // particle.v *= 0.995;
+      particle.u *= 0.999;
+      particle.v *= 0.999;
 
+      // Delay to make sure the wind dispersion animates at a reasonable speed
       while (Date.now() < stepEndTime) {
         // Noop
       }

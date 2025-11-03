@@ -59,8 +59,9 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
   const viewer = useCesiumViewer(lavaCoderElt, mapType);
 
   const {
-    cameraMode, isAnimating, animateToCameraPitch, listenToCameraChange, setCameraMode, setDefaultCameraView, zoomIn, zoomOut
-    } = useCameraControls(viewer, verticalExaggeration);
+    cameraMode, isAnimating, animateToCameraPitch, listenToCameraChange, setCameraMode, setDefaultCameraView, zoomIn,
+    zoomOut
+  } = useCameraControls(viewer, verticalExaggeration);
 
   const { replaceBaseLayer } = useWorldImagery();
 
@@ -77,7 +78,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
   // Close the lat/long popup when the worker is reset (e.g., when a new simulation starts)
   useEffect(() => {
     return reaction(
-      () => lavaSimulation.worker,
+      () => [lavaSimulation.worker, lavaSimulation.vogWorker],
       () => clearLatLong()
     );
   }, [clearLatLong]);

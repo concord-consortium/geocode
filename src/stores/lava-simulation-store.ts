@@ -63,7 +63,7 @@ export const LavaSimulationStore = types
     raster: null as AsciiRaster | null, // AsciiRaster
     worker: null as Worker | null,
     vogWorker: null as Worker | null,
-    resetCount: 0, // Used to reset the camera when the simulation is reset
+    resetCount: 0, // Used to clear the lat/long overlay when the simulation is reset
     hazardZones: null as KmlDataSource | null
   }))
   .views((self) => ({
@@ -253,6 +253,10 @@ export const LavaSimulationStore = types
       if (self.worker) {
         self.worker.terminate();
         self.worker = null;
+      }
+      if (self.vogWorker) {
+        self.vogWorker.terminate();
+        self.vogWorker = null;
       }
       lavaElevations = [];
       vogConcentrations = [];

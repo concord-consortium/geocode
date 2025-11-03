@@ -1,3 +1,5 @@
+// TODO: Remove this when use-vog-overlay.ts is removed.
+
 const canvas = document.createElement("canvas");
 const ctx = canvas.getContext("2d");
 
@@ -25,15 +27,10 @@ export function visualizeVog(grid: number[][]) {
       const vogConcentration = grid[y][x];
       const index = (y * width + x) * 4;
       if (vogConcentration > 0) {
-        // data[index] = 255;
-        // data[index + 1] = 0;
-        // data[index + 2] = 0;
-        // data[index + 3] = 255; // Alpha
         // 50-100% opacity based on concentration
         data[index] = 200;
         data[index + 1] = 200;
         data[index + 2] = 200;
-        // data[index + 3] = 127 + Math.floor(127 * Math.min(vogConcentration, 10) / 10); // Alpha
         data[index + 3] = 50 + Math.floor(205 * Math.min(vogConcentration, 10) / 10); // Alpha
       } else {
         // Transparent

@@ -124,13 +124,6 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
     };
   }, []);
 
-  useEffect(() => {
-    return reaction(
-      () => lavaSimulation.resetCount,
-      () => setDefaultCameraView()
-    );
-  }, [setDefaultCameraView]);
-
   const handlePan = useCallback(({ dx, dy }: IOnDragArgs) => {
     if (!viewer) return;
 
