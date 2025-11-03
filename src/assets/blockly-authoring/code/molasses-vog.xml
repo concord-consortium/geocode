@@ -1,0 +1,25 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+  <block type="molasses_eruption_volume" id="e]5S2t+{mK$OQv@cLO^t">
+    <value name="molasses_eruption_volume">
+      <block type="math_number" id=",b?)ZY24Ctp.#l6H#EG8">
+        <field name="NUM">10000000000</field>
+      </block>
+    </value>
+    <next>
+      <block type="molasses_vent_location" id="molasses_vent_location">
+        <value name="molasses_vent_location">
+          <block type="lat_long" id="vent_lat_long">
+            <field name="lat_long">19.366,-155.740</field>
+          </block>
+        </value>
+        <next>
+          <block type="vog_wind_pattern" id="vog_wind_pattern">
+            <next>
+              <block type="vog_run_simulation" id="bIjG2)~K%-s0~0{5oaS|" />
+            </next>
+          </block>
+        </next>
+      </block>
+    </next>
+  </block>
+</xml>

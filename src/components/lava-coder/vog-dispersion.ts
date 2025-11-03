@@ -14,8 +14,8 @@ interface VogParticle {
 
 let particles: VogParticle[] = [];
 
-const timePerPulse = .0003;
-const msPerStep = 30;
+const timePerPulse = .0002;
+const msPerStep = 25;
 
 export interface VogSimulationParameters {
   postMessage: (message: any) => void;
@@ -30,12 +30,13 @@ export async function disperseVog({
   postMessage, pulses, raster, totalVolume, ventLatitude, ventLongitude, windPattern
 }: VogSimulationParameters) {
   particles = [];
+  const vogPulses = 2 * pulses;
   let pulseCount = 0;
   // logVolume is between 6 and 10
   const logVolume = Math.log10(totalVolume);
   console.log(`--- logVolume`, logVolume);
-  const totalParticles = Math.floor(2000 * logVolume);
-  const particlesPerPulse = Math.max(1, Math.floor(totalParticles / pulses));
+  const totalParticles = Math.floor(4000 * logVolume);
+  const particlesPerPulse = Math.max(1, Math.floor(totalParticles / vogPulses));
   console.log(` -- particlesPerPulse`, particlesPerPulse);
   const dispersionFactor = (logVolume - 2) / 4;
   const halfDispersionFactor = dispersionFactor / 2;
@@ -199,7 +200,7 @@ export async function disperseVog({
     }
   };
 
-  while (pulseCount < pulses) {
+  while (pulseCount < vogPulses) {
     disperseVogStep();
     sendUpdateMessage();
     pulseCount++;
