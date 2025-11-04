@@ -65,3 +65,35 @@ And with that, you're good to go!
 ## General tips
 
 Throughout the process, especially early on, it can be very helpful to visualize the maps. ChatGPT is pretty good at this. Send it a file and ask it to give you a visualization. It can be particularly helpful to make sea level or lower a very distinct color. If ChatGPT is struggling to visualize the map for you, it might be too big, in which case running `reduce-dem.py` can be helpful, even reducing by a factor of 4.
+
+# Generating Wind Data
+
+The molasses vog simulation requires wind data to disperse vog around the island. Here's how to acquire and process new data:
+
+## 1. Get raw csv file
+
+1. Visit the [https://pae-paha.pacioos.hawaii.edu/erddap/griddap/wrf_hi.graph](Pacific Islands Ocean Observing System).
+2. Specify a stop time (current maps are January 7, 2025 at 10am and September 2, 2025 at 10am).
+3. Specify a region (current latitude values are 18.68 and 20.44 and longitude values are -156.19 and -154.63).
+4. Push the Redraw the Graph button to make sure the region and wind data look good.
+5. In the optional section below the Redraw the Graph button, set the file type to .csv.
+6. Push the Download the Data or an Image button to get the file.
+
+## 2. Run convert-wind.py
+
+`convert-wind.py` will convert the `.csv` file into a `.json` file that contains a grid of wind data, along with some metadata about the latitudes and longitudes included in the grid.
+1. Move the file you downloaded above into the `/scripts` directory.
+2. You might want to rename the csv file to something shorter and easier to read and type.
+3. Run `convert-wind.py` on the file: `python3 convert-wind.py ./wind-map.csv`.
+
+## 3. Run interpolate-wind.py
+`interpolate-wind.py` creates a more fine-grained grid by interpolating wind values throughout the grid. This results in smoother output from the dispersion simulation.
+1. Run `interpolate-wind.py` on the json file output from `convert-wind.py`: `python3 interpolate-wind.py wind-map.json --scale 4`
+
+## 4. Move the file and update the code
+
+You'll need to make a few more changes before the wind data can actually be used.
+1. Move the output file to `/src/assets/lava-coder/wind-maps`.
+2. Rename the file if it would be helpful.
+3. Import the data from the file in `vog-dispersion.ts`.
+4. You might also need to add a new option to the `vog_wind_pattern` blockly block in `block-simulate-lava.ts` and hook that option up to the new data in `vog-dispersion.ts`.

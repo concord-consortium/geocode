@@ -46,9 +46,29 @@ Blockly.Blocks.molasses_vent_location = {
   }
 };
 
+Blockly.Blocks.vog_wind_pattern = {
+  init() {
+    basicInit(this);
+    this.appendDummyInput()
+      .appendField(strings.SET_WIND_PATTERN)
+      .appendField(new Blockly.FieldDropdown([
+        // \u00A0 is used to supress blockly suffix matching
+        // See https://developers.google.com/blockly/guides/create-custom-blocks/fields/built-in-fields/dropdown
+        ["Trade\u00A0Winds", "trade"],
+        ["Kona\u00A0Winds", "kona"]
+      ]), "wind_pattern");
+  }
+};
+
 Blockly.Blocks.molasses_run_simulation = {
   init() {
     basicInit(this, strings.RUN_SIMULATION);
+  }
+};
+
+Blockly.Blocks.vog_run_simulation = {
+  init() {
+    basicInit(this, strings.RUN_VOG_SIMULATION);
   }
 };
 
@@ -212,10 +232,20 @@ javascriptGenerator.forBlock.molasses_vent_location = function(block) {
   });
 };
 
+javascriptGenerator.forBlock.vog_wind_pattern = function(block) {
+  const windPattern = block.getFieldValue("wind_pattern");
+  return `this.setWindPattern("${windPattern}")\n`;
+};
+
 javascriptGenerator.forBlock.molasses_run_simulation = function(block) {
   return `
   this.checkDefaultParameters();
   this.runMolassesSimulation();\n`;
+};
+
+javascriptGenerator.forBlock.vog_run_simulation = function(block) {
+  return `
+  this.runVogSimulation();\n`;
 };
 
 javascriptGenerator.forBlock.molasses_set_flag_location = function(block) {

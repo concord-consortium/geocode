@@ -28,6 +28,8 @@ export function useLavaOverlay(viewer: CesiumWidget | null) {
       );
 
       if (lavaLayerRef.current) viewer.imageryLayers.add(lavaLayerRef.current);
+      // When the lava and vog are rendered at the same time, we might need to not destroy the old layer when removing
+      // it. Destroying it can cause a crash when the user moves the camera.
       if (oldLayer) viewer.imageryLayers.remove(oldLayer, true);
     });
   }, [viewer]);

@@ -1,4 +1,5 @@
 import Interpreter from "js-interpreter";
+import { WindPattern } from "../components/lava-coder/lava-coder-types";
 import { maxFlags } from "../components/lava-coder/lava-constants";
 import { StationData } from "../deformation";
 import { IBlocklyWorkspace } from "../interfaces";
@@ -84,6 +85,9 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       }
       lavaSimulation.setVentLocation(lat, long);
     });
+    addFunc("setWindPattern", (pattern: WindPattern) => {
+      lavaSimulation.setWindPattern(pattern);
+    });
 
     addFunc("checkDefaultParameters", () => {
       if (lavaSimulation.hasOnlyDefaultParameters) {
@@ -96,6 +100,9 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     // before continuing execution
     const runSimulationWrapper = (callback: () => void) => lavaSimulation.runSimulation(callback);
     interpreter.setProperty(scope, "runMolassesSimulation", interpreter.createAsyncFunction(runSimulationWrapper));
+
+    const runVogSimulationWrapper = (callback: () => void) => lavaSimulation.runVogSimulation(callback);
+    interpreter.setProperty(scope, "runVogSimulation", interpreter.createAsyncFunction(runVogSimulationWrapper));
 
     addFunc("addFlagLocation", (args) => {
       if (lavaSimulation.flagLocations.length >= maxFlags) {

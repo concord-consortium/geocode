@@ -25,6 +25,8 @@ import { useHazardZones } from "./use-hazard-zones";
 import { useLavaOverlay } from "./use-lava-overlay";
 import { useRulerMode } from "./use-ruler-mode";
 import { useVerticalExaggeration } from "./use-vertical-exaggeration";
+import { useVog } from "./use-vog";
+import { useVogOverlay } from "./use-vog-overlay";
 import { useWorldImagery } from "./use-world-imagery";
 import { VentKey } from "./vent-key";
 
@@ -57,8 +59,9 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
   const viewer = useCesiumViewer(lavaCoderElt, mapType);
 
   const {
-    cameraMode, isAnimating, animateToCameraPitch, listenToCameraChange, setCameraMode, setDefaultCameraView, zoomIn, zoomOut
-    } = useCameraControls(viewer, verticalExaggeration);
+    cameraMode, isAnimating, animateToCameraPitch, listenToCameraChange, setCameraMode, setDefaultCameraView, zoomIn,
+    zoomOut
+  } = useCameraControls(viewer, verticalExaggeration);
 
   const { replaceBaseLayer } = useWorldImagery();
 
@@ -75,7 +78,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
   // Close the lat/long popup when the worker is reset (e.g., when a new simulation starts)
   useEffect(() => {
     return reaction(
-      () => lavaSimulation.worker,
+      () => [lavaSimulation.worker, lavaSimulation.vogWorker],
       () => clearLatLong()
     );
   }, [clearLatLong]);
@@ -94,6 +97,8 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
   useElevationData();
 
   useLavaOverlay(viewer);
+  useVog(viewer, verticalExaggeration);
+  useVogOverlay(viewer);
 
   const {
     isRulerMode, getCursor: getRulerModeCursor, handleClick: handleRulerModeClick,

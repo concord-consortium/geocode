@@ -1,8 +1,10 @@
 export const RUN_SIMULATION = "Compute and visualize lava flow";
+export const RUN_VOG_SIMULATION = "Compute and visualize vog";
 export const SET_ERUPTION_VOLUME = "Set eruption volume (m³)";
 export const SET_LAVA_THICKNESS = "Set lava thickness (m)";
 export const SET_VENT_LOCATION = "Set vent location";
 export const SET_FLAG_LOCATION = "Set flag location";
+export const SET_WIND_PATTERN = "Set wind pattern";
 export const CREATE_TABLE = "Create a data table";
 export const ADD_ROW = "Create row in data table";
 export const FOR_FLAG = "For flag";

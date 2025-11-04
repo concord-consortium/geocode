@@ -187,7 +187,7 @@ To deploy a production release:
 2. Run `npm version [major.minor.patch]` (for example, `npm version 5.8.0`) to update the version number in package.json and package-lock.json, create a commit with this change, and create a tag. It isn't necessary to add the `v` prefix, the version command does that automatically. This will make a tag called `v5.8.0`
 3. Push the updated tag: `git push` and `git push origin v[major.minor.patch]`
 4. GitHub actions will automatically start building and deploying the branch when it is pushed, and the tag. You can track the progress here:
-https://github.com/concord-consortium/collaborative-learning/actions
+https://github.com/concord-consortium/geocode/actions
 5. Generate the release notes.
     1. You need to check out: https://github.com/concord-consortium/dev-templates
     2. Go into the scripts folder `cd scripts` and run `npm i`
@@ -196,14 +196,14 @@ https://github.com/concord-consortium/collaborative-learning/actions
     5. Run the release notes script: `npm run release-notes <pt label>`. The `pt label` is usually `clue-[major.minor.patch]`. This output is for the GitHub release.
     6. Run the release notes script again for slack: `npm run release-notes <pt label> slack`. This changes the formatting so it can be pasted into Slack.
 6. Create a GitHub release and add the release notes.
-    1. Go to https://github.com/concord-consortium/collaborative-learning/releases
+    1. Go to https://github.com/concord-consortium/geocode/releases
     2. Click "Draft a new release"
     3. Choose the tag that you pushed before `v[major.minor.patch]`
     4. Give it a title like: "Version [major.minor.patch] - Released [Date of planned release]"
     5. Paste in the non-slack release notes from the script for the description
     6. Click publish release
 7. Do the release: run a GitHub action with the tag name.
-    1. Go to https://github.com/concord-consortium/collaborative-learning/actions
+    1. Go to https://github.com/concord-consortium/geocode/actions
     2. Click on "Release Production"
     3. Click on "Run Workflow"
     4. Fill the dialog with the tag `v[major.minor.patch]`

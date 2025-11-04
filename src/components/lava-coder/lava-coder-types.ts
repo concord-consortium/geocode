@@ -17,3 +17,5 @@ interface ICartographicEventProps {
 }
 
 export type CartographicEventCallback = (props: ICartographicEventProps) => void;
+
+export type WindPattern = "trade" | "kona";

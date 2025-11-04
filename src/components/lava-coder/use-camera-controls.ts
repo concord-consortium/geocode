@@ -1,8 +1,6 @@
 import { Cartesian2, Cartesian3, CesiumWidget, Math as CSMath, HeadingPitchRange } from "@cesium/engine";
-import { reaction } from "mobx";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { v4 as uuid } from "uuid";
-import { lavaSimulation } from "../../stores/lava-simulation-store";
 import { uiStore } from "../../stores/ui-store";
 import { getCameraState } from "./cesium-utils";
 import { IOnDragArgs, useCesiumDragEvents } from "./use-cesium-drag-events";
@@ -123,13 +121,6 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
       }
     };
   }, []);
-
-  useEffect(() => {
-    return reaction(
-      () => lavaSimulation.resetCount,
-      () => setDefaultCameraView()
-    );
-  }, [setDefaultCameraView]);
 
   const handlePan = useCallback(({ dx, dy }: IOnDragArgs) => {
     if (!viewer) return;
