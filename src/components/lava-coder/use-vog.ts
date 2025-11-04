@@ -39,7 +39,7 @@ export function useVog(viewer: CesiumWidget | null, verticalExaggeration = 1) {
             const elevationFactor = Math.random() * 100 * verticalExaggeration;
             const elevation = Math.max(elevationAtPoint(lat, long, raster) + elevationFactor,
               ventElevation + (50 * distFactor * verticalExaggeration) + elevationFactor);
-            console.log(` --`, lat, long, dist, distFactor, elevation);
+            // console.log(` --`, lat, long, dist, distFactor, elevation);
             cloudsRef.current.add({
               brightness: .75 + Math.random() * .15,
               // color: Color.YELLOW.withAlpha(.8 - .01 * distFactor),

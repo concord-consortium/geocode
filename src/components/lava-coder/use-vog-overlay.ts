@@ -31,7 +31,9 @@ export function useVogOverlay(viewer: CesiumWidget | null) {
       );
 
       if (vogLayerRef.current) viewer.imageryLayers.add(vogLayerRef.current);
-      if (oldLayer) viewer.imageryLayers.remove(oldLayer, true);
+      // The old layer is not destroyed because doing so can cause a crash when the vog clouds are being rendered and
+      // the user changes the camera.
+      if (oldLayer) viewer.imageryLayers.remove(oldLayer, false);
     });
   }, [viewer]);
 
