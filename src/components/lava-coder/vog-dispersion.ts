@@ -34,14 +34,11 @@ export async function disperseVog({
   let pulseCount = 0;
   // logVolume is between 6 and 10
   const logVolume = Math.log10(totalVolume);
-  console.log(`--- logVolume`, logVolume);
   const totalParticles = Math.floor(4000 * logVolume);
   const particlesPerPulse = Math.max(1, Math.floor(totalParticles / vogPulses));
-  console.log(` -- particlesPerPulse`, particlesPerPulse);
   // dispersionFactor is between 1 and 2
   const dispersionFactor = (logVolume - 2) / 4;
   const halfDispersionFactor = dispersionFactor / 2;
-  console.log(` -- dispersionFactor`, dispersionFactor);
 
   // Set up wind data
   const windData = windPattern === "trade" ? tradeWindData : konaWindData;

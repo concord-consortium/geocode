@@ -37,7 +37,7 @@ export function useVogOverlay(viewer: CesiumWidget | null) {
     });
   }, [viewer]);
 
-  // Remove the old lava layers when a new simulation starts (indicated by a new worker)
+  // Remove the old vog layers when a new simulation starts (indicated by a new worker)
   useEffect(() => {
     return reaction(
       () => lavaSimulation.vogWorker,
