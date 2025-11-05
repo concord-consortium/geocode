@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import konaWindData from "../../assets/lava-coder/wind-patterns/kona_winds.json";
 import tradeWindData from "../../assets/lava-coder/wind-patterns/trade_winds.json";
 import { tradeWindsSvg } from "../../assets/lava-coder/wind-patterns/trade-winds-svg";
+import { tradeWindsDenseSvg } from "../../assets/lava-coder/wind-patterns/trade-winds-dense-svg";
 import { lavaSimulation } from "../../stores/lava-simulation-store";
 
 export function useShowWindPattern(viewer: CesiumWidget | null) {
@@ -13,10 +14,9 @@ export function useShowWindPattern(viewer: CesiumWidget | null) {
       if (windPatternVisualizationRef.current) viewer?.entities.remove(windPatternVisualizationRef.current);
 
       if (show) {
-        // const svg = lavaSimulation.windPattern === "trade" ? tradeWindsSvg : konaWindsSvg;
-        const svg = tradeWindsSvg;
+        const svg = lavaSimulation.windPattern === "trade" ? tradeWindsSvg : tradeWindsDenseSvg;
         const svgUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
-        const heightMeters = 10000;
+        const heightMeters = 14000;
 
         const windData = lavaSimulation.windPattern === "trade" ? tradeWindData : konaWindData;
         const minLat = windData.lats[0];
