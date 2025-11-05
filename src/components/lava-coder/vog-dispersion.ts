@@ -1,6 +1,5 @@
-import konaWindData from "../../assets/lava-coder/wind-patterns/kona_winds.json";
-import tradeWindData from "../../assets/lava-coder/wind-patterns/trade_winds.json";
 import { convertLongitudeToX, convertLatitudeToY } from "../../utilities/molasses-utils";
+import { getWindData } from "../../utilities/vog-utilities";
 import { WindPattern } from "./lava-coder-types";
 import { rangeLat, rangeLong } from "./lava-constants";
 import { AsciiRaster } from "./parse-ascii-raster";
@@ -40,37 +39,26 @@ export async function disperseVog({
   const dispersionFactor = (logVolume - 2) / 4;
   const halfDispersionFactor = dispersionFactor / 2;
 
-  // Set up wind data
-  const windData = windPattern === "trade" ? tradeWindData : konaWindData;
-  const windColumns = windData.lats.length;
-  const windMinLat = windData.lats[0];
-  const windMaxLat = windData.lats[windColumns - 1];
-  const windRangeLat = windMaxLat - windMinLat;
-  const windRows = windData.lons.length;
-  const windMinLong = windData.lons[0];
-  const windMaxLong = windData.lons[windRows - 1];
-  const windRangeLong = windMaxLong - windMinLong;
-  const windLatStep = windRangeLat / (windColumns - 1);
-  const windLongStep = windRangeLong / (windRows - 1);
+  const { columns, data, maxLat, maxLon, minLat, minLon, stepLat, stepLon, rows } = getWindData(windPattern);
 
   function getWindAt(latitude: number, longitude: number) {
     const latIndex = Math.min(
-      windColumns - 1,
-      Math.max(0, Math.round((latitude - windMinLat) / windLatStep))
+      columns - 1,
+      Math.max(0, Math.round((latitude - minLat) / stepLat))
     );
     const longIndex = Math.min(
-      windRows - 1,
-      Math.max(0, Math.round((longitude - windMinLong) / windLongStep))
+      rows - 1,
+      Math.max(0, Math.round((longitude - minLon) / stepLon))
     );
 
     // Interpolate between the four surrounding wind values
-    const baseWind = windData.grid[latIndex][longIndex];
-    const rightWind = windData.grid[latIndex][longIndex + 1] ?? baseWind;
-    const downWind = windData.grid[latIndex + 1]?.[longIndex] ?? baseWind;
-    const diagWind = windData.grid[latIndex + 1]?.[longIndex + 1] ?? baseWind;
+    const baseWind = data.grid[latIndex][longIndex];
+    const rightWind = data.grid[latIndex][longIndex + 1] ?? baseWind;
+    const downWind = data.grid[latIndex + 1]?.[longIndex] ?? baseWind;
+    const diagWind = data.grid[latIndex + 1]?.[longIndex + 1] ?? baseWind;
 
-    const latFraction = (latitude - (windMinLat + latIndex * windLatStep)) / windLatStep;
-    const longFraction = (longitude - (windMinLong + longIndex * windLongStep)) / windLongStep;
+    const latFraction = (latitude - (minLat + latIndex * stepLat)) / stepLat;
+    const longFraction = (longitude - (minLon + longIndex * stepLon)) / stepLon;
 
     const topU = baseWind[0] + (rightWind[0] - baseWind[0]) * longFraction;
     const topV = baseWind[1] + (rightWind[1] - baseWind[1]) * longFraction;
@@ -87,9 +75,9 @@ export async function disperseVog({
   const grid: number[][] = [];
   const latPerCell = rangeLat / raster.header.nrows;
   const longPerCell = rangeLong / raster.header.ncols;
-  for (let lat = windMinLat; lat <= windMaxLat; lat += latPerCell) {
+  for (let lat = minLat; lat <= maxLat; lat += latPerCell) {
     const gridRow: number[] = [];
-    for (let long = windMinLong; long <= windMaxLong; long += longPerCell) {
+    for (let long = minLon; long <= maxLon; long += longPerCell) {
       gridRow.push(0);
     }
     grid.push(gridRow);
@@ -121,10 +109,10 @@ export async function disperseVog({
 
     grid[y][x] += delta;
 
-    vogRange.east = Math.min(windMaxLong, Math.max(vogRange.east, long));
-    vogRange.north = Math.min(windMaxLat, Math.max(vogRange.north, lat));
-    vogRange.south = Math.max(windMinLat, Math.min(vogRange.south, lat));
-    vogRange.west = Math.max(windMinLong, Math.min(vogRange.west, long));
+    vogRange.east = Math.min(maxLon, Math.max(vogRange.east, long));
+    vogRange.north = Math.min(maxLat, Math.max(vogRange.north, lat));
+    vogRange.south = Math.max(minLat, Math.min(vogRange.south, lat));
+    vogRange.west = Math.max(minLon, Math.min(vogRange.west, long));
 
     vogGridRange.east = Math.min(grid[0].length - 1, Math.max(vogGridRange.east, x));
     vogGridRange.north = Math.max(0, Math.min(vogGridRange.north, y));

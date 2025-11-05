@@ -1,3 +1,5 @@
+import { WindPattern } from "./lava-coder-types";
+
 export const kFeetPerMeter = 3.28084;
 export const kMetersPerFoot = 1 / kFeetPerMeter;
 export const kMetersPerMile = 1609.344;
@@ -10,7 +12,7 @@ export const defaultResidual = 5;
 export const defaultShowWindPattern = false;
 export const defaultVentLatitude = 19.5;
 export const defaultVentLongitude = -155.565;
-export const defaultWindPattern = "trade";
+export const defaultWindPattern = "trade" as WindPattern;
 
 // Bounds of the elevation map in latitude and longitude
 export const minLong = -156;
