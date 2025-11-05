@@ -27,7 +27,6 @@ import { useRulerMode } from "./use-ruler-mode";
 import { useShowWindPattern } from "./use-show-wind-pattern";
 import { useVerticalExaggeration } from "./use-vertical-exaggeration";
 import { useVog } from "./use-vog";
-import { useVogOverlay } from "./use-vog-overlay";
 import { useWorldImagery } from "./use-world-imagery";
 import { VentKey } from "./vent-key";
 
@@ -99,7 +98,6 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
 
   useLavaOverlay(viewer);
   useVog(viewer, verticalExaggeration);
-  useVogOverlay(viewer);
   useShowWindPattern(viewer);
 
   const {

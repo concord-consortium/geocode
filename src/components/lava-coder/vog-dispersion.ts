@@ -1,4 +1,3 @@
-import { convertLongitudeToX, convertLatitudeToY } from "../../utilities/molasses-utils";
 import { getWindData } from "../../utilities/vog-utilities";
 import { WindPattern } from "./lava-coder-types";
 import { rangeLat, rangeLong } from "./lava-constants";
@@ -82,6 +81,11 @@ export async function disperseVog({
     }
     grid.push(gridRow);
   }
+  const gridRows = grid.length;
+  const gridCols = grid[0].length;
+  const convertLatitudeToY =
+    (latitude: number) => gridRows - Math.floor((latitude - minLat) / (maxLat - minLat) * gridRows);
+  const convertLongitudeToX = (longitude: number) => Math.floor((longitude - minLon) / (maxLon - minLon) * gridCols);
 
   // The range of the rectangle containing vog particles in lat/long.
   const vogRange = {
@@ -101,8 +105,8 @@ export async function disperseVog({
 
   // Increase or decrease the number of particles at a location and expand the ranges to contain that location
   const updateVogGrid = (delta: number, lat: number, long: number) => {
-    const y = convertLatitudeToY(lat, raster);
-    const x = convertLongitudeToX(long, raster);
+    const y = convertLatitudeToY(lat);
+    const x = convertLongitudeToX(long);
     if (y < 0 || y >= grid.length || x < 0 || x >= grid[0].length) {
       return;
     }
@@ -180,11 +184,11 @@ export async function disperseVog({
       // Decay unique particle velocity
       particle.u *= 0.999;
       particle.v *= 0.999;
+    }
 
-      // Delay to make sure the wind dispersion animates at a reasonable speed
-      while (Date.now() < stepEndTime) {
-        // Noop
-      }
+    // Delay to make sure the wind dispersion animates at a reasonable speed
+    while (Date.now() < stepEndTime) {
+      // Noop
     }
   };
 

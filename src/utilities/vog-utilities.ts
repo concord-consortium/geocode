@@ -1,5 +1,5 @@
-import konaWindData from "../assets/lava-coder/wind-patterns/kona_winds.json";
-import tradeWindData from "../assets/lava-coder/wind-patterns/trade_winds.json";
+import konaWindData from "../assets/lava-coder/wind-patterns/kona-winds.json";
+import tradeWindData from "../assets/lava-coder/wind-patterns/trade-winds.json";
 import { WindPattern } from "../components/lava-coder/lava-coder-types";
 
 interface WindData {
