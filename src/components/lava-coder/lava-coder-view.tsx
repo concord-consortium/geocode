@@ -24,6 +24,7 @@ import { useFlagLocations } from "./use-flag-locations";
 import { useHazardZones } from "./use-hazard-zones";
 import { useLavaOverlay } from "./use-lava-overlay";
 import { useRulerMode } from "./use-ruler-mode";
+import { useShowWindPattern } from "./use-show-wind-pattern";
 import { useVerticalExaggeration } from "./use-vertical-exaggeration";
 import { useVog } from "./use-vog";
 import { useVogOverlay } from "./use-vog-overlay";
@@ -99,6 +100,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
   useLavaOverlay(viewer);
   useVog(viewer, verticalExaggeration);
   useVogOverlay(viewer);
+  useShowWindPattern(viewer);
 
   const {
     isRulerMode, getCursor: getRulerModeCursor, handleClick: handleRulerModeClick,

@@ -7,6 +7,7 @@ export const kSquareMetersPerAcre = 4046.86;
 // These values are hardcoded in full-toolbox.xml and possibly other toolboxes and should be kept in sync
 export const defaultEruptionVolume = 200000000;
 export const defaultResidual = 5;
+export const defaultShowWindPattern = false;
 export const defaultVentLatitude = 19.5;
 export const defaultVentLongitude = -155.565;
 export const defaultWindPattern = "trade";

@@ -60,6 +60,12 @@ Blockly.Blocks.vog_wind_pattern = {
   }
 };
 
+Blockly.Blocks.vog_show_wind_pattern = {
+  init() {
+    basicInit(this, strings.SHOW_WIND_PATTERN);
+  }
+};
+
 Blockly.Blocks.molasses_run_simulation = {
   init() {
     basicInit(this, strings.RUN_SIMULATION);
@@ -235,6 +241,10 @@ javascriptGenerator.forBlock.molasses_vent_location = function(block) {
 javascriptGenerator.forBlock.vog_wind_pattern = function(block) {
   const windPattern = block.getFieldValue("wind_pattern");
   return `this.setWindPattern("${windPattern}")\n`;
+};
+
+javascriptGenerator.forBlock.vog_show_wind_pattern = function(block) {
+  return `this.showWindPattern();\n`;
 };
 
 javascriptGenerator.forBlock.molasses_run_simulation = function(block) {

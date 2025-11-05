@@ -88,6 +88,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     addFunc("setWindPattern", (pattern: WindPattern) => {
       lavaSimulation.setWindPattern(pattern);
     });
+    addFunc("showWindPattern", () => lavaSimulation.setShowWindPattern(true));
 
     addFunc("checkDefaultParameters", () => {
       if (lavaSimulation.hasOnlyDefaultParameters) {

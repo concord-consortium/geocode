@@ -1,4 +1,3 @@
-
 const locationMarkerSvg = `<svg width="23" height="33" viewBox="0 0 23 33" xmlns="http://www.w3.org/2000/svg">
   <g fill="none">
     <path d="M0 0h23v33H0z"/>

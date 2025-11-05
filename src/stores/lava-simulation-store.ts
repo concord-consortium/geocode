@@ -5,8 +5,8 @@ import MolassesWorker from "../components/lava-coder/molasses.worker";
 import { AsciiRaster } from "../components/lava-coder/parse-ascii-raster";
 import { WindPattern } from "../components/lava-coder/lava-coder-types";
 import {
-  defaultEruptionVolume, defaultResidual, defaultVentLatitude, defaultVentLongitude, defaultWindPattern, FlagColor,
-  flagLabels, kSquareMetersPerAcre, maxFlags
+  defaultEruptionVolume, defaultResidual, defaultShowWindPattern, defaultVentLatitude, defaultVentLongitude,
+  defaultWindPattern, FlagColor, flagLabels, kSquareMetersPerAcre, maxFlags
 } from "../components/lava-coder/lava-constants";
 import VogWorker from "../components/lava-coder/vog.worker";
 import { DataRow, DataTable, DataTableType } from "../models/data-table";
@@ -59,6 +59,7 @@ export const LavaSimulationStore = types
     coveredCells: 0,
     voggedCells: 0,
     dataTable: undefined as DataTableType | undefined,
+    showWindPattern: defaultShowWindPattern,
     flagLocations: observable.array<FlagLocation>([]),
     raster: null as AsciiRaster | null, // AsciiRaster
     worker: null as Worker | null,
@@ -139,6 +140,9 @@ export const LavaSimulationStore = types
     newDataTable() {
       self.dataTable = DataTable.create();
     },
+    setShowWindPattern(display: boolean) {
+      self.showWindPattern = display;
+    },
     setPulseCount(pulseCount: number) {
       self.pulseCount = pulseCount;
     },
@@ -172,6 +176,7 @@ export const LavaSimulationStore = types
         });
       },
       resetDefaults: () => {
+        self.setShowWindPattern(defaultShowWindPattern);
         self.setResidual(defaultResidual);
         self.setTotalVolume(defaultEruptionVolume);
         self.setVentLocation(defaultVentLatitude, defaultVentLongitude);
