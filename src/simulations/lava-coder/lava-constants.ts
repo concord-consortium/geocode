@@ -1,4 +1,4 @@
-import { WindPattern } from "./lava-coder-types";
+import { WindPattern } from "../../types/lava-coder/lava-coder-types";
 
 export const kFeetPerMeter = 3.28084;
 export const kMetersPerFoot = 1 / kFeetPerMeter;

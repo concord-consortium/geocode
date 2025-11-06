@@ -1,6 +1,6 @@
 import Interpreter from "js-interpreter";
-import { WindPattern } from "../components/lava-coder/lava-coder-types";
-import { maxFlags } from "../components/lava-coder/lava-constants";
+import { WindPattern } from "../types/lava-coder/lava-coder-types";
+import { maxFlags } from "../simulations/lava-coder/lava-constants";
 import { StationData } from "../deformation";
 import { IBlocklyWorkspace } from "../interfaces";
 import { Datasets, Dataset, Filter, ProtoTimeRange, TimeRange } from "../stores/data-sets";

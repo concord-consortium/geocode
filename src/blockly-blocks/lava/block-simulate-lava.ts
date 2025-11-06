@@ -1,8 +1,8 @@
 
 import * as Blockly from "blockly/core";
 import { javascriptGenerator, Order } from "blockly/javascript";
-import { flagColors, maxLat, maxLong, minLat, minLong } from "../../components/lava-coder/lava-constants";
 import { dataHue } from "../../constants";
+import { flagColors, maxLat, maxLong, minLat, minLong } from "../../simulations/lava-coder/lava-constants";
 import { blocklyStore } from "../../stores/blockly-store";
 import { uiStore } from "../../stores/ui-store";
 import * as strings from "../../strings/blockly-blocks/lava/simulate-lava";

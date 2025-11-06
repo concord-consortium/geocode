@@ -1,6 +1,6 @@
 import { Cartesian2, CesiumWidget, ScreenSpaceEventHandler, ScreenSpaceEventType } from "@cesium/engine";
 import { useEffect, useRef } from "react";
-import { getCameraState, ICameraState } from "./cesium-utils";
+import { getCameraState, ICameraState } from "../../utilities/cesium-utils";
 
 export interface IOnDragArgs {
   dx: number;

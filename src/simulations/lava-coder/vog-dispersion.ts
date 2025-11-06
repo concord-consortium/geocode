@@ -1,5 +1,5 @@
 import { getWindData } from "../../utilities/vog-utilities";
-import { WindPattern } from "./lava-coder-types";
+import { WindPattern } from "../../types/lava-coder/lava-coder-types";
 import { rangeLat, rangeLong } from "./lava-constants";
 import { AsciiRaster } from "./parse-ascii-raster";
 

@@ -1,5 +1,5 @@
-import { AsciiRaster } from "../components/lava-coder/parse-ascii-raster";
-import { minLat, minLong, rangeLat, rangeLong } from "../components/lava-coder/lava-constants";
+import { AsciiRaster } from "../simulations/lava-coder/parse-ascii-raster";
+import { minLat, minLong, rangeLat, rangeLong } from "../simulations/lava-coder/lava-constants";
 
 export function convertLongitudeToX(longitude: number, raster: AsciiRaster) {
   return Math.floor((longitude - minLong) / rangeLong * raster.header.ncols);

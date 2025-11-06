@@ -5,7 +5,7 @@ import { tradeWindsSvg } from "../../assets/lava-coder/wind-patterns/trade-winds
 import { tradeWindsDenseSvg } from "../../assets/lava-coder/wind-patterns/trade-winds-dense-svg";
 import { lavaSimulation } from "../../stores/lava-simulation-store";
 import { getWindData } from "../../utilities/vog-utilities";
-import { WindPattern } from "./lava-coder-types";
+import { WindPattern } from "../../types/lava-coder/lava-coder-types";
 
 const heightMeters = 14000;
 

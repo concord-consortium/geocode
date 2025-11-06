@@ -2,7 +2,7 @@ import { CesiumWidget } from "@cesium/engine";
 import { observer } from "mobx-react";
 import { useRef } from "react";
 import { uiStore } from "../../stores/ui-store";
-import { kMetersPerMile } from "./lava-constants";
+import { kMetersPerMile } from "../../simulations/lava-coder/lava-constants";
 
 import "./ruler-line-label.scss";
 

@@ -2,9 +2,9 @@ import { Cartesian2, Cartesian3, CesiumWidget, Color, VerticalOrigin } from "@ce
 import { autorun } from "mobx";
 import { useEffect } from "react";
 import { lavaSimulation } from "../../stores/lava-simulation-store";
-import { flagColorInfo, flagLabelInfo, flagLabels } from "./lava-constants";
+import { flagColorInfo, flagLabelInfo, flagLabels } from "../../simulations/lava-coder/lava-constants";
 import { useTerrainProvider } from "./use-terrain-provider";
-import { getLocationMarkerSvg } from "./location-markers";
+import { getLocationMarkerSvg } from "../../components/lava-coder/location-markers";
 
 function flagId(label: string) {
   return `flag-${label}`;

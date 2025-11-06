@@ -6,7 +6,7 @@ import CopyButtonIcon from "../../assets/lava-coder/content-copy-icon.png";
 import LatLongIconNoShadow from "../../assets/lava-coder/lat-long-icon-no-shadow.svg";
 import { uiStore } from "../../stores/ui-store";
 import IconButton from "../buttons/icon-button";
-import { ILatLong, ILatLongElevation } from "./lava-coder-types";
+import { ILatLong, ILatLongElevation } from "../../types/lava-coder/lava-coder-types";
 
 import "./lat-long-popup.scss";
 
