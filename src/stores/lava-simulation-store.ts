@@ -1,15 +1,15 @@
 import { KmlDataSource, Math as CSMath } from "@cesium/engine";
 import { observable } from "mobx";
 import { types } from "mobx-state-tree";
-import MolassesWorker from "../simulations/lava-coder/molasses.worker";
-import { AsciiRaster } from "../simulations/lava-coder/parse-ascii-raster";
-import { WindPattern } from "../types/lava-coder/lava-coder-types";
+import { DataRow, DataTable, DataTableType } from "../models/data-table";
 import {
   defaultEruptionVolume, defaultResidual, defaultShowWindPattern, defaultVentLatitude, defaultVentLongitude,
   FlagColor, flagLabels, kSquareMetersPerAcre, maxFlags
 } from "../simulations/lava-coder/lava-constants";
+import MolassesWorker from "../simulations/lava-coder/molasses.worker";
+import { AsciiRaster } from "../simulations/lava-coder/parse-ascii-raster";
 import VogWorker from "../simulations/lava-coder/vog.worker";
-import { DataRow, DataTable, DataTableType } from "../models/data-table";
+import { WindPattern } from "../types/lava-coder/lava-coder-types";
 import { pointInPolygon } from "../utilities/geometry-utils";
 import { isPointOnIsland } from "../utilities/molasses-utils";
 import { LavaSimulationAuthorSettings, LavaSimulationAuthorSettingsProps } from "./stores";

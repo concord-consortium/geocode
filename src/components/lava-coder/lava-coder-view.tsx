@@ -13,8 +13,10 @@ import { useShowWindPattern } from "../../hooks/lava-coder/use-show-wind-pattern
 import { useVerticalExaggeration } from "../../hooks/lava-coder/use-vertical-exaggeration";
 import { useVog } from "../../hooks/lava-coder/use-vog";
 import { useWorldImagery } from "../../hooks/lava-coder/use-world-imagery";
+import { kFeetPerMeter } from "../../simulations/lava-coder/lava-constants";
 import { lavaSimulation } from "../../stores/lava-simulation-store";
 import { LavaMapType, LavaMapTypes, uiStore } from "../../stores/ui-store";
+import { CartographicEventCallback, ILatLongElevation } from "../../types/lava-coder/lava-coder-types";
 import { AcresCovered } from "./acres-covered-box";
 import { CompassHeading } from "./compass-heading";
 import { ConcordAttribution } from "./concord-attribution";
@@ -23,8 +25,6 @@ import {
   HomeViewIcon, LatLongIcon, MapButtonIcon, MoveIcon, RotateHeadingIcon, RotatePitchIcon, RulerIcon,
   ZoomInIcon, ZoomOutIcon
 } from "./lava-coder-icons";
-import { CartographicEventCallback, ILatLongElevation } from "../../types/lava-coder/lava-coder-types";
-import { kFeetPerMeter } from "../../simulations/lava-coder/lava-constants";
 import { LavaIconButton } from "./lava-icon-button";
 import { ProgressBar } from "./progress-bar";
 import { RulerLineLabel } from "./ruler-line-label";
