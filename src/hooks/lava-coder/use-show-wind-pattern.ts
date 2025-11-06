@@ -4,8 +4,8 @@ import { useEffect, useRef } from "react";
 import { tradeWindsSvg } from "../../assets/lava-coder/wind-patterns/trade-winds-svg";
 import { tradeWindsDenseSvg } from "../../assets/lava-coder/wind-patterns/trade-winds-dense-svg";
 import { lavaSimulation } from "../../stores/lava-simulation-store";
-import { getWindData } from "../../utilities/vog-utilities";
 import { WindPattern } from "../../types/lava-coder/lava-coder-types";
+import { getWindData } from "../../utilities/vog-utilities";
 
 const heightMeters = 14000;
 

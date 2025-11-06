@@ -6,8 +6,8 @@ import PointIcon from "../../assets/lava-coder/point-icon.asset.svg";
 import PointIconActive from "../../assets/lava-coder/point-icon-active.asset.svg";
 import PointIconHover from "../../assets/lava-coder/point-icon-hover.asset.svg";
 import { uiStore } from "../../stores/ui-store";
-import { getCameraState } from "../../utilities/cesium-utils";
 import { CartographicEventCallback } from "../../types/lava-coder/lava-coder-types";
+import { getCameraState } from "../../utilities/cesium-utils";
 import { kInitialCameraPitch, kMinCameraPitch } from "./use-camera-controls";
 
 interface IProps {

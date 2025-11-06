@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import { lavaSimulation } from "../../stores/lava-simulation-store";
 import RasterWorker from "../../simulations/lava-coder/raster.worker";
+import { lavaSimulation } from "../../stores/lava-simulation-store";
 
 export function useElevationData() {
   // Load the elevation data
