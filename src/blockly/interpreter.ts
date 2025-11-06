@@ -94,7 +94,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
         blocklyController.throwError(`You must set the wind pattern before the "${SHOW_WIND_PATTERN}" block.`);
         return;
       }
-      lavaSimulation.setShowWindPattern(true)
+      lavaSimulation.setShowWindPattern(true);
     });
 
     addFunc("checkDefaultParameters", () => {
