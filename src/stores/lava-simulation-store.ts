@@ -6,7 +6,7 @@ import { AsciiRaster } from "../simulations/lava-coder/parse-ascii-raster";
 import { WindPattern } from "../types/lava-coder/lava-coder-types";
 import {
   defaultEruptionVolume, defaultResidual, defaultShowWindPattern, defaultVentLatitude, defaultVentLongitude,
-  defaultWindPattern, FlagColor, flagLabels, kSquareMetersPerAcre, maxFlags
+  FlagColor, flagLabels, kSquareMetersPerAcre, maxFlags
 } from "../simulations/lava-coder/lava-constants";
 import VogWorker from "../simulations/lava-coder/vog.worker";
 import { DataRow, DataTable, DataTableType } from "../models/data-table";
@@ -52,8 +52,7 @@ export const LavaSimulationStore = types
     ventLatitude: defaultVentLatitude,
     ventLongitude: defaultVentLongitude,
     totalVolume: defaultEruptionVolume,
-    pulseCount: 0,
-    windPattern: defaultWindPattern
+    pulseCount: 0
   })
   .volatile((self) => ({
     coveredCells: 0,
@@ -65,7 +64,8 @@ export const LavaSimulationStore = types
     worker: null as Worker | null,
     vogWorker: null as Worker | null,
     resetCount: 0, // Used to clear the lat/long overlay when the simulation is reset
-    hazardZones: null as KmlDataSource | null
+    hazardZones: null as KmlDataSource | null,
+    windPattern: null as WindPattern | null
   }))
   .views((self) => ({
     get cellArea() {
@@ -162,7 +162,7 @@ export const LavaSimulationStore = types
     setHazardZones(hazardZones: KmlDataSource) {
       self.hazardZones = hazardZones;
     },
-    setWindPattern(pattern: WindPattern) {
+    setWindPattern(pattern: WindPattern | null) {
       self.windPattern = pattern;
     }
   }))
@@ -180,7 +180,7 @@ export const LavaSimulationStore = types
         self.setResidual(defaultResidual);
         self.setTotalVolume(defaultEruptionVolume);
         self.setVentLocation(defaultVentLatitude, defaultVentLongitude);
-        self.setWindPattern(defaultWindPattern);
+        self.setWindPattern(null);
       }
     };
   })

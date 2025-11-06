@@ -1,14 +1,15 @@
 import Interpreter from "js-interpreter";
-import { WindPattern } from "../types/lava-coder/lava-coder-types";
-import { maxFlags } from "../simulations/lava-coder/lava-constants";
 import { StationData } from "../deformation";
 import { IBlocklyWorkspace } from "../interfaces";
+import { maxFlags } from "../simulations/lava-coder/lava-constants";
 import { Datasets, Dataset, Filter, ProtoTimeRange, TimeRange } from "../stores/data-sets";
 import { lavaSimulation } from "../stores/lava-simulation-store";
 import { ColorMethod } from "../stores/seismic-simulation-store";
 import { IStore } from "../stores/stores";
 import { ITephraModelParams } from "../stores/tephra-simulation-store";
 import { uiStore } from "../stores/ui-store";
+import { SHOW_WIND_PATTERN } from "../strings/blockly-blocks/lava/simulate-lava";
+import { WindPattern } from "../types/lava-coder/lava-coder-types";
 import { BlocklyController } from "./blockly-controller";
 
 const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore,
@@ -88,7 +89,13 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     addFunc("setWindPattern", (pattern: WindPattern) => {
       lavaSimulation.setWindPattern(pattern);
     });
-    addFunc("showWindPattern", () => lavaSimulation.setShowWindPattern(true));
+    addFunc("showWindPattern", () => {
+      if (lavaSimulation.windPattern == null) {
+        blocklyController.throwError(`You must set the wind pattern before the "${SHOW_WIND_PATTERN}" block.`);
+        return;
+      }
+      lavaSimulation.setShowWindPattern(true)
+    });
 
     addFunc("checkDefaultParameters", () => {
       if (lavaSimulation.hasOnlyDefaultParameters) {
