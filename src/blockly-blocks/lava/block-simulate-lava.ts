@@ -255,6 +255,7 @@ javascriptGenerator.forBlock.molasses_run_simulation = function(block) {
 
 javascriptGenerator.forBlock.vog_run_simulation = function(block) {
   return `
+  this.checkWindPattern();
   this.runVogSimulation();\n`;
 };
 

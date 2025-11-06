@@ -104,6 +104,13 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       }
     });
 
+    addFunc("checkWindPattern", () => {
+      if (lavaSimulation.windPattern == null) {
+        const error = "You must set the wind pattern before computing and visualizing vog.";
+        blocklyController.throwError(error);
+      }
+    });
+
     // We use createAsyncFunction for runSimulation so the blockly program will wait for the simulation to complete
     // before continuing execution
     const runSimulationWrapper = (callback: () => void) => lavaSimulation.runSimulation(callback);
