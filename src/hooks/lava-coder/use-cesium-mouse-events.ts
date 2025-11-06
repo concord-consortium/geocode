@@ -2,7 +2,7 @@ import {
   Cartesian2, Cartographic, CesiumWidget, Math as CSMath, ScreenSpaceEventHandler, ScreenSpaceEventType
 } from "@cesium/engine";
 import { useEffect } from "react";
-import { CartographicEventCallback } from "./lava-coder-types";
+import { CartographicEventCallback } from "../../types/lava-coder/lava-coder-types";
 
 interface ScreenSpaceHandlers {
   handleMouseMove?: ScreenSpaceEventHandler;

@@ -1,8 +1,8 @@
 
 import * as Blockly from "blockly/core";
 import { javascriptGenerator, Order } from "blockly/javascript";
-import { flagColors, maxLat, maxLong, minLat, minLong } from "../../components/lava-coder/lava-constants";
 import { dataHue } from "../../constants";
+import { flagColors, maxLat, maxLong, minLat, minLong } from "../../simulations/lava-coder/lava-constants";
 import { blocklyStore } from "../../stores/blockly-store";
 import { uiStore } from "../../stores/ui-store";
 import * as strings from "../../strings/blockly-blocks/lava/simulate-lava";
@@ -57,6 +57,12 @@ Blockly.Blocks.vog_wind_pattern = {
         ["Trade\u00A0Winds", "trade"],
         ["Kona\u00A0Winds", "kona"]
       ]), "wind_pattern");
+  }
+};
+
+Blockly.Blocks.vog_show_wind_pattern = {
+  init() {
+    basicInit(this, strings.SHOW_WIND_PATTERN);
   }
 };
 
@@ -237,6 +243,10 @@ javascriptGenerator.forBlock.vog_wind_pattern = function(block) {
   return `this.setWindPattern("${windPattern}")\n`;
 };
 
+javascriptGenerator.forBlock.vog_show_wind_pattern = function(block) {
+  return `this.showWindPattern();\n`;
+};
+
 javascriptGenerator.forBlock.molasses_run_simulation = function(block) {
   return `
   this.checkDefaultParameters();
@@ -245,6 +255,7 @@ javascriptGenerator.forBlock.molasses_run_simulation = function(block) {
 
 javascriptGenerator.forBlock.vog_run_simulation = function(block) {
   return `
+  this.checkWindPattern();
   this.runVogSimulation();\n`;
 };
 

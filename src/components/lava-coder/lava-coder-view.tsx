@@ -1,8 +1,22 @@
 import { reaction } from "mobx";
 import { observer } from "mobx-react";
 import { useCallback, useEffect, useState } from "react";
+import { CameraMode, kDefaultCameraMode, useCameraControls } from "../../hooks/lava-coder/use-camera-controls";
+import { useCesiumMouseEvents } from "../../hooks/lava-coder/use-cesium-mouse-events";
+import { useCesiumViewer } from "../../hooks/lava-coder/use-cesium-viewer";
+import { useElevationData } from "../../hooks/lava-coder/use-elevation-data";
+import { useFlagLocations } from "../../hooks/lava-coder/use-flag-locations";
+import { useHazardZones } from "../../hooks/lava-coder/use-hazard-zones";
+import { useLavaOverlay } from "../../hooks/lava-coder/use-lava-overlay";
+import { useRulerMode } from "../../hooks/lava-coder/use-ruler-mode";
+import { useShowWindPattern } from "../../hooks/lava-coder/use-show-wind-pattern";
+import { useVerticalExaggeration } from "../../hooks/lava-coder/use-vertical-exaggeration";
+import { useVog } from "../../hooks/lava-coder/use-vog";
+import { useWorldImagery } from "../../hooks/lava-coder/use-world-imagery";
+import { kFeetPerMeter } from "../../simulations/lava-coder/lava-constants";
 import { lavaSimulation } from "../../stores/lava-simulation-store";
 import { LavaMapType, LavaMapTypes, uiStore } from "../../stores/ui-store";
+import { CartographicEventCallback, ILatLongElevation } from "../../types/lava-coder/lava-coder-types";
 import { AcresCovered } from "./acres-covered-box";
 import { CompassHeading } from "./compass-heading";
 import { ConcordAttribution } from "./concord-attribution";
@@ -11,23 +25,9 @@ import {
   HomeViewIcon, LatLongIcon, MapButtonIcon, MoveIcon, RotateHeadingIcon, RotatePitchIcon, RulerIcon,
   ZoomInIcon, ZoomOutIcon
 } from "./lava-coder-icons";
-import { CartographicEventCallback, ILatLongElevation } from "./lava-coder-types";
-import { kFeetPerMeter } from "./lava-constants";
 import { LavaIconButton } from "./lava-icon-button";
 import { ProgressBar } from "./progress-bar";
 import { RulerLineLabel } from "./ruler-line-label";
-import { CameraMode, kDefaultCameraMode, useCameraControls } from "./use-camera-controls";
-import { useCesiumMouseEvents } from "./use-cesium-mouse-events";
-import { useCesiumViewer } from "./use-cesium-viewer";
-import { useElevationData } from "./use-elevation-data";
-import { useFlagLocations } from "./use-flag-locations";
-import { useHazardZones } from "./use-hazard-zones";
-import { useLavaOverlay } from "./use-lava-overlay";
-import { useRulerMode } from "./use-ruler-mode";
-import { useVerticalExaggeration } from "./use-vertical-exaggeration";
-import { useVog } from "./use-vog";
-import { useVogOverlay } from "./use-vog-overlay";
-import { useWorldImagery } from "./use-world-imagery";
 import { VentKey } from "./vent-key";
 
 import "./lava-coder-view.scss";
@@ -98,7 +98,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
 
   useLavaOverlay(viewer);
   useVog(viewer, verticalExaggeration);
-  useVogOverlay(viewer);
+  useShowWindPattern(viewer);
 
   const {
     isRulerMode, getCursor: getRulerModeCursor, handleClick: handleRulerModeClick,

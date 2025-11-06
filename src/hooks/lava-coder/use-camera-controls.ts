@@ -2,7 +2,7 @@ import { Cartesian2, Cartesian3, CesiumWidget, Math as CSMath, HeadingPitchRange
 import { useCallback, useEffect, useRef, useState } from "react";
 import { v4 as uuid } from "uuid";
 import { uiStore } from "../../stores/ui-store";
-import { getCameraState } from "./cesium-utils";
+import { getCameraState } from "../../utilities/cesium-utils";
 import { IOnDragArgs, useCesiumDragEvents } from "./use-cesium-drag-events";
 import { useTerrainProvider } from "./use-terrain-provider";
 

@@ -1,6 +1,6 @@
 import { observer } from "mobx-react";
 import { DataRowType, DataTableType } from "../../models/data-table";
-import { flagColorInfo } from "./lava-constants";
+import { flagColorInfo } from "../../simulations/lava-coder/lava-constants";
 import { getLocationMarkerSvg } from "./location-markers";
 
 import "./data-table.scss";
