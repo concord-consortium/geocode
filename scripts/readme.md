@@ -73,7 +73,7 @@ The molasses vog simulation requires wind data to disperse vog around the island
 ## 1. Get raw csv file
 
 1. Visit the [https://pae-paha.pacioos.hawaii.edu/erddap/griddap/wrf_hi.graph](Pacific Islands Ocean Observing System).
-2. Specify a stop time (current maps are January 7, 2025 at 10am and September 2, 2025 at 10am).
+2. Specify a stop time (current maps are March 9, 2023 at 10am UTC (Kona) and September 30, 2025 at 10am UTC (Trade)).
 3. Specify a region (current latitude values are 18.68 and 20.44 and longitude values are -156.31 and -154.51).
 4. Push the Redraw the Graph button to make sure the region and wind data look good.
 5. In the optional section below the Redraw the Graph button, set the file type to .csv.
