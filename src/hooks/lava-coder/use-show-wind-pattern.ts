@@ -1,7 +1,7 @@
 import { Cartesian3, CesiumWidget, Entity, ImageMaterialProperty, Rectangle } from "@cesium/engine";
 import { reaction } from "mobx";
 import { useEffect, useRef } from "react";
-import tradeWindsPng from "../../assets/lava-coder/wind-patterns/trade-winds-arrows-w-island@3x.png";
+import tradeWindsPng from "../../assets/lava-coder/wind-patterns/trade-winds-arrows@3x.png";
 // import { tradeWindsSvg } from "../../assets/lava-coder/wind-patterns/trade-winds-svg";
 // import { tradeWindsDenseSvg } from "../../assets/lava-coder/wind-patterns/trade-winds-dense-svg";
 import { lavaSimulation } from "../../stores/lava-simulation-store";
