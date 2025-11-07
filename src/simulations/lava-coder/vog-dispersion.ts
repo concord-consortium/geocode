@@ -145,8 +145,6 @@ export async function disperseVog({
   };
 
   const disperseVogStep = () => {
-    const stepEndTime = Date.now() + msPerStep;
-
     // Add new vog
     for (let i = 0; i < particlesPerPulse; i++) {
       const u = Math.random() * dispersionFactor - halfDispersionFactor;
@@ -186,16 +184,19 @@ export async function disperseVog({
       particle.v *= 0.999;
     }
 
+    sendUpdateMessage();
+  };
+
+  while (pulseCount < vogPulses) {
+    const stepEndTime = Date.now() + msPerStep;
+    
+    disperseVogStep();
+    pulseCount++;
+
     // Delay to make sure the wind dispersion animates at a reasonable speed
     while (Date.now() < stepEndTime) {
       // Noop
     }
-  };
-
-  while (pulseCount < vogPulses) {
-    disperseVogStep();
-    sendUpdateMessage();
-    pulseCount++;
   }
 
   sendUpdateMessage(true);
