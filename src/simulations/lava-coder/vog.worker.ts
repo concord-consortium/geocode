@@ -1,4 +1,4 @@
-import { VogSimulation } from "./vog-dispersion";
+import { VogSimulation } from "./vog-simulation";
 
 let vogSimulation: VogSimulation;
 

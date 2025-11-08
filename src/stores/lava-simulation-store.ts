@@ -6,7 +6,7 @@ import {
   defaultEruptionVolume, defaultResidual, defaultShowWindPattern, defaultVentLatitude, defaultVentLongitude,
   FlagColor, flagLabels, kSquareMetersPerAcre, maxFlags
 } from "../simulations/lava-coder/lava-constants";
-import MolassesWorker from "../simulations/lava-coder/molasses.worker";
+import LavaWorker from "../simulations/lava-coder/lava.worker";
 import { AsciiRaster } from "../simulations/lava-coder/parse-ascii-raster";
 import VogWorker from "../simulations/lava-coder/vog.worker";
 import { WindPattern } from "../types/lava-coder/lava-coder-types";
@@ -61,7 +61,7 @@ export const LavaSimulationStore = types
     showWindPattern: defaultShowWindPattern,
     flagLocations: observable.array<FlagLocation>([]),
     raster: null as AsciiRaster | null, // AsciiRaster
-    worker: null as Worker | null,
+    lavaWorker: null as Worker | null,
     vogWorker: null as Worker | null,
     resetCount: 0, // Used to clear the lat/long overlay when the simulation is reset
     hazardZones: null as KmlDataSource | null,
@@ -80,7 +80,7 @@ export const LavaSimulationStore = types
       return isPointOnIsland(latitude, longitude, self.raster);
     },
     get isRunning() {
-      return self.worker != null && self.pulseCount < uiStore.pulsesPerEruption;
+      return self.lavaWorker != null && self.pulseCount < uiStore.pulsesPerEruption;
     },
     isPointInHazardZone(latitude: number, longitude: number) {
       if (!self.hazardZones) return false;
@@ -209,13 +209,13 @@ export const LavaSimulationStore = types
       const runMolasses = sim === "molasses" || sim === "both";
       const runVog = sim === "vog" || sim === "both";
       if (runMolasses) {
-        if (self.worker) {
+        if (self.lavaWorker) {
           self.setPulseCount(0);
-          self.worker.terminate();
+          self.lavaWorker.terminate();
         }
 
-        self.worker = new MolassesWorker();
-        self.worker.onmessage = (e) => {
+        self.lavaWorker = new LavaWorker();
+        self.lavaWorker.onmessage = (e) => {
           try {
             const { complete, status } = e.data;
             if (status === "updatedGrid") {
@@ -231,7 +231,7 @@ export const LavaSimulationStore = types
           }
         };
 
-        self.worker.postMessage({ type: "start", parameters });
+        self.lavaWorker.postMessage({ type: "start", parameters });
       }
 
       if (runVog) {
@@ -261,9 +261,9 @@ export const LavaSimulationStore = types
     },
     reset() {
       // Terminate the active simulation worker if it exists
-      if (self.worker) {
-        self.worker.terminate();
-        self.worker = null;
+      if (self.lavaWorker) {
+        self.lavaWorker.terminate();
+        self.lavaWorker = null;
       }
       if (self.vogWorker) {
         self.vogWorker.terminate();

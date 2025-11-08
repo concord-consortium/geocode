@@ -78,7 +78,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
   // Close the lat/long popup when the worker is reset (e.g., when a new simulation starts)
   useEffect(() => {
     return reaction(
-      () => [lavaSimulation.worker, lavaSimulation.vogWorker],
+      () => [lavaSimulation.lavaWorker, lavaSimulation.vogWorker],
       () => clearLatLong()
     );
   }, [clearLatLong]);

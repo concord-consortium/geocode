@@ -37,7 +37,7 @@ export function useLavaOverlay(viewer: CesiumWidget | null) {
   // Remove the old lava layers when a new simulation starts (indicated by a new worker)
   useEffect(() => {
     return reaction(
-      () => lavaSimulation.worker,
+      () => lavaSimulation.lavaWorker,
       () => {
         if (!viewer) return;
         if (lavaLayerRef.current) viewer.imageryLayers.remove(lavaLayerRef.current, true);
