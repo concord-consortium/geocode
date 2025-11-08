@@ -1,9 +1,16 @@
-import { disperseVog } from "./vog-dispersion";
+import { VogSimulation } from "./vog-dispersion";
+
+let vogSimulation: VogSimulation;
 
 self.onmessage = (e) => {
-  if (!e.data.parameters) return;
+  const { parameters, type } = e.data;
 
-  disperseVog({ ...e.data.parameters, postMessage });
+  if (type === "setup") {
+    if (!parameters) return;
+    vogSimulation = new VogSimulation(parameters);
+  } else if (type === "run") {
+    vogSimulation?.runSimulation();
+  }
 };
 
 export default {} as typeof Worker & (new () => Worker);

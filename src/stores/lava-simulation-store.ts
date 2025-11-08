@@ -255,7 +255,8 @@ export const LavaSimulationStore = types
           }
         };
 
-        self.vogWorker.postMessage({ type: "start", parameters });
+        self.vogWorker.postMessage({ type: "setup", parameters });
+        self.vogWorker.postMessage({ type: "run" });
       }
     },
     reset() {
