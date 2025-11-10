@@ -3,13 +3,15 @@ import { VogSimulation } from "./vog-simulation";
 let vogSimulation: VogSimulation;
 
 self.onmessage = (e) => {
-  const { parameters, type } = e.data;
+  const { complete, parameters, type } = e.data;
 
   if (type === "setup") {
     if (!parameters) return;
     vogSimulation = new VogSimulation(parameters);
   } else if (type === "run") {
     vogSimulation?.runSimulation();
+  } else if (type === "step") {
+    vogSimulation?.stepSimulation(complete);
   }
 };
 

@@ -160,7 +160,7 @@ export class VogSimulation {
     });
   }
 
-  public stepSimulation() {
+  public stepSimulation(complete = false) {
     // Add new vog
     for (let i = 0; i < this.particlesPerPulse; i++) {
       const u = Math.random() * this.dispersionFactor - this.halfDispersionFactor;
@@ -200,7 +200,7 @@ export class VogSimulation {
       particle.v *= 0.999;
     }
 
-    this.sendUpdateMessage();
+    this.sendUpdateMessage(complete);
   }
 
   public async runSimulation() {

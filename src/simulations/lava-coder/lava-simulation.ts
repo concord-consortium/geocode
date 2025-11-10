@@ -147,6 +147,10 @@ export async function runLavaSimulation({
     return lavaElevationGrid;
   }
 
+  const sendStepMessage = (complete = false) => {
+    postMessage({ status: "step", complete });
+  };
+
   const sendUpdateMessage = (complete = false) => {
     validateRange();
     postMessage({
@@ -212,6 +216,7 @@ export async function runLavaSimulation({
     }
 
     pulseCount++;
+    sendStepMessage(currentTotalVolume <= 0);
     if (Date.now() - lastFrameTime >= millisecondsPerFrame) {
       sendUpdateMessage();
       lastFrameTime = Date.now();

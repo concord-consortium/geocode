@@ -113,7 +113,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
 
     // We use createAsyncFunction for runSimulation so the blockly program will wait for the simulation to complete
     // before continuing execution
-    const runSimulationWrapper = (callback: () => void) => lavaSimulation.runSimulation("molasses", callback);
+    const runSimulationWrapper = (callback: () => void) => lavaSimulation.runSimulation("lava", callback);
     interpreter.setProperty(scope, "runMolassesSimulation", interpreter.createAsyncFunction(runSimulationWrapper));
 
     const runVogSimulationWrapper = (callback: () => void) => lavaSimulation.runSimulation("vog", callback);

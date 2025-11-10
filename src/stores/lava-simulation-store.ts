@@ -185,7 +185,7 @@ export const LavaSimulationStore = types
     };
   })
   .actions((self) => ({
-    runSimulation(sim: "molasses" | "vog" | "both", onFinish?: () => void) {
+    runSimulation(sim: "lava" | "vog" | "both", onFinish?: () => void) {
       if (!self.raster) return;
 
       let completeSims = 0;
@@ -206,9 +206,9 @@ export const LavaSimulationStore = types
         windPattern: self.windPattern
       };
 
-      const runMolasses = sim === "molasses" || sim === "both";
+      const runLava = sim === "lava" || sim === "both";
       const runVog = sim === "vog" || sim === "both";
-      if (runMolasses) {
+      if (runLava) {
         if (self.lavaWorker) {
           self.setPulseCount(0);
           self.lavaWorker.terminate();
@@ -225,6 +225,12 @@ export const LavaSimulationStore = types
               self.countCoveredCells(e.data.grid);
 
               if (complete) completeSim();
+            } else if (status === "step") {
+              if (runVog) {
+                self.vogWorker?.postMessage({ type: "step" });
+                // The vog simulation has twice as many steps as the lava simulation
+                setTimeout(() => self.vogWorker?.postMessage({ type: "step", complete }), 25);
+              }
             }
           } catch (error) {
             console.error("Error handling worker message:", error, e);
@@ -256,7 +262,8 @@ export const LavaSimulationStore = types
         };
 
         self.vogWorker.postMessage({ type: "setup", parameters });
-        self.vogWorker.postMessage({ type: "run" });
+        // If the lava simulation is also running, it will manage the progress of the vog simulation
+        if (!runLava) self.vogWorker.postMessage({ type: "run" });
       }
     },
     reset() {
