@@ -29,6 +29,7 @@ export class VogSimulation {
   private ventLongitude: number;
   private windData: WindData;
 
+  private timePerPulse: number;
   private vogPulses: number;
   private particlesPerPulse: number;
   private dispersionFactor: number;
@@ -59,6 +60,7 @@ export class VogSimulation {
     this.vogPulses = 2 * pulses;
     // logVolume is between 6 and 10
     const logVolume = Math.log10(totalVolume);
+    this.timePerPulse = timePerPulse * logVolume / 10;
     const totalParticles = Math.floor(4000 * logVolume);
     this.particlesPerPulse = Math.max(1, Math.floor(totalParticles / this.vogPulses));
     // dispersionFactor is between 1 and 2
@@ -173,17 +175,17 @@ export class VogSimulation {
     for (const particle of this.particles) {
       // Determine particle position assuming constant wind at current location's velocity
       const [uWind, vWind] = this.getWindAt(particle.latitude, particle.longitude);
-      const selfDU = particle.u * timePerPulse;
-      const selfDV = particle.v * timePerPulse;
-      const projectedLat = particle.latitude + (vWind * timePerPulse) + selfDV;
-      const projectedLong = particle.longitude + (uWind * timePerPulse) + selfDU;
+      const selfDU = particle.u * this.timePerPulse;
+      const selfDV = particle.v * this.timePerPulse;
+      const projectedLat = particle.latitude + (vWind * this.timePerPulse) + selfDV;
+      const projectedLong = particle.longitude + (uWind * this.timePerPulse) + selfDU;
 
       // Use average wind at current and projected location to determine actual new position
       const [projectedU, projectedV] = this.getWindAt(projectedLat, projectedLong);
       const averageU = (uWind + projectedU) / 2;
       const averageV = (vWind + projectedV) / 2;
-      const newLatitude = particle.latitude + (averageV * timePerPulse) + selfDV;
-      const newLongitude = particle.longitude + (averageU * timePerPulse) + selfDU;
+      const newLatitude = particle.latitude + (averageV * this.timePerPulse) + selfDV;
+      const newLongitude = particle.longitude + (averageU * this.timePerPulse) + selfDU;
 
       // Remove particle from old position in concentration grid
       this.updateVogGrid(-1, particle.latitude, particle.longitude);
