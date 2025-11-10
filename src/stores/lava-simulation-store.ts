@@ -215,6 +215,7 @@ export const LavaSimulationStore = types
         }
 
         self.lavaWorker = new LavaWorker();
+        let lastStepTime = Date.now();
         self.lavaWorker.onmessage = (e) => {
           try {
             const { complete, status } = e.data;
@@ -226,10 +227,12 @@ export const LavaSimulationStore = types
 
               if (complete) completeSim();
             } else if (status === "step") {
+              const stepDuration = Date.now() - lastStepTime;
+              lastStepTime = Date.now();
               if (runVog) {
                 self.vogWorker?.postMessage({ type: "step" });
                 // The vog simulation has twice as many steps as the lava simulation
-                setTimeout(() => self.vogWorker?.postMessage({ type: "step", complete }), 25);
+                setTimeout(() => self.vogWorker?.postMessage({ type: "step", complete }), stepDuration / 2);
               }
             }
           } catch (error) {
