@@ -27,8 +27,10 @@ export function useVog(viewer: CesiumWidget | null, verticalExaggeration = 1) {
         for (let j = 0; j < vogConcentrations[i].length; j += 8 + Math.floor(Math.random() * 8)) {
           const _i = i + Math.floor(Math.random() * 8);
           const vogConcentration = vogConcentrations[_i] ? vogConcentrations[_i][j] : undefined;
+
           if (vogConcentration && vogConcentration > 0) {
             const concentrationFactor = Math.min(1, vogConcentration / 10);
+
             const lat = vogBounds.north - (vogBounds.north - vogBounds.south) * (_i / vogConcentrations.length);
             const long = vogBounds.west + (vogBounds.east - vogBounds.west) * (j / vogConcentrations[_i].length);
             const dLat = lat - ventLatitude;
@@ -36,15 +38,14 @@ export function useVog(viewer: CesiumWidget | null, verticalExaggeration = 1) {
             const dist = Math.sqrt(dLat * dLat + dLong * dLong);
             const _distFactor = Math.log(dist * 1000);
             const distFactor = _distFactor ** 2;
+
             const elevationFactor = Math.random() * 100 * verticalExaggeration;
             const minElevation = elevationAtPoint(lat, long, raster) + elevationFactor;
             const maxElevation = ventElevation + (50 * distFactor * verticalExaggeration) + elevationFactor;
             const elevation = Math.random() * (maxElevation - minElevation) + minElevation;
-            // const elevation = Math.max(elevationAtPoint(lat, long, raster) + elevationFactor,
-            //   ventElevation + (50 * distFactor * verticalExaggeration) + elevationFactor);
+
             cloudsRef.current.add({
               brightness: .75 + Math.random() * .15,
-              // color: Color.YELLOW.withAlpha(.8 - .01 * distFactor),
               color: Color.DARKGRAY.withAlpha(.2 + .6 * concentrationFactor),
               position: Cartesian3.fromDegrees(long, lat, elevation),
               scale: new Cartesian2(3000 + 500 * distFactor, 2000 + 250 * distFactor),
