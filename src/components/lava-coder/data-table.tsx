@@ -14,6 +14,7 @@ const DataTableRow = observer(function DataTableRow({ row }: IDataTableRowProps)
   const lavaImpact = row?.displayLava && row.lavaDepth != null
     ? row.lavaDepth > 0 ? "Yes" : "No"
     : "";
+  const vogImpact = "";
 
   return (
     <tr>
@@ -27,6 +28,7 @@ const DataTableRow = observer(function DataTableRow({ row }: IDataTableRowProps)
       </td>
       <td className="td-left">{row?.name ?? ""}</td>
       <td className="td-center">{lavaImpact}</td>
+      <td className="td-center">{vogImpact}</td>
     </tr>
   );
 });
@@ -45,6 +47,7 @@ export const DataTable = observer(function DataTable({ dataTable }: IDataTablePr
             <th className="flag">Flag</th>
             <th className="name">Flag Name</th>
             <th className="lava">Lava Impact?</th>
+            <th className="vog">Vog Impact?</th>
           </tr>
         </thead>
         <tbody>
