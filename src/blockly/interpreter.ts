@@ -183,6 +183,21 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       row.setLavaDepth(lavaSimulation.lavaDepthAtPoint(row.latitude, row.longitude));
     });
 
+    addFunc("computeVog", (flagName: string) => {
+      if (!flagName) {
+        blocklyController.throwError("You must select a flag.");
+        return;
+      }
+
+      const row = lavaSimulation.dataTable?.rows.find(r => r.name === flagName);
+      if (!row) {
+        blocklyController.throwError(`You must add a row for "${flagName}" before you can compute its vog impact.`);
+        return;
+      }
+
+      row.setVogConcentration(lavaSimulation.vogConcentrationAtPoint(row.latitude, row.longitude));
+    });
+
     addFunc("addData", (flagName: string) => {
       if (!flagName) {
         blocklyController.throwError("You must select a flag.");
@@ -195,7 +210,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
         return;
       }
 
-      row.setDisplayLava(true);
+      row.setDisplayData(true);
     });
 
     /** ==== Tephra simulation model setters ==== */

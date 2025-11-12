@@ -9,6 +9,7 @@
     <block type="vog_show_wind_pattern" />
     <block type="molasses_set_flag_location" />
     <block type="molasses_compute_lava" />
+    <block type="molasses_compute_vog" />
     <block type="molasses_add_data" />
   </category>
 

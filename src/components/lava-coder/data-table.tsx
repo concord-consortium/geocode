@@ -11,10 +11,12 @@ interface IDataTableRowProps {
 const DataTableRow = observer(function DataTableRow({ row }: IDataTableRowProps) {
   const color = row ? flagColorInfo[row.color ?? ""]?.color ?? "#000" : "#000";
   const label = row?.label ?? "";
-  const lavaImpact = row?.displayLava && row.lavaDepth != null
+  const lavaImpact = row?.displayData && row.lavaDepth != null
     ? row.lavaDepth > 0 ? "Yes" : "No"
     : "";
-  const vogImpact = "";
+  const vogImpact = row?.displayData && row.vogConcentration != null
+    ? row.vogConcentration > 0 ? "Yes" : "No"
+    : "";
 
   return (
     <tr>

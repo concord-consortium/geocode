@@ -10,6 +10,7 @@ export const CREATE_TABLE = "Create a data table";
 export const ADD_ROW = "Create row in data table";
 export const FOR_FLAG = "For flag";
 export const COMPUTE_LAVA = "Compute lava flow impact";
+export const COMPUTE_VOG = "Compute VOG impact";
 export const AT_FLAG = "At flag";
 export const ADD_DATA = "Add data from flag";
 export const AT_LOCATION = "at location";

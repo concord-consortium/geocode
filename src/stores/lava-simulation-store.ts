@@ -109,6 +109,18 @@ export const LavaSimulationStore = types
         return 0;
       }
       return lavaElevations[row][column];
+    },
+    vogConcentrationAtPoint(latitude: number, longitude: number) {
+      // TODO: This should handle historical vog concentrations, not just current concentrations
+      if (!vogConcentrations || !vogBounds) return 0;
+
+      const { east, north, south, west } = vogBounds;
+      const column = Math.floor((longitude - west) / (east - west) * vogConcentrations[0].length);
+      const row = Math.floor((north - latitude) / (north - south) * vogConcentrations.length);
+      if (row < 0 || row >= vogConcentrations.length || column < 0 || column >= vogConcentrations[0].length) {
+        return 0;
+      }
+      return vogConcentrations[row][column];
     }
   }))
   .views((self) => ({
