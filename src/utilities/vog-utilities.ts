@@ -2,7 +2,7 @@ import konaWindData from "../assets/lava-coder/wind-patterns/kona-winds.json";
 import tradeWindData from "../assets/lava-coder/wind-patterns/trade-winds.json";
 import { WindPattern } from "../types/lava-coder/lava-coder-types";
 
-interface WindData {
+export interface WindData {
   columns: number;
   data: {
     lats: number[];
