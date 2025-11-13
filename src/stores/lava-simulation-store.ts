@@ -253,12 +253,12 @@ export const LavaSimulationStore = types
           try {
             const { complete, status } = e.data;
             if (status === "updatedVog") {
-            vogConcentrations = e.data.grid;
-            vogBounds = e.data.gridBounds;
-            self.countVoggedCells(e.data.grid);
+              vogConcentrations = e.data.grid;
+              vogBounds = e.data.gridBounds;
+              self.countVoggedCells(e.data.grid);
 
-            if (complete) completeSim();
-          }
+              if (complete) completeSim();
+            }
           } catch (error) {
             console.error("Error handling vog worker message:", error, e);
           }
