@@ -5,7 +5,7 @@ import "./acres-covered-box.scss";
 
 export const AcresCovered = observer(function AcresCovered() {
   // Only display if the simulation is running or has completed.
-  if (!lavaSimulation.worker) return null;
+  if (!lavaSimulation.lavaWorker) return null;
 
   return (
     <div className="acres-covered-box">

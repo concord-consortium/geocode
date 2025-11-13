@@ -1,5 +1,6 @@
 export const RUN_SIMULATION = "Compute and visualize lava flow";
 export const RUN_VOG_SIMULATION = "Compute and visualize vog";
+export const RUN_MOLASSES_VOG_SIMULATION = "Compute and visualize lava flow and vog";
 export const SET_ERUPTION_VOLUME = "Set eruption volume (m³)";
 export const SET_LAVA_THICKNESS = "Set lava thickness (m)";
 export const SET_VENT_LOCATION = "Set vent location";

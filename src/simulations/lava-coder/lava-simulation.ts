@@ -94,7 +94,6 @@ function getLowerNeighbors(cell: GridCell, grid: GridCell[][]) {
 }
 
 export interface LavaSimulationParameters {
-  postMessage: (message: any) => void;
   pulseVolume: number;
   raster: AsciiRaster;
   residual: number;
@@ -102,8 +101,8 @@ export interface LavaSimulationParameters {
   ventLatitude: number;
   ventLongitude: number;
 }
-export async function runSimulation({
-  postMessage, pulseVolume, raster, residual, totalVolume, ventLatitude, ventLongitude
+export async function runLavaSimulation({
+  pulseVolume, raster, residual, totalVolume, ventLatitude, ventLongitude
 }: LavaSimulationParameters) {
   const startTime = Date.now();
 
@@ -147,6 +146,10 @@ export async function runSimulation({
     }
     return lavaElevationGrid;
   }
+
+  const sendStepMessage = (complete = false) => {
+    postMessage({ status: "step", complete });
+  };
 
   const sendUpdateMessage = (complete = false) => {
     validateRange();
@@ -213,6 +216,7 @@ export async function runSimulation({
     }
 
     pulseCount++;
+    sendStepMessage(currentTotalVolume <= 0);
     if (Date.now() - lastFrameTime >= millisecondsPerFrame) {
       sendUpdateMessage();
       lastFrameTime = Date.now();

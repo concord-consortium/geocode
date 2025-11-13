@@ -6,7 +6,7 @@ import {
   defaultEruptionVolume, defaultResidual, defaultShowWindPattern, defaultVentLatitude, defaultVentLongitude,
   FlagColor, flagLabels, kSquareMetersPerAcre, maxFlags
 } from "../simulations/lava-coder/lava-constants";
-import MolassesWorker from "../simulations/lava-coder/molasses.worker";
+import LavaWorker from "../simulations/lava-coder/lava.worker";
 import { AsciiRaster } from "../simulations/lava-coder/parse-ascii-raster";
 import VogWorker from "../simulations/lava-coder/vog.worker";
 import { WindPattern } from "../types/lava-coder/lava-coder-types";
@@ -61,7 +61,7 @@ export const LavaSimulationStore = types
     showWindPattern: defaultShowWindPattern,
     flagLocations: observable.array<FlagLocation>([]),
     raster: null as AsciiRaster | null, // AsciiRaster
-    worker: null as Worker | null,
+    lavaWorker: null as Worker | null,
     vogWorker: null as Worker | null,
     resetCount: 0, // Used to clear the lat/long overlay when the simulation is reset
     hazardZones: null as KmlDataSource | null,
@@ -80,7 +80,7 @@ export const LavaSimulationStore = types
       return isPointOnIsland(latitude, longitude, self.raster);
     },
     get isRunning() {
-      return self.worker != null && self.pulseCount < uiStore.pulsesPerEruption;
+      return self.lavaWorker != null && self.pulseCount < uiStore.pulsesPerEruption;
     },
     isPointInHazardZone(latitude: number, longitude: number) {
       if (!self.hazardZones) return false;
@@ -197,79 +197,95 @@ export const LavaSimulationStore = types
     };
   })
   .actions((self) => ({
-    runSimulation(onFinish?: () => void) {
+    runSimulation(sim: "lava" | "vog" | "both", onFinish?: () => void) {
       if (!self.raster) return;
 
-      if (self.worker) {
-        self.setPulseCount(0);
-        self.worker.terminate();
-      }
-
-      self.worker = new MolassesWorker();
-      self.worker.onmessage = (e) => {
-        try {
-          const { complete, status } = e.data;
-          if (status === "updatedGrid") {
-            self.setPulseCount(e.data.pulseCount);
-            lavaElevations = e.data.grid;
-            gridBounds = e.data.gridBounds;
-            self.countCoveredCells(e.data.grid);
-
-            if (complete) onFinish?.();
-          }
-        } catch (error) {
-          console.error("Error handling worker message:", error, e);
-        }
-      };
-
-      const parameters = {
-        pulseVolume: self.totalVolume / uiStore.pulsesPerEruption,
-        raster: self.raster,
-        residual: self.residual,
-        totalVolume: self.totalVolume,
-        ventLatitude: self.ventLatitude,
-        ventLongitude: self.ventLongitude
-      };
-      self.worker.postMessage({ type: "start", parameters });
-    },
-    runVogSimulation(onFinish?: () => void) {
-      if (!self.raster) return;
-
-      if (self.vogWorker) {
-        self.vogWorker.terminate();
-      }
-
-      self.vogWorker = new VogWorker();
-      self.vogWorker.onmessage = (e) => {
-        try {
-          const { status } = e.data;
-          if (status === "updatedVog") {
-            vogConcentrations = e.data.grid;
-            vogBounds = e.data.gridBounds;
-            self.countVoggedCells(e.data.grid);
-
-            if (e.data.complete) onFinish?.();
-          }
-        } catch (error) {
-          console.error("Error handling vog worker message:", error, e);
+      let completeSims = 0;
+      const completeSim = () => {
+        if (++completeSims >= (sim === "both" ? 2 : 1)) {
+          onFinish?.();
         }
       };
 
       const parameters = {
         pulses: uiStore.pulsesPerEruption,
+        pulseVolume: self.totalVolume / uiStore.pulsesPerEruption,
         raster: self.raster,
+        residual: self.residual,
         totalVolume: self.totalVolume,
         ventLatitude: self.ventLatitude,
         ventLongitude: self.ventLongitude,
         windPattern: self.windPattern
       };
-      self.vogWorker.postMessage({ type: "start", parameters });
+
+      const runLava = sim === "lava" || sim === "both";
+      const runVog = sim === "vog" || sim === "both";
+      if (runLava) {
+        if (self.lavaWorker) {
+          self.setPulseCount(0);
+          self.lavaWorker.terminate();
+        }
+
+        self.lavaWorker = new LavaWorker();
+        let lastStepTime = Date.now();
+        self.lavaWorker.onmessage = (e) => {
+          try {
+            const { complete, status } = e.data;
+            if (status === "updatedGrid") {
+              self.setPulseCount(e.data.pulseCount);
+              lavaElevations = e.data.grid;
+              gridBounds = e.data.gridBounds;
+              self.countCoveredCells(e.data.grid);
+
+              if (complete) completeSim();
+            } else if (status === "step") {
+              const stepDuration = Date.now() - lastStepTime;
+              lastStepTime = Date.now();
+              if (runVog) {
+                self.vogWorker?.postMessage({ type: "step" });
+                // The vog simulation has twice as many steps as the lava simulation
+                setTimeout(() => self.vogWorker?.postMessage({ type: "step", complete }), stepDuration / 2);
+              }
+            }
+          } catch (error) {
+            console.error("Error handling worker message:", error, e);
+          }
+        };
+
+        self.lavaWorker.postMessage({ type: "start", parameters });
+      }
+
+      if (runVog) {
+        if (self.vogWorker) {
+          self.vogWorker.terminate();
+        }
+
+        self.vogWorker = new VogWorker();
+        self.vogWorker.onmessage = (e) => {
+          try {
+            const { complete, status } = e.data;
+            if (status === "updatedVog") {
+              vogConcentrations = e.data.grid;
+              vogBounds = e.data.gridBounds;
+              self.countVoggedCells(e.data.grid);
+
+              if (complete) completeSim();
+            }
+          } catch (error) {
+            console.error("Error handling vog worker message:", error, e);
+          }
+        };
+
+        self.vogWorker.postMessage({ type: "setup", parameters });
+        // If the lava simulation is also running, it will manage the progress of the vog simulation
+        if (!runLava) self.vogWorker.postMessage({ type: "run" });
+      }
     },
     reset() {
       // Terminate the active simulation worker if it exists
-      if (self.worker) {
-        self.worker.terminate();
-        self.worker = null;
+      if (self.lavaWorker) {
+        self.lavaWorker.terminate();
+        self.lavaWorker = null;
       }
       if (self.vogWorker) {
         self.vogWorker.terminate();
