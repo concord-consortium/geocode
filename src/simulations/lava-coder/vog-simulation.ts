@@ -4,6 +4,8 @@ import { rangeLat, rangeLong } from "./lava-constants";
 import { AsciiRaster } from "./parse-ascii-raster";
 
 interface VogParticle {
+  age: number;
+  alive: boolean;
   latitude: number;
   longitude: number;
   u: number;
@@ -24,11 +26,13 @@ export interface VogSimulationParameters {
 export class VogSimulation {
   private particles: VogParticle[] = [];
   private grid: number[][] = [];
+  private stage: "creation" | "dispersion" = "creation";
 
   private ventLatitude: number;
   private ventLongitude: number;
   private windData: WindData;
 
+  private particleLifespan = Infinity;
   private timePerPulse: number;
   private vogPulses: number;
   private particlesPerPulse: number;
@@ -164,15 +168,28 @@ export class VogSimulation {
 
   public stepSimulation(complete = false) {
     // Add new vog
-    for (let i = 0; i < this.particlesPerPulse; i++) {
-      const u = Math.random() * this.dispersionFactor - this.halfDispersionFactor;
-      const v = Math.random() * this.dispersionFactor - this.halfDispersionFactor;
-      this.particles.push({ latitude: this.ventLatitude, longitude: this.ventLongitude, u, v });
-      this.updateVogGrid(1, this.ventLatitude, this.ventLongitude);
+    if (this.stage === "creation") {
+      for (let i = 0; i < this.particlesPerPulse; i++) {
+        const u = Math.random() * this.dispersionFactor - this.halfDispersionFactor;
+        const v = Math.random() * this.dispersionFactor - this.halfDispersionFactor;
+        this.particles.push({ age: 0, alive: true, latitude: this.ventLatitude, longitude: this.ventLongitude, u, v });
+        this.updateVogGrid(1, this.ventLatitude, this.ventLongitude);
+      }
     }
 
     // Update vog
     for (const particle of this.particles) {
+      if (!particle.alive) continue;
+
+      particle.age += 1;
+
+      // Kill old particles
+      if (particle.age > this.particleLifespan) {
+        particle.alive = false;
+        this.updateVogGrid(-1, particle.latitude, particle.longitude);
+        continue;
+      }
+
       // Determine particle position assuming constant wind at current location's velocity
       const [uWind, vWind] = this.getWindAt(particle.latitude, particle.longitude);
       const selfDU = particle.u * this.timePerPulse;
@@ -198,8 +215,8 @@ export class VogSimulation {
       this.updateVogGrid(1, newLatitude, newLongitude);
 
       // Decay unique particle velocity
-      particle.u *= 0.999;
-      particle.v *= 0.999;
+      particle.u *= 0.9995;
+      particle.v *= 0.9995;
     }
 
     this.sendUpdateMessage(complete);
@@ -207,12 +224,20 @@ export class VogSimulation {
 
   public async runSimulation() {
     let pulseCount = 0;
+    this.particleLifespan = this.vogPulses;
 
     while (pulseCount < this.vogPulses) {
       const stepEndTime = Date.now() + msPerStep;
 
       this.stepSimulation();
       pulseCount++;
+
+      // Switch to dispersion mode once we're finished creating particles
+      if (pulseCount >= this.vogPulses && this.stage === "creation") {
+        this.setStage("dispersion");
+        this.vogPulses = this.vogPulses / 2;
+        pulseCount = 0;
+      }
 
       // Delay to make sure the wind dispersion animates at a reasonable speed
       while (Date.now() < stepEndTime) {
@@ -221,5 +246,9 @@ export class VogSimulation {
     }
 
     this.sendUpdateMessage(true);
+  }
+
+  public setStage(stage: "creation" | "dispersion") {
+    this.stage = stage;
   }
 }
