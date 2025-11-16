@@ -194,13 +194,19 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
         return;
       }
 
+      const flag = lavaSimulation.flagLocations.find(f => f.name === flagName);
+      if (!flag) {
+        blocklyController.throwError(`Flag "${flagName}" not found.`);
+        return;
+      }
+
       const row = lavaSimulation.dataTable?.rows.find(r => r.name === flagName);
       if (!row) {
         blocklyController.throwError(`You must add a row for "${flagName}" before you can compute its vog impact.`);
         return;
       }
 
-      row.setVogConcentration(lavaSimulation.vogConcentrationAtPoint(row.latitude, row.longitude));
+      row.setVogConcentration(flag.vogConcentration ?? 0);
     });
 
     addFunc("addData", (flagName: string) => {

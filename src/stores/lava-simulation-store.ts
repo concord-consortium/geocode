@@ -11,7 +11,7 @@ import { AsciiRaster } from "../simulations/lava-coder/parse-ascii-raster";
 import VogWorker from "../simulations/lava-coder/vog.worker";
 import { WindPattern } from "../types/lava-coder/lava-coder-types";
 import { pointInPolygon } from "../utilities/geometry-utils";
-import { convertLatitudeToY, convertLongitudeToX, isPointOnIsland } from "../utilities/molasses-utils";
+import { isPointOnIsland } from "../utilities/molasses-utils";
 import { LavaSimulationAuthorSettings, LavaSimulationAuthorSettingsProps } from "./stores";
 import { uiStore } from "./ui-store";
 
@@ -25,9 +25,6 @@ export let gridBounds: { east: number, north: number, south: number, west: numbe
 
 export let vogConcentrations: number[][] | undefined;
 export let vogBounds: { east: number, north: number, south: number, west: number } | undefined;
-
-// Max vog concentrations are tracked throughout a simulation so we can tell if a locaiton was ever affected by vog.
-let maxVogConcentrations: number[][] | undefined;
 
 function countCoveredCells(_lavaElevations: number[][]) {
   let coveredCells = 0;
@@ -47,6 +44,7 @@ interface FlagLocation {
   label?: string;
   latitude: number;
   longitude: number;
+  vogConcentration?: number;
 }
 
 export const LavaSimulationStore = types
@@ -114,14 +112,15 @@ export const LavaSimulationStore = types
       return lavaElevations[row][column];
     },
     vogConcentrationAtPoint(latitude: number, longitude: number) {
-      if (!maxVogConcentrations || !self.raster) return 0;
+      if (!vogConcentrations || !vogBounds) return 0;
 
-      const y = convertLatitudeToY(latitude, self.raster);
-      const x = convertLongitudeToX(longitude, self.raster);
-      if (y < 0 || y >= maxVogConcentrations.length || x < 0 || x >= maxVogConcentrations[0].length) {
+      const { east, north, south, west } = vogBounds;
+      const column = Math.floor((longitude - west) / (east - west) * vogConcentrations[0].length);
+      const row = Math.floor((north - latitude) / (north - south) * vogConcentrations.length);
+      if (row < 0 || row >= vogConcentrations.length || column < 0 || column >= vogConcentrations[0].length) {
         return 0;
       }
-      return maxVogConcentrations[y][x];
+      return vogConcentrations[row][column];
     }
   }))
   .views((self) => ({
@@ -261,15 +260,10 @@ export const LavaSimulationStore = types
           self.vogWorker.terminate();
         }
 
-        // Clear max vog concentration grid, which is the same size as the elevation grid
-        maxVogConcentrations = [];
-        for (let i = 0; i < self.raster.header.nrows; i++) {
-          const row: number[] = [];
-          for (let j = 0; j < self.raster.header.ncols; j++) {
-            row.push(0);
-          }
-          maxVogConcentrations.push(row);
-        }
+        // Clear flag location vog concentrations
+        self.flagLocations.forEach(flag => {
+          flag.vogConcentration = 0;
+        });
 
         self.vogWorker = new VogWorker();
         self.vogWorker.onmessage = (e) => {
@@ -280,28 +274,11 @@ export const LavaSimulationStore = types
               vogBounds = e.data.gridBounds;
               self.countVoggedCells(e.data.grid);
 
-              // Update max vog concentrations
-              if (vogConcentrations && vogBounds && maxVogConcentrations && self.raster) {
-                const vogLongStep = (vogBounds.east - vogBounds.west) / vogConcentrations[0].length;
-                const vogLatStep = (vogBounds.north - vogBounds.south) / vogConcentrations.length;
-                for (let i = 0; i < vogConcentrations.length; i++) {
-                  const row = vogConcentrations[i];
-                  const latitude = vogBounds.north - (i + 0.5) * vogLatStep;
-                  const y = convertLatitudeToY(latitude, self.raster);
-                  if (y >= 0 && y < maxVogConcentrations.length) {
-                    for (let j = 0; j < row.length; j++) {
-                      const longitude = vogBounds.west + (j + 0.5) * vogLongStep;
-                      const x = convertLongitudeToX(longitude, self.raster);
-                      if (x >= 0 && x < maxVogConcentrations[0].length) {
-                        maxVogConcentrations[y][x] = Math.max(
-                          maxVogConcentrations[y][x],
-                          row[j]
-                        );
-                      }
-                    }
-                  }
-                }
-              }
+              // Update flag location vog concentrations
+              self.flagLocations.forEach(flag => {
+                const vogConcentration = self.vogConcentrationAtPoint(flag.latitude, flag.longitude);
+                flag.vogConcentration = Math.max(flag.vogConcentration ?? 0, vogConcentration);
+              });
 
               if (complete) completeSim();
             }
