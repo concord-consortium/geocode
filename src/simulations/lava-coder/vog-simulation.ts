@@ -26,7 +26,7 @@ export interface VogSimulationParameters {
 export class VogSimulation {
   private particles: VogParticle[] = [];
   private grid: number[][] = [];
-  private stage: "creation" | "dispersion" = "creation";
+  private phase: "creation" | "dispersion" = "creation";
 
   private ventLatitude: number;
   private ventLongitude: number;
@@ -169,7 +169,7 @@ export class VogSimulation {
 
   public stepSimulation(complete = false) {
     // Add new vog
-    if (this.stage === "creation") {
+    if (this.phase === "creation") {
       for (let i = 0; i < this.particlesPerPulse; i++) {
         const u = Math.random() * this.dispersionFactor - this.halfDispersionFactor;
         const v = Math.random() * this.dispersionFactor - this.halfDispersionFactor;
@@ -182,7 +182,7 @@ export class VogSimulation {
     for (const particle of this.particles) {
       if (!particle.alive) continue;
 
-      particle.age += 1;
+      particle.age++;
 
       // Kill old particles
       if (particle.age > this.particleLifespan) {
@@ -233,8 +233,8 @@ export class VogSimulation {
       pulseCount++;
 
       // Switch to dispersion mode once we're finished creating particles
-      if (pulseCount >= this.vogPulses && this.stage === "creation") {
-        this.setStage("dispersion");
+      if (pulseCount >= this.vogPulses && this.phase === "creation") {
+        this.setPhase("dispersion");
         pulseCount = 0;
       }
 
@@ -247,9 +247,9 @@ export class VogSimulation {
     this.sendUpdateMessage(true);
   }
 
-  public setStage(stage: "creation" | "dispersion") {
-    this.stage = stage;
-    if (stage === "dispersion") {
+  public setPhase(phase: "creation" | "dispersion") {
+    this.phase = phase;
+    if (phase === "dispersion") {
       this.vogPulses = this.vogPulses / 2;
     }
   }

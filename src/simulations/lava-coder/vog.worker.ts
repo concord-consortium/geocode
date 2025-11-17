@@ -16,7 +16,7 @@ self.onmessage = (e) => {
     vogSimulation.stepSimulation();
     if (complete) {
       // When the lava eruption completes, continue dispersing vog
-      vogSimulation.setStage("dispersion");
+      vogSimulation.setPhase("dispersion");
       vogSimulation.runSimulation();
     }
   }
