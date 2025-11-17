@@ -4,15 +4,13 @@ import { rangeLat, rangeLong } from "./lava-constants";
 import { AsciiRaster } from "./parse-ascii-raster";
 
 interface VogParticle {
-  age: number;
-  alive: boolean;
   latitude: number;
   longitude: number;
   u: number;
   v: number;
 }
 
-const timePerPulse = .0002;
+const timePerPulse = .0004;
 const msPerStep = 25;
 
 export interface VogSimulationParameters {
@@ -32,7 +30,6 @@ export class VogSimulation {
   private ventLongitude: number;
   private windData: WindData;
 
-  private particleLifespan = Infinity;
   private timePerPulse: number;
   private vogPulses: number;
   private particlesPerPulse: number;
@@ -62,7 +59,6 @@ export class VogSimulation {
   
     // Set up simulation
     this.vogPulses = 2 * pulses;
-    this.particleLifespan = this.vogPulses;
     // logVolume is between 6 and 10
     const logVolume = Math.log10(totalVolume);
     this.timePerPulse = timePerPulse * logVolume / 10;
@@ -173,20 +169,13 @@ export class VogSimulation {
       for (let i = 0; i < this.particlesPerPulse; i++) {
         const u = Math.random() * this.dispersionFactor - this.halfDispersionFactor;
         const v = Math.random() * this.dispersionFactor - this.halfDispersionFactor;
-        this.particles.push({ age: 0, alive: true, latitude: this.ventLatitude, longitude: this.ventLongitude, u, v });
+        this.particles.push({ latitude: this.ventLatitude, longitude: this.ventLongitude, u, v });
         this.updateVogGrid(1, this.ventLatitude, this.ventLongitude);
       }
     }
 
     // Update vog
     for (const particle of this.particles) {
-      // Kill the particle if it's too old
-      if (++particle.age > this.particleLifespan) {
-        particle.alive = false;
-        this.updateVogGrid(-1, particle.latitude, particle.longitude);
-        continue;
-      }
-
       // Determine particle position assuming constant wind at current location's velocity
       const [uWind, vWind] = this.getWindAt(particle.latitude, particle.longitude);
       const selfDU = particle.u * this.timePerPulse;
@@ -214,14 +203,6 @@ export class VogSimulation {
       // Decay unique particle velocity
       particle.u *= 0.999;
       particle.v *= 0.999;
-    }
-
-    // Remove dead particles
-    // The oldest particles are always at the beginning of the particles array.
-    let oldParticle = this.particles[0];
-    while (oldParticle && !oldParticle.alive) {
-      this.particles.shift();
-      oldParticle = this.particles[0];
     }
 
     this.sendUpdateMessage(complete);
