@@ -180,12 +180,8 @@ export class VogSimulation {
 
     // Update vog
     for (const particle of this.particles) {
-      if (!particle.alive) continue;
-
-      particle.age++;
-
-      // Kill old particles
-      if (particle.age > this.particleLifespan) {
+      // Kill the particle if it's too old
+      if (++particle.age > this.particleLifespan) {
         particle.alive = false;
         this.updateVogGrid(-1, particle.latitude, particle.longitude);
         continue;
@@ -218,6 +214,14 @@ export class VogSimulation {
       // Decay unique particle velocity
       particle.u *= 0.999;
       particle.v *= 0.999;
+    }
+
+    // Remove dead particles
+    // The oldest particles are always at the beginning of the particles array.
+    let oldParticle = this.particles[0];
+    while (oldParticle && !oldParticle.alive) {
+      this.particles.shift();
+      oldParticle = this.particles[0];
     }
 
     this.sendUpdateMessage(complete);
