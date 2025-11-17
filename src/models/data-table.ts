@@ -2,19 +2,23 @@ import { types } from "mobx-state-tree";
 
 export const DataRow = types.model("DataRow", {
   color: types.string,
-  displayLava: types.optional(types.boolean, false),
+  displayData: types.optional(types.boolean, false),
   label: types.string,
   latitude: types.number,
   lavaDepth: types.maybe(types.number),
   longitude: types.number,
   name: types.string,
+  vogConcentration: types.maybe(types.number)
 })
 .actions(self => ({
-  setDisplayLava(display: boolean) {
-    self.displayLava = display;
+  setDisplayData(display: boolean) {
+    self.displayData = display;
   },
   setLavaDepth(depth: number) {
     self.lavaDepth = depth;
+  },
+  setVogConcentration(concentration: number) {
+    self.vogConcentration = concentration;
   }
 }));
 
