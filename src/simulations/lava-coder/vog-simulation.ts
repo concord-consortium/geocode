@@ -62,6 +62,7 @@ export class VogSimulation {
   
     // Set up simulation
     this.vogPulses = 2 * pulses;
+    this.particleLifespan = this.vogPulses;
     // logVolume is between 6 and 10
     const logVolume = Math.log10(totalVolume);
     this.timePerPulse = timePerPulse * logVolume / 10;
@@ -215,8 +216,8 @@ export class VogSimulation {
       this.updateVogGrid(1, newLatitude, newLongitude);
 
       // Decay unique particle velocity
-      particle.u *= 0.9995;
-      particle.v *= 0.9995;
+      particle.u *= 0.999;
+      particle.v *= 0.999;
     }
 
     this.sendUpdateMessage(complete);
@@ -224,7 +225,6 @@ export class VogSimulation {
 
   public async runSimulation() {
     let pulseCount = 0;
-    this.particleLifespan = this.vogPulses;
 
     while (pulseCount < this.vogPulses) {
       const stepEndTime = Date.now() + msPerStep;
@@ -235,7 +235,6 @@ export class VogSimulation {
       // Switch to dispersion mode once we're finished creating particles
       if (pulseCount >= this.vogPulses && this.stage === "creation") {
         this.setStage("dispersion");
-        this.vogPulses = this.vogPulses / 2;
         pulseCount = 0;
       }
 
@@ -250,5 +249,8 @@ export class VogSimulation {
 
   public setStage(stage: "creation" | "dispersion") {
     this.stage = stage;
+    if (stage === "dispersion") {
+      this.vogPulses = this.vogPulses / 2;
+    }
   }
 }

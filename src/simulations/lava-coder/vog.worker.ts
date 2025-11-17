@@ -11,7 +11,14 @@ self.onmessage = (e) => {
   } else if (type === "run") {
     vogSimulation?.runSimulation();
   } else if (type === "step") {
-    vogSimulation?.stepSimulation(complete);
+    if (!vogSimulation) return;
+
+    vogSimulation.stepSimulation();
+    if (complete) {
+      // When the lava eruption completes, continue dispersing vog
+      vogSimulation.setStage("dispersion");
+      vogSimulation.runSimulation();
+    }
   }
 };
 
