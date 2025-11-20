@@ -128,6 +128,13 @@ Blockly.Blocks.molasses_compute_lava = {
   }
 };
 
+Blockly.Blocks.molasses_compute_vog = {
+  init() {
+    basicInit(this, strings.COMPUTE_VOG);
+    addFlagOptions(this, strings.AT_FLAG);
+  }
+};
+
 Blockly.Blocks.molasses_add_data = {
   init() {
     basicInit(this, strings.ADD_DATA);
@@ -308,6 +315,13 @@ javascriptGenerator.forBlock.molasses_compute_lava = function(block) {
   const flag = block.getFieldValue('flag');
   return `
   this.computeLava("${flag}");
+  `;
+};
+
+javascriptGenerator.forBlock.molasses_compute_vog = function(block) {
+  const flag = block.getFieldValue('flag');
+  return `
+  this.computeVog("${flag}");
   `;
 };
 

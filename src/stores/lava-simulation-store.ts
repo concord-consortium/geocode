@@ -44,6 +44,7 @@ interface FlagLocation {
   label?: string;
   latitude: number;
   longitude: number;
+  vogConcentration?: number;
 }
 
 export const LavaSimulationStore = types
@@ -109,6 +110,17 @@ export const LavaSimulationStore = types
         return 0;
       }
       return lavaElevations[row][column];
+    },
+    vogConcentrationAtPoint(latitude: number, longitude: number) {
+      if (!vogConcentrations || !vogBounds) return 0;
+
+      const { east, north, south, west } = vogBounds;
+      const column = Math.floor((longitude - west) / (east - west) * vogConcentrations[0].length);
+      const row = Math.floor((north - latitude) / (north - south) * vogConcentrations.length);
+      if (row < 0 || row >= vogConcentrations.length || column < 0 || column >= vogConcentrations[0].length) {
+        return 0;
+      }
+      return vogConcentrations[row][column];
     }
   }))
   .views((self) => ({
@@ -248,6 +260,11 @@ export const LavaSimulationStore = types
           self.vogWorker.terminate();
         }
 
+        // Clear flag location vog concentrations
+        self.flagLocations.forEach(flag => {
+          flag.vogConcentration = 0;
+        });
+
         self.vogWorker = new VogWorker();
         self.vogWorker.onmessage = (e) => {
           try {
@@ -256,6 +273,12 @@ export const LavaSimulationStore = types
               vogConcentrations = e.data.grid;
               vogBounds = e.data.gridBounds;
               self.countVoggedCells(e.data.grid);
+
+              // Update flag location vog concentrations
+              self.flagLocations.forEach(flag => {
+                const vogConcentration = self.vogConcentrationAtPoint(flag.latitude, flag.longitude);
+                flag.vogConcentration = Math.max(flag.vogConcentration ?? 0, vogConcentration);
+              });
 
               if (complete) completeSim();
             }

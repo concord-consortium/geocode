@@ -11,8 +11,11 @@ interface IDataTableRowProps {
 const DataTableRow = observer(function DataTableRow({ row }: IDataTableRowProps) {
   const color = row ? flagColorInfo[row.color ?? ""]?.color ?? "#000" : "#000";
   const label = row?.label ?? "";
-  const lavaImpact = row?.displayLava && row.lavaDepth != null
+  const lavaImpact = row?.displayData && row.lavaDepth != null
     ? row.lavaDepth > 0 ? "Yes" : "No"
+    : "";
+  const vogImpact = row?.displayData && row.vogConcentration != null
+    ? row.vogConcentration > 0 ? "Yes" : "No"
     : "";
 
   return (
@@ -27,6 +30,7 @@ const DataTableRow = observer(function DataTableRow({ row }: IDataTableRowProps)
       </td>
       <td className="td-left">{row?.name ?? ""}</td>
       <td className="td-center">{lavaImpact}</td>
+      <td className="td-center">{vogImpact}</td>
     </tr>
   );
 });
@@ -45,6 +49,7 @@ export const DataTable = observer(function DataTable({ dataTable }: IDataTablePr
             <th className="flag">Flag</th>
             <th className="name">Flag Name</th>
             <th className="lava">Lava Impact?</th>
+            <th className="vog">Vog Impact?</th>
           </tr>
         </thead>
         <tbody>

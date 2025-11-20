@@ -31,7 +31,7 @@
                 <field name="color">purple</field>
                 <value name="location">
                   <block type="lat_long" id="L(1YW187Em[K)yK;Q4m~">
-                    <field name="lat_long">19.131,-155.623</field>
+                    <field name="lat_long">19.337,-155.464</field>
                   </block>
                 </value>
                 <next>
@@ -51,25 +51,40 @@
                               </block>
                             </value>
                             <next>
-                              <block type="molasses_run_simulation" id="bIjG2)~K%-s0~0{5oaS|">
+                              <block type="vog_wind_pattern" id="vog_wind_pattern">
+                                <field name="wind_pattern">kona</field>
                                 <next>
-                                  <block type="molasses_add_row" id="molasses_add_row1">
-                                    <field name="flag">test</field>
+                                  <block type="molasses_vog_run_simulation" id="bIjG2)~K%-s0~0{5oaS|">
                                     <next>
-                                      <block type="molasses_add_row" id="molasses_add_row2">
-                                        <field name="flag">test4</field>
+                                      <block type="molasses_add_row" id="molasses_add_row1">
+                                        <field name="flag">test</field>
                                         <next>
-                                          <block type="molasses_compute_lava" id="molasses_compute_lava1">
+                                          <block type="molasses_add_row" id="molasses_add_row2">
                                             <field name="flag">test4</field>
                                             <next>
-                                              <block type="molasses_add_data" id="molasses_add_data1">
+                                              <block type="molasses_compute_lava" id="molasses_compute_lava1">
                                                 <field name="flag">test4</field>
                                                 <next>
-                                                  <block type="molasses_compute_lava" id="molasses_compute_lava2">
-                                                    <field name="flag">test</field>
+                                                  <block type="molasses_compute_vog" id="molasses_compute_vog1">
+                                                    <field name="flag">test4</field>
                                                     <next>
-                                                      <block type="molasses_add_data" id="molasses_add_data2">
-                                                        <field name="flag">test</field>
+                                                      <block type="molasses_add_data" id="molasses_add_data1">
+                                                        <field name="flag">test4</field>
+                                                        <next>
+                                                          <block type="molasses_compute_lava" id="molasses_compute_lava2">
+                                                            <field name="flag">test</field>
+                                                            <next>
+                                                              <block type="molasses_compute_vog" id="molasses_compute_vog2">
+                                                                <field name="flag">test</field>
+                                                                <next>
+                                                                  <block type="molasses_add_data" id="molasses_add_data2">
+                                                                    <field name="flag">test</field>
+                                                                  </block>
+                                                                </next>
+                                                              </block>
+                                                            </next>
+                                                          </block>
+                                                        </next>
                                                       </block>
                                                     </next>
                                                   </block>
