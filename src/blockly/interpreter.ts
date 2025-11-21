@@ -172,7 +172,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       if (flag.vogConcentration == null) {
         blocklyController.throwError(`You must add a flag before running the simulation to compute its vog impact.`);
       }
-      return !!flag.vogConcentration;
+      return flag.vogConcentration != null;
     }
 
     addFunc("addRowToTable", (flagName: string) => {
