@@ -10,7 +10,7 @@ interface VogParticle {
   v: number;
 }
 
-const timePerPulse = .0002;
+const timePerPulse = .0004;
 const msPerStep = 25;
 
 export interface VogSimulationParameters {
@@ -24,6 +24,7 @@ export interface VogSimulationParameters {
 export class VogSimulation {
   private particles: VogParticle[] = [];
   private grid: number[][] = [];
+  private phase: "creation" | "dispersion" = "creation";
 
   private ventLatitude: number;
   private ventLongitude: number;
@@ -164,11 +165,13 @@ export class VogSimulation {
 
   public stepSimulation(complete = false) {
     // Add new vog
-    for (let i = 0; i < this.particlesPerPulse; i++) {
-      const u = Math.random() * this.dispersionFactor - this.halfDispersionFactor;
-      const v = Math.random() * this.dispersionFactor - this.halfDispersionFactor;
-      this.particles.push({ latitude: this.ventLatitude, longitude: this.ventLongitude, u, v });
-      this.updateVogGrid(1, this.ventLatitude, this.ventLongitude);
+    if (this.phase === "creation") {
+      for (let i = 0; i < this.particlesPerPulse; i++) {
+        const u = Math.random() * this.dispersionFactor - this.halfDispersionFactor;
+        const v = Math.random() * this.dispersionFactor - this.halfDispersionFactor;
+        this.particles.push({ latitude: this.ventLatitude, longitude: this.ventLongitude, u, v });
+        this.updateVogGrid(1, this.ventLatitude, this.ventLongitude);
+      }
     }
 
     // Update vog
@@ -214,6 +217,12 @@ export class VogSimulation {
       this.stepSimulation();
       pulseCount++;
 
+      // Switch to dispersion mode once we're finished creating particles
+      if (pulseCount >= this.vogPulses && this.phase === "creation") {
+        this.setPhase("dispersion");
+        pulseCount = 0;
+      }
+
       // Delay to make sure the wind dispersion animates at a reasonable speed
       while (Date.now() < stepEndTime) {
         // Noop
@@ -221,5 +230,13 @@ export class VogSimulation {
     }
 
     this.sendUpdateMessage(true);
+  }
+
+  public setPhase(phase: "creation" | "dispersion") {
+    this.phase = phase;
+    if (phase === "dispersion") {
+      // The dispersion phase runs for half the duration of the creation phase
+      this.vogPulses = this.vogPulses / 2;
+    }
   }
 }
