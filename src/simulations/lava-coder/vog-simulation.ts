@@ -235,6 +235,7 @@ export class VogSimulation {
   public setPhase(phase: "creation" | "dispersion") {
     this.phase = phase;
     if (phase === "dispersion") {
+      // The dispersion phase runs for half the duration of the creation phase
       this.vogPulses = this.vogPulses / 2;
     }
   }
