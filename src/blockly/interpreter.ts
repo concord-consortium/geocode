@@ -9,7 +9,7 @@ import { IStore } from "../stores/stores";
 import { ITephraModelParams } from "../stores/tephra-simulation-store";
 import { uiStore } from "../stores/ui-store";
 import { SHOW_WIND_PATTERN } from "../strings/blockly-blocks/lava/simulate-lava";
-import { WindPattern } from "../types/lava-coder/lava-coder-types";
+import { FlagLocation, WindPattern } from "../types/lava-coder/lava-coder-types";
 import { BlocklyController } from "./blockly-controller";
 
 const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore,
@@ -153,77 +153,91 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       lavaSimulation.newDataTable();
     });
 
+    function checkFlag(flagName: string) {
+      if (!flagName) blocklyController.throwError("You must select a flag.");
+
+      return !!flagName;
+    }
+
+    function getFlag(flagName: string) {
+      if (!checkFlag(flagName)) return;
+
+      const flag = lavaSimulation.flagLocations.find(f => f.name === flagName);
+      if (!flag) blocklyController.throwError(`Flag "${flagName}" not found.`);
+
+      return flag;
+    }
+
+    function getRow(flagName: string, errorMessage: string) {
+      const row = lavaSimulation.dataTable?.rows.find(r => r.name === flagName);
+
+      if (!row) blocklyController.throwError(errorMessage);
+
+      return row;
+    }
+
+    function checkVogConcentration(flag: FlagLocation) {
+      if (flag.vogConcentration == null) {
+        blocklyController.throwError(`You must add a flag before running the simulation to compute its vog impact.`);
+      }
+
+      return flag.vogConcentration != null;
+    }
+
     addFunc("addRowToTable", (flagName: string) => {
       if (!lavaSimulation.dataTable) {
         blocklyController.throwError("You must create a data table before adding rows.");
         return;
       }
 
-      if (!flagName) {
-        blocklyController.throwError("You must select a flag.");
-        return;
-      }
-
-      const flag = lavaSimulation.flagLocations.find(f => f.name === flagName);
-      if (!flag) {
-        blocklyController.throwError(`Flag "${flagName}" not found.`);
-        return;
-      }
+      const flag = getFlag(flagName);
+      if (!flag) return;
 
       lavaSimulation.addRowToTable(flag);
     });
 
     addFunc("computeLava", (flagName: string) => {
-      if (!flagName) {
-        blocklyController.throwError("You must select a flag.");
-        return;
-      }
+      if (!checkFlag(flagName)) return;
 
-      const row = lavaSimulation.dataTable?.rows.find(r => r.name === flagName);
-      if (!row) {
-        blocklyController.throwError(`You must add a row for "${flagName}" before you can compute its lava flow.`);
-        return;
-      }
+      const row = getRow(flagName, `You must add a row for "${flagName}" before you can compute its lava flow.`);
+      if (!row) return;
 
       row.setLavaDepth(lavaSimulation.lavaDepthAtPoint(row.latitude, row.longitude));
     });
 
     addFunc("computeVog", (flagName: string) => {
-      if (!flagName) {
-        blocklyController.throwError("You must select a flag.");
-        return;
-      }
+      const flag = getFlag(flagName);
+      if (!flag) return;
 
-      const flag = lavaSimulation.flagLocations.find(f => f.name === flagName);
-      if (!flag) {
-        blocklyController.throwError(`Flag "${flagName}" not found.`);
-        return;
-      }
-      if (flag.vogConcentration == null) {
-        blocklyController.throwError(`You must add a flag before running the simulation to compute its vog impact.`);
-        return;
-      }
+      if (!checkVogConcentration(flag)) return;
 
-      const row = lavaSimulation.dataTable?.rows.find(r => r.name === flagName);
-      if (!row) {
-        blocklyController.throwError(`You must add a row for "${flagName}" before you can compute its vog impact.`);
-        return;
-      }
+      const row = getRow(flagName, `You must add a row for "${flagName}" before you can compute its vog impact.`);
+      if (!row) return;
 
-      row.setVogConcentration(flag.vogConcentration);
+      if (flag.vogConcentration != null) row.setVogConcentration(flag.vogConcentration);
+    });
+
+    addFunc("lavaImpact", (flagName: string) => {
+      const flag = getFlag(flagName);
+      if (!flag) return;
+
+      return { toBoolean: () => lavaSimulation.lavaDepthAtPoint(flag.latitude, flag.longitude) > 0 };
+    });
+
+    addFunc("vogImpact", (flagName: string) => {
+      const flag = getFlag(flagName);
+      if (!flag) return;
+
+      if (!checkVogConcentration(flag)) return;
+
+      return { toBoolean: () => flag.vogConcentration != null ? flag.vogConcentration > 0 : false };
     });
 
     addFunc("addData", (flagName: string) => {
-      if (!flagName) {
-        blocklyController.throwError("You must select a flag.");
-        return;
-      }
+      if (!checkFlag(flagName)) return;
 
-      const row = lavaSimulation.dataTable?.rows.find(r => r.name === flagName);
-      if (!row) {
-        blocklyController.throwError(`You must add a row for "${flagName}" before you can display its lava impact.`);
-        return;
-      }
+      const row = getRow(flagName, `You must add a row for "${flagName}" before you can display its lava impact.`);
+      if (!row) return;
 
       row.setDisplayData(true);
     });

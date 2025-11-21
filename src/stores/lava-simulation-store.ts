@@ -4,12 +4,12 @@ import { types } from "mobx-state-tree";
 import { DataRow, DataTable, DataTableType } from "../models/data-table";
 import {
   defaultEruptionVolume, defaultResidual, defaultShowWindPattern, defaultVentLatitude, defaultVentLongitude,
-  FlagColor, flagLabels, kSquareMetersPerAcre, maxFlags
+  flagLabels, kSquareMetersPerAcre, maxFlags
 } from "../simulations/lava-coder/lava-constants";
 import LavaWorker from "../simulations/lava-coder/lava.worker";
 import { AsciiRaster } from "../simulations/lava-coder/parse-ascii-raster";
 import VogWorker from "../simulations/lava-coder/vog.worker";
-import { WindPattern } from "../types/lava-coder/lava-coder-types";
+import { FlagLocation, WindPattern } from "../types/lava-coder/lava-coder-types";
 import { pointInPolygon } from "../utilities/geometry-utils";
 import { isPointOnIsland } from "../utilities/molasses-utils";
 import { LavaSimulationAuthorSettings, LavaSimulationAuthorSettingsProps } from "./stores";
@@ -36,15 +36,6 @@ function countCoveredCells(_lavaElevations: number[][]) {
     });
   });
   return coveredCells;
-}
-
-interface FlagLocation {
-  color: FlagColor;
-  name: string;
-  label?: string;
-  latitude: number;
-  longitude: number;
-  vogConcentration?: number;
 }
 
 export const LavaSimulationStore = types

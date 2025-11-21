@@ -135,6 +135,17 @@ Blockly.Blocks.molasses_compute_vog = {
   }
 };
 
+Blockly.Blocks.molasses_impact = {
+  init() {
+    this.appendDummyInput()
+      .appendField(new Blockly.FieldDropdown([["lava", "lava"], ["VOG", "vog"]]), "impact")
+      .appendField("impact");
+    addFlagOptions(this, strings.AT_FLAG);
+    this.setOutput(true, "Boolean");
+    this.setColour("#006f95");
+  }
+};
+
 Blockly.Blocks.molasses_add_data = {
   init() {
     basicInit(this, strings.ADD_DATA);
@@ -305,28 +316,35 @@ javascriptGenerator.forBlock.molasses_create_table = function(block) {
 };
 
 javascriptGenerator.forBlock.molasses_add_row = function(block) {
-  const flag = block.getFieldValue('flag');
+  const flag = block.getFieldValue("flag");
   return `
   this.addRowToTable("${flag}");
   `;
 };
 
 javascriptGenerator.forBlock.molasses_compute_lava = function(block) {
-  const flag = block.getFieldValue('flag');
+  const flag = block.getFieldValue("flag");
   return `
   this.computeLava("${flag}");
   `;
 };
 
 javascriptGenerator.forBlock.molasses_compute_vog = function(block) {
-  const flag = block.getFieldValue('flag');
+  const flag = block.getFieldValue("flag");
   return `
   this.computeVog("${flag}");
   `;
 };
 
+javascriptGenerator.forBlock.molasses_impact = function(block) {
+  const impactType = block.getFieldValue("impact");
+  const functionName = impactType === "lava" ? "lavaImpact" : "vogImpact";
+  const flag = block.getFieldValue("flag");
+  return [`this.${functionName}("${flag}")`, Order.ATOMIC];
+};
+
 javascriptGenerator.forBlock.molasses_add_data = function(block) {
-  const flag = block.getFieldValue('flag');
+  const flag = block.getFieldValue("flag");
   return `
   this.addData("${flag}");
   `;
