@@ -168,10 +168,19 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       return flag;
     }
 
+    function getRow(flagName: string, errorMessage: string) {
+      const row = lavaSimulation.dataTable?.rows.find(r => r.name === flagName);
+
+      if (!row) blocklyController.throwError(errorMessage);
+
+      return row;
+    }
+
     function checkVogConcentration(flag: FlagLocation) {
       if (flag.vogConcentration == null) {
         blocklyController.throwError(`You must add a flag before running the simulation to compute its vog impact.`);
       }
+
       return flag.vogConcentration != null;
     }
 
@@ -190,11 +199,8 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     addFunc("computeLava", (flagName: string) => {
       if (!checkFlag(flagName)) return;
 
-      const row = lavaSimulation.dataTable?.rows.find(r => r.name === flagName);
-      if (!row) {
-        blocklyController.throwError(`You must add a row for "${flagName}" before you can compute its lava flow.`);
-        return;
-      }
+      const row = getRow(flagName, `You must add a row for "${flagName}" before you can compute its lava flow.`);
+      if (!row) return;
 
       row.setLavaDepth(lavaSimulation.lavaDepthAtPoint(row.latitude, row.longitude));
     });
@@ -205,11 +211,8 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
 
       if (!checkVogConcentration(flag)) return;
 
-      const row = lavaSimulation.dataTable?.rows.find(r => r.name === flagName);
-      if (!row) {
-        blocklyController.throwError(`You must add a row for "${flagName}" before you can compute its vog impact.`);
-        return;
-      }
+      const row = getRow(flagName, `You must add a row for "${flagName}" before you can compute its vog impact.`);
+      if (!row) return;
 
       if (flag.vogConcentration != null) row.setVogConcentration(flag.vogConcentration);
     });
@@ -233,11 +236,8 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     addFunc("addData", (flagName: string) => {
       if (!checkFlag(flagName)) return;
 
-      const row = lavaSimulation.dataTable?.rows.find(r => r.name === flagName);
-      if (!row) {
-        blocklyController.throwError(`You must add a row for "${flagName}" before you can display its lava impact.`);
-        return;
-      }
+      const row = getRow(flagName, `You must add a row for "${flagName}" before you can display its lava impact.`);
+      if (!row) return;
 
       row.setDisplayData(true);
     });

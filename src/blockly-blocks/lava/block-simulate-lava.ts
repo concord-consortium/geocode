@@ -337,7 +337,7 @@ javascriptGenerator.forBlock.molasses_compute_vog = function(block) {
 };
 
 javascriptGenerator.forBlock.molasses_impact = function(block) {
-  const impactType = block.getFieldValue('impact');
+  const impactType = block.getFieldValue("impact");
   const functionName = impactType === "lava" ? "lavaImpact" : "vogImpact";
   const flag = block.getFieldValue("flag");
   return [`this.${functionName}("${flag}")`, Order.ATOMIC];
