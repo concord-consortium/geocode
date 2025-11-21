@@ -9,7 +9,7 @@ import { IStore } from "../stores/stores";
 import { ITephraModelParams } from "../stores/tephra-simulation-store";
 import { uiStore } from "../stores/ui-store";
 import { SHOW_WIND_PATTERN } from "../strings/blockly-blocks/lava/simulate-lava";
-import { WindPattern } from "../types/lava-coder/lava-coder-types";
+import { FlagLocation, WindPattern } from "../types/lava-coder/lava-coder-types";
 import { BlocklyController } from "./blockly-controller";
 
 const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore,
@@ -168,8 +168,11 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       return flag;
     }
 
-    function vogConcentrationError() {
-      blocklyController.throwError(`You must add a flag before running the simulation to compute its vog impact.`);
+    function checkVogConcentration(flag: FlagLocation) {
+      if (flag.vogConcentration == null) {
+        blocklyController.throwError(`You must add a flag before running the simulation to compute its vog impact.`);
+      }
+      return !!flag.vogConcentration;
     }
 
     addFunc("addRowToTable", (flagName: string) => {
@@ -200,10 +203,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       const flag = getFlag(flagName);
       if (!flag) return;
 
-      if (flag.vogConcentration == null) {
-        vogConcentrationError();
-        return;
-      }
+      if (!checkVogConcentration(flag)) return;
 
       const row = lavaSimulation.dataTable?.rows.find(r => r.name === flagName);
       if (!row) {
@@ -211,7 +211,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
         return;
       }
 
-      row.setVogConcentration(flag.vogConcentration);
+      if (flag.vogConcentration != null) row.setVogConcentration(flag.vogConcentration);
     });
 
     addFunc("lavaImpact", (flagName: string) => {
@@ -225,10 +225,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       const flag = getFlag(flagName);
       if (!flag) return;
 
-      if (flag.vogConcentration == null) {
-        vogConcentrationError();
-        return;
-      }
+      if (!checkVogConcentration(flag)) return;
 
       return { toBoolean: () => flag.vogConcentration != null ? flag.vogConcentration > 0 : false };
     });
