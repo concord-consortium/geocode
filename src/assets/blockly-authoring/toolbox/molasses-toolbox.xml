@@ -3,8 +3,20 @@
     <block type="molasses_run_simulation" />
     <block type="vog_run_simulation" />
     <block type="molasses_vog_run_simulation" />
-    <block type="molasses_eruption_volume" />
-    <block type="molasses_lava_thickness" />
+    <block type="molasses_eruption_volume">
+      <value name="molasses_eruption_volume">
+        <shadow type="math_number">
+          <field name="NUM">200000000</field>
+        </shadow>
+      </value>
+    </block>
+    <block type="molasses_lava_thickness">
+      <value name="molasses_lava_thickness">
+        <shadow type="math_number">
+          <field name="NUM">5</field>
+        </shadow>
+      </value>
+    </block>
     <block type="molasses_vent_location" />
     <block type="vog_wind_pattern" />
     <block type="vog_show_wind_pattern" />
