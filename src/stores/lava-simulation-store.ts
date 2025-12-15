@@ -47,6 +47,7 @@ export const LavaSimulationStore = types
     pulseCount: 0
   })
   .volatile((self) => ({
+    parameterSet: false, // At least one parameter must be set before running the simulation
     coveredCells: 0,
     voggedCells: 0,
     dataTable: undefined as DataTableType | undefined,
@@ -62,10 +63,6 @@ export const LavaSimulationStore = types
   .views((self) => ({
     get cellArea() {
       return (self.raster?.header.cellsize ?? 60) ** 2; // Default cell size is 60 meters
-    },
-    get hasOnlyDefaultParameters() {
-      return self.residual === defaultResidual && self.totalVolume === defaultEruptionVolume &&
-        self.ventLatitude === defaultVentLatitude && self.ventLongitude === defaultVentLongitude;
     },
     isPointOnIsland(latitude: number, longitude: number) {
       if (!self.raster) return false;
@@ -154,13 +151,16 @@ export const LavaSimulationStore = types
     },
     setResidual(residual: number) {
       self.residual = residual;
+      self.parameterSet = true;
     },
     setTotalVolume(totalVolume: number) {
       self.totalVolume = totalVolume;
+      self.parameterSet = true;
     },
     setVentLocation(latitude: number, longitude: number) {
       self.ventLatitude = latitude;
       self.ventLongitude = longitude;
+      self.parameterSet = true;
     },
     setHazardZones(hazardZones: KmlDataSource) {
       self.hazardZones = hazardZones;
@@ -184,6 +184,7 @@ export const LavaSimulationStore = types
         self.setTotalVolume(defaultEruptionVolume);
         self.setVentLocation(defaultVentLatitude, defaultVentLongitude);
         self.setWindPattern(null);
+        self.parameterSet = false;
       }
     };
   })
