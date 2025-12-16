@@ -98,7 +98,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
     });
 
     addFunc("checkDefaultParameters", () => {
-      if (lavaSimulation.hasOnlyDefaultParameters) {
+      if (!lavaSimulation.parameterSet) {
         const error = "You must set at least one lava simulation parameter before computing and visualizing lava flow.";
         blocklyController.throwError(error);
       }
