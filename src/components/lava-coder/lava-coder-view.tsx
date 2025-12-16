@@ -189,7 +189,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
         </div>
         <div className="rotate-pan-controls">
           <LavaIconButton className="lava-icon-button rotate-pitch-button" isActive={cameraMode === "pitch"}
-                          onClick={() => toggleCameraMode("pitch")} disabled={isRulerMode || running}>
+                          onClick={() => toggleCameraMode("pitch")} disabled={isRulerMode}>
             <RotatePitchIcon />
           </LavaIconButton>
           <LavaIconButton className="lava-icon-button rotate-heading-button" isActive={cameraMode === "heading"}
