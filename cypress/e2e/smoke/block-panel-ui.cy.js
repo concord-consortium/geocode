@@ -28,7 +28,7 @@ context("Blocks panel", () => {
       it('verify Run button switches to Pause after click and vice versa',()=>{
         modelOptions.getModelOptionsMenu().click();
         modelOptions.selectInitialCode("Nested loops");
-        cy.wait(100);
+        cy.wait(200);
         blocksTab.getRunButton().click();
         blocksTab.getPauseButton().should('be.visible');
         blocksTab.getPauseButton().click();
