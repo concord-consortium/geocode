@@ -4,7 +4,7 @@ export const kMetersPerMile = 1609.344;
 export const kSquareMetersPerAcre = 4046.86;
 
 // Default eruption values
-// These values are hardcoded in full-toolbox.xml and possibly other toolboxes and should be kept in sync
+// These values should be kept in sync with molasses-toolbox.xml, full-toolbox.xml, and possibly other toolboxes
 export const defaultEruptionVolume = 200000000;
 export const defaultResidual = 5;
 export const defaultShowWindPattern = false;
