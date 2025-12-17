@@ -61,7 +61,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
   const {
     cameraMode, isAnimating, animateToCameraPitch, listenToCameraChange, setCameraMode, setDefaultCameraView, zoomIn,
     zoomOut
-  } = useCameraControls(viewer, verticalExaggeration);
+  } = useCameraControls(viewer, verticalExaggeration, running);
 
   const { replaceBaseLayer } = useWorldImagery();
 
@@ -175,29 +175,33 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
           <CompassHeading viewer={viewer} />
         </div>
         <div className="home-view-controls">
-          <LavaIconButton className="lava-icon-button home-view-button" onClick={() => setDefaultCameraView()}>
+          <LavaIconButton
+            className="lava-icon-button home-view-button"
+            onClick={() => setDefaultCameraView()}
+            disabled={running}
+          >
             <HomeViewIcon />
           </LavaIconButton>
         </div>
         <div className="zoom-controls">
-          <LavaIconButton className="lava-icon-button zoom-in-button" onClick={() => zoomIn()}>
+          <LavaIconButton className="lava-icon-button zoom-in-button" onClick={() => zoomIn()} disabled={running}>
             <ZoomInIcon />
           </LavaIconButton>
-          <LavaIconButton className="lava-icon-button zoom-out-button" onClick={() => zoomOut()}>
+          <LavaIconButton className="lava-icon-button zoom-out-button" onClick={() => zoomOut()} disabled={running}>
             <ZoomOutIcon />
           </LavaIconButton>
         </div>
         <div className="rotate-pan-controls">
           <LavaIconButton className="lava-icon-button rotate-pitch-button" isActive={cameraMode === "pitch"}
-                          onClick={() => toggleCameraMode("pitch")} disabled={isRulerMode}>
+                          onClick={() => toggleCameraMode("pitch")} disabled={isRulerMode || running}>
             <RotatePitchIcon />
           </LavaIconButton>
           <LavaIconButton className="lava-icon-button rotate-heading-button" isActive={cameraMode === "heading"}
-                          onClick={() => toggleCameraMode("heading")}>
+                          onClick={() => toggleCameraMode("heading")} disabled={running}>
             <RotateHeadingIcon />
           </LavaIconButton>
           <LavaIconButton className="lava-icon-button panning-mode-button" isActive={cameraMode === "panning"}
-                          onClick={() => toggleCameraMode("panning")}>
+                          onClick={() => toggleCameraMode("panning")} disabled={running}>
             <MoveIcon />
           </LavaIconButton>
         </div>
