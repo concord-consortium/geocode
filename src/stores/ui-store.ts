@@ -156,6 +156,9 @@ const UIStore = types.model("UI", {
 }))
 .actions((self) => {
   return {
+    displayTable() {
+      self.setRightTabIndex(1);
+    },
     loadAuthorSettingsData: (data: UIAuthorSettings) => {
       Object.keys(data).forEach((key: UIAuthorSettingsProps) => {
         if (renamedKeys[key]) {

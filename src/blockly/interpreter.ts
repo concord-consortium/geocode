@@ -151,6 +151,7 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       }
 
       lavaSimulation.newDataTable();
+      uiStore.displayTable();
     });
 
     function checkFlag(flagName: string) {
