@@ -1,42 +1,47 @@
+import deepmerge from "deepmerge";
+import { js_beautify } from "js-beautify";
 import { inject, observer } from "mobx-react";
 import React from "react";
-import deepmerge from "deepmerge";
-import { BaseComponent, IBaseProps } from "./base";
-import { MapComponent, Scenario } from "./map/map-component";
-import { LogComponent } from "./log-component";
-import { CrossSectionComponent } from "./crosssection/cross-section-component";
-import Scenarios from "../assets/maps/scenarios.json";
-import { BlocklyAuthoring } from "../assets/blockly-authoring";
-import BlocklyContainer from "./blockly-container";
-import styled from "styled-components";
-import { StyledButton } from "./buttons/styled-button";
-import { SectionTypes, RightSectionTypes, kTabInfo, kRightTabInfo,
-         TabBack, Tab, Tabs, TabList, TabPanel, RightTabBack, BottomTab } from "./tabs";
-import { js_beautify } from "js-beautify";
-import SyntaxHighlighter from "react-syntax-highlighter";
-import { Controls } from "./controls";
-import RunButtons from "./buttons/run-buttons";
-import { Footer, TabContent } from "./styled-containers";
-import WidgetPanel from "./widgets/widget-panel";
-import screenfull from "screenfull";
 import ResizeObserver from "react-resize-observer";
-import AuthoringMenu from "./authoring-menu";
-import { getAuthorableSettings, updateStores, serializeState, getSavableStateAuthor,
-         deserializeState, UnmigratedSerializedState, IStoreish } from "../stores/stores";
-import { ChartPanel } from "./charts/chart-panel";
+import SyntaxHighlighter from "react-syntax-highlighter";
+import screenfull from "screenfull";
+import styled from "styled-components";
+import { BlocklyAuthoring } from "../assets/blockly-authoring";
+import Scenarios from "../assets/maps/scenarios.json";
 import { BlocklyController } from "../blockly/blockly-controller";
-import { HistogramPanel } from "./montecarlo/histogram-panel";
-import { DeformationGraphPanel } from "./deformation/deformation-graph-panel";
-import { PlateMovementPanel } from "./deformation/plate-movement-panel";
+import { blocklyStore } from "../stores/blockly-store";
+import { lavaSimulation } from "../stores/lava-simulation-store";
+import {
+  getAuthorableSettings, updateStores, serializeState, getSavableStateAuthor, deserializeState,
+  UnmigratedSerializedState, IStoreish
+} from "../stores/stores";
 import { uiStore } from "../stores/ui-store";
 import { unitStore , UnitNameType } from "../stores/unit-store";
-import { blocklyStore } from "../stores/blockly-store";
-import { GPSStationTable } from "./gps-station-table";
-import { DeformationModel } from "./deformation/deformation-model";
-import { LavaCoderView } from "./lava-coder/lava-coder-view";
 import { queryValue, queryValueBoolean } from "../utilities/url-query";
+import AuthoringMenu from "./authoring-menu";
+import { BaseComponent, IBaseProps } from "./base";
 import IconButton from "./buttons/icon-button";
+import RunButtons from "./buttons/run-buttons";
+import { StyledButton } from "./buttons/styled-button";
+import { ChartPanel } from "./charts/chart-panel";
+import { Controls } from "./controls";
+import { CrossSectionComponent } from "./crosssection/cross-section-component";
+import BlocklyContainer from "./blockly-container";
+import { DeformationGraphPanel } from "./deformation/deformation-graph-panel";
+import { DeformationModel } from "./deformation/deformation-model";
+import { PlateMovementPanel } from "./deformation/plate-movement-panel";
+import { GPSStationTable } from "./gps-station-table";
 import { DataTable } from "./lava-coder/data-table";
+import { LavaCoderView } from "./lava-coder/lava-coder-view";
+import { LogComponent } from "./log-component";
+import { MapComponent, Scenario } from "./map/map-component";
+import { HistogramPanel } from "./montecarlo/histogram-panel";
+import { Footer, TabContent } from "./styled-containers";
+import {
+  SectionTypes, RightSectionTypes, kTabInfo, kRightTabInfo, TabBack, Tab, Tabs, TabList, TabPanel, RightTabBack,
+  BottomTab
+} from "./tabs";
+import WidgetPanel from "./widgets/widget-panel";
 
 import "./app.scss";
 
@@ -313,6 +318,16 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       code,
     } = this.blocklyController;
 
+    function appPause() {
+      lavaSimulation.pause();
+      pause();
+    }
+
+    function appUnpause() {
+      lavaSimulation.unpause();
+      unpause();
+    }
+
     const {
       expandOptionsDialog,
       showingReloadModal,
@@ -460,8 +475,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                   <RunButtons
                     run={run}
                     stop={stop}
-                    pause={pause}
-                    unpause={unpause}
+                    pause={appPause}
+                    unpause={appUnpause}
                     step={step}
                     reset={reset}
                     running={running}
