@@ -253,7 +253,7 @@ export const LavaSimulationStore = types
           }
         };
 
-        self.lavaWorker.postMessage({ type: "start", parameters });
+        self.lavaWorker.postMessage({ type: "run", parameters });
       }
 
       if (runVog) {
