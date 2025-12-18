@@ -11,7 +11,6 @@ interface VogParticle {
 }
 
 const timePerPulse = .0004;
-const msPerStep = 25;
 
 export interface VogSimulationParameters {
   pulses: number;
@@ -24,14 +23,14 @@ export interface VogSimulationParameters {
 export class VogSimulation {
   private particles: VogParticle[] = [];
   private grid: number[][] = [];
-  private phase: "creation" | "dispersion" = "creation";
+  public phase: "creation" | "dispersion" = "creation";
 
   private ventLatitude: number;
   private ventLongitude: number;
   private windData: WindData;
 
   private timePerPulse: number;
-  private vogPulses: number;
+  public vogPulses: number;
   private particlesPerPulse: number;
   private dispersionFactor: number;
   private halfDispersionFactor: number;
@@ -143,7 +142,7 @@ export class VogSimulation {
     this.vogGridRange.west = Math.max(0, Math.min(this.vogGridRange.west, x));
   }
   
-  private sendUpdateMessage(complete = false) {
+  public sendUpdateMessage(complete = false) {
     const vogConcentrationGrid: number[][] = [];
     for (let y = this.vogGridRange.north; y <= this.vogGridRange.south; y++) {
       if (y < 0 || y >= this.grid.length) continue; // Skip rows outside the grid bounds
@@ -206,30 +205,6 @@ export class VogSimulation {
     }
 
     this.sendUpdateMessage(complete);
-  }
-
-  public async runSimulation() {
-    let pulseCount = 0;
-
-    while (pulseCount < this.vogPulses) {
-      const stepEndTime = Date.now() + msPerStep;
-
-      this.stepSimulation();
-      pulseCount++;
-
-      // Switch to dispersion mode once we're finished creating particles
-      if (pulseCount >= this.vogPulses && this.phase === "creation") {
-        this.setPhase("dispersion");
-        pulseCount = 0;
-      }
-
-      // Delay to make sure the wind dispersion animates at a reasonable speed
-      while (Date.now() < stepEndTime) {
-        // Noop
-      }
-    }
-
-    this.sendUpdateMessage(true);
   }
 
   public setPhase(phase: "creation" | "dispersion") {

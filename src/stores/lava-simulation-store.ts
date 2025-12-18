@@ -47,6 +47,7 @@ export const LavaSimulationStore = types
     pulseCount: 0
   })
   .volatile((self) => ({
+    paused: false,
     parameterSet: false, // At least one parameter must be set before running the simulation
     coveredCells: 0,
     voggedCells: 0,
@@ -140,6 +141,11 @@ export const LavaSimulationStore = types
     newDataTable() {
       self.dataTable = DataTable.create();
     },
+    pause() {
+      self.paused = true;
+      self.lavaWorker?.postMessage({ type: "pause" });
+      self.vogWorker?.postMessage({ type: "pause" });
+    },
     setShowWindPattern(display: boolean) {
       self.showWindPattern = display;
     },
@@ -167,27 +173,30 @@ export const LavaSimulationStore = types
     },
     setWindPattern(pattern: WindPattern | null) {
       self.windPattern = pattern;
+    },
+    unpause() {
+      self.paused = false;
+      self.lavaWorker?.postMessage({ type: "unpause" });
+      self.vogWorker?.postMessage({ type: "unpause" });
+    },
+  }))
+  .actions((self) => ({
+    loadAuthorSettingsData: (data: LavaSimulationAuthorSettings) => {
+      Object.keys(data).forEach((key: LavaSimulationAuthorSettingsProps) => {
+        // annoying `as any ... as any` is needed because we're mixing bool and non-bool props, which combine to never
+        // see https://github.com/microsoft/TypeScript/issues/31663
+        (self[key] as any) = data[key] as any;
+      });
+    },
+    resetDefaults: () => {
+      self.setShowWindPattern(defaultShowWindPattern);
+      self.setResidual(defaultResidual);
+      self.setTotalVolume(defaultEruptionVolume);
+      self.setVentLocation(defaultVentLatitude, defaultVentLongitude);
+      self.setWindPattern(null);
+      self.parameterSet = false;
     }
   }))
-  .actions((self) => {
-    return {
-      loadAuthorSettingsData: (data: LavaSimulationAuthorSettings) => {
-        Object.keys(data).forEach((key: LavaSimulationAuthorSettingsProps) => {
-          // annoying `as any ... as any` is needed because we're mixing bool and non-bool props, which combine to never
-          // see https://github.com/microsoft/TypeScript/issues/31663
-          (self[key] as any) = data[key] as any;
-        });
-      },
-      resetDefaults: () => {
-        self.setShowWindPattern(defaultShowWindPattern);
-        self.setResidual(defaultResidual);
-        self.setTotalVolume(defaultEruptionVolume);
-        self.setVentLocation(defaultVentLatitude, defaultVentLongitude);
-        self.setWindPattern(null);
-        self.parameterSet = false;
-      }
-    };
-  })
   .actions((self) => ({
     runSimulation(sim: "lava" | "vog" | "both", onFinish?: () => void) {
       if (!self.raster) return;
