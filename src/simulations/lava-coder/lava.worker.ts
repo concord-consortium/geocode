@@ -39,7 +39,7 @@ async function runLavaSimulation() {
       lastFrameTime = Date.now();
     }
 
-    // Check for messages (like pause)
+    // Yield control to check for messages (like pause)
     await new Promise<void>((r) => setTimeout(r, 1));
   }
 

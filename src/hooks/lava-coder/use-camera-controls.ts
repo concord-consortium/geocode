@@ -24,7 +24,7 @@ function getAngleFromCenter(pos: Cartesian2, center: Cartesian2) {
   return Math.atan2(pos.y - center.y, pos.x - center.x);
 }
 
-export function useCameraControls(viewer: CesiumWidget | null, verticalExaggeration: number, running: boolean) {
+export function useCameraControls(viewer: CesiumWidget | null, verticalExaggeration: number, disabled: boolean) {
 
   const [cameraMode, setCameraMode] = useState<CameraMode>(kDefaultCameraMode);
   const animationInterval = useRef<number | null>(null);
@@ -123,7 +123,7 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
   }, []);
 
   const handlePan = useCallback(({ dx, dy }: IOnDragArgs) => {
-    if (!viewer || running) return;
+    if (!viewer || disabled) return;
 
     const { camera } = viewer;
 
@@ -135,10 +135,10 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
     camera.moveRight(-dx * moveRate);
     camera.moveUp(dy * moveRate);
     notifyCameraChange();
-  }, [notifyCameraChange, running, viewer]);
+  }, [notifyCameraChange, disabled, viewer]);
 
   const handleRotateHeading = useCallback(({ startPosition, position, initialCameraState }: IOnDragArgs) => {
-    if (!viewer || running) return;
+    if (!viewer || disabled) return;
 
     const { camera } = viewer;
     const { center, target, initialHeading, initialPitch, initialRange } = initialCameraState;
@@ -153,10 +153,10 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
       initialRange
     ));
     notifyCameraChange();
-  }, [notifyCameraChange, running, viewer]);
+  }, [notifyCameraChange, disabled, viewer]);
 
   const handleRotatePitch = useCallback(({ dyTotal, initialCameraState }: IOnDragArgs) => {
-    if (!viewer || running) return;
+    if (!viewer || disabled) return;
 
     const { camera } = viewer;
     const { target, initialHeading, initialPitch, initialRange } = initialCameraState;
@@ -170,7 +170,7 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
       initialRange
     ));
     notifyCameraChange();
-  }, [notifyCameraChange, running, viewer]);
+  }, [notifyCameraChange, disabled, viewer]);
 
   const dragHandlers: Record<CameraMode, (args: IOnDragArgs) => void> = {
     panning: handlePan,
@@ -189,7 +189,7 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
 
   async function zoomIn() {
     let moveDist = cameraZoomRate();
-    if (!viewer || !moveDist || running) return;
+    if (!viewer || !moveDist || disabled) return;
 
     // Sample the terrain at the camera's lat/lon
     const terrainProvider = viewer.terrainProvider;
@@ -207,7 +207,7 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
 
   function zoomOut() {
     let moveDist = cameraZoomRate();
-    if (!viewer || !moveDist || running) return;
+    if (!viewer || !moveDist || disabled) return;
 
     const cameraPos = viewer.camera.positionCartographic;
     moveDist = Math.min(moveDist, kMaxDistanceAboveTerrain - cameraPos.height);
