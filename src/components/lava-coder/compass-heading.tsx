@@ -14,15 +14,27 @@ export function CompassHeading({ viewer }: IProps) {
   };
 
   useEffect(() => {
-    const changedEvent = viewer?.camera?.changed;
+    let changedEvent: CesiumWidget["camera"]["changed"] | undefined;
+    try {
+      changedEvent = viewer?.camera?.changed;
+    } catch {
+      // Camera access can throw during Cesium widget initialization/destruction, which ? won't protect against
+    }
     changedEvent?.addEventListener(handleCameraChange);
     return () => {
       changedEvent?.removeEventListener(handleCameraChange);
     };
   }, [viewer]);
 
+  let heading = 0;
+  try {
+    heading = viewer?.camera?.heading ?? 0;
+  } catch {
+    // Camera access can throw during Cesium widget initialization/destruction, which ? won't protect against
+  }
+
   const compassStyle: React.CSSProperties = {
-    transform: `rotate(-${viewer?.camera?.heading || 0}rad)`
+    transform: `rotate(-${heading}rad)`
   };
 
   return (
