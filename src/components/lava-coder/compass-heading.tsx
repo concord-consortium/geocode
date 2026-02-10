@@ -22,11 +22,7 @@ export function CompassHeading({ viewer }: IProps) {
     }
     changedEvent?.addEventListener(handleCameraChange);
     return () => {
-      try {
-        changedEvent?.removeEventListener(handleCameraChange);
-      } catch {
-        // Camera access can throw during Cesium widget initialization/destruction, which ? won't protect against
-      }
+      changedEvent?.removeEventListener(handleCameraChange);
     };
   }, [viewer]);
 
