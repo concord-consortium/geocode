@@ -32,7 +32,11 @@ export function useCesiumViewer(container: Element | null, initialMapType: LavaM
       });
       forceRefresh(prev => !prev);
     }
-    return () => viewer.current?.destroy();
+    return () => {
+      console.log(`>>> Clearing Cesium viewer`);
+      viewer.current?.destroy();
+      viewer.current = null;
+    };
   }, [baseLayer, container, terrainProvider]);
 
   return viewer.current;
