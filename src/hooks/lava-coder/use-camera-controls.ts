@@ -57,8 +57,6 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
     viewer.camera.changed.addEventListener(handleCameraChanged);
 
     return () => {
-      // console.log(`--- Removing camera change listener`);
-      // viewer?.camera.changed.removeEventListener(handleCameraChanged);
       try {
         viewer?.camera.changed.removeEventListener(handleCameraChanged);
       } catch {

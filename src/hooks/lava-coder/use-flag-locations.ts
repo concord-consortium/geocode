@@ -26,12 +26,6 @@ export function useFlagLocations({ verticalExaggeration, viewer }: IUseFlagLocat
       // Remove existing flags from the map
       flagLabels.forEach(label => {
         const existingFlag = viewer.entities.getById(flagId(label));
-        // let existingFlag: Entity | undefined;
-        // try {
-        //   existingFlag = viewer.entities.getById(flagId(label));
-        // } catch {
-        //   // Entities access can throw during Cesium widget initialization/destruction
-        // }
         if (existingFlag) {
           viewer.entities.remove(existingFlag);
         }
