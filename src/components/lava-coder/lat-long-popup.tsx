@@ -71,13 +71,15 @@ export function LatLongPopup({ viewer, verticalExaggeration, mode, onSetLatLongP
 
     // Get the pick ray and intersection with the globe
     const scene = viewer.scene;
-    let pickedPosition: Cartesian3 | null | undefined;
-    try {
-      const ray = scene.camera.getPickRay(screenPos.current);
-      pickedPosition = ray ? scene.globe.pick(ray, scene) : null;
-    } catch {
-      // Camera access can throw during Cesium widget initialization/destruction
-    }
+    const ray = scene.camera.getPickRay(screenPos.current);
+    const pickedPosition = ray ? scene.globe.pick(ray, scene) : null;
+    // let pickedPosition: Cartesian3 | null | undefined;
+    // try {
+    //   const ray = scene.camera.getPickRay(screenPos.current);
+    //   pickedPosition = ray ? scene.globe.pick(ray, scene) : null;
+    // } catch {
+    //   // Camera access can throw during Cesium widget initialization/destruction
+    // }
 
     if (pickedPosition) {
       const cartPos = Cartographic.fromCartesian(pickedPosition);

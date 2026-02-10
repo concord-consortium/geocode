@@ -1,4 +1,4 @@
-import { Cartesian2, Cartesian3, CesiumWidget, Color, Entity, VerticalOrigin } from "@cesium/engine";
+import { Cartesian2, Cartesian3, CesiumWidget, Color, VerticalOrigin } from "@cesium/engine";
 import { autorun } from "mobx";
 import { useEffect } from "react";
 import { getLocationMarkerSvg } from "../../components/lava-coder/location-markers";
@@ -25,12 +25,13 @@ export function useFlagLocations({ verticalExaggeration, viewer }: IUseFlagLocat
 
       // Remove existing flags from the map
       flagLabels.forEach(label => {
-        let existingFlag: Entity | undefined;
-        try {
-          existingFlag = viewer.entities.getById(flagId(label));
-        } catch {
-          // Entities access can throw during Cesium widget initialization/destruction
-        }
+        const existingFlag = viewer.entities.getById(flagId(label));
+        // let existingFlag: Entity | undefined;
+        // try {
+        //   existingFlag = viewer.entities.getById(flagId(label));
+        // } catch {
+        //   // Entities access can throw during Cesium widget initialization/destruction
+        // }
         if (existingFlag) {
           viewer.entities.remove(existingFlag);
         }
