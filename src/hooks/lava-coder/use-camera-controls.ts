@@ -57,7 +57,7 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
     viewer.camera.changed.addEventListener(handleCameraChanged);
 
     return () => {
-      viewer.camera.changed.removeEventListener(handleCameraChanged);
+      viewer?.camera.changed.removeEventListener(handleCameraChanged);
     };
   }, [notifyCameraChange, viewer]);
 
