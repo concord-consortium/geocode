@@ -57,13 +57,13 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
     viewer.camera.changed.addEventListener(handleCameraChanged);
 
     return () => {
-      console.log(`--- Removing camera change listener`);
-      viewer?.camera.changed.removeEventListener(handleCameraChanged);
-      // try {
-      //   viewer?.camera.changed.removeEventListener(handleCameraChanged);
-      // } catch {
-      //   // Camera access can throw during Cesium widget initialization/destruction, which ? won't protect against
-      // }
+      // console.log(`--- Removing camera change listener`);
+      // viewer?.camera.changed.removeEventListener(handleCameraChanged);
+      try {
+        viewer?.camera.changed.removeEventListener(handleCameraChanged);
+      } catch {
+        // Camera access can throw during Cesium widget initialization/destruction, which ? won't protect against
+      }
     };
   }, [notifyCameraChange, viewer]);
 
