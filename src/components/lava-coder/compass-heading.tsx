@@ -30,6 +30,8 @@ export function CompassHeading({ viewer }: IProps) {
   try {
     heading = viewer?.camera?.heading ?? 0;
   } catch {
+    console.log(`!!! Viewer failure`, viewer);
+    console.log(` !! viewer json`, JSON.parse(JSON.stringify(viewer)));
     // Camera access can throw during Cesium widget initialization/destruction, which ? won't protect against
   }
 
