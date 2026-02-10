@@ -22,7 +22,7 @@ export function CompassHeading({ viewer }: IProps) {
   }, [viewer]);
 
   const compassStyle: React.CSSProperties = {
-    transform: `rotate(-${viewer?.camera?.heading ?? 0}rad)`
+    transform: `rotate(-${viewer?.camera?.heading || 0}rad)`
   };
 
   return (

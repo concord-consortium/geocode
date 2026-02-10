@@ -1,4 +1,3 @@
-// import { CesiumWidget } from "@cesium/engine";
 import { CesiumWidget, KmlDataSource } from "@cesium/engine";
 import { useEffect } from "react";
 import hazardZonesKml from "../../assets/Volcano_Lava_Flow_Hazard_Zones.kml";
