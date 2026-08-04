@@ -144,6 +144,7 @@ const uiAuthorSettingsProps = tuple(
   "showRiskDiamonds",
   "showLatLongButton",
   "showMapType",
+  "showMapTypeDevelop",
   "showMapTypeTerrain",
   "showMapTypeLabeledTerrain",
   "showMapTypeStreet",

@@ -1,7 +1,5 @@
 import { Cartesian2 } from "@cesium/engine";
 import { types } from "mobx-state-tree";
-import { isLocalhost } from "../utilities/js-utils";
-import { queryValueBoolean } from "../utilities/url-query";
 import { UIAuthorSettings, UIAuthorSettingsProps } from "./stores";
 
 const km3ToM3 = 1000000; // 1 km^3 = 1000000 m^3
@@ -10,11 +8,8 @@ export const LavaMapTypes = ["develop", "terrain", "terrainWithLabels", "street"
 export const LavaMapTypeStrings = LavaMapTypes.map((type) => type.toString());
 export type LavaMapType = typeof LavaMapTypes[number];
 
-function defaultMapType(): LavaMapType {
-  const isDeveloping = isLocalhost();
-  const isTesting = queryValueBoolean("testing");
-  return isDeveloping || isTesting ? "develop" : "terrain";
-}
+// The free, low-resolution imagery is the default so we don't consume Cesium ion quota by default.
+const kDefaultMapType: LavaMapType = "develop";
 
 interface ILavaCoderRulerLine {
   points: [Cartesian2, Cartesian2];
@@ -62,6 +57,8 @@ const UIStore = types.model("UI", {
   showRulerButton: true,
   // whether to show the Map Type button
   showMapType: true,
+  // whether to include the free, low-resolution imagery in the map type options
+  showMapTypeDevelop: true,
   // whether to include terrain in the map type options
   showMapTypeTerrain: true,
   // whether to include labeled terrain in the map type options
@@ -69,7 +66,7 @@ const UIStore = types.model("UI", {
   // whether to include street in the map type options
   showMapTypeStreet: true,
   // current map type
-  mapType: types.optional(types.enumeration(LavaMapTypes), defaultMapType),
+  mapType: types.optional(types.enumeration(LavaMapTypes), kDefaultMapType),
   // vertical exaggeration (1 = normal, 2 = 2x, 3 = 3x, etc)
   _verticalExaggeration: 3,
   // number of hundreds of pulses for each eruption. The actual number of pulses will be 100x this one.

@@ -72,6 +72,7 @@ export const MAP_FEATURES = "Map Features";
 export const SHOW_LAT_LONG_BUTTON = "Show Lat/Long button?";
 export const SHOW_RULER_BUTTON = "Show Ruler button?";
 export const SHOW_MAP_TYPE = "Show Map Type button?";
+export const SHOW_MAP_TYPE_DEVELOP = "Show Develop map type?";
 export const SHOW_MAP_TYPE_TERRAIN = "Show Terrain map type?";
 export const SHOW_MAP_TYPE_LABELED_TERRAIN = "Show Labeled Terrain map type?";
 export const SHOW_MAP_TYPE_STREET = "Show Street map type?";
