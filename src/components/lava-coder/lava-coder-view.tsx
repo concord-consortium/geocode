@@ -10,6 +10,7 @@ import { useHazardZones } from "../../hooks/lava-coder/use-hazard-zones";
 import { useLavaOverlay } from "../../hooks/lava-coder/use-lava-overlay";
 import { useRulerMode } from "../../hooks/lava-coder/use-ruler-mode";
 import { useShowWindPattern } from "../../hooks/lava-coder/use-show-wind-pattern";
+import { useTerrainProvider } from "../../hooks/lava-coder/use-terrain-provider";
 import { useVerticalExaggeration } from "../../hooks/lava-coder/use-vertical-exaggeration";
 import { useVog } from "../../hooks/lava-coder/use-vog";
 import { useWorldImagery } from "../../hooks/lava-coder/use-world-imagery";
@@ -56,17 +57,19 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
   const [isLatLongMode, setIsLatLongMode] = useState(false);
   const [cursor, setCursor] = useState("auto");
 
-  const viewer = useCesiumViewer(lavaCoderElt, mapType);
+  const { getElevation, terrainProvider } = useTerrainProvider();
+
+  const viewer = useCesiumViewer(lavaCoderElt, mapType, terrainProvider);
 
   const runningAndNotPaused = running && !lavaSimulation.paused;
   const {
     cameraMode, isAnimating, animateToCameraPitch, listenToCameraChange, setCameraMode, setDefaultCameraView, zoomIn,
     zoomOut
-  } = useCameraControls(viewer, verticalExaggeration, runningAndNotPaused);
+  } = useCameraControls({ viewer, verticalExaggeration, disabled: runningAndNotPaused, getElevation });
 
   const { replaceBaseLayer } = useWorldImagery();
 
-  useFlagLocations({ viewer, verticalExaggeration });
+  useFlagLocations({ getElevation, viewer, verticalExaggeration });
   useVerticalExaggeration(viewer, verticalExaggeration);
 
   useHazardZones(viewer, isLatLongMode, verticalExaggeration);
