@@ -182,3 +182,143 @@ This should happen before any of these options is worth planning in detail.
 - [USGSImageryOnly service](https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer)
 - [USGS Imagery Only catalog entry](https://www.sciencebase.gov/catalog/item/544172dae4b0b0a643c73c6e)
 - [OSM Tile Usage Policy](https://operations.osmfoundation.org/policies/tiles/)
+
+---
+
+## Terrain Mesh Alternatives (LavaCoder / Cesium)
+
+Status: exploratory. No decision made. Effort figures are estimates, not commitments.
+
+### Before doing anything
+
+**What is Ion terrain actually costing today?** The streaming estimate below is derived, not measured.
+If real usage is well inside quota, this work may be lower priority than the imagery question.
+
+### The problem
+
+Imagery is only half of our Ion dependency. `createWorldTerrainAsync()` in
+`src/hooks/lava-coder/use-terrain-provider.ts:11` pulls Cesium World Terrain — the 3D *shape* of the
+ground, as opposed to the photo draped over it. **Replacing Bing does not remove the Ion token or the
+metering.**
+
+It is a different meter, which cuts both ways. Terrain is a Cesium-owned asset, so it bills against
+**data streaming GB/month** (15 GB on Community, 150 GB on Commercial) rather than Global Imagery
+sessions. That means it is not subject to the hard per-session wall described above — but it is also
+large enough to matter on its own:
+
+| Sessions/month | Est. terrain streaming (at 1–4 MB/session) | Against quota |
+|---|---|---|
+| 5,000 | ~10 GB | nearly exhausts Community's 15 GB |
+| 100,000 | ~200 GB | exceeds Commercial's 150 GB |
+
+So "drop Bing and fall back to the free Community tier" does not eliminate Ion on its own.
+
+### What the terrain provider is actually used for
+
+| Job | Where | Needs a global service? |
+|---|---|---|
+| Visual 3D relief | `src/hooks/lava-coder/use-cesium-viewer.ts:31` | yes, or a replacement mesh |
+| Camera zoom clamp (stay 1 km above ground) | `src/hooks/lava-coder/use-camera-controls.ts:201` | **no** |
+| Flag placement on the surface | `src/hooks/lava-coder/use-flag-locations.ts:37` | **no** |
+
+The last two go through `getElevation()`, which calls `sampleTerrainMostDetailed` — fetching terrain
+tiles at maximum available detail on *every* zoom step and *every* flag drop. That is a meaningful
+share of the streaming bill spent on what are only point lookups.
+
+### Choosing a source DEM
+
+- **`big_island.asc`** — the raster the simulation already runs on — is the obvious candidate, but it is 60 m posts
+  (2151 × 2448 over the AOI). Cesium World Terrain over Hawaiʻi is roughly 10–30 m effective, so building relief from
+  it would be a 2–4× downgrade, and the 3× default vertical exaggeration would amplify that into visible terracing
+  on the shield slopes.
+- **SRTM 1-arc-second (~30 m)** — the four GeoTIFFs already committed under
+  `src/assets/lava-coder/elevation-maps/` (`n18_w156`, `n19_w155`, `n19_w156`, `n20_w156`). Zero new
+  downloads.
+- **USGS 3DEP 1/3-arc-second (~10 m)** — public domain, covers Hawaiʻi, and would be *better* than
+  what Ion gives us today.
+
+### Options under consideration
+
+Cesium will not consume a `.asc` directly; it wants tiles or a heightmap callback. That constraint
+shapes all three options.
+
+#### Move the point lookups to a local DEM
+
+Rewrite `getElevation()` as a bilinear sample into the raster the worker already loads
+(`src/simulations/lava-coder/raster.worker.ts`). Removes two of the three Ion terrain uses, and with
+them all per-zoom and per-flag network traffic. The lookups become synchronous and free.
+
+**Tradeoffs.** Partial — the visual mesh still comes from Ion, so the token stays. But it is the
+cheapest meaningful cut, it is independent of the other two options, and it is a prerequisite for the
+heightmap option below.
+
+**Effort:** ~1 day.
+
+#### Self-hosted quantized-mesh pyramid
+
+Merge a DEM with GDAL, build tiles with `ctb-quantized-mesh` (Docker), serve from the same
+S3/CloudFront as the imagery, and swap to `CesiumTerrainProvider.fromUrl()`.
+
+**Tradeoffs.** This is how Cesium expects to be fed: proper LOD, small tiles, detail fetched only
+where the camera looks. It decouples resolution from bundle size entirely, so 10 m 3DEP is viable.
+Removes the Ion token completely when paired with self-hosted imagery. Terrain tiles are far smaller
+than imagery — the whole pyramid is likely a few hundred MB, not gigabytes. Costs a build pipeline
+someone has to maintain and re-run.
+
+**Effort:** ~2–4 days.
+
+#### CustomHeightmapTerrainProvider with an in-memory DEM
+
+`CustomHeightmapTerrainProvider` is available in our installed `@cesium/engine` 17. It takes a
+callback returning a `Float32Array` of heights per tile; we sample an in-memory DEM shipped as a
+bundled asset, exactly as `big_island.asc` is today. No tile pyramid, no build step, no hosting.
+
+This is viable *only* because the camera is locked to a small fixed box — "the whole DEM fits in
+memory" is actually true here. But it forces a resolution/bundle-size tradeoff:
+
+| DEM resolution | Posts over the AOI | Raw Int16 | Viable? |
+|---|---|---|---|
+| 60 m (current `.asc`) | 5.3M | ~11 MB | yes, but that is the downgrade described above |
+| 30 m (SRTM, already in repo) | 21M | ~42 MB | borderline — needs compression |
+| 10 m (3DEP) | 189M | ~378 MB | no |
+
+**Tradeoffs.** By far the simplest to build and operate, with no infrastructure and no vendor. But it
+caps quality at roughly 30 m and adds tens of MB to the deployed bundle. Note that
+`sampleTerrainMostDetailed` needs tile-availability metadata this provider does not expose, so it
+requires the local-DEM lookup option above as a prerequisite — which is a benefit, not a cost.
+
+**Effort:** ~1–2 days on top of the local-DEM work.
+
+### Comparison
+
+| | Removes Ion? | Quality ceiling | Infrastructure | Effort |
+|---|---|---|---|---|
+| Local DEM point lookups | partially | unchanged | none | ~1 day |
+| Quantized-mesh pyramid | fully | high (10 m) | S3/CloudFront + build pipeline | 2–4 days |
+| CustomHeightmapTerrainProvider | fully | medium (~30 m) | none | 1–2 days |
+
+The local-DEM lookup is worth doing regardless — it is cheap, independent, and a prerequisite for the
+third option. The real choice is between the pyramid (better quality, needs a pipeline) and the
+heightmap (simpler, capped at ~30 m).
+
+### Open questions
+
+**How does 30 m look at 3× vertical exaggeration?** This decides whether the heightmap option is
+acceptable, and it is cheap to test — the SRTM GeoTIFFs are already in the repo.
+
+### Note on a related bug
+
+`getElevation()` takes degrees (it calls `Cartographic.fromDegrees`), and
+`src/hooks/lava-coder/use-flag-locations.ts:37` passes degrees correctly. But
+`src/hooks/lava-coder/use-camera-controls.ts:201` passes `positionCartographic` values, which Cesium
+returns in **radians**. The zoom-in clamp therefore samples elevation near (-2.7°, 0.34°) — the
+Atlantic — gets ~0, and measures the 1 km floor from sea level instead of from terrain. Pre-existing
+and unrelated to the options above, but whoever rewrites `getElevation()` should fix it in the same
+pass.
+
+### References
+
+- [Cesium ion pricing](https://cesium.com/platform/cesium-ion/pricing/)
+- [CustomHeightmapTerrainProvider](https://cesium.com/learn/cesiumjs/ref-doc/CustomHeightmapTerrainProvider.html)
+- [USGS 3DEP](https://www.usgs.gov/3d-elevation-program)
+- [ctb-quantized-mesh](https://github.com/ahuarte47/cesium-terrain-builder)
