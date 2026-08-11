@@ -37,6 +37,17 @@ function getImageryProvider(type: LavaMapType): Promise<ImageryProvider> {
         credit: "USGS The National Map: Orthoimagery"
       }));
     }
+    else if (type === "hawaii") {
+      // Experimental: WorldView-2 2016 orthoimagery from the Hawaii Statewide GIS Program.
+      // Standard Web Mercator tiling scheme, cached to level 19 (0.3 m/px).
+      // NOTE: these are PNG tiles averaging ~125 KB, roughly 10x the size of Esri's JPEGs.
+      imageryProviders[type] = Promise.resolve(new UrlTemplateImageryProvider({
+        url: "https://geodata.hawaii.gov/arcgis/rest/services/SoH_Imagery/WV2_2016/MapServer" +
+             "/tile/{z}/{y}/{x}",
+        maximumLevel: 19,
+        credit: "State of Hawaii Statewide GIS Program"
+      }));
+    }
     else {
       // Bing maps is the default imagery provider in Cesium
       const style: IonWorldImageryStyle = type === "terrainWithLabels"

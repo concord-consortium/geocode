@@ -53,6 +53,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
     terrain: "Terrain",
     esri: "Esri",
     usgs: "USGS",
+    hawaii: "Hawaii",
     terrainWithLabels: "Labeled",
     street: "Street"
   };
