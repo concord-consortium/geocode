@@ -1,6 +1,6 @@
 import {
   CesiumWidget, createWorldImageryAsync, ImageryLayer, ImageryProvider, IonImageryProvider, IonWorldImageryStyle,
-  OpenStreetMapImageryProvider
+  OpenStreetMapImageryProvider, UrlTemplateImageryProvider
 } from "@cesium/engine";
 import { useCallback } from "react";
 import { LavaMapType } from "../../stores/ui-store";
@@ -16,6 +16,16 @@ function getImageryProvider(type: LavaMapType): Promise<ImageryProvider> {
     }
     else if (type === "street") {
       imageryProviders[type] = Promise.resolve(new OpenStreetMapImageryProvider({}));
+    }
+    else if (type === "esri") {
+      // Experimental: Esri World Imagery, accessed keyless the same way the Leaflet units access
+      // World_Topo_Map. Serves past level 19, well beyond the ~17 this app can reach.
+      // NOTE: keyless access is ToS-gray -- a production version needs an API key.
+      imageryProviders[type] = Promise.resolve(new UrlTemplateImageryProvider({
+        url: "https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+        maximumLevel: 19,
+        credit: "Esri, Maxar, Earthstar Geographics, and the GIS User Community"
+      }));
     }
     else {
       // Bing maps is the default imagery provider in Cesium

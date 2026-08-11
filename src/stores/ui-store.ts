@@ -1,19 +1,17 @@
 import { Cartesian2 } from "@cesium/engine";
 import { types } from "mobx-state-tree";
-import { isLocalhost } from "../utilities/js-utils";
-import { queryValueBoolean } from "../utilities/url-query";
 import { UIAuthorSettings, UIAuthorSettingsProps } from "./stores";
 
 const km3ToM3 = 1000000; // 1 km^3 = 1000000 m^3
 
-export const LavaMapTypes = ["develop", "terrain", "terrainWithLabels", "street"] as const;
+// "esri" is an experimental prototype layer -- see docs/lavacoder/lavacoder-optimizations.md
+export const LavaMapTypes = ["develop", "terrain", "esri", "terrainWithLabels", "street"] as const;
 export const LavaMapTypeStrings = LavaMapTypes.map((type) => type.toString());
 export type LavaMapType = typeof LavaMapTypes[number];
 
 function defaultMapType(): LavaMapType {
-  const isDeveloping = isLocalhost();
-  const isTesting = queryValueBoolean("testing");
-  return isDeveloping || isTesting ? "develop" : "terrain";
+  // Esri is free, so there is no longer a reason to fall back to low-res imagery when developing.
+  return "esri";
 }
 
 interface ILavaCoderRulerLine {

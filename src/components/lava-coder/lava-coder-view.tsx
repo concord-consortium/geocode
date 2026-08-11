@@ -51,6 +51,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
   const mapLabels: Record<LavaMapType, string> = {
     develop: "Develop",
     terrain: "Terrain",
+    esri: "Esri",
     terrainWithLabels: "Labeled",
     street: "Street"
   };
