@@ -27,6 +27,16 @@ function getImageryProvider(type: LavaMapType): Promise<ImageryProvider> {
         credit: "Esri, Maxar, Earthstar Geographics, and the GIS User Community"
       }));
     }
+    else if (type === "usgs") {
+      // Experimental: free, public-domain orthoimagery from USGS The National Map.
+      // The tile cache 404s above level 16 over Hawaii, so maximumLevel must be set or Cesium
+      // requests tiles that do not exist and leaves holes in the globe.
+      imageryProviders[type] = Promise.resolve(new UrlTemplateImageryProvider({
+        url: "https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}",
+        maximumLevel: 16,
+        credit: "USGS The National Map: Orthoimagery"
+      }));
+    }
     else {
       // Bing maps is the default imagery provider in Cesium
       const style: IonWorldImageryStyle = type === "terrainWithLabels"
