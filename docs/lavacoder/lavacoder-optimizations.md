@@ -70,17 +70,90 @@ So "just use a free service" is what we are already doing, and it does not survi
 
 **Candidates:**
 
-| Source | Resolution | Key needed | Notes |
+| Source | Max zoom over Kīlauea | Key needed | Notes |
 |---|---|---|---|
-| USGS `USGSImageryOnly` (The National Map) | 1 m where NAIP exists | No | Public domain. Hawaii is **not** NAIP (CONUS only) — coverage comes from partnership imagery of unverified vintage. Effective max detail appears to be ~z16 despite advertising 24 LODs. |
-| Esri World Imagery | high, deep zoom | Yes (free tier) | Good Hawaii coverage. Esri's location platform free tier is generous. Legal and keyed — would also legitimize the dependency Tephra/Seismic already have. |
-| Hawaii Statewide GIS / NOAA Digital Coast | varies | No | Not yet investigated. Possibly the best Hawaii-specific imagery. |
+| USGS `USGSImageryOnly` (The National Map) | **z16** (z17+ 404s) | No | Public domain. **Prototyped and rejected — see below.** |
+| Esri World Imagery | **z19+** | Yes, for the legitimate endpoint | Good Hawaii coverage, cloud-free, proper water. Prototyped and looks good. |
+| Hawaii Statewide GIS / NOAA Digital Coast | unknown | No | Not investigated. Possibly the best Hawaii-specific imagery. |
 
-**Tradeoffs.** Cheapest to implement by a wide margin. But it keeps us exposed to exactly the failure
-mode we are escaping: a vendor changing terms, adding metering, or rate-limiting us. Esri with a key
-is the honest version of this option; keyless scraping of Esri or OSM is borrowed time.
+##### USGS: prototyped and rejected
 
-**Effort:** ~half a day to swap the provider, plus verification.
+A throwaway prototype wired `USGSImageryOnly` in as a Cesium `UrlTemplateImageryProvider`. The
+imagery is not usable for this app:
+
+- **Mosaic seams.** Hawaii is not NAIP (CONUS only), so coverage is stitched from partnership
+  imagery of varying vintage. Seams between captures are obvious.
+- **Cloud cover.** Source scenes were not selected for clarity.
+- **No-data offshore.** Coastal tiles contain hard diagonal boundaries with large black regions;
+  water is flat and dark where it renders at all.
+- **z16 ceiling.** Direct probing confirmed z17+ returns 404 over Kīlauea, so Cesium magnifies
+  level 16 as the camera approaches the 1 km floor, compounding the other problems.
+
+This rules out USGS as an imagery source — including as the source for self-hosting (option B),
+which had assumed USGS was the clean public-domain path. **Option B now needs a different source.**
+
+##### Esri: two different products, only one of which is licensed
+
+This distinction matters and is easy to miss:
+
+| | Endpoint | Key | Status |
+|---|---|---|---|
+| ArcGIS Online hosted service | `services.arcgisonline.com/.../World_Imagery` | none | Works, but terms require an ArcGIS Online/Enterprise license. **Not licensed for our use.** This is what Tephra/Seismic already do with `World_Topo_Map`. |
+| ArcGIS Location Platform | basemap styles service (`arcgis/imagery`) | API key | The legitimate, metered path. What the pricing below applies to. |
+
+Both serve the same underlying World Imagery mosaic, so a prototype against the keyless endpoint is
+a fair test of *appearance* — but it is not a test of the thing we would actually ship.
+
+**Pricing** ([location.arcgis.com/pricing](https://location.arcgis.com/pricing/)). Account creation
+is free. Basemaps offer two billing models and we choose one:
+
+| Model | Free tier | Overage |
+|---|---|---|
+| Tiles | 2,000,000 tiles/month | $0.15 per 1,000 |
+| Sessions | 1,000 sessions/month | $4.00 per 1,000 |
+
+Estimated cost for LavaCoder alone, at ~250 tiles/session (derived from the AOI and zoom range, not
+measured):
+
+| Sessions/month | Tile model | Session model | Cesium Ion today |
+|---|---|---|---|
+| 5,000 | free (1.25M tiles) | ~$16 | $149 |
+| 20,000 | ~$450 | ~$76 | not available |
+| 100,000 | ~$3,450 | ~$396 | not available |
+
+**The model choice depends on total usage across all three units, not just LavaCoder** — it is one
+account and one shared free tier. Roughly: below ~2M tiles/month the tile model is free and wins;
+above that the session model scales far better. See the Leaflet section below.
+
+**Tradeoffs.** Cheapest to implement by a wide margin, and Esri-with-a-key is legitimate rather than
+borrowed time. But it keeps us metered by a vendor who can reprice, and it introduces a *runtime* API
+key to manage — unlike the Ion token, which is build-time inlined today.
+
+**Effort:** ~half a day to swap the provider, plus key provisioning and verification.
+
+#### A2. Make the Leaflet units legitimate
+
+Tephra and Seismic hit `services.arcgisonline.com/.../World_Topo_Map` with no key
+(`src/components/map/map-component.tsx:272-274`). That is the same unlicensed path described above.
+
+The like-for-like keyed replacement is the Location Platform `arcgis/topographic` basemap style.
+
+**Pricing impact.** Everything shares one account and one free tier, so the units cannot be costed
+independently:
+
+- **Under the session model**, cost tracks total app loads regardless of unit. Adding Tephra/Seismic
+  could double or triple the session count, and therefore the bill.
+- **Under the tile model**, the Leaflet units are much cheaper per session than LavaCoder — a 2D map
+  at zoom 6–12 pulls on the order of 100 tiles per session versus ~250 for the Cesium globe — so
+  they consume the shared 2M pool more slowly.
+
+Worked example: at 10k LavaCoder + 30k Tephra/Seismic sessions per month, the session model costs
+~$156/mo while the tile model costs ~$525/mo. At 2k + 8k, the tile model is free and the session
+model costs ~$36/mo. The crossover sits around 8–15k combined sessions.
+
+**This should be decided for the portfolio at once**, not per unit. There is also a non-cost reason
+to do it: the current keyless dependency can be cut off without notice, and it would take both 2D
+units down.
 
 #### B. Host our own tiles
 
@@ -89,8 +162,21 @@ existing static deploy to `models-resources`.
 
 **Legality is the deciding constraint on the source, and it is not ambiguous.** Bulk-downloading
 Bing or Ion tiles violates both Microsoft's and Cesium's terms — this is a non-starter, not a gray
-area. Esri and Google prohibit it as well. Public-domain federal imagery (USGS / The National Map)
-carries no such restriction and is the clean path.
+area. Esri and Google prohibit it as well.
+
+**This option currently has no confirmed source.** It originally assumed USGS/The National Map as the
+clean public-domain path, but the prototype above showed that imagery is unusable over Hawaii for
+quality reasons that self-hosting does not fix — seams, clouds, and no-data offshore are properties
+of the source, not of how it is served. Remaining leads, none yet investigated:
+
+- **Hawaii Statewide GIS Program / NOAA Digital Coast** — state and federal imagery specific to
+  Hawaii, likely better than the national mosaic. The most promising direction.
+- **USGS EarthExplorer** — raw scenes rather than the pre-rendered basemap, which would let us
+  select cloud-free captures ourselves at the cost of real orthorectification work.
+- **Sentinel-2 cloudless (EOX)** — free and seamless, but 10 m, so it fails the quality bar for the
+  same reason Ion's Sentinel-2 layer does.
+
+Until one of these is verified, option B is blocked on source selection rather than on engineering.
 
 **Cost, for our specific box** (estimates; ocean is ~45% of the bounding box and collapses to almost
 nothing):
@@ -156,31 +242,39 @@ entirely on the quality bar, which is not yet settled.
 
 | | Ongoing cost | Vendor risk | Quality ceiling | Effort |
 |---|---|---|---|---|
-| **A.** Third-party service | free–low | high | high (Esri) / medium (USGS) | half day |
-| **B.** Self-host | very low, linear | none | high (z≤17) | 3–5 days |
+| **A.** Esri with a key | free–moderate, usage-scaled | moderate | high (z19+) | half day + key |
+| **A2.** Legitimize Leaflet units | shares A's meter | moderate | unchanged | half day |
+| **B.** Self-host | very low, linear | none | unknown — **no source yet** | 3–5 days + source hunt |
 | **C.** Gate the flag | proportional | unchanged | unchanged | hours |
-| **D.** Baked image | zero | none | medium | ~1 day |
+| **D.** Baked image | zero | none | limited by same source problem as B | ~1 day |
 
-A and B are the real alternatives. C is a stopgap worth doing regardless. D is the safety net.
+The prototype narrowed this considerably. **A is now the leading option**: it is the only path with a
+confirmed source that clears the quality bar. B remains the best long-term economics but is blocked
+until someone finds Hawaii imagery that is both freely licensed and good. D inherits the same blocker,
+since it needs a source image from somewhere. C is still worth doing regardless as a stopgap.
 
-### Open question blocking a decision
+### Open questions
 
-**How good is free Hawaii imagery, actually?** USGS `USGSImageryOnly` is the natural self-hosting
-source — free, keyless, public domain — but NAIP does not cover Hawaii, so the imagery there comes
-from partnerships of unknown vintage and resolution, and the service's effective detail looks like
-~z16 rather than the 24 levels its metadata advertises.
+**What is our actual session and tile volume?** Every cost estimate here rests on a
+~250-tiles-per-session figure that is derived, not measured, and on session counts nobody has
+supplied. The tile-vs-session billing choice swings by an order of magnitude on these numbers, and
+measuring is cheap — the dev server's network panel gives a real tile count in minutes.
 
-Someone should load USGS, Esri, and any Hawaii state imagery over Kīlauea at maximum zoom and compare
-them against Bing side by side. If USGS looks good, self-hosting is clearly the answer. If it is soft
-or cloudy, the decision shifts toward Esri with a key, or toward accepting a lower quality bar.
+**Does the keyed Location Platform imagery look identical to the keyless endpoint we prototyped?**
+Both draw from the same World Imagery mosaic, so it should, but this has not been verified with an
+actual key — and max zoom over Hawaii in particular should be re-checked, since that is what USGS
+failed on.
 
 This should happen before any of these options is worth planning in detail.
 
 ### References
 
 - [Cesium ion pricing](https://cesium.com/platform/cesium-ion/pricing/)
+- [ArcGIS Location Platform pricing](https://location.arcgis.com/pricing/) — includes a cost calculator
+- [ArcGIS Location Platform billing guide](https://location.arcgis.com/help/billing/)
+- [Esri session usage pricing announcement](https://www.esri.com/about/newsroom/announcements/esri-arcgis-location-platform-adds-session-usage-pricing-for-basemaps) (Oct 2025)
+- [Esri World Imagery terms of use](https://goto.arcgisonline.com/maps/World_Imagery)
 - [USGSImageryOnly service](https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer)
-- [USGS Imagery Only catalog entry](https://www.sciencebase.gov/catalog/item/544172dae4b0b0a643c73c6e)
 - [OSM Tile Usage Policy](https://operations.osmfoundation.org/policies/tiles/)
 
 ---
