@@ -48,6 +48,27 @@ function getImageryProvider(type: LavaMapType): Promise<ImageryProvider> {
         credit: "State of Hawaii Statewide GIS Program"
       }));
     }
+    else if (type === "vivid") {
+      // Experimental: Maxar Vivid 2022 (0.5 m) from the Hawaii Statewide GIS Program.
+      //
+      // This is an ImageServer with no tile cache, so there is no /tile/{z}/{y}/{x} path. Instead we
+      // drive its exportImage endpoint through Cesium's projected-bbox placeholders, which makes a
+      // dynamic image service usable as an imagery layer with no custom provider.
+      //
+      // EVALUATION ONLY: every tile is rendered on demand by the state's server, so this is slower
+      // than a cache and puts real load on a public service. It is here to judge image quality, not
+      // to ship. A production version would bake static tiles from this source.
+      // Using the 2020 mosaic rather than 2022: the 2022 one has nodata gaps, including a ~800 m
+      // band clear across the island near 19.554,-155.713. Measured over the app's AOI, 2020 has
+      // zero interior holes and 4% more coverage, at 0.5 m vs 0.6 m.
+      imageryProviders[type] = Promise.resolve(new UrlTemplateImageryProvider({
+        url: "https://geodata.hawaii.gov/arcgis/rest/services/SoH_Imagery/Vivid_2020/ImageServer" +
+             "/exportImage?bbox={westProjected},{southProjected},{eastProjected},{northProjected}" +
+             "&bboxSR=3857&imageSR=3857&size={width},{height}&format=jpg&f=image",
+        maximumLevel: 19,
+        credit: "Maxar Vivid 2020 via State of Hawaii Statewide GIS Program"
+      }));
+    }
     else {
       // Bing maps is the default imagery provider in Cesium
       const style: IonWorldImageryStyle = type === "terrainWithLabels"
