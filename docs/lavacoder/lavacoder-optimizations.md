@@ -70,11 +70,14 @@ So "just use a free service" is what we are already doing, and it does not survi
 
 **Candidates:**
 
-| Source | Max zoom over Kīlauea | Key needed | Notes |
-|---|---|---|---|
-| USGS `USGSImageryOnly` (The National Map) | **z16** (z17+ 404s) | No | Public domain. **Prototyped and rejected — see below.** |
-| Esri World Imagery | **z19+** | Yes, for the legitimate endpoint | Good Hawaii coverage, cloud-free, proper water. Prototyped and looks good. |
-| Hawaii Statewide GIS / NOAA Digital Coast | unknown | No | Not investigated. Possibly the best Hawaii-specific imagery. |
+All four candidates have now been probed directly. Only two are viable.
+
+| Source | Max zoom over Kīlauea | Bytes/tile at z16 | Key needed | Verdict |
+|---|---|---|---|---|
+| Esri World Imagery | **z19+** | **11.8 KB** (JPEG) | Yes, for the legitimate endpoint | **Viable.** Best all-round. |
+| Hawaii Statewide GIS `WV2_2016` | **z19** | **125 KB** (PNG) | No | **Viable but heavy** — 10.6x Esri's bandwidth. |
+| USGS `USGSImageryOnly` | z16 (z17+ 404s) | 9.9 KB | No | **Rejected** on quality. |
+| NOAA Digital Coast | n/a | n/a | No | **Rejected** — no Hawaii coverage at all. |
 
 ##### USGS: prototyped and rejected
 
@@ -90,7 +93,61 @@ imagery is not usable for this app:
   level 16 as the camera approaches the 1 km floor, compounding the other problems.
 
 This rules out USGS as an imagery source — including as the source for self-hosting (option B),
-which had assumed USGS was the clean public-domain path. **Option B now needs a different source.**
+which had assumed USGS was the clean public-domain path.
+
+##### NOAA Digital Coast: no Hawaii coverage
+
+**RULED OUT**
+
+`coast.noaa.gov/arcgis/rest/services/Imagery` hosts seven services; querying the raster catalog of all four RGB mosaics
+returns **zero rasters over the Big Island**:
+
+| Service | Total rasters | Over the Big Island |
+|---|---|---|
+| `3Band_RGB_8Bit_Imagery` | 144,901 | 0 |
+| `4Band_RGBN_8Bit_Imagery` | 134,716 | 0 |
+| `3Band_RGB_16Bit_Imagery` | 1,220 | 0 |
+| `4Band_RGBN_16Bit_Imagery` | 4,672 | 0 |
+
+Verified three ways: the same query returns 1,059 rasters over Cape Hatteras; `exportImage` returns
+real imagery at Hatteras and Galveston but 778-byte empty PNGs at both Kīlauea and the Hilo coast.
+Digital Coast's high-resolution orthoimagery is a coastal-zone program concentrated on the
+continental US.
+
+Two further reasons it would not have fit even with coverage: these are **ImageServers with no tile
+cache**, so Cesium would need a custom provider issuing a dynamic `exportImage` render per tile —
+slow, and an unreasonable load on a public service at classroom scale. And the resolution is wrong
+for a basemap: `4Band_RGBN_8Bit` is 2.5 cm/px, survey imagery for shoreline change analysis.
+
+##### Hawaii Statewide GIS: viable, but the tiles are ten times heavier
+
+**Quality probably too low**
+
+The state runs an ArcGIS server at `geodata.hawaii.gov` with a `SoH_Imagery` folder of ~40 services.
+Nearly all are ImageServers, which Cesium cannot consume as tiles. **One exception is usable:**
+
+`SoH_Imagery/WV2_2016` (MapServer) — WorldView-2 imagery from 2016:
+
+- **Standard Web Mercator tiling.** Origin and level-0 resolution match the Google/OSM scheme
+  exactly, so `{z}/{y}/{x}` maps straight through with no reprojection.
+- **Cached to level 19** at 0.3 m/px — deeper than the app can reach.
+- Serves 200s across z13–19 over Kīlauea. Cloud-free, good land detail.
+- Coastal tiles are far better than USGS — smooth water, no mid-tile seam — but there is still a
+  black no-data wedge where the imagery footprint ends offshore. Needs a look in the app at the
+  zooms students actually use.
+
+**The problem is tile weight.** These are PNGs averaging **125 KB** against Esri's **11.8 KB** JPEGs
+(measured over six tiles at the same location) — **10.6x the bandwidth**. At ~250 tiles/session that
+is roughly 31 MB per session versus 3 MB. That hurts page-load time on school networks, and would
+multiply storage and egress by 10 if it ever became the self-hosted source. Re-encoding to JPEG in a
+build step fixes it for self-hosting, but rules the endpoint out as a direct runtime layer.
+
+**Licensing is promising but unconfirmed.** The `copyrightText` is an accuracy disclaimer, not a
+usage restriction — no commercial-use clause, no third-party attribution. Notably `Vivid_2020` on the
+same server explicitly carries "© 2021 Maxar Technologies Inc" while `WV2_2016` carries nothing of
+the kind. That is suggestive, not settled: WorldView-2 is a Maxar satellite, and absence of a notice
+is not a grant. Confirm with `gis@hawaii.gov` before relying on it, especially for self-hosting,
+which means redistribution.
 
 ##### Esri: two different products, only one of which is licensed
 
@@ -164,19 +221,31 @@ existing static deploy to `models-resources`.
 Bing or Ion tiles violates both Microsoft's and Cesium's terms — this is a non-starter, not a gray
 area. Esri and Google prohibit it as well.
 
-**This option currently has no confirmed source.** It originally assumed USGS/The National Map as the
-clean public-domain path, but the prototype above showed that imagery is unusable over Hawaii for
-quality reasons that self-hosting does not fix — seams, clouds, and no-data offshore are properties
-of the source, not of how it is served. Remaining leads, none yet investigated:
+It originally assumed USGS/The National Map as the clean public-domain path. That is now ruled out on
+quality — seams, clouds, and no-data offshore are properties of the source, not of how it is served,
+so self-hosting does not fix them.
 
-- **Hawaii Statewide GIS Program / NOAA Digital Coast** — state and federal imagery specific to
-  Hawaii, likely better than the national mosaic. The most promising direction.
-- **USGS EarthExplorer** — raw scenes rather than the pre-rendered basemap, which would let us
-  select cloud-free captures ourselves at the cost of real orthorectification work.
+**The Hawaii state server is the replacement, and self-hosting suits it better than live serving
+does.** Two candidates there, both unusable as runtime layers but fine as source data, because a
+build step pulls rasters once and emits our own tiles:
+
+| Source | Resolution | Why it fails live | Why it works as source |
+|---|---|---|---|
+| `SoH_Imagery/Vivid_2022` | **0.5 m** | ImageServer, no tile cache | Highest-resolution Big Island imagery found. Carries Maxar licensing — needs clearing. |
+| `SoH_Imagery/WV2_2016` | 0.3 m at z19 | 125 KB PNG tiles | Already tiled in standard Web Mercator; re-encode to JPEG to kill the 10x weight penalty. |
+
+Self-hosting also solves the two problems that make `WV2_2016` awkward live: we control the encoding
+(JPEG instead of PNG) and can composite over the offshore no-data rather than shipping black wedges.
+
+Remaining fallback if neither clears licensing:
+
+- **USGS EarthExplorer** — raw scenes rather than the pre-rendered basemap, letting us select
+  cloud-free captures ourselves at the cost of real orthorectification work.
 - **Sentinel-2 cloudless (EOX)** — free and seamless, but 10 m, so it fails the quality bar for the
   same reason Ion's Sentinel-2 layer does.
 
-Until one of these is verified, option B is blocked on source selection rather than on engineering.
+**Option B is no longer blocked on finding a source — it is blocked on licensing confirmation from
+`gis@hawaii.gov`.** That is an email, not an investigation.
 
 **Cost, for our specific box** (estimates; ocean is ~45% of the bounding box and collapses to almost
 nothing):
@@ -244,28 +313,41 @@ entirely on the quality bar, which is not yet settled.
 |---|---|---|---|---|
 | **A.** Esri with a key | free–moderate, usage-scaled | moderate | high (z19+) | half day + key |
 | **A2.** Legitimize Leaflet units | shares A's meter | moderate | unchanged | half day |
-| **B.** Self-host | very low, linear | none | unknown — **no source yet** | 3–5 days + source hunt |
+| **B.** Self-host from Hawaii state imagery | very low, linear | none | **highest (0.5 m)** | 3–5 days, pending licensing |
 | **C.** Gate the flag | proportional | unchanged | unchanged | hours |
-| **D.** Baked image | zero | none | limited by same source problem as B | ~1 day |
+| **D.** Baked image | zero | none | same source options as B | ~1 day |
 
-The prototype narrowed this considerably. **A is now the leading option**: it is the only path with a
-confirmed source that clears the quality bar. B remains the best long-term economics but is blocked
-until someone finds Hawaii imagery that is both freely licensed and good. D inherits the same blocker,
-since it needs a source image from somewhere. C is still worth doing regardless as a stopgap.
+Probing all four candidate sources resolved the question that was blocking everything. **Two real
+paths remain, and they are a genuine trade rather than a ranking:**
+
+- **A (Esri + key)** is the fast path. Half a day, best-in-class imagery, no build pipeline — but
+  permanently metered by a vendor, with a runtime key to manage.
+- **B (self-host)** is now unblocked on source and has the higher quality ceiling, since `Vivid_2022`
+  at 0.5 m beats anything available live. It costs a build pipeline and an email to the state, and
+  gives permanent independence.
+
+The deciding input is expected usage. Below roughly 8–15k combined sessions/month Esri is free and B
+is hard to justify; well above that, B's economics win decisively and A's meter becomes a recurring
+line item. **C remains worth doing immediately regardless** — it is hours of work and stops the
+bleeding while either path is built.
 
 ### Open questions
 
-**What is our actual session and tile volume?** Every cost estimate here rests on a
-~250-tiles-per-session figure that is derived, not measured, and on session counts nobody has
-supplied. The tile-vs-session billing choice swings by an order of magnitude on these numbers, and
-measuring is cheap — the dev server's network panel gives a real tile count in minutes.
+**What is our actual session and tile volume?** This is now the top blocker: it decides A-vs-B, and
+within A it decides tile-vs-session billing, which swings cost by an order of magnitude. Every
+estimate in this document rests on a ~250-tiles-per-session figure that is derived, not measured, and
+on session counts nobody has supplied. Measuring is cheap — the dev server's network panel gives a
+real tile count in minutes.
+
+**Will the state license `Vivid_2022` / `WV2_2016` for redistribution?** One email to
+`gis@hawaii.gov`. It gates option B entirely, and it is the only remaining unknown on that path.
 
 **Does the keyed Location Platform imagery look identical to the keyless endpoint we prototyped?**
-Both draw from the same World Imagery mosaic, so it should, but this has not been verified with an
-actual key — and max zoom over Hawaii in particular should be re-checked, since that is what USGS
-failed on.
+Both draw from the same World Imagery mosaic, so it should, but this is unverified — and max zoom
+over Hawaii in particular should be re-checked, since that is precisely what USGS failed on.
 
-This should happen before any of these options is worth planning in detail.
+**How visible is the Hawaii imagery's offshore no-data boundary in the app?** It is much less severe
+than USGS but not absent. Only matters if B uses `WV2_2016` rather than `Vivid_2022`.
 
 ### References
 
@@ -276,6 +358,10 @@ This should happen before any of these options is worth planning in detail.
 - [Esri World Imagery terms of use](https://goto.arcgisonline.com/maps/World_Imagery)
 - [USGSImageryOnly service](https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer)
 - [OSM Tile Usage Policy](https://operations.osmfoundation.org/policies/tiles/)
+- [Hawaii Statewide GIS REST directory](https://geodata.hawaii.gov/arcgis/rest/services/SoH_Imagery) — contact `gis@hawaii.gov`
+- [Hawaii `WV2_2016` tile service](https://geodata.hawaii.gov/arcgis/rest/services/SoH_Imagery/WV2_2016/MapServer)
+- [Hawaii `Vivid_2022` (0.5 m, ImageServer)](https://geodata.hawaii.gov/arcgis/rest/services/SoH_Imagery/Vivid_2022/ImageServer)
+- [NOAA Digital Coast imagery services](https://coast.noaa.gov/arcgis/rest/services/Imagery) — no Hawaii coverage
 
 ---
 
