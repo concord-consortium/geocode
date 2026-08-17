@@ -502,3 +502,110 @@ pass.
 - [CustomHeightmapTerrainProvider](https://cesium.com/learn/cesiumjs/ref-doc/CustomHeightmapTerrainProvider.html)
 - [USGS 3DEP](https://www.usgs.gov/3d-elevation-program)
 - [ctb-quantized-mesh](https://github.com/ahuarte47/cesium-terrain-builder)
+
+---
+
+## Place Name Labels (LavaCoder / Cesium)
+
+Status: exploratory. No decision made. Effort figures are estimates, not commitments.
+
+### The problem
+
+The current **Labeled** map type is Bing's `AERIAL_WITH_LABELS` — place names baked directly into the
+imagery tiles by the provider. Every replacement imagery source discussed above is unlabelled, so
+dropping Bing means losing that option unless labels are sourced separately.
+
+### Option 1: Transparent raster overlay tiles
+
+A second imagery layer drawn above the base. Prototyped as the `vividWithLabels` map type: CARTO's
+label tiles over Vivid.
+
+Downside: Any label layer delivered as image tiles is draped over the terrain mesh like a decal.
+
+**Sources probed.** All return transparent PNGs; ink colours measured over Hilo at z12:
+
+| Source | Text | Halo | Notes |
+|---|---|---|---|
+| CARTO `dark_only_labels` | rgb(160,160,160) | rgb(32,32,32) | Light text on dark halo |
+| CARTO `light_only_labels` | rgb(64,64,64) | rgb(224,224,224) | Dark text on light halo |
+| Esri `World_Boundaries_and_Places` | mostly rgb(0,0,0) | — | Sparse, but dark. |
+| Esri `World_Transportation` | — | — | Roads and labels; probably too dense for this app. |
+
+**Appearance is adjustable.** Cesium applies per-layer colour operations in the shader, set through
+`ImageryLayer.ConstructorOptions` — `brightness`, `contrast`, `saturation`, `gamma`, `hue`, `alpha`.
+
+**Which labels appear is not adjustable.** The tile arrives as a flat image
+with every label already painted, so no per-pixel operation can distinguish a volcano from a
+residential street. The only related levers are:
+
+- `maximumTerrainLevel` / `minimumTerrainLevel` — zoom-gate the whole layer. Since CARTO adds labels
+  progressively with zoom, capping this is a blunt but real density control: major names at overview
+  zooms, clean imagery close in.
+- `cutoutRectangle` — punch a geographic hole (crude; could suppress dense Hilo/Kona).
+- `colorToAlpha` — sounds like category filtering but is not usable here. Every ink colour measured
+  is neutral grey; those are antialiasing steps between text and halo, not categories. Keying on any
+  of them removes all the text.
+
+**Licensing.** CARTO is OSM-derived and free for non-commercial use with attribution — the cleanest
+of the raster options. Esri's reference layers carry the same keyless-ToS problem as their imagery,
+and note that under a keyed Location Platform setup a label layer would meter as a **second** basemap
+request per tile, roughly doubling that cost.
+
+**Effort:** already prototyped. ~1 day to productionise.
+
+### Option 2: GNIS place names as native Cesium labels
+
+Render labels as Cesium entities from a bundled dataset rather than fetching tiles.
+
+**USGS GNIS** (Geographic Names Information System) is public domain and covers every named feature
+in Hawaii. `DomesticNames_HI_Text.zip` is confirmed available from the USGS staged-products bucket.
+
+This is the only option that solves both problems at once:
+
+- **Legible at any pitch.** `LabelGraphics` billboards always face the camera, so no draping and no
+  skew.
+- **Full editorial control.** Choose exactly which features appear, with `distanceDisplayCondition`
+  per feature so Mauna Loa shows when zoomed out and minor features only appear close in.
+- **No runtime dependency.** No vendor, no key, no metering, no bandwidth; works offline. Ships as a
+  small JSON asset.
+- **Public domain** — the only option here that is.
+
+**Costs.** GNIS includes every gulch and stream, so the data needs filtering by feature class and
+then curation — probably 50–200 hand-picked features for a fixed island-sized AOI. Cesium entity
+labels also do not auto-declutter, so importance tiering is manual. That is an afternoon of data work
+plus editorial judgement about what students should see, rather than a URL.
+
+**Effort:** ~2 days including curation.
+
+### Option 3: Vector tiles with a custom style
+
+Labels arrive as data and get filtered by feature class in the style, giving category control without
+hand-curation. **But `@cesium/engine` has no native Mapbox Vector Tile support** — this would mean
+community plugins or writing a renderer. Not proportionate to the need here; noted for completeness.
+
+### Comparison
+
+| | Which labels | Legible at pitch | Dependency | Effort |
+|---|---|---|---|---|
+| **1.** Raster overlay (CARTO) | fixed, OSM's choices | no — drapes | CARTO, metered-adjacent | prototyped |
+| **2.** GNIS entities | fully chosen | yes | none | ~2 days |
+| **3.** Vector tiles | filtered by class | no — drapes | plugin/renderer | high |
+
+**Option 1 is the right stopgap and option 2 is the likely destination.** The two problems point the
+same way: OSM's label priorities are streets and businesses, not craters and flows, so a volcano
+simulation will want editorial control sooner rather than later — and the option that provides it
+also fixes the skew and removes a dependency instead of adding one. That matters especially if the
+imagery ends up self-hosted (option B above), where adding a metered or ToS-gray label layer would
+partly defeat the point.
+
+### Open questions
+
+**What does GNIS actually contain for the Big Island?** Unknown until someone pulls the file and
+filters it. Roughly an hour to find out, and it determines how much curation option 2 really needs.
+
+### References
+
+- [CARTO basemaps](https://github.com/CartoDB/basemap-styles) — attribution requirements and style list
+- [USGS GNIS download](https://www.usgs.gov/us-board-on-geographic-names/download-gnis-data)
+- [Cesium ImageryLayer](https://cesium.com/learn/cesiumjs/ref-doc/ImageryLayer.html) — colour adjustment properties
+- [Cesium LabelGraphics](https://cesium.com/learn/cesiumjs/ref-doc/LabelGraphics.html)
