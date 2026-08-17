@@ -5,9 +5,12 @@ import {
 import { useCallback } from "react";
 import { LavaMapType } from "../../stores/ui-store";
 
-const imageryProviders: Partial<Record<LavaMapType, Promise<ImageryProvider>>> = {};
+// Imagery keys are map types plus any layers that only ever appear as part of a stack
+type ImageryKey = LavaMapType | "cartoLabels";
 
-function getImageryProvider(type: LavaMapType): Promise<ImageryProvider> {
+const imageryProviders: Partial<Record<ImageryKey, Promise<ImageryProvider>>> = {};
+
+function getImageryProvider(type: ImageryKey): Promise<ImageryProvider> {
   if (!imageryProviders[type]) {
     if (type === "develop") {
       // Use lower-resolution imagery for development
@@ -69,6 +72,16 @@ function getImageryProvider(type: LavaMapType): Promise<ImageryProvider> {
         credit: "Maxar Vivid 2020 via State of Hawaii Statewide GIS Program"
       }));
     }
+    else if (type === "cartoLabels") {
+      // Transparent place-name overlay, drawn above imagery rather than as a base layer. OSM-derived
+      // and free for non-commercial use with attribution. The "dark" variant is light text, which
+      // reads better over lava than the dark text of the "light" variant.
+      imageryProviders[type] = Promise.resolve(new UrlTemplateImageryProvider({
+        url: "https://basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}.png",
+        maximumLevel: 19,
+        credit: "© OpenStreetMap contributors © CARTO"
+      }));
+    }
     else {
       // Bing maps is the default imagery provider in Cesium
       const style: IonWorldImageryStyle = type === "terrainWithLabels"
@@ -80,27 +93,48 @@ function getImageryProvider(type: LavaMapType): Promise<ImageryProvider> {
   return imageryProviders[type];
 }
 
+// Map types that render as a stack of layers, ordered bottom to top. Any map type not listed here
+// renders as a single layer of the same name.
+const kLayerStack: Partial<Record<LavaMapType, ImageryKey[]>> = {
+  vividWithLabels: ["vivid", "cartoLabels"]
+};
+
+// Per-layer display adjustments, applied by Cesium in the shader as the layer is drawn.
+// CARTO's label tiles are grey text on a dark halo rather than white on black, so brightness lifts
+// the text to white while contrast pushes the halo darker, keeping the two separated over both
+// bright vegetation and black lava. Saturation removes any residual colour cast.
+const kLayerOptions: Partial<Record<ImageryKey, ImageryLayer.ConstructorOptions>> = {
+  cartoLabels: { brightness: 1.75, contrast: 1.4, saturation: 0 }
+};
+
+// The layers currently installed at the bottom of the viewer's layer stack. Tracked so a map type
+// change can remove exactly those, leaving the lava and vog overlays added above them untouched.
+let currentBaseLayers: ImageryLayer[] = [];
+
 export function useWorldImagery() {
 
-  const createBaseLayer = useCallback(async (mapType: LavaMapType) => {
-    const imageryProvider = await getImageryProvider(mapType);
-    return new ImageryLayer(imageryProvider);
+  // Returns the layers for a map type, ordered bottom to top.
+  const createBaseLayers = useCallback(async (mapType: LavaMapType) => {
+    const keys = kLayerStack[mapType] ?? [mapType];
+    const providers = await Promise.all(keys.map(getImageryProvider));
+    currentBaseLayers = providers.map((provider, index) => new ImageryLayer(provider, kLayerOptions[keys[index]]));
+    return currentBaseLayers;
   }, []);
 
   const replaceBaseLayer = useCallback(async (viewer: CesiumWidget | null, mapType: LavaMapType) => {
     if (!viewer) return;
 
-    const newBaseLayer = await createBaseLayer(mapType);
-    if (newBaseLayer) {
-      // Remove the old base layer
-      const oldBaseLayer = viewer.imageryLayers.get(0);
-      if (oldBaseLayer) {
-        viewer.imageryLayers.remove(oldBaseLayer);
-      }
-      // Add the new base layer at the bottom of the layer stack
-      viewer.imageryLayers.add(newBaseLayer, 0);
-    }
-  }, [createBaseLayer]);
+    // Capture the outgoing layers before createBaseLayers() reassigns currentBaseLayers
+    const oldBaseLayers = currentBaseLayers;
+    const newBaseLayers = await createBaseLayers(mapType);
 
-  return { createBaseLayer, replaceBaseLayer };
+    oldBaseLayers.forEach(layer => {
+      if (viewer.imageryLayers.contains(layer)) {
+        viewer.imageryLayers.remove(layer);
+      }
+    });
+    newBaseLayers.forEach((layer, index) => viewer.imageryLayers.add(layer, index));
+  }, [createBaseLayers]);
+
+  return { createBaseLayers, replaceBaseLayer };
 }
