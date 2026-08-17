@@ -7,7 +7,7 @@ const km3ToM3 = 1000000; // 1 km^3 = 1000000 m^3
 // "esri", "usgs", "hawaii" and "vivid" are experimental prototype layers being compared against the
 // Bing-backed "terrain" default -- see docs/lavacoder/lavacoder-optimizations.md
 export const LavaMapTypes =
-  ["develop", "terrain", "esri", "usgs", "hawaii", "vivid", "vividWithLabels",
+  ["develop", "terrain", "esri", "usgs", "hawaii", "vivid", "vividWithLabels", "vividWithEsriLabels",
    "terrainWithLabels", "street"] as const;
 export const LavaMapTypeStrings = LavaMapTypes.map((type) => type.toString());
 export type LavaMapType = typeof LavaMapTypes[number];

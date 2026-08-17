@@ -6,7 +6,7 @@ import { useCallback } from "react";
 import { LavaMapType } from "../../stores/ui-store";
 
 // Imagery keys are map types plus any layers that only ever appear as part of a stack
-type ImageryKey = LavaMapType | "cartoLabels";
+type ImageryKey = LavaMapType | "cartoLabels" | "esriLabels";
 
 const imageryProviders: Partial<Record<ImageryKey, Promise<ImageryProvider>>> = {};
 
@@ -82,6 +82,18 @@ function getImageryProvider(type: ImageryKey): Promise<ImageryProvider> {
         credit: "© OpenStreetMap contributors © CARTO"
       }));
     }
+    else if (type === "esriLabels") {
+      // Esri's reference overlay, the layer they pair with World Imagery. Sparser than the CARTO
+      // labels (0.3% vs 0.8% ink) and already styled for imagery: pale text on a strong black halo.
+      // World_Reference_Overlay is the same idea but adds road casings -- far too busy here.
+      // NOTE: keyless access is ToS-gray, same as the Esri imagery above.
+      imageryProviders[type] = Promise.resolve(new UrlTemplateImageryProvider({
+        url: "https://services.arcgisonline.com/ArcGIS/rest/services/Reference" +
+             "/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}",
+        maximumLevel: 19,
+        credit: "Esri, Garmin, and the GIS User Community"
+      }));
+    }
     else {
       // Bing maps is the default imagery provider in Cesium
       const style: IonWorldImageryStyle = type === "terrainWithLabels"
@@ -96,7 +108,8 @@ function getImageryProvider(type: ImageryKey): Promise<ImageryProvider> {
 // Map types that render as a stack of layers, ordered bottom to top. Any map type not listed here
 // renders as a single layer of the same name.
 const kLayerStack: Partial<Record<LavaMapType, ImageryKey[]>> = {
-  vividWithLabels: ["vivid", "cartoLabels"]
+  vividWithLabels: ["vivid", "cartoLabels"],
+  vividWithEsriLabels: ["vivid", "esriLabels"]
 };
 
 // Per-layer display adjustments, applied by Cesium in the shader as the layer is drawn.
@@ -104,7 +117,8 @@ const kLayerStack: Partial<Record<LavaMapType, ImageryKey[]>> = {
 // the text to white while contrast pushes the halo darker, keeping the two separated over both
 // bright vegetation and black lava. Saturation removes any residual colour cast.
 const kLayerOptions: Partial<Record<ImageryKey, ImageryLayer.ConstructorOptions>> = {
-  cartoLabels: { brightness: 1.75, contrast: 1.4, saturation: 0 }
+  cartoLabels: { brightness: 1.75, contrast: 1.4, saturation: 0 },
+  esriLabels: { brightness: 1.65, saturation: 0 }
 };
 
 // The layers currently installed at the bottom of the viewer's layer stack. Tracked so a map type
