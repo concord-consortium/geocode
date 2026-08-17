@@ -13,8 +13,8 @@ export const LavaMapTypeStrings = LavaMapTypes.map((type) => type.toString());
 export type LavaMapType = typeof LavaMapTypes[number];
 
 function defaultMapType(): LavaMapType {
-  // Esri is free, so there is no longer a reason to fall back to low-res imagery when developing.
-  return "esri";
+  // Vivid is the leading candidate; see docs/lavacoder/lavacoder-optimizations.md
+  return "vivid";
 }
 
 interface ILavaCoderRulerLine {

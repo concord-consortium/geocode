@@ -42,6 +42,11 @@ interface IProps {
 
 const round6 = (value: number) => Math.round(value * 1000000) / 1000000;
 
+// Map types reachable from the Map Type toggle while prototyping. The rest -- including the esri,
+// usgs and hawaii imagery experiments -- remain implemented in use-world-imagery.ts but are not
+// offered as options. See docs/lavacoder/lavacoder-optimizations.md
+const kDemoMapTypes: LavaMapType[] = ["develop", "vivid", "vividWithLabels", "vividWithEsriLabels"];
+
 export const LavaCoderView = observer(function LavaCoderView({ width, height, margin, running }: IProps) {
   const {
     showLatLongButton, showRulerButton, verticalExaggeration,
@@ -160,10 +165,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
       // if (type === "terrain" && !showMapTypeTerrain) return false;
       // if (type === "terrainWithLabels" && !showMapTypeLabeledTerrain) return false;
       // if (type === "street" && !showMapTypeStreet) return false;
-      if (type === "terrain") return false;
-      if (type === "terrainWithLabels") return false;
-      if (type === "street") return false;
-      return true;
+      return kDemoMapTypes.includes(type);
     });
     const currMapIndex = availableMapTypes.indexOf(mapType);
     const nextMapType = availableMapTypes[(currMapIndex + 1) % availableMapTypes.length];
