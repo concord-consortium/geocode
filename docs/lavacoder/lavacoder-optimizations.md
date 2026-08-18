@@ -1,6 +1,6 @@
-# Lavacoder Optimizations
+# LavaCoder Optimizations
 
-This document describes options for reducing costs associated with cesium assets.
+This document describes options for reducing costs associated with Cesium assets.
 
 ## TLDR
 
