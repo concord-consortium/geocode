@@ -1,5 +1,28 @@
 # Lavacoder Optimizations
 
+This document describes options for reducing costs associated with cesium assets.
+
+## TLDR
+
+A prototype has been generated to test map imagery and labels: https://models-resources.concord.org/geocode-app/branch/b-usgs-test/?unit=LavaCoder
+
+### Map Imagery
+
+We've explored options and decided hosting our own tiles (option B) using the `SoH_Imagery/Vivid_2022` imagery is the best option. The project team has sent an email to request access to these files.
+
+### Place Name Labels
+
+We've tried all the variants for overlaying a transparent layer (option 1) with low to moderate success. You can see the outcomes in the demo linked above.
+
+We haven't started exploring option 2 yet. I suspect it will be more work than claude suggests in the description below, because in addition to selecting which labels we care about, we would also have to specify:
+- Zoom levels for each label
+- Size for each label (cities > streets)
+- Orientation for each label (following streets and rivers)
+
+### Terrain Mesh Alternatives
+
+No progress. Before embarking on any work, make sure this is actually a problem and not just an AI fever dream.
+
 ## Map Imagery Alternatives (LavaCoder / Cesium)
 
 Status: exploratory. No decision made. Effort figures are estimates, not commitments.
