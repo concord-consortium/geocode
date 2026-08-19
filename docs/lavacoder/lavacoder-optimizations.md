@@ -509,16 +509,6 @@ heightmap (simpler, capped at ~30 m).
 **How does 30 m look at 3× vertical exaggeration?** This decides whether the heightmap option is
 acceptable, and it is cheap to test — the SRTM GeoTIFFs are already in the repo.
 
-### Note on a related bug
-
-`getElevation()` takes degrees (it calls `Cartographic.fromDegrees`), and
-`src/hooks/lava-coder/use-flag-locations.ts:37` passes degrees correctly. But
-`src/hooks/lava-coder/use-camera-controls.ts:201` passes `positionCartographic` values, which Cesium
-returns in **radians**. The zoom-in clamp therefore samples elevation near (-2.7°, 0.34°) — the
-Atlantic — gets ~0, and measures the 1 km floor from sea level instead of from terrain. Pre-existing
-and unrelated to the options above, but whoever rewrites `getElevation()` should fix it in the same
-pass.
-
 ### References
 
 - [Cesium ion pricing](https://cesium.com/platform/cesium-ion/pricing/)

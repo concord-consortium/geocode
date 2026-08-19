@@ -201,9 +201,12 @@ export function useCameraControls({ viewer, verticalExaggeration, disabled, getE
     const terrainProvider = viewer.terrainProvider;
     if (!terrainProvider) return;
 
-    // Cesium expects an array of Cartographic
+    // positionCartographic is in radians, but getElevation expects degrees
     const cameraPos = viewer.camera.positionCartographic;
-    const elevation = await getElevation(cameraPos.longitude, cameraPos.latitude);
+    const elevation = await getElevation(
+      CSMath.toDegrees(cameraPos.longitude),
+      CSMath.toDegrees(cameraPos.latitude)
+    );
     const terrainHeight = (elevation ?? 0) * verticalExaggeration;
 
     moveDist = Math.max(0, Math.min(moveDist, cameraPos.height - (terrainHeight + kMinDistanceAboveTerrain)));
