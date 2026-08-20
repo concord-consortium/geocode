@@ -25,7 +25,7 @@ No progress. Before embarking on any work, make sure this is actually a problem 
 
 ## Map Imagery Alternatives (LavaCoder / Cesium)
 
-Status: exploratory. No decision made. Effort figures are estimates, not commitments.
+Planning on implementing option B with `SoH_Imagery/Vivid_2022`. Effort figures are estimates, not commitments.
 
 ### The problem
 
@@ -98,7 +98,7 @@ All four candidates have now been probed directly. Only two are viable.
 | Source | Max zoom over Kīlauea | Bytes/tile at z16 | Key needed | Verdict |
 |---|---|---|---|---|
 | Esri World Imagery | **z19+** | **11.8 KB** (JPEG) | Yes, for the legitimate endpoint | **Viable.** Best all-round. |
-| Hawaii Statewide GIS `WV2_2016` | **z19** | **125 KB** (PNG) | No | **Viable but heavy** — 10.6x Esri's bandwidth. |
+| Hawaii Statewide GIS `WV2_2016` | **z19** | **125 KB** (PNG) | No | **Rejected** on quailty. |
 | USGS `USGSImageryOnly` | z16 (z17+ 404s) | 9.9 KB | No | **Rejected** on quality. |
 | NOAA Digital Coast | n/a | n/a | No | **Rejected** — no Hawaii coverage at all. |
 
@@ -142,7 +142,7 @@ cache**, so Cesium would need a custom provider issuing a dynamic `exportImage` 
 slow, and an unreasonable load on a public service at classroom scale. And the resolution is wrong
 for a basemap: `4Band_RGBN_8Bit` is 2.5 cm/px, survey imagery for shoreline change analysis.
 
-##### Hawaii Statewide GIS: viable, but the tiles are ten times heavier
+##### Hawaii Statewide GIS
 
 **Quality probably too low**
 
@@ -349,16 +349,16 @@ paths remain, and they are a genuine trade rather than a ranking:**
   at 0.5 m beats anything available live. It costs a build pipeline and an email to the state, and
   gives permanent independence.
 
-The deciding input is expected usage. Below roughly 8–15k combined sessions/month Esri is free and B
-is hard to justify; well above that, B's economics win decisively and A's meter becomes a recurring
+We're planning on implementing B. Even though below roughly 8–15k combined sessions/month Esri is free;
+well above that, B's economics win decisively and A's meter becomes a recurring
 line item. **C remains worth doing immediately regardless** — it is hours of work and stops the
 bleeding while either path is built.
 
 ### Open questions
 
-**What is our actual session and tile volume?** This is now the top blocker: it decides A-vs-B, and
-within A it decides tile-vs-session billing, which swings cost by an order of magnitude. Every
-estimate in this document rests on a ~250-tiles-per-session figure that is derived, not measured, and
+**What is our actual session and tile volume?** Even though we're committed to B, it would still be good to
+get a concrete number about session and tile usage.
+Every estimate in this document rests on a ~250-tiles-per-session figure that is derived, not measured, and
 on session counts nobody has supplied. Measuring is cheap — the dev server's network panel gives a
 real tile count in minutes.
 
@@ -432,7 +432,7 @@ share of the streaming bill spent on what are only point lookups.
 
 - **`big_island.asc`** — the raster the simulation already runs on — is the obvious candidate, but it is 60 m posts
   (2151 × 2448 over the AOI). Cesium World Terrain over Hawaiʻi is roughly 10–30 m effective, so building relief from
-  it would be a 2–4× downgrade, and the 3× default vertical exaggeration would amplify that into visible terracing
+  it would be a 2–6× downgrade, and the 3× default vertical exaggeration would amplify that into visible terracing
   on the shield slopes.
 - **SRTM 1-arc-second (~30 m)** — the four GeoTIFFs already committed under
   `src/assets/lava-coder/elevation-maps/` (`n18_w156`, `n19_w155`, `n19_w156`, `n20_w156`). Zero new
@@ -520,7 +520,7 @@ acceptable, and it is cheap to test — the SRTM GeoTIFFs are already in the rep
 
 ## Place Name Labels (LavaCoder / Cesium)
 
-Status: exploratory. No decision made. Effort figures are estimates, not commitments.
+Status: exploratory, but leaning towards option 1. Effort figures are estimates, not commitments.
 
 ### The problem
 
