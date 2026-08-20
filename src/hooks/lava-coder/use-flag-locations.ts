@@ -4,18 +4,18 @@ import { useEffect } from "react";
 import { getLocationMarkerSvg } from "../../components/lava-coder/location-markers";
 import { flagColorInfo, flagLabelInfo, flagLabels } from "../../simulations/lava-coder/lava-constants";
 import { lavaSimulation } from "../../stores/lava-simulation-store";
-import { useTerrainProvider } from "./use-terrain-provider";
+import { GetElevation } from "./use-terrain-provider";
 
 function flagId(label: string) {
   return `flag-${label}`;
 }
 
 interface IUseFlagLocationsProps {
+  getElevation: GetElevation;
   verticalExaggeration: number;
   viewer: CesiumWidget | null;
 }
-export function useFlagLocations({ verticalExaggeration, viewer }: IUseFlagLocationsProps) {
-  const { getElevation } = useTerrainProvider();
+export function useFlagLocations({ getElevation, verticalExaggeration, viewer }: IUseFlagLocationsProps) {
 
   useEffect(() => {
     return autorun(() => {

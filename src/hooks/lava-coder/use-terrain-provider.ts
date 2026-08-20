@@ -1,6 +1,8 @@
 import { Cartographic, createWorldTerrainAsync, sampleTerrainMostDetailed, TerrainProvider } from "@cesium/engine";
 import { useCallback, useEffect, useState } from "react";
 
+export type GetElevation = (longitude: number, latitude: number) => Promise<number>;
+
 export function useTerrainProvider() {
   const [terrainProvider, setTerrainProvider] = useState<TerrainProvider | null>(null);
 
@@ -11,7 +13,7 @@ export function useTerrainProvider() {
     });
   }, []);
 
-  const getElevation = useCallback(async (longitude: number, latitude: number): Promise<number> => {
+  const getElevation = useCallback<GetElevation>(async (longitude, latitude) => {
     if (!terrainProvider) {
       return 0;
     }

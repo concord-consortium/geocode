@@ -1,19 +1,19 @@
-import { CesiumWidget, ImageryLayer, Ion } from "@cesium/engine";
+import { CesiumWidget, ImageryLayer, Ion, TerrainProvider } from "@cesium/engine";
 import { useEffect, useRef, useState } from "react";
 import { LavaMapType } from "../../stores/ui-store";
-import { useTerrainProvider } from "./use-terrain-provider";
 import { useWorldImagery } from "./use-world-imagery";
 
 import "@cesium/engine/Source/Widget/CesiumWidget.css";
 
 Ion.defaultAccessToken = process.env.CESIUM_ION_ACCESS_TOKEN;
 
-export function useCesiumViewer(container: Element | null, initialMapType: LavaMapType) {
+export function useCesiumViewer(
+  container: Element | null, initialMapType: LavaMapType, terrainProvider: TerrainProvider | null
+) {
   const viewer = useRef<CesiumWidget | null>(null);
   const [ , forceRefresh] = useState(false);
   const { createBaseLayer } = useWorldImagery();
   const [baseLayer, setBaseLayer] = useState<ImageryLayer | null>(null);
-  const { terrainProvider } = useTerrainProvider();
 
   useEffect(() => {
     if (!baseLayer) {

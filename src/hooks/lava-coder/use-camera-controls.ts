@@ -4,7 +4,7 @@ import { v4 as uuid } from "uuid";
 import { uiStore } from "../../stores/ui-store";
 import { getCameraState } from "../../utilities/cesium-utils";
 import { IOnDragArgs, useCesiumDragEvents } from "./use-cesium-drag-events";
-import { useTerrainProvider } from "./use-terrain-provider";
+import { GetElevation } from "./use-terrain-provider";
 
 export type CameraMode = "pitch" | "heading" | "panning";
 
@@ -24,13 +24,18 @@ function getAngleFromCenter(pos: Cartesian2, center: Cartesian2) {
   return Math.atan2(pos.y - center.y, pos.x - center.x);
 }
 
-export function useCameraControls(viewer: CesiumWidget | null, verticalExaggeration: number, disabled: boolean) {
+interface IUseCameraControlsProps {
+  disabled: boolean;
+  getElevation: GetElevation;
+  verticalExaggeration: number;
+  viewer: CesiumWidget | null;
+}
+
+export function useCameraControls({ viewer, verticalExaggeration, disabled, getElevation }: IUseCameraControlsProps) {
 
   const [cameraMode, setCameraMode] = useState<CameraMode>(kDefaultCameraMode);
   const animationInterval = useRef<number | null>(null);
   const cameraChangeReceivers = useRef<Map<string, () => void>>(new Map());
-
-  const { getElevation } = useTerrainProvider();
 
   // Cesium doesn't always send a camera changed event for client-triggered changes,
   // so we provide our own mechanism to listen for camera changes.
@@ -196,9 +201,12 @@ export function useCameraControls(viewer: CesiumWidget | null, verticalExaggerat
     const terrainProvider = viewer.terrainProvider;
     if (!terrainProvider) return;
 
-    // Cesium expects an array of Cartographic
+    // positionCartographic is in radians, but getElevation expects degrees
     const cameraPos = viewer.camera.positionCartographic;
-    const elevation = await getElevation(cameraPos.longitude, cameraPos.latitude);
+    const elevation = await getElevation(
+      CSMath.toDegrees(cameraPos.longitude),
+      CSMath.toDegrees(cameraPos.latitude)
+    );
     const terrainHeight = (elevation ?? 0) * verticalExaggeration;
 
     moveDist = Math.max(0, Math.min(moveDist, cameraPos.height - (terrainHeight + kMinDistanceAboveTerrain)));
