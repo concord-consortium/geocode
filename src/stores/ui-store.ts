@@ -1,19 +1,20 @@
 import { Cartesian2 } from "@cesium/engine";
 import { types } from "mobx-state-tree";
-import { isLocalhost } from "../utilities/js-utils";
-import { queryValueBoolean } from "../utilities/url-query";
 import { UIAuthorSettings, UIAuthorSettingsProps } from "./stores";
 
 const km3ToM3 = 1000000; // 1 km^3 = 1000000 m^3
 
-export const LavaMapTypes = ["develop", "terrain", "terrainWithLabels", "street"] as const;
+// "esri", "usgs", "hawaii" and "vivid" are experimental prototype layers being compared against the
+// Bing-backed "terrain" default -- see docs/lavacoder/lavacoder-optimizations.md
+export const LavaMapTypes =
+  ["develop", "terrain", "esri", "usgs", "hawaii", "vivid", "vividWithLabels", "vividWithEsriLabels",
+   "terrainWithLabels", "street"] as const;
 export const LavaMapTypeStrings = LavaMapTypes.map((type) => type.toString());
 export type LavaMapType = typeof LavaMapTypes[number];
 
 function defaultMapType(): LavaMapType {
-  const isDeveloping = isLocalhost();
-  const isTesting = queryValueBoolean("testing");
-  return isDeveloping || isTesting ? "develop" : "terrain";
+  // Vivid is the leading candidate; see docs/lavacoder/lavacoder-optimizations.md
+  return "vivid";
 }
 
 interface ILavaCoderRulerLine {

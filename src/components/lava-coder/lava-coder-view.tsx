@@ -42,15 +42,27 @@ interface IProps {
 
 const round6 = (value: number) => Math.round(value * 1000000) / 1000000;
 
+// Map types reachable from the Map Type toggle while prototyping. The rest -- including the esri,
+// usgs and hawaii imagery experiments -- remain implemented in use-world-imagery.ts but are not
+// offered as options. See docs/lavacoder/lavacoder-optimizations.md
+const kDemoMapTypes: LavaMapType[] = ["develop", "vivid", "vividWithLabels", "vividWithEsriLabels"];
+
 export const LavaCoderView = observer(function LavaCoderView({ width, height, margin, running }: IProps) {
   const {
     showLatLongButton, showRulerButton, verticalExaggeration,
-    showMapType, showMapTypeTerrain, showMapTypeLabeledTerrain, showMapTypeStreet, mapType
+    showMapType, mapType
+    // showMapType, showMapTypeTerrain, showMapTypeLabeledTerrain, showMapTypeStreet, mapType
   } = uiStore;
   const [lavaCoderElt, setLavaCoderElt] = useState<HTMLDivElement | null>(null);
   const mapLabels: Record<LavaMapType, string> = {
     develop: "Develop",
     terrain: "Terrain",
+    esri: "Esri",
+    usgs: "USGS",
+    hawaii: "Hawaii",
+    vivid: "Vivid",
+    vividWithLabels: "Labeled Vivid",
+    vividWithEsriLabels: "Esri Labeled Vivid",
     terrainWithLabels: "Labeled",
     street: "Street"
   };
@@ -149,11 +161,11 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
 
   function toggleMapType() {
     const availableMapTypes = LavaMapTypes.filter(type => {
-      if (type === "develop") return false; // development map type is not available via toggle
-      if (type === "terrain" && !showMapTypeTerrain) return false;
-      if (type === "terrainWithLabels" && !showMapTypeLabeledTerrain) return false;
-      if (type === "street" && !showMapTypeStreet) return false;
-      return true;
+      // if (type === "develop") return false; // development map type is not available via toggle
+      // if (type === "terrain" && !showMapTypeTerrain) return false;
+      // if (type === "terrainWithLabels" && !showMapTypeLabeledTerrain) return false;
+      // if (type === "street" && !showMapTypeStreet) return false;
+      return kDemoMapTypes.includes(type);
     });
     const currMapIndex = availableMapTypes.indexOf(mapType);
     const nextMapType = availableMapTypes[(currMapIndex + 1) % availableMapTypes.length];
