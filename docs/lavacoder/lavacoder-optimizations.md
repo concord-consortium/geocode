@@ -8,7 +8,9 @@ A prototype has been generated to test map imagery and labels: https://models-re
 
 ### Map Imagery
 
-We've explored options and decided hosting our own tiles (option B) using the `SoH_Imagery/Vivid_2022` imagery is the best option. The project team has sent an email to request access to these files.
+We've explored options and decided hosting our own tiles (option B) using the `SoH_Imagery/Vivid_2020` imagery is the best option. The project team has sent an email to request access to these files.
+
+Note the year: the prototype linked above renders **Vivid_2020**, not Vivid_2022. The 2022 mosaic is lower resolution (0.6 m vs 0.5 m) and has nodata gaps over the AOI, including a ~800 m band clear across the island near 19.554, -155.713. Measured over the app's AOI, 2020 has zero interior holes and 4% more coverage.
 
 ### Place Name Labels
 
@@ -25,7 +27,7 @@ No progress. Before embarking on any work, make sure this is actually a problem 
 
 ## Map Imagery Alternatives (LavaCoder / Cesium)
 
-Planning on implementing option B with `SoH_Imagery/Vivid_2022`. Effort figures are estimates, not commitments.
+Planning on implementing option B with `SoH_Imagery/Vivid_2020`. Effort figures are estimates, not commitments.
 
 ### The problem
 
@@ -254,8 +256,20 @@ build step pulls rasters once and emits our own tiles:
 
 | Source | Resolution | Why it fails live | Why it works as source |
 |---|---|---|---|
-| `SoH_Imagery/Vivid_2022` | **0.5 m** | ImageServer, no tile cache | Highest-resolution Big Island imagery found. Carries Maxar licensing — needs clearing. |
+| `SoH_Imagery/Vivid_2020` | **0.5 m** | ImageServer, no tile cache | Highest-resolution Big Island imagery found with no interior holes over the AOI. Carries Maxar licensing — needs clearing. |
 | `SoH_Imagery/WV2_2016` | 0.3 m at z19 | 125 KB PNG tiles | Already tiled in standard Web Mercator; re-encode to JPEG to kill the 10x weight penalty. |
+
+`SoH_Imagery/Vivid_2022` was considered and rejected: it is 0.6 m rather than 0.5 m, and it has nodata
+gaps over the AOI, including a ~800 m band clear across the island near 19.554, -155.713. The 2020
+mosaic has zero interior holes and 4% more coverage of the AOI.
+
+**What the Vivid service metadata says about licensing.** Both Vivid services describe themselves as
+a Maxar dataset acquired by USDA-FPAC-BC-GEO, whose EULA was "upgraded ... with the ability to publicly
+publish the dataset." Use by non-profits is permitted; commercial use "for a profit or fee is strictly
+prohibited." But: "The original received data cannot be downloaded via public access. Please contact
+USDA-FPAC-BC-GEO Branch for current license information." The service exposes `Image,Metadata,Catalog`
+capabilities only — no `Download` — so the only self-serve route would be bulk `exportImage` scraping,
+which that sentence rules out. Hence the email; expect `gis@hawaii.gov` may redirect to USDA.
 
 Self-hosting also solves the two problems that make `WV2_2016` awkward live: we control the encoding
 (JPEG instead of PNG) and can composite over the offshore no-data rather than shipping black wedges.
@@ -345,7 +359,7 @@ paths remain, and they are a genuine trade rather than a ranking:**
 
 - **A (Esri + key)** is the fast path. Half a day, best-in-class imagery, no build pipeline — but
   permanently metered by a vendor, with a runtime key to manage.
-- **B (self-host)** is now unblocked on source and has the higher quality ceiling, since `Vivid_2022`
+- **B (self-host)** is now unblocked on source and has the higher quality ceiling, since `Vivid_2020`
   at 0.5 m beats anything available live. It costs a build pipeline and an email to the state, and
   gives permanent independence.
 
@@ -362,7 +376,7 @@ Every estimate in this document rests on a ~250-tiles-per-session figure that is
 on session counts nobody has supplied. Measuring is cheap — the dev server's network panel gives a
 real tile count in minutes.
 
-**Will the state license `Vivid_2022` / `WV2_2016` for redistribution?** One email to
+**Will the state license `Vivid_2020` / `WV2_2016` for redistribution?** One email to
 `gis@hawaii.gov`. It gates option B entirely, and it is the only remaining unknown on that path.
 
 **Does the keyed Location Platform imagery look identical to the keyless endpoint we prototyped?**
@@ -370,7 +384,7 @@ Both draw from the same World Imagery mosaic, so it should, but this is unverifi
 over Hawaii in particular should be re-checked, since that is precisely what USGS failed on.
 
 **How visible is the Hawaii imagery's offshore no-data boundary in the app?** It is much less severe
-than USGS but not absent. Only matters if B uses `WV2_2016` rather than `Vivid_2022`.
+than USGS but not absent. Only matters if B uses `WV2_2016` rather than `Vivid_2020`.
 
 ### References
 
@@ -383,7 +397,8 @@ than USGS but not absent. Only matters if B uses `WV2_2016` rather than `Vivid_2
 - [OSM Tile Usage Policy](https://operations.osmfoundation.org/policies/tiles/)
 - [Hawaii Statewide GIS REST directory](https://geodata.hawaii.gov/arcgis/rest/services/SoH_Imagery) — contact `gis@hawaii.gov`
 - [Hawaii `WV2_2016` tile service](https://geodata.hawaii.gov/arcgis/rest/services/SoH_Imagery/WV2_2016/MapServer)
-- [Hawaii `Vivid_2022` (0.5 m, ImageServer)](https://geodata.hawaii.gov/arcgis/rest/services/SoH_Imagery/Vivid_2022/ImageServer)
+- [Hawaii `Vivid_2020` (0.5 m, ImageServer)](https://geodata.hawaii.gov/arcgis/rest/services/SoH_Imagery/Vivid_2020/ImageServer) — the chosen source
+- [Hawaii `Vivid_2022` (0.6 m, ImageServer)](https://geodata.hawaii.gov/arcgis/rest/services/SoH_Imagery/Vivid_2022/ImageServer) — rejected for nodata gaps
 - [NOAA Digital Coast imagery services](https://coast.noaa.gov/arcgis/rest/services/Imagery) — no Hawaii coverage
 
 ---
