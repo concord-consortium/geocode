@@ -25,8 +25,25 @@ It requests each 2 km chunk in the two-step form (`f=json`, then download the re
 because the server returns HTTP 500 when asked to stream a 50 MB TIFF directly. Re-running skips
 chunks already on disk.
 
-Do **not** use it to pull the whole island — the service's terms say the original data is not for
-bulk public download. Run `/opt/homebrew/bin/python3 -m unittest` here to test it.
+Run `/opt/homebrew/bin/python3 -m unittest` here to test it.
+
+### Whole island
+
+    /opt/homebrew/bin/python3 vivid_fetch.py --island --dry-run   # counts and sizes only
+    /opt/homebrew/bin/python3 vivid_fetch.py --island --out source-island
+
+`--island` covers the LavaCoder AOI at **1 m/px** (zoom 17 is 1.2 m/px, so nothing is lost) in
+4 km chunks, and asks the service catalog for its raster footprints so open-ocean chunks are never
+requested: about 1,000 chunks, ~41 GB, ~3 hours. It is deliberately gentle on the state's server —
+one request at a time, a 2 s pause between them (`--delay`), exponential backoff on errors, and an
+identifying `User-Agent` — and it resumes where it left off, so it can be stopped and restarted
+freely. Running it overnight Hawaii time is the considerate choice.
+
+Use a separate `--out` directory (or move the sample chunks aside) so `build-tiles.sh` mosaics one
+dataset at a time; chunk filenames include the pixel size to keep the two from colliding.
+
+**Licensing:** the service metadata says the original data "cannot be downloaded via public access"
+and to contact USDA-FPAC-BC-GEO for license terms. Get that answer before an island run.
 
 ## Build
 
