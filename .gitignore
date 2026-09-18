@@ -15,3 +15,4 @@ LocalhostCertificates
 scripts/imagery/source
 scripts/imagery/build
 scripts/imagery/tiles
+__pycache__/
