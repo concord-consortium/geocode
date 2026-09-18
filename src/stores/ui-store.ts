@@ -11,6 +11,7 @@ export const LavaMapTypeStrings = LavaMapTypes.map((type) => type.toString());
 export type LavaMapType = typeof LavaMapTypes[number];
 
 function defaultMapType(): LavaMapType {
+  // TODO: Switch the default to vivid when we are hosting all of the tiles.
   const isDeveloping = isLocalhost();
   const isTesting = queryValueBoolean("testing");
   return isDeveloping || isTesting ? "develop" : "terrain";
