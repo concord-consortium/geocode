@@ -84,7 +84,8 @@ def download(url, path, attempts=3):
             print(f"  attempt {attempt} failed: {error}", file=sys.stderr)
             if "CERTIFICATE_VERIFY_FAILED" in str(error):
                 # The python.org build of Python ships without CA certificates; Homebrew's does not.
-                sys.exit("This Python cannot verify TLS certificates. Run with /opt/homebrew/bin/python3 instead.")
+                sys.exit("This Python cannot verify TLS certificates. Use Homebrew's python3 (the one GDAL uses), "
+                         "or for a python.org install run \"Install Certificates.command\" from its Applications folder.")
             time.sleep(5 * attempt)
     raise RuntimeError(f"gave up on {url}")
 
