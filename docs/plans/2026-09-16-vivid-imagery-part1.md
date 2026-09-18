@@ -308,9 +308,12 @@ scripts/imagery/tiles
 Run (from `scripts/imagery/`):
 
 ```bash
-python3 vivid_fetch.py --bbox -155.31 19.38 -155.25 19.44
-python3 vivid_fetch.py --bbox -155.08 19.30 -155.02 19.36
+/opt/homebrew/bin/python3 vivid_fetch.py --bbox -155.31 19.38 -155.25 19.44
+/opt/homebrew/bin/python3 vivid_fetch.py --bbox -155.08 19.30 -155.02 19.36
 ```
+
+Use Homebrew's Python explicitly: the python.org build on this machine has no CA certificates and fails
+with `CERTIFICATE_VERIFY_FAILED`. Homebrew's is also the interpreter `gdal2tiles.py` uses.
 
 Expected: each prints `N chunks of 2000 m -> source` with 9 ≤ N ≤ 16, then one `fetching ...` line per chunk, ~5–10 s each. Afterwards `ls source | wc -l` is 18–32 and `du -sh source` is ≤ 1.6G.
 
