@@ -4,9 +4,9 @@
 
 **Goal:** Build the end-to-end tile pipeline against a small sample of Vivid 2020 imagery, host the sample tiles on `models-resources`, and make a self-hosted `vivid` map type the LavaCoder default — so the full-island build in Part 2 is a re-run, not new work.
 
-**Architecture:** A Python/GDAL pipeline under `scripts/imagery/` pulls native-resolution GeoTIFF chunks from the Hawaii Statewide GIS `Vivid_2020` ImageServer (sample-only stage), mosaics them with `gdalbuildvrt`, tiles them to XYZ JPEG with `gdal2tiles.py`, and syncs the result to `s3://models-resources/geocode-imagery/vivid-2020/`. The app gains a `vivid` `LavaMapType` backed by Cesium's `UrlTemplateImageryProvider` pointed at that prefix, clipped to the existing AOI, and `defaultMapType()` returns it outside localhost/testing.
+**Architecture:** A Python/GDAL pipeline under `scripts/imagery/` pulls native-resolution GeoTIFF chunks from the Hawaii Statewide GIS `Vivid_2020` ImageServer (sample-only stage), mosaics them with `gdalbuildvrt`, tiles them to XYZ WebP with `gdal2tiles.py`, and syncs the result to `s3://models-resources/geocode-imagery/vivid-2020/`. The app gains a `vivid` `LavaMapType` backed by Cesium's `UrlTemplateImageryProvider` pointed at that prefix, clipped to the existing AOI, and `defaultMapType()` returns it outside localhost/testing.
 
-**Tech Stack:** Python 3.13 stdlib (`urllib`, `unittest`), GDAL 3.11 CLI (`gdalbuildvrt`, `gdal2tiles.py --xyz --tiledriver=JPEG`), AWS CLI v2, `@cesium/engine` 17 (`UrlTemplateImageryProvider`, `Rectangle`), React/MobX-State-Tree app with Jest + ts-jest.
+**Tech Stack:** Python 3.13 stdlib (`urllib`, `unittest`), GDAL 3.13 CLI (`gdalbuildvrt`, `gdal2tiles.py --xyz --tiledriver=WEBP`), AWS CLI v2, `@cesium/engine` 17 (`UrlTemplateImageryProvider`, `Rectangle`), React/MobX-State-Tree app with Jest + ts-jest.
 
 **Design doc:** [2026-09-16-vivid-imagery-design.md](./2026-09-16-vivid-imagery-design.md)
 
@@ -331,7 +331,9 @@ git commit -m "Add Vivid sample fetcher CLI with retry and resume."
 
 ---
 
-### Task 3: Build XYZ JPEG tiles from `source/`
+### Task 3: Build XYZ WebP tiles from `source/`
+
+> **Deviation (2026-09-18):** output is **WebP, not JPEG**. GDAL 3.13's `gdal2tiles.py` wraps the C++ `gdal raster tile`, which detects blank tiles by alpha/nodata; JPEG has neither, so every uncovered tile was written as a black square (6,756 of 9,039 on the sample). WebP is the same size at the same quality and leaves coverage edges transparent. The VRT must also be built with `-srcnodata 0 -vrtnodata 0`. The committed `build-tiles.sh` is authoritative; the script text below is the original.
 
 **Files:**
 - Create: `scripts/imagery/build-tiles.sh`
@@ -424,10 +426,10 @@ PREFIX="${1:-geocode-imagery/vivid-2020}"
 
 aws s3 sync tiles/ "s3://$BUCKET/$PREFIX/" \
   --size-only \
-  --content-type image/jpeg \
+  --content-type image/webp \
   --cache-control "public, max-age=31536000, immutable"
 
-echo "Served at https://$BUCKET.concord.org/$PREFIX/{z}/{x}/{y}.jpg"
+echo "Served at https://$BUCKET.concord.org/$PREFIX/{z}/{x}/{y}.webp"
 ```
 
 **Step 2: Authenticate and confirm access**
@@ -445,14 +447,14 @@ Expected: one `upload:` line per tile, then the `Served at` line.
 Run (substitute a real path from `scripts/imagery/tiles/16`):
 
 ```bash
-curl -sI https://models-resources.concord.org/geocode-imagery/vivid-2020/16/<x>/<y>.jpg \
+curl -sI https://models-resources.concord.org/geocode-imagery/vivid-2020/16/<x>/<y>.webp \
   | grep -iE "^(HTTP|content-type|cache-control|access-control-allow-origin)"
 ```
 
 Expected:
 ```
 HTTP/2 200
-content-type: image/jpeg
+content-type: image/webp
 cache-control: public, max-age=31536000, immutable
 access-control-allow-origin: *
 ```
@@ -517,9 +519,9 @@ import { useCallback } from "react";
 import { maxLat, maxLong, minLat, minLong } from "../../simulations/lava-coder/lava-constants";
 import { LavaMapType } from "../../stores/ui-store";
 
-// Self-hosted XYZ JPEG pyramid built by scripts/imagery from Maxar Vivid 2020 (0.5 m) imagery provided
+// Self-hosted XYZ WebP pyramid built by scripts/imagery from Maxar Vivid 2020 (0.5 m) imagery provided
 // by the Hawaii Statewide GIS Program. See docs/plans/2026-09-16-vivid-imagery-design.md.
-const kVividTileUrl = "https://models-resources.concord.org/geocode-imagery/vivid-2020/{z}/{x}/{y}.jpg";
+const kVividTileUrl = "https://models-resources.concord.org/geocode-imagery/vivid-2020/{z}/{x}/{y}.webp";
 // Zoom 17 is ~1.2 m/px, which is sharp at the camera's 1 km minimum eye height.
 const kVividMaximumLevel = 17;
 
@@ -659,7 +661,8 @@ bulk public download. Run `python3 -m unittest` here to test it.
     ./build-tiles.sh          # zoom 7-17, full island
     ./build-tiles.sh 12-17    # small samples: skips low zooms that would be mostly black
 
-Output: `tiles/{z}/{x}/{y}.jpg`. Black (0,0,0) is treated as nodata; empty tiles are not written.
+Output: `tiles/{z}/{x}/{y}.webp`. Black (0,0,0) is treated as nodata; empty tiles are not written and
+coverage edges are transparent.
 Expect ~300k tiles / ~4 GB for the full island at z17.
 
 ## Upload
