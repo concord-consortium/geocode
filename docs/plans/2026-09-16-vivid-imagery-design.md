@@ -31,8 +31,8 @@ and cleanup of the other map types are separate tasks.
 
 | Decision | Choice | Alternatives considered |
 |---|---|---|
-| Tile tooling | GDAL CLI + `gdal2tiles.py --xyz --tiledriver=JPEG` (GDAL 3.11 via Homebrew; needs `brew install numpy`) | rasterio/mercantile venv (reimplements the pyramid); Docker `osgeo/gdal` (reproducible but heavy for multi‑GB I/O) |
-| Packaging | Plain XYZ JPEG tiles, `{z}/{x}/{y}.jpg` | PMTiles (single file, but needs a custom Cesium provider) |
+| Tile tooling | GDAL CLI + `gdal2tiles.py --xyz --tiledriver=WEBP` (GDAL 3.13 via Homebrew; needs numpy) | rasterio/mercantile venv (reimplements the pyramid); Docker `osgeo/gdal` (reproducible but heavy for multi‑GB I/O) |
+| Packaging | Plain XYZ **WebP** tiles, `{z}/{x}/{y}.webp` — changed from JPEG during Part 1, see below | PMTiles (single file, but needs a custom Cesium provider) |
 | Hosting | `s3://models-resources/geocode-imagery/vivid-2020/`, served at `https://models-resources.concord.org/geocode-imagery/vivid-2020/` | Separate bucket (needs new provisioning) |
 | Zoom range | 7–17 | z≤16 (softer at 1 km); z≤18 (4× storage, no visible gain) |
 | Cesium provider | `UrlTemplateImageryProvider` with `rectangle` = AOI, `maximumLevel: 17` | Layer-stack refactor from the prototype (not needed for a single layer) |
@@ -44,33 +44,39 @@ and cleanup of the other map types are separate tasks.
 
 Lives beside the existing DEM scripts with its own README.
 
-- **`fetch-sample.py`** *(sample-only stage)* — given a WGS84 bbox, computes 4000×4000 native-res
-  chunks aligned to the z17 tile grid and requests each from
-  `Vivid_2020/ImageServer/exportImage?bboxSR=3857&imageSR=3857&format=tiff` into `source/`.
-  Skips chunks already present. Verified: a 4000×4000 request returns a georeferenced EPSG:3857
-  GeoTIFF at 0.5 m in ~5 s (~50 MB).
+- **`vivid_fetch.py`** *(sample-only stage)* — given a WGS84 bbox, computes 4000×4000 native-res
+  chunks on a 2 km Web Mercator grid (origins on the 0.5 m pixel grid, so chunks mosaic without
+  seams) and requests each from `Vivid_2020/ImageServer/exportImage?...&format=tiff` into
+  `source/`, using the two-step form (`f=json`, then download the returned `href`) because the server
+  returns HTTP 500 when streaming a 50 MB TIFF directly. Skips chunks already present. Unit-tested
+  with `unittest`. Verified: a 4000×4000 request returns a georeferenced EPSG:3857 GeoTIFF at 0.5 m
+  in ~5 s (~50 MB).
   When the state delivers files they go straight into `source/` and this step is skipped.
 - **`build-tiles.sh`** — `gdalbuildvrt` over `source/*.tif`, then
-  `gdal2tiles.py --xyz --tiledriver=JPEG -z 7-17 --processes=N` clipped to the AOI, writing
-  `tiles/{z}/{x}/{y}.jpg`. Handles reprojection when inputs are not EPSG:3857.
+  `gdal2tiles.py --xyz --tiledriver=WEBP -z 7-17 --processes=N --exclude` over a VRT built with
+  `-srcnodata 0 -vrtnodata 0`, writing `tiles/{z}/{x}/{y}.webp` and skipping fully empty tiles. Handles reprojection when inputs are not EPSG:3857.
 - **`upload.sh`** — `aws s3 sync tiles/ s3://models-resources/geocode-imagery/vivid-2020/`
-  with `--content-type image/jpeg` and `--cache-control "public, max-age=31536000, immutable"`.
+  with `--content-type image/webp` and `--cache-control "public, max-age=31536000, immutable"`.
   Requires `aws login` first.
 
 ### 2. App — `src/hooks/lava-coder/use-world-imagery.ts`, `src/stores/ui-store.ts`
 
 - Add `"vivid"` to `LavaMapTypes`; label "Vivid" in `lava-coder-view.tsx`; icon reuses the
   terrain icon.
-- Provider: `new UrlTemplateImageryProvider({ url: <base>/{z}/{x}/{y}.jpg, rectangle:
-  Rectangle.fromDegrees(minLong, minLat, maxLong, maxLat), maximumLevel: 17, credit: "Maxar Vivid
-  2020 via State of Hawaii Statewide GIS Program" })`. The base URL is a single constant.
-- `defaultMapType()` returns `"vivid"` for students; `"develop"` (Ion Sentinel‑2) remains the
-  localhost/testing default so dev work does not depend on hosted tiles being complete.
+- Provider: `new UrlTemplateImageryProvider({ url: <base>/{z}/{x}/{y}.webp, rectangle:
+  Rectangle.fromDegrees(minLong, minLat, maxLong, maxLat), maximumLevel: 17, credit })`, where the credit is
+  the wording the Maxar license requires on derivative works: *"Includes copyrighted material of
+  Maxar, Inc., All Rights Reserved. Imagery via USDA-FPAC and the Hawaii Statewide GIS Program."*
+  The base URL is a single constant.
+- `defaultMapType()` will return `"vivid"` for students **once the full island is hosted (Part 2)**;
+  until then it stays `"terrain"` with a TODO, so deploys of the branch don't show a mostly-empty
+  globe. `"develop"` (Ion Sentinel‑2) remains the localhost/testing default.
 - Existing `terrain`, `terrainWithLabels`, and `street` types are left in place (out of scope).
 
 ### 3. Ocean and no-data — **provisional**
 
-Vivid coverage ends offshore and JPEG carries no alpha, so no-data must become *some* color.
+Vivid coverage ends offshore and JPEG (the original packaging choice) carries no alpha, so no-data
+would have to become *some* color.
 Current plan: fill no-data with a flat ocean color in the pipeline and set `globe.baseColor` to the
 same color, so areas beyond coverage and beyond the provider `rectangle` are indistinguishable.
 
@@ -79,21 +85,48 @@ can see what Vivid actually contains offshore (real water, black, or transparent
 Alternatives if the flat fill looks wrong: composite Vivid over a low-res ocean layer (e.g.
 Sentinel‑2 cloudless) in the VRT; or use PNG/WebP with alpha for coastal tiles only.
 
+**Findings from Part 1 (2026-09-18):**
+
+- *Offshore content.* Vivid_2020 has real imagery — very dark blue water (RGB ≈ 1,6,9) — for at
+  least ~2 km off the Kalapana coast. Beyond the mosaic footprint every band is 0. So near shore the
+  question is moot; only the footprint edge needs handling.
+- *Tiles are WebP, not JPEG, and that settles the edge.* GDAL 3.13's `gdal2tiles.py` wraps the C++
+  `gdal raster tile`, which detects blank tiles by alpha/nodata. JPEG has neither, so with JPEG output
+  every uncovered tile in the AOI was written as a 668-byte black square (6,756 of 9,039 on the
+  sample) and edge tiles had hard black regions. WebP carries alpha: blank tiles are skipped, and
+  tiles that straddle the footprint edge are transparent beyond it, so the globe's base color shows
+  through. Sizes are equal (median ~7 KB at q80 on the same tiles). No pipeline fill or compositing
+  is needed; the only remaining lever is `globe.baseColor`, which can be set to an ocean tone in
+  Part 2 if the default blue looks wrong next to Vivid's water.
+- *The bigger visual issues are in the source, not at the edge.* The coast sample shows a visible
+  mosaic seam (different land tone and a distinctly greener water block on one side) and clouds over
+  the lava field. These are properties of the state's mosaic and were equally present in the runtime
+  prototype; self-hosting cannot fix them. Worth surveying across the island once the full files
+  arrive, in case a different vintage patches the worst spots.
+
+Status: no longer provisional for the coverage edge. `globe.baseColor` choice remains open for Part 2.
+
 ## Sample area (Part 1)
 
-~10 × 10 km from Kīlauea caldera southeast to the Puna coast: caldera, recent lava fields, forest,
-and a coastline in one box. Roughly 25 `exportImage` requests, ~1.3 GB of source, a few thousand
-tiles. Tiles outside the sample simply 404 during Part 1; Cesium leaves those areas at base color.
+Two ~6 km boxes: **A**, Kīlauea caldera (lon −155.31→−155.25, lat 19.38→19.44) for sharpness, and
+**B**, the Kalapana coast (lon −155.08→−155.02, lat 19.30→19.36) for the shoreline. 36 chunks,
+1.7 GB of source, 2,283 WebP tiles (24 MB) at z12–17, hosted at
+`https://models-resources.concord.org/geocode-imagery/vivid-2020/`. Tiles outside the sample 404;
+Cesium leaves those areas at base color.
 
 ## Testing
 
-- Unit test for the `vivid` provider configuration (URL template, rectangle equals the AOI,
-  maximum level).
+- Fetcher: `unittest` coverage of the Mercator math, chunk grid, filenames, and export URL form.
+- App: `tsc` + `eslint`; the exhaustive `Record<LavaMapType, string>` label map fails to compile
+  when a map type is added without a label. No Jest test — Jest cannot import `@cesium/engine`
+  (ESM) in this project's config, and no existing test does.
 - Manual verification in the app against the hosted sample tiles at both the 1 km floor and the
   140 km ceiling, including the coastline.
-- Cypress smoke test: map type defaults to `vivid` when not on localhost / `testing`.
-- Pipeline: `build-tiles.sh` run on the sample; spot-check tile count, byte sizes (target ~10–15 KB
-  at z16, matching Esri's JPEGs), and visual seams between chunks.
+- Pipeline: `build-tiles.sh` run on the sample; tile count, byte sizes (5–9 KB median, ≤22 KB at
+  z16–17, in line with Esri's ~12 KB JPEGs), and visual checks of caldera, shoreline, and
+  coverage-edge tiles.
+- Cypress was considered and dropped: it runs on localhost, where the default is intentionally
+  `develop`.
 
 ## Delivery in parts
 

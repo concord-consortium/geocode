@@ -582,6 +582,11 @@ git commit -m "Add self-hosted Vivid 2020 map type to LavaCoder."
 
 ### Task 6: Make `vivid` the student default
 
+> **Deviation (2026-09-18):** deferred to Part 2. Only two sample patches are hosted, so a student default
+> of `vivid` would ship a mostly-empty globe from any deploy of this branch. `defaultMapType()` keeps
+> returning `"terrain"` with a TODO; the switch happens once the full island is uploaded. Steps 1–5 below
+> are the original text.
+
 **Files:**
 - Modify: `src/stores/ui-store.ts:13-17`
 

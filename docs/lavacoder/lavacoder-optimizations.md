@@ -8,7 +8,12 @@ A prototype has been generated to test map imagery and labels: https://models-re
 
 ### Map Imagery
 
-We've explored options and decided hosting our own tiles (option B) using the `SoH_Imagery/Vivid_2020` imagery is the best option. The project team has sent an email to request access to these files.
+Implementing option B with `SoH_Imagery/Vivid_2020`. The tile pipeline (`scripts/imagery/`) and the
+app's `vivid` map type are built and verified against two sample areas hosted at
+`https://models-resources.concord.org/geocode-imagery/vivid-2020/`; the full-island build and the
+switch of the student default are waiting on the state delivering the source files (email sent to
+`gis@hawaii.gov`). Design, status, and findings:
+[docs/plans/2026-09-16-vivid-imagery-design.md](../plans/2026-09-16-vivid-imagery-design.md).
 
 Note the year: the prototype linked above renders **Vivid_2020**, not Vivid_2022. The 2022 mosaic is lower resolution (0.6 m vs 0.5 m) and has nodata gaps over the AOI, including a ~800 m band clear across the island near 19.554, -155.713. Measured over the app's AOI, 2020 has zero interior holes and 4% more coverage.
 
