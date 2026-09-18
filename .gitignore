@@ -10,3 +10,9 @@ LocalhostCertificates
 .idea
 
 .DS_Store
+
+# Imagery pipeline inputs/outputs (GBs; never commit)
+scripts/imagery/source
+scripts/imagery/build
+scripts/imagery/tiles
+__pycache__/

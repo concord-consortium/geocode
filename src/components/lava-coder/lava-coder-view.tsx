@@ -50,6 +50,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
   const [lavaCoderElt, setLavaCoderElt] = useState<HTMLDivElement | null>(null);
   const mapLabels: Record<LavaMapType, string> = {
     develop: "Develop",
+    vivid: "Vivid",
     terrain: "Terrain",
     terrainWithLabels: "Labeled",
     street: "Street"
