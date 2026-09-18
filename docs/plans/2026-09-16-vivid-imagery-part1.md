@@ -30,7 +30,7 @@
 | A — Kīlauea caldera | iconic feature; sharpness check | −155.31 | −155.25 | 19.38 | 19.44 |
 | B — Kalapana coast | coastline; answers the ocean/no-data question | −155.08 | −155.02 | 19.30 | 19.36 |
 
-Each is ~6 × 6 km → ≤16 chunks of 2 km each → ≤ 32 requests, ≤ 1.6 GB of source total.
+Each is ~6.7 × 7.1 km in Mercator meters (0.06° inflated by 1/cos 19.4°) → 20–25 chunks of 2 km each → ≤ 50 requests, ~2–2.5 GB of source total.
 
 ---
 
