@@ -35,15 +35,35 @@ describe("applyUrlSettings", () => {
     expect(blocklyStore.toolbox).toBe(BlocklyAuthoring.molassesToolboxes[0]);
   });
 
-  it("leaves the unit and toolbox alone when there is no unit parameter", () => {
+  it("selects the Seismic unit and its default toolbox", () => {
+    setUrlParams({ unit: "Seismic" });
+
     applyUrlSettings();
 
-    expect(unitStore.name).toBe("Tephra");
+    expect(unitStore.name).toBe("Seismic");
+    expect(blocklyStore.toolbox).toBe(BlocklyAuthoring.seismicToolboxes[0]);
+  });
+
+  it("leaves the unit and toolbox alone when there is no unit parameter", () => {
+    // a unit other than the store's default, so this asserts more than the default
+    unitStore.setUnit("LavaCoder");
+
+    applyUrlSettings();
+
+    expect(unitStore.name).toBe("LavaCoder");
     expect(blocklyStore.toolbox).toBe("Everything");
   });
 
   it("hides the model options for the Tephra unit, which has no authorable options", () => {
     setUrlParams({ unit: "Tephra" });
+
+    applyUrlSettings(true);
+
+    expect(uiStore.showOptionsDialog).toBe(false);
+  });
+
+  it("hides the model options for the Seismic unit, which has no authorable options", () => {
+    setUrlParams({ unit: "Seismic" });
 
     applyUrlSettings(true);
 
