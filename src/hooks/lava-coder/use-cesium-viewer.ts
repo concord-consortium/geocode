@@ -12,23 +12,27 @@ export function useCesiumViewer(
 ) {
   const viewer = useRef<CesiumWidget | null>(null);
   const [ , forceRefresh] = useState(false);
-  const { createBaseLayer } = useWorldImagery();
-  const [baseLayer, setBaseLayer] = useState<ImageryLayer | null>(null);
+  const { createBaseLayers } = useWorldImagery();
+  const [baseLayers, setBaseLayers] = useState<ImageryLayer[] | null>(null);
 
   useEffect(() => {
-    if (!baseLayer) {
-      createBaseLayer(initialMapType).then(layer => {
-        setBaseLayer(layer);
+    if (!baseLayers) {
+      createBaseLayers(initialMapType).then(layers => {
+        setBaseLayers(layers);
       });
     }
-  }, [baseLayer, createBaseLayer, initialMapType]);
+  }, [baseLayers, createBaseLayers, initialMapType]);
 
   useEffect(() => {
-    if (!viewer.current && container && baseLayer && terrainProvider) {
+    if (!viewer.current && container && baseLayers?.length && terrainProvider) {
       viewer.current = new CesiumWidget(container, {
         shouldAnimate: true,
-        baseLayer,
+        baseLayer: baseLayers[0],
         terrainProvider
+      });
+      // A map type with a layer stack supplies more than one layer; the rest sit above the base
+      baseLayers.slice(1).forEach((layer, index) => {
+        viewer.current?.imageryLayers.add(layer, index + 1);
       });
       forceRefresh(prev => !prev);
     }
@@ -36,7 +40,7 @@ export function useCesiumViewer(
       viewer.current?.destroy();
       viewer.current = null;
     };
-  }, [baseLayer, container, terrainProvider]);
+  }, [baseLayers, container, terrainProvider]);
 
   return viewer.current;
 }
