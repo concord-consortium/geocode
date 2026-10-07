@@ -2,6 +2,7 @@ import { KmlDataSource, Math as CSMath } from "@cesium/engine";
 import { observable } from "mobx";
 import { types } from "mobx-state-tree";
 import { DataRow, DataTable, DataTableType } from "../models/data-table";
+import { MultirunTable, MultirunTableType, RunRow } from "../models/multirun-table";
 import {
   defaultEruptionVolume, defaultResidual, defaultShowWindPattern, defaultVentLatitude, defaultVentLongitude,
   flagLabels, kSquareMetersPerAcre, maxFlags
@@ -25,6 +26,21 @@ export let gridBounds: { east: number, north: number, south: number, west: numbe
 
 export let vogConcentrations: number[][] | undefined;
 export let vogBounds: { east: number, north: number, south: number, west: number } | undefined;
+
+export interface RunFootprint {
+  grid: number[][];
+  bounds: { east: number, north: number, south: number, west: number };
+  // The thickness this run used. visualizeLava() scales its colour ramp by it, so replaying
+  // a run with the *current* thickness would render it with the wrong colours.
+  residual: number;
+  // Cached gray rendering, used when this run sits behind the one being displayed. The grid
+  // and residual never change once the run completes, so it only has to be built once.
+  grayUrl?: string;
+}
+// Completed-run footprints, keyed by run number. Held outside the MST model for the same
+// reason lavaElevations is — see the note above. Each entry is only the bounding box of that
+// run's lava, so these are small (hundreds of KB), not the whole island raster.
+export const runFootprints = new Map<number, RunFootprint>();
 
 function countCoveredCells(_lavaElevations: number[][]) {
   let coveredCells = 0;
@@ -52,6 +68,11 @@ export const LavaSimulationStore = types
     coveredCells: 0,
     voggedCells: 0,
     dataTable: undefined as DataTableType | undefined,
+    // Undefined until the program's "Create a multirun data table" block runs, so the Multirun
+    // tab is empty until the student asks for a table.
+    multirunTable: undefined as MultirunTableType | undefined,
+    // Run number whose footprint is displayed instead of the live one; undefined = live.
+    selectedRunNumber: undefined as number | undefined,
     showWindPattern: defaultShowWindPattern,
     flagLocations: observable.array<FlagLocation>([]),
     raster: null as AsciiRaster | null, // AsciiRaster
@@ -126,11 +147,57 @@ export const LavaSimulationStore = types
     addRowToTable(flag: FlagLocation) {
       self.dataTable?.addRow(DataRow.create({ label: "", ...flag }));
     },
+    // Called as a run STARTS, so the row and its toolbar circle appear immediately rather than
+    // only once the run finishes. The parameters are known now; the area fills in as it runs.
+    beginRun() {
+      // No table means the program never asked for one. The simulation still runs; it just
+      // isn't recorded.
+      if (!self.multirunTable) return undefined;
+      const runNumber = self.multirunTable.nextRunNumber;
+      self.multirunTable.addRow(RunRow.create({
+        runNumber,
+        lavaThickness: self.residual,
+        eruptionVolume: self.totalVolume,
+        acresCovered: 0,
+        complete: false
+      }));
+      // The erupting run is the one on display, so its circle reads as selected. There is no
+      // stored footprint for it yet, so the overlay falls through to the live lava.
+      self.selectedRunNumber = runNumber;
+      return runNumber;
+    },
+    newMultirunTable() {
+      self.multirunTable = MultirunTable.create();
+    },
+    updateRunAcres(runNumber: number) {
+      self.multirunTable?.row(runNumber)?.setAcresCovered(self.acresCovered);
+    },
+    completeRun(runNumber: number) {
+      const row = self.multirunTable?.row(runNumber);
+      if (!row) return;
+      row.setAcresCovered(self.acresCovered);
+      row.setComplete(true);
+      // Keep this run's footprint so the row can redisplay it later. The worker hands us a new
+      // array each message, so holding the reference is safe — the next run won't mutate it.
+      if (lavaElevations && gridBounds) {
+        runFootprints.set(runNumber, { grid: lavaElevations, bounds: gridBounds, residual: row.lavaThickness });
+      }
+    },
+    setSelectedRunNumber(runNumber: number | undefined) {
+      self.selectedRunNumber = runNumber;
+    },
     clearDataTable() {
       self.dataTable = undefined;
     },
     clearFlagPositions() {
       self.flagLocations.clear();
+    },
+    clearMultirunTable() {
+      // Back to undefined, not just empty: the Multirun tab shows no table at all until a
+      // program creates one.
+      self.multirunTable = undefined;
+      runFootprints.clear();
+      self.selectedRunNumber = undefined;
     },
     countCoveredCells(grid: number[][]) {
       self.coveredCells = countCoveredCells(grid);
@@ -202,8 +269,12 @@ export const LavaSimulationStore = types
       if (!self.raster) return;
 
       let completeSims = 0;
+      // Set below when a lava run starts. A vog-only run produces no lava footprint, so it
+      // gets no row in the Multirun table.
+      let runNumber: number | undefined;
       const completeSim = () => {
         if (++completeSims >= (sim === "both" ? 2 : 1)) {
+          if (runNumber != null) self.completeRun(runNumber);
           onFinish?.();
         }
       };
@@ -227,6 +298,8 @@ export const LavaSimulationStore = types
           self.lavaWorker.terminate();
         }
 
+        runNumber = self.beginRun();
+
         self.lavaWorker = new LavaWorker();
         let lastStepTime = Date.now();
         self.lavaWorker.onmessage = (e) => {
@@ -237,6 +310,7 @@ export const LavaSimulationStore = types
               lavaElevations = e.data.grid;
               gridBounds = e.data.gridBounds;
               self.countCoveredCells(e.data.grid);
+              if (runNumber != null) self.updateRunAcres(runNumber);
 
               if (complete) completeSim();
             } else if (status === "step") {
@@ -309,6 +383,11 @@ export const LavaSimulationStore = types
       self.resetDefaults();
       self.clearFlagPositions();
       self.clearDataTable();
+      // The table goes with every reset. blocklyController.run() resets before each program,
+      // and the program's "Create a multirun data table" block then makes a fresh one, so a
+      // program still accumulates all of its runs in one table.
+      self.setSelectedRunNumber(undefined);
+      self.clearMultirunTable();
       self.coveredCells = 0;
       ++self.resetCount;
     }

@@ -14,6 +14,9 @@
     border-radius: 5px;
     height: 100%;
 
+    // The label sits in flow so the bar grows to fit it — "Run 1 - Eruption progress" is much
+    // wider than "Eruption progress". min-width holds the original 112px for the short label,
+    // so the single-run bar is unchanged.
     .progress-bar {
       align-items: center;
       background-color: #eef6ff;
@@ -21,8 +24,9 @@
       height: 22px;
       justify-content: center;
       margin: 6px;
+      min-width: 112px;
       position: relative;
-      width: 112px;
+      width: max-content;
 
       .fill {
         background-color: #FFB472;
@@ -42,8 +46,26 @@
       }
 
       .label {
+        // In flow (not absolute) so it determines the bar's width. The padding keeps the text
+        // off the outline, and nowrap stops it wrapping to a second line as it lengthens.
+        // Grid stacks the visible label and the hidden sizers in one cell, so the width is the
+        // widest of them and doesn't change when the label flips to "complete".
+        display: grid;
         font-size: 12px;
-        position: absolute;
+        // 7px, not 8: it keeps the widest label ("Eruption complete") inside the original
+        // 112px so the single-run bar is pixel-identical to before.
+        padding: 0 7px;
+        place-items: center;
+        white-space: nowrap;
+        z-index: 1;
+
+        > * {
+          grid-area: 1 / 1;
+        }
+
+        .label-sizer {
+          visibility: hidden;
+        }
       }
     }
   }

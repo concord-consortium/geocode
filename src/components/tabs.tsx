@@ -92,6 +92,11 @@ const kRightTabInfo: RightTabInfo = {
   },
   data: {
     name: "Data",
+    unitDisplayName: {
+      LavaCoder: "Multirun",
+      Tephra: "Data",
+      Seismic: "Data"
+    },
     index: -1,
     backgroundColor: "#e6f2e4",
     hoverBackgroundColor: "#dae6d7",

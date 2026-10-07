@@ -1,0 +1,65 @@
+<!--
+  TEMPORARY development program — see docs/lavacoder/multirun-todo.md
+
+  Built from the same blocks a student would use, so it exercises the real path:
+
+    create a multirun data table
+    set LT to 10
+    repeat 5 times
+      do  set lava thickness (m) to LT
+          compute and visualize lava flow
+          change LT by 8
+
+  That produces five runs at 10, 18, 26, 34 and 42 m — all inside the allowed 2–50 m range.
+  The flag and data-table blocks from the original program are deliberately omitted; they
+  only served the old per-flag table, which the Multirun table replaces.
+-->
+<xml xmlns="http://www.w3.org/1999/xhtml">
+  <variables>
+    <variable id="lavaThicknessVar">LT</variable>
+  </variables>
+  <block type="molasses_create_multirun_table" id="createMultirunTable" x="40" y="40">
+    <next>
+      <block type="variables_set" id="setLavaThickness">
+        <field name="VAR" id="lavaThicknessVar">LT</field>
+        <value name="VALUE">
+          <block type="math_number" id="startThickness">
+            <field name="NUM">10</field>
+          </block>
+        </value>
+        <next>
+          <block type="controls_repeat_ext" id="multirunRepeat">
+            <value name="TIMES">
+              <shadow type="math_number" id="runCount">
+                <field name="NUM">5</field>
+              </shadow>
+            </value>
+            <statement name="DO">
+              <block type="molasses_lava_thickness" id="applyThickness">
+                <value name="molasses_lava_thickness">
+                  <block type="variables_get" id="readThickness">
+                    <field name="VAR" id="lavaThicknessVar">LT</field>
+                  </block>
+                </value>
+                <next>
+                  <block type="molasses_run_simulation" id="runLava">
+                    <next>
+                      <block type="math_change" id="stepThickness">
+                        <field name="VAR" id="lavaThicknessVar">LT</field>
+                        <value name="DELTA">
+                          <shadow type="math_number" id="thicknessStep">
+                            <field name="NUM">8</field>
+                          </shadow>
+                        </value>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </statement>
+          </block>
+        </next>
+      </block>
+    </next>
+  </block>
+</xml>

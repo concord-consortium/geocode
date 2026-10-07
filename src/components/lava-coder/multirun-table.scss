@@ -1,0 +1,120 @@
+@use "./lava-vars.scss" as vars;
+
+// The panel gives this container a fixed 35% of the tab height (see .data-table-container in
+// app.scss) and TabPanel clips its overflow, so on a short window the lower rows were simply
+// cut off. Scrolling here keeps every run reachable without resizing the map.
+.multirun-table-container {
+  height: 100%;
+  overflow-y: auto;
+}
+
+.multirun-table {
+  background-color: white;
+  border-left: 1px solid #3baa1d;
+  border-top: 1px solid #3baa1d;
+  border-collapse: collapse;
+  box-sizing: border-box;
+  margin: 5px;
+  table-layout: fixed;
+  width: calc(100% - 10px);
+
+  tr {
+    width: 100%;
+  }
+
+  th, td {
+    border-bottom: 1px solid #3baa1d;
+    border-right: 1px solid #3baa1d;
+  }
+
+  th {
+    background-color: #f0f0f0;
+    height: 47px;
+    padding: 0 4px;
+
+    &.run {
+      width: 14%;
+    }
+    &.thickness {
+      width: 26%;
+    }
+    &.volume {
+      width: 28%;
+    }
+    &.area {
+      width: 32%;
+    }
+
+    sup {
+      font-size: 0.75em;
+      line-height: 0;
+    }
+  }
+
+  td {
+    height: 36px;
+
+    &.td-center {
+      text-align: center;
+    }
+    &.td-left {
+      padding-left: 8px;
+    }
+  }
+
+  .run-row {
+    cursor: pointer;
+
+    // Keyed off selectability, not dimming: the erupting row is deliberately NOT dimmed (it
+    // shows as selected at full strength), but it still can't be picked, so it must not
+    // light up on hover or offer a pointer. Matches the Run toolbar circles.
+    &.not-selectable {
+      cursor: default;
+    }
+
+    &:hover:not(.not-selectable) td {
+      background-color: vars.$green-2-hover;
+    }
+
+    // Rows the program has already moved past. Dimming matches the map buttons' disabled
+    // treatment (.25 opacity, background unchanged).
+    &.dimmed .run-select-button {
+      opacity: 0.25;
+    }
+
+    .run-select-button:disabled {
+      cursor: default;
+    }
+
+    // The selected run is marked three ways, not by colour alone: fill, bold text and a bar
+    // down the left edge. Colour on its own would fail WCAG 1.4.1.
+    &.selected {
+      td {
+        background-color: vars.$green-1-select;
+        font-weight: bold;
+      }
+
+      .run-cell {
+        box-shadow: inset 4px 0 0 0 #3baa1d;
+      }
+    }
+  }
+
+  // Fills the cell so the keyboard target matches the clickable area, and inherits the table's
+  // type rather than shrinking to the browser's default button size.
+  .run-select-button {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+    height: 100%;
+    padding: 0;
+    width: 100%;
+
+    &:focus-visible {
+      outline: 2px solid #0066cc;
+      outline-offset: -2px;
+    }
+  }
+}

@@ -30,8 +30,10 @@ import { DeformationGraphPanel } from "./deformation/deformation-graph-panel";
 import { DeformationModel } from "./deformation/deformation-model";
 import { PlateMovementPanel } from "./deformation/plate-movement-panel";
 import { GPSStationTable } from "./gps-station-table";
-import { DataTable } from "./lava-coder/data-table";
 import { LavaCoderView } from "./lava-coder/lava-coder-view";
+import { MultirunTable } from "./lava-coder/multirun-table";
+// TEMPORARY — see docs/lavacoder/multirun-todo.md
+import { MultirunVersionLabel } from "./lava-coder/multirun-version-label";
 import { LogComponent } from "./log-component";
 import { MapComponent, Scenario } from "./map/map-component";
 import { HistogramPanel } from "./montecarlo/histogram-panel";
@@ -446,6 +448,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 data-test={this.getTabName(SectionTypes.BLOCKS) + "-panel"}
               >
                 <TabContent>
+                  {/* TEMPORARY — see docs/lavacoder/multirun-todo.md */}
+                  { isLavaCoder && <MultirunVersionLabel /> }
                   <BlocklyContainer
                     width={blocklyWidth}
                     height={blocklyHeight}
@@ -617,7 +621,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                       />
                     </div>
                     <div className="data-table-container">
-                      <DataTable dataTable={this.stores.lavaSimulation.dataTable} />
+                      <MultirunTable multirunTable={this.stores.lavaSimulation.multirunTable} running={running} />
                     </div>
                   </div>
                 }
@@ -725,7 +729,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                       backgroundhovercolor={this.getRightTabHoverColor(RightSectionTypes.DATA)}
                       data-test={this.getRightTabName(RightSectionTypes.DATA) + "-tab"}
                     >
-                      {this.getRightTabName(RightSectionTypes.DATA)}
+                      {this.getRightTabName(RightSectionTypes.DATA, unitName)}
                     </BottomTab>
                   }
                   { showDeformation && isSeismic &&

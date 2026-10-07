@@ -1,0 +1,89 @@
+@use "./lava-vars.scss" as vars;
+
+// Floats in the band between the Key button (top: 11px, 34px tall — see vent-key.scss) and the
+// Total Area Covered box (bottom: 80px, 47px tall — see acres-covered-box.scss), centered in
+// whatever space is left between them. Anchored to both edges rather than a fixed offset so it
+// stays centered as the map resizes.
+.run-toolbar-band {
+  align-items: center;
+  bottom: 137px; // 80 acres offset + 47 acres height + 10 gap
+  display: flex;
+  // The band spans empty map, so only the panel itself should intercept clicks.
+  pointer-events: none;
+  position: absolute;
+  right: 10px;
+  top: 55px; // 11 Key offset + 34 Key height + 10 gap
+
+  // 4 top pad + 19 label + 5 gap + (5 x 32 circles) + (4 x 5 gaps) + 4 bottom pad = 212
+  .run-toolbar {
+    align-items: center;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.35);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    height: 212px;
+    padding: 4px 0;
+    pointer-events: auto;
+    width: 42px;
+  }
+
+  .run-toolbar-label {
+    color: vars.$control-label;
+    font-size: 16px;
+    line-height: 19px;
+    text-align: center;
+  }
+
+  .run-toolbar-circles {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 5px;
+  }
+
+  // border-box keeps the 2px border inside the 32x32, matching the other map buttons' states:
+  // white default, $green-2-hover on hover, $green-1-select when showing that run.
+  .run-circle {
+    align-items: center;
+    background-color: white;
+    border: solid 2px #3baa1d;
+    border-radius: 50%;
+    box-sizing: border-box;
+    color: vars.$control-label;
+    cursor: pointer;
+    display: flex;
+    flex: 0 0 auto;
+    font-family: inherit;
+    font-size: 16px;
+    height: 32px;
+    justify-content: center;
+    padding: 0;
+    width: 32px;
+
+    &:hover:not(:disabled) {
+      background-color: vars.$green-2-hover;
+    }
+
+    &:disabled {
+      cursor: default;
+    }
+
+    // Runs the program has already moved past. Matches how the map's other buttons show a
+    // disabled state (see icon.tsx and icon-button.tsx): content at .25 opacity, background
+    // unchanged. The ring is the button's border, so it stays at full strength.
+    &.dimmed .run-number {
+      opacity: 0.25;
+    }
+
+    &.selected {
+      background-color: vars.$green-1-select;
+    }
+
+    &:focus-visible {
+      outline: 2px solid #0066cc;
+      outline-offset: 2px;
+    }
+  }
+}

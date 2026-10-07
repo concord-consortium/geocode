@@ -29,6 +29,7 @@ import {
 import { LavaIconButton } from "./lava-icon-button";
 import { ProgressBar } from "./progress-bar";
 import { RulerLineLabel } from "./ruler-line-label";
+import { RunToolbar } from "./run-toolbar";
 import { VentKey } from "./vent-key";
 
 import "./lava-coder-view.scss";
@@ -173,7 +174,11 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
   return (
     <div className="lava-coder-view" style={containerStyle}>
       <div ref={elt => setLavaCoderElt(elt)} className="lava-coder-simulation" />
-      <ProgressBar pulseCount={lavaSimulation.pulseCount} pulses={uiStore.pulsesPerEruption} />
+      <ProgressBar
+        pulseCount={lavaSimulation.pulseCount}
+        pulses={uiStore.pulsesPerEruption}
+        runNumber={lavaSimulation.selectedRunNumber}
+      />
       <div className="lava-overlay-controls-left">
         <div className="compass-heading-indicator">
           <CompassHeading viewer={viewer} />
@@ -240,6 +245,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
           </LavaIconButton>
         )}
       </div>
+      <RunToolbar running={running} />
       <AcresCovered />
       <ConcordAttribution />
       <LatLongPopup viewer={viewer} verticalExaggeration={verticalExaggeration}

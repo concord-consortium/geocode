@@ -154,6 +154,16 @@ const makeInterpreterFunc = (blocklyController: BlocklyController, store: IStore
       uiStore.displayTable();
     });
 
+    addFunc("createMultirunTable", () => {
+      if (lavaSimulation.multirunTable) {
+        blocklyController.throwError("There cannot be more than one multirun data table in the LavaCoder.");
+        return;
+      }
+
+      lavaSimulation.newMultirunTable();
+      uiStore.displayTable();
+    });
+
     function checkFlag(flagName: string) {
       if (!flagName) blocklyController.throwError("You must select a flag.");
 

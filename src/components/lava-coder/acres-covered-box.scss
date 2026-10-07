@@ -1,3 +1,6 @@
+// Grows to fit its label — "Run 1 - Total Area Covered:" is much wider than
+// "Total Area Covered:". min-width holds the original 169px for the short label, so the
+// single-run box is unchanged. Matches how the Eruption progress bar widens.
 .acres-covered-box {
   align-items: center;
   background-color: #ddedff;
@@ -9,12 +12,15 @@
   flex-direction: column;
   height: 47px;
   justify-content: center;
+  min-width: 169px;
+  padding: 0 10px;
   position: absolute;
   right: 14px;
-  width: 169px;
+  width: max-content;
 
   .acres-covered-label {
     font-size: 16px;
+    white-space: nowrap;
   }
 
   .acres-covered-value {

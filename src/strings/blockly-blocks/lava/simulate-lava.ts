@@ -8,6 +8,7 @@ export const SET_FLAG_LOCATION = "Set flag location";
 export const SET_WIND_PATTERN = "Set wind pattern";
 export const SHOW_WIND_PATTERN = "Show wind pattern";
 export const CREATE_TABLE = "Create a data table";
+export const CREATE_MULTIRUN_TABLE = "Create a multirun data table";
 export const ADD_ROW = "Create row in data table";
 export const FOR_FLAG = "For flag";
 export const COMPUTE_LAVA = "Compute lava flow impact";
