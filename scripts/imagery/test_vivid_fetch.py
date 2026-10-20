@@ -2,7 +2,7 @@ import unittest
 
 from vivid_fetch import (
     CHUNK_PIXELS, PIXEL_METERS, chunk_filename, chunk_grid, export_url, footprint_bbox,
-    lonlat_to_mercator, rect_intersects_polygon
+    lonlat_to_mercator, looks_like_tiff, rect_intersects_polygon
 )
 
 
@@ -102,6 +102,21 @@ class FootprintFilter(unittest.TestCase):
 
     def test_rect_far_away_does_not_intersect(self):
         self.assertFalse(rect_intersects_polygon((20, 20, 30, 30), self.tri))
+
+
+class TiffCheck(unittest.TestCase):
+    def test_small_coastal_chunk_is_accepted(self):
+        # A chunk that is mostly beyond the footprint LZW-compresses to a few hundred KB (443 KB seen)
+        self.assertTrue(looks_like_tiff(b"II*\x00" + bytes(443_045)))
+
+    def test_big_endian_tiff_is_accepted(self):
+        self.assertTrue(looks_like_tiff(b"MM\x00*" + bytes(500_000)))
+
+    def test_error_page_is_rejected(self):
+        self.assertFalse(looks_like_tiff(b"<html>" + bytes(500_000)))
+
+    def test_stub_with_tiff_magic_is_rejected(self):
+        self.assertFalse(looks_like_tiff(b"II*\x00" + bytes(100)))
 
 
 if __name__ == "__main__":

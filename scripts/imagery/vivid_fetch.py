@@ -162,6 +162,12 @@ def _read(url, timeout=180):
         return response.read()
 
 
+def looks_like_tiff(data):
+    """TIFF magic and more than a stub. No size floor beyond that: chunks that are mostly beyond the
+    footprint are mostly zeros and LZW-compress to a few hundred KB."""
+    return len(data) >= 10_000 and data[:4] in (b"II*\x00", b"MM\x00*")
+
+
 def download(url, path, attempts=5):
     """Render via f=json, then download the href. Backs off 10, 20, 40, 80 s on failure."""
     for attempt in range(1, attempts + 1):
@@ -170,7 +176,7 @@ def download(url, path, attempts=5):
             if "href" not in result:
                 raise RuntimeError(f"server returned no href: {result}")
             data = _read(result["href"])
-            if len(data) < 1_000_000 or data[:4] not in (b"II*\x00", b"MM\x00*"):
+            if not looks_like_tiff(data):
                 raise RuntimeError(f"href did not return a TIFF ({len(data)} bytes)")
             with open(path + ".part", "wb") as out:
                 out.write(data)
