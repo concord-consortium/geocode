@@ -9,6 +9,10 @@ cd "$(dirname "$0")"
 
 BUCKET="models-resources"
 PREFIX="${1:-geocode-imagery/vivid-2020}"
+if [[ "$PREFIX" == -* ]]; then
+  echo "upload.sh takes a PREFIX, not aws options (got '$PREFIX')" >&2
+  exit 1
+fi
 
 aws s3 sync tiles/ "s3://$BUCKET/$PREFIX/" \
   --size-only \

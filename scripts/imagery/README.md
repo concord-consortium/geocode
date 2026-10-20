@@ -34,16 +34,26 @@ Run `/opt/homebrew/bin/python3 -m unittest` here to test it.
 
 `--island` covers the LavaCoder AOI at **1 m/px** (zoom 17 is 1.2 m/px, so nothing is lost) in
 4 km chunks, and asks the service catalog for its raster footprints so open-ocean chunks are never
-requested: about 1,000 chunks, ~41 GB, ~3 hours. It is deliberately gentle on the state's server —
+requested: 1,005 chunks, 31 GB on disk (the dry run's ~41 GB estimate is conservative). The October
+2026 run took **~6¾ hours**, ~24 s per chunk on average — the dry-run estimate assumes 8 s, which
+only holds for the mostly-ocean edge chunks; full chunks over the island take the server far longer. It is deliberately gentle on the state's server —
 one request at a time, a 2 s pause between them (`--delay`), exponential backoff on errors, and an
 identifying `User-Agent` — and it resumes where it left off, so it can be stopped and restarted
 freely. Running it overnight Hawaii time is the considerate choice.
 
-Use a separate `--out` directory (or move the sample chunks aside) so `build-tiles.sh` mosaics one
-dataset at a time; chunk filenames include the pixel size to keep the two from colliding.
+`build-tiles.sh` mosaics everything in `source/`, so move the sample chunks aside before an island
+run (or fetch to a separate `--out` and swap directories); chunk filenames include the pixel size to
+keep the two from colliding.
 
 **Licensing:** the service metadata says the original data "cannot be downloaded via public access"
-and to contact USDA-FPAC-BC-GEO for license terms. Get that answer before an island run.
+and to contact USDA-FPAC-BC-GEO for license terms. Permission for LavaCoder's use was received in
+October 2026.
+
+**Why not the USDA Box share?** NRCS publishes Hawaii mosaics on Box, but only up to 2016–2018 for
+satellite imagery: per its readme, USDA "deploys satellite-based Web Map Services ... instead of
+creating Compressed Mosaics" after that, so Vivid 2020 is not there. Its `2022` folder is NAIP
+(aerial, 60 cm, public domain) — a different dataset from the state's Maxar `Vivid_2022`. Every file
+there is MrSID, which Homebrew's GDAL cannot read.
 
 ## Build
 
@@ -51,8 +61,9 @@ and to contact USDA-FPAC-BC-GEO for license terms. Get that answer before an isl
     ./build-tiles.sh 12-17    # small samples: skips low zooms that would be mostly empty
 
 Output: `tiles/{z}/{x}/{y}.webp`. Black (0,0,0) is treated as nodata; empty tiles are not written and
-coverage edges are transparent. The sample (two ~6 km boxes) is ~2,300 tiles / 24 MB at z12–17;
-expect on the order of 150k tiles / 2 GB for the full island at z17 once ocean tiles are skipped.
+coverage edges are transparent. The sample (two ~6 km boxes) is ~2,300 tiles / 24 MB at z12–17.
+The full island is **216,274 tiles / 2.2 GB** at z7–17 (162k of them at z17), built in 2 hours on a
+10-core Mac; median tile 9–10 KB, max 26 KB.
 
 WebP rather than JPEG: GDAL's tiler decides a tile is blank by its alpha/nodata, which JPEG cannot
 carry, so JPEG output writes every uncovered tile as a black square. WebP is the same size at the
@@ -66,6 +77,10 @@ same quality.
 Tiles are cached for a year, so a refreshed dataset goes to a **new prefix** (`./upload.sh
 geocode-imagery/vivid-2024`) and `kVividTileUrl` in `src/hooks/lava-coder/use-world-imagery.ts` is
 updated to match. The sync is idempotent; re-running after a partial upload finishes it.
+
+`--size-only` assumes a prefix is only ever filled from one build. When the island went over the
+Part 1 sample, 9 of the 64 tiles it skipped had the same size but different content and had to be
+copied up individually. If you must overwrite a prefix in place, drop `--size-only` for that run.
 
 ## Rebuilding from scratch
 

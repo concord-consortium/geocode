@@ -68,9 +68,8 @@ Lives beside the existing DEM scripts with its own README.
   the wording the Maxar license requires on derivative works: *"Includes copyrighted material of
   Maxar, Inc., All Rights Reserved. Imagery via USDA-FPAC and the Hawaii Statewide GIS Program."*
   The base URL is a single constant.
-- `defaultMapType()` will return `"vivid"` for students **once the full island is hosted (Part 2)**;
-  until then it stays `"terrain"` with a TODO, so deploys of the branch don't show a mostly-empty
-  globe. `"develop"` (Ion Sentinel‑2) remains the localhost/testing default.
+- `defaultMapType()` returns `"vivid"` for students now that the full island is hosted (Part 2).
+  `"develop"` (Ion Sentinel‑2) remains the localhost/testing default.
 - Existing `terrain`, `terrainWithLabels`, and `street` types are left in place (out of scope).
 
 ### 3. Ocean and no-data — **provisional**
@@ -104,7 +103,28 @@ Sentinel‑2 cloudless) in the VRT; or use PNG/WebP with alpha for coastal tiles
   prototype; self-hosting cannot fix them. Worth surveying across the island once the full files
   arrive, in case a different vintage patches the worst spots.
 
-Status: no longer provisional for the coverage edge. `globe.baseColor` choice remains open for Part 2.
+Status: settled. The mosaic ends a few km offshore in hard rectangular steps that stood out against
+Cesium's default blue, so Part 2 puts a solid ocean layer of RGB(2, 17, 23) — the median offshore
+water color in the island tiles — under every map type (`createOceanLayer` in
+`use-world-imagery.ts`). It has to be a layer, not `globe.baseColor`: Cesium treats the bottom
+imagery layer as global by stretching its edge pixels across the rest of the globe, so with Vivid at
+the bottom its coastal water was smeared outward wherever it reached the provider `rectangle`.
+
+## Full island (Part 2)
+
+Done 2026-10-20, after permission to use the data was received.
+
+- *Source.* The state never delivered files, and the NRCS Box share it pointed to has no Vivid 2020:
+  USDA stopped publishing compressed satellite mosaics after 2016–2018 and serves newer satellite
+  imagery only as map services. (The Box `2022` folder is NAIP aerial imagery, not Vivid.) So the
+  island was pulled through `exportImage` with `vivid_fetch.py --island`: 1,005 chunks of 4 km at
+  1 m/px, 31 GB, ~6¾ hours, no failed requests once a too-strict size check was fixed (mostly-ocean
+  edge chunks are valid TIFFs of only ~400 KB).
+- *Tiles.* 216,274 WebP tiles, 2.2 GB, z7–17, built in 2 hours. Median 9–10 KB at z15–17, p95
+  ~19 KB, max 26 KB. Uploaded over the Part 1 sample at the same prefix.
+- *QA.* Whole island at z10 has no holes, including the saddle area where Vivid_2022 has its gap.
+  No visible seams at 4 km chunk corners at z17. Kīlauea caldera (2020 water lake) and Kona are
+  sharp. The coverage edge and some near-shore tone/glint patchiness are in the source mosaic.
 
 ## Sample area (Part 1)
 
@@ -140,4 +160,5 @@ Cesium leaves those areas at base color.
 
 - What does Vivid_2020 contain offshore — water imagery, black, or no-data? (Answered by Part 1.)
 - Delivered file format, projection, and total size — determines how long the Part 2 build runs.
+  (Moot: no files were delivered; see Part 2.)
 - Attribution wording the state / USDA want on the credit line.

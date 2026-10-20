@@ -1,6 +1,6 @@
 import {
-  CesiumWidget, createWorldImageryAsync, ImageryLayer, ImageryProvider, IonImageryProvider, IonWorldImageryStyle,
-  OpenStreetMapImageryProvider, Rectangle, UrlTemplateImageryProvider
+  CesiumWidget, Color, createWorldImageryAsync, ImageryLayer, ImageryProvider, IonImageryProvider, IonWorldImageryStyle,
+  OpenStreetMapImageryProvider, Rectangle, SingleTileImageryProvider, UrlTemplateImageryProvider
 } from "@cesium/engine";
 import { useCallback } from "react";
 import { maxLat, maxLong, minLat, minLong } from "../../simulations/lava-coder/lava-constants";
@@ -14,6 +14,23 @@ const kVividMaximumLevel = 17;
 // Wording required by the imagery license for derivative works
 const kVividCredit = "Includes copyrighted material of Maxar, Inc., All Rights Reserved. " +
   "Imagery via USDA-FPAC and the Hawaii Statewide GIS Program.";
+// Median offshore water color in the Vivid tiles. The mosaic ends a few km offshore in hard rectangular
+// steps; with this color underneath, the edge of the imagery mostly disappears.
+const kOceanColor = Color.fromBytes(2, 17, 23);
+
+// The viewer's layer stack is [ocean, map, ...overlays].
+const kMapLayerIndex = 1;
+
+export function createOceanLayer() {
+  const canvas = document.createElement("canvas");
+  canvas.width = canvas.height = 1;
+  const context = canvas.getContext("2d");
+  if (context) {
+    context.fillStyle = kOceanColor.toCssColorString();
+    context.fillRect(0, 0, 1, 1);
+  }
+  return new ImageryLayer(new SingleTileImageryProvider({ url: canvas.toDataURL(), tileWidth: 1, tileHeight: 1 }));
+}
 
 const imageryProviders: Partial<Record<LavaMapType, Promise<ImageryProvider>>> = {};
 
@@ -60,12 +77,12 @@ export function useWorldImagery() {
     const newBaseLayer = await createBaseLayer(mapType);
     if (newBaseLayer) {
       // Remove the old base layer
-      const oldBaseLayer = viewer.imageryLayers.get(0);
+      const oldBaseLayer = viewer.imageryLayers.get(kMapLayerIndex);
       if (oldBaseLayer) {
         viewer.imageryLayers.remove(oldBaseLayer);
       }
-      // Add the new base layer at the bottom of the layer stack
-      viewer.imageryLayers.add(newBaseLayer, 0);
+      // Add the new base layer just above the ocean layer
+      viewer.imageryLayers.add(newBaseLayer, kMapLayerIndex);
     }
   }, [createBaseLayer]);
 

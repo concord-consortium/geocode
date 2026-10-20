@@ -1,7 +1,7 @@
 import { CesiumWidget, ImageryLayer, Ion, TerrainProvider } from "@cesium/engine";
 import { useEffect, useRef, useState } from "react";
 import { LavaMapType } from "../../stores/ui-store";
-import { useWorldImagery } from "./use-world-imagery";
+import { createOceanLayer, useWorldImagery } from "./use-world-imagery";
 
 import "@cesium/engine/Source/Widget/CesiumWidget.css";
 
@@ -27,9 +27,10 @@ export function useCesiumViewer(
     if (!viewer.current && container && baseLayer && terrainProvider) {
       viewer.current = new CesiumWidget(container, {
         shouldAnimate: true,
-        baseLayer,
+        baseLayer: createOceanLayer(),
         terrainProvider
       });
+      viewer.current.imageryLayers.add(baseLayer);
       forceRefresh(prev => !prev);
     }
     return () => {
