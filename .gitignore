@@ -13,6 +13,8 @@ LocalhostCertificates
 
 # Imagery pipeline inputs/outputs (GBs; never commit)
 scripts/imagery/source
+scripts/imagery/source-islands
 scripts/imagery/build
 scripts/imagery/tiles
+scripts/imagery/tiles-low
 __pycache__/

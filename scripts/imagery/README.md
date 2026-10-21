@@ -32,8 +32,8 @@ Run `/opt/homebrew/bin/python3 -m unittest` here to test it.
     /opt/homebrew/bin/python3 vivid_fetch.py --island --dry-run   # counts and sizes only
     /opt/homebrew/bin/python3 vivid_fetch.py --island --out source-island
 
-`--island` covers `IMAGERY_EXTENT` — the LavaCoder camera AOI plus margins, since land reaches past
-the AOI (Keāhole Point is at −156.06, west of its −156.0 edge) — at **1 m/px** (zoom 17 is 1.2 m/px,
+`--island` covers `IMAGERY_EXTENT` — LavaCoder's AOI (the lava simulation's elevation grid) plus
+margins, since land reaches past the AOI (Keāhole Point is at −156.06, west of its −156.0 edge) — at **1 m/px** (zoom 17 is 1.2 m/px,
 so nothing is lost) in 4 km chunks. It asks the service catalog for its raster footprints so
 open-ocean chunks are never requested: 1,058 chunks, ~32 GB on disk (the dry run's size estimate is
 conservative). The October 2026 run took **~6¾ hours**, ~24 s per chunk on average — the dry-run
@@ -67,6 +67,20 @@ Output: `tiles/{z}/{x}/{y}.webp`. Black (0,0,0) is treated as nodata; empty tile
 coverage edges are transparent. The sample (two ~6 km boxes) is ~2,300 tiles / 24 MB at z12–17.
 The full island is **222,046 tiles / 2.3 GB** at z7–17, built in ~2¼ hours on a 10-core Mac; median
 tile 9–10 KB, max 26 KB.
+
+### Other islands (split build)
+
+    /opt/homebrew/bin/python3 vivid_fetch.py --other-islands      # 38 chunks, 8 m/px, ~400 MB, ~4 min
+    ./build-tiles.sh 7-14 tiles-low source source-islands         # both sources, ~1 hour
+    for z in 7 8 9 10 11 12 13 14; do rm -rf tiles/$z && mv tiles-low/$z tiles/$z; done
+
+LavaCoder is about the Big Island, so as a cost trade-off Niʻihau through Maui are fetched at 8 m/px
+into `source-islands/` and tiled only to zoom 14 (~9.5 m/px). Students can pan to them and zoom in,
+where that is soft; fetch them finer (`--pixel-size`) and extend the build's zoom if it matters. Zooms 7–14 are built from a VRT of both sources (the
+script uses `-resolution highest`, so the Big Island stays at 1 m) into a fresh directory and swapped
+in; `--resume` would otherwise keep the old low-zoom tiles that lack the other islands. The Big
+Island's z15–17 tiles are untouched. Result: 226,161 tiles, 2.3 GB. Where Cesium asks for a z15+
+tile over another island it gets a 404 and uses the z14 tile.
 
 Builds are not bit-for-bit reproducible: rebuilding unchanged source re-encodes ~8% of the
 lower-zoom tiles with differences of a few levels per pixel. Harmless, but it means "what changed"

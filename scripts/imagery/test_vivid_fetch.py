@@ -1,21 +1,33 @@
 import unittest
 
 from vivid_fetch import (
-    AOI, CHUNK_PIXELS, IMAGERY_EXTENT, PIXEL_METERS, chunk_filename, chunk_grid, export_url, footprint_bbox,
+    AOI, CHUNK_PIXELS, IMAGERY_EXTENT, OTHER_ISLANDS_EXTENT, PIXEL_METERS, chunk_filename, chunk_grid, export_url, footprint_bbox,
     lonlat_to_mercator, looks_like_tiff, rect_intersects_polygon
 )
 
 
 class ImageryExtent(unittest.TestCase):
-    def test_contains_the_camera_aoi(self):
+    def test_contains_the_aoi(self):
         self.assertLess(IMAGERY_EXTENT["west"], AOI["west"])
         self.assertLess(IMAGERY_EXTENT["south"], AOI["south"])
         self.assertGreater(IMAGERY_EXTENT["east"], AOI["east"])
         self.assertGreater(IMAGERY_EXTENT["north"], AOI["north"])
 
     def test_reaches_past_keahole_point(self):
-        # The island's westernmost land, which sticks out past the camera AOI's -156.0
+        # The island's westernmost land, which sticks out past the AOI's -156.0
         self.assertLess(IMAGERY_EXTENT["west"], -156.0613 - 0.02)
+
+
+class OtherIslandsExtent(unittest.TestCase):
+    def test_does_not_overlap_the_big_island(self):
+        # The two are fetched at different resolutions; an overlap would mosaic 8 m over 1 m data
+        self.assertGreater(OTHER_ISLANDS_EXTENT["south"], IMAGERY_EXTENT["north"])
+
+    def test_covers_niihau_to_hana(self):
+        self.assertLess(OTHER_ISLANDS_EXTENT["west"], -160.25)   # Niʻihau's west coast
+        self.assertGreater(OTHER_ISLANDS_EXTENT["east"], -155.98)  # Hāna, Maui's east tip
+        self.assertGreater(OTHER_ISLANDS_EXTENT["north"], 22.23)  # Kauaʻi's north shore
+        self.assertLess(OTHER_ISLANDS_EXTENT["south"], 20.50)    # Kahoʻolawe's south tip
 
 
 class LonLatToMercator(unittest.TestCase):

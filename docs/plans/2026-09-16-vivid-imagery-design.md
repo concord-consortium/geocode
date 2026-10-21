@@ -21,8 +21,9 @@ and cleanup of the other map types are separate tasks.
   prototype already makes at runtime — so the full build is one command later.
 - **Vivid_2020, not 2022.** 2022 is 0.6 m and has nodata gaps across the island; 2020 is 0.5 m with
   no interior holes over the AOI.
-- **Fixed AOI.** Camera is clamped to lon −156.0→−154.805, lat 18.909→20.268, eye height 1–140 km
-  (`src/simulations/lava-coder/lava-constants.ts`, `src/hooks/lava-coder/use-camera-controls.ts`).
+- **AOI.** The lava simulation's elevation grid, lon −156.0→−154.805, lat 18.909→20.268
+  (`src/simulations/lava-coder/lava-constants.ts`). It is not a camera bound: the camera's eye height
+  is clamped to 1–140 km (`src/hooks/lava-coder/use-camera-controls.ts`), but panning is unbounded.
   At the 1 km floor the app needs ~1–2 m/px, i.e. zoom 17.
 - **Delivered files will likely not be Web Mercator** (UTM 5N or Hawaii State Plane), so the
   pipeline must reproject, not just slice.
@@ -120,7 +121,7 @@ Done 2026-10-20, after permission to use the data was received.
   island was pulled through `exportImage` with `vivid_fetch.py --island`: 1,005 chunks of 4 km at
   1 m/px, 31 GB, ~6¾ hours, no failed requests once a too-strict size check was fixed (mostly-ocean
   edge chunks are valid TIFFs of only ~400 KB).
-- *Extent.* The first pass fetched exactly the camera AOI, which cut off Keāhole Point (−156.06,
+- *Extent.* The first pass fetched exactly the AOI, which cut off Keāhole Point (−156.06,
   west of the AOI's −156.0) and clipped coastal water at the other edges, where land is within a few
   hundred meters of the AOI. The fetch extent (`IMAGERY_EXTENT`) and the provider `rectangle`
   (`kVividRectangle`) are now the AOI plus margins: west to −156.10, 0.03° elsewhere. That added 53
@@ -132,9 +133,17 @@ Done 2026-10-20, after permission to use the data was received.
 - *QA.* Whole island at z10 has no holes, including the saddle area where Vivid_2022 has its gap.
   No visible seams at 4 km chunk corners at z17. Kīlauea caldera (2020 water lake) and Kona are
   sharp. The coverage edge and some near-shore tone/glint patchiness are in the source mosaic.
-- *Other islands* (Maui and its neighbors are visible from the AOI, currently as ocean-colored
-  terrain) are a separate task. The camera can't get closer than ~50 km to them, so low zooms
-  (likely ≤ z13, from a coarse fetch) should suffice, leaving the Big Island's z14–17 tiles untouched.
+- *Other islands* (2026-10-21). Niʻihau through Maui were showing as ocean-colored terrain. The app is
+  about the Big Island, so as a cost trade-off they were fetched at 8 m/px (`vivid_fetch.py
+  --other-islands`: 38 chunks, 405 MB, 4 minutes) and tiled only to z14 from a VRT combining both sources, swapped into
+  the existing pyramid's z7–14; the Big Island's z15–17 tiles were not rebuilt. 7,815 tiles uploaded
+  with `upload_changed.py`, then invalidated. `kVividRectangle` now spans −160.35° to the Big
+  Island's east margin and north to 22.30°. Students can pan to these islands and zoom to the 1 km
+  floor, where z14 (~9.5 m/px) is soft; a finer fetch and build for them is the fix if that matters.
+- *Open: feathering the coverage edge.* The hard edge between the tiles' water and the flat ocean
+  layer looks bad. The likely fix is to bake a fade into the tiles' alpha: a coarse coverage mask,
+  `gdal_proximity.py` for distance from the edge, and alpha ramping to 0 over ~1.5 km, then a full
+  rebuild, upload and invalidation.
 
 ## Sample area (Part 1)
 

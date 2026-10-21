@@ -1,14 +1,15 @@
 """Pull Vivid 2020 GeoTIFF chunks from the Hawaii Statewide GIS ImageServer.
 
 The service offers no bulk download, so this drives its exportImage endpoint one chunk at a time.
-Two modes:
+Three modes:
 
   Sample:  --bbox WEST SOUTH EAST NORTH   a small area at native 0.5 m/px, for exercising the pipeline
   Island:  --island                       the LavaCoder AOI plus coastal margins at 1 m/px (zoom 17
                                           is 1.2 m/px, so nothing is lost), skipping chunks with no
                                           imagery
+  Others:  --other-islands                Niʻihau through Maui at 8 m/px, for zoom 14 and below
 
-Both are polite by construction: one request at a time, a pause between requests, exponential
+All are polite by construction: one request at a time, a pause between requests, exponential
 backoff on server errors, and an identifying User-Agent. Re-running skips chunks already on disk.
 
 Check licensing before an island run: the service metadata says the original data is not for bulk
@@ -29,7 +30,8 @@ EARTH_RADIUS = 6378137.0
 PIXEL_METERS = 0.5           # native resolution of Vivid 2020
 CHUNK_PIXELS = 4000          # server maxImageHeight is 4100
 
-# LavaCoder's camera bounds. Keep in sync with src/simulations/lava-coder/lava-constants.ts.
+# LavaCoder's AOI: the lava simulation's elevation grid (not a camera bound; the camera can pan anywhere).
+# Keep in sync with src/simulations/lava-coder/lava-constants.ts.
 AOI = dict(west=-156.0, south=18.90863649, east=-154.80533185226327, north=20.26825881713135)
 # What --island fetches: the AOI plus margins, because land reaches its edges. Keāhole Point
 # (-156.06) is past the west edge, and Upolu Point, Ka Lae and Cape Kumukahi are within a few hundred
@@ -37,6 +39,11 @@ AOI = dict(west=-156.0, south=18.90863649, east=-154.80533185226327, north=20.26
 # src/hooks/lava-coder/use-world-imagery.ts.
 IMAGERY_EXTENT = dict(west=-156.10, south=AOI["south"] - 0.03, east=AOI["east"] + 0.03,
                       north=AOI["north"] + 0.03)
+# What --other-islands fetches: Niʻihau to Maui and Kahoʻolawe, north of IMAGERY_EXTENT so the two never
+# overlap. LavaCoder is about the Big Island, so as a cost trade-off these are fetched at 8 m/px and
+# tiled only to zoom 14 (9.5 m/px), which is soft if a student zooms in on them. The west and north edges are kVividRectangle's.
+OTHER_ISLANDS_EXTENT = dict(west=-160.35, south=20.45, east=-155.95, north=22.30)
+OTHER_ISLANDS_PIXEL_METERS = 8.0
 
 
 def lonlat_to_mercator(lon, lat):
@@ -233,21 +240,27 @@ def main():
                       help="lon/lat box in degrees, fetched at native resolution")
     area.add_argument("--island", action="store_true",
                       help="the LavaCoder AOI plus coastal margins at 1 m/px, skipping chunks with no imagery")
+    area.add_argument("--other-islands", action="store_true",
+                      help="Niʻihau through Maui at 8 m/px, into source-islands by default")
     parser.add_argument("--pixel-size", type=float, help="override meters per pixel")
     parser.add_argument("--no-footprints", action="store_true",
                         help="fetch every chunk in the grid instead of only those touching imagery")
     parser.add_argument("--delay", type=float, default=2.0, help="seconds to wait between requests (default 2)")
     parser.add_argument("--dry-run", action="store_true", help="report the chunk count and size; fetch nothing")
-    parser.add_argument("--out", default="source", help="output directory (default: source)")
+    parser.add_argument("--out", help="output directory (default: source, or source-islands for --other-islands)")
     args = parser.parse_args()
 
+    out = args.out or ("source-islands" if args.other_islands else "source")
     if args.island:
         box, pixel, footprints = IMAGERY_EXTENT, args.pixel_size or 1.0, not args.no_footprints
+    elif args.other_islands:
+        box, pixel, footprints = OTHER_ISLANDS_EXTENT, args.pixel_size or OTHER_ISLANDS_PIXEL_METERS, \
+            not args.no_footprints
     else:
         west, south, east, north = args.bbox
         box, pixel, footprints = dict(west=west, south=south, east=east, north=north), \
             args.pixel_size or PIXEL_METERS, not args.no_footprints
-    fetch(**box, out_dir=args.out, pixel_meters=pixel, use_footprints=footprints, delay=args.delay,
+    fetch(**box, out_dir=out, pixel_meters=pixel, use_footprints=footprints, delay=args.delay,
           dry_run=args.dry_run)
 
 
