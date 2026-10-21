@@ -1,9 +1,21 @@
 import unittest
 
 from vivid_fetch import (
-    CHUNK_PIXELS, PIXEL_METERS, chunk_filename, chunk_grid, export_url, footprint_bbox,
+    AOI, CHUNK_PIXELS, IMAGERY_EXTENT, PIXEL_METERS, chunk_filename, chunk_grid, export_url, footprint_bbox,
     lonlat_to_mercator, looks_like_tiff, rect_intersects_polygon
 )
+
+
+class ImageryExtent(unittest.TestCase):
+    def test_contains_the_camera_aoi(self):
+        self.assertLess(IMAGERY_EXTENT["west"], AOI["west"])
+        self.assertLess(IMAGERY_EXTENT["south"], AOI["south"])
+        self.assertGreater(IMAGERY_EXTENT["east"], AOI["east"])
+        self.assertGreater(IMAGERY_EXTENT["north"], AOI["north"])
+
+    def test_reaches_past_keahole_point(self):
+        # The island's westernmost land, which sticks out past the camera AOI's -156.0
+        self.assertLess(IMAGERY_EXTENT["west"], -156.0613 - 0.02)
 
 
 class LonLatToMercator(unittest.TestCase):

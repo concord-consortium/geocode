@@ -120,11 +120,21 @@ Done 2026-10-20, after permission to use the data was received.
   island was pulled through `exportImage` with `vivid_fetch.py --island`: 1,005 chunks of 4 km at
   1 m/px, 31 GB, ~6¾ hours, no failed requests once a too-strict size check was fixed (mostly-ocean
   edge chunks are valid TIFFs of only ~400 KB).
-- *Tiles.* 216,274 WebP tiles, 2.2 GB, z7–17, built in 2 hours. Median 9–10 KB at z15–17, p95
-  ~19 KB, max 26 KB. Uploaded over the Part 1 sample at the same prefix.
+- *Extent.* The first pass fetched exactly the camera AOI, which cut off Keāhole Point (−156.06,
+  west of the AOI's −156.0) and clipped coastal water at the other edges, where land is within a few
+  hundred meters of the AOI. The fetch extent (`IMAGERY_EXTENT`) and the provider `rectangle`
+  (`kVividRectangle`) are now the AOI plus margins: west to −156.10, 0.03° elsewhere. That added 53
+  chunks (1,058 total, ~32 GB).
+- *Tiles.* 222,046 WebP tiles, 2.3 GB, z7–17, built in ~2¼ hours. Median 9–10 KB at z15–17, p95
+  ~19 KB, max 26 KB. Uploaded over the Part 1 sample at the same prefix; the extent fix was
+  re-uploaded in place with `upload_changed.py` and the prefix invalidated in CloudFront, rather than
+  moved to a new prefix, since only the developer had loaded the old tiles.
 - *QA.* Whole island at z10 has no holes, including the saddle area where Vivid_2022 has its gap.
   No visible seams at 4 km chunk corners at z17. Kīlauea caldera (2020 water lake) and Kona are
   sharp. The coverage edge and some near-shore tone/glint patchiness are in the source mosaic.
+- *Other islands* (Maui and its neighbors are visible from the AOI, currently as ocean-colored
+  terrain) are a separate task. The camera can't get closer than ~50 km to them, so low zooms
+  (likely ≤ z13, from a coarse fetch) should suffice, leaving the Big Island's z14–17 tiles untouched.
 
 ## Sample area (Part 1)
 

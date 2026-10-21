@@ -4,8 +4,9 @@ The service offers no bulk download, so this drives its exportImage endpoint one
 Two modes:
 
   Sample:  --bbox WEST SOUTH EAST NORTH   a small area at native 0.5 m/px, for exercising the pipeline
-  Island:  --island                       the whole LavaCoder AOI at 1 m/px (zoom 17 is 1.2 m/px, so
-                                          nothing is lost), skipping chunks with no imagery
+  Island:  --island                       the LavaCoder AOI plus coastal margins at 1 m/px (zoom 17
+                                          is 1.2 m/px, so nothing is lost), skipping chunks with no
+                                          imagery
 
 Both are polite by construction: one request at a time, a pause between requests, exponential
 backoff on server errors, and an identifying User-Agent. Re-running skips chunks already on disk.
@@ -30,6 +31,12 @@ CHUNK_PIXELS = 4000          # server maxImageHeight is 4100
 
 # LavaCoder's camera bounds. Keep in sync with src/simulations/lava-coder/lava-constants.ts.
 AOI = dict(west=-156.0, south=18.90863649, east=-154.80533185226327, north=20.26825881713135)
+# What --island fetches: the AOI plus margins, because land reaches its edges. Keāhole Point
+# (-156.06) is past the west edge, and Upolu Point, Ka Lae and Cape Kumukahi are within a few hundred
+# meters of the others, which would clip their coastal water. Keep in sync with kVividRectangle in
+# src/hooks/lava-coder/use-world-imagery.ts.
+IMAGERY_EXTENT = dict(west=-156.10, south=AOI["south"] - 0.03, east=AOI["east"] + 0.03,
+                      north=AOI["north"] + 0.03)
 
 
 def lonlat_to_mercator(lon, lat):
@@ -225,7 +232,7 @@ def main():
     area.add_argument("--bbox", nargs=4, type=float, metavar=("WEST", "SOUTH", "EAST", "NORTH"),
                       help="lon/lat box in degrees, fetched at native resolution")
     area.add_argument("--island", action="store_true",
-                      help="the whole LavaCoder AOI at 1 m/px, skipping chunks with no imagery")
+                      help="the LavaCoder AOI plus coastal margins at 1 m/px, skipping chunks with no imagery")
     parser.add_argument("--pixel-size", type=float, help="override meters per pixel")
     parser.add_argument("--no-footprints", action="store_true",
                         help="fetch every chunk in the grid instead of only those touching imagery")
@@ -235,7 +242,7 @@ def main():
     args = parser.parse_args()
 
     if args.island:
-        box, pixel, footprints = AOI, args.pixel_size or 1.0, not args.no_footprints
+        box, pixel, footprints = IMAGERY_EXTENT, args.pixel_size or 1.0, not args.no_footprints
     else:
         west, south, east, north = args.bbox
         box, pixel, footprints = dict(west=west, south=south, east=east, north=north), \

@@ -3,7 +3,7 @@ import {
   OpenStreetMapImageryProvider, Rectangle, SingleTileImageryProvider, UrlTemplateImageryProvider
 } from "@cesium/engine";
 import { useCallback } from "react";
-import { maxLat, maxLong, minLat, minLong } from "../../simulations/lava-coder/lava-constants";
+import { maxLat, maxLong, minLat } from "../../simulations/lava-coder/lava-constants";
 import { LavaMapType } from "../../stores/ui-store";
 
 // Self-hosted XYZ WebP pyramid built by scripts/imagery from Maxar Vivid 2020 (0.5 m) imagery provided
@@ -11,6 +11,12 @@ import { LavaMapType } from "../../stores/ui-store";
 const kVividTileUrl = "https://models-resources.concord.org/geocode-imagery/vivid-2020/{z}/{x}/{y}.webp";
 // Zoom 17 is ~1.2 m/px, which is sharp at the camera's 1 km minimum eye height.
 const kVividMaximumLevel = 17;
+// The camera bounds plus coastal margins, since land reaches past them (Keāhole Point is at -156.06).
+// Keep in sync with IMAGERY_EXTENT in scripts/imagery/vivid_fetch.py.
+const kVividMargin = 0.03;
+const kVividRectangle = Rectangle.fromDegrees(
+  -156.10, minLat - kVividMargin, maxLong + kVividMargin, maxLat + kVividMargin
+);
 // Wording required by the imagery license for derivative works
 const kVividCredit = "Includes copyrighted material of Maxar, Inc., All Rights Reserved. " +
   "Imagery via USDA-FPAC and the Hawaii Statewide GIS Program.";
@@ -44,8 +50,8 @@ function getImageryProvider(type: LavaMapType): Promise<ImageryProvider> {
     else if (type === "vivid") {
       imageryProviders[type] = Promise.resolve(new UrlTemplateImageryProvider({
         url: kVividTileUrl,
-        // Only request tiles over the area the camera can reach; elsewhere the globe shows its base color.
-        rectangle: Rectangle.fromDegrees(minLong, minLat, maxLong, maxLat),
+        // Only request tiles where there is imagery; elsewhere the ocean layer shows through.
+        rectangle: kVividRectangle,
         maximumLevel: kVividMaximumLevel,
         credit: kVividCredit
       }));

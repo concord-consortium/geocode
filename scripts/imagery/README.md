@@ -32,11 +32,14 @@ Run `/opt/homebrew/bin/python3 -m unittest` here to test it.
     /opt/homebrew/bin/python3 vivid_fetch.py --island --dry-run   # counts and sizes only
     /opt/homebrew/bin/python3 vivid_fetch.py --island --out source-island
 
-`--island` covers the LavaCoder AOI at **1 m/px** (zoom 17 is 1.2 m/px, so nothing is lost) in
-4 km chunks, and asks the service catalog for its raster footprints so open-ocean chunks are never
-requested: 1,005 chunks, 31 GB on disk (the dry run's ~41 GB estimate is conservative). The October
-2026 run took **~6¾ hours**, ~24 s per chunk on average — the dry-run estimate assumes 8 s, which
-only holds for the mostly-ocean edge chunks; full chunks over the island take the server far longer. It is deliberately gentle on the state's server —
+`--island` covers `IMAGERY_EXTENT` — the LavaCoder camera AOI plus margins, since land reaches past
+the AOI (Keāhole Point is at −156.06, west of its −156.0 edge) — at **1 m/px** (zoom 17 is 1.2 m/px,
+so nothing is lost) in 4 km chunks. It asks the service catalog for its raster footprints so
+open-ocean chunks are never requested: 1,058 chunks, ~32 GB on disk (the dry run's size estimate is
+conservative). The October 2026 run took **~6¾ hours**, ~24 s per chunk on average — the dry-run
+time estimate assumes 8 s, which only holds for the mostly-ocean edge chunks; full chunks over the
+island take the server far longer. The app's provider `rectangle` (`kVividRectangle`) must match
+`IMAGERY_EXTENT`. It is deliberately gentle on the state's server —
 one request at a time, a 2 s pause between them (`--delay`), exponential backoff on errors, and an
 identifying `User-Agent` — and it resumes where it left off, so it can be stopped and restarted
 freely. Running it overnight Hawaii time is the considerate choice.
@@ -62,8 +65,12 @@ there is MrSID, which Homebrew's GDAL cannot read.
 
 Output: `tiles/{z}/{x}/{y}.webp`. Black (0,0,0) is treated as nodata; empty tiles are not written and
 coverage edges are transparent. The sample (two ~6 km boxes) is ~2,300 tiles / 24 MB at z12–17.
-The full island is **216,274 tiles / 2.2 GB** at z7–17 (162k of them at z17), built in 2 hours on a
-10-core Mac; median tile 9–10 KB, max 26 KB.
+The full island is **222,046 tiles / 2.3 GB** at z7–17, built in ~2¼ hours on a 10-core Mac; median
+tile 9–10 KB, max 26 KB.
+
+Builds are not bit-for-bit reproducible: rebuilding unchanged source re-encodes ~8% of the
+lower-zoom tiles with differences of a few levels per pixel. Harmless, but it means "what changed"
+between builds is always larger than what actually changed.
 
 WebP rather than JPEG: GDAL's tiler decides a tile is blank by its alpha/nodata, which JPEG cannot
 carry, so JPEG output writes every uncovered tile as a black square. WebP is the same size at the
@@ -78,9 +85,19 @@ Tiles are cached for a year, so a refreshed dataset goes to a **new prefix** (`.
 geocode-imagery/vivid-2024`) and `kVividTileUrl` in `src/hooks/lava-coder/use-world-imagery.ts` is
 updated to match. The sync is idempotent; re-running after a partial upload finishes it.
 
-`--size-only` assumes a prefix is only ever filled from one build. When the island went over the
-Part 1 sample, 9 of the 64 tiles it skipped had the same size but different content and had to be
-copied up individually. If you must overwrite a prefix in place, drop `--size-only` for that run.
+`--size-only` assumes a prefix is only ever filled from one build: it skips a rebuilt tile that kept
+its byte size (9 of 64 such tiles were stale when the island went over the Part 1 sample). To
+refresh a prefix in place, use `upload_changed.py` instead, which compares MD5s with the S3 ETags
+and uploads only changed and new tiles (listing the prefix takes ~20 minutes):
+
+    /opt/homebrew/bin/python3 upload_changed.py --dry-run   # counts only
+    /opt/homebrew/bin/python3 upload_changed.py
+
+then invalidate the prefix in CloudFront so edge caches drop the old versions, and clear your own
+browser cache (or load with DevTools' "Disable cache"):
+
+    aws cloudfront create-invalidation --distribution-id E1QHTGVGYD1DWZ \
+      --paths "/geocode-imagery/vivid-2020/*"
 
 ## Rebuilding from scratch
 

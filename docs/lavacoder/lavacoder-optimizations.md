@@ -9,9 +9,9 @@ A prototype has been generated to test map imagery and labels: https://models-re
 ### Map Imagery
 
 Implementing option B with `SoH_Imagery/Vivid_2020`. The full island is self-hosted at
-`https://models-resources.concord.org/geocode-imagery/vivid-2020/` — 216k WebP tiles, 2.2 GB, z7–17,
-pulled from the state's ImageServer by `scripts/imagery/` once permission was received (31 GB of
-source, ~6¾ h fetch, 2 h build) — and `vivid` is the student default. Cutover measurements (Part 3)
+`https://models-resources.concord.org/geocode-imagery/vivid-2020/` — 222k WebP tiles, 2.3 GB, z7–17,
+pulled from the state's ImageServer by `scripts/imagery/` once permission was received (~32 GB of
+source, ~6¾ h fetch, ~2¼ h build) — and `vivid` is the student default. Cutover measurements (Part 3)
 remain. Design, status, and findings:
 [docs/plans/2026-09-16-vivid-imagery-design.md](../plans/2026-09-16-vivid-imagery-design.md).
 
