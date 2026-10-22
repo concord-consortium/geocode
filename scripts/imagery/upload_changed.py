@@ -22,6 +22,13 @@ import sys
 BUCKET = "models-resources"
 
 
+def data_dir():
+    """All inputs and outputs live in data/ next to this script (gitignored)."""
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+    os.makedirs(path, exist_ok=True)
+    return path
+
+
 def remote_etags(prefix):
     out = subprocess.run(["aws", "s3api", "list-objects-v2", "--bucket", BUCKET, "--prefix", prefix + "/",
                           "--query", "Contents[].[Key,ETag]", "--output", "json"],
@@ -66,7 +73,7 @@ def main():
     args = [a for a in argv if a not in flags]
     dry_run, delete_orphans = "--dry-run" in argv, "--delete" in argv
     prefix = args[0] if args else "geocode-imagery/vivid-2020"
-    os.chdir(os.path.dirname(os.path.abspath(__file__)))
+    os.chdir(data_dir())
 
     remote = remote_etags(prefix)
     local = local_md5s("tiles")

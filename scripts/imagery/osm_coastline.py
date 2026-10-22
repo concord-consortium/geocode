@@ -30,6 +30,13 @@ RAW = os.path.join("build", "osm-coastline.osm")
 OUT = os.path.join("build", "osm-land.geojson")
 
 
+def data_dir():
+    """All inputs and outputs live in data/ next to this script (gitignored)."""
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+    os.makedirs(path, exist_ok=True)
+    return path
+
+
 def _add_rings(geom, out):
     if ogr.GT_Flatten(geom.GetGeometryType()) == ogr.wkbPolygon:
         for i in range(geom.GetGeometryCount()):
@@ -64,7 +71,7 @@ def fetch():
 
 
 def main():
-    os.chdir(os.path.dirname(os.path.abspath(__file__)))
+    os.chdir(data_dir())
     os.makedirs("build", exist_ok=True)
     print(f"Fetching the OSM coastline for {BBOX} from Overpass", flush=True)
     fetch()

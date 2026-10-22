@@ -19,6 +19,7 @@
 #        mostly empty. See the README for the split build that adds the other islands.
 set -euo pipefail
 cd "$(dirname "$0")"
+mkdir -p data && cd data   # all inputs and outputs live in data/ (gitignored)
 
 ZOOM="${1:-7-17}"
 OUT="${2:-tiles}"

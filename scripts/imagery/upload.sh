@@ -6,6 +6,7 @@
 # Usage: ./upload.sh [PREFIX]   (default geocode-imagery/vivid-2020)
 set -euo pipefail
 cd "$(dirname "$0")"
+mkdir -p data && cd data   # all inputs and outputs live in data/ (gitignored)
 
 BUCKET="models-resources"
 PREFIX="${1:-geocode-imagery/vivid-2020}"

@@ -3,6 +3,10 @@
 Builds the self-hosted basemap LavaCoder uses instead of Bing/Cesium Ion. Background and decisions:
 [docs/plans/2026-09-16-vivid-imagery-design.md](../../docs/plans/2026-09-16-vivid-imagery-design.md).
 
+Every input and output (source chunks, `build/` intermediates, tiles — tens of GB) lives in `data/`,
+which is gitignored. The scripts switch into `data/` themselves, so directory names in the commands
+below (`source`, `tiles`, `source-masked`, ...) are relative to it.
+
 ## Requirements
 
 - GDAL 3.13+ with Python bindings and numpy: `brew install gdal numpy`. Note that `brew install` may
@@ -14,7 +18,7 @@ Builds the self-hosted basemap LavaCoder uses instead of Bing/Cesium Ion. Backgr
 
 ## Source data
 
-Put GeoTIFFs in `source/`. Any projection works; `build-tiles.sh` reprojects to Web Mercator.
+Put GeoTIFFs in `data/source/`. Any projection works; `build-tiles.sh` reprojects to Web Mercator.
 
 Until the state delivers the Vivid 2020 files, `vivid_fetch.py` pulls native-resolution chunks of a
 small area from the public ImageServer so the pipeline can be exercised:
@@ -84,7 +88,7 @@ and at z16–17 the line can be a few meters off. The data is © OpenStreetMap c
     ./build-tiles.sh          # zoom 7-17, full island
     ./build-tiles.sh 12-17    # small samples: skips low zooms that would be mostly empty
 
-Output: `tiles/{z}/{x}/{y}.webp`. Black (0,0,0) is treated as nodata; empty tiles are not written and
+Output: `data/tiles/{z}/{x}/{y}.webp`. Black (0,0,0) is treated as nodata; empty tiles are not written and
 coverage edges are transparent. The sample (two ~6 km boxes) is ~2,300 tiles / 24 MB at z12–17.
 The full island is **222,046 tiles / 2.3 GB** at z7–17, built in ~2¼ hours on a 10-core Mac; median
 tile 9–10 KB, max 26 KB.
@@ -93,7 +97,7 @@ tile 9–10 KB, max 26 KB.
 
     /opt/homebrew/bin/python3 vivid_fetch.py --other-islands      # 38 chunks, 8 m/px, ~400 MB, ~4 min
     ./build-tiles.sh 7-14 tiles-low source source-islands         # both sources, ~1 hour
-    for z in 7 8 9 10 11 12 13 14; do rm -rf tiles/$z && mv tiles-low/$z tiles/$z; done
+    (cd data && for z in 7 8 9 10 11 12 13 14; do rm -rf tiles/$z && mv tiles-low/$z tiles/$z; done)
 
 LavaCoder is about the Big Island, so as a cost trade-off Niʻihau through Maui are fetched at 8 m/px
 into `source-islands/` and tiled only to zoom 14 (~9.5 m/px). Students can pan to them and zoom in,
@@ -148,6 +152,6 @@ browser cache (or load with DevTools' "Disable cache"):
 
 ## Rebuilding from scratch
 
-`rm -rf build tiles` and rerun. `build-tiles.sh` passes `--resume`, so an interrupted run continues
+`rm -rf data/build data/tiles` and rerun. `build-tiles.sh` passes `--resume`, so an interrupted run continues
 where it stopped. Avoid running GDAL statistics on the output tiles: `ComputeStatistics` writes
 `.aux.xml` sidecars next to them (the upload excludes those anyway).

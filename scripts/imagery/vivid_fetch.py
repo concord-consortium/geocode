@@ -46,6 +46,13 @@ OTHER_ISLANDS_EXTENT = dict(west=-160.35, south=20.45, east=-155.95, north=22.30
 OTHER_ISLANDS_PIXEL_METERS = 8.0
 
 
+def data_dir():
+    """All inputs and outputs live in data/ next to this script (gitignored)."""
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+    os.makedirs(path, exist_ok=True)
+    return path
+
+
 def lonlat_to_mercator(lon, lat):
     """WGS84 degrees -> EPSG:3857 meters (spherical Mercator)."""
     x = math.radians(lon) * EARTH_RADIUS
@@ -249,6 +256,7 @@ def main():
     parser.add_argument("--dry-run", action="store_true", help="report the chunk count and size; fetch nothing")
     parser.add_argument("--out", help="output directory (default: source, or source-islands for --other-islands)")
     args = parser.parse_args()
+    os.chdir(data_dir())
 
     out = args.out or ("source-islands" if args.other_islands else "source")
     if args.island:

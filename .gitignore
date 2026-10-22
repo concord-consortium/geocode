@@ -12,14 +12,5 @@ LocalhostCertificates
 .DS_Store
 
 # Imagery pipeline inputs/outputs (GBs; never commit)
-scripts/imagery/source
-scripts/imagery/source-islands
-scripts/imagery/source-masked
-scripts/imagery/source-islands-masked
-scripts/imagery/build
-scripts/imagery/tiles
-scripts/imagery/tiles-low
-scripts/imagery/tiles-masked
-scripts/imagery/tiles-masked-low
-scripts/imagery/tiles-unmasked
+scripts/imagery/data/
 __pycache__/

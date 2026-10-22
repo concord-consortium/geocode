@@ -1,6 +1,6 @@
 """Make the water in the source chunks transparent, using the OSM land polygons from osm_coastline.py.
 
-The Vivid mosaic's water has seams, glint, and a hard rectangular edge a few km offshore, all of which
+The Vivid mosaic's water has a hard rectangular edge a few km offshore, which
 stand out against LavaCoder's flat ocean layer. This rasterizes the land polygons onto each chunk's
 grid and sets every pixel outside them to (0,0,0), the pipeline's no-data, so build-tiles.sh writes
 water as transparent and skips water-only tiles. Chunks entirely on land are symlinked; chunks with
@@ -23,6 +23,13 @@ from osgeo import gdal, ogr
 gdal.UseExceptions()
 ogr.UseExceptions()
 LAND = os.path.join("build", "osm-land.geojson")
+
+
+def data_dir():
+    """All inputs and outputs live in data/ next to this script (gitignored)."""
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+    os.makedirs(path, exist_ok=True)
+    return path
 
 
 def without_water(rgb, land):
@@ -50,7 +57,8 @@ def mask_chunk(args):
     if not land.any():
         return "dropped"
     if land.all():
-        os.symlink(os.path.abspath(path), out)
+        # Relative, so the data directory can be moved without breaking the links
+        os.symlink(os.path.relpath(os.path.abspath(path), os.path.dirname(os.path.abspath(out))), out)
         return "linked"
     result = without_water(src.ReadAsArray(), land)
     # Match the originals' band metadata (ColorInterp Undefined on every band) or gdalbuildvrt skips
@@ -75,7 +83,7 @@ def main():
     parser.add_argument("--land", default=LAND, help=f"land polygons (default {LAND})")
     parser.add_argument("--jobs", type=int, default=os.cpu_count(), help="parallel workers")
     args = parser.parse_args()
-    os.chdir(os.path.dirname(os.path.abspath(__file__)))
+    os.chdir(data_dir())
 
     chunks = sorted(glob.glob(os.path.join(args.source_dir, "*.tif")))
     os.makedirs(args.out_dir, exist_ok=True)
