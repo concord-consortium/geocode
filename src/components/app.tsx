@@ -9,15 +9,14 @@ import styled from "styled-components";
 import { BlocklyAuthoring } from "../assets/blockly-authoring";
 import Scenarios from "../assets/maps/scenarios.json";
 import { BlocklyController } from "../blockly/blockly-controller";
-import { blocklyStore } from "../stores/blockly-store";
 import { lavaSimulation } from "../stores/lava-simulation-store";
 import {
   getAuthorableSettings, updateStores, serializeState, getSavableStateAuthor, deserializeState,
   UnmigratedSerializedState, IStoreish
 } from "../stores/stores";
 import { uiStore } from "../stores/ui-store";
-import { unitStore , UnitNameType } from "../stores/unit-store";
-import { queryValue, queryValueBoolean } from "../utilities/url-query";
+import { UnitNameType } from "../stores/unit-store";
+import { applyUrlSettings } from "../stores/url-settings";
 import AuthoringMenu from "./authoring-menu";
 import { BaseComponent, IBaseProps } from "./base";
 import IconButton from "./buttons/icon-button";
@@ -224,26 +223,9 @@ export class AppComponent extends BaseComponent<IProps, IState> {
     this.blocklyController = new BlocklyController(this.stores);
   }
 
-  public parseQueryParams() {
-    const unit = queryValue("unit");
-    let hideModelOptions = queryValueBoolean("hide-model-options");
-    if (unit === "Tephra") {
-      blocklyStore.setToolbox(BlocklyAuthoring.tephraToolboxes[0]);
-      unitStore.setUnit(unit);
-      hideModelOptions = true;
-    } else if (unit === "Seismic") {
-      blocklyStore.setToolbox(BlocklyAuthoring.seismicToolboxes[0]);
-      unitStore.setUnit(unit);
-      hideModelOptions = true;
-    } else if (unit === "LavaCoder") {
-      blocklyStore.setToolbox(BlocklyAuthoring.molassesToolboxes[0]);
-      unitStore.setUnit(unit);
-    }
-    uiStore.setShowOptionsDialog(!hideModelOptions);
-  }
-
   public componentDidMount() {
-    this.parseQueryParams();
+    // Apply the url settings, including hiding the model options.
+    applyUrlSettings(true);
 
     // Trigger the Enter key when pasting into Blockly HTML input fields
     window.addEventListener("paste", this.handlePaste);
@@ -402,7 +384,8 @@ export class AppComponent extends BaseComponent<IProps, IState> {
       // controllers, before reloading the initial application state
       reset();
       this.props.reload();
-      this.parseQueryParams();
+      // Reapply the url settings, except setting the visibility of the model options, which LARA may have set.
+      applyUrlSettings();
     };
 
     const showReloadModal = () => this.setState({showingReloadModal: true});

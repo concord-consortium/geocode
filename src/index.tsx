@@ -60,10 +60,11 @@ const parseJSON = (obj: any, propsToParse: string[]) => {
 
 // If we are embedded in LARA, wait for `initInteractive` and initialize model with any student data
 phone.addListener("initInteractive", (data: {
-    mode: any,
-    authoredState: any,
-    interactiveState: any,
-    linkedState: any}) => {
+  mode: any,
+  authoredState: any,
+  interactiveState: any,
+  linkedState: any
+}) => {
   parseJSON(data, ["authoredState", "interactiveState", "linkedState"]);
 
   const authorState: UnmigratedSerializedState | {} = data?.authoredState || {};
