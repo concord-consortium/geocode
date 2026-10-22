@@ -58,6 +58,27 @@ creating Compressed Mosaics" after that, so Vivid 2020 is not there. Its `2022` 
 (aerial, 60 cm, public domain) — a different dataset from the state's Maxar `Vivid_2022`. Every file
 there is MrSID, which Homebrew's GDAL cannot read.
 
+## Remove the water
+
+    /opt/homebrew/bin/python3 osm_coastline.py                                      # -> build/osm-land.geojson
+    /opt/homebrew/bin/python3 mask_water.py source source-masked                    # seconds
+    /opt/homebrew/bin/python3 mask_water.py source-islands source-islands-masked
+
+The Vivid mosaic's water (seams, glint, a hard rectangular edge a few km offshore) looks bad against
+the app's flat ocean layer, so the tiles contain land only. `osm_coastline.py` builds land polygons for
+every island (117, including islets) from the OpenStreetMap coastline in one Overpass query;
+`mask_water.py` sets every pixel outside them to no-data, so water tiles are transparent or not written
+at all. Build from the `-masked` directories.
+
+Why OSM: the state's official coastline (and NOAA's copy) is from 1983 USGS maps and misses decades of
+new lava coast — it would erase the whole 2018 Kapoho delta. OSM is traced from modern imagery and
+matched the 2020 mosaic at every spot checked.
+
+Limits: breakwaters disappear (OSM maps them apart from the coastline); coastal ponds inside the
+coastline keep their water; a thin surf line stays where whitewater is just inside the mapped coast;
+and at z16–17 the line can be a few meters off. The data is © OpenStreetMap contributors (ODbL), so
+`kVividCredit` credits it.
+
 ## Build
 
     ./build-tiles.sh          # zoom 7-17, full island
@@ -79,8 +100,15 @@ into `source-islands/` and tiled only to zoom 14 (~9.5 m/px). Students can pan t
 where that is soft; fetch them finer (`--pixel-size`) and extend the build's zoom if it matters. Zooms 7–14 are built from a VRT of both sources (the
 script uses `-resolution highest`, so the Big Island stays at 1 m) into a fresh directory and swapped
 in; `--resume` would otherwise keep the old low-zoom tiles that lack the other islands. The Big
-Island's z15–17 tiles are untouched. Result: 226,161 tiles, 2.3 GB. Where Cesium asks for a z15+
-tile over another island it gets a 404 and uses the z14 tile.
+Island's z15–17 tiles are untouched. Where Cesium asks for a z15+ tile over another island it gets a
+404 and uses the z14 tile.
+
+With water masking, the full build from scratch (~2½ hours) is:
+
+    ./build-tiles.sh 15-17 tiles source-masked
+    ./build-tiles.sh 7-14 tiles-low source-masked source-islands-masked   # then swap z7-14 in as above
+
+Result: 173,081 tiles, ~2 GB (water-only tiles are not written).
 
 Builds are not bit-for-bit reproducible: rebuilding unchanged source re-encodes ~8% of the
 lower-zoom tiles with differences of a few levels per pixel. Harmless, but it means "what changed"
@@ -107,7 +135,12 @@ and uploads only changed and new tiles (listing the prefix takes ~20 minutes):
     /opt/homebrew/bin/python3 upload_changed.py --dry-run   # counts only
     /opt/homebrew/bin/python3 upload_changed.py
 
-then invalidate the prefix in CloudFront so edge caches drop the old versions, and clear your own
+If the new build no longer writes some tiles (masking the water dropped 53,080), add `--delete` to
+remove them from S3 too, or the old ones keep being served. `--max-delete N` aborts before changing
+anything if more than N would go; work out the expected number locally first by comparing the old
+and new tile directories (`comm -23` on sorted `find` listings).
+
+Then invalidate the prefix in CloudFront so edge caches drop the old versions, and clear your own
 browser cache (or load with DevTools' "Disable cache"):
 
     aws cloudfront create-invalidation --distribution-id E1QHTGVGYD1DWZ \

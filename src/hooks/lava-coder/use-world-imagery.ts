@@ -19,12 +19,12 @@ const kVividMargin = 0.03;
 const kVividRectangle = Rectangle.fromDegrees(
   -160.35, minLat - kVividMargin, maxLong + kVividMargin, 22.30
 );
-// Wording required by the imagery license for derivative works
+// Wording required by the imagery license for derivative works. The tiles' water is masked out with the
+// OpenStreetMap coastline (scripts/imagery/mask_water.py), which the ODbL requires crediting.
 const kVividCredit = "Includes copyrighted material of Maxar, Inc., All Rights Reserved. " +
-  "Imagery via USDA-FPAC and the Hawaii Statewide GIS Program.";
-// Median offshore water color in the Vivid tiles. The mosaic ends a few km offshore in hard rectangular
-// steps; with this color underneath, the edge of the imagery mostly disappears.
-const kOceanColor = Color.fromBytes(2, 17, 23);
+  "Imagery via USDA-FPAC and the Hawaii Statewide GIS Program. Coastline © OpenStreetMap contributors.";
+// The Vivid tiles have no water (it is masked out), so this flat color is the sea everywhere.
+const kOceanColor = Color.fromBytes(15, 38, 53);
 
 // The viewer's layer stack is [ocean, map, ...overlays].
 const kMapLayerIndex = 1;

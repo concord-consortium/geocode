@@ -140,10 +140,21 @@ Done 2026-10-20, after permission to use the data was received.
   with `upload_changed.py`, then invalidated. `kVividRectangle` now spans −160.35° to the Big
   Island's east margin and north to 22.30°. Students can pan to these islands and zoom to the 1 km
   floor, where z14 (~9.5 m/px) is soft; a finer fetch and build for them is the fix if that matters.
-- *Open: feathering the coverage edge.* The hard edge between the tiles' water and the flat ocean
-  layer looks bad. The likely fix is to bake a fade into the tiles' alpha: a coarse coverage mask,
-  `gdal_proximity.py` for distance from the edge, and alpha ramping to 0 over ~1.5 km, then a full
-  rebuild, upload and invalidation.
+- *Water removed* (2026-10-21). The tiles' water — seams, glint, and the hard rectangular coverage
+  edge a few km offshore — looked bad against the flat ocean layer. Tried in order:
+  - *Feathering* the coverage edge into the ocean color over 3 km: removed the hard edge, but the
+    very dark deep water still showed as soft patches, and wider fades ate into land where coverage
+    hugs the coast.
+  - *A color rule* (drop pixels where blue dominates): removes all water, including reef and glint,
+    but grey lava is slightly blue and was punched full of holes at Kalapana and Kapoho. Rejected.
+  - *A coastline mask*: chosen. The state's coastline (and NOAA's copy) is from 1983 USGS maps and
+    would erase the 2018 Kapoho delta; OpenStreetMap's matched the 2020 mosaic at every one of ~20
+    spots checked across all islands. `osm_coastline.py` builds 117 land polygons; `mask_water.py`
+    sets everything outside them to no-data before tiling.
+  Result: 173,081 tiles (53,080 water-only tiles no longer written, and deleted from S3). Limits:
+  breakwaters disappear, coastal ponds keep their water, a thin surf line stays in places, and at
+  z16–17 the coastline can be a few meters off. The credit now includes © OpenStreetMap contributors
+  (ODbL).
 
 ## Sample area (Part 1)
 
