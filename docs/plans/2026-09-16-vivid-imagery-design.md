@@ -72,6 +72,9 @@ Lives beside the existing DEM scripts with its own README.
 - `defaultMapType()` returns `"vivid"` for students now that the full island is hosted (Part 2).
   `"develop"` (Ion Sentinel‑2) remains the localhost/testing default.
 - Existing `terrain`, `terrainWithLabels`, and `street` types are left in place (out of scope).
+- *Later (October 2026):* the Bing `terrain` type was removed and `vivid` was renamed to take its place,
+  so the self-hosted imagery is now the `"terrain"` map type, labeled "Terrain". Saved states that
+  name `"vivid"` load as `"terrain"`. `terrainWithLabels` (Bing) and `street` remain.
 
 ### 3. Ocean and no-data — **provisional**
 

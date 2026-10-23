@@ -49,7 +49,7 @@ function getImageryProvider(type: LavaMapType): Promise<ImageryProvider> {
       const SENTINEL_2_IMAGERY_ASSET_ID = 3954;
       imageryProviders[type] = IonImageryProvider.fromAssetId(SENTINEL_2_IMAGERY_ASSET_ID);
     }
-    else if (type === "vivid") {
+    else if (type === "terrain") {
       imageryProviders[type] = Promise.resolve(new UrlTemplateImageryProvider({
         url: kVividTileUrl,
         // Only request tiles where there is imagery; elsewhere the ocean layer shows through.
@@ -62,11 +62,8 @@ function getImageryProvider(type: LavaMapType): Promise<ImageryProvider> {
       imageryProviders[type] = Promise.resolve(new OpenStreetMapImageryProvider({}));
     }
     else {
-      // Bing maps is the default imagery provider in Cesium
-      const style: IonWorldImageryStyle = type === "terrainWithLabels"
-        ? IonWorldImageryStyle.AERIAL_WITH_LABELS
-        : IonWorldImageryStyle.AERIAL;
-      imageryProviders[type] = createWorldImageryAsync({ style });
+      // "terrainWithLabels": Bing aerial imagery with labels, via Cesium Ion
+      imageryProviders[type] = createWorldImageryAsync({ style: IonWorldImageryStyle.AERIAL_WITH_LABELS });
     }
   }
   return imageryProviders[type];

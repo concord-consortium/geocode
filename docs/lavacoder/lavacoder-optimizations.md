@@ -70,10 +70,8 @@ LavaCoder is about the Big Island of Hawaiʻi:
 | Eye height | clamped 1 km – 140 km | `src/hooks/lava-coder/use-camera-controls.ts:20-22` |
 | Pan / rotate / tilt | Cesium's default controls disabled; the app's own pan is unbounded | `use-camera-controls.ts` |
 
-The simulation covers a box of roughly 126 × 151 km and the camera starts over it. Nothing stops a
-student from panning to the other islands or beyond, but that is not what the app is for. We are
-paying for a global imagery subscription to display one island. This is what makes self-hosting unusually attractive here — it would be a bad
-idea for an app that could navigate anywhere.
+The simulation covers a box of roughly 126 × 151 km and the camera starts over it, though nothing stops a
+student from panning to the other islands or beyond.
 
 At the 1 km minimum eye height the app needs roughly 1–2 m/px to look sharp, which corresponds to
 about zoom level 17. This is the quality bar any candidate has to clear.
@@ -318,9 +316,10 @@ and documenting how to rebuild.
 #### C. Gate Bing behind the existing authoring flag
 
 Keep Bing, but make it opt-in for demos and screenshots rather than the student default. The plumbing
-already exists: `showMapTypeTerrain` / `showMapTypeLabeledTerrain` and `defaultMapType()` in
-`src/stores/ui-store.ts:13-17,62-72`, and the cycling logic in
-`src/components/lava-coder/lava-coder-view.tsx:147-158`.
+already exists: `showMapTypeLabeledTerrain` and `defaultMapType()` in `src/stores/ui-store.ts`, and the
+cycling logic in `toggleMapType()` in `src/components/lava-coder/lava-coder-view.tsx`. (The unlabeled
+Bing "Terrain" map type was removed in October 2026 and the self-hosted Vivid imagery took over the
+`"terrain"` name, along with its `showMapTypeTerrain` flag; labeled Bing is the only Bing layer left.)
 
 Because billing is per-session, savings are directly proportional to how rarely the layer is enabled.
 
