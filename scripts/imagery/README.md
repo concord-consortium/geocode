@@ -16,6 +16,70 @@ below (`source`, `tiles`, `source-masked`, ...) are relative to it.
   tools use, and unlike the python.org build it ships with CA certificates.
 - AWS CLI v2 with write access to `s3://models-resources/geocode-imagery/`.
 
+## TLDR: rebuild everything from scratch
+
+Every command, in order, run from `scripts/imagery/`. Roughly 11 hours end to end, most of it
+unattended. Times are from the October 2026 run on a 10-core Mac; details are in the sections below.
+
+**1. Download the Big Island** — ~6¾ hours, 1,058 chunks at 1 m/px, ~32 GB, into `data/source/`.
+Run it overnight Hawaii time, since it hits the state's public server for hours.
+It is one request at a time and resumable: stop and re-run freely.
+
+    /opt/homebrew/bin/python3 vivid_fetch.py --island --dry-run   # counts only; check before the long run
+    /opt/homebrew/bin/python3 vivid_fetch.py --island
+
+**2. Download the other islands** — ~4 minutes, 38 chunks at 8 m/px, ~400 MB, into `data/source-islands/`.
+
+    /opt/homebrew/bin/python3 vivid_fetch.py --other-islands
+
+**3. Build land polygons from the OpenStreetMap coastline** — about a minute, one Overpass query,
+writes `data/build/osm-land.geojson`.
+
+    /opt/homebrew/bin/python3 osm_coastline.py
+
+**4. Remove the water** — a few minutes. Writes `data/source-masked/` and
+`data/source-islands-masked/`, dropping all-water chunks and linking all-land ones.
+
+    /opt/homebrew/bin/python3 mask_water.py source source-masked
+    /opt/homebrew/bin/python3 mask_water.py source-islands source-islands-masked
+
+**5. Tile the Big Island's close zooms (z15–17)** — ~1¾ hours, all CPU cores.
+
+    ./build-tiles.sh 15-17 tiles source-masked
+
+**6. Tile every island's far zooms (z7–14) and merge them in** — ~1 hour. The low zooms mix both
+datasets, so they are built separately into `tiles-low` and moved into `tiles`.
+
+    ./build-tiles.sh 7-14 tiles-low source-masked source-islands-masked
+    (cd data && for z in 7 8 9 10 11 12 13 14; do rm -rf tiles/$z && mv tiles-low/$z tiles/$z; done \
+      && rmdir tiles-low)
+
+Result: `data/tiles/`, ~173,000 WebP tiles, ~2 GB.
+
+**7. Upload** — needs an AWS session (`aws login` opens a browser). Sessions expire after a few
+hours, so log in again if an upload stops with an expired-session error; every upload command is
+safe to re-run.
+
+- *Into an empty prefix* (first upload, or a new prefix such as `geocode-imagery/vivid-2024`, in which
+  case update `kVividTileUrl` in `src/hooks/lava-coder/use-world-imagery.ts`) — ~1½ hours:
+
+      aws login
+      ./upload.sh
+
+- *Over the tiles already in `geocode-imagery/vivid-2020/`* — ~20 minutes to list the prefix, plus the
+  upload. Compare first; `--delete` removes tiles the new build no longer writes, and `--max-delete`
+  stops before changing anything if that number is larger than you expect:
+
+      aws login
+      /opt/homebrew/bin/python3 upload_changed.py --dry-run
+      /opt/homebrew/bin/python3 upload_changed.py --delete --max-delete N   # N from the dry run
+
+**8. Refresh the CDN** — a minute or two. Only needed when overwriting existing tiles: CloudFront
+caches them for a year. Then reload the app with DevTools' "Disable cache" checked.
+
+    aws cloudfront create-invalidation --distribution-id E1QHTGVGYD1DWZ \
+      --paths "/geocode-imagery/vivid-2020/*"
+
 ## Source data
 
 Put GeoTIFFs in `data/source/`. Any projection works; `build-tiles.sh` reprojects to Web Mercator.
@@ -34,7 +98,7 @@ Run `/opt/homebrew/bin/python3 -m unittest` here to test it.
 ### Whole island
 
     /opt/homebrew/bin/python3 vivid_fetch.py --island --dry-run   # counts and sizes only
-    /opt/homebrew/bin/python3 vivid_fetch.py --island --out source-island
+    /opt/homebrew/bin/python3 vivid_fetch.py --island
 
 `--island` covers `IMAGERY_EXTENT` — LavaCoder's AOI (the lava simulation's elevation grid) plus
 margins, since land reaches past the AOI (Keāhole Point is at −156.06, west of its −156.0 edge) — at **1 m/px** (zoom 17 is 1.2 m/px,
