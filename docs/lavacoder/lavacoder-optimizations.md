@@ -8,7 +8,14 @@ A prototype has been generated to test map imagery and labels: https://models-re
 
 ### Map Imagery
 
-We've explored options and decided hosting our own tiles (option B) using the `SoH_Imagery/Vivid_2022` imagery is the best option. The project team has sent an email to request access to these files.
+Implementing option B with `SoH_Imagery/Vivid_2020`. The full island is self-hosted at
+`https://models-resources.concord.org/geocode-imagery/vivid-2020/` — 226k WebP tiles, 2.3 GB, z7–17 (other islands to z14),
+pulled from the state's ImageServer by `scripts/imagery/` once permission was received (~32 GB of
+source, ~6¾ h fetch, ~2¼ h build) — and `vivid` is the student default. Cutover measurements (Part 3)
+remain. Design, status, and findings:
+[docs/plans/2026-09-16-vivid-imagery-design.md](../plans/2026-09-16-vivid-imagery-design.md).
+
+Note the year: the prototype linked above renders **Vivid_2020**, not Vivid_2022. The 2022 mosaic is lower resolution (0.6 m vs 0.5 m) and has nodata gaps over the AOI, including a ~800 m band clear across the island near 19.554, -155.713. Measured over the app's AOI, 2020 has zero interior holes and 4% more coverage.
 
 ### Place Name Labels
 
@@ -25,7 +32,7 @@ No progress. Before embarking on any work, make sure this is actually a problem 
 
 ## Map Imagery Alternatives (LavaCoder / Cesium)
 
-Planning on implementing option B with `SoH_Imagery/Vivid_2022`. Effort figures are estimates, not commitments.
+Planning on implementing option B with `SoH_Imagery/Vivid_2020`. Effort figures are estimates, not commitments.
 
 ### The problem
 
@@ -55,18 +62,16 @@ thousand sessions is the top published tier.
 Bing is used by LavaCoder only. Tephra and Seismic run on Leaflet with ArcGIS topo tiles and never
 touch Ion.
 
-LavaCoder's camera cannot leave the Big Island of Hawaiʻi:
+LavaCoder is about the Big Island of Hawaiʻi:
 
 | Constraint | Value | Source |
 |---|---|---|
-| Longitude bounds | -156.0 → -154.805 | `src/simulations/lava-coder/lava-constants.ts:16-21` |
-| Latitude bounds | 18.909 → 20.268 | same |
+| Simulation grid (elevation map) | lon -156.0 → -154.805, lat 18.909 → 20.268 | `src/simulations/lava-coder/lava-constants.ts:16-21` |
 | Eye height | clamped 1 km – 140 km | `src/hooks/lava-coder/use-camera-controls.ts:20-22` |
-| Pan / rotate / tilt | default controls disabled | `use-camera-controls.ts:212-227` |
+| Pan / rotate / tilt | Cesium's default controls disabled; the app's own pan is unbounded | `use-camera-controls.ts` |
 
-That is a fixed box of roughly 126 × 151 km. We are paying for a global imagery subscription to
-display one island. This is what makes self-hosting unusually attractive here — it would be a bad
-idea for an app that could navigate anywhere.
+The simulation covers a box of roughly 126 × 151 km and the camera starts over it, though nothing stops a
+student from panning to the other islands or beyond.
 
 At the 1 km minimum eye height the app needs roughly 1–2 m/px to look sharp, which corresponds to
 about zoom level 17. This is the quality bar any candidate has to clear.
@@ -192,8 +197,8 @@ is free. Basemaps offer two billing models and we choose one:
 | Tiles | 2,000,000 tiles/month | $0.15 per 1,000 |
 | Sessions | 1,000 sessions/month | $4.00 per 1,000 |
 
-Estimated cost for LavaCoder alone, at ~250 tiles/session (derived from the AOI and zoom range, not
-measured):
+Estimated cost for LavaCoder alone, at ~250 tiles/session (derived from the Big Island and zoom range,
+assuming students stay over it; not measured):
 
 | Sessions/month | Tile model | Session model | Cesium Ion today |
 |---|---|---|---|
@@ -237,7 +242,7 @@ units down.
 
 #### B. Host our own tiles
 
-Build a tile pyramid for the fixed AOI once and serve it from our own S3 + CloudFront, alongside the
+Build a tile pyramid for the island once and serve it from our own S3 + CloudFront, alongside the
 existing static deploy to `models-resources`.
 
 **Legality is the deciding constraint on the source, and it is not ambiguous.** Bulk-downloading
@@ -254,8 +259,20 @@ build step pulls rasters once and emits our own tiles:
 
 | Source | Resolution | Why it fails live | Why it works as source |
 |---|---|---|---|
-| `SoH_Imagery/Vivid_2022` | **0.5 m** | ImageServer, no tile cache | Highest-resolution Big Island imagery found. Carries Maxar licensing — needs clearing. |
+| `SoH_Imagery/Vivid_2020` | **0.5 m** | ImageServer, no tile cache | Highest-resolution Big Island imagery found with no interior holes over the AOI. Carries Maxar licensing — needs clearing. |
 | `SoH_Imagery/WV2_2016` | 0.3 m at z19 | 125 KB PNG tiles | Already tiled in standard Web Mercator; re-encode to JPEG to kill the 10x weight penalty. |
+
+`SoH_Imagery/Vivid_2022` was considered and rejected: it is 0.6 m rather than 0.5 m, and it has nodata
+gaps over the AOI, including a ~800 m band clear across the island near 19.554, -155.713. The 2020
+mosaic has zero interior holes and 4% more coverage of the AOI.
+
+**What the Vivid service metadata says about licensing.** Both Vivid services describe themselves as
+a Maxar dataset acquired by USDA-FPAC-BC-GEO, whose EULA was "upgraded ... with the ability to publicly
+publish the dataset." Use by non-profits is permitted; commercial use "for a profit or fee is strictly
+prohibited." But: "The original received data cannot be downloaded via public access. Please contact
+USDA-FPAC-BC-GEO Branch for current license information." The service exposes `Image,Metadata,Catalog`
+capabilities only — no `Download` — so the only self-serve route would be bulk `exportImage` scraping,
+which that sentence rules out. Hence the email; expect `gis@hawaii.gov` may redirect to USDA.
 
 Self-hosting also solves the two problems that make `WV2_2016` awkward live: we control the encoding
 (JPEG instead of PNG) and can composite over the offshore no-data rather than shipping black wedges.
@@ -299,9 +316,10 @@ and documenting how to rebuild.
 #### C. Gate Bing behind the existing authoring flag
 
 Keep Bing, but make it opt-in for demos and screenshots rather than the student default. The plumbing
-already exists: `showMapTypeTerrain` / `showMapTypeLabeledTerrain` and `defaultMapType()` in
-`src/stores/ui-store.ts:13-17,62-72`, and the cycling logic in
-`src/components/lava-coder/lava-coder-view.tsx:147-158`.
+already exists: `showMapTypeLabeledTerrain` and `defaultMapType()` in `src/stores/ui-store.ts`, and the
+cycling logic in `toggleMapType()` in `src/components/lava-coder/lava-coder-view.tsx`. (The unlabeled
+Bing "Terrain" map type was removed in October 2026 and the self-hosted Vivid imagery took over the
+`"terrain"` name, along with its `showMapTypeTerrain` flag; labeled Bing is the only Bing layer left.)
 
 Because billing is per-session, savings are directly proportional to how rarely the layer is enabled.
 
@@ -317,7 +335,7 @@ adjacent to this work and worth reviewing before duplicating effort.
 
 #### D. Bake a single image or shallow pyramid into the app
 
-For a fixed AOI, ship one large orthophoto of the Big Island as a `SingleTileImageryProvider` — a
+Since the app is about one island, ship one large orthophoto of the Big Island as a `SingleTileImageryProvider` — a
 pattern already used for the lava overlay (`src/hooks/lava-coder/use-lava-overlay.ts:25-28`) — or a
 very shallow local tile pyramid.
 
@@ -345,7 +363,7 @@ paths remain, and they are a genuine trade rather than a ranking:**
 
 - **A (Esri + key)** is the fast path. Half a day, best-in-class imagery, no build pipeline — but
   permanently metered by a vendor, with a runtime key to manage.
-- **B (self-host)** is now unblocked on source and has the higher quality ceiling, since `Vivid_2022`
+- **B (self-host)** is now unblocked on source and has the higher quality ceiling, since `Vivid_2020`
   at 0.5 m beats anything available live. It costs a build pipeline and an email to the state, and
   gives permanent independence.
 
@@ -362,7 +380,7 @@ Every estimate in this document rests on a ~250-tiles-per-session figure that is
 on session counts nobody has supplied. Measuring is cheap — the dev server's network panel gives a
 real tile count in minutes.
 
-**Will the state license `Vivid_2022` / `WV2_2016` for redistribution?** One email to
+**Will the state license `Vivid_2020` / `WV2_2016` for redistribution?** One email to
 `gis@hawaii.gov`. It gates option B entirely, and it is the only remaining unknown on that path.
 
 **Does the keyed Location Platform imagery look identical to the keyless endpoint we prototyped?**
@@ -370,7 +388,7 @@ Both draw from the same World Imagery mosaic, so it should, but this is unverifi
 over Hawaii in particular should be re-checked, since that is precisely what USGS failed on.
 
 **How visible is the Hawaii imagery's offshore no-data boundary in the app?** It is much less severe
-than USGS but not absent. Only matters if B uses `WV2_2016` rather than `Vivid_2022`.
+than USGS but not absent. Only matters if B uses `WV2_2016` rather than `Vivid_2020`.
 
 ### References
 
@@ -383,7 +401,8 @@ than USGS but not absent. Only matters if B uses `WV2_2016` rather than `Vivid_2
 - [OSM Tile Usage Policy](https://operations.osmfoundation.org/policies/tiles/)
 - [Hawaii Statewide GIS REST directory](https://geodata.hawaii.gov/arcgis/rest/services/SoH_Imagery) — contact `gis@hawaii.gov`
 - [Hawaii `WV2_2016` tile service](https://geodata.hawaii.gov/arcgis/rest/services/SoH_Imagery/WV2_2016/MapServer)
-- [Hawaii `Vivid_2022` (0.5 m, ImageServer)](https://geodata.hawaii.gov/arcgis/rest/services/SoH_Imagery/Vivid_2022/ImageServer)
+- [Hawaii `Vivid_2020` (0.5 m, ImageServer)](https://geodata.hawaii.gov/arcgis/rest/services/SoH_Imagery/Vivid_2020/ImageServer) — the chosen source
+- [Hawaii `Vivid_2022` (0.6 m, ImageServer)](https://geodata.hawaii.gov/arcgis/rest/services/SoH_Imagery/Vivid_2022/ImageServer) — rejected for nodata gaps
 - [NOAA Digital Coast imagery services](https://coast.noaa.gov/arcgis/rest/services/Imagery) — no Hawaii coverage
 
 ---
@@ -476,8 +495,10 @@ someone has to maintain and re-run.
 callback returning a `Float32Array` of heights per tile; we sample an in-memory DEM shipped as a
 bundled asset, exactly as `big_island.asc` is today. No tile pyramid, no build step, no hosting.
 
-This is viable *only* because the camera is locked to a small fixed box — "the whole DEM fits in
-memory" is actually true here. But it forces a resolution/bundle-size tradeoff:
+This is viable *only* because the app is about one island — "the whole DEM fits in memory" is
+actually true here. The camera is not bounded, though, so the provider would need a fallback (flat or
+Cesium World Terrain) wherever a student pans beyond the DEM. It also forces a resolution/bundle-size
+tradeoff:
 
 | DEM resolution | Posts over the AOI | Raw Int16 | Viable? |
 |---|---|---|---|
@@ -584,7 +605,7 @@ This is the only option that solves both problems at once:
 - **Public domain** — the only option here that is.
 
 **Costs.** GNIS includes every gulch and stream, so the data needs filtering by feature class and
-then curation — probably 50–200 hand-picked features for a fixed island-sized AOI. Cesium entity
+then curation — probably 50–200 hand-picked features for an island-sized area. Cesium entity
 labels also do not auto-declutter, so importance tiering is manual. That is an afternoon of data work
 plus editorial judgement about what students should see, rather than a URL.
 
