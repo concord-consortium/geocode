@@ -29,7 +29,6 @@ import {
 import { LavaIconButton } from "./lava-icon-button";
 import { ProgressBar } from "./progress-bar";
 import { RulerLineLabel } from "./ruler-line-label";
-import { RunToolbar } from "./run-toolbar";
 import { VentKey } from "./vent-key";
 
 import "./lava-coder-view.scss";
@@ -62,11 +61,15 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
 
   const viewer = useCesiumViewer(lavaCoderElt, mapType, terrainProvider);
 
-  const runningAndNotPaused = running && !lavaSimulation.paused;
+  // The map controls stay usable during a run, per design. Note that commit 24cc2ad
+  // ("GEOCODE-141 Fix Destroy Error") originally disabled them while the simulation was
+  // running and unpaused, because moving the camera while imagery layers are being swapped
+  // could crash Cesium — see the note in use-lava-overlay.ts about not destroying a layer
+  // that the camera may still be using. If that crash resurfaces, this is where it comes from.
   const {
     cameraMode, isAnimating, animateToCameraPitch, listenToCameraChange, setCameraMode, setDefaultCameraView, zoomIn,
     zoomOut
-  } = useCameraControls({ viewer, verticalExaggeration, disabled: runningAndNotPaused, getElevation });
+  } = useCameraControls({ viewer, verticalExaggeration, disabled: false, getElevation });
 
   const { replaceBaseLayer } = useWorldImagery();
 
@@ -95,7 +98,7 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
     );
   }, [clearLatLong]);
 
-  const latLongPopupMode = isLatLongMode && !running
+  const latLongPopupMode = isLatLongMode
                             ? uiStore.hasLatLongPoint ? "static" : "dynamic"
                             : undefined;
 
@@ -187,7 +190,6 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
           <LavaIconButton
             className="lava-icon-button home-view-button"
             onClick={() => setDefaultCameraView()}
-            disabled={runningAndNotPaused}
           >
             <HomeViewIcon />
           </LavaIconButton>
@@ -196,29 +198,27 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
           <LavaIconButton
             className="lava-icon-button zoom-in-button"
             onClick={() => zoomIn()}
-            disabled={runningAndNotPaused}
           >
             <ZoomInIcon />
           </LavaIconButton>
           <LavaIconButton
             className="lava-icon-button zoom-out-button"
             onClick={() => zoomOut()}
-            disabled={runningAndNotPaused}
           >
             <ZoomOutIcon />
           </LavaIconButton>
         </div>
         <div className="rotate-pan-controls">
           <LavaIconButton className="lava-icon-button rotate-pitch-button" isActive={cameraMode === "pitch"}
-                          onClick={() => toggleCameraMode("pitch")} disabled={isRulerMode || runningAndNotPaused}>
+                          onClick={() => toggleCameraMode("pitch")} disabled={isRulerMode}>
             <RotatePitchIcon />
           </LavaIconButton>
           <LavaIconButton className="lava-icon-button rotate-heading-button" isActive={cameraMode === "heading"}
-                          onClick={() => toggleCameraMode("heading")} disabled={runningAndNotPaused}>
+                          onClick={() => toggleCameraMode("heading")}>
             <RotateHeadingIcon />
           </LavaIconButton>
           <LavaIconButton className="lava-icon-button panning-mode-button" isActive={cameraMode === "panning"}
-                          onClick={() => toggleCameraMode("panning")} disabled={runningAndNotPaused}>
+                          onClick={() => toggleCameraMode("panning")}>
             <MoveIcon />
           </LavaIconButton>
         </div>
@@ -227,13 +227,13 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
       <div className="lava-overlay-controls-bottom bottom-left-controls">
         {showLatLongButton && (
           <LavaIconButton className="lat-long-button" width={26} label={"Lat/Long"} isActive={isLatLongMode}
-                          onClick={() => toggleLatLongMode()} disabled={isRulerMode || running}>
+                          onClick={() => toggleLatLongMode()} disabled={isRulerMode}>
             <LatLongIcon />
           </LavaIconButton>
         )}
         {showRulerButton && (
           <LavaIconButton className="ruler-button" width={26} label={"Ruler"} isActive={isRulerMode}
-                          onClick={() => toggleRulerMode()} disabled={isLatLongMode || isAnimating || running}>
+                          onClick={() => toggleRulerMode()} disabled={isLatLongMode || isAnimating}>
             <RulerIcon />
           </LavaIconButton>
         )}
@@ -245,7 +245,6 @@ export const LavaCoderView = observer(function LavaCoderView({ width, height, ma
           </LavaIconButton>
         )}
       </div>
-      <RunToolbar running={running} />
       <AcresCovered />
       <ConcordAttribution />
       <LatLongPopup viewer={viewer} verticalExaggeration={verticalExaggeration}

@@ -26,9 +26,6 @@ export const BlocklyStore = types
     setToolbox(newToolbox: string) {
       self.toolbox = newToolbox;
     },
-    setInitialCodeTitle(title: string) {
-      self.initialCodeTitle = title;
-    },
     forceBlocklyRefresh() {
       self.blocklyRefreshCount++;
     },

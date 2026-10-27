@@ -32,15 +32,13 @@ import { PlateMovementPanel } from "./deformation/plate-movement-panel";
 import { GPSStationTable } from "./gps-station-table";
 import { LavaCoderView } from "./lava-coder/lava-coder-view";
 import { MultirunTable } from "./lava-coder/multirun-table";
-// TEMPORARY — see docs/lavacoder/multirun-todo.md
-import { MultirunVersionLabel } from "./lava-coder/multirun-version-label";
 import { LogComponent } from "./log-component";
 import { MapComponent, Scenario } from "./map/map-component";
 import { HistogramPanel } from "./montecarlo/histogram-panel";
 import { Footer, TabContent } from "./styled-containers";
 import {
   SectionTypes, RightSectionTypes, kTabInfo, kRightTabInfo, TabBack, Tab, Tabs, TabList, TabPanel, RightTabBack,
-  BottomTab
+  BottomTab, pointerFocusProps
 } from "./tabs";
 import WidgetPanel from "./widgets/widget-panel";
 
@@ -448,8 +446,6 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 data-test={this.getTabName(SectionTypes.BLOCKS) + "-panel"}
               >
                 <TabContent>
-                  {/* TEMPORARY — see docs/lavacoder/multirun-todo.md */}
-                  { isLavaCoder && <MultirunVersionLabel /> }
                   <BlocklyContainer
                     width={blocklyWidth}
                     height={blocklyHeight}
@@ -686,6 +682,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                 <TabList>
                   { showConditions &&
                     <BottomTab
+                      {...pointerFocusProps}
                       selected={rightTabIndex === kRightTabInfo.conditions.index}
                       leftofselected={rightTabIndex === (kRightTabInfo.conditions.index + 1) ? "true" : undefined}
                       rightofselected={rightTabIndex === (kRightTabInfo.conditions.index - 1) ? "true" : undefined}
@@ -698,6 +695,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                   }
                   { showCrossSection &&
                     <BottomTab
+                      {...pointerFocusProps}
                       selected={rightTabIndex === kRightTabInfo.crossSection.index}
                       leftofselected={rightTabIndex === (kRightTabInfo.crossSection.index + 1) ? "true" : undefined}
                       rightofselected={rightTabIndex === (kRightTabInfo.crossSection.index - 1) ? "true" : undefined}
@@ -710,6 +708,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                   }
                   { showMonteCarlo &&
                     <BottomTab
+                      {...pointerFocusProps}
                       selected={rightTabIndex === kRightTabInfo.monteCarlo.index}
                       leftofselected={rightTabIndex === (kRightTabInfo.monteCarlo.index + 1) ? "true" : undefined}
                       rightofselected={rightTabIndex === (kRightTabInfo.monteCarlo.index - 1) ? "true" : undefined}
@@ -722,6 +721,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                   }
                   { showData &&
                     <BottomTab
+                      {...pointerFocusProps}
                       selected={rightTabIndex === kRightTabInfo.data.index}
                       leftofselected={rightTabIndex === (kRightTabInfo.data.index + 1) ? "true" : undefined}
                       rightofselected={rightTabIndex === (kRightTabInfo.data.index - 1) ? "true" : undefined}
@@ -734,6 +734,7 @@ export class AppComponent extends BaseComponent<IProps, IState> {
                   }
                   { showDeformation && isSeismic &&
                     <BottomTab
+                      {...pointerFocusProps}
                       selected={rightTabIndex === kRightTabInfo.deformation.index}
                       leftofselected={rightTabIndex === (kRightTabInfo.deformation.index + 1) ? "true" : undefined}
                       rightofselected={rightTabIndex === (kRightTabInfo.deformation.index - 1) ? "true" : undefined}

@@ -21,8 +21,6 @@ import WindDataCollection from "./code/wind-data-collection.xml";
 import FilteredWindDataCollection from "./code/filter-wind-data-collection.xml";
 import MolassesLocation from "./code/molasses-location.xml";
 import MolassesVog from "./code/molasses-vog.xml";
-// TEMPORARY — see docs/lavacoder/multirun-todo.md
-import MolassesMultirunTest from "./code/molasses-multirun-test.xml";
 
 interface IBlocklyAuthoring {
   toolbox: Record<string, string>;
@@ -57,9 +55,7 @@ export const BlocklyAuthoring: IBlocklyAuthoring = {
     "Wind Data Collection": WindDataCollection,
     "Filtered Wind Data Collection": FilteredWindDataCollection,
     "Molasses Location": MolassesLocation,
-    "Molasses Vog": MolassesVog,
-    // TEMPORARY — see docs/lavacoder/multirun-todo.md
-    "Molasses Multirun Test": MolassesMultirunTest
+    "Molasses Vog": MolassesVog
   },
   tephraToolboxes: [
     "TephraFull",

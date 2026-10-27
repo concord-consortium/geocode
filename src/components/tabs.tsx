@@ -1,3 +1,4 @@
+import type { FocusEvent, KeyboardEvent, MouseEvent } from "react";
 import styled from "styled-components";
 import {
   Tab as UnstyledTab,
@@ -203,6 +204,24 @@ const Tab = styled(UnstyledTab)<TabProps>`
   }
 `;
 const BottomTab = styled(Tab)<TabProps>`
+  /* react-tabs gives the selected tab tabIndex="0", so clicking it left the browser's default
+     focus ring on screen. :focus-visible keeps the ring for keyboard users, who need it, and
+     drops it for pointer users, who don't. */
+  &:focus {
+    outline: none;
+  }
+  &:focus-visible {
+    outline: 2px solid #0066cc;
+    outline-offset: -4px;
+  }
+  /* react-tabs focuses the selected tab programmatically on click (focusTabOnClick defaults
+     to true) and Chrome treats programmatic focus as keyboard-like, so :focus-visible alone
+     still painted a ring on plain clicks. pointerFocusProps marks the tab while the
+     interaction is a pointer one, which tells the two apart without relying on the browser's
+     heuristic. Keyboard focus is untouched, so arrow-key navigation still shows a ring. */
+  &[data-pointer-focus]:focus-visible {
+    outline: none;
+  }
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
   border-top-left-radius: ${props => props.rightofselected === "true" ? "10px" : "0px"};
@@ -237,6 +256,25 @@ const TabPanel = styled(UnstyledTabPanel).attrs({ selectedClassName: "selected" 
     display: block;
   }
 `;
+
+/**
+ * Spread onto a BottomTab so a pointer click doesn't leave a focus ring behind. See the
+ * comment in BottomTab for why :focus-visible isn't enough on its own.
+ */
+export const pointerFocusProps = {
+  onMouseDown: (e: MouseEvent<HTMLElement>) =>
+    e.currentTarget.setAttribute("data-pointer-focus", "true"),
+  onKeyDown: (e: KeyboardEvent<HTMLElement>) =>
+    e.currentTarget.removeAttribute("data-pointer-focus"),
+  onBlur: (e: FocusEvent<HTMLElement>) => {
+    // Switching to another app fires blur on the focused tab too, but focus is restored to
+    // that same tab on return — with no new mousedown. Clearing the mark here would let
+    // :focus-visible paint a ring the user never asked for, just from leaving and coming
+    // back. document.hasFocus() is false for a window blur and true when focus is really
+    // moving elsewhere in the page, which is the case we want to clear on.
+    if (document.hasFocus()) e.currentTarget.removeAttribute("data-pointer-focus");
+  }
+};
 
 (Tab as any).tabsRole = "Tab";
 (Tabs as any).tabsRole = "Tabs";

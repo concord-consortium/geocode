@@ -40,9 +40,6 @@ export const MultirunTable = types.model("MultirunTable", {
 .actions(self => ({
   addRow(row: RunRowType) {
     self.rows.push(row);
-  },
-  clearRows() {
-    self.rows.clear();
   }
 }));
 

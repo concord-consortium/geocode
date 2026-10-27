@@ -20,9 +20,6 @@ export function applyUrlSettings(applyHideModelOptions=false) {
     hideModelOptions = true;
   } else if (unit === "LavaCoder") {
     blocklyStore.setToolbox(BlocklyAuthoring.molassesToolboxes[0]);
-    // TEMPORARY — see docs/lavacoder/multirun-todo.md. Preloads the one-block multirun test
-    // program so the Multirun table can be exercised without assembling a program by hand.
-    blocklyStore.setInitialCodeTitle("Molasses Multirun Test");
     unitStore.setUnit(unit);
   }
 
