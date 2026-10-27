@@ -119,8 +119,11 @@ run (or fetch to a separate `--out` and swap directories); chunk filenames inclu
 keep the two from colliding.
 
 **Licensing:** the service metadata says the original data "cannot be downloaded via public access"
-and to contact USDA-FPAC-BC-GEO for license terms. Permission for LavaCoder's use was received in
-October 2026.
+and to contact USDA-FPAC-BC-GEO for license terms.
+See [https://geodata.hawaii.gov/arcgis/rest/services/SoH_Imagery/Vivid_2020/ImageServer](https://geodata.hawaii.gov/arcgis/rest/services/SoH_Imagery/Vivid_2020/ImageServer)
+for the full license terms for the imagery.
+Permission to use the imagery was granted by Joan Delos Santos of the Hawaii Statewide GIS Program
+to Leslie Bondaryk via email on September 24, 2026.
 
 **Why not the USDA Box share?** NRCS publishes Hawaii mosaics on Box, but only up to 2016–2018 for
 satellite imagery: per its readme, USDA "deploys satellite-based Web Map Services ... instead of
