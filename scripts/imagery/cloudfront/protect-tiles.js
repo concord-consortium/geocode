@@ -6,15 +6,17 @@
 // stops other sites from embedding the tiles. It does not stop a determined scraper, which can
 // send any headers it likes.
 
-var ALLOWED_REFERER = /^https?:\/\/(([a-z0-9-]+\.)*concord\.org|localhost|127\.0\.0\.1)(:\d+)?(\/|$)/i;
+const ALLOWED_REFERER = /^https?:\/\/(([a-z0-9-]+\.)*concord\.org|localhost|127\.0\.0\.1)(:\d+)?(\/|$)/i;
 
+// CloudFront calls handler() by name.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function handler(event) {
-  var request = event.request;
-  var headers = request.headers;
-  var site = headerValue(headers, 'sec-fetch-site');
-  var mode = headerValue(headers, 'sec-fetch-mode');
-  var dest = headerValue(headers, 'sec-fetch-dest');
-  var referer = headerValue(headers, 'referer');
+  const request = event.request;
+  const headers = request.headers;
+  const site = headerValue(headers, 'sec-fetch-site');
+  const mode = headerValue(headers, 'sec-fetch-mode');
+  const dest = headerValue(headers, 'sec-fetch-dest');
+  const referer = headerValue(headers, 'referer');
 
   // Someone opened a tile in a tab: typed, bookmarked, or clicked a link. Only top-level
   // documents, so another site cannot show the tiles in iframes.
