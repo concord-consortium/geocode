@@ -231,7 +231,8 @@ requests that have neither header, so add one to `curl` a tile: `curl -H 'Refere
 default behavior's caching or origin settings later change, change this behavior to match.
 
 Changes go to a staging distribution first: a copy of production on its own `*.cloudfront.net`
-domain, with its own copy of the function (a distribution always runs a function's published stage,
+domain, with its own copy of the cache policy (production's `S3-CORS-1` is at CloudFront's limit of
+100 distributions per policy) and of the function (a distribution always runs a function's published stage,
 so a shared function could not be tested without changing production). The script creates whatever is
 missing and leaves alone whatever is current, so every command is safe to re-run:
 

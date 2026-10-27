@@ -35,6 +35,7 @@ import urllib.request
 PRODUCTION_ID = "E1QHTGVGYD1DWZ"
 PRODUCTION_DOMAIN = "models-resources.concord.org"
 STAGING_COMMENT = "geocode-imagery staging, managed by geocode scripts/imagery/protect_tiles.py"
+STAGING_CACHE_POLICY = "geocode-imagery-staging"
 FUNCTION_NAMES = {"staging": "geocode-imagery-protect-staging", "production": "geocode-imagery-protect"}
 FUNCTION_COMMENT = "Keeps other websites from using geocode-imagery tiles (geocode scripts/imagery)"
 PATH_PATTERN = "geocode-imagery/*"
@@ -183,10 +184,36 @@ def find_staging_distribution():
     return ids[0] if ids else None
 
 
+def staging_cache_policy_id(production_policy_id):
+    """A copy of production's cache policy for staging, created if it does not exist yet.
+
+    A cache policy can be used by at most 100 distributions, and the shared S3-CORS-1 policy
+    production uses is at that limit."""
+    policies = aws("cloudfront", "list-cache-policies", "--type", "custom")["CachePolicyList"]
+    for item in policies.get("Items", []):
+        if item["CachePolicy"]["CachePolicyConfig"]["Name"] == STAGING_CACHE_POLICY:
+            return item["CachePolicy"]["Id"]
+
+    response = aws("cloudfront", "get-cache-policy", "--id", production_policy_id)
+    config = response["CachePolicy"]["CachePolicyConfig"]
+    config.update({"Name": STAGING_CACHE_POLICY,
+                   "Comment": f"Copy of {config['Name']} for the geocode-imagery staging distribution"})
+    config_path = write_temp_json(config)
+    try:
+        policy = aws("cloudfront", "create-cache-policy",
+                     "--cache-policy-config", f"file://{config_path}")["CachePolicy"]
+    finally:
+        os.remove(config_path)
+    print(f"Created cache policy {STAGING_CACHE_POLICY} ({policy['Id']})")
+    return policy["Id"]
+
+
 def create_staging_distribution():
     """Copy production's configuration, minus its domains, certificate, logging, and behaviors."""
     config = aws("cloudfront", "get-distribution-config", "--id", PRODUCTION_ID)["DistributionConfig"]
     config = copy.deepcopy(config)
+    default_behavior = config["DefaultCacheBehavior"]
+    default_behavior["CachePolicyId"] = staging_cache_policy_id(default_behavior["CachePolicyId"])
     config.update({
         "CallerReference": f"geocode-imagery-staging-{int(time.time())}",
         "Comment": STAGING_COMMENT,
@@ -196,7 +223,7 @@ def create_staging_distribution():
         "PriceClass": "PriceClass_100",
         "CacheBehaviors": {"Quantity": 0},
     })
-    config["DefaultCacheBehavior"]["FunctionAssociations"] = {"Quantity": 0}
+    default_behavior["FunctionAssociations"] = {"Quantity": 0}
     config_path = write_temp_json(config)
     try:
         distribution = aws("cloudfront", "create-distribution",
