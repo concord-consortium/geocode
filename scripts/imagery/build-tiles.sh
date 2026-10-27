@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # Mosaic every GeoTIFF in source/ and tile it to XYZ WebP under tiles/{z}/{x}/{y}.webp.
 #
-# Works for both the sample chunks from vivid_fetch.py and the full dataset from the state: gdal2tiles
+# Works for any GeoTIFFs, such as a small sample or the whole island from vivid_fetch.py: gdal2tiles
 # reprojects to Web Mercator as needed. Black (0,0,0) is declared nodata because that is what the
 # Vivid service returns outside its footprint, and the VRT reports areas no source covers the same
 # way. Tiles that are entirely nodata are not written; tiles that straddle the footprint edge get an
-# alpha channel there, so the globe's base color shows through instead of a black wedge.
+# alpha channel there, so LavaCoder's ocean layer shows through instead of a black wedge.
 #
 # WebP rather than JPEG: same size at the same quality, but it carries alpha. GDAL's tiler decides a
 # tile is blank by its alpha/nodata, so with JPEG output every ocean tile would be written as a black

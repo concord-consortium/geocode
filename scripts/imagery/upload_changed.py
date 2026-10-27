@@ -1,11 +1,14 @@
 """Upload only the tiles whose content differs from what is already in S3.
 
-For refreshing a prefix in place. `upload.sh` syncs with --size-only, which skips a rebuilt tile that
-happens to keep its byte size; this compares MD5s against the objects' ETags instead (equal for
-these small, single-part uploads). Changed and new tiles are hard-linked into a staging directory
-and copied up with the same headers as upload.sh. Tiles in S3 but not on disk are reported, and
-deleted with --delete (needed when a rebuild stops writing some tiles, as masking the water does:
-otherwise the old water tiles keep being served). Run with --dry-run first to see the counts.
+NOTE: Only use this script during development. Once a tile set has been released and
+used by non-developers, a new prefix should be used instead.
+
+This script is for refreshing a prefix in place. `upload.sh` syncs with --size-only, which skips
+a rebuilt tile that happens to keep its byte size; this compares MD5s against the objects' ETags
+instead (equal for these small, single-part uploads). Changed and new tiles are hard-linked into a
+staging directory and copied up with the same headers as upload.sh. Tiles in S3 but not on disk are
+reported, and deleted with --delete (needed when a rebuild stops writing some tiles, as masking the
+water does: otherwise the old water tiles keep being served). Run with --dry-run first to see the counts.
 
 Because tiles are cached for a year, follow an in-place refresh with a CloudFront invalidation of
 the prefix.

@@ -8,6 +8,7 @@ import { LavaMapType } from "../../stores/ui-store";
 
 // Self-hosted XYZ WebP pyramid built by scripts/imagery from Maxar Vivid 2020 (0.5 m) imagery provided
 // by the Hawaii Statewide GIS Program. See docs/plans/2026-09-16-vivid-imagery-design.md.
+// The imagery is licensed for non-commercial use only; see "Satellite imagery" in the README.
 const kVividTileUrl = "https://models-resources.concord.org/geocode-imagery/vivid-2020/{z}/{x}/{y}.webp";
 // Zoom 17 is ~1.2 m/px, which is sharp at the camera's 1 km minimum eye height. Only the Big Island
 // has tiles above zoom 14; Cesium falls back to the zoom 14 tile where a closer one is missing.

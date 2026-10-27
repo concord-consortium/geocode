@@ -66,16 +66,17 @@ safe to re-run.
       aws login
       ./upload.sh
 
-- *Over the tiles already in `geocode-imagery/vivid-2020/`* — ~20 minutes to list the prefix, plus the
-  upload. Compare first; `--delete` removes tiles the new build no longer writes, and `--max-delete`
+- *Over the tiles already in `geocode-imagery/vivid-2020/`* — ~20 minutes to list the prefix, plus the upload.
+  *NOTE:* Only do this when a prefix is unreleased and has only been used by developers.
+  Compare first; `--delete` removes tiles the new build no longer writes, and `--max-delete`
   stops before changing anything if that number is larger than you expect:
 
       aws login
       /opt/homebrew/bin/python3 upload_changed.py --dry-run
       /opt/homebrew/bin/python3 upload_changed.py --delete --max-delete N   # N from the dry run
 
-**8. Refresh the CDN** — a minute or two. Only needed when overwriting existing tiles: CloudFront
-caches them for a year. Then reload the app with DevTools' "Disable cache" checked.
+**8. Refresh the CDN** — a minute or two. Only needed when overwriting existing tiles during development:
+CloudFront caches them for a year. Then reload the app with DevTools' "Disable cache" checked.
 
     aws cloudfront create-invalidation --distribution-id E1QHTGVGYD1DWZ \
       --paths "/geocode-imagery/vivid-2020/*"
@@ -84,8 +85,9 @@ caches them for a year. Then reload the app with DevTools' "Disable cache" check
 
 Put GeoTIFFs in `data/source/`. Any projection works; `build-tiles.sh` reprojects to Web Mercator.
 
-Until the state delivers the Vivid 2020 files, `vivid_fetch.py` pulls native-resolution chunks of a
-small area from the public ImageServer so the pipeline can be exercised:
+The state never delivered the Vivid 2020 files and the service has no bulk download, so
+`vivid_fetch.py` pulls native-resolution chunks from the public ImageServer into `data/source/`,
+either the whole island (see below) or a small area to exercise the pipeline:
 
     /opt/homebrew/bin/python3 vivid_fetch.py --bbox WEST SOUTH EAST NORTH
 
@@ -182,10 +184,6 @@ Builds are not bit-for-bit reproducible: rebuilding unchanged source re-encodes 
 lower-zoom tiles with differences of a few levels per pixel. Harmless, but it means "what changed"
 between builds is always larger than what actually changed.
 
-WebP rather than JPEG: GDAL's tiler decides a tile is blank by its alpha/nodata, which JPEG cannot
-carry, so JPEG output writes every uncovered tile as a black square. WebP is the same size at the
-same quality.
-
 ## Upload
 
     aws login
@@ -196,8 +194,10 @@ geocode-imagery/vivid-2024`) and `kVividTileUrl` in `src/hooks/lava-coder/use-wo
 updated to match. The sync is idempotent; re-running after a partial upload finishes it.
 
 `--size-only` assumes a prefix is only ever filled from one build: it skips a rebuilt tile that kept
-its byte size (9 of 64 such tiles were stale when the island went over the Part 1 sample). To
-refresh a prefix in place, use `upload_changed.py` instead, which compares MD5s with the S3 ETags
+its byte size (9 of 64 such tiles were stale when the island went over the Part 1 sample).
+
+*During development*, when working on a prefix that no one but developers has used:
+to refresh a prefix in place, use `upload_changed.py` instead, which compares MD5s with the S3 ETags
 and uploads only changed and new tiles (listing the prefix takes ~20 minutes):
 
     /opt/homebrew/bin/python3 upload_changed.py --dry-run   # counts only
