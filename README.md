@@ -248,8 +248,21 @@ the report will render the component `src/report-item/report-item.tsx` as an Ifr
 LARA Interactive API to register a report-item-answer-listener. That listener will render custom HTML for
 each student answer that is solicited by rendering `src/report-item/studnent-answer-view.tsx` to text using
 `renderToStaticMarkup` in the `studentAnswerHtml` method.
+
 ## License
 
 GeoCode is Copyright 2018-2025 (c) by the Concord Consortium and is distributed under the [MIT license](http://www.opensource.org/licenses/MIT).
 
 See license.md for the complete license text.
+
+### Satellite imagery
+
+The LavaCoder **Terrain** map uses Maxar Vivid 2020 imagery, provided by USDA-FPAC and the Hawaii
+Statewide GIS Program, which we serve as tiles from `models-resources.concord.org/geocode-imagery/`.
+The imagery is not covered by the MIT license above. Its license permits non-profit use and
+prohibits use "for a profit or fee." GeoCode must not be offered for a fee, including under a paid
+contract, while it uses this imagery, unless a commercial license is obtained first or LavaCoder is
+switched to other imagery. Forks and other projects may not use our hosted tiles. See [https://geodata.hawaii.gov/arcgis/rest/services/SoH_Imagery/Vivid_2020/ImageServer](https://geodata.hawaii.gov/arcgis/rest/services/SoH_Imagery/Vivid_2020/ImageServer)
+for the full license terms for the imagery.
+Permission to use the imagery was granted by Joan Delos Santos of the Hawaii Statewide GIS Program
+to Leslie Bondaryk via email on September 24, 2026.

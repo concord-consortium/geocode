@@ -9,6 +9,8 @@ const km3ToM3 = 1000000; // 1 km^3 = 1000000 m^3
 export const LavaMapTypes = ["develop", "terrain", "terrainWithLabels", "street"] as const;
 export const LavaMapTypeStrings = LavaMapTypes.map((type) => type.toString());
 export type LavaMapType = typeof LavaMapTypes[number];
+// The default map type to use when an unknown type is saved.
+const kReplacementMapType: LavaMapType = "terrain";
 
 function defaultMapType(): LavaMapType {
   const isDeveloping = isLocalhost();
@@ -163,6 +165,8 @@ const UIStore = types.model("UI", {
       Object.keys(data).forEach((key: UIAuthorSettingsProps) => {
         if (renamedKeys[key]) {
           (self[renamedKeys[key]] as any) = data[key] as any;
+        } else if (key === "mapType" && !LavaMapTypes.includes(data[key])) {
+          self.mapType = kReplacementMapType;
         } else {
           (self[key] as any) = data[key] as any;
         }
