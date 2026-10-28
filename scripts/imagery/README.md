@@ -246,7 +246,7 @@ Before publishing, each function is run in CloudFront against every case in
 [cloudfront/protect-tiles-cases.json](cloudfront/protect-tiles-cases.json), and after the distribution
 deploys, the same cases are sent to it as real requests (`protect_tiles.py verify staging|production`
 repeats this). To change the rules, edit the function and the cases together. `production` refuses to
-run until the function is live on staging. To undo, `protect_tiles.py production --remove` detaches
+run until the staging distribution is deployed, runs this exact code, and passes every case. To undo, `protect_tiles.py production --remove` detaches
 the function from production; the behavior stays, with the same caching as before.
 
 ## Rebuilding from scratch

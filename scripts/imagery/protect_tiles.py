@@ -18,8 +18,8 @@ usage:
   /opt/homebrew/bin/python3 protect_tiles.py production [--dry-run] [--no-wait] [--yes] [--remove]
   /opt/homebrew/bin/python3 protect_tiles.py verify {staging,production}
 
-`production` requires the code to already be live on staging, shows its plan, and asks before
-changing anything. `production --remove` detaches the function from production again.
+`production` first checks that the staging distribution is deployed, runs this exact code, and passes
+every case; then it shows its plan and asks before changing anything. `production --remove` detaches the function from production again.
 """
 import argparse
 import copy
@@ -334,15 +334,30 @@ def staging(args):
         verify(distribution_domain(distribution_id))
 
 
+def check_staging():
+    """Exit unless the staging distribution is deployed, running this code, and passes every case."""
+    name = FUNCTION_NAMES["staging"]
+    rerun = "Run `protect_tiles.py staging` and test it there first."
+    distribution_id = find_staging_distribution()
+    if distribution_id is None:
+        sys.exit(f"There is no staging distribution yet. {rerun}")
+    if deployed_code(name, "LIVE") != read_function_code():
+        sys.exit(f"{os.path.relpath(FUNCTION_PATH)} is not live on staging yet. {rerun}")
+    if planned_behavior(distribution_id, function_arn(name))[2]:
+        sys.exit(f"Staging distribution {distribution_id} does not run {name} on {PATH_PATTERN}. {rerun}")
+    distribution = aws("cloudfront", "get-distribution", "--id", distribution_id)["Distribution"]
+    if distribution["Status"] != "Deployed":
+        sys.exit(f"Staging distribution {distribution_id} is still deploying. Try again in a few minutes.")
+    verify(distribution["DomainName"])
+
+
 def production(args):
     name = FUNCTION_NAMES["production"]
     if args.remove:
         changes = []
         config, etag, change = planned_behavior(PRODUCTION_ID, None)
     else:
-        if deployed_code(FUNCTION_NAMES["staging"], "LIVE") != read_function_code():
-            sys.exit(f"{os.path.relpath(FUNCTION_PATH)} is not live on staging yet. "
-                     "Run `protect_tiles.py staging` and test it there first.")
+        check_staging()
         changes = function_changes(name)
         config, etag, change = planned_behavior(PRODUCTION_ID, function_arn(name))
     changes += [f"production distribution {PRODUCTION_ID}: {change}"] if change else []
