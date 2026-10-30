@@ -217,6 +217,38 @@ browser cache (or load with DevTools' "Disable cache"):
     aws cloudfront create-invalidation --distribution-id E1QHTGVGYD1DWZ \
       --paths "/geocode-imagery/vivid-2020/*"
 
+## Protecting the tiles
+
+A CloudFront Function, [cloudfront/protect-tiles.js](cloudfront/protect-tiles.js), answers 403 when
+another website's pages request the tiles. It allows concord.org pages (any subdomain), `localhost` and
+`127.0.0.1` for development, and opening a tile directly in a browser tab. It goes by the
+`Sec-Fetch-*` and `Referer` headers, which browsers set and page scripts cannot change, so it stops
+other sites from embedding the tiles but not a scraper, which can send any headers. It also blocks
+requests that have neither header, so add one to `curl` a tile: `curl -H 'Referer: https://concord.org/' ...`.
+
+`models-resources.concord.org` serves the whole bucket, so the function runs only on a
+`geocode-imagery/*` cache behavior, which the script adds as a copy of the default behavior. If the
+default behavior's caching or origin settings later change, change this behavior to match.
+
+Changes go to a staging distribution first: a copy of production on its own `*.cloudfront.net`
+domain, with its own copy of the cache policy (production's `S3-CORS-1` is at CloudFront's limit of
+100 distributions per policy) and of the function (a distribution always runs a function's published stage,
+so a shared function could not be tested without changing production). The script creates whatever is
+missing and leaves alone whatever is current, so every command is safe to re-run:
+
+    /opt/homebrew/bin/python3 -m unittest test_protect_tiles      # run the cases locally, in Node
+    aws login
+    /opt/homebrew/bin/python3 protect_tiles.py staging --dry-run  # show what would change
+    /opt/homebrew/bin/python3 protect_tiles.py staging            # deploy, wait, verify
+    /opt/homebrew/bin/python3 protect_tiles.py production         # shows its plan, asks first
+
+Before publishing, each function is run in CloudFront against every case in
+[cloudfront/protect-tiles-cases.json](cloudfront/protect-tiles-cases.json), and after the distribution
+deploys, the same cases are sent to it as real requests (`protect_tiles.py verify staging|production`
+repeats this). To change the rules, edit the function and the cases together. `production` refuses to
+run until the staging distribution is deployed, runs this exact code, and passes every case. To undo, `protect_tiles.py production --remove` detaches
+the function from production; the behavior stays, with the same caching as before.
+
 ## Rebuilding from scratch
 
 `rm -rf data/build data/tiles` and rerun. `build-tiles.sh` passes `--resume`, so an interrupted run continues
