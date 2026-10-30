@@ -38,6 +38,7 @@ STAGING_COMMENT = "geocode-imagery staging, managed by geocode scripts/imagery/p
 STAGING_CACHE_POLICY = "geocode-imagery-staging"
 FUNCTION_NAMES = {"staging": "geocode-imagery-protect-staging", "production": "geocode-imagery-protect"}
 FUNCTION_COMMENT = "Keeps other websites from using geocode-imagery tiles (geocode scripts/imagery)"
+FUNCTION_RUNTIME = "cloudfront-js-2.0"
 PATH_PATTERN = "geocode-imagery/*"
 SAMPLE_TILE = "geocode-imagery/vivid-2020/10/56/447.webp"
 
@@ -85,9 +86,10 @@ def viewer_request_event(headers):
     }
 
 
-def read_function_code():
+def local_function():
+    """The function's code and runtime as they should be deployed."""
     with open(FUNCTION_PATH, "rb") as f:
-        return f.read()
+        return f.read(), FUNCTION_RUNTIME
 
 
 # --- Functions ---
@@ -97,15 +99,26 @@ def function_arn(name):
     return f"arn:aws:cloudfront::{account}:function/{name}"
 
 
-def deployed_code(name, stage):
-    """The function's code at `stage`, or None if the function does not exist."""
+def deployed_function(name, stage):
+    """The function's code and runtime at `stage`, or None if the function does not exist."""
+    summary = aws("cloudfront", "describe-function", "--name", name, "--stage", stage,
+                  missing="NoSuchFunctionExists")
+    if summary is None:
+        return None
     with tempfile.TemporaryDirectory() as tmp:
         out = os.path.join(tmp, "code.js")
-        if aws("cloudfront", "get-function", "--name", name, "--stage", stage, out,
-               missing="NoSuchFunctionExists") is None:
-            return None
+        aws("cloudfront", "get-function", "--name", name, "--stage", stage, out)
         with open(out, "rb") as f:
-            return f.read()
+            return f.read(), summary["FunctionSummary"]["FunctionConfig"]["Runtime"]
+
+
+def function_differences(deployed):
+    """What differs between a deployed function and local_function(), e.g. "code, runtime"."""
+    code, runtime = local_function()
+    differences = ["code"] if deployed[0] != code else []
+    if deployed[1] != runtime:
+        differences.append(f"runtime {deployed[1]} -> {runtime}")
+    return ", ".join(differences)
 
 
 def development_etag(name):
@@ -114,35 +127,34 @@ def development_etag(name):
 
 def function_changes(name):
     """What deploy_function would do, as a list of descriptions."""
-    code = read_function_code()
-    development = deployed_code(name, "DEVELOPMENT")
+    development = deployed_function(name, "DEVELOPMENT")
     changes = []
     if development is None:
         changes.append(f"create function {name}")
-    elif development != code:
-        changes.append(f"update function {name} with {os.path.relpath(FUNCTION_PATH)}")
-    if deployed_code(name, "LIVE") != code:
+    elif development != local_function():
+        changes.append(f"update function {name} ({function_differences(development)})")
+    if deployed_function(name, "LIVE") != local_function():
         changes.append(f"test and publish function {name}")
     return changes
 
 
 def deploy_function(name):
-    """Create or update the function, test it in CloudFront, and publish it if it changed."""
-    code = read_function_code()
-    config = f"Comment={FUNCTION_COMMENT},Runtime=cloudfront-js-2.0"
-    development = deployed_code(name, "DEVELOPMENT")
+    """Create or update the function, test it in CloudFront, and publish it if its code or runtime
+    changed."""
+    config = f"Comment={FUNCTION_COMMENT},Runtime={FUNCTION_RUNTIME}"
+    development = deployed_function(name, "DEVELOPMENT")
     if development is None:
         print(f"Creating function {name}")
         aws("cloudfront", "create-function", "--name", name, "--function-config", config,
             "--function-code", f"fileb://{FUNCTION_PATH}")
-    elif development != code:
-        print(f"Updating function {name}")
+    elif development != local_function():
+        print(f"Updating function {name} ({function_differences(development)})")
         aws("cloudfront", "update-function", "--name", name, "--if-match", development_etag(name),
             "--function-config", config, "--function-code", f"fileb://{FUNCTION_PATH}")
     else:
         print(f"Function {name} is up to date")
 
-    if deployed_code(name, "LIVE") == code:
+    if deployed_function(name, "LIVE") == local_function():
         print(f"Function {name} is already live")
         return
     test_function(name)
@@ -341,8 +353,8 @@ def check_staging():
     distribution_id = find_staging_distribution()
     if distribution_id is None:
         sys.exit(f"There is no staging distribution yet. {rerun}")
-    if deployed_code(name, "LIVE") != read_function_code():
-        sys.exit(f"{os.path.relpath(FUNCTION_PATH)} is not live on staging yet. {rerun}")
+    if deployed_function(name, "LIVE") != local_function():
+        sys.exit(f"{os.path.relpath(FUNCTION_PATH)} ({FUNCTION_RUNTIME}) is not live on staging yet. {rerun}")
     if planned_behavior(distribution_id, function_arn(name))[2]:
         sys.exit(f"Staging distribution {distribution_id} does not run {name} on {PATH_PATTERN}. {rerun}")
     distribution = aws("cloudfront", "get-distribution", "--id", distribution_id)["Distribution"]
