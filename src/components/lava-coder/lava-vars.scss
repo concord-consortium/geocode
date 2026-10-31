@@ -1,4 +1,11 @@
 $green-1-select: #cee6c9;
 $green-2-hover: #b7dcad;
 
+// Blue counterparts, same roles. Each is a blue the app already uses: the line colour is the
+// progress bar's outline, the hover is the Code/Data tab hover, the select is the Blocks tab
+// hover. As with the greens, select is the lighter of the two.
+$blue-1-select: #cfe1fe;
+$blue-2-hover: #aeceff;
+$blue-line: #4691ff;
+
 $control-label: #434343;

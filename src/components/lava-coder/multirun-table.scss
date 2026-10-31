@@ -1,0 +1,191 @@
+@use "./lava-vars.scss" as vars;
+
+// The panel gives this container a fixed 35% of the tab height (see .data-table-container in
+// app.scss) and TabPanel clips its overflow, so on a short window the lower rows were simply
+// cut off. Scrolling here keeps every run reachable without resizing the map.
+.multirun-table-container {
+  height: 100%;
+  // tbody is the scroller now (see below), so the container itself must not scroll — otherwise
+  // the scrollbar would run the full height, past the header.
+  overflow: hidden;
+}
+
+.multirun-empty-state {
+  align-items: center;
+  box-sizing: border-box;
+  color: vars.$control-label;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  height: 100%;
+  justify-content: center;
+  padding: 12px 24px;
+  text-align: center;
+
+  .multirun-empty-title {
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .multirun-empty-detail {
+    font-size: 16px;
+    max-width: 44ch;
+  }
+}
+
+.multirun-table {
+  background-color: white;
+  // separate, not collapse: with border-collapse the borders belong to the TABLE, so a sticky
+  // header loses its edges as it detaches and scrolls. With separate + zero spacing every edge
+  // belongs to a cell and travels with it. Each cell draws its bottom and right, first-child
+  // draws the left and thead draws the top, so the grid is still single 1px lines.
+  border-collapse: separate;
+  border-spacing: 0;
+  box-sizing: border-box;
+  // Laid out as a flex column so thead keeps its natural height and tbody takes the rest. That
+  // puts the scrollbar on the rows alone instead of running up alongside the header.
+  display: flex;
+  flex-direction: column;
+  // max-height, not height: the table grows a row at a time as runs are added, so the box is
+  // only ever as tall as the rows it holds. Capping it is still load-bearing though — without
+  // a bound the flex column is auto-height forever, tbody never becomes a scroller, and the
+  // container just clips the last row. The 10px is the 5px margin top and bottom.
+  max-height: calc(100% - 10px);
+  margin: 5px;
+  min-height: 0;
+  table-layout: fixed;
+  width: calc(100% - 10px);
+
+  thead {
+    display: table;
+    flex: 0 0 auto;
+    table-layout: fixed;
+    width: 100%;
+  }
+
+  tbody {
+    display: block;
+    flex: 1 1 auto;
+    // min-height:0 lets a flex item shrink below its content, which is what allows scrolling.
+    min-height: 0;
+    overflow-y: auto;
+  }
+
+  tbody tr {
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+  }
+
+  th, td {
+    border-bottom: 1px solid vars.$blue-line;
+    border-right: 1px solid vars.$blue-line;
+    // border-box is load-bearing: th carries horizontal padding, and with the default
+    // content-box that padding is ADDED to the declared percentage. thead and each body row
+    // are separate table boxes now, so they'd compute different column widths and the
+    // header would drift out of line with the rows (measured: ~2.5px, accumulating).
+    box-sizing: border-box;
+  }
+
+  th:first-child, td:first-child {
+    border-left: 1px solid vars.$blue-line;
+  }
+
+  // The header sits outside the scrolling tbody, so it stays put without needing position:
+  // sticky. It still draws its own top border, since no table-level border remains.
+  thead th {
+    border-top: 1px solid vars.$blue-line;
+  }
+
+  // thead and each tbody row are now separate table boxes, so the widths have to be declared
+  // for both or the columns won't line up.
+  th, td {
+    &:nth-child(1) {
+      width: 14%;
+    }
+    &:nth-child(2) {
+      width: 26%;
+    }
+    &:nth-child(3) {
+      width: 28%;
+    }
+    &:nth-child(4) {
+      width: 32%;
+    }
+  }
+
+  th {
+    background-color: #f0f0f0;
+    height: 47px;
+    padding: 0 4px;
+
+    sup {
+      font-size: 0.75em;
+      line-height: 0;
+    }
+  }
+
+  td {
+    height: 36px;
+
+    &.td-center {
+      text-align: center;
+    }
+  }
+
+  .run-row {
+    cursor: pointer;
+
+    // Keyed off selectability, not dimming: the erupting row is deliberately NOT dimmed (it
+    // shows as selected at full strength), but it still can't be picked, so it must not
+    // light up on hover or offer a pointer. Matches the Run toolbar circles.
+    &.not-selectable {
+      cursor: default;
+    }
+
+    &:hover:not(.not-selectable) td {
+      background-color: vars.$blue-2-hover;
+    }
+
+    // Rows the program has already moved past. Dimming matches the map buttons' disabled
+    // treatment (.25 opacity, background unchanged).
+    &.dimmed .run-select-button {
+      opacity: 0.25;
+    }
+
+    .run-select-button:disabled {
+      cursor: default;
+    }
+
+    // The selected run is marked three ways, not by colour alone: fill, bold text and a bar
+    // down the left edge. Colour on its own would fail WCAG 1.4.1.
+    &.selected {
+      td {
+        background-color: vars.$blue-1-select;
+        font-weight: bold;
+      }
+
+      .run-cell {
+        box-shadow: inset 4px 0 0 0 vars.$blue-line;
+      }
+    }
+  }
+
+  // Fills the cell so the keyboard target matches the clickable area, and inherits the table's
+  // type rather than shrinking to the browser's default button size.
+  .run-select-button {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+    height: 100%;
+    padding: 0;
+    width: 100%;
+
+    &:focus-visible {
+      outline: 2px solid #0066cc;
+      outline-offset: -2px;
+    }
+  }
+}

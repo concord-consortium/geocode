@@ -74,6 +74,7 @@
     <block type="molasses_impact"></block>
     <block type="math_arithmetic"></block>
     <block type="molasses_create_table"></block>
+    <block type="molasses_create_multirun_table"></block>
     <block type="molasses_add_row"></block>
   </category>
 

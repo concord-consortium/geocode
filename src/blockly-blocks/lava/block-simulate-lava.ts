@@ -103,6 +103,12 @@ Blockly.Blocks.molasses_create_table = {
   }
 };
 
+Blockly.Blocks.molasses_create_multirun_table = {
+  init() {
+    basicInit(this, strings.CREATE_MULTIRUN_TABLE, dataHue);
+  }
+};
+
 function getFlagOptions() {
   const options: [string, string][] = [[strings.SELECT_LOCATION, ""], ...blocklyStore.flagLocations];
   return options;
@@ -312,6 +318,12 @@ javascriptGenerator.forBlock.molasses_set_flag_location = function(block) {
 javascriptGenerator.forBlock.molasses_create_table = function(block) {
   return `
   this.createTable();
+  `;
+};
+
+javascriptGenerator.forBlock.molasses_create_multirun_table = function(block) {
+  return `
+  this.createMultirunTable();
   `;
 };
 
